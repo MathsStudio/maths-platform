@@ -1,7 +1,7 @@
 (function () { 'use strict';
 var S = Studio, H = S.h, $ = H.$, rnd = H.rnd, pick = H.pick, shuffle = H.shuffle, fmtInt = H.fmtInt, V = S.viz;
 var K = S.kit = {};
-K.Q = function (o) { o.type = o.type || 'input'; return o; };
+K.Q = function (o) { o.type = o.type || 'input'; if (o.options) o.options = o.options.map(String); if (o.answer !== undefined) o.answer = String(o.answer); return o; };
 K.ex = function (q, steps, final, render) { return { q: q, steps: steps, final: final, render: render }; };
 K.table = function (rows, head) {
   return '<table class="tbl">' + (head ? '<tr>' + head.map(function (c) { return '<th>' + c + '</th>'; }).join('') + '</tr>' : '') + rows.map(function (r) { return '<tr>' + r.map(function (c) { return '<td>' + c + '</td>'; }).join('') + '</tr>'; }).join('') + '</table>';
@@ -48,7 +48,7 @@ K.stage = function (sp) {
   });
   var nm = function (f) { return f.name; };
   var verb = (sp.gens || []).filter(function (g) { return g.name === 'genVerbal'; });
-  S.pools(sp.n, sp.base, (sp.easy || []).concat(verb).map(nm), (sp.hard || []).concat(verb).map(nm));
+  S.pools(sp.n, sp.year && sp.year.charAt(0) === 'S' ? -1 : sp.base, (sp.easy || []).concat(verb).map(nm), (sp.hard || []).concat(verb).map(nm));
   var practise = function () { return H.buildPracticeSet(sp.gens, 50); };
   S.addTopic({ n: sp.n, base: sp.base, year: sp.year, short: sp.short, title: sp.title, blurb: sp.blurb, practiceCount: 50, gens: {}, steps: [
     { id: 'warm', label: 'Warm-up', type: 'quiz', tag: 'Step 1 · Warm-up', title: 'Mental maths warm-up', lead: 'Four quick questions.', make: sp.warm, doneLabel: 'On to the lesson' },
