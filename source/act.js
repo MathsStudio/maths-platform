@@ -25,20 +25,25 @@
     '.gm-step.used{border-color:var(--good);background:var(--good-bg)}.gm-list{margin:6px 0 10px;padding-left:1.3em}';
   document.head.appendChild(css);
 
-  function pool(t, need) {
+  function diff(q) { return plain(q.text).length + 4 * String(q.answer).length + (q.type === 'mc' ? 10 : 0); }
+  function pool(t, need, mode) {
     var pr = t.steps.filter(function (s) { return s.id === 'practise'; })[0], out = [];
     if (!pr) return out;
-    for (var k = 0; k < 4 && out.length < need; k++) { try { out = out.concat(pr.make()); } catch (e) { } }
+    for (var k = 0; k < 5 && out.length < need * 2; k++) { try { out = out.concat(pr.make()); } catch (e) { } }
+    if (mode === 'easy' || mode === 'hard') {
+      var s = out.slice().sort(function (x, y) { return diff(x) - diff(y); }), cut = Math.ceil(s.length * 0.6);
+      out = mode === 'easy' ? s.slice(0, cut) : s.slice(s.length - cut);
+    }
     return out;
   }
   function stars(frac) { var n = Math.round(frac * 5), s = ''; for (var i = 0; i < 5; i++) s += i < n ? '★' : '☆'; return '<div class="stars" aria-label="' + n + ' out of 5 stars">' + s + '</div>'; }
 
   /* ---------- Beat the clock ---------- */
-  function mountClock(t) {
+  function mountClock(t, cfg) {
     return function (host, ctx) {
-      var SECS = 60, left, score, streak, best, qs, qi, timer, fb, q, over;
-      function nextQ() { if (qi >= qs.length) { qs = shuffle(pool(t, 20)); qi = 0; } q = qs[qi++]; }
-      function start() { left = SECS; score = 0; streak = 0; best = 0; fb = ''; over = false; qs = shuffle(pool(t, 20)); qi = 0; nextQ(); draw(); clearInterval(timer); timer = setInterval(tick, 1000); }
+      var SECS = cfg.secs, left, score, streak, best, qs, qi, timer, fb, q, over;
+      function nextQ() { if (qi >= qs.length) { qs = shuffle(pool(t, 20, cfg.mode)); qi = 0; } q = qs[qi++]; }
+      function start() { left = SECS; score = 0; streak = 0; best = 0; fb = ''; over = false; qs = shuffle(pool(t, 20, cfg.mode)); qi = 0; nextQ(); draw(); clearInterval(timer); timer = setInterval(tick, 1000); }
       function tick() {
         if (!host.isConnected) { clearInterval(timer); return; }
         left--; var el = $('gmTime'); if (el) el.textContent = left + 's';
@@ -47,8 +52,8 @@
       function top() { return '<div class="gm-top"><span class="gm-pill">⏱ <span id="gmTime">' + left + 's</span></span><span class="gm-pill">Score <span id="gmScore">' + score + '</span></span><span class="gm-pill">🔥 Streak <span id="gmStreak">' + streak + '</span></span></div>'; }
       function draw() {
         if (over) {
-          var ok = score >= 5; if (ok) ctx.complete();
-          host.innerHTML = '<div class="score">' + stars(Math.min(1, score / 12)) + '<div class="big">' + score + ' correct</div><p class="say">' + (ok ? 'Great run! Your best streak was ' + best + '.' : 'You need 5 correct to finish this one. Have another go!') + '</p><div class="row"><button class="btn" id="gmAgain" type="button">Play again</button></div></div>';
+          var ok = score >= cfg.need; if (ok) ctx.complete();
+          host.innerHTML = '<div class="score">' + stars(Math.min(1, score / 12)) + '<div class="big">' + score + ' correct</div><p class="say">' + (ok ? 'Great run! Your best streak was ' + best + '.' : 'You need ' + cfg.need + ' correct to finish this one. Have another go!') + '</p><div class="row"><button class="btn" id="gmAgain" type="button">Play again</button></div></div>';
           $('gmAgain').addEventListener('click', start); return;
         }
         var body;
@@ -67,21 +72,21 @@
         else { streak = 0; fb = '✘ ' + pick(TRY) + ' The answer was <b>' + q.answer + '</b>.'; }
         nextQ(); draw();
       }
-      host.innerHTML = '<div class="score"><p class="say">You have 60 seconds. Answer as many questions as you can. Get 5 right to finish. Your streak grows with every correct answer in a row.</p><button class="btn" id="gmGo" type="button">Start the clock</button></div>';
+      host.innerHTML = '<div class="score"><p class="say">You have ' + cfg.secs + ' seconds. Get ' + cfg.need + ' right to finish.' + (cfg.pen ? ' A wrong answer costs you ' + cfg.pen + ' seconds, so think before you type!' : ' Your streak grows with every correct answer in a row.') + '</p><button class="btn" id="gmGo" type="button">Start the clock</button></div>';
       $('gmGo').addEventListener('click', start);
     };
   }
 
   /* ---------- Match-up ---------- */
-  function mountMatch(t) {
+  function mountMatch(t, cfg) {
     return function (host, ctx) {
       function build() {
-        var qs = shuffle(pool(t, 60)), pairs = [];
+        var qs = shuffle(pool(t, 60, cfg.mode)), pairs = [];
         [[46, 9, false], [80, 14, false], [120, 22, true]].forEach(function (lim) {
-          if (pairs.length >= 4) return;
+          if (pairs.length >= Math.min(4, cfg.pairs)) return;
           var seen = {}; pairs = [];
           qs.forEach(function (q) {
-            if (pairs.length >= 6 || q.pic || (q.type === 'mc' && !lim[2])) return;
+            if (pairs.length >= cfg.pairs || q.pic || (q.type === 'mc' && !lim[2])) return;
             var tx = plain(q.text), an = plain(q.answer);
             if (tx.length > lim[0] || an.length > lim[1] || seen[an]) return;
             seen[an] = 1; pairs.push({ q: tx, a: an });
@@ -91,7 +96,7 @@
       }
       function start() {
         var pairs = build(), cards = [], sel = null, moves = 0, matched = 0, bad = null;
-        if (pairs.length < 4) { host.innerHTML = '<p class="note">New cards could not be made this time. Press the button to try again.</p><button class="btn" id="gmRe" type="button">Try again</button>'; $('gmRe').addEventListener('click', start); return; }
+        if (pairs.length < Math.min(4, cfg.pairs)) { host.innerHTML = '<p class="note">New cards could not be made this time. Press the button to try again.</p><button class="btn" id="gmRe" type="button">Try again</button>'; $('gmRe').addEventListener('click', start); return; }
         pairs.forEach(function (p, i) { cards.push({ p: i, k: 'q', t: p.q }); cards.push({ p: i, k: 'a', t: p.a }); });
         cards = shuffle(cards);
         function draw() {
@@ -119,28 +124,34 @@
   }
 
   /* ---------- Right or wrong? ---------- */
-  function wrongFor(q) {
-    var a = String(q.answer).replace(/−/g, '-').replace(/,/g, '');
+  function wrongFor(q, lvl) {
+    var a = String(q.answer).replace(/\u2212/g, '-').replace(/,/g, '');
     if (q.type === 'mc') { var o = (q.options || []).filter(function (x) { return x !== q.answer; }); return o.length ? pick(o) : null; }
     if (q.kind && q.kind !== 'num') return null;
     if (!/^-?\d+(\.\d+)?$/.test(a)) return null;
-    var dp = (a.split('.')[1] || '').length, st = Math.pow(10, -dp), v = Number(a), c = [v + st, v - st, v + 10 * st, v - 10 * st, v + 2 * st, v - 2 * st];
+    var dp = (a.split('.')[1] || '').length, st = Math.pow(10, -dp), v = Number(a), c;
+    if (lvl === 'easy') c = [v + 10 * st, v - 10 * st, v + 5 * st, v - 5 * st];
+    else if (lvl === 'hard') {
+      c = [v + st, v - st, v + 2 * st, v - 2 * st];
+      if (dp === 0 && v !== 0) { c.push(v * 10); if (v % 10 === 0) c.push(v / 10); var s = String(Math.abs(v)); if (s.length >= 2 && s[s.length - 1] !== s[s.length - 2]) { var sw = s.slice(0, -2) + s[s.length - 1] + s[s.length - 2]; c.push(v < 0 ? -Number(sw) : Number(sw)); } }
+    } else c = [v + st, v - st, v + 10 * st, v - 10 * st, v + 2 * st, v - 2 * st];
     c = c.filter(function (x) { return x !== v && (v < 0 || x >= 0); });
-    var w = pick(c); return w.toFixed(dp);
+    if (!c.length) return null;
+    return pick(c).toFixed(dp);
   }
-  function mountTF(t) {
+  function mountTF(t, cfg) {
     return function (host, ctx) {
-      var ROUNDS = 8;
+      var ROUNDS = cfg.rounds;
       function start() {
-        var qs = shuffle(pool(t, 40)).filter(function (q) { return wrongFor(q) !== null; }).slice(0, ROUNDS), i = 0, score = 0;
+        var qs = shuffle(pool(t, 40, cfg.mode)).filter(function (q) { return wrongFor(q, cfg.lvl) !== null; }).slice(0, ROUNDS), i = 0, score = 0;
         if (qs.length < 4) { host.innerHTML = '<p class="note">Questions could not be made this time.</p><button class="btn" id="gmRe" type="button">Try again</button>'; $('gmRe').addEventListener('click', start); return; }
         function round() {
           if (i >= qs.length) {
-            var ok = score >= Math.ceil(qs.length * 0.75); if (ok) ctx.complete();
+            var ok = score >= Math.ceil(qs.length * cfg.pass); if (ok) ctx.complete();
             host.innerHTML = '<div class="score">' + stars(score / qs.length) + '<div class="big">' + score + ' out of ' + qs.length + '</div><p class="say">' + (ok ? 'Sharp eyes! You spotted the mistakes.' : 'Have another go. Check each answer before you decide.') + '</p><button class="btn" id="gmAgain" type="button">Play again</button></div>';
             $('gmAgain').addEventListener('click', start); return;
           }
-          var q = qs[i], truth = Math.random() < 0.5, shown = truth ? String(q.answer) : wrongFor(q);
+          var q = qs[i], truth = Math.random() < 0.5, shown = truth ? String(q.answer) : wrongFor(q, cfg.lvl);
           host.innerHTML = '<div class="gm-top"><span class="gm-pill">Round ' + (i + 1) + ' of ' + qs.length + '</span><span class="gm-pill">Score ' + score + '</span></div>' +
             (q.pic ? '<div class="visual">' + q.pic + '</div>' : '') + '<div class="gm-say say">' + q.text + '</div>' +
             '<div class="gm-claim say">A friend says the answer is <b>' + shown + '</b>.</div><p class="note" style="min-height:0">Work it out. Is your friend right or wrong?</p>' +
@@ -161,11 +172,12 @@
   }
 
   /* ---------- Steps in order ---------- */
-  function mountOrder(t) {
+  function mountOrder(t, cfg) {
     return function (host, ctx) {
       var exs = [];
       t.steps.forEach(function (s) { if (s.type === 'slides') s.slides.forEach(function (sl) { if (sl.ex && sl.ex.steps && sl.ex.steps.length >= 3) exs.push(sl.ex); }); });
-      var solved = 0, last = -1;
+      var solved = 0, last = -1, pref = exs.filter(function (e) { return e.steps.length >= cfg.min && e.steps.length <= cfg.max; });
+      if (pref.length >= 2) exs = pref;
       function start() {
         var ex, k = rnd(exs.length); if (exs.length > 1 && k === last) k = (k + 1) % exs.length; last = k; ex = exs[k];
         var steps = ex.steps.map(function (s, i) { return { t: s, i: i }; }), order = shuffle(steps), next = 0, msg = '';
@@ -191,22 +203,130 @@
     };
   }
 
-  /* ---------- install ---------- */
-  var DEFS = [
-    { id: 'a_clock', label: 'Beat the clock', title: 'Beat the clock', lead: 'A 60-second maths dash. How many can you get right?', mk: mountClock },
-    { id: 'a_match', label: 'Match-up', title: 'Match-up', lead: 'Pair each question with its answer.', mk: mountMatch },
-    { id: 'a_tf', label: 'Right or wrong?', title: 'Right or wrong?', lead: 'A friend gives an answer. Work it out and decide.', mk: mountTF },
-    { id: 'a_order', label: 'Steps in order', title: 'Put the steps in order', lead: 'The steps of a worked example have been jumbled up. Put them back in order.', mk: mountOrder }
-  ];
+  /* ---------- Treasure trail (P5) ---------- */
+  function mountTrail(t, cfg) {
+    return function (host, ctx) {
+      var N = cfg.len;
+      function start() {
+        var qs = shuffle(pool(t, 20, cfg.mode)), qi = 0, pos = 0, tries = 0, fb = '', q = qs[qi];
+        function trail() { var s = '🏠 '; for (var i = 0; i < N; i++) s += (i < pos ? '🟢' : (i === pos ? '🚶' : '⚪')) + ' '; return s + (pos >= N ? '🏆' : '💎'); }
+        function nextQ() { qi++; if (qi >= qs.length) { qs = shuffle(pool(t, 20, cfg.mode)); qi = 0; } q = qs[qi]; tries = 0; }
+        function draw() {
+          if (pos >= N) { ctx.complete(); host.innerHTML = '<div class="score"><div class="gm-say">' + trail() + '</div><div class="stars" aria-label="Treasure found">★★★★★</div><p class="say">You followed the trail and found the treasure! ' + pick(CHEER) + '</p><button class="btn" id="gmAgain" type="button">Walk the trail again</button></div>'; $('gmAgain').addEventListener('click', start); return; }
+          var body;
+          if (q.type === 'mc') body = '<div class="opts">' + shuffle(q.options).map(function (o) { return '<button class="opt say" type="button" data-v="' + String(o).replace(/"/g, '&quot;') + '">' + o + '</button>'; }).join('') + '</div>';
+          else body = '<form class="ans" id="gmForm"><input id="gmIn" type="text" inputmode="decimal" autocomplete="off" aria-label="Your answer"><button class="btn" type="submit">Check</button></form>';
+          host.innerHTML = '<div class="gm-say" aria-label="Trail progress">' + trail() + '</div><p class="note" style="min-height:0">Answer each question to take a step. Reach the treasure at the end!</p>' + (fb ? '<div class="explain say" aria-live="polite">' + fb + '</div>' : '') + (q.pic ? '<div class="visual">' + q.pic + '</div>' : '') + '<div class="gm-say say">' + q.text + '</div>' + body;
+          if (q.type === 'mc') host.querySelectorAll('.opt').forEach(function (b) { b.addEventListener('click', function () { grade(b.getAttribute('data-v')); }); });
+          else { var ai = $('gmIn'); ai.focus(); if (numOnly(q)) ai.addEventListener('input', function () { var c = ai.value.replace(/[A-Za-z]/g, ''); if (c !== ai.value) ai.value = c; }); $('gmForm').addEventListener('submit', function (e) { e.preventDefault(); if (ai.value.trim() !== '') grade(ai.value); }); }
+        }
+        function grade(val) {
+          if (H.matches(q, val)) { pos++; fb = '<b>' + pick(CHEER) + '</b> One step closer.'; nextQ(); }
+          else { tries++; if (tries >= 2) { fb = 'The answer was <b>' + q.answer + '</b>. ' + (q.explain || '') + ' Here is a new question.'; nextQ(); } else fb = '<b>Not quite.</b> ' + ((q.hints && q.hints[0]) ? 'Hint: ' + q.hints[0] : 'Have another look.') + ' Try once more.'; }
+          draw();
+        }
+        draw();
+      }
+      start();
+    };
+  }
+
+  /* ---------- Spot the mistake (P6, P7, S) ---------- */
+  function corrupt(step) {
+    var parts = String(step).split(/(<[^>]+>)/), idx = [];
+    parts.forEach(function (p, i) { if (p.charAt(0) !== '<' && /\d/.test(p)) idx.push(i); });
+    if (!idx.length) return null;
+    var i = idx[idx.length - 1], p = parts[i], m = p.match(/\d+(\.\d+)?/g), last = m[m.length - 1], v = Number(last);
+    var delta = pick([1, -1, 2, 10, -10]); var nv = v + delta; if (nv < 0 || nv === v) nv = v + 1;
+    var dp = (last.split('.')[1] || '').length; var rep = dp ? nv.toFixed(dp) : String(nv);
+    var k = p.lastIndexOf(last); parts[i] = p.slice(0, k) + rep + p.slice(k + last.length);
+    return parts.join('');
+  }
+  function mountSpot(t, cfg) {
+    return function (host, ctx) {
+      var exs = [];
+      t.steps.forEach(function (s) { if (s.type === 'slides') s.slides.forEach(function (sl) { if (sl.ex && sl.ex.steps && sl.ex.steps.length >= 3) exs.push(sl.ex); }); });
+      var solved = 0, last = -1, need = cfg.need;
+      function start() {
+        var k = rnd(exs.length); if (exs.length > 1 && k === last) k = (k + 1) % exs.length; last = k;
+        var ex = exs[k], cand = [];
+        ex.steps.forEach(function (s, i) { if (/\d/.test(plain(s))) cand.push(i); });
+        var bi = cand.length ? pick(cand) : 0, bad = corrupt(ex.steps[bi]);
+        if (bad === null || bad === ex.steps[bi]) { bad = ex.steps[bi] + ' (and so the answer is 0)'; }
+        var shown = ex.steps.map(function (s, i) { return i === bi ? bad : s; }), picked = -1;
+        function draw() {
+          var done = picked >= 0;
+          host.innerHTML = '<div class="gm-top"><span class="gm-pill">Found ' + solved + ' of ' + need + '</span></div><div class="gm-say say">' + ex.q + '</div>' +
+            '<p class="note" style="min-height:0">A pupil solved this, but made <b>one mistake</b>. Tap the line with the mistake.</p><div class="gm-steps">' +
+            shown.map(function (s, i) { return '<button type="button" class="gm-step say' + (done && i === bi ? ' used' : '') + '" data-i="' + i + '"' + (done ? ' disabled' : '') + '>' + (i + 1) + '. ' + s + '</button>'; }).join('') + '</div>' +
+            (done ? '<div class="explain say"><b>' + (picked === bi ? pick(CHEER) + ' You found it.' : 'Not that line.') + '</b> The mistake was in line ' + (bi + 1) + '. It should say: ' + ex.steps[bi] + '</div><div class="row" style="margin-top:10px"><button class="btn" id="gmMore" type="button">Another one</button></div>' : '');
+          if (done) { $('gmMore').addEventListener('click', start); return; }
+          host.querySelectorAll('.gm-step').forEach(function (b) { b.addEventListener('click', function () { picked = Number(b.getAttribute('data-i')); if (picked === bi) { solved++; if (solved >= need) ctx.complete(); } draw(); }); });
+        }
+        draw();
+      }
+      start();
+    };
+  }
+
+  /* ---------- Boss challenge (P7, S) ---------- */
+  function mountBoss(t, cfg) {
+    return function (host, ctx) {
+      function start() {
+        var qs = shuffle(pool(t, 20, 'hard')).slice(0, cfg.rounds), i = 0, lives = cfg.lives, fb = '';
+        if (qs.length < 3) { host.innerHTML = '<p class="note">Questions could not be made.</p><button class="btn" id="gmRe" type="button">Try again</button>'; $('gmRe').addEventListener('click', start); return; }
+        function hearts() { var s = ''; for (var k = 0; k < cfg.lives; k++) s += k < lives ? '❤️' : '🤍'; return s; }
+        function draw() {
+          if (lives <= 0 || i >= qs.length) {
+            var win = lives > 0; if (win) ctx.complete();
+            host.innerHTML = '<div class="score">' + stars(win ? 1 : i / qs.length) + '<div class="big">' + (win ? 'Boss beaten!' : 'The boss wins this time') + '</div><p class="say">' + (win ? 'You kept ' + lives + ' ' + (lives === 1 ? 'life' : 'lives') + '. Brilliant problem solving.' : 'Look back at the lessons and try again. Each try gives you new questions.') + '</p><button class="btn" id="gmAgain" type="button">' + (win ? 'Fight again' : 'Try again') + '</button></div>';
+            $('gmAgain').addEventListener('click', start); return;
+          }
+          var q = qs[i], body;
+          if (q.type === 'mc') body = '<div class="opts">' + shuffle(q.options).map(function (o) { return '<button class="opt say" type="button" data-v="' + String(o).replace(/"/g, '&quot;') + '">' + o + '</button>'; }).join('') + '</div>';
+          else body = '<form class="ans" id="gmForm"><input id="gmIn" type="text" inputmode="decimal" autocomplete="off" aria-label="Your answer"><button class="btn" type="submit">Attack</button></form>';
+          host.innerHTML = '<div class="gm-top"><span class="gm-pill">Lives ' + hearts() + '</span><span class="gm-pill">Round ' + (i + 1) + ' of ' + qs.length + '</span></div>' + (fb ? '<div class="explain say" aria-live="polite">' + fb + '</div>' : '') + (q.pic ? '<div class="visual">' + q.pic + '</div>' : '') + '<div class="gm-say say">' + q.text + '</div><p class="note" style="min-height:0">No hints in a boss fight. Think it through.</p>' + body;
+          if (q.type === 'mc') host.querySelectorAll('.opt').forEach(function (b) { b.addEventListener('click', function () { grade(q, b.getAttribute('data-v')); }); });
+          else { var ai = $('gmIn'); ai.focus(); if (numOnly(q)) ai.addEventListener('input', function () { var c = ai.value.replace(/[A-Za-z]/g, ''); if (c !== ai.value) ai.value = c; }); $('gmForm').addEventListener('submit', function (e) { e.preventDefault(); if (ai.value.trim() !== '') grade(q, ai.value); }); }
+        }
+        function grade(q, val) {
+          if (H.matches(q, val)) fb = '<b>Direct hit!</b> ' + pick(CHEER);
+          else { lives--; fb = '<b>Ouch, you lose a life.</b> The answer was <b>' + q.answer + '</b>. ' + (q.explain || ''); }
+          i++; draw();
+        }
+        draw();
+      }
+      start();
+    };
+  }
+
+  /* ---------- install: a different line-up for each year ---------- */
+  var GAMES = {
+    clock: { label: 'Beat the clock', title: 'Beat the clock', lead: 'A maths dash against the clock. How many can you get right?', mk: mountClock },
+    match: { label: 'Match-up', title: 'Match-up', lead: 'Pair each question with its answer.', mk: mountMatch },
+    tf: { label: 'Right or wrong?', title: 'Right or wrong?', lead: 'A friend gives an answer. Work it out and decide.', mk: mountTF },
+    order: { label: 'Steps in order', title: 'Put the steps in order', lead: 'The steps of a worked example have been jumbled up. Put them back in order.', mk: mountOrder },
+    trail: { label: 'Treasure trail', title: 'Treasure trail', lead: 'Answer questions to walk along the trail and find the treasure.', mk: mountTrail },
+    spot: { label: 'Spot the mistake', title: 'Spot the mistake', lead: 'A pupil has made a mistake in their working. Can you find it?', mk: mountSpot },
+    boss: { label: 'Boss challenge', title: 'Boss challenge', lead: 'Tough problems, three lives and no hints. Can you beat the boss?', mk: mountBoss }
+  };
+  var LINE = {
+    P5: [['trail', { len: 6, mode: 'easy' }], ['match', { pairs: 4, mode: 'easy' }], ['tf', { rounds: 6, mode: 'easy', lvl: 'easy', pass: 0.67 }], ['order', { min: 3, max: 4 }]],
+    P6: [['clock', { secs: 60, need: 5, pen: 0, mode: 'mid' }], ['match', { pairs: 6, mode: 'mid' }], ['tf', { rounds: 8, mode: 'mid', lvl: 'mid', pass: 0.75 }], ['spot', { need: 2 }]],
+    P7: [['clock', { secs: 75, need: 7, pen: 3, mode: 'hard' }], ['spot', { need: 3 }], ['boss', { rounds: 6, lives: 3 }], ['tf', { rounds: 10, mode: 'hard', lvl: 'hard', pass: 0.8 }], ['order', { min: 5, max: 9 }]]
+  };
+  LINE.S = LINE.P7;
+  function yearKey(t) { var y = t.year || 'P6'; return y.charAt(0) === 'S' ? 'S' : y; }
   S.order.forEach(function (n) {
     var t = S.topics[n];
-    if (!t || t.steps.some(function (s) { return s.id === 'a_clock'; })) return;
+    if (!t || t.steps.some(function (s) { return /^a_/.test(s.id); })) return;
     if (!t.steps.some(function (s) { return s.id === 'practise'; })) return;
     var hasEx = false;
     t.steps.forEach(function (s) { if (s.type === 'slides') s.slides.forEach(function (sl) { if (sl.ex && sl.ex.steps && sl.ex.steps.length >= 3) hasEx = true; }); });
-    DEFS.forEach(function (d) {
-      if (d.id === 'a_order' && !hasEx) return;
-      t.steps.push({ id: d.id, label: d.label, type: 'lab', tag: 'Game', title: d.title, lead: d.lead, mount: d.mk(t) });
+    (LINE[yearKey(t)] || LINE.P6).forEach(function (e) {
+      var g = GAMES[e[0]];
+      if ((e[0] === 'order' || e[0] === 'spot') && !hasEx) return;
+      t.steps.push({ id: 'a_' + e[0], label: g.label, type: 'lab', tag: 'Game', title: g.title, lead: g.lead, mount: g.mk(t, e[1]) });
     });
     S.arrange(t);
   });
