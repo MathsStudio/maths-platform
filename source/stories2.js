@@ -196,5 +196,6 @@ Object.keys(S.topics).forEach(function (k) {
   var base = t.base || t.replaces || t.n;
   t.steps.push({ id: 'practical', label: 'Real-time problem', type: 'quiz', tag: 'Step ' + (t.steps.length + 1) + ' · Real-time problems', title: 'Real-time problems', lead: '30 situation questions on ' + (LEAD[base] || 'this topic') + '. Think about which skill from this topic the problem needs. Low, Medium and High change how many steps each problem has.',
     make: function () { var m = []; m.storyMode = true; return H.buildPracticeSet(m, 30); } });
+  if (S.arrange) S.arrange(t);
 });
 })();

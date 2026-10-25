@@ -1,0 +1,10 @@
+const {chromium}=require('playwright');(async()=>{const b=await chromium.launch();const p=await b.newPage({viewport:{width:1366,height:800}});p.on('pageerror',e=>console.log('ERR',e.message));
+await p.goto('file://'+process.cwd()+'/v20.html');await p.click('[data-level="medium"]');await p.click('[data-pickyear="P6"]');
+await p.evaluate(()=>{const c=[...document.querySelectorAll('.card.topic')].find(c=>c.querySelector('.tn').textContent.trim()==='Topic 3');c.querySelector('button.btn').click()});
+await p.click('#wbBtn');const bx=await p.$eval('.wb-stage canvas',c=>{const r=c.getBoundingClientRect();return {x:r.x,y:r.y}});
+await p.mouse.move(bx.x+40,bx.y+40);await p.mouse.down();await p.mouse.move(bx.x+100,bx.y+80,{steps:5});await p.mouse.up();
+const st=()=>p.evaluate(()=>[document.querySelector('[data-wb=undo]').disabled,document.querySelector('[data-wb=clear]').disabled,localStorage.getItem('pm-wb')&&JSON.parse(localStorage.getItem('pm-wb')).length]);
+console.log('after stroke',await st());
+await p.click('[data-wb="text"]');await p.mouse.click(bx.x+60,bx.y+130);await p.keyboard.type('hello');console.log('ta',await p.$eval('.wb-text',t=>[t.hidden,t.value]));
+await p.click('[data-wb="pen"]');await p.waitForTimeout(500);console.log('after text',await st());
+await b.close()})();

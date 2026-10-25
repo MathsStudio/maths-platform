@@ -157,6 +157,16 @@ table.plan th, table.plan td { text-align: left; padding: 8px 10px; border-botto
 .tscroll { overflow-x: auto; }
 
 /* Lesson */
+.partgrid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 16px; margin: 14px 0; }
+.partcard { display: flex; flex-direction: column; gap: 6px; }
+.partico { font-size: 2.2rem; }
+.partbar { display: flex; align-items: center; gap: 12px; margin: 8px 0; }
+.stepgroups { display: grid; gap: 8px; margin: 8px 0 4px; }
+.sgrow { display: flex; align-items: center; gap: 10px; padding: 6px 10px; border-radius: 16px; border: 2px solid transparent; background: var(--surface-2); }
+.sgrow.on { border-color: var(--accent); }
+.sglab { flex: none; font-size: .78rem; text-transform: uppercase; letter-spacing: .06em; min-width: 7.2em; }
+.sgrow .stepper { padding-bottom: 0; }
+@media (max-width: 560px) { .sgrow { flex-direction: column; align-items: flex-start; gap: 4px; } .sgrow .stepper { max-width: 100%; } }
 .stepper { display: flex; gap: 6px; overflow-x: auto; padding-bottom: 4px; }
 .sp { flex: none; display: flex; align-items: center; gap: 8px; padding: 6px 12px 6px 6px; border-radius: 999px; background: var(--surface-2); border: 2px solid transparent; font-weight: 800; font-size: .85rem; }
 .sp .num { width: 24px; height: 24px; border-radius: 50%; display: grid; place-items: center; background: var(--surface); font-size: .8rem; }
@@ -675,6 +685,7 @@ var SLIDE_MORE = {"1.learn1": [{"more": ["Our number system uses only ten digits
   S.h.sameNum = sameNum; S.h.matches = matches;
 
   /* ================= quiz engine ================= */
+  function numOnly(q) { return q.type !== 'mc' && q.kind !== 'text' && !/[A-Za-z]/.test(String(q.answer)); }
   function mountQuiz(host, qs, cfg) {
     var qi = 0, score = 0, results = [], answered = false, hintIdx = 0;
     function draw() {
@@ -696,7 +707,7 @@ var SLIDE_MORE = {"1.learn1": [{"more": ["Our number system uses only ten digits
       var q = qs[qi], body;
       hintIdx = 0;
       if (q.type === 'mc') body = '<div class="opts">' + q.options.map(function (o, i) { return '<button class="opt say" type="button" data-o="' + i + '">' + o + '</button>'; }).join('') + '</div>';
-      else body = '<form class="ans" id="ansForm"><label class="eyebrow" for="ansIn" style="width:100%">Your answer' + (q.unit ? ' (' + q.unit + ')' : '') + '</label><input id="ansIn" type="text" inputmode="' + (q.kind === 'text' || q.kind === 'time' || q.kind === 'frac' ? 'text' : 'decimal') + '" autocomplete="off"' + (q.placeholder ? ' placeholder="' + esc(q.placeholder) + '"' : '') + '><button class="btn" id="check" type="submit">Check</button></form>';
+      else body = '<form class="ans" id="ansForm"><label class="eyebrow" for="ansIn" style="width:100%">Your answer' + (q.unit ? ' (' + q.unit + ')' : '') + (numOnly(q) ? ' \u00b7 numbers only' : '') + '</label><input id="ansIn" type="text" inputmode="' + (q.kind === 'text' || q.kind === 'time' || q.kind === 'frac' ? 'text' : 'decimal') + '" autocomplete="off"' + (q.placeholder ? ' placeholder="' + esc(q.placeholder) + '"' : '') + '><button class="btn" id="check" type="submit">Check</button></form>';
       host.innerHTML = prog + '<div class="qtag">Question ' + (qi + 1) + ' of ' + qs.length + ' · ' + q.tag + '</div>' +
         (q.ctx ? '<div class="qctx say">' + q.ctx + '</div>' : '') +
         (q.pic ? '<div class="visual" style="margin-top:8px">' + q.pic + '</div>' : '') +
@@ -711,7 +722,8 @@ var SLIDE_MORE = {"1.learn1": [{"more": ["Our number system uses only ten digits
         this.disabled = hintIdx >= q.hints.length;
       });
       if (q.type === 'mc') host.querySelectorAll('.opt').forEach(function (b) { b.addEventListener('click', function () { if (!answered) grade(b.textContent, b); }); });
-      else $('ansForm').addEventListener('submit', function (e) { e.preventDefault(); if (!answered && $('ansIn').value.trim() !== '') grade($('ansIn').value, null); });
+      else { var ai = $('ansIn'); if (numOnly(q) && ai) ai.addEventListener('input', function () { var c = ai.value.replace(/[A-Za-z]/g, ''); if (c !== ai.value) ai.value = c; }); }
+      if (q.type !== 'mc') $('ansForm').addEventListener('submit', function (e) { e.preventDefault(); if (!answered && $('ansIn').value.trim() !== '') grade($('ansIn').value, null); });
       if ((store.settings.auto || store.settings.readMode) && Nar.ok) narPlay(true);
     }
     function grade(val, btn) {
@@ -853,14 +865,30 @@ var SLIDE_MORE = {"1.learn1": [{"more": ["Our number system uses only ten digits
   S.h.mountWorked = mountWorked;
 
   /* ================= views ================= */
-  var state = { tab: 'home', step: 0, slide: 0 };
+  var state = { tab: 'home', step: 0, slide: 0, part: null };
   function topic() { return S.topics[state.tab]; }
-  function allSteps(t) { return t.steps.concat([{ id: 'done', label: 'Finish', type: 'finish' }]); }
+  function allSteps(t) { return t.steps.concat([{ id: 'done', label: 'Finish', type: 'finish', group: 'practice' }]); }
+  function progOf(t) { var ss = t.steps.filter(function (s) { return s.type !== 'finish'; }); return { done: ss.filter(function (s) { return isDone(t.n, s.id); }).length, total: ss.length }; }
+  function confirmBtn(btn, label, fn) { var armed = false, tm; btn.addEventListener('click', function () { if (!armed) { armed = true; btn.textContent = 'Tap again to confirm'; tm = setTimeout(function () { armed = false; btn.textContent = label; }, 8000); btn.style.background = 'var(--bad, #b3261e)'; btn.style.color = '#fff'; return; } clearTimeout(tm); fn(); }); }
   function doneCount(t) { return t.steps.filter(function (s) { return isDone(t.n, s.id); }).length; }
   function go(tab, step) {
+    var same = state.tab === tab && tab !== 'home';
     state.tab = tab;
-    if (step !== undefined) { state.step = step; state.slide = 0; }
+    if (step !== undefined) {
+      state.step = step; state.slide = 0;
+      if (tab === 'home') state.part = null;
+      else if (same && state.part) { var st = S.topics[tab] && allSteps(S.topics[tab])[step]; if (!st) state.part = null; else state.part = st.group; }
+      else state.part = null;
+    }
     render();
+  }
+  /* Open a topic at its menu: Let\u2019s learn or Let\u2019s practice. */
+  function enter(t) { state.tab = t.n; state.part = null; state.step = 0; state.slide = 0; render(); }
+  function openPart(t, part) {
+    var steps = allSteps(t), idx = [];
+    steps.forEach(function (x, i) { if (x.group === part && x.type !== 'finish') idx.push(i); });
+    var first = idx.filter(function (i) { return !isDone(t.n, steps[i].id); })[0];
+    state.tab = t.n; state.part = part; state.step = first === undefined ? idx[0] : first; state.slide = 0; render();
   }
   function firstOpen(t) {
     var i = t.steps.findIndex(function (s) { return !isDone(t.n, s.id); });
@@ -905,7 +933,7 @@ var SLIDE_MORE = {"1.learn1": [{"more": ["Our number system uses only ten digits
       b.addEventListener('click', function () {
         var v = b.dataset.tab;
         if (v === 'home') go('home');
-        else { var cu = S.topics[state.tab], t = openTopicFor(Number(v), cu ? stageOf(cu) : null); go(t.n, firstOpen(t)); }
+        else { var cu = S.topics[state.tab], t = openTopicFor(Number(v), cu ? stageOf(cu) : null); enter(t); }
       });
     });
     var cur = $('tabs').querySelector('.tab.cur');
@@ -979,16 +1007,16 @@ var SLIDE_MORE = {"1.learn1": [{"more": ["Our number system uses only ten digits
     P5: 'P5 builds secure number skills and introduces fractions, percentages, sequences and data. Start with Low or Medium. Topics marked Start here are introduced this year.',
     P6: 'P6 develops fluency across every strand: bigger numbers, fractions and percentages, angles, equations and problem solving. Medium is the usual starting level.',
     P7: 'P7 secures and applies everything and prepares for S1. Expect more multi-step problems, percentages, proportion and algebra. Try High.',
-    S1: 'S1 starts Third level. Expect algebra, negative numbers, ratio, angle rules and area and volume. Medium is the usual starting level.',
-    S2: 'S2 moves from Third towards Fourth level: expanding and factorising, Pythagoras, circles, scatter graphs and straight lines.',
-    S3: 'S3 is Fourth level: simultaneous equations, quadratics, trigonometry, similarity, surds and functions.',
+    S1: 'S1 starts Third level. Expect whole numbers and decimals, fractions, percentages, ratio, money, time and speed, angles, area and volume, simple algebra, charts and probability. Medium is the usual starting level.',
+    S2: 'S2 builds on S1: standard form, percentages and finance, proportion, straight lines, Pythagoras, circles, similarity, scatter graphs and probability.',
+    S3: 'S3 is Fourth level: finance, factorising, simultaneous equations, trigonometry, circle work, solids, statistics and probability.',
     all: 'Every Second level topic in curriculum order. Low is the beginning of Second level, Medium is during, and High is the end.'
   };
   var ROLE_LABEL = { start: 'Start here', core: 'Core', extend: 'Stretch' };
   function yearOf() { var y = store.settings.year; return ['P5', 'P6', 'P7', 'S1', 'S2', 'S3', 'all'].indexOf(y) > -1 ? y : 'P6'; }
   function renderYearGate(v) {
     var info = { P5: ['Primary 5', 'Secure the basics', 'Number to 1,000,000, the four operations, fractions, decimals and percentages, sequences, shapes and data. New ideas are introduced step by step.'], P6: ['Primary 6', 'Develop fluency', 'Bigger numbers, fractions and percentages, angles, equations and problem solving across every strand.'], P7: ['Primary 7', 'Secure, apply and stretch', 'Multi-step problems, percentages and proportion, algebra, prime factors and reasoning, plus two extra topics on ratio and money, and on volume, scale and speed, to prepare for S1.'],
-      S1: ['Secondary 1', 'Third level begins', 'Number and negative numbers, fractions and percentages, ratio, algebra, equations, angles, area and volume, data, probability and patterns.'], S2: ['Secondary 2', 'Build algebra and geometry', 'Powers and standard form, expanding and factorising, inequalities, Pythagoras, circles, transformations, scatter graphs and straight lines.'], S3: ['Secondary 3', 'Fourth level', 'Surds and indices, simultaneous equations, quadratics, trigonometry, similarity, solids, statistics and functions.'] };
+      S1: ['Secondary 1', 'Third level begins', 'Whole numbers and decimals, integers, fractions, percentages, ratio, money, time and speed, measure, algebra, angles, shape and coordinates, data and probability.'], S2: ['Secondary 2', 'Build algebra and geometry', 'Standard form, percentages, ratio and proportion, finance, time graphs, area and volume, algebra, straight lines, bearings, Pythagoras, circles, similarity, data and probability.'], S3: ['Secondary 3', 'Fourth level', 'Number and percentages, finance, proportion, solids, factorising, equations and formulae, straight lines, simultaneous equations, trigonometry, circles, similarity and statistics.'] };
     function cardsFor(list) { return '<section class="yrgrid" aria-label="Choose year group">' + list.map(function (y) { return '<button class="yrcard" type="button" data-pickyear="' + y + '"><span class="big">' + y + '</span><span class="what">' + info[y][1] + '</span><span class="note" style="margin:0;min-height:0">' + info[y][2] + '</span></button>'; }).join('') + '</section>'; }
     v.innerHTML = '<section class="hero"><span class="eyebrow">Curriculum for Excellence · Maths Studio</span><h1 class="say">Which year group are you in?</h1><p class="lead say">Pick your year. You will see the topics for that year, with explanations, questions and activities written for it. You can change year at any time.</p></section>' +
       '<h2 class="say" style="margin:18px 0 8px">Primary (Second level)</h2>' + cardsFor(['P5', 'P6', 'P7']) + '<h2 class="say" style="margin:22px 0 8px">Secondary (Third and Fourth level)</h2>' + cardsFor(['S1', 'S2', 'S3']);
@@ -999,12 +1027,15 @@ var SLIDE_MORE = {"1.learn1": [{"more": ["Our number system uses only ten digits
     var yr = yearOf(), rank = { core: 0, start: 1, extend: 2 };
     var order = visibleOrder(), cs = wantStage();
     var cards = order.map(function (n) {
-      var t = openTopicFor(n), have = stageOf(t) === cs || cs === 'P6', c = doneCount(t), pct = Math.round(c / t.steps.length * 100), label = c === 0 ? 'Start topic' : (c >= t.steps.length ? 'Review topic' : 'Continue');
+      var t = openTopicFor(n), have = stageOf(t) === cs || cs === 'P6', pr = progOf(t), c = pr.done, pct = pr.total ? Math.round(c / pr.total * 100) : 0, label = c === 0 ? 'Start topic' : (c >= pr.total ? 'Review topic' : 'Continue');
       var role = yr === 'all' ? '' : (YEAR_ROLE[n] || {})[yr], badge = role ? '<span class="tag role-' + role + '">' + yr + ' · ' + ROLE_LABEL[role] + '</span>' : '';
       var note = have ? '' : '<p class="note" style="margin:0;min-height:0">' + cs + ' stage is coming. Showing the ' + stageOf(t) + ' stage for now.</p>';
       return '<div class="card topic"><span class="tn">Topic ' + n + '</span>' + badge + '<h3>' + t.title + '</h3><p class="note" style="margin:0;min-height:0">' + t.blurb + '</p>' + '<div class="bar" aria-label="' + pct + ' percent complete"><i style="width:' + pct + '%"></i></div>' +
-        '<p class="note" style="margin:0;min-height:0">' + c + ' of ' + t.steps.length + ' parts done</p><button class="btn" data-open="' + t.n + '" type="button" style="margin-top:auto">' + label + '</button></div>';
+        '<p class="note" style="margin:0;min-height:0">' + c + ' of ' + pr.total + ' parts done · ' + pct + '%</p><button class="btn" data-open="' + t.n + '" type="button" style="margin-top:auto">' + label + '</button></div>';
     }).join('');
+    var tot = 0, dn = 0, full = 0; order.forEach(function (n) { var p = progOf(openTopicFor(n)); tot += p.total; dn += p.done; if (p.total && p.done >= p.total) full++; });
+    var opct = tot ? Math.round(dn / tot * 100) : 0;
+    var progPanel = '<section class="card" id="myprog"><div class="row" style="align-items:center;justify-content:space-between"><h2 style="margin:0">Your progress</h2><span class="tag">' + opct + '%</span></div><div class="bar" style="margin:10px 0" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="' + opct + '" aria-label="Overall progress"><i style="width:' + opct + '%"></i></div><p class="note" style="margin:0 0 10px;min-height:0">' + full + ' of ' + order.length + ' topics finished · ' + dn + ' of ' + tot + ' parts done' + (yr === 'all' ? '' : ' in ' + yr) + '.</p><button class="btn ghost" id="resetAll" type="button">Reset my progress</button></section>';
     var soon = [].map(function (c) {
       return '<div class="card topic soon"><span class="tn">Topic ' + c.n + ' · coming next</span><h3>' + c.title + '</h3><p class="note" style="margin:0;min-height:0">' + c.blurb + '</p></div>';
     }).join('');
@@ -1016,30 +1047,58 @@ var SLIDE_MORE = {"1.learn1": [{"more": ["Our number system uses only ten digits
       '<section class="hero"><span class="eyebrow">' + (yr === 'all' ? 'Primary 5 to 7' : (yr.charAt(0) === 'S' ? 'Secondary ' + yr.slice(1) : 'Primary ' + yr.slice(1))) + ' · Curriculum for Excellence, ' + ({ S1: 'Third level', S2: 'Third and Fourth level', S3: 'Fourth level' }[yr] || 'Second level') + '</span><h1 class="say">' + (yr === 'all' ? 'Every topic' : yr + ' topics') + '</h1>' +
       '<p class="lead say">' + ({ 1: 'One', 10: 'Ten', 12: 'Twelve' }[order.length] || order.length) + ' topics. Start with a clear explanation and worked examples, then a no-repeat warm-up, interactive activities and 50 practice questions. Choose Low, Medium or High at any time. Verbal and non-verbal reasoning appear throughout the course.</p></section>' +
       '<section class="pillars"><div class="card"><h3 class="say">Read it</h3><p class="say">Clear steps and pictures, one idea at a time.</p></div><div class="card"><h3 class="say">Hear it</h3><p class="say">Turn on Read aloud once and the voice continues on new pages and questions, where your device allows it.</p></div><div class="card"><h3 class="say">Try it</h3><p class="say">Build, slide, spin and plot. Then answer questions. Hints come one step at a time.</p></div></section>' +
-      '<section><div class="row" style="align-items:center;justify-content:space-between;margin-bottom:12px"><h2>Topics</h2><span class="tag" id="difficultyBadge">Difficulty: ' + (store.settings.difficulty || 'Medium').replace(/^./, function(c){return c.toUpperCase();}) + '</span></div><div class="topics">' + cards + soon + '</div></section>' +
+      progPanel + '<section><div class="row" style="align-items:center;justify-content:space-between;margin-bottom:12px"><h2>Topics</h2><span class="tag" id="difficultyBadge">Difficulty: ' + (store.settings.difficulty || 'Medium').replace(/^./, function(c){return c.toUpperCase();}) + '</span></div><div class="topics">' + cards + soon + '</div></section>' +
       '<details class="card"><summary>For teachers and parents</summary>' +
       '<p>Each topic begins with an explanation and worked examples, then a short warm-up, hands-on activities, a second explanation and a 50-question practice set. Low, Medium and High each draw from their own question selection. Plan about 45 to 60 minutes a topic, split over two sessions if needed.</p>' +
       '<div class="tscroll"><table class="plan"><thead><tr><th>Topic</th><th>Parts</th></tr></thead><tbody>' + rows + '</tbody></table></div>' +
       '<p class="note">Hints come in steps: first a nudge, then the method with the numbers, never the answer. The explanation after each answer shows the full working. Check outcomes against Education Scotland’s Benchmarks for Numeracy and Mathematics at Second level before you rely on this for planning. This is an independent resource. Progress is saved in this browser only.</p>' +
       '<div class="row" style="margin-top:10px"><button class="btn ghost" id="resetProg" type="button">Reset progress</button></div></details>';
-        v.querySelectorAll('[data-open]').forEach(function (b) { b.addEventListener('click', function () { var t = S.topics[Number(b.dataset.open)]; go(t.n, firstOpen(t)); }); });
+        v.querySelectorAll('[data-open]').forEach(function (b) { b.addEventListener('click', function () { var t = S.topics[Number(b.dataset.open)]; enter(t); }); });
     $('chgYear').addEventListener('click', function () { state.yearSel = false; render(); });
     $('resetProg').addEventListener('click', function () { store.progress = {}; save(); render(); });
+    confirmBtn($('resetAll'), 'Reset my progress', function () { order.forEach(function (n) { delete store.progress[pkey(openTopicFor(n).n)]; delete store.progress[pkey(n)]; }); save(); render(); });
   }
 
+  function renderLanding(v, t) {
+    var steps = allSteps(t), nextT = nextVisible(t.n);
+    function card(part, title, text, icon) {
+      var mine = steps.filter(function (x) { return x.group === part && x.type !== 'finish'; }), done = mine.filter(function (x) { return isDone(t.n, x.id); }).length;
+      var label = done === 0 ? 'Start' : (done >= mine.length ? 'Go again' : 'Continue');
+      return '<div class="card partcard"><div class="partico" aria-hidden="true">' + icon + '</div><h2 class="say">' + title + '</h2><p class="lead say">' + text + '</p>' +
+        '<ul class="sumlist">' + mine.map(function (x) { var d = isDone(t.n, x.id); return '<li><span aria-hidden="true">' + (d ? '\u2713' : '\u25cb') + '</span>' + x.label + '</li>'; }).join('') + '</ul>' +
+        '<p class="note" style="min-height:0">' + done + ' of ' + mine.length + ' done</p><button class="btn" data-part="' + part + '" type="button">' + label + '</button></div>';
+    }
+    var lp = progOf(t), lpct = lp.total ? Math.round(lp.done / lp.total * 100) : 0;
+    var lpanel = '<div class="partbar"><div class="bar" style="flex:1" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="' + lpct + '" aria-label="Topic progress"><i style="width:' + lpct + '%"></i></div><span class="note" style="min-height:0;white-space:nowrap">' + lp.done + ' of ' + lp.total + ' done · ' + lpct + '%</span></div>';
+    v.innerHTML = '<div class="eyebrow">Topic ' + dnum(t) + ' \u00b7 ' + stageOf(t) + ' stage</div><h1 class="say" style="margin:.2em 0 .1em">' + t.title + '</h1><p class="lead say">' + t.blurb + '</p>' + lpanel +
+      '<div class="partgrid">' + card('learn', 'Let\u2019s Learn', 'Lessons with worked examples, one idea at a time.', '\ud83d\udcd8') +
+      (steps.some(function (x) { return x.group === 'activity'; }) ? card('activity', 'Activity Time', 'Hands-on activities. Build, slide, spin and explore the idea.', '\ud83e\uddea') : '') +
+      card('practice', 'Let\u2019s Practice', 'A warm-up, the practice questions, then real-life problems.', '\u270f\ufe0f') + '</div>' +
+      '<div class="navrow"><button class="btn ghost" id="resetTopic" type="button">Reset this topic</button>' + (nextT ? '<button class="btn ghost" id="nextTopic" type="button">Next topic</button>' : '<button class="btn ghost" id="toHome" type="button">Back to home</button>') + '</div>';
+    v.querySelectorAll('[data-part]').forEach(function (b) { b.addEventListener('click', function () { openPart(t, b.dataset.part); }); });
+    confirmBtn($('resetTopic'), 'Reset this topic', function () { delete store.progress[pkey(t.n)]; save(); render(); });
+    if ($('nextTopic')) $('nextTopic').addEventListener('click', function () { enter(nextT); });
+    if ($('toHome')) $('toHome').addEventListener('click', function () { go('home'); });
+  }
+  function gname(g) { return g === 'learn' ? 'Let\u2019s Learn' : g === 'activity' ? 'Activity Time' : 'Let\u2019s Practice'; }
   function renderLesson(v) {
-    var t = topic(), steps = allSteps(t), step = steps[state.step] || steps[0];
-    var stepper = '<div class="stepper" role="list">' + steps.map(function (s, i) {
-      var d = s.type !== 'finish' && isDone(t.n, s.id);
-      return '<button class="sp' + (i === state.step ? ' cur' : '') + (d ? ' done' : '') + '" data-go="' + i + '" role="listitem" type="button"' + (i === state.step ? ' aria-current="step"' : '') + '><span class="num">' + (d ? '✓' : (i + 1)) + '</span>' + s.label + '</button>';
-    }).join('') + '</div>';
+    var t = topic(); arrange(t);
+    if (!state.part) { renderLanding(v, t); return; }
+    var steps = allSteps(t), step = steps[state.step] || steps[0];
+    if (step.group !== state.part) { var f = steps.findIndex(function (x) { return x.group === state.part; }); state.step = f; step = steps[f]; }
+    function spBtn(sx, i, nn) { var d = sx.type !== 'finish' && isDone(t.n, sx.id); return '<button class="sp' + (i === state.step ? ' cur' : '') + (d ? ' done' : '') + '" data-go="' + i + '" data-n="' + nn + '" role="listitem" type="button"' + (i === state.step ? ' aria-current="step"' : '') + '><span class="num">' + (d ? '\u2713' : nn) + '</span>' + sx.label + '</button>'; }
+    var gi = []; steps.forEach(function (sx, i) { if (sx.group === state.part) gi.push(i); });
+    var title = gname(state.part);
+    var stepper = '<div class="stepper" role="list">' + gi.map(function (i, k) { return spBtn(steps[i], i, k + 1); }).join('') + '</div>';
     var last = state.step === steps.length - 1, nextT = nextVisible(t.n);
-    v.innerHTML = '<div class="eyebrow">Topic ' + dnum(t) + ' · ' + t.title + ' · ' + stageOf(t) + ' stage</div>' + stepper + '<section class="card" id="pane"></section>' +
-      '<div class="navrow"><button class="btn ghost" id="prevStep" type="button"' + (state.step === 0 ? ' disabled' : '') + '>Previous step</button><button class="btn" id="nextStep" type="button">' + (last ? (nextT ? 'Next topic' : 'Back to home') : 'Next step') + '</button></div>';
+    var first = state.step === gi[0], groupLast = state.step === gi[gi.length - 1];
+    v.innerHTML = '<div class="eyebrow">Topic ' + dnum(t) + ' \u00b7 ' + t.title + ' \u00b7 ' + stageOf(t) + ' stage</div>' +
+      '<div class="partbar"><button class="btn ghost" id="backMenu" type="button">\u2190 Back</button><b class="sglab">' + title + '</b></div>' + stepper + '<section class="card" id="pane"></section>' +
+      '<div class="navrow"><button class="btn ghost" id="prevStep" type="button">' + (first ? 'Back to menu' : 'Previous step') + '</button><button class="btn" id="nextStep" type="button">' + (last ? (nextT ? 'Next topic' : 'Back to home') : (groupLast ? 'On to ' + gname(steps[state.step + 1].group) : 'Next step')) + '</button></div>';
     v.querySelectorAll('[data-go]').forEach(function (b) { b.addEventListener('click', function () { go(t.n, Number(b.dataset.go)); }); });
-    v.querySelectorAll('[data-stage]').forEach(function (b) { b.addEventListener('click', function () { var tt = S.topics[Number(b.dataset.stage)]; go(tt.n, firstOpen(tt)); }); });
-    $('prevStep').addEventListener('click', function () { go(t.n, state.step - 1); });
-    $('nextStep').addEventListener('click', function () { if (last) { if (nextT) go(nextT.n, firstOpen(nextT)); else go('home'); } else go(t.n, state.step + 1); });
+    $('backMenu').addEventListener('click', function () { state.part = null; render(); });
+    $('prevStep').addEventListener('click', function () { if (first) { state.part = null; render(); } else go(t.n, state.step - 1); });
+    $('nextStep').addEventListener('click', function () { if (last) { if (nextT) enter(nextT); else go('home'); } else go(t.n, state.step + 1); });
     var pane = $('pane');
     if (step.type === 'slides') mountSlides(pane, t, step);
     else if (step.type === 'quiz') mountStepQuiz(pane, t, step);
@@ -1049,7 +1108,7 @@ var SLIDE_MORE = {"1.learn1": [{"more": ["Our number system uses only ten digits
   function renderStepper() {
     var t = topic(); if (!t) return;
     var steps = allSteps(t);
-    document.querySelectorAll('.sp').forEach(function (b, i) { var s = steps[i], d = s.type !== 'finish' && isDone(t.n, s.id); b.classList.toggle('done', d); b.querySelector('.num').textContent = d ? '✓' : (i + 1); });
+    document.querySelectorAll('.sp').forEach(function (b) { var i = Number(b.dataset.go), s = steps[i], d = s.type !== 'finish' && isDone(t.n, s.id); b.classList.toggle('done', d); b.querySelector('.num').textContent = d ? '✓' : b.dataset.n; });
     renderTabsLight();
   }
   function renderTabsLight() {
@@ -1109,7 +1168,7 @@ var SLIDE_MORE = {"1.learn1": [{"more": ["Our number system uses only ten digits
       var gl = (SLIDE_GOALS[t.n + '.' + step.id] || [])[k], goal = gl ? '<p class="goal say"><b>In this slide</b> we will learn ' + gl + '</p>' : '';
       pane.innerHTML = '<div class="slide"><span class="step-tag">' + step.tag + ' · slide ' + (k + 1) + ' of ' + slides.length + '</span>' + dots + '<h2 class="say">' + s.title + '</h2>' + goal + body + moreBlock(t, step, k) +
         (lastSlide ? mediaAid(t) : '') +
-        '<div class="navrow"><button class="btn ghost" id="sPrev" type="button"' + (k === 0 ? ' disabled' : '') + '>Back</button><button class="btn" id="sNext" type="button">' + (lastSlide ? 'Continue to the activity' : 'Next slide') + '</button></div></div>';
+        '<div class="navrow"><button class="btn ghost" id="sPrev" type="button"' + (k === 0 ? ' disabled' : '') + '>Back</button><button class="btn" id="sNext" type="button">' + (lastSlide ? ((allSteps(t)[state.step + 1] || {}).group === 'learn' ? 'Next lesson' : 'On to ' + gname((allSteps(t)[state.step + 1] || {}).group)) : 'Next slide') + '</button></div></div>';
       $('sPrev').addEventListener('click', function () { state.slide--; draw(); });
       $('sNext').addEventListener('click', function () { if (lastSlide) go(t.n, state.step + 1); else { state.slide++; draw(); } });
       if (s.ex) mountWorked($('workedHost'), s.ex);
@@ -1142,15 +1201,23 @@ var SLIDE_MORE = {"1.learn1": [{"more": ["Our number system uses only ten digits
   }
 
   /* ================= wiring ================= */
+  /* Every topic has two parts: Let’s learn (lesson slides and the lab) and Let’s practice (warm-up, practice, real-time problems). */
+  function arrange(t) {
+    var L = [], A = [], P = [];
+    function rank(x) { return x.id === 'warm' ? 0 : x.id === 'practise' ? 2 : x.id === 'practical' ? 3 : 4; }
+    t.steps.forEach(function (s) { if (s.type === 'slides') { s.group = 'learn'; L.push(s); } else if (s.type === 'lab') { s.group = 'activity'; A.push(s); } else { s.group = 'practice'; P.push(s); } });
+    P.sort(function (a, b) { return rank(a) - rank(b); });
+    var all = L.concat(A, P); t.steps.length = 0; all.forEach(function (s) { t.steps.push(s); });
+    t.steps.forEach(function (s) {
+      var rest = String(s.tag || '').replace(/^(Let\u2019s (learn|practice) \u00b7 |Activity time \u00b7 )?(Step \d+ \u00b7 )?/, '');
+      s.tag = (s.group === 'learn' ? 'Let\u2019s learn' : s.group === 'activity' ? 'Activity time' : 'Let\u2019s practice') + (rest ? ' \u00b7 ' + rest : '');
+      if (s.id === 'warm') s.doneLabel = 'On to the practice';
+      if (s.type === 'lab' && s.label === 'Explore') s.label = 'Activity';
+    });
+  }
+  S.arrange = arrange;
   S.addTopic = function (t) {
-    // Learning comes first: explain the idea and show examples before the warm-up.
-    var warmIndex = t.steps.findIndex(function (step) { return step.id === 'warm'; });
-    var lessonIndex = t.steps.findIndex(function (step) { return step.type === 'slides'; });
-    if (warmIndex === 0 && lessonIndex > -1) {
-      var warmStep = t.steps.splice(warmIndex, 1)[0];
-      t.steps.splice(lessonIndex, 0, warmStep);
-      warmStep.tag = 'Step ' + (lessonIndex + 1) + ' · Warm-up';
-    }
+    arrange(t);
     S.topics[t.n] = t; if (S.order.indexOf(t.n) === -1) S.order.push(t.n); S.order.sort(function (a, b) { return a - b; }); S.gens[t.n] = t.gens || {};
   };
   S.start = function () {
@@ -1659,8 +1726,18 @@ function colHTML(a, b, op, step, cs) {
 
 /* ---------- labs ---------- */
 function mountColumns(host, ctx) {
-  var op = '+', a, b, step = 0, cs;
-  function fresh() { a = rnd(1200, 9800) + (Math.random() < 0.5 ? rnd(0, 9) * 10000 : 0); b = rnd(1100, 8900); if (op === '-') { if (a < b) { var t = a; a = b; b = t; } if (a === b) a += 137; } cs = colSteps(a, b, op); step = 0; draw(); }
+  var op = '+', a, b, step = 0, cs, tries = 0, fb = '';
+  function fresh() { a = rnd(1200, 9800) + (Math.random() < 0.5 ? rnd(0, 9) * 10000 : 0); b = rnd(1100, 8900); if (op === '-') { if (a < b) { var t = a; a = b; b = t; } if (a === b) a += 137; } cs = colSteps(a, b, op); step = 0; tries = 0; fb = ''; draw(); }
+  function colCarry(i) { var c = 0, k; for (k = 0; k < i && k < cs.L; k++) { var x0 = cs.da[k] || 0, y0 = cs.db[k] || 0; if (op === '+') c = (x0 + y0 + c) >= 10 ? 1 : 0; else c = (x0 - c) < y0 ? 1 : 0; } return c; }
+  function colTotal(i) { if (i >= cs.L) return cs.res[i]; var x = cs.da[i] || 0, y = cs.db[i] || 0, c = colCarry(i); return op === '+' ? x + y + c : cs.res[i]; }
+  function twoLast(i) { return op === '+' && cs.extra === 1 && i === cs.L - 1; }
+  function colHint(i) {
+    var da = cs.da, db = cs.db, c = colCarry(i);
+    if (i >= cs.L) return 'A 1 was carried over from the last column. Write it here.';
+    var x = da[i] || 0, y = db[i] || 0;
+    if (op === '+') return 'Add the digits: ' + x + ' + ' + y + (c ? ' + 1 carried' : '') + '. '+ (twoLast(i) ? 'This is the last column, so write the whole total, both digits.' : 'Type just the one digit you write. Carry any ten to the next column.') + '';
+    return 'Take ' + y + ' from ' + x + (c ? ' (1 was lent, so the top digit is now ' + (x - 1) + ')' : '') + '. If the top digit is too small, exchange 1 from the next column and add 10.';
+  }
   function draw() {
     var list = cs.texts.slice(0, step).map(function (t) { return '<li><span class="say">' + t + '</span></li>'; }).join('');
     var doneAll = step >= cs.texts.length, ans = op === '+' ? a + b : a - b;
@@ -1668,9 +1745,20 @@ function mountColumns(host, ctx) {
       '<p class="wq">' + fmtInt(a) + ' ' + (op === '+' ? '+' : '−') + ' ' + fmtInt(b) + '</p>' + colHTML(a, b, op === '+' ? '+' : '−', Math.min(step, cs.res.length), cs) +
       '<ol class="wsteps">' + list + '</ol>' +
       (doneAll ? '<p class="wres">' + fmtInt(a) + (op === '+' ? ' + ' : ' − ') + fmtInt(b) + ' = ' + fmtInt(ans) + '</p><div class="explain say">Check with the inverse: ' + (op === '+' ? fmtInt(ans) + ' − ' + fmtInt(b) + ' = ' + fmtInt(a) : fmtInt(ans) + ' + ' + fmtInt(b) + ' = ' + fmtInt(a)) + '. It matches, so the answer is right.</div>' : '') +
-      '<div class="tools"><button class="btn" id="cNext" type="button"' + (doneAll ? ' disabled' : '') + '>' + (step === 0 ? 'Start: ones column' : 'Next column') + '</button><button class="btn ghost" id="cNew" type="button">New numbers</button></div>';
+      (doneAll ? '' : '<label class="eyebrow" for="cIn">Your turn: which digit do you write in the ' + PN[step] + ' column?</label><p class="note" style="min-height:0">' + colHint(step) + '</p><div class="tools"><input id="cIn" class="ans" inputmode="numeric" maxlength="' + (twoLast(step) ? 2 : 1) + '" autocomplete="off" style="max-width:5rem;text-align:center;font-size:1.6rem" aria-label="Digit for the ' + PN[step] + ' column"><button class="btn" id="cNext" type="button">Check</button></div><div class="explain" id="cFb" aria-live="polite" style="' + (fb ? '' : 'display:none') + '">' + fb + '</div>') +
+      '<div class="tools"><button class="btn ghost" id="cNew" type="button">New numbers</button></div>';
     host.querySelectorAll('[data-op]').forEach(function (bt) { bt.addEventListener('click', function () { op = bt.dataset.op; fresh(); }); });
-    $('cNext').addEventListener('click', function () { step++; draw(); if (step >= cs.texts.length) { ctx.count = (ctx.count || 0) + 1; if (ctx.count >= 2) ctx.complete(); } });
+    if ($('cIn')) {
+      var cin = $('cIn');
+      cin.addEventListener('input', function () { cin.value = cin.value.replace(/[^0-9]/g, '').slice(0, cin.maxLength); });
+      cin.addEventListener('keydown', function (e) { if (e.key === 'Enter') $('cNext').click(); });
+      $('cNext').addEventListener('click', function () {
+        if (cin.value === '') { fb = 'Type a number first.'; $('cFb').style.display = ''; $('cFb').textContent = fb; return; }
+        if (twoLast(step) ? Number(cin.value) === colTotal(step) : Number(cin.value) === cs.res[step]) { step += twoLast(step) ? 2 : 1; tries = 0; fb = ''; draw(); if (step >= cs.texts.length) { ctx.count = (ctx.count || 0) + 1; if (ctx.count >= 2) ctx.complete(); } }
+        else { tries++; fb = (!twoLast(step) && cin.value.length > 1) ? 'Only one digit goes in this column. Write the ones digit and carry the ten to the next column.' : tries >= 2 ? 'Not yet. Here is the working: ' + cs.texts[step].replace(/ Write .*$/, '') + ' Try again.' : 'Not quite. Look at the hint above and try again.'; draw(); $('cIn').focus(); }
+      });
+      cin.focus();
+    }
     $('cNew').addEventListener('click', fresh);
   }
   fresh();
@@ -1849,7 +1937,7 @@ Studio.addTopic({ n: 2, short: 'Four operations', title: 'The four operations', 
   steps: [
     { id: 'warm', label: 'Warm-up', type: 'quiz', tag: 'Step 1 · Warm-up', title: 'Mental maths warm-up', lead: 'Four quick questions to wake up your number brain.', make: genWarm, doneLabel: 'On to adding and subtracting' },
     { id: 'learn1', label: 'Add and subtract', type: 'slides', tag: 'Add and subtract', slides: LEARN1 },
-    { id: 'columns', label: 'Column lab', type: 'lab', tag: 'Step 3 · We do it together', title: 'Step through a column sum', lead: 'Choose add or subtract, then tap through the columns one at a time. Finish two sums to complete this step.', mount: mountColumns },
+    { id: 'columns', label: 'Column lab', type: 'lab', tag: 'Step 3 · We do it together', title: 'Step through a column sum', lead: 'Choose add or subtract, then work out each column yourself, starting with the ones. Type the column total (or the digit you write) and press Check. Finish two sums to complete this step.', mount: mountColumns },
     { id: 'learn2', label: 'Multiply and divide', type: 'slides', tag: 'Multiply and divide', slides: LEARN2 },
     { id: 'array', label: 'Array lab', type: 'lab', tag: 'Step 5 · We do it together', title: 'Split an array', lead: 'Move the sliders to change the rows and columns. Then split the array into two easy parts.', mount: mountArray },
     { id: 'practise', label: 'Practise', type: 'quiz', best: true, tag: 'Step 6 · Your turn', title: 'Practise', lead: '50 questions, including word problems and reasoning. Use the hints one step at a time.', make: practiceSet }
