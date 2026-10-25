@@ -1190,6 +1190,21 @@ var SLIDE_MORE = {"1.learn1": [{"more": ["Our number system uses only ten digits
       onDone: function () { go(t.n, state.step + 1); }
     });
   }
+  /* Give an activity a different starting arrangement: new numbers, other choices, other positions. */
+  function randomSetup(host) {
+    function fire(el, type) { el.dispatchEvent(new Event(type, { bubbles: true })); }
+    var nb = host.querySelector('#cNew, #newNums, [data-new]');
+    if (!nb) [].slice.call(host.querySelectorAll('button')).some(function (b) { if (/random|new numbers|new one|another|shuffle/i.test(b.textContent)) { nb = b; return true; } return false; });
+    if (nb) nb.click();
+    var fr = [].slice.call(host.querySelectorAll('button')).filter(function (b) { return /^\d+\/\d+$/.test(b.textContent.trim()); });
+    if (fr.length) fr[Math.floor(Math.random() * fr.length)].click();
+    host.querySelectorAll('.modes').forEach(function (g) { var bs = g.querySelectorAll('.mode'); if (bs.length > 1) bs[Math.floor(Math.random() * bs.length)].click(); });
+    host.querySelectorAll('select').forEach(function (s) { if (s.options.length > 1) { s.selectedIndex = Math.floor(Math.random() * s.options.length); fire(s, 'input'); fire(s, 'change'); } });
+    host.querySelectorAll('input[type=range]').forEach(function (r) {
+      var mn = Number(r.min || 0), mx = Number(r.max || 100), st = Number(r.step) || 1, n = Math.floor((mx - mn) / st), v = mn + Math.floor(Math.random() * (n + 1)) * st;
+      r.value = v; fire(r, 'input'); fire(r, 'change');
+    });
+  }
   function mountLab(pane, t, step) {
     pane.innerHTML = head(step.tag, step.title, step.lead) + '<div id="labHost"></div><div class="row" style="margin-top:14px"><button class="btn ghost" id="labNew" type="button">Try a different set-up</button></div>';
     function boot() { step.mount($('labHost'), { complete: function () { markDone(t.n, step.id); renderStepper(); }, done: function () { return isDone(t.n, step.id); } }); }
@@ -1197,7 +1212,7 @@ var SLIDE_MORE = {"1.learn1": [{"more": ["Our number system uses only ten digits
     $('labNew').addEventListener('click', function () {
       narStop();
       var old = $('labHost'), fresh = document.createElement('div'); fresh.id = 'labHost';
-      old.parentNode.replaceChild(fresh, old); boot();
+      old.parentNode.replaceChild(fresh, old); boot(); randomSetup(fresh);
     });
   }
   function mountFinish(pane, t) {
