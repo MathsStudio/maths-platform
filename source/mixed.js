@@ -57,7 +57,7 @@
         $('tyF').addEventListener('submit', function (e) {
           e.preventDefault(); if (ai.value.trim() === '') return;
           if (H.matches(q, ai.value)) { solved = true; count++; var done = need && count >= need; draw('<b>Yes!</b> ' + q.explain + (done ? ' <b>You have finished the game!</b>' : ''), 'ok'); if (done && onGoal) onGoal(); }
-          else draw('<b>Not quite.</b> ' + (q.form === 'mixed' ? 'Write it as a mixed number, for example 2 3/4.' : q.form === 'improper' ? 'Write it as one fraction, for example 11/4.' : '') + ' Look at the bars or press Need a hint.', 'no');
+          else draw('<b>Missed it.</b> ' + (q.form === 'mixed' ? 'Write it as a mixed number, for example 2 3/4.' : q.form === 'improper' ? 'Write it as one fraction, for example 11/4.' : '') + ' Look at the bars or press Need a hint.', 'no');
         });
       }
       fresh();

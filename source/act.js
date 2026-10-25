@@ -224,7 +224,7 @@
         }
         function grade(val) {
           if (H.matches(q, val)) { pos++; fb = '<b>' + pick(CHEER) + '</b> One step closer.'; nextQ(); }
-          else { tries++; if (tries >= 2) { fb = 'The answer was <b>' + q.answer + '</b>. ' + (q.explain || '') + ' Here is a new question.'; nextQ(); } else fb = '<b>Not quite.</b> ' + ((q.hints && q.hints[0]) ? 'Hint: ' + q.hints[0] : 'Have another look.') + ' Try once more.'; }
+          else { tries++; if (tries >= 2) { fb = 'The answer was <b>' + q.answer + '</b>. ' + (q.explain || '') + ' Here is a new question.'; nextQ(); } else fb = '<b>Missed it.</b> ' + ((q.hints && q.hints[0]) ? 'Hint: ' + q.hints[0] : 'Have another look.') + ' Try once more.'; }
           draw();
         }
         draw();
