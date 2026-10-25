@@ -489,6 +489,18 @@
     };
   }
 
+  /* With the voice on, read each new screen of a game. Touching an answer pauses the voice (see the page code). */
+  function voiced(fn) {
+    return function (host, ctx) {
+      var tm;
+      new MutationObserver(function () {
+        if (!host.isConnected) return;
+        clearTimeout(tm); tm = setTimeout(function () { if (host.isConnected && S.h.narPlayFn && S.state && S.h.readOn && S.h.readOn()) S.h.narPlayFn(true); }, 250);
+      }).observe(host, { childList: true });
+      fn(host, ctx);
+    };
+  }
+
   /* ---------- install: a different line-up for each year ---------- */
   var GAMES = {
     clock: { label: 'Beat the clock', title: 'Beat the clock', lead: 'A maths dash against the clock. How many can you get right?', mk: mountClock },
@@ -520,7 +532,7 @@
     (LINE[yearKey(t)] || LINE.P6).forEach(function (e) {
       var g = GAMES[e[0]];
       if ((e[0] === 'order' || e[0] === 'spot') && !hasEx) return;
-      t.steps.push({ id: 'a_' + e[0], label: g.label, type: 'lab', tag: 'Game', title: g.title, lead: g.lead, mount: g.mk(t, e[1]) });
+      t.steps.push({ id: 'a_' + e[0], label: g.label, type: 'lab', tag: 'Game', title: g.title, lead: g.lead, mount: voiced(g.mk(t, e[1])) });
     });
     S.arrange(t);
   });
