@@ -513,6 +513,7 @@ var SLIDE_MORE = {"1.learn1": [{"more": ["Our number system uses only ten digits
   function best(n) { var p = store.progress[pkey(n)]; return (p && p.best) || 0; }
   function setBest(n, sc) { var p = store.progress[pkey(n)] = store.progress[pkey(n)] || { steps: {} }; if (!p.best || sc > p.best) { p.best = sc; save(); } }
   S.h.markDone = markDone;
+  S.h.slideMeta = { goals: SLIDE_GOALS, more: SLIDE_MORE };
 
   /* ================= narrator ================= */
   var Nar = { ok: ('speechSynthesis' in window) && ('SpeechSynthesisUtterance' in window), voices: [], units: [], token: 0, at: 0, playing: false, err: '' };
