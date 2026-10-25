@@ -7484,7 +7484,8 @@ Object.keys(S.topics).forEach(function (k) {
     P5: { dmin: 2, dmax: 5, wmax: 3, impN: 7, impD: 4, miW: 1, miR: 2, miD: 3 },
     P6: { dmin: 2, dmax: 8, wmax: 4, impN: 11, impD: 4, miW: 2, miR: 3, miD: 4 },
     P7: { dmin: 2, dmax: 10, wmax: 6, impN: 23, impD: 5, miW: 4, miR: 3, miD: 5 },
-    S1: { dmin: 3, dmax: 12, wmax: 8, impN: 38, impD: 7, miW: 5, miR: 3, miD: 7 }
+    S1: { dmin: 3, dmax: 12, wmax: 8, impN: 38, impD: 7, miW: 5, miR: 3, miD: 7 },
+    S2: { dmin: 3, dmax: 12, wmax: 9, impN: 47, impD: 8, miW: 6, miR: 5, miD: 8 }
   };
   function slidesFor(y) {
     var c = YEAR[y], iw = Math.floor(c.impN / c.impD), ir = c.impN % c.impD, mn = c.miW * c.miD + c.miR;
@@ -7521,19 +7522,19 @@ Object.keys(S.topics).forEach(function (k) {
   }
 
   /* ---------- install ---------- */
-  var MAP = { 503: 'P5', 3: 'P6', 703: 'P7', 803: 'S1' };
+  var MAP = { 503: 'P5', 3: 'P6', 703: 'P7', 803: 'S1', 821: 'S2' };
   Object.keys(MAP).forEach(function (k) {
     var t = S.topics[k]; if (!t) return;
     var c = YEAR[MAP[k]], replaced = false;
     t.steps.filter(function (s) { return s.type === 'slides'; }).forEach(function (st) {
       if (replaced) return;
-      var i = -1; st.slides.forEach(function (sl, j) { if (i < 0 && /mixed|improper/i.test(sl.title)) i = j; });
-      if (i < 0) return;
+      var i = -1, del = 1; st.slides.forEach(function (sl, j) { if (i < 0 && /mixed|improper/i.test(sl.title)) i = j; });
+      if (i < 0) { st.slides.forEach(function (sl, j) { if (i < 0 && /fractions/i.test(sl.title)) i = j; }); if (i < 0) return; i += 1; del = 0; }
       var news = slidesFor(MAP[k]), key = k + '.' + st.id, meta = H.slideMeta || { goals: {}, more: {} };
       [meta.goals, meta.more].forEach(function (m) {
-        if (!m[key]) return; var a = m[key].slice(); a.splice(i, 1, ...news.map(function () { return undefined; })); m[key] = a;
+        if (!m[key]) return; var a = m[key].slice(); a.splice(i, del, ...news.map(function () { return undefined; })); m[key] = a;
       });
-      st.slides.splice.apply(st.slides, [i, 1].concat(news));
+      st.slides.splice.apply(st.slides, [i, del].concat(news));
       replaced = true;
     });
     if (!replaced) return;
