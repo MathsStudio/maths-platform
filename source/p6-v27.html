@@ -550,9 +550,9 @@ var SLIDE_MORE = {"1.learn1": [{"more": ["Our number system uses only ten digits
     else $('pStat').textContent = Nar.playing ? 'Reading sentence ' + Math.min(Nar.at + 1, Nar.units.length) + ' of ' + Nar.units.length : '';
   }
   function freshStart() { try { if (speechSynthesis.speaking || speechSynthesis.pending) speechSynthesis.cancel(); speechSynthesis.resume(); } catch (e) { /* ignore */ } }
-  function collect() {
+  function collect(root) {
     var out = [];
-    document.querySelectorAll('#view .say').forEach(function (el) {
+    (root || document.querySelector('#view')).querySelectorAll('.say').forEach(function (el) {
       if (el.closest('.hide') || el.hasAttribute('hidden')) return;
       var txt = el.getAttribute('data-say') || el.textContent;
       if (txt && txt.trim()) out.push({ el: el, text: txt });
@@ -580,18 +580,18 @@ var SLIDE_MORE = {"1.learn1": [{"more": ["Our number system uses only ten digits
     }, 3000);
     setPlayerUI();
   }
-  function narPlay(fromStart) {
+  function narPlay(fromStart, root) {
     if (!Nar.ok) return;
     freshStart(); Nar.token++;
     var tk = Nar.token;
-    Nar.units = collect(); Nar.err = '';
+    Nar.units = collect(root && root.isConnected ? root : null); Nar.err = '';
     if (fromStart || Nar.at >= Nar.units.length) Nar.at = 0;
     Nar.playing = true;
     run(Nar.at, tk);
     setPlayerUI();
   }
   function narPause() { if (!Nar.ok) return; Nar.token++; speechSynthesis.cancel(); Nar.playing = false; unmarkAll(); setPlayerUI(); }
-  S.h.narPlayFn = function (fromStart) { narPlay(fromStart); };
+  S.h.narPlayFn = function (fromStart, root) { narPlay(fromStart, root); };
   S.h.readOn = function () { return !!(store.settings.readMode || store.settings.auto); };
   function narStop() { if (Nar.ok) { Nar.token++; try { speechSynthesis.cancel(); } catch (e) { /* ignore */ } } Nar.playing = false; Nar.at = 0; Nar.units = []; Nar.err = ''; unmarkAll(); setPlayerUI(); }
   function narSpeakNow(text, report) {
@@ -692,9 +692,10 @@ var SLIDE_MORE = {"1.learn1": [{"more": ["Our number system uses only ten digits
   /* ================= quiz engine ================= */
   function numOnly(q) { return q.type !== 'mc' && q.kind !== 'text' && !/[A-Za-z]/.test(String(q.answer)); }
   function mountQuiz(host, qs, cfg) {
-    var qi = 0, score = 0, results = [], answered = false, hintIdx = 0;
+    var qi = 0, score = 0, results = [], answered = false, hintIdx = 0, drawnOnce = false;
     function draw() {
       narStop();
+      var readRoot = drawnOnce ? host : null; drawnOnce = true;
       var prog = '<div class="progress" aria-label="Question ' + Math.min(qi + 1, qs.length) + ' of ' + qs.length + '">' + qs.map(function (_, i) {
         return '<span class="pd ' + (i < results.length ? (results[i] ? 'ok' : 'no') : (i === qi ? 'cur' : '')) + '"></span>'; }).join('') + '</div>';
       if (qi >= qs.length) {
@@ -706,7 +707,7 @@ var SLIDE_MORE = {"1.learn1": [{"more": ["Our number system uses only ten digits
         $('qDone').addEventListener('click', function () { cfg.onDone(score); });
         $('qAgain').addEventListener('click', function () { qs = cfg.make(); qi = 0; score = 0; results = []; draw(); });
         if (cfg.onFinish) cfg.onFinish(score, qs.length);
-        if ((store.settings.auto || store.settings.readMode) && Nar.ok) narPlay(true);
+        if ((store.settings.auto || store.settings.readMode) && Nar.ok) narPlay(true, readRoot);
         return;
       }
       var q = qs[qi], body;
@@ -729,7 +730,7 @@ var SLIDE_MORE = {"1.learn1": [{"more": ["Our number system uses only ten digits
       if (q.type === 'mc') host.querySelectorAll('.opt').forEach(function (b) { b.addEventListener('click', function () { if (!answered) grade(b.textContent, b); }); });
       else { var ai = $('ansIn'); if (numOnly(q) && ai) ai.addEventListener('input', function () { var c = ai.value.replace(/[A-Za-z]/g, ''); if (c !== ai.value) ai.value = c; }); }
       if (q.type !== 'mc') $('ansForm').addEventListener('submit', function (e) { e.preventDefault(); if (!answered && $('ansIn').value.trim() !== '') grade($('ansIn').value, null); });
-      if ((store.settings.auto || store.settings.readMode) && Nar.ok) narPlay(true);
+      if ((store.settings.auto || store.settings.readMode) && Nar.ok) narPlay(true, readRoot);
     }
     function grade(val, btn) {
       var q = qs[qi], ok = matches(q, val);
@@ -1217,6 +1218,7 @@ var SLIDE_MORE = {"1.learn1": [{"more": ["Our number system uses only ten digits
       narStop();
       var old = $('labHost'), fresh = document.createElement('div'); fresh.id = 'labHost';
       old.parentNode.replaceChild(fresh, old); boot(); randomSetup(fresh);
+      if ((store.settings.auto || store.settings.readMode) && Nar.ok) narPlay(true, fresh);
     });
   }
   function mountFinish(pane, t) {

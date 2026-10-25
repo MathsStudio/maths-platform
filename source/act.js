@@ -495,7 +495,7 @@
       var tm;
       new MutationObserver(function () {
         if (!host.isConnected) return;
-        clearTimeout(tm); tm = setTimeout(function () { if (host.isConnected && S.h.narPlayFn && S.state && S.h.readOn && S.h.readOn()) S.h.narPlayFn(true); }, 250);
+        clearTimeout(tm); tm = setTimeout(function () { if (host.isConnected && S.h.narPlayFn && S.state && S.h.readOn && S.h.readOn()) S.h.narPlayFn(true, host); }, 250);
       }).observe(host, { childList: true });
       fn(host, ctx);
     };
