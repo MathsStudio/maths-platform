@@ -279,7 +279,7 @@ table.plan th, table.plan td { text-align: left; padding: 8px 10px; border-botto
 .fb.ok { background: var(--good-bg); }
 .fb.no { background: var(--bad-bg); }
 .fb.hint { background: var(--surface-2); }
-.fb strong { display: block; margin-bottom: 2px; }
+.fb strong { display: block; margin-bottom: 2px; font-weight: 800; }
 .qnext { margin-top: 12px; }
 .shp { display: inline-block; width: 22px; height: 22px; vertical-align: -5px; margin: 0 1px; }
 .shp.sq { background: hsl(350 var(--dot-s) var(--dot-l)); border-radius: 4px; }
@@ -610,11 +610,11 @@ var SLIDE_MORE = {"1.learn1": [{"more": ["Our number system uses only ten digits
   function speakAnswerFeedback(ok, answer, explanation) {
     // Feedback voice is opt-in: keep the screen quiet unless Read aloud or Auto-read is enabled.
     if (!(store.settings.readMode || store.settings.auto)) return;
-    if (ok) { narSpeakNow('Correct!'); return; }
+    if (ok) { narSpeakNow('Brilliant!'); return; }
     var tmp = document.createElement('div');
     tmp.innerHTML = explanation || '';
     var detail = (tmp.textContent || tmp.innerText || '').replace(/\s+/g, ' ').trim();
-    narSpeakNow('Not quite. The correct answer is ' + answer + '. ' + detail);
+    narSpeakNow('Missed it. The correct answer is ' + answer + '. ' + detail);
   }
   S.Nar = Nar; S.speakable = speakable; S.narPlay = narPlay;
 
@@ -740,7 +740,7 @@ var SLIDE_MORE = {"1.learn1": [{"more": ["Our number system uses only ten digits
       $('hintBtn').disabled = true;
       var last = qi === qs.length - 1;
       var shown = q.show || (q.type === 'mc' ? q.answer : (isNaN(Number(q.answer)) ? q.answer : fmtInt(Number(q.answer))));
-      $('fb').innerHTML = '<div class="fb ' + (ok ? 'ok' : 'no') + ' say"><strong>' + (ok ? 'Correct!' : 'Not quite. The answer is ' + shown + '.') + '</strong>' + q.explain + '</div><button class="btn qnext" id="next" type="button">' + (last ? 'See my score' : 'Next question') + '</button>';
+      $('fb').innerHTML = '<div class="fb ' + (ok ? 'ok' : 'no') + ' say"><strong>' + (ok ? 'Brilliant!' : 'Missed it. The answer is ' + shown + '.') + '</strong>' + q.explain + '</div><button class="btn qnext" id="next" type="button">' + (last ? 'See my score' : 'Next question') + '</button>';
       speakAnswerFeedback(ok, shown, q.explain);
       $('next').focus();
       $('next').addEventListener('click', function () { qi++; draw(); });
@@ -1547,7 +1547,7 @@ var H=Studio.h,$=H.$,rnd=H.rnd,fmtInt=H.fmtInt,shuffle=H.shuffle,pick=H.pick,tri
         var ok = (b.dataset.p === 'up') === info.up; if (ok) ps++;
         host.querySelectorAll('[data-p]').forEach(function (x) { x.disabled = true; });
         var correction = 'The decider is ' + info.decider + ', which is ' + (info.up ? '5 or more, so it rounds up' : '4 or less, so it rounds down') + ' to ' + roundedText(it.v, it.m, info) + '.';
-        $('pfb').innerHTML = '<div class="fb ' + (ok ? 'ok' : 'no') + ' say"><strong>' + (ok ? 'Correct!' : 'Not quite.') + '</strong>' + correction + '</div><div class="visual" style="margin-top:10px">' + lineSVG(it.v, it.m, info) + '</div><button class="btn qnext" id="pNext" type="button">' + (pi === items.length - 1 ? 'See my score' : 'Next') + '</button>';
+        $('pfb').innerHTML = '<div class="fb ' + (ok ? 'ok' : 'no') + ' say"><strong>' + (ok ? 'Brilliant!' : 'Missed it.') + '</strong>' + correction + '</div><div class="visual" style="margin-top:10px">' + lineSVG(it.v, it.m, info) + '</div><button class="btn qnext" id="pNext" type="button">' + (pi === items.length - 1 ? 'See my score' : 'Next') + '</button>';
         speakAnswerFeedback(ok, roundedText(it.v, it.m, info), correction);
         $('pNext').addEventListener('click', function () { pi++; narStop(); drawPred(); }); $('pNext').focus(); }); });
     }
@@ -7437,7 +7437,7 @@ Object.keys(S.topics).forEach(function (k) {
         $('tyF').addEventListener('submit', function (e) {
           e.preventDefault(); if (ai.value.trim() === '') return;
           if (H.matches(q, ai.value)) { solved = true; count++; var done = need && count >= need; draw('<b>Yes!</b> ' + q.explain + (done ? ' <b>You have finished the game!</b>' : ''), 'ok'); if (done && onGoal) onGoal(); }
-          else draw('<b>Not quite.</b> ' + (q.form === 'mixed' ? 'Write it as a mixed number, for example 2 3/4.' : q.form === 'improper' ? 'Write it as one fraction, for example 11/4.' : '') + ' Look at the bars or press Need a hint.', 'no');
+          else draw('<b>Missed it.</b> ' + (q.form === 'mixed' ? 'Write it as a mixed number, for example 2 3/4.' : q.form === 'improper' ? 'Write it as one fraction, for example 11/4.' : '') + ' Look at the bars or press Need a hint.', 'no');
         });
       }
       fresh();
@@ -7773,7 +7773,7 @@ Object.keys(S.topics).forEach(function (k) {
         }
         function grade(val) {
           if (H.matches(q, val)) { pos++; fb = '<b>' + pick(CHEER) + '</b> One step closer.'; nextQ(); }
-          else { tries++; if (tries >= 2) { fb = 'The answer was <b>' + q.answer + '</b>. ' + (q.explain || '') + ' Here is a new question.'; nextQ(); } else fb = '<b>Not quite.</b> ' + ((q.hints && q.hints[0]) ? 'Hint: ' + q.hints[0] : 'Have another look.') + ' Try once more.'; }
+          else { tries++; if (tries >= 2) { fb = 'The answer was <b>' + q.answer + '</b>. ' + (q.explain || '') + ' Here is a new question.'; nextQ(); } else fb = '<b>Missed it.</b> ' + ((q.hints && q.hints[0]) ? 'Hint: ' + q.hints[0] : 'Have another look.') + ' Try once more.'; }
           draw();
         }
         draw();
