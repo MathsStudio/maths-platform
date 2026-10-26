@@ -4,53 +4,186 @@
 <meta name="description" content="Maths for Scottish Curriculum for Excellence, P5 to S3. Short lessons, hands-on activities and 100 practice questions per topic.">
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="/site.css"></head><body>
-<header class="nav"><a class="brand" href="/"><span class="logo">M</span><span>MathsStudio</span></a>
-<nav class="links" aria-label="Main"><a href="#levels">Levels</a><a href="#how">How it works</a><a href="#pricing">Pricing</a><a href="/login/">Sign in</a><a class="pill" href="/signup/">Try free</a></nav></header>
+<style>body{margin:0;font-family:'Nunito',system-ui,sans-serif;color:#14213d;background:#fff}a{color:#2b5fd9}h1,h2,h3{font-family:'Fredoka',sans-serif}
+a:focus-visible,button:focus-visible,input:focus-visible{outline:3px solid #ffd166;outline-offset:2px;box-shadow:0 0 0 5px #14213d}</style></head><body>
+<div style="width:100%;background:#ffffff;color:#14213d;font-family:'Nunito',system-ui,sans-serif;font-size:17px;line-height:1.55">
 
-<section class="hero"><div class="wrap">
-<div class="l"><span class="badge">Scottish Curriculum for Excellence · Second to Fourth level</span>
-<h1>Maths that makes sense, one small step at a time.</h1>
-<p class="lead">Learn it, try it, then practise it. Short lessons, hands-on activities and 100 practice questions per topic, read aloud if you like.</p>
-<p><a class="btn" href="/signup/">Try free</a></p>
-<p class="note">Free access to some topics and games. No card needed. We email a link to confirm your address.</p></div>
-<div class="r"><div class="card" id="levels">
-<p class="eyebrow">Start here</p><h2 style="font-size:30px">Choose your year</h2>
-<p class="note" style="margin-bottom:6px">Primary (Second level)</p>
-<div class="years"><a href="/signup/?year=P5">P5<small>Secure the basics</small></a><a href="/signup/?year=P6">P6<small>Develop fluency</small></a><a href="/signup/?year=P7">P7<small>Apply and stretch</small></a></div>
-<p class="note" style="margin-bottom:6px">Secondary (Third and Fourth level)</p>
-<div class="years sec"><a href="/signup/?year=S1">S1<small>Third level</small></a><a href="/signup/?year=S2">S2<small>Third level</small></a><a href="/signup/?year=S3">S3<small>Fourth level</small></a></div>
-<p class="note" style="margin:0">Senior phase (S4 to S6): coming soon.</p>
-</div></div></div></section>
+<!-- NAV -->
+<div style="max-width:1200px;margin:0 auto;padding:20px 24px;display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:16px">
+<div style="display:flex;align-items:center;gap:10px">
+<div style="width:40px;height:40px;border-radius:12px;background:#2b5fd9;display:flex;align-items:center;justify-content:center;color:#ffffff;font-family:'Fredoka',sans-serif;font-weight:700;font-size:22px">M</div>
+<div style="font-family:'Fredoka',sans-serif;font-weight:600;font-size:24px;color:#14213d">MathsStudio</div>
+</div>
+<div style="display:flex;flex-wrap:wrap;align-items:center;gap:8px">
+<a href="#levels" style="min-height:44px;display:inline-flex;align-items:center;padding:0 14px;color:#14213d;text-decoration:none;font-weight:700">Levels</a>
+<a href="#how" style="min-height:44px;display:inline-flex;align-items:center;padding:0 14px;color:#14213d;text-decoration:none;font-weight:700">How it works</a>
+<a href="#pricing" style="min-height:44px;display:inline-flex;align-items:center;padding:0 14px;color:#14213d;text-decoration:none;font-weight:700">Pricing</a>
+<a href="/login/" style="min-height:44px;display:inline-flex;align-items:center;padding:0 14px;color:#14213d;text-decoration:none;font-weight:700">Sign in</a>
+<a href="/signup/" style="min-height:44px;display:inline-flex;align-items:center;padding:0 22px;background:#14213d;color:#ffffff;text-decoration:none;font-weight:800;border-radius:999px">Try free</a>
+</div>
+</div>
 
-<section class="sect" id="how"><div class="wrap"><h2>Three parts in every topic</h2><p class="lead" style="margin-bottom:28px">The same simple pattern each time, so children always know what to do next.</p>
-<div class="grid3">
-<div class="tile"><div class="ico b">📘</div><h3>Let’s Learn</h3><p>Lessons with worked examples, one idea at a time, with a warm-up to start.</p></div>
-<div class="tile"><div class="ico y">🧪</div><h3>Activity Time</h3><p>Hands-on activities and games to try the idea together before practising.</p></div>
-<div class="tile"><div class="ico g">✅</div><h3>Practice</h3><p>100 questions per topic at Low, Medium and High, with hints one step at a time.</p></div>
-</div></div></section>
+<!-- HERO -->
+<div style="background:#f3f6ff">
+<div style="max-width:1200px;margin:0 auto;padding:64px 24px 72px;display:flex;flex-wrap:wrap;align-items:center;gap:48px">
+<div style="flex:1 1 460px;min-width:0">
+<div style="display:inline-block;background:#ffd166;color:#14213d;font-weight:800;font-size:14px;letter-spacing:0.06em;text-transform:uppercase;padding:6px 14px;border-radius:999px">Scottish Curriculum for Excellence · Second to Fourth level</div>
+<h1 style="font-family:'Fredoka',sans-serif;font-weight:700;font-size:60px;line-height:1.05;margin:20px 0 18px;color:#14213d">Maths that makes sense, one small step at a time.</h1>
+<p style="margin:0 0 28px;font-size:20px;color:#3b4a6b;max-width:540px">Learn it, try it, then practise it. Short lessons, hands-on activities and 100 practice questions per topic, read aloud if you like.</p>
+<form id="join" action="/signup/" method="get" style="display:flex;flex-wrap:wrap;gap:12px;max-width:560px">
+<label for="email" style="flex:1 1 100%;font-weight:800;font-size:15px">Parent or teacher email</label>
+<input id="email" name="email" type="email" placeholder="name@example.com" style="flex:1 1 260px;min-width:0;min-height:52px;box-sizing:border-box;padding:0 18px;border:2px solid #b8c4e6;border-radius:14px;font-size:17px;font-family:inherit;color:#14213d;background:#ffffff">
+<button type="submit" style="flex:0 0 auto;min-height:52px;padding:0 28px;border:0;border-radius:14px;background:#2b5fd9;color:#ffffff;font-weight:800;font-size:17px;font-family:inherit;cursor:pointer">Try free</button>
+<div style="flex:1 1 100%;font-size:14px;color:#4a587a">Free access to some topics and games. No card needed. We email a link to confirm your address.</div>
+</form>
+</div>
 
-<section class="sect tint"><div class="wrap"><h2>Made for learning</h2>
-<div class="grid3" style="margin-top:20px">
-<div class="tile"><h3>Read aloud</h3><p>Turn on the voice once and lessons and questions are read out.</p></div>
-<div class="tile"><h3>Three levels</h3><p>Low, Medium and High change the practice itself, not just the label.</p></div>
-<div class="tile"><h3>Spatial and reasoning</h3><p>Cubes, nets, turns, patterns and puzzles in every year group.</p></div>
-<div class="tile"><h3>Hints, not answers</h3><p>Stuck? Hints appear one step at a time, then a full explanation.</p></div>
-</div></div></section>
+<div style="flex:1 1 420px;min-width:0">
+<div style="background:#ffffff;border-radius:24px;padding:24px;box-shadow:0 18px 40px rgba(20,33,61,0.14);border:1px solid #dbe3f7">
+<div style="font-size:13px;font-weight:800;letter-spacing:0.06em;text-transform:uppercase;color:#2b5fd9">Activity time · We do it together</div>
+<div style="font-family:'Fredoka',sans-serif;font-weight:600;font-size:28px;margin:6px 0 4px">Cube builder</div>
+<div style="color:#4a587a;margin-bottom:14px">Build the stack to match the challenge.</div>
+<div style="background:#e8eefb;border-radius:16px;padding:18px 12px;display:flex;justify-content:center">
+<svg width="220" height="210" viewBox="0 0 200 210" role="img" aria-label="A staircase of cubes: one, two and three cubes high"><g transform="translate(0,-40)"><polygon points="70,98 99,115 70,132 41,115" fill="#9cc0ff" stroke="#14213d" stroke-width="1.5"/><polygon points="41,115 70,132 70,166 41,149" fill="#4f86e8" stroke="#14213d" stroke-width="1.5"/><polygon points="70,132 99,115 99,149 70,166" fill="#2b5fd9" stroke="#14213d" stroke-width="1.5"/><polygon points="99,115 128,132 99,149 70,132" fill="#9cc0ff" stroke="#14213d" stroke-width="1.5"/><polygon points="70,132 99,149 99,183 70,166" fill="#4f86e8" stroke="#14213d" stroke-width="1.5"/><polygon points="99,149 128,132 128,166 99,183" fill="#2b5fd9" stroke="#14213d" stroke-width="1.5"/><polygon points="99,81 128,98 99,115 70,98" fill="#9cc0ff" stroke="#14213d" stroke-width="1.5"/><polygon points="70,98 99,115 99,149 70,132" fill="#4f86e8" stroke="#14213d" stroke-width="1.5"/><polygon points="99,115 128,98 128,132 99,149" fill="#2b5fd9" stroke="#14213d" stroke-width="1.5"/><polygon points="128,132 157,149 128,166 99,149" fill="#9cc0ff" stroke="#14213d" stroke-width="1.5"/><polygon points="99,149 128,166 128,200 99,183" fill="#4f86e8" stroke="#14213d" stroke-width="1.5"/><polygon points="128,166 157,149 157,183 128,200" fill="#2b5fd9" stroke="#14213d" stroke-width="1.5"/><polygon points="128,98 157,115 128,132 99,115" fill="#9cc0ff" stroke="#14213d" stroke-width="1.5"/><polygon points="99,115 128,132 128,166 99,149" fill="#4f86e8" stroke="#14213d" stroke-width="1.5"/><polygon points="128,132 157,115 157,149 128,166" fill="#2b5fd9" stroke="#14213d" stroke-width="1.5"/><polygon points="128,64 157,81 128,98 99,81" fill="#9cc0ff" stroke="#14213d" stroke-width="1.5"/><polygon points="99,81 128,98 128,132 99,115" fill="#4f86e8" stroke="#14213d" stroke-width="1.5"/><polygon points="128,98 157,81 157,115 128,132" fill="#2b5fd9" stroke="#14213d" stroke-width="1.5"/></g></svg>
+</div>
+<div style="font-family:'Fredoka',sans-serif;font-weight:600;font-size:24px;text-align:center;margin:14px 0 6px">How many cubes are in this stack?</div>
+<div style="text-align:center;color:#4a587a">Challenge 1 of 3</div>
+</div>
+</div>
+</div>
+</div>
 
-<section class="sect" id="pricing"><div class="wrap"><h2>Simple pricing</h2><p class="lead" style="margin-bottom:28px">One subscription covers one year group.</p>
-<div class="grid3">
-<div class="tile"><span class="tag">Free</span><div class="price">£0</div>
-<ul class="ticks"><li>First 3 topics in your year group</li><li>First 2 games in your year group</li><li>Parent or teacher email, confirmed by link</li></ul><a class="btn block" href="/signup/">Try free</a></div>
-<div class="tile"><span class="tag">Monthly · opening soon</span><div class="price">£5 <small>a month, per year group</small></div>
-<ul class="ticks"><li>Every topic and game in one year group</li><li>Pay by card or PayPal</li><li>Cancel any time</li></ul><a class="btn alt block" href="/signup/">Join the free plan first</a></div>
-</div><p class="note" style="margin-top:14px">Paid plans are not open yet. Prices shown are the plan. Nothing can be downloaded or printed from the site.</p></div></section>
+<!-- LEVELS (grouped at the front) -->
+<div id="levels" style="max-width:1200px;margin:0 auto;padding:72px 24px 24px">
+<h2 style="font-family:'Fredoka',sans-serif;font-weight:600;font-size:40px;margin:0 0 8px">Choose your level</h2>
+<p style="margin:0 0 28px;color:#3b4a6b">Grouped the way Scottish schools teach it. Pick your year to start.</p>
 
-<section class="sect tint"><div class="wrap" style="max-width:820px"><h2>Questions</h2>
-<details><summary>Who is it for?</summary><p>Children in P5 to S3 following the Scottish Curriculum for Excellence. Accounts are for a parent or teacher.</p></details>
-<details><summary>Do children need their own email?</summary><p>No. A parent or teacher signs up and signs in with their own email address.</p></details>
-<details><summary>What do you do with my email?</summary><p>We use it to confirm your account and let you sign in. If you tick the separate box, we also send news, tips and offers, and you can unsubscribe in one click. <a href="/privacy/">Read the privacy notice</a>.</p></details>
-<details><summary>Can I cancel?</summary><p>Yes, when paid plans open you will be able to cancel at any time.</p></details>
-</div></section>
-<footer class="foot">© MathsStudio · <a href="/privacy/">Privacy</a> · <a href="/login/">Sign in</a></footer>
+<div style="display:flex;flex-direction:column;gap:14px">
+
+<!-- Second level -->
+<div style="width:62%;min-width:min(340px,100%);box-sizing:border-box;background:#2f9e6e;border-radius:999px 24px 24px 999px;padding:16px 20px 16px 28px;display:flex;flex-wrap:wrap;align-items:center;gap:14px;color:#ffffff">
+<div style="flex:1 1 150px">
+<div style="font-family:'Fredoka',sans-serif;font-weight:700;font-size:24px;line-height:1.15">Second level</div>
+<div style="font-weight:700;font-size:15px">P5 to P7</div>
+</div>
+<div style="display:flex;flex-wrap:wrap;gap:10px">
+<a href="/signup/?year=P5" style="min-height:48px;min-width:64px;display:inline-flex;align-items:center;justify-content:center;background:#ffffff;color:#14613f;border-radius:14px;text-decoration:none;font-family:'Fredoka',sans-serif;font-weight:700;font-size:22px;padding:0 16px">P5</a>
+<a href="/signup/?year=P6" style="min-height:48px;min-width:64px;display:inline-flex;align-items:center;justify-content:center;background:#ffffff;color:#14613f;border-radius:14px;text-decoration:none;font-family:'Fredoka',sans-serif;font-weight:700;font-size:22px;padding:0 16px">P6</a>
+<a href="/signup/?year=P7" style="min-height:48px;min-width:64px;display:inline-flex;align-items:center;justify-content:center;background:#ffffff;color:#14613f;border-radius:14px;text-decoration:none;font-family:'Fredoka',sans-serif;font-weight:700;font-size:22px;padding:0 16px">P7</a>
+</div>
+</div>
+
+<!-- Third and Fourth level -->
+<div style="width:100%;background:#2b6fa8;border-radius:999px 24px 24px 999px;padding:16px 20px 16px 28px;display:flex;flex-wrap:wrap;align-items:center;gap:14px;color:#ffffff;box-sizing:border-box">
+<div style="flex:1 1 150px">
+<div style="font-family:'Fredoka',sans-serif;font-weight:700;font-size:24px;line-height:1.15">Third and Fourth level</div>
+<div style="font-weight:700;font-size:15px">S1 to S3</div>
+</div>
+<div style="display:flex;flex-wrap:wrap;gap:10px">
+<a href="/signup/?year=S1" style="min-height:48px;min-width:64px;display:inline-flex;align-items:center;justify-content:center;background:#ffffff;color:#1b4f7d;border-radius:14px;text-decoration:none;font-family:'Fredoka',sans-serif;font-weight:700;font-size:22px;padding:0 16px">S1</a>
+<a href="/signup/?year=S2" style="min-height:48px;min-width:64px;display:inline-flex;align-items:center;justify-content:center;background:#ffffff;color:#1b4f7d;border-radius:14px;text-decoration:none;font-family:'Fredoka',sans-serif;font-weight:700;font-size:22px;padding:0 16px">S2</a>
+<a href="/signup/?year=S3" style="min-height:48px;min-width:64px;display:inline-flex;align-items:center;justify-content:center;background:#ffffff;color:#1b4f7d;border-radius:14px;text-decoration:none;font-family:'Fredoka',sans-serif;font-weight:700;font-size:22px;padding:0 16px">S3</a>
+</div>
+</div>
+
+<!-- Senior phase: coming soon -->
+<div style="width:100%;background:#eef0f5;border:2px dashed #aab3c8;border-radius:999px 24px 24px 999px;padding:16px 20px 16px 28px;display:flex;flex-wrap:wrap;align-items:center;gap:14px;color:#3b4a6b;box-sizing:border-box">
+<div style="flex:1 1 150px">
+<div style="font-family:'Fredoka',sans-serif;font-weight:700;font-size:24px;line-height:1.15">Senior phase</div>
+<div style="font-weight:700;font-size:15px">S4 to S6 · Coming soon</div>
+</div>
+
+</div>
+
+</div>
+</div>
+
+<!-- HOW IT WORKS -->
+<div id="how" style="max-width:1200px;margin:0 auto;padding:56px 24px 24px">
+<h2 style="font-family:'Fredoka',sans-serif;font-weight:600;font-size:40px;margin:0 0 28px">Every topic has three parts</h2>
+<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:20px">
+<div style="border:2px solid #dbe3f7;border-radius:22px;padding:26px">
+<div style="width:44px;height:44px;border-radius:50%;background:#2b5fd9;color:#ffffff;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:20px">1</div>
+<h3 style="font-family:'Fredoka',sans-serif;font-weight:600;font-size:26px;margin:14px 0 6px">Let's Learn</h3>
+<p style="margin:0;color:#3b4a6b">Short lesson slides with pictures and worked examples.</p>
+</div>
+<div style="border:2px solid #dbe3f7;border-radius:22px;padding:26px">
+<div style="width:44px;height:44px;border-radius:50%;background:#ffd166;color:#14213d;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:20px">2</div>
+<h3 style="font-family:'Fredoka',sans-serif;font-weight:600;font-size:26px;margin:14px 0 6px">Activity Time</h3>
+<p style="margin:0;color:#3b4a6b">Sliders, builders and games to explore the idea hands-on.</p>
+</div>
+<div style="border:2px solid #dbe3f7;border-radius:22px;padding:26px">
+<div style="width:44px;height:44px;border-radius:50%;background:#17754c;color:#ffffff;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:20px">3</div>
+<h3 style="font-family:'Fredoka',sans-serif;font-weight:600;font-size:26px;margin:14px 0 6px">Let's Practice</h3>
+<p style="margin:0;color:#3b4a6b">100 questions at Low, Medium or High, plus real-life problems.</p>
+</div>
+</div>
+</div>
+
+<!-- FEATURES -->
+<div style="max-width:1200px;margin:0 auto;padding:48px 24px 24px">
+<div style="background:#14213d;color:#ffffff;border-radius:28px;padding:44px 40px;display:flex;flex-wrap:wrap;gap:36px">
+<div style="flex:1 1 280px;min-width:0"><h3 style="font-family:'Fredoka',sans-serif;font-weight:600;font-size:26px;margin:0 0 6px;color:#ffd166">Read aloud</h3><p style="margin:0;color:#dbe3f7">Turn the voice on and each new question is read out.</p></div>
+<div style="flex:1 1 280px;min-width:0"><h3 style="font-family:'Fredoka',sans-serif;font-weight:600;font-size:26px;margin:0 0 6px;color:#ffd166">Whiteboard</h3><p style="margin:0;color:#dbe3f7">A movable whiteboard for working out on screen.</p></div>
+<div style="flex:1 1 280px;min-width:0"><h3 style="font-family:'Fredoka',sans-serif;font-weight:600;font-size:26px;margin:0 0 6px;color:#ffd166">Spatial awareness and reasoning</h3><p style="margin:0;color:#dbe3f7">Shape, position, patterns and puzzles in every year.</p></div>
+<div style="flex:1 1 280px;min-width:0"><h3 style="font-family:'Fredoka',sans-serif;font-weight:600;font-size:26px;margin:0 0 6px;color:#ffd166">Clear feedback</h3><p style="margin:0;color:#dbe3f7">Hints, worked explanations and a clear Brilliant or Missed it.</p></div>
+</div>
+</div>
+
+<!-- PRICING: Free or Monthly -->
+<div id="pricing" style="max-width:1200px;margin:0 auto;padding:56px 24px 24px">
+<h2 style="font-family:'Fredoka',sans-serif;font-weight:600;font-size:40px;margin:0 0 8px">Start free. Subscribe if you like it.</h2>
+<p style="margin:0 0 28px;color:#3b4a6b">Try some topics and games for free. Subscribe to unlock everything. Cancel at any time.</p>
+<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:20px;max-width:880px">
+
+<div style="border:2px solid #dbe3f7;border-radius:22px;padding:28px;display:flex;flex-direction:column">
+<div style="font-weight:800;font-size:14px;letter-spacing:0.06em;text-transform:uppercase;color:#4a587a">Free</div>
+<div style="font-family:'Fredoka',sans-serif;font-weight:700;font-size:48px;margin:6px 0">£0</div>
+<ul style="margin:0 0 22px;padding-left:20px;color:#3b4a6b;flex:1">
+<li>The first 3 topics in your year group</li>
+<li>The first 2 games</li>
+<li>A sample of the practice questions</li>
+<li>Read aloud and whiteboard</li>
+<li>Other topics and games shown with a lock</li>
+</ul>
+<a href="/signup/" style="min-height:52px;display:flex;align-items:center;justify-content:center;border-radius:14px;border:2px solid #14213d;color:#14213d;text-decoration:none;font-weight:800">Try free</a>
+</div>
+
+<div style="border:3px solid #2b5fd9;border-radius:22px;padding:28px;background:#f3f6ff;display:flex;flex-direction:column">
+<div style="font-weight:800;font-size:14px;letter-spacing:0.06em;text-transform:uppercase;color:#2b5fd9">Monthly</div>
+<div style="font-family:'Fredoka',sans-serif;font-weight:700;font-size:48px;margin:6px 0">£5<span style="font-size:20px;font-weight:600;color:#3b4a6b"> / month per year group</span></div>
+<ul style="margin:0 0 22px;padding-left:20px;color:#3b4a6b;flex:1">
+<li>Every topic and every game for one year group of your choice</li>
+<li>All three practice levels, 100 questions each</li>
+<li>Progress saved</li>
+<li>Pay by card or PayPal</li>
+<li>Cancel online at any time</li>
+</ul>
+<a href="/signup/" style="min-height:52px;display:flex;align-items:center;justify-content:center;border-radius:14px;background:#2b5fd9;color:#ffffff;text-decoration:none;font-weight:800">Join free first · paid plans open soon</a>
+</div>
+
+</div>
+<p style="margin:16px 0 0;font-size:14px;color:#4a587a">Paid plans are not open yet. £5 is an example price. When they open, payments will be handled securely by our payment provider and we will never see your card details.</p>
+</div>
+
+<!-- FAQ -->
+<div style="max-width:1200px;margin:0 auto;padding:56px 24px 24px">
+<h2 style="font-family:'Fredoka',sans-serif;font-weight:600;font-size:40px;margin:0 0 20px">Questions</h2>
+<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:20px">
+<div><h3 style="font-size:19px;margin:0 0 4px">Why a parent or teacher email?</h3><p style="margin:0;color:#3b4a6b">Accounts belong to the adult. We never collect a child's email.</p></div>
+<div><h3 style="font-size:19px;margin:0 0 4px">What happens if I stop paying?</h3><p style="margin:0;color:#3b4a6b">You keep free access. Paid topics lock again, and your progress is kept for a while in case you come back.</p></div>
+<div><h3 style="font-size:19px;margin:0 0 4px">What will you email me?</h3><p style="margin:0;color:#3b4a6b">A confirmation email now. News and offers only if you tick the separate box, and every one has an unsubscribe link.</p></div>
+<div><h3 style="font-size:19px;margin:0 0 4px">Can I print or download lessons?</h3><p style="margin:0;color:#3b4a6b">No. MathsStudio is an online service, and content is not available to download.</p></div>
+</div>
+</div>
+
+<!-- FOOTER -->
+<div style="background:#14213d;color:#dbe3f7;margin-top:40px">
+<div style="max-width:1200px;margin:0 auto;padding:32px 24px;display:flex;flex-wrap:wrap;justify-content:space-between;gap:16px;font-size:15px">
+<div style="font-family:'Fredoka',sans-serif;font-weight:600;font-size:22px;color:#ffffff">MathsStudio</div>
+<div style="display:flex;flex-wrap:wrap;gap:20px"><a href="/privacy/" style="color:#dbe3f7;min-height:44px;display:inline-flex;align-items:center">Privacy</a><a href="mailto:hello@mathsstudio.co.uk" style="color:#dbe3f7;min-height:44px;display:inline-flex;align-items:center">Contact</a><a href="/login/" style="color:#dbe3f7;min-height:44px;display:inline-flex;align-items:center">Sign in</a></div>
+</div>
+</div>
+
+</div>
 </body></html>
