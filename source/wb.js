@@ -19,7 +19,8 @@ var css = '.wb-btn{position:fixed;z-index:36;right:12px;top:calc(42% - 66px);min
  '.wb-note{margin:0;padding:6px 10px;font-size:.8rem;color:var(--muted,#55627f);border-top:1px solid var(--line,#c9d4ea)}' +
  'body[data-view="gate"] .wb-btn,body[data-view="gate"] .wb-panel{display:none}' +
  '@media (min-width:1240px){.wb-panel{top:0;width:clamp(340px,calc(100vw - 810px),560px)}body.wb-open{padding-right:clamp(340px,calc(100vw - 810px),560px)}body.wb-open .reader-dock{right:calc(clamp(340px,calc(100vw - 810px),560px) + 12px)}body.wb-open .wb-btn{right:calc(clamp(340px,calc(100vw - 810px),560px) + 12px)}body.wb-open .player{right:clamp(340px,calc(100vw - 810px),560px)}}' +
- '@media (max-width:1239px){.wb-panel{left:0;height:54vh;border-left:0;border-top:2px solid var(--line,#c9d4ea);box-shadow:0 -8px 28px rgba(20,35,70,.16)}.wb-btn{top:auto;bottom:182px;right:8px}body.wb-open{padding-bottom:54vh}body.wb-open .wb-btn{bottom:calc(54vh + 12px)}body.wb-open .reader-dock{display:none}}';
+ '@media (max-width:1239px){.wb-panel{left:0;height:54vh;border-left:0;border-top:2px solid var(--line,#c9d4ea);box-shadow:0 -8px 28px rgba(20,35,70,.16)}.wb-btn{top:auto;bottom:86px;right:8px;min-height:44px;padding:6px 12px;font-size:.9rem;opacity:.95}body.wb-open{padding-bottom:54vh}body.wb-open .wb-btn{left:auto!important;top:auto!important;right:8px!important;bottom:calc(54vh + 12px)!important}body.wb-open .reader-dock{display:none}}' +
+ '@media (min-width:1240px){body.wb-open .wb-btn{left:auto!important}}';
 var st = doc.createElement('style'); st.textContent = css; doc.head.appendChild(st);
 function el(tag, attrs, html) { var e = doc.createElement(tag); Object.keys(attrs || {}).forEach(function (k) { e.setAttribute(k, attrs[k]); }); if (html !== undefined) e.innerHTML = html; return e; }
 var btn = el('button', { id: 'wbBtn', class: 'wb-btn', type: 'button', 'aria-expanded': 'false', 'aria-controls': 'wbPanel' }, 'Whiteboard');
@@ -72,5 +73,26 @@ btn.addEventListener('click', function () { toggle(); });
 doc.addEventListener('keydown', function (e) { if (e.key === 'Escape' && open && doc.activeElement && !/INPUT|SELECT/.test(doc.activeElement.tagName)) toggle(false); });
 window.addEventListener('resize', function () { if (open) fit(); });
 if (window.ResizeObserver) new ResizeObserver(function () { if (open) fit(); }).observe(stage);
+/* Make the floating buttons movable: drag to move, position is remembered. */
+function movable(el, key) {
+  if (!el) return;
+  var sx, sy, ox, oy, moved = false, down = false;
+  function clamp(x, y) { var r = el.getBoundingClientRect(); return [Math.max(4, Math.min(window.innerWidth - r.width - 4, x)), Math.max(4, Math.min(window.innerHeight - r.height - 4, y))]; }
+  function place(x, y) { var c = clamp(x, y); el.style.left = c[0] + 'px'; el.style.top = c[1] + 'px'; el.style.right = 'auto'; el.style.bottom = 'auto'; }
+  try { var p = JSON.parse(localStorage.getItem(key) || 'null'); if (p && typeof p.x === 'number') place(p.x * window.innerWidth, p.y * window.innerHeight); } catch (e) { /* ignore */ }
+  window.addEventListener('resize', function () { if (el.style.left) { var r = el.getBoundingClientRect(); place(r.left, r.top); } });
+  el.addEventListener('pointerdown', function (e) { if (e.button) return; var r = el.getBoundingClientRect(); down = true; moved = false; sx = e.clientX; sy = e.clientY; ox = r.left; oy = r.top; });
+  window.addEventListener('pointermove', function (e) {
+    if (!down) return;
+    if (!moved && Math.abs(e.clientX - sx) + Math.abs(e.clientY - sy) < 8) return;
+    moved = true; e.preventDefault(); place(ox + e.clientX - sx, oy + e.clientY - sy);
+  }, { passive: false });
+  window.addEventListener('pointerup', function () {
+    if (!down) return; down = false;
+    if (moved) { var r = el.getBoundingClientRect(); try { localStorage.setItem(key, JSON.stringify({ x: r.left / window.innerWidth, y: r.top / window.innerHeight })); } catch (e) { /* ignore */ } }
+  });
+  el.addEventListener('click', function (e) { if (moved) { e.stopImmediatePropagation(); e.preventDefault(); moved = false; } }, true);
+}
+movable(btn, 'pm-pos-wb'); movable(doc.getElementById('readerDock'), 'pm-pos-voice');
 try { var sv = JSON.parse(localStorage.getItem('pm-wb') || '[]'); if (Array.isArray(sv)) items = sv.filter(function (x) { return x && (x.t === 's' || x.t === 't'); }); } catch (e) { items = []; }
 })();
