@@ -31,9 +31,9 @@ K.explore = function (cfg) {
   return function (host, ctx) {
     var vals = {}, seen = {}, need = cfg.need || 6;
     cfg.params.forEach(function (p) { vals[p.id] = p.val; });
-    host.innerHTML = '<div class="visual" id="xVis" style="text-align:center;overflow-x:auto"></div><div class="lab-out say" id="xOut" aria-live="polite"></div>' + cfg.params.map(function (p) { return '<label class="eyebrow" for="x_' + p.id + '">' + p.label + '</label><input class="slider" id="x_' + p.id + '" type="range" min="' + p.min + '" max="' + p.max + '" step="' + (p.step || 1) + '" value="' + p.val + '" style="width:100%">'; }).join('') + '<div class="explain" id="xExp"></div><p class="note" id="xNote"></p>';
+    host.innerHTML = '<div class="visual" id="xVis" style="text-align:center;overflow-x:auto"></div><div class="lab-out say" id="xOut" aria-live="polite"></div>' + cfg.params.map(function (p) { if (p.options) return '<label class="eyebrow" for="x_' + p.id + '">' + p.label + '</label><select class="slider" id="x_' + p.id + '" style="min-height:44px">' + p.options.map(function (o) { return '<option value="' + o.v + '"' + (o.v === p.val ? ' selected' : '') + '>' + o.label + '</option>'; }).join('') + '</select>'; return '<label class="eyebrow" for="x_' + p.id + '">' + p.label + '</label><input class="slider" id="x_' + p.id + '" type="range" min="' + p.min + '" max="' + p.max + '" step="' + (p.step || 1) + '" value="' + p.val + '" style="width:100%">'; }).join('') + '<div class="explain" id="xExp"></div><p class="note" id="xNote"></p>';
     function draw() { var r = cfg.render(vals); $('xVis').innerHTML = r.vis || ''; $('xOut').textContent = r.out || ''; $('xExp').innerHTML = r.explain || ''; seen[JSON.stringify(vals)] = 1; var c = Object.keys(seen).length; $('xNote').textContent = 'Different settings tried: ' + Math.min(c, need) + ' of ' + need; if (c >= need) ctx.complete(); }
-    cfg.params.forEach(function (p) { $('x_' + p.id).addEventListener('input', function (e) { vals[p.id] = Number(e.target.value); draw(); }); });
+    cfg.params.forEach(function (p) { $('x_' + p.id).addEventListener('input', function (e) { vals[p.id] = p.options ? e.target.value : Number(e.target.value); draw(); }); if (p.options) $('x_' + p.id).addEventListener('change', function (e) { vals[p.id] = e.target.value; draw(); }); });
     draw();
   };
 };
