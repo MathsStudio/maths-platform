@@ -13,7 +13,7 @@ function stmt(sql, args = []) {
 const DB = { prepare: s => stmt(s), async batch(list) { for (const s of list) s._run(); return []; } };
 const sent = [];
 globalThis.fetch = async (u, o) => { if (String(u).includes('api.resend.com')) { sent.push(JSON.parse(o.body)); return new Response('{}', { status: 200 }); } throw new Error('unexpected fetch ' + u); };
-const env = { DB, RESEND_API_KEY: 'k', FROM_EMAIL: 'MathsStudio <hello@mathsstudio.co.uk>', ADMIN_PASSWORD: 'pw',
+const env = { DB, RESEND_API_KEY: 'k', FROM_EMAIL: 'MathsStudio <info@mathsstudio.co.uk>', ADMIN_PASSWORD: 'pw',
   ASSETS: { fetch: async r => new Response('STATIC ' + new URL(r.url).pathname, { headers: { 'Content-Type': 'text/html' } }) } };
 const B = 'https://x.test';
 let cookieJar = '';

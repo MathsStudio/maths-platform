@@ -8,6 +8,6 @@
     "run_worker_first": ["/api/*", "/auth/*", "/account", "/account/*", "/admin", "/admin/*", "/app", "/app/*", "/logout", "/unsubscribe"]
   },
   "d1_databases": [{ "binding": "DB", "database_name": "mathsstudio" }],
-  "vars": { "FROM_EMAIL": "MathsStudio <hello@mathsstudio.co.uk>" },
+  "vars": { "FROM_EMAIL": "MathsStudio <info@mathsstudio.co.uk>" },
   "triggers": { "crons": ["17 3 * * *"] }
 }
