@@ -49,13 +49,13 @@ K.stage = function (sp) {
   var nm = function (f) { return f.name; };
   var verb = (sp.gens || []).filter(function (g) { return g.name === 'genVerbal'; });
   S.pools(sp.n, sp.year && sp.year.charAt(0) === 'S' ? -1 : sp.base, (sp.easy || []).concat(verb).map(nm), (sp.hard || []).concat(verb).map(nm));
-  var practise = function () { return H.buildPracticeSet(sp.gens, 50); };
-  S.addTopic({ n: sp.n, base: sp.base, year: sp.year, short: sp.short, title: sp.title, blurb: sp.blurb, practiceCount: 50, gens: {}, steps: [
+  var practise = function () { return H.buildPracticeSet(sp.gens, 100); };
+  S.addTopic({ n: sp.n, base: sp.base, year: sp.year, short: sp.short, title: sp.title, blurb: sp.blurb, practiceCount: 100, gens: {}, steps: [
     { id: 'warm', label: 'Warm-up', type: 'quiz', tag: 'Step 1 · Warm-up', title: 'Mental maths warm-up', lead: 'Four quick questions.', make: sp.warm, doneLabel: 'On to the lesson' },
     { id: 'learn1', label: sp.l1label || 'Learn', type: 'slides', tag: sp.l1tag || 'Learn it', slides: sp.learn1 },
     { id: 'lab1', label: 'Explore', type: 'lab', tag: 'Step 3 · We do it together', title: sp.lab.title, lead: sp.lab.lead, mount: K.explore(sp.lab) },
     { id: 'learn2', label: sp.l2label || 'Learn more', type: 'slides', tag: sp.l2tag || 'Learn more', slides: sp.learn2 },
-    { id: 'practise', label: 'Practise', type: 'quiz', best: true, tag: 'Step 5 · Your turn', title: 'Practise', lead: '50 questions for this stage. Use the hints one at a time.', make: practise }
+    { id: 'practise', label: 'Practise', type: 'quiz', best: true, tag: 'Step 5 · Your turn', title: 'Practise', lead: '100 questions for this stage. Use the hints one at a time.', make: practise }
   ] });
 };
 })();

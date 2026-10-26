@@ -783,9 +783,10 @@ var SLIDE_MORE = {"1.learn1": [{"more": ["Our number system uses only ten digits
     var el = document.createElement('div'); el.innerHTML = String(value || '');
     return String(el.textContent || el.innerText || '').replace(/\s+/g, ' ').trim().toLowerCase();
   }
+  function picHash(p) { if (!p) return 0; p = String(p); var h = 0; for (var i = 0; i < p.length; i++) h = (h * 31 + p.charCodeAt(i)) | 0; return h; }
   function questionSignature(q) {
     return JSON.stringify([plainQuestionText(q.data), plainQuestionText(q.text),
-      (q.options || []).map(plainQuestionText).sort(), String(q.answer), q.type || 'input']);
+      (q.options || []).map(plainQuestionText).sort(), String(q.answer), q.type || 'input', picHash(q.pic)]);
   }
   S.h.buildPracticeSet = function (makers, count) {
     var level = store.settings.difficulty || 'medium';
@@ -795,10 +796,11 @@ var SLIDE_MORE = {"1.learn1": [{"more": ["Our number system uses only ten digits
       return allowed.indexOf(make.name || '') !== -1 || (level === 'high' && !make.name);
     }) : makers.slice();
     if (!pool.length) pool = makers.slice();
+    if (!makers.storyMode && count >= 50 && S.extraMakers) { var extra = S.extraMakers(topicNumber, level); if (extra && extra.length) pool = pool.concat(extra); }
     var st = makers.storyMode && S.storyFor && S.storyFor(topicNumber);
     if (st) pool = level === 'low' ? st.easy.slice() : level === 'high' ? st.hard.slice() : st.easy.concat(st.hard);
     var out = [], seen = Object.create(null), attempts = 0, maxAttempts = count * 45;
-    // Each level/topic set contains 50 distinct prompts wherever the generators allow it.
+    // Each level/topic set contains 100 distinct prompts wherever the generators allow it.
     while (out.length < count && attempts < maxAttempts) {
       shuffle(pool.slice()).forEach(function (make) {
         if (out.length >= count || attempts >= maxAttempts) return;
@@ -806,6 +808,11 @@ var SLIDE_MORE = {"1.learn1": [{"more": ["Our number system uses only ten digits
         var q = make(), sig = questionSignature(q);
         if (!seen[sig]) { seen[sig] = true; out.push(q); }
       });
+    }
+    // A finite generator pool can run short of distinct questions: top up with reasoning puzzles before any repeat.
+    if (out.length < count && !makers.storyMode && count >= 50 && S.extraMakers) {
+      var wide = S.extraMakers(topicNumber, 'wide') || [], more = 0;
+      while (out.length < count && wide.length && more < count * 30) { more++; var wq = pick(wide)(), wsig = questionSignature(wq); if (!seen[wsig]) { seen[wsig] = true; out.push(wq); } }
     }
     // Keep the quiz at the promised length even if a topic has a finite generator pool.
     while (out.length < count) out.push(pick(pool)());
@@ -920,7 +927,7 @@ var SLIDE_MORE = {"1.learn1": [{"more": ["Our number system uses only ten digits
     return out.sort(function (a, b) { return a - b; });
   }
   function nextVisible(n) { var t = S.topics[n], o = visibleOrder(), i = o.indexOf(baseOf(t)); return i > -1 && o[i + 1] ? openTopicFor(o[i + 1], stageOf(t)) : null; }
-  function dnum(t) { return baseOf(t); }
+  function dnum(t) { var o = visibleOrder(), i = o.indexOf(baseOf(t)); return i > -1 ? i + 1 : baseOf(t); }
   function stageChips(base, cur, attr) {
     return ['P5', 'P6', 'P7'].map(function (st) {
       var tp = stageTopic(base, st);
@@ -989,7 +996,7 @@ var SLIDE_MORE = {"1.learn1": [{"more": ["Our number system uses only ten digits
   }
 
   function renderDifficultyGate(v) {
-    v.innerHTML = '<section class="hero"><span class="eyebrow">Second level · Maths Studio</span><h1 class="say">Choose your challenge</h1><p class="lead say">Pick a level before you begin. The Low, Medium and High buttons stay at the top so you can switch levels at any time. Every topic has a 50-question practice set at each level, with hints and explanations.</p></section>' +
+    v.innerHTML = '<section class="hero"><span class="eyebrow">Second level · Maths Studio</span><h1 class="say">Choose your challenge</h1><p class="lead say">Pick a level before you begin. The Low, Medium and High buttons stay at the top so you can switch levels at any time. Every topic has a 100-question practice set at each level, with hints and explanations.</p></section>' +
       '<section class="level-grid" aria-label="Choose difficulty">' +
       '<button class="level-option" type="button" data-level="low"><span class="level-mark">1</span><span class="level-name">Low</span><span class="level-note">Build confidence with more direct questions and core skills.</span></button>' +
       '<button class="level-option" type="button" data-level="medium"><span class="level-mark">2</span><span class="level-name">Medium</span><span class="level-note">A balanced mix of calculations, examples and reasoning.</span></button>' +
@@ -1052,11 +1059,11 @@ var SLIDE_MORE = {"1.learn1": [{"more": ["Our number system uses only ten digits
     v.innerHTML =
       '<section class="yrtop"><div class="yrbar"><span class="tag">' + (yr === 'all' ? 'All years' : yr) + '</span><button class="yr" type="button" id="chgYear">Change year</button></div><p class="note say" style="margin:8px 0 0">' + YEAR_NOTE[yr] + '</p></section>' +
       '<section class="hero"><span class="eyebrow">' + (yr === 'all' ? 'Primary 5 to 7' : (yr.charAt(0) === 'S' ? 'Secondary ' + yr.slice(1) : 'Primary ' + yr.slice(1))) + ' · Curriculum for Excellence, ' + ({ S1: 'Third level', S2: 'Third and Fourth level', S3: 'Fourth level' }[yr] || 'Second level') + '</span><h1 class="say">' + (yr === 'all' ? 'Every topic' : yr + ' topics') + '</h1>' +
-      '<p class="lead say">' + ({ 1: 'One', 10: 'Ten', 12: 'Twelve' }[order.length] || order.length) + ' topics. Start with a clear explanation and worked examples, then a no-repeat warm-up, interactive activities and 50 practice questions. Choose Low, Medium or High at any time. Verbal and non-verbal reasoning appear throughout the course.</p></section>' +
+      '<p class="lead say">' + ({ 1: 'One', 10: 'Ten', 12: 'Twelve' }[order.length] || order.length) + ' topics. Start with a clear explanation and worked examples, then a no-repeat warm-up, interactive activities and 100 practice questions. Choose Low, Medium or High at any time. Verbal and non-verbal reasoning appear throughout the course.</p></section>' +
       '<section class="pillars"><div class="card"><h3 class="say">Read it</h3><p class="say">Clear steps and pictures, one idea at a time.</p></div><div class="card"><h3 class="say">Hear it</h3><p class="say">Turn on Read aloud once and the voice continues on new pages and questions, where your device allows it.</p></div><div class="card"><h3 class="say">Try it</h3><p class="say">Build, slide, spin and plot. Then answer questions. Hints come one step at a time.</p></div></section>' +
       progPanel + '<section><div class="row" style="align-items:center;justify-content:space-between;margin-bottom:12px"><h2>Topics</h2><span class="tag" id="difficultyBadge">Difficulty: ' + (store.settings.difficulty || 'Medium').replace(/^./, function(c){return c.toUpperCase();}) + '</span></div><div class="topics">' + cards + soon + '</div></section>' +
       '<details class="card"><summary>For teachers and parents</summary>' +
-      '<p>Each topic begins with an explanation and worked examples, then a short warm-up, hands-on activities, a second explanation and a 50-question practice set. Low, Medium and High each draw from their own question selection. Plan about 45 to 60 minutes a topic, split over two sessions if needed.</p>' +
+      '<p>Each topic begins with an explanation and worked examples, then a short warm-up, hands-on activities, a second explanation and a 100-question practice set. Low, Medium and High each draw from their own question selection. Plan about 45 to 60 minutes a topic, split over two sessions if needed.</p>' +
       '<div class="tscroll"><table class="plan"><thead><tr><th>Topic</th><th>Parts</th></tr></thead><tbody>' + rows + '</tbody></table></div>' +
       '<p class="note">Hints come in steps: first a nudge, then the method with the numbers, never the answer. The explanation after each answer shows the full working. Check outcomes against Education Scotland’s Benchmarks for Numeracy and Mathematics at Second level before you rely on this for planning. This is an independent resource. Progress is saved in this browser only.</p>' +
       '<div class="row" style="margin-top:10px"><button class="btn ghost" id="resetProg" type="button">Reset progress</button></div></details>';
@@ -1710,9 +1717,9 @@ function genCode() {
     hints: ['Count how many squares, how many triangles and how many circles there are.', 'Squares: ' + a + ' × 1,000. Triangles: ' + b + ' × 100. Circles: ' + c + ' × 10. Add the three parts.'],
     explain: a + ' × 1,000 + ' + b + ' × 100 + ' + c + ' × 10 = ' + fmtInt(total) + '.' });
 }
-function practiceSet() { return H.buildPracticeSet([genValue, genRound, genOrder, genWords, genEstimate, genReal, genRound, genVerbal, genSeq, genCode], 50); }
+function practiceSet() { return H.buildPracticeSet([genValue, genRound, genOrder, genWords, genEstimate, genReal, genRound, genVerbal, genSeq, genCode], 100); }
 
-Studio.addTopic({ n: 1, short: 'Place value', title: 'Place value and rounding', blurb: 'Read, write and round numbers up to 1,000,000 and to 3 decimal places.', practiceCount: 50,
+Studio.addTopic({ n: 1, short: 'Place value', title: 'Place value and rounding', blurb: 'Read, write and round numbers up to 1,000,000 and to 3 decimal places.', practiceCount: 100,
   gens: { genWarm: genWarm, genValue: genValue, genRound: genRound, genOrder: genOrder, genWords: genWords, genEstimate: genEstimate, genReal: genReal, genVerbal: genVerbal, genSeq: genSeq, genCode: genCode, practiceSet: practiceSet },
   steps: [
     { id: 'warm', label: 'Warm-up', type: 'quiz', tag: 'Step 1 · Warm-up', title: 'Mental maths warm-up', lead: 'Answer these four questions in your head. Type the answer and press Check.', make: genWarm, doneLabel: 'On to place value' },
@@ -1720,7 +1727,7 @@ Studio.addTopic({ n: 1, short: 'Place value', title: 'Place value and rounding',
     { id: 'build', label: 'Build it', type: 'lab', tag: 'Step 3 · We do it together', title: 'Build a number', lead: 'Tap plus or minus to add or remove a counter. Each column is worth 10 times the column on its right. Complete all five challenges.', mount: mountBuild },
     { id: 'learn2', label: 'Rounding', type: 'slides', tag: 'Rounding', slides: LEARN2 },
     { id: 'round', label: 'Round it', type: 'lab', tag: 'Step 5 · We do it together', title: 'Round it on the number line', lead: 'Pick what to round to and slide the number. Past the halfway mark it rounds up. Then predict five answers.', mount: mountRound },
-    { id: 'practise', label: 'Practise', type: 'quiz', best: true, tag: 'Step 6 · Your turn', title: 'Practise', lead: '50 questions on place value, rounding, real life and reasoning. No calculator. Use the hints one step at a time.', make: practiceSet }
+    { id: 'practise', label: 'Practise', type: 'quiz', best: true, tag: 'Step 6 · Your turn', title: 'Practise', lead: '100 questions on place value, rounding, real life and reasoning. No calculator. Use the hints one step at a time.', make: practiceSet }
   ] });
 })();
 
@@ -1967,9 +1974,9 @@ function genShapes() {
     text: '<span class="eqline"><span class="sym s3"></span> × <span class="sym s3"></span> = ' + (tr * tr) + '</span><span class="eqline"><span class="sym s3"></span> + <span class="sym s4"></span> = ' + (tr + ci) + '</span>What is <span class="sym s4"></span> worth?', answer: String(ci),
     hints: ['Use the first line to find what one square is worth. Which number times itself makes ' + (tr * tr) + '?', 'Once you know the square, take it away from ' + (tr + ci) + ' to find the triangle.'], explain: tr + ' × ' + tr + ' = ' + (tr * tr) + ' so the square is ' + tr + '. Then ' + (tr + ci) + ' − ' + tr + ' = ' + ci + '.' });
 }
-function practiceSet() { return H.buildPracticeSet([genAdd, genSub, genMult, genDiv, genBidmas, genWord, genMissing, genVerbal, genMachine, genShapes], 50); }
+function practiceSet() { return H.buildPracticeSet([genAdd, genSub, genMult, genDiv, genBidmas, genWord, genMissing, genVerbal, genMachine, genShapes], 100); }
 
-Studio.addTopic({ n: 2, short: 'Four operations', title: 'The four operations', blurb: 'Add, subtract, multiply and divide with big numbers, with real-life word problems.', practiceCount: 50,
+Studio.addTopic({ n: 2, short: 'Four operations', title: 'The four operations', blurb: 'Add, subtract, multiply and divide with big numbers, with real-life word problems.', practiceCount: 100,
   gens: { genAdd: genAdd, genSub: genSub, genMult: genMult, genDiv: genDiv },
   steps: [
     { id: 'warm', label: 'Warm-up', type: 'quiz', tag: 'Step 1 · Warm-up', title: 'Mental maths warm-up', lead: 'Four quick questions to wake up your number brain.', make: genWarm, doneLabel: 'On to adding and subtracting' },
@@ -1977,7 +1984,7 @@ Studio.addTopic({ n: 2, short: 'Four operations', title: 'The four operations', 
     { id: 'columns', label: 'Column lab', type: 'lab', tag: 'Step 3 · We do it together', title: 'Step through a column sum', lead: 'Choose add or subtract, then work out each column yourself, starting with the ones. Type the column total (or the digit you write) and press Check. Finish two sums to complete this step.', mount: mountColumns },
     { id: 'learn2', label: 'Multiply and divide', type: 'slides', tag: 'Multiply and divide', slides: LEARN2 },
     { id: 'array', label: 'Array lab', type: 'lab', tag: 'Step 5 · We do it together', title: 'Split an array', lead: 'Move the sliders to change the rows and columns. Then split the array into two easy parts.', mount: mountArray },
-    { id: 'practise', label: 'Practise', type: 'quiz', best: true, tag: 'Step 6 · Your turn', title: 'Practise', lead: '50 questions, including word problems and reasoning. Use the hints one step at a time.', make: practiceSet }
+    { id: 'practise', label: 'Practise', type: 'quiz', best: true, tag: 'Step 6 · Your turn', title: 'Practise', lead: '100 questions, including word problems and reasoning. Use the hints one step at a time.', make: practiceSet }
   ] });
 })();
 
@@ -2195,9 +2202,9 @@ function genFracSeq() {
   return Q({ tag: 'Non-verbal reasoning', kind: 'text', placeholder: 'e.g. 7/12', text: 'What comes next? <span class="codeline"><b>' + s.slice(0, 3).join(' , ') + ' , ?</b></span>', answer: s[3],
     hints: ['The denominators stay the same. Look at the numerators.', 'The top number goes up by ' + steps + ' each time. Add ' + steps + ' to the last numerator.'], explain: 'The numerator goes up by ' + steps + ' each time, so the next fraction is ' + s[3] + '.' });
 }
-function practiceSet() { return H.buildPracticeSet([genEquiv, genSimplify, genCompare, genOrderF, genFracOf, genAddSub, genMixed, genWord, genVerbal, function () { return Math.random() < 0.5 ? genShaded() : genFracSeq(); }], 50); }
+function practiceSet() { return H.buildPracticeSet([genEquiv, genSimplify, genCompare, genOrderF, genFracOf, genAddSub, genMixed, genWord, genVerbal, function () { return Math.random() < 0.5 ? genShaded() : genFracSeq(); }], 100); }
 
-Studio.addTopic({ n: 3, short: 'Fractions', title: 'Fractions', blurb: 'Equivalent, simplest form, comparing, fractions of amounts, mixed numbers and adding and subtracting.', practiceCount: 50,
+Studio.addTopic({ n: 3, short: 'Fractions', title: 'Fractions', blurb: 'Equivalent, simplest form, comparing, fractions of amounts, mixed numbers and adding and subtracting.', practiceCount: 100,
   gens: { genEquiv: genEquiv },
   steps: [
     { id: 'warm', label: 'Warm-up', type: 'quiz', tag: 'Step 1 · Warm-up', title: 'Mental maths warm-up', lead: 'Four quick fraction questions.', make: genWarm, doneLabel: 'On to fractions' },
@@ -2382,9 +2389,9 @@ function genPctSeq() {
   return Q({ tag: 'Non-verbal reasoning', unit: '%', text: 'What comes next? <span class="codeline"><b>' + t.slice(0, 3).map(function (x) { return x + '%'; }).join(' , ') + ' , ?</b></span>', answer: String(t[3]),
     hints: ['Look at how much the percentage grows each time.', 'The first jump is ' + (t[1] - t[0]) + ' percent. Check the second jump matches, then add it again.'], explain: 'The percentage goes up by ' + step + ' each time, so the next is ' + t[3] + '%.' });
 }
-function practiceSet() { return H.buildPracticeSet([genConvert, genConvert, genPctOf, genDecAdd, genShift, genSale, genBest, genVerbal, genGridQ, function () { return Math.random() < 0.5 ? genDecSeq() : genPctSeq(); }], 50); }
+function practiceSet() { return H.buildPracticeSet([genConvert, genConvert, genPctOf, genDecAdd, genShift, genSale, genBest, genVerbal, genGridQ, function () { return Math.random() < 0.5 ? genDecSeq() : genPctSeq(); }], 100); }
 
-Studio.addTopic({ n: 4, short: 'Decimals %', title: 'Decimals and percentages', blurb: 'Link fractions, decimals and percentages. Calculate percentages of amounts, sale prices and best value.', practiceCount: 50,
+Studio.addTopic({ n: 4, short: 'Decimals %', title: 'Decimals and percentages', blurb: 'Link fractions, decimals and percentages. Calculate percentages of amounts, sale prices and best value.', practiceCount: 100,
   gens: {},
   steps: [
     { id: 'warm', label: 'Warm-up', type: 'quiz', tag: 'Step 1 · Warm-up', title: 'Mental maths warm-up', lead: 'Four quick questions on tenths, halves and percentages.', make: genWarm, doneLabel: 'On to percentages' },
@@ -2392,7 +2399,7 @@ Studio.addTopic({ n: 4, short: 'Decimals %', title: 'Decimals and percentages', 
     { id: 'lab1', label: 'Hundred square', type: 'lab', tag: 'Step 3 · We do it together', title: 'Shade the hundred square', lead: 'Tap squares to shade them. See the fraction, decimal and percentage change together. Try three shortcut buttons.', mount: mountGridLab },
     { id: 'learn2', label: 'Calculating', type: 'slides', tag: 'Calculating', slides: LEARN2 },
     { id: 'lab2', label: 'Sale shop', type: 'lab', tag: 'Step 5 · We do it together', title: 'The sale shop', lead: 'Choose a price and a discount. See how to build the discount from easy pieces.', mount: mountShopLab },
-    { id: 'practise', label: 'Practise', type: 'quiz', best: true, tag: 'Step 6 · Your turn', title: 'Practise', lead: '50 questions on conversions, percentages, decimals and reasoning. Use the hints one at a time.', make: practiceSet }
+    { id: 'practise', label: 'Practise', type: 'quiz', best: true, tag: 'Step 6 · Your turn', title: 'Practise', lead: '100 questions on conversions, percentages, decimals and reasoning. Use the hints one at a time.', make: practiceSet }
   ] });
 })();
 
@@ -2585,16 +2592,16 @@ function genSquares() {
   return Q({ tag: 'Non-verbal reasoning', unit: 'cm²', data: 'A rectangle is drawn on a square grid. It is ' + w + ' squares wide and ' + h + ' squares tall. Each square has an area of one square centimetre. What is the area?', pic: rect(w, h, 'squares'), text: 'Each small square is <b>1 cm²</b>. What is the area of the rectangle in cm²?', answer: String(w * h),
     hints: ['Count the squares along the bottom and up the side.', 'Multiply the number of columns by the number of rows.'], explain: w + ' × ' + h + ' = ' + (w * h) + ' squares, so the area is ' + (w * h) + ' cm².' });
 }
-function practiceSet() { return H.buildPracticeSet([genUnits, genUnits, genPerim, genArea, genArea, genDuration, genTime12, genMoney, genTemp, function () { return Math.random() < 0.5 ? genClock() : genSquares(); }], 50); }
+function practiceSet() { return H.buildPracticeSet([genUnits, genUnits, genPerim, genArea, genArea, genDuration, genTime12, genMoney, genTemp, function () { return Math.random() < 0.5 ? genClock() : genSquares(); }], 100); }
 
-Studio.addTopic({ n: 5, short: 'Measure', title: 'Money, time and measurement', blurb: 'Units, perimeter and area, 12 and 24-hour time, money problems and temperature.', practiceCount: 50, gens: {},
+Studio.addTopic({ n: 5, short: 'Measure', title: 'Money, time and measurement', blurb: 'Units, perimeter and area, 12 and 24-hour time, money problems and temperature.', practiceCount: 100, gens: {},
   steps: [
     { id: 'warm', label: 'Warm-up', type: 'quiz', tag: 'Step 1 · Warm-up', title: 'Mental maths warm-up', lead: 'Four quick questions on units, time and money.', make: genWarm, doneLabel: 'On to measuring' },
     { id: 'learn1', label: 'Measure', type: 'slides', tag: 'Measurement', slides: LEARN1 },
     { id: 'lab1', label: 'Rectangle lab', type: 'lab', tag: 'Step 3 · We do it together', title: 'Perimeter and area', lead: 'Change the width and the height. Watch the area and the perimeter change.', mount: mountRectLab },
     { id: 'learn2', label: 'Time and money', type: 'slides', tag: 'Time and money', slides: LEARN2 },
     { id: 'lab2', label: 'Clock lab', type: 'lab', tag: 'Step 5 · We do it together', title: 'Clocks, 24-hour time and journeys', lead: 'Move the sliders to set a time. See it on the clock in two ways, then add a journey time.', mount: mountClockLab },
-    { id: 'practise', label: 'Practise', type: 'quiz', best: true, tag: 'Step 6 · Your turn', title: 'Practise', lead: '50 questions on measures, time, money and reasoning. For times, type like 14:35 or 3:40.', make: practiceSet }
+    { id: 'practise', label: 'Practise', type: 'quiz', best: true, tag: 'Step 6 · Your turn', title: 'Practise', lead: '100 questions on measures, time, money and reasoning. For times, type like 14:35 or 3:40.', make: practiceSet }
   ] });
 })();
 
@@ -2757,16 +2764,16 @@ function genSymbol() {
   return Q({ tag: 'Non-verbal reasoning', data: 'Two stars and one circle make ' + tot + '. A circle is worth ' + b + '. What is one star worth?', text: '<span class="eqline"><span class="sym s1"></span> + <span class="sym s1"></span> + <span class="sym s2"></span> = ' + tot + '</span><span class="eqline"><span class="sym s2"></span> = ' + b + '</span>What is <span class="sym s1"></span> worth?', answer: String(a),
     hints: ['Use the second line to replace the circle with its number in the first line.', 'Then two stars equal ' + tot + ' minus ' + b + '. Share that between two stars.'], explain: 'Replace the circle: star + star + ' + b + ' = ' + tot + '. So two stars = ' + (tot - b) + ' and one star = ' + a + '.' });
 }
-function practiceSet() { return H.buildPracticeSet([genSeq, genSeq, genNth, genMachine, genSolve, genSolve, genThink, genFormula, genVerbal, function () { return Math.random() < 0.5 ? genStickQ() : genSymbol(); }], 50); }
+function practiceSet() { return H.buildPracticeSet([genSeq, genSeq, genNth, genMachine, genSolve, genSolve, genThink, genFormula, genVerbal, function () { return Math.random() < 0.5 ? genStickQ() : genSymbol(); }], 100); }
 
-Studio.addTopic({ n: 6, short: 'Algebra', title: 'Patterns and algebra', blurb: 'Sequences, rules for patterns, function machines, letters for numbers, equations and formulae.', practiceCount: 50, gens: {},
+Studio.addTopic({ n: 6, short: 'Algebra', title: 'Patterns and algebra', blurb: 'Sequences, rules for patterns, function machines, letters for numbers, equations and formulae.', practiceCount: 100, gens: {},
   steps: [
     { id: 'warm', label: 'Warm-up', type: 'quiz', tag: 'Step 1 · Warm-up', title: 'Mental maths warm-up', lead: 'Four quick pattern questions.', make: genWarm, doneLabel: 'On to patterns' },
     { id: 'learn1', label: 'Patterns', type: 'slides', tag: 'Patterns and rules', slides: LEARN1 },
     { id: 'lab1', label: 'Matchstick lab', type: 'lab', tag: 'Step 3 · We do it together', title: 'Grow a matchstick pattern', lead: 'Slide the pattern number and watch the sticks grow. Look at at least six different patterns.', mount: mountStickLab },
     { id: 'learn2', label: 'Algebra', type: 'slides', tag: 'Algebra', slides: LEARN2 },
     { id: 'lab2', label: 'Balance lab', type: 'lab', tag: 'Step 5 · We do it together', title: 'Balance the equation', lead: 'Do the same to both sides to keep the scales balanced and find x. Solve three equations.', mount: mountBalanceLab },
-    { id: 'practise', label: 'Practise', type: 'quiz', best: true, tag: 'Step 6 · Your turn', title: 'Practise', lead: '50 questions on sequences, rules, equations and reasoning. Use the hints one at a time.', make: practiceSet }
+    { id: 'practise', label: 'Practise', type: 'quiz', best: true, tag: 'Step 6 · Your turn', title: 'Practise', lead: '100 questions on sequences, rules, equations and reasoning. Use the hints one at a time.', make: practiceSet }
   ] });
 })();
 
@@ -2942,16 +2949,16 @@ function genTurn() {
   return Q({ type: 'mc', tag: 'Non-verbal reasoning', pic: '<div class="flow">' + arrow(st) + '<span>→</span><span class="chip">' + t + ' × quarter turn ' + (cw ? 'clockwise' : 'anticlockwise') + '</span><span>→</span><span class="chip big">?</span></div>', data: 'An arrow points ' + dirs[st] + '. It makes ' + t + ' quarter turns ' + (cw ? 'clockwise' : 'anticlockwise') + '. Which way does it point at the end?', text: 'An arrow points <b>' + dirs[st] + '</b>. It turns <b>' + t + '</b> quarter turn' + (t > 1 ? 's' : '') + ' <b>' + (cw ? 'clockwise' : 'anticlockwise') + '</b>. Which way does it point now?', options: dirs.slice(), answer: end,
     hints: ['Clockwise goes the way clock hands move: up, right, down, left. Anticlockwise goes the other way.', 'Start at "' + dirs[st] + '" and count ' + t + ' step' + (t > 1 ? 's' : '') + ' ' + (cw ? 'along the order up, right, down, left' : 'backwards through that order') + '.'], explain: 'Each quarter turn moves one step round. After ' + t + ' ' + (cw ? 'clockwise' : 'anticlockwise') + ' turn' + (t > 1 ? 's' : '') + ' from ' + dirs[st] + ' it points ' + end + '.' });
 }
-function practiceSet() { return H.buildPracticeSet([genAngleType, genMissing, genMissing, genSymm, genCoord, genCoord, genSolid, genVerbal, genOdd, genTurn], 50); }
+function practiceSet() { return H.buildPracticeSet([genAngleType, genMissing, genMissing, genSymm, genCoord, genCoord, genSolid, genVerbal, genOdd, genTurn], 100); }
 
-Studio.addTopic({ n: 7, short: 'Shape', title: 'Shape, angles and symmetry', blurb: '2D and 3D shapes, angles, symmetry and coordinates, with reflection.', practiceCount: 50, gens: {},
+Studio.addTopic({ n: 7, short: 'Shape', title: 'Shape, angles and symmetry', blurb: '2D and 3D shapes, angles, symmetry and coordinates, with reflection.', practiceCount: 100, gens: {},
   steps: [
     { id: 'warm', label: 'Warm-up', type: 'quiz', tag: 'Step 1 · Warm-up', title: 'Warm-up', lead: 'Four quick questions about shapes and turns.', make: genWarm, doneLabel: 'On to shapes and angles' },
     { id: 'learn1', label: 'Shape ideas', type: 'slides', tag: 'Shapes, angles and symmetry', slides: LEARN1 },
     { id: 'lab1', label: 'Angle lab', type: 'lab', tag: 'Step 3 · We do it together', title: 'Turn an angle', lead: 'Slide the angle and see its type. Visit at least four types: acute, right, obtuse, straight and reflex.', mount: mountAngleLab },
     { id: 'learn2', label: 'Solve it', type: 'slides', tag: 'Working with shapes', slides: LEARN2 },
     { id: 'lab2', label: 'Coordinate lab', type: 'lab', tag: 'Step 5 · We do it together', title: 'Plot and reflect', lead: 'Tap the grid to plot points, then show their reflection in the mirror line. Plot five points.', mount: mountCoordLab },
-    { id: 'practise', label: 'Practise', type: 'quiz', best: true, tag: 'Step 6 · Your turn', title: 'Practise', lead: '50 questions on angles, symmetry, coordinates and reasoning. Write coordinates like (3,4).', make: practiceSet }
+    { id: 'practise', label: 'Practise', type: 'quiz', best: true, tag: 'Step 6 · Your turn', title: 'Practise', lead: '100 questions on angles, symmetry, coordinates and reasoning. Write coordinates like (3,4).', make: practiceSet }
   ] });
 })();
 
@@ -3144,16 +3151,16 @@ var VERBAL = [
   { text: 'Which sentence is true about a <b>fair</b> dice?', options: ['Each number is equally likely', '6 is more likely than 1', 'Odd numbers are more likely', 'You always get a 6 in 6 rolls'], answer: 'Each number is equally likely', hints: ['Fair means no side is favoured.', 'Each face has the same chance.'], explain: 'On a fair dice every number has probability 1/6.' }
 ];
 function genVerbal() { var v = pick(VERBAL); return Q({ tag: 'Verbal reasoning', type: 'mc', text: v.text, options: shuffle(v.options.slice()), answer: v.answer, hints: v.hints, explain: v.explain }); }
-function practiceSet() { return H.buildPracticeSet([genBarRead, genBarRead, genAverage, genAverage, genProb, genProbWord, genExpected, genPie, genVenn, function () { return Math.random() < 0.5 ? genPicto() : genLineRead(); }], 50); }
+function practiceSet() { return H.buildPracticeSet([genBarRead, genBarRead, genAverage, genAverage, genProb, genProbWord, genExpected, genPie, genVenn, function () { return Math.random() < 0.5 ? genPicto() : genLineRead(); }], 100); }
 
-Studio.addTopic({ n: 8, short: 'Data', title: 'Data and chance', blurb: 'Collect, show and read data. Mean, median, mode and range, and probability.', practiceCount: 50, gens: {},
+Studio.addTopic({ n: 8, short: 'Data', title: 'Data and chance', blurb: 'Collect, show and read data. Mean, median, mode and range, and probability.', practiceCount: 100, gens: {},
   steps: [
     { id: 'warm', label: 'Warm-up', type: 'quiz', tag: 'Step 1 · Warm-up', title: 'Warm-up', lead: 'Four quick data and chance questions.', make: genWarm, doneLabel: 'On to data' },
     { id: 'learn1', label: 'Show data', type: 'slides', tag: 'Displaying data', slides: LEARN1 },
     { id: 'lab1', label: 'Chart lab', type: 'lab', tag: 'Step 3 · We do it together', title: 'Build a bar chart', lead: 'Move the four sliders and watch the bar chart, the mode, the range and the mean change.', mount: mountBarLab },
     { id: 'learn2', label: 'Averages and chance', type: 'slides', tag: 'Averages and probability', slides: LEARN2 },
     { id: 'lab2', label: 'Chance lab', type: 'lab', tag: 'Step 5 · We do it together', title: 'Counters in a bag', lead: 'Change the counters in the bag, then take 24 counters and compare what you got with what you expected. Do this three times.', mount: mountSpinLab },
-    { id: 'practise', label: 'Practise', type: 'quiz', best: true, tag: 'Step 6 · Your turn', title: 'Practise', lead: '50 questions on charts, averages, probability and reasoning. Write probabilities as fractions like 3/10.', make: practiceSet }
+    { id: 'practise', label: 'Practise', type: 'quiz', best: true, tag: 'Step 6 · Your turn', title: 'Practise', lead: '100 questions on charts, averages, probability and reasoning. Write probabilities as fractions like 3/10.', make: practiceSet }
   ] });
 })();
 
@@ -3338,9 +3345,9 @@ function genSpecial() {
   else { t = [1, 1, 2, 3, 5]; nx = 8; nm = 'Fibonacci numbers'; h = ['Look at how each number relates to the two before it.', 'Add the last two numbers to get the next one: 3 + 5.']; }
   return Q({ tag: 'Non-verbal reasoning', text: 'What comes next? <span class="codeline"><b>' + t.join(' , ') + ' , ?</b></span>', answer: String(nx), hints: h, explain: 'These are ' + nm + '. The next number is ' + nx + '.' });
 }
-function practiceSet() { return H.buildPracticeSet([genBarModel, genBack, genHeads, genParty, genDeduce, genAnalogy, genCode, genMagic, genShapeSeq, function () { return Math.random() < 0.5 ? genGridRule() : genSpecial(); }], 50); }
+function practiceSet() { return H.buildPracticeSet([genBarModel, genBack, genHeads, genParty, genDeduce, genAnalogy, genCode, genMagic, genShapeSeq, function () { return Math.random() < 0.5 ? genGridRule() : genSpecial(); }], 100); }
 
-Studio.addTopic({ n: 9, short: 'Reasoning', title: 'Mixed reasoning and problem solving', blurb: 'Strategies for tricky problems, plus verbal and non-verbal reasoning puzzles.', practiceCount: 50, gens: {},
+Studio.addTopic({ n: 9, short: 'Reasoning', title: 'Mixed reasoning and problem solving', blurb: 'Strategies for tricky problems, plus verbal and non-verbal reasoning puzzles.', practiceCount: 100, gens: {},
   steps: [
     { id: 'warm', label: 'Warm-up', type: 'quiz', tag: 'Step 1 · Warm-up', title: 'Warm-up', lead: 'Four quick brain-warmers.', make: genWarm, doneLabel: 'On to problem solving' },
     { id: 'learn1', label: 'Strategies', type: 'slides', tag: 'Problem-solving strategies', slides: LEARN1 },
@@ -3568,18 +3575,18 @@ var VERBAL = [
   { text: 'Which statement is <b>true</b>?', options: ['Every even number except 2 is composite', 'All prime numbers are odd', '1 is a prime number', 'Square numbers are always even'], answer: 'Every even number except 2 is composite', hints: ['Think about the number 2 as a factor.', 'Any even number bigger than 2 has 2 as a factor as well as 1 and itself.'], explain: 'Every even number above 2 has 2 as a factor, so it has more than two factors and is composite.' }
 ];
 function genVerbal() { var v = pick(VERBAL); return Q({ tag: 'Verbal reasoning', type: 'mc', text: v.text, options: shuffle(v.options.slice()), answer: v.answer, hints: v.hints, explain: v.explain }); }
-function practiceSet() { return H.buildPracticeSet([genFactorCount, genBigFactor, genHCF, genLCM, genBuses, genNthMultiple, genIsMultiple, genPrimeMC, genPrimeCount, genSquare, genSqBetween, genTriangular, genDivRule, genRectangles, genVerbal, genArrayQ], 50); }
+function practiceSet() { return H.buildPracticeSet([genFactorCount, genBigFactor, genHCF, genLCM, genBuses, genNthMultiple, genIsMultiple, genPrimeMC, genPrimeCount, genSquare, genSqBetween, genTriangular, genDivRule, genRectangles, genVerbal, genArrayQ], 100); }
 Studio.pools10 = { easy: ['genNthMultiple', 'genIsMultiple', 'genFactorCount', 'genSquare', 'genDivRule'], hard: ['genHCF', 'genLCM', 'genBuses', 'genPrimeCount', 'genBigFactor', 'genTriangular', 'genRectangles', 'genVerbal'] };
 Studio.gens10 = { genFactorCount: genFactorCount, genBigFactor: genBigFactor, genHCF: genHCF, genLCM: genLCM, genBuses: genBuses, genNthMultiple: genNthMultiple, genIsMultiple: genIsMultiple, genPrimeMC: genPrimeMC, genPrimeCount: genPrimeCount, genSquare: genSquare, genSqBetween: genSqBetween, genTriangular: genTriangular, genDivRule: genDivRule, genRectangles: genRectangles, genVerbal: genVerbal, genArrayQ: genArrayQ };
 
-Studio.addTopic({ n: 10, short: 'Factors', title: 'Factors, multiples and primes', blurb: 'Multiples, factors and factor pairs, common factors and multiples, prime numbers, divisibility, square and triangular numbers.', practiceCount: 50, gens: {},
+Studio.addTopic({ n: 10, short: 'Factors', title: 'Factors, multiples and primes', blurb: 'Multiples, factors and factor pairs, common factors and multiples, prime numbers, divisibility, square and triangular numbers.', practiceCount: 100, gens: {},
   steps: [
     { id: 'warm', label: 'Warm-up', type: 'quiz', tag: 'Step 1 · Warm-up', title: 'Mental maths warm-up', lead: 'Four quick questions on times tables, factors and primes.', make: genWarm, doneLabel: 'On to multiples and factors' },
     { id: 'learn1', label: 'Multiples and factors', type: 'slides', tag: 'Multiples and factors', slides: LEARN1 },
     { id: 'lab1', label: 'Factor lab', type: 'lab', tag: 'Step 3 · We do it together', title: 'Build every rectangle', lead: 'Slide the number and see every rectangle it can make. Explore at least eight numbers, including a prime.', mount: mountFactorLab },
     { id: 'learn2', label: 'Primes and squares', type: 'slides', tag: 'Primes, squares and triangles', slides: LEARN2 },
     { id: 'lab2', label: 'Prime sieve', type: 'lab', tag: 'Step 5 · We do it together', title: 'Find the primes', lead: 'Cross out multiples of 2, 3, 5 and 7. The numbers left are the primes up to 50.', mount: mountSieveLab },
-    { id: 'practise', label: 'Practise', type: 'quiz', best: true, tag: 'Step 6 · Your turn', title: 'Practise', lead: '50 questions on factors, multiples, primes and square numbers. Use the hints one at a time.', make: practiceSet }
+    { id: 'practise', label: 'Practise', type: 'quiz', best: true, tag: 'Step 6 · Your turn', title: 'Practise', lead: '100 questions on factors, multiples, primes and square numbers. Use the hints one at a time.', make: practiceSet }
   ] });
 })();
 </script>
@@ -3796,16 +3803,16 @@ var VERBAL = [
   { text: 'A shop says it sold <b>about 5,000</b> tickets, rounded to the nearest 1,000. Which could be the exact number?', options: ['4,720', '5,501', '4,380', '5,640'], answer: '4,720', hints: ['Numbers that round to 5,000 are between 4,500 and 5,499.', 'Check each choice against that range.'], explain: '4,720 is between 4,500 and 5,499, so it rounds to 5,000.' }
 ];
 function genVerbal() { var v = pick(VERBAL); return Q({ tag: 'Verbal reasoning', type: 'mc', text: v.text, options: shuffle(v.options.slice()), answer: v.answer, hints: v.hints, explain: v.explain }); }
-function practiceSet() { return H.buildPracticeSet([genValue, genExpanded, genOrder, genDecCompare, genDecValue, genRound10, genRound100, genRound1000, genRoundDec, genEstimate, genCrowd, genLargest, genLine, genVerbal], 50); }
+function practiceSet() { return H.buildPracticeSet([genValue, genExpanded, genOrder, genDecCompare, genDecValue, genRound10, genRound100, genRound1000, genRoundDec, genEstimate, genCrowd, genLargest, genLine, genVerbal], 100); }
 
-Studio.addTopic({ n: 501, year: 'P5', dn: 1, replaces: 1, short: 'Place value', title: 'Place value and rounding', blurb: 'Numbers to 100,000, tenths and hundredths, comparing and ordering, rounding to 10, 100 and 1,000, and estimating.', practiceCount: 50, gens: {},
+Studio.addTopic({ n: 501, year: 'P5', dn: 1, replaces: 1, short: 'Place value', title: 'Place value and rounding', blurb: 'Numbers to 100,000, tenths and hundredths, comparing and ordering, rounding to 10, 100 and 1,000, and estimating.', practiceCount: 100, gens: {},
   steps: [
     { id: 'warm', label: 'Warm-up', type: 'quiz', tag: 'Step 1 · Warm-up', title: 'Mental maths warm-up', lead: 'Four quick questions.', make: genWarm, doneLabel: 'On to place value' },
     { id: 'learn1', label: 'Place value', type: 'slides', tag: 'Place value', slides: LEARN1 },
     { id: 'lab1', label: 'Number builder', type: 'lab', tag: 'Step 3 · We do it together', title: 'Build the number', lead: 'Tap the arrows to build each target number, one column at a time. Build three numbers.', mount: mountBuildLab },
     { id: 'learn2', label: 'Rounding', type: 'slides', tag: 'Rounding and estimating', slides: LEARN2 },
     { id: 'lab2', label: 'Rounding line', type: 'lab', tag: 'Step 5 · We do it together', title: 'Round on the number line', lead: 'Slide the number and choose 10, 100 or 1,000. See which landmark is nearer.', mount: mountRoundLab },
-    { id: 'practise', label: 'Practise', type: 'quiz', best: true, tag: 'Step 6 · Your turn', title: 'Practise', lead: '50 questions on place value, decimals and rounding. Use the hints one at a time.', make: practiceSet }
+    { id: 'practise', label: 'Practise', type: 'quiz', best: true, tag: 'Step 6 · Your turn', title: 'Practise', lead: '100 questions on place value, decimals and rounding. Use the hints one at a time.', make: practiceSet }
   ] });
 })();
 </script>
