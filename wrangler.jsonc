@@ -7,7 +7,7 @@
     "binding": "ASSETS",
     "run_worker_first": ["/api/*", "/auth/*", "/account", "/account/*", "/admin", "/admin/*", "/app", "/app/*", "/logout", "/unsubscribe"]
   },
-  "d1_databases": [{ "binding": "DB", "database_name": "mathsstudio" }],
+  "d1_databases": [{ "binding": "DB", "database_name": "mathsstudio", "database_id": "6b27f82f-411d-4fb1-84ab-6b8f9d83503a" }],
   "vars": { "FROM_EMAIL": "MathsStudio <info@mathsstudio.co.uk>" },
   "triggers": { "crons": ["17 3 * * *"] }
 }
