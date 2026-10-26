@@ -957,6 +957,12 @@ var SLIDE_MORE = {"1.learn1": [{"more": ["Our number system uses only ten digits
   function render() {
     narStop();
     var v = $('view');
+    if (!['low','medium','high'].includes(store.settings.difficulty) && !state.yearSel) {
+      $('tabs').classList.add('hide'); $('player').classList.add('hide'); $('settings').classList.add('hide');
+      document.body.setAttribute('data-view', 'gate');
+      ['.level-switch', '#tbHome', '#brandMark'].forEach(function (q) { var el = document.querySelector(q); if (el) el.classList.add('hide'); });
+      renderYearGate(v); setPlayerUI(); return;
+    }
     if (!['low','medium','high'].includes(store.settings.difficulty)) {
       $('tabs').classList.add('hide'); $('player').classList.add('hide'); $('settings').classList.add('hide');
       document.body.setAttribute('data-view', 'gate');
