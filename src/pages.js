@@ -5,7 +5,7 @@ export { YEARS };
 export function shell(title, body) {
   return '<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="robots" content="noindex"><title>' + esc(title) + ' · MathsStudio</title>' +
     '<link rel="icon" href="/favicon.svg" type="image/svg+xml"><link rel="stylesheet" href="/site.css"></head><body class="plain">' +
-    '<header class="nav"><a class="brand" href="/"><span class="logo">M</span><span>MathsStudio</span></a></header>' +
+    '<header class="nav"><a class="brand" href="/"><svg class="mark" width="40" height="40" viewBox="0 0 64 64" role="img" aria-label="MathsStudio logo"><rect width="64" height="64" rx="16" fill="#2b5fd9"/><path d="M16 47V21L32 39L48 21V47" fill="none" stroke="#ffffff" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/><circle cx="32" cy="15" r="4.5" fill="#ffd166"/></svg><span class="word"><span>Maths</span><span class="st">Studio</span></span></a></header>' +
     '<main class="narrow">' + body + '</main>' +
     '<footer class="foot"><a href="/privacy/">Privacy</a> · <a href="/">Home</a></footer></body></html>';
 }
