@@ -783,9 +783,10 @@ var SLIDE_MORE = {"1.learn1": [{"more": ["Our number system uses only ten digits
     var el = document.createElement('div'); el.innerHTML = String(value || '');
     return String(el.textContent || el.innerText || '').replace(/\s+/g, ' ').trim().toLowerCase();
   }
+  function picHash(p) { if (!p) return 0; p = String(p); var h = 0; for (var i = 0; i < p.length; i++) h = (h * 31 + p.charCodeAt(i)) | 0; return h; }
   function questionSignature(q) {
     return JSON.stringify([plainQuestionText(q.data), plainQuestionText(q.text),
-      (q.options || []).map(plainQuestionText).sort(), String(q.answer), q.type || 'input']);
+      (q.options || []).map(plainQuestionText).sort(), String(q.answer), q.type || 'input', picHash(q.pic)]);
   }
   S.h.buildPracticeSet = function (makers, count) {
     var level = store.settings.difficulty || 'medium';
@@ -795,10 +796,11 @@ var SLIDE_MORE = {"1.learn1": [{"more": ["Our number system uses only ten digits
       return allowed.indexOf(make.name || '') !== -1 || (level === 'high' && !make.name);
     }) : makers.slice();
     if (!pool.length) pool = makers.slice();
+    if (!makers.storyMode && count >= 50 && S.extraMakers) { var extra = S.extraMakers(topicNumber, level); if (extra && extra.length) pool = pool.concat(extra); }
     var st = makers.storyMode && S.storyFor && S.storyFor(topicNumber);
     if (st) pool = level === 'low' ? st.easy.slice() : level === 'high' ? st.hard.slice() : st.easy.concat(st.hard);
     var out = [], seen = Object.create(null), attempts = 0, maxAttempts = count * 45;
-    // Each level/topic set contains 50 distinct prompts wherever the generators allow it.
+    // Each level/topic set contains 100 distinct prompts wherever the generators allow it.
     while (out.length < count && attempts < maxAttempts) {
       shuffle(pool.slice()).forEach(function (make) {
         if (out.length >= count || attempts >= maxAttempts) return;
@@ -806,6 +808,11 @@ var SLIDE_MORE = {"1.learn1": [{"more": ["Our number system uses only ten digits
         var q = make(), sig = questionSignature(q);
         if (!seen[sig]) { seen[sig] = true; out.push(q); }
       });
+    }
+    // A finite generator pool can run short of distinct questions: top up with reasoning puzzles before any repeat.
+    if (out.length < count && !makers.storyMode && count >= 50 && S.extraMakers) {
+      var wide = S.extraMakers(topicNumber, 'wide') || [], more = 0;
+      while (out.length < count && wide.length && more < count * 30) { more++; var wq = pick(wide)(), wsig = questionSignature(wq); if (!seen[wsig]) { seen[wsig] = true; out.push(wq); } }
     }
     // Keep the quiz at the promised length even if a topic has a finite generator pool.
     while (out.length < count) out.push(pick(pool)());
@@ -920,7 +927,7 @@ var SLIDE_MORE = {"1.learn1": [{"more": ["Our number system uses only ten digits
     return out.sort(function (a, b) { return a - b; });
   }
   function nextVisible(n) { var t = S.topics[n], o = visibleOrder(), i = o.indexOf(baseOf(t)); return i > -1 && o[i + 1] ? openTopicFor(o[i + 1], stageOf(t)) : null; }
-  function dnum(t) { return baseOf(t); }
+  function dnum(t) { var o = visibleOrder(), i = o.indexOf(baseOf(t)); return i > -1 ? i + 1 : baseOf(t); }
   function stageChips(base, cur, attr) {
     return ['P5', 'P6', 'P7'].map(function (st) {
       var tp = stageTopic(base, st);
@@ -989,7 +996,7 @@ var SLIDE_MORE = {"1.learn1": [{"more": ["Our number system uses only ten digits
   }
 
   function renderDifficultyGate(v) {
-    v.innerHTML = '<section class="hero"><span class="eyebrow">Second level · Maths Studio</span><h1 class="say">Choose your challenge</h1><p class="lead say">Pick a level before you begin. The Low, Medium and High buttons stay at the top so you can switch levels at any time. Every topic has a 50-question practice set at each level, with hints and explanations.</p></section>' +
+    v.innerHTML = '<section class="hero"><span class="eyebrow">Second level · Maths Studio</span><h1 class="say">Choose your challenge</h1><p class="lead say">Pick a level before you begin. The Low, Medium and High buttons stay at the top so you can switch levels at any time. Every topic has a 100-question practice set at each level, with hints and explanations.</p></section>' +
       '<section class="level-grid" aria-label="Choose difficulty">' +
       '<button class="level-option" type="button" data-level="low"><span class="level-mark">1</span><span class="level-name">Low</span><span class="level-note">Build confidence with more direct questions and core skills.</span></button>' +
       '<button class="level-option" type="button" data-level="medium"><span class="level-mark">2</span><span class="level-name">Medium</span><span class="level-note">A balanced mix of calculations, examples and reasoning.</span></button>' +
@@ -1052,11 +1059,11 @@ var SLIDE_MORE = {"1.learn1": [{"more": ["Our number system uses only ten digits
     v.innerHTML =
       '<section class="yrtop"><div class="yrbar"><span class="tag">' + (yr === 'all' ? 'All years' : yr) + '</span><button class="yr" type="button" id="chgYear">Change year</button></div><p class="note say" style="margin:8px 0 0">' + YEAR_NOTE[yr] + '</p></section>' +
       '<section class="hero"><span class="eyebrow">' + (yr === 'all' ? 'Primary 5 to 7' : (yr.charAt(0) === 'S' ? 'Secondary ' + yr.slice(1) : 'Primary ' + yr.slice(1))) + ' · Curriculum for Excellence, ' + ({ S1: 'Third level', S2: 'Third and Fourth level', S3: 'Fourth level' }[yr] || 'Second level') + '</span><h1 class="say">' + (yr === 'all' ? 'Every topic' : yr + ' topics') + '</h1>' +
-      '<p class="lead say">' + ({ 1: 'One', 10: 'Ten', 12: 'Twelve' }[order.length] || order.length) + ' topics. Start with a clear explanation and worked examples, then a no-repeat warm-up, interactive activities and 50 practice questions. Choose Low, Medium or High at any time. Verbal and non-verbal reasoning appear throughout the course.</p></section>' +
+      '<p class="lead say">' + ({ 1: 'One', 10: 'Ten', 12: 'Twelve' }[order.length] || order.length) + ' topics. Start with a clear explanation and worked examples, then a no-repeat warm-up, interactive activities and 100 practice questions. Choose Low, Medium or High at any time. Verbal and non-verbal reasoning appear throughout the course.</p></section>' +
       '<section class="pillars"><div class="card"><h3 class="say">Read it</h3><p class="say">Clear steps and pictures, one idea at a time.</p></div><div class="card"><h3 class="say">Hear it</h3><p class="say">Turn on Read aloud once and the voice continues on new pages and questions, where your device allows it.</p></div><div class="card"><h3 class="say">Try it</h3><p class="say">Build, slide, spin and plot. Then answer questions. Hints come one step at a time.</p></div></section>' +
       progPanel + '<section><div class="row" style="align-items:center;justify-content:space-between;margin-bottom:12px"><h2>Topics</h2><span class="tag" id="difficultyBadge">Difficulty: ' + (store.settings.difficulty || 'Medium').replace(/^./, function(c){return c.toUpperCase();}) + '</span></div><div class="topics">' + cards + soon + '</div></section>' +
       '<details class="card"><summary>For teachers and parents</summary>' +
-      '<p>Each topic begins with an explanation and worked examples, then a short warm-up, hands-on activities, a second explanation and a 50-question practice set. Low, Medium and High each draw from their own question selection. Plan about 45 to 60 minutes a topic, split over two sessions if needed.</p>' +
+      '<p>Each topic begins with an explanation and worked examples, then a short warm-up, hands-on activities, a second explanation and a 100-question practice set. Low, Medium and High each draw from their own question selection. Plan about 45 to 60 minutes a topic, split over two sessions if needed.</p>' +
       '<div class="tscroll"><table class="plan"><thead><tr><th>Topic</th><th>Parts</th></tr></thead><tbody>' + rows + '</tbody></table></div>' +
       '<p class="note">Hints come in steps: first a nudge, then the method with the numbers, never the answer. The explanation after each answer shows the full working. Check outcomes against Education Scotland’s Benchmarks for Numeracy and Mathematics at Second level before you rely on this for planning. This is an independent resource. Progress is saved in this browser only.</p>' +
       '<div class="row" style="margin-top:10px"><button class="btn ghost" id="resetProg" type="button">Reset progress</button></div></details>';
@@ -1710,9 +1717,9 @@ function genCode() {
     hints: ['Count how many squares, how many triangles and how many circles there are.', 'Squares: ' + a + ' × 1,000. Triangles: ' + b + ' × 100. Circles: ' + c + ' × 10. Add the three parts.'],
     explain: a + ' × 1,000 + ' + b + ' × 100 + ' + c + ' × 10 = ' + fmtInt(total) + '.' });
 }
-function practiceSet() { return H.buildPracticeSet([genValue, genRound, genOrder, genWords, genEstimate, genReal, genRound, genVerbal, genSeq, genCode], 50); }
+function practiceSet() { return H.buildPracticeSet([genValue, genRound, genOrder, genWords, genEstimate, genReal, genRound, genVerbal, genSeq, genCode], 100); }
 
-Studio.addTopic({ n: 1, short: 'Place value', title: 'Place value and rounding', blurb: 'Read, write and round numbers up to 1,000,000 and to 3 decimal places.', practiceCount: 50,
+Studio.addTopic({ n: 1, short: 'Place value', title: 'Place value and rounding', blurb: 'Read, write and round numbers up to 1,000,000 and to 3 decimal places.', practiceCount: 100,
   gens: { genWarm: genWarm, genValue: genValue, genRound: genRound, genOrder: genOrder, genWords: genWords, genEstimate: genEstimate, genReal: genReal, genVerbal: genVerbal, genSeq: genSeq, genCode: genCode, practiceSet: practiceSet },
   steps: [
     { id: 'warm', label: 'Warm-up', type: 'quiz', tag: 'Step 1 · Warm-up', title: 'Mental maths warm-up', lead: 'Answer these four questions in your head. Type the answer and press Check.', make: genWarm, doneLabel: 'On to place value' },
@@ -1720,7 +1727,7 @@ Studio.addTopic({ n: 1, short: 'Place value', title: 'Place value and rounding',
     { id: 'build', label: 'Build it', type: 'lab', tag: 'Step 3 · We do it together', title: 'Build a number', lead: 'Tap plus or minus to add or remove a counter. Each column is worth 10 times the column on its right. Complete all five challenges.', mount: mountBuild },
     { id: 'learn2', label: 'Rounding', type: 'slides', tag: 'Rounding', slides: LEARN2 },
     { id: 'round', label: 'Round it', type: 'lab', tag: 'Step 5 · We do it together', title: 'Round it on the number line', lead: 'Pick what to round to and slide the number. Past the halfway mark it rounds up. Then predict five answers.', mount: mountRound },
-    { id: 'practise', label: 'Practise', type: 'quiz', best: true, tag: 'Step 6 · Your turn', title: 'Practise', lead: '50 questions on place value, rounding, real life and reasoning. No calculator. Use the hints one step at a time.', make: practiceSet }
+    { id: 'practise', label: 'Practise', type: 'quiz', best: true, tag: 'Step 6 · Your turn', title: 'Practise', lead: '100 questions on place value, rounding, real life and reasoning. No calculator. Use the hints one step at a time.', make: practiceSet }
   ] });
 })();
 
@@ -1967,9 +1974,9 @@ function genShapes() {
     text: '<span class="eqline"><span class="sym s3"></span> × <span class="sym s3"></span> = ' + (tr * tr) + '</span><span class="eqline"><span class="sym s3"></span> + <span class="sym s4"></span> = ' + (tr + ci) + '</span>What is <span class="sym s4"></span> worth?', answer: String(ci),
     hints: ['Use the first line to find what one square is worth. Which number times itself makes ' + (tr * tr) + '?', 'Once you know the square, take it away from ' + (tr + ci) + ' to find the triangle.'], explain: tr + ' × ' + tr + ' = ' + (tr * tr) + ' so the square is ' + tr + '. Then ' + (tr + ci) + ' − ' + tr + ' = ' + ci + '.' });
 }
-function practiceSet() { return H.buildPracticeSet([genAdd, genSub, genMult, genDiv, genBidmas, genWord, genMissing, genVerbal, genMachine, genShapes], 50); }
+function practiceSet() { return H.buildPracticeSet([genAdd, genSub, genMult, genDiv, genBidmas, genWord, genMissing, genVerbal, genMachine, genShapes], 100); }
 
-Studio.addTopic({ n: 2, short: 'Four operations', title: 'The four operations', blurb: 'Add, subtract, multiply and divide with big numbers, with real-life word problems.', practiceCount: 50,
+Studio.addTopic({ n: 2, short: 'Four operations', title: 'The four operations', blurb: 'Add, subtract, multiply and divide with big numbers, with real-life word problems.', practiceCount: 100,
   gens: { genAdd: genAdd, genSub: genSub, genMult: genMult, genDiv: genDiv },
   steps: [
     { id: 'warm', label: 'Warm-up', type: 'quiz', tag: 'Step 1 · Warm-up', title: 'Mental maths warm-up', lead: 'Four quick questions to wake up your number brain.', make: genWarm, doneLabel: 'On to adding and subtracting' },
@@ -1977,7 +1984,7 @@ Studio.addTopic({ n: 2, short: 'Four operations', title: 'The four operations', 
     { id: 'columns', label: 'Column lab', type: 'lab', tag: 'Step 3 · We do it together', title: 'Step through a column sum', lead: 'Choose add or subtract, then work out each column yourself, starting with the ones. Type the column total (or the digit you write) and press Check. Finish two sums to complete this step.', mount: mountColumns },
     { id: 'learn2', label: 'Multiply and divide', type: 'slides', tag: 'Multiply and divide', slides: LEARN2 },
     { id: 'array', label: 'Array lab', type: 'lab', tag: 'Step 5 · We do it together', title: 'Split an array', lead: 'Move the sliders to change the rows and columns. Then split the array into two easy parts.', mount: mountArray },
-    { id: 'practise', label: 'Practise', type: 'quiz', best: true, tag: 'Step 6 · Your turn', title: 'Practise', lead: '50 questions, including word problems and reasoning. Use the hints one step at a time.', make: practiceSet }
+    { id: 'practise', label: 'Practise', type: 'quiz', best: true, tag: 'Step 6 · Your turn', title: 'Practise', lead: '100 questions, including word problems and reasoning. Use the hints one step at a time.', make: practiceSet }
   ] });
 })();
 
@@ -2195,9 +2202,9 @@ function genFracSeq() {
   return Q({ tag: 'Non-verbal reasoning', kind: 'text', placeholder: 'e.g. 7/12', text: 'What comes next? <span class="codeline"><b>' + s.slice(0, 3).join(' , ') + ' , ?</b></span>', answer: s[3],
     hints: ['The denominators stay the same. Look at the numerators.', 'The top number goes up by ' + steps + ' each time. Add ' + steps + ' to the last numerator.'], explain: 'The numerator goes up by ' + steps + ' each time, so the next fraction is ' + s[3] + '.' });
 }
-function practiceSet() { return H.buildPracticeSet([genEquiv, genSimplify, genCompare, genOrderF, genFracOf, genAddSub, genMixed, genWord, genVerbal, function () { return Math.random() < 0.5 ? genShaded() : genFracSeq(); }], 50); }
+function practiceSet() { return H.buildPracticeSet([genEquiv, genSimplify, genCompare, genOrderF, genFracOf, genAddSub, genMixed, genWord, genVerbal, function () { return Math.random() < 0.5 ? genShaded() : genFracSeq(); }], 100); }
 
-Studio.addTopic({ n: 3, short: 'Fractions', title: 'Fractions', blurb: 'Equivalent, simplest form, comparing, fractions of amounts, mixed numbers and adding and subtracting.', practiceCount: 50,
+Studio.addTopic({ n: 3, short: 'Fractions', title: 'Fractions', blurb: 'Equivalent, simplest form, comparing, fractions of amounts, mixed numbers and adding and subtracting.', practiceCount: 100,
   gens: { genEquiv: genEquiv },
   steps: [
     { id: 'warm', label: 'Warm-up', type: 'quiz', tag: 'Step 1 · Warm-up', title: 'Mental maths warm-up', lead: 'Four quick fraction questions.', make: genWarm, doneLabel: 'On to fractions' },
@@ -2382,9 +2389,9 @@ function genPctSeq() {
   return Q({ tag: 'Non-verbal reasoning', unit: '%', text: 'What comes next? <span class="codeline"><b>' + t.slice(0, 3).map(function (x) { return x + '%'; }).join(' , ') + ' , ?</b></span>', answer: String(t[3]),
     hints: ['Look at how much the percentage grows each time.', 'The first jump is ' + (t[1] - t[0]) + ' percent. Check the second jump matches, then add it again.'], explain: 'The percentage goes up by ' + step + ' each time, so the next is ' + t[3] + '%.' });
 }
-function practiceSet() { return H.buildPracticeSet([genConvert, genConvert, genPctOf, genDecAdd, genShift, genSale, genBest, genVerbal, genGridQ, function () { return Math.random() < 0.5 ? genDecSeq() : genPctSeq(); }], 50); }
+function practiceSet() { return H.buildPracticeSet([genConvert, genConvert, genPctOf, genDecAdd, genShift, genSale, genBest, genVerbal, genGridQ, function () { return Math.random() < 0.5 ? genDecSeq() : genPctSeq(); }], 100); }
 
-Studio.addTopic({ n: 4, short: 'Decimals %', title: 'Decimals and percentages', blurb: 'Link fractions, decimals and percentages. Calculate percentages of amounts, sale prices and best value.', practiceCount: 50,
+Studio.addTopic({ n: 4, short: 'Decimals %', title: 'Decimals and percentages', blurb: 'Link fractions, decimals and percentages. Calculate percentages of amounts, sale prices and best value.', practiceCount: 100,
   gens: {},
   steps: [
     { id: 'warm', label: 'Warm-up', type: 'quiz', tag: 'Step 1 · Warm-up', title: 'Mental maths warm-up', lead: 'Four quick questions on tenths, halves and percentages.', make: genWarm, doneLabel: 'On to percentages' },
@@ -2392,7 +2399,7 @@ Studio.addTopic({ n: 4, short: 'Decimals %', title: 'Decimals and percentages', 
     { id: 'lab1', label: 'Hundred square', type: 'lab', tag: 'Step 3 · We do it together', title: 'Shade the hundred square', lead: 'Tap squares to shade them. See the fraction, decimal and percentage change together. Try three shortcut buttons.', mount: mountGridLab },
     { id: 'learn2', label: 'Calculating', type: 'slides', tag: 'Calculating', slides: LEARN2 },
     { id: 'lab2', label: 'Sale shop', type: 'lab', tag: 'Step 5 · We do it together', title: 'The sale shop', lead: 'Choose a price and a discount. See how to build the discount from easy pieces.', mount: mountShopLab },
-    { id: 'practise', label: 'Practise', type: 'quiz', best: true, tag: 'Step 6 · Your turn', title: 'Practise', lead: '50 questions on conversions, percentages, decimals and reasoning. Use the hints one at a time.', make: practiceSet }
+    { id: 'practise', label: 'Practise', type: 'quiz', best: true, tag: 'Step 6 · Your turn', title: 'Practise', lead: '100 questions on conversions, percentages, decimals and reasoning. Use the hints one at a time.', make: practiceSet }
   ] });
 })();
 
@@ -2585,16 +2592,16 @@ function genSquares() {
   return Q({ tag: 'Non-verbal reasoning', unit: 'cm²', data: 'A rectangle is drawn on a square grid. It is ' + w + ' squares wide and ' + h + ' squares tall. Each square has an area of one square centimetre. What is the area?', pic: rect(w, h, 'squares'), text: 'Each small square is <b>1 cm²</b>. What is the area of the rectangle in cm²?', answer: String(w * h),
     hints: ['Count the squares along the bottom and up the side.', 'Multiply the number of columns by the number of rows.'], explain: w + ' × ' + h + ' = ' + (w * h) + ' squares, so the area is ' + (w * h) + ' cm².' });
 }
-function practiceSet() { return H.buildPracticeSet([genUnits, genUnits, genPerim, genArea, genArea, genDuration, genTime12, genMoney, genTemp, function () { return Math.random() < 0.5 ? genClock() : genSquares(); }], 50); }
+function practiceSet() { return H.buildPracticeSet([genUnits, genUnits, genPerim, genArea, genArea, genDuration, genTime12, genMoney, genTemp, function () { return Math.random() < 0.5 ? genClock() : genSquares(); }], 100); }
 
-Studio.addTopic({ n: 5, short: 'Measure', title: 'Money, time and measurement', blurb: 'Units, perimeter and area, 12 and 24-hour time, money problems and temperature.', practiceCount: 50, gens: {},
+Studio.addTopic({ n: 5, short: 'Measure', title: 'Money, time and measurement', blurb: 'Units, perimeter and area, 12 and 24-hour time, money problems and temperature.', practiceCount: 100, gens: {},
   steps: [
     { id: 'warm', label: 'Warm-up', type: 'quiz', tag: 'Step 1 · Warm-up', title: 'Mental maths warm-up', lead: 'Four quick questions on units, time and money.', make: genWarm, doneLabel: 'On to measuring' },
     { id: 'learn1', label: 'Measure', type: 'slides', tag: 'Measurement', slides: LEARN1 },
     { id: 'lab1', label: 'Rectangle lab', type: 'lab', tag: 'Step 3 · We do it together', title: 'Perimeter and area', lead: 'Change the width and the height. Watch the area and the perimeter change.', mount: mountRectLab },
     { id: 'learn2', label: 'Time and money', type: 'slides', tag: 'Time and money', slides: LEARN2 },
     { id: 'lab2', label: 'Clock lab', type: 'lab', tag: 'Step 5 · We do it together', title: 'Clocks, 24-hour time and journeys', lead: 'Move the sliders to set a time. See it on the clock in two ways, then add a journey time.', mount: mountClockLab },
-    { id: 'practise', label: 'Practise', type: 'quiz', best: true, tag: 'Step 6 · Your turn', title: 'Practise', lead: '50 questions on measures, time, money and reasoning. For times, type like 14:35 or 3:40.', make: practiceSet }
+    { id: 'practise', label: 'Practise', type: 'quiz', best: true, tag: 'Step 6 · Your turn', title: 'Practise', lead: '100 questions on measures, time, money and reasoning. For times, type like 14:35 or 3:40.', make: practiceSet }
   ] });
 })();
 
@@ -2757,16 +2764,16 @@ function genSymbol() {
   return Q({ tag: 'Non-verbal reasoning', data: 'Two stars and one circle make ' + tot + '. A circle is worth ' + b + '. What is one star worth?', text: '<span class="eqline"><span class="sym s1"></span> + <span class="sym s1"></span> + <span class="sym s2"></span> = ' + tot + '</span><span class="eqline"><span class="sym s2"></span> = ' + b + '</span>What is <span class="sym s1"></span> worth?', answer: String(a),
     hints: ['Use the second line to replace the circle with its number in the first line.', 'Then two stars equal ' + tot + ' minus ' + b + '. Share that between two stars.'], explain: 'Replace the circle: star + star + ' + b + ' = ' + tot + '. So two stars = ' + (tot - b) + ' and one star = ' + a + '.' });
 }
-function practiceSet() { return H.buildPracticeSet([genSeq, genSeq, genNth, genMachine, genSolve, genSolve, genThink, genFormula, genVerbal, function () { return Math.random() < 0.5 ? genStickQ() : genSymbol(); }], 50); }
+function practiceSet() { return H.buildPracticeSet([genSeq, genSeq, genNth, genMachine, genSolve, genSolve, genThink, genFormula, genVerbal, function () { return Math.random() < 0.5 ? genStickQ() : genSymbol(); }], 100); }
 
-Studio.addTopic({ n: 6, short: 'Algebra', title: 'Patterns and algebra', blurb: 'Sequences, rules for patterns, function machines, letters for numbers, equations and formulae.', practiceCount: 50, gens: {},
+Studio.addTopic({ n: 6, short: 'Algebra', title: 'Patterns and algebra', blurb: 'Sequences, rules for patterns, function machines, letters for numbers, equations and formulae.', practiceCount: 100, gens: {},
   steps: [
     { id: 'warm', label: 'Warm-up', type: 'quiz', tag: 'Step 1 · Warm-up', title: 'Mental maths warm-up', lead: 'Four quick pattern questions.', make: genWarm, doneLabel: 'On to patterns' },
     { id: 'learn1', label: 'Patterns', type: 'slides', tag: 'Patterns and rules', slides: LEARN1 },
     { id: 'lab1', label: 'Matchstick lab', type: 'lab', tag: 'Step 3 · We do it together', title: 'Grow a matchstick pattern', lead: 'Slide the pattern number and watch the sticks grow. Look at at least six different patterns.', mount: mountStickLab },
     { id: 'learn2', label: 'Algebra', type: 'slides', tag: 'Algebra', slides: LEARN2 },
     { id: 'lab2', label: 'Balance lab', type: 'lab', tag: 'Step 5 · We do it together', title: 'Balance the equation', lead: 'Do the same to both sides to keep the scales balanced and find x. Solve three equations.', mount: mountBalanceLab },
-    { id: 'practise', label: 'Practise', type: 'quiz', best: true, tag: 'Step 6 · Your turn', title: 'Practise', lead: '50 questions on sequences, rules, equations and reasoning. Use the hints one at a time.', make: practiceSet }
+    { id: 'practise', label: 'Practise', type: 'quiz', best: true, tag: 'Step 6 · Your turn', title: 'Practise', lead: '100 questions on sequences, rules, equations and reasoning. Use the hints one at a time.', make: practiceSet }
   ] });
 })();
 
@@ -2942,16 +2949,16 @@ function genTurn() {
   return Q({ type: 'mc', tag: 'Non-verbal reasoning', pic: '<div class="flow">' + arrow(st) + '<span>→</span><span class="chip">' + t + ' × quarter turn ' + (cw ? 'clockwise' : 'anticlockwise') + '</span><span>→</span><span class="chip big">?</span></div>', data: 'An arrow points ' + dirs[st] + '. It makes ' + t + ' quarter turns ' + (cw ? 'clockwise' : 'anticlockwise') + '. Which way does it point at the end?', text: 'An arrow points <b>' + dirs[st] + '</b>. It turns <b>' + t + '</b> quarter turn' + (t > 1 ? 's' : '') + ' <b>' + (cw ? 'clockwise' : 'anticlockwise') + '</b>. Which way does it point now?', options: dirs.slice(), answer: end,
     hints: ['Clockwise goes the way clock hands move: up, right, down, left. Anticlockwise goes the other way.', 'Start at "' + dirs[st] + '" and count ' + t + ' step' + (t > 1 ? 's' : '') + ' ' + (cw ? 'along the order up, right, down, left' : 'backwards through that order') + '.'], explain: 'Each quarter turn moves one step round. After ' + t + ' ' + (cw ? 'clockwise' : 'anticlockwise') + ' turn' + (t > 1 ? 's' : '') + ' from ' + dirs[st] + ' it points ' + end + '.' });
 }
-function practiceSet() { return H.buildPracticeSet([genAngleType, genMissing, genMissing, genSymm, genCoord, genCoord, genSolid, genVerbal, genOdd, genTurn], 50); }
+function practiceSet() { return H.buildPracticeSet([genAngleType, genMissing, genMissing, genSymm, genCoord, genCoord, genSolid, genVerbal, genOdd, genTurn], 100); }
 
-Studio.addTopic({ n: 7, short: 'Shape', title: 'Shape, angles and symmetry', blurb: '2D and 3D shapes, angles, symmetry and coordinates, with reflection.', practiceCount: 50, gens: {},
+Studio.addTopic({ n: 7, short: 'Shape', title: 'Shape, angles and symmetry', blurb: '2D and 3D shapes, angles, symmetry and coordinates, with reflection.', practiceCount: 100, gens: {},
   steps: [
     { id: 'warm', label: 'Warm-up', type: 'quiz', tag: 'Step 1 · Warm-up', title: 'Warm-up', lead: 'Four quick questions about shapes and turns.', make: genWarm, doneLabel: 'On to shapes and angles' },
     { id: 'learn1', label: 'Shape ideas', type: 'slides', tag: 'Shapes, angles and symmetry', slides: LEARN1 },
     { id: 'lab1', label: 'Angle lab', type: 'lab', tag: 'Step 3 · We do it together', title: 'Turn an angle', lead: 'Slide the angle and see its type. Visit at least four types: acute, right, obtuse, straight and reflex.', mount: mountAngleLab },
     { id: 'learn2', label: 'Solve it', type: 'slides', tag: 'Working with shapes', slides: LEARN2 },
     { id: 'lab2', label: 'Coordinate lab', type: 'lab', tag: 'Step 5 · We do it together', title: 'Plot and reflect', lead: 'Tap the grid to plot points, then show their reflection in the mirror line. Plot five points.', mount: mountCoordLab },
-    { id: 'practise', label: 'Practise', type: 'quiz', best: true, tag: 'Step 6 · Your turn', title: 'Practise', lead: '50 questions on angles, symmetry, coordinates and reasoning. Write coordinates like (3,4).', make: practiceSet }
+    { id: 'practise', label: 'Practise', type: 'quiz', best: true, tag: 'Step 6 · Your turn', title: 'Practise', lead: '100 questions on angles, symmetry, coordinates and reasoning. Write coordinates like (3,4).', make: practiceSet }
   ] });
 })();
 
@@ -3144,16 +3151,16 @@ var VERBAL = [
   { text: 'Which sentence is true about a <b>fair</b> dice?', options: ['Each number is equally likely', '6 is more likely than 1', 'Odd numbers are more likely', 'You always get a 6 in 6 rolls'], answer: 'Each number is equally likely', hints: ['Fair means no side is favoured.', 'Each face has the same chance.'], explain: 'On a fair dice every number has probability 1/6.' }
 ];
 function genVerbal() { var v = pick(VERBAL); return Q({ tag: 'Verbal reasoning', type: 'mc', text: v.text, options: shuffle(v.options.slice()), answer: v.answer, hints: v.hints, explain: v.explain }); }
-function practiceSet() { return H.buildPracticeSet([genBarRead, genBarRead, genAverage, genAverage, genProb, genProbWord, genExpected, genPie, genVenn, function () { return Math.random() < 0.5 ? genPicto() : genLineRead(); }], 50); }
+function practiceSet() { return H.buildPracticeSet([genBarRead, genBarRead, genAverage, genAverage, genProb, genProbWord, genExpected, genPie, genVenn, function () { return Math.random() < 0.5 ? genPicto() : genLineRead(); }], 100); }
 
-Studio.addTopic({ n: 8, short: 'Data', title: 'Data and chance', blurb: 'Collect, show and read data. Mean, median, mode and range, and probability.', practiceCount: 50, gens: {},
+Studio.addTopic({ n: 8, short: 'Data', title: 'Data and chance', blurb: 'Collect, show and read data. Mean, median, mode and range, and probability.', practiceCount: 100, gens: {},
   steps: [
     { id: 'warm', label: 'Warm-up', type: 'quiz', tag: 'Step 1 · Warm-up', title: 'Warm-up', lead: 'Four quick data and chance questions.', make: genWarm, doneLabel: 'On to data' },
     { id: 'learn1', label: 'Show data', type: 'slides', tag: 'Displaying data', slides: LEARN1 },
     { id: 'lab1', label: 'Chart lab', type: 'lab', tag: 'Step 3 · We do it together', title: 'Build a bar chart', lead: 'Move the four sliders and watch the bar chart, the mode, the range and the mean change.', mount: mountBarLab },
     { id: 'learn2', label: 'Averages and chance', type: 'slides', tag: 'Averages and probability', slides: LEARN2 },
     { id: 'lab2', label: 'Chance lab', type: 'lab', tag: 'Step 5 · We do it together', title: 'Counters in a bag', lead: 'Change the counters in the bag, then take 24 counters and compare what you got with what you expected. Do this three times.', mount: mountSpinLab },
-    { id: 'practise', label: 'Practise', type: 'quiz', best: true, tag: 'Step 6 · Your turn', title: 'Practise', lead: '50 questions on charts, averages, probability and reasoning. Write probabilities as fractions like 3/10.', make: practiceSet }
+    { id: 'practise', label: 'Practise', type: 'quiz', best: true, tag: 'Step 6 · Your turn', title: 'Practise', lead: '100 questions on charts, averages, probability and reasoning. Write probabilities as fractions like 3/10.', make: practiceSet }
   ] });
 })();
 
@@ -3338,9 +3345,9 @@ function genSpecial() {
   else { t = [1, 1, 2, 3, 5]; nx = 8; nm = 'Fibonacci numbers'; h = ['Look at how each number relates to the two before it.', 'Add the last two numbers to get the next one: 3 + 5.']; }
   return Q({ tag: 'Non-verbal reasoning', text: 'What comes next? <span class="codeline"><b>' + t.join(' , ') + ' , ?</b></span>', answer: String(nx), hints: h, explain: 'These are ' + nm + '. The next number is ' + nx + '.' });
 }
-function practiceSet() { return H.buildPracticeSet([genBarModel, genBack, genHeads, genParty, genDeduce, genAnalogy, genCode, genMagic, genShapeSeq, function () { return Math.random() < 0.5 ? genGridRule() : genSpecial(); }], 50); }
+function practiceSet() { return H.buildPracticeSet([genBarModel, genBack, genHeads, genParty, genDeduce, genAnalogy, genCode, genMagic, genShapeSeq, function () { return Math.random() < 0.5 ? genGridRule() : genSpecial(); }], 100); }
 
-Studio.addTopic({ n: 9, short: 'Reasoning', title: 'Mixed reasoning and problem solving', blurb: 'Strategies for tricky problems, plus verbal and non-verbal reasoning puzzles.', practiceCount: 50, gens: {},
+Studio.addTopic({ n: 9, short: 'Reasoning', title: 'Mixed reasoning and problem solving', blurb: 'Strategies for tricky problems, plus verbal and non-verbal reasoning puzzles.', practiceCount: 100, gens: {},
   steps: [
     { id: 'warm', label: 'Warm-up', type: 'quiz', tag: 'Step 1 · Warm-up', title: 'Warm-up', lead: 'Four quick brain-warmers.', make: genWarm, doneLabel: 'On to problem solving' },
     { id: 'learn1', label: 'Strategies', type: 'slides', tag: 'Problem-solving strategies', slides: LEARN1 },
@@ -3568,18 +3575,18 @@ var VERBAL = [
   { text: 'Which statement is <b>true</b>?', options: ['Every even number except 2 is composite', 'All prime numbers are odd', '1 is a prime number', 'Square numbers are always even'], answer: 'Every even number except 2 is composite', hints: ['Think about the number 2 as a factor.', 'Any even number bigger than 2 has 2 as a factor as well as 1 and itself.'], explain: 'Every even number above 2 has 2 as a factor, so it has more than two factors and is composite.' }
 ];
 function genVerbal() { var v = pick(VERBAL); return Q({ tag: 'Verbal reasoning', type: 'mc', text: v.text, options: shuffle(v.options.slice()), answer: v.answer, hints: v.hints, explain: v.explain }); }
-function practiceSet() { return H.buildPracticeSet([genFactorCount, genBigFactor, genHCF, genLCM, genBuses, genNthMultiple, genIsMultiple, genPrimeMC, genPrimeCount, genSquare, genSqBetween, genTriangular, genDivRule, genRectangles, genVerbal, genArrayQ], 50); }
+function practiceSet() { return H.buildPracticeSet([genFactorCount, genBigFactor, genHCF, genLCM, genBuses, genNthMultiple, genIsMultiple, genPrimeMC, genPrimeCount, genSquare, genSqBetween, genTriangular, genDivRule, genRectangles, genVerbal, genArrayQ], 100); }
 Studio.pools10 = { easy: ['genNthMultiple', 'genIsMultiple', 'genFactorCount', 'genSquare', 'genDivRule'], hard: ['genHCF', 'genLCM', 'genBuses', 'genPrimeCount', 'genBigFactor', 'genTriangular', 'genRectangles', 'genVerbal'] };
 Studio.gens10 = { genFactorCount: genFactorCount, genBigFactor: genBigFactor, genHCF: genHCF, genLCM: genLCM, genBuses: genBuses, genNthMultiple: genNthMultiple, genIsMultiple: genIsMultiple, genPrimeMC: genPrimeMC, genPrimeCount: genPrimeCount, genSquare: genSquare, genSqBetween: genSqBetween, genTriangular: genTriangular, genDivRule: genDivRule, genRectangles: genRectangles, genVerbal: genVerbal, genArrayQ: genArrayQ };
 
-Studio.addTopic({ n: 10, short: 'Factors', title: 'Factors, multiples and primes', blurb: 'Multiples, factors and factor pairs, common factors and multiples, prime numbers, divisibility, square and triangular numbers.', practiceCount: 50, gens: {},
+Studio.addTopic({ n: 10, short: 'Factors', title: 'Factors, multiples and primes', blurb: 'Multiples, factors and factor pairs, common factors and multiples, prime numbers, divisibility, square and triangular numbers.', practiceCount: 100, gens: {},
   steps: [
     { id: 'warm', label: 'Warm-up', type: 'quiz', tag: 'Step 1 · Warm-up', title: 'Mental maths warm-up', lead: 'Four quick questions on times tables, factors and primes.', make: genWarm, doneLabel: 'On to multiples and factors' },
     { id: 'learn1', label: 'Multiples and factors', type: 'slides', tag: 'Multiples and factors', slides: LEARN1 },
     { id: 'lab1', label: 'Factor lab', type: 'lab', tag: 'Step 3 · We do it together', title: 'Build every rectangle', lead: 'Slide the number and see every rectangle it can make. Explore at least eight numbers, including a prime.', mount: mountFactorLab },
     { id: 'learn2', label: 'Primes and squares', type: 'slides', tag: 'Primes, squares and triangles', slides: LEARN2 },
     { id: 'lab2', label: 'Prime sieve', type: 'lab', tag: 'Step 5 · We do it together', title: 'Find the primes', lead: 'Cross out multiples of 2, 3, 5 and 7. The numbers left are the primes up to 50.', mount: mountSieveLab },
-    { id: 'practise', label: 'Practise', type: 'quiz', best: true, tag: 'Step 6 · Your turn', title: 'Practise', lead: '50 questions on factors, multiples, primes and square numbers. Use the hints one at a time.', make: practiceSet }
+    { id: 'practise', label: 'Practise', type: 'quiz', best: true, tag: 'Step 6 · Your turn', title: 'Practise', lead: '100 questions on factors, multiples, primes and square numbers. Use the hints one at a time.', make: practiceSet }
   ] });
 })();
 </script>
@@ -3796,16 +3803,16 @@ var VERBAL = [
   { text: 'A shop says it sold <b>about 5,000</b> tickets, rounded to the nearest 1,000. Which could be the exact number?', options: ['4,720', '5,501', '4,380', '5,640'], answer: '4,720', hints: ['Numbers that round to 5,000 are between 4,500 and 5,499.', 'Check each choice against that range.'], explain: '4,720 is between 4,500 and 5,499, so it rounds to 5,000.' }
 ];
 function genVerbal() { var v = pick(VERBAL); return Q({ tag: 'Verbal reasoning', type: 'mc', text: v.text, options: shuffle(v.options.slice()), answer: v.answer, hints: v.hints, explain: v.explain }); }
-function practiceSet() { return H.buildPracticeSet([genValue, genExpanded, genOrder, genDecCompare, genDecValue, genRound10, genRound100, genRound1000, genRoundDec, genEstimate, genCrowd, genLargest, genLine, genVerbal], 50); }
+function practiceSet() { return H.buildPracticeSet([genValue, genExpanded, genOrder, genDecCompare, genDecValue, genRound10, genRound100, genRound1000, genRoundDec, genEstimate, genCrowd, genLargest, genLine, genVerbal], 100); }
 
-Studio.addTopic({ n: 501, year: 'P5', dn: 1, replaces: 1, short: 'Place value', title: 'Place value and rounding', blurb: 'Numbers to 100,000, tenths and hundredths, comparing and ordering, rounding to 10, 100 and 1,000, and estimating.', practiceCount: 50, gens: {},
+Studio.addTopic({ n: 501, year: 'P5', dn: 1, replaces: 1, short: 'Place value', title: 'Place value and rounding', blurb: 'Numbers to 100,000, tenths and hundredths, comparing and ordering, rounding to 10, 100 and 1,000, and estimating.', practiceCount: 100, gens: {},
   steps: [
     { id: 'warm', label: 'Warm-up', type: 'quiz', tag: 'Step 1 · Warm-up', title: 'Mental maths warm-up', lead: 'Four quick questions.', make: genWarm, doneLabel: 'On to place value' },
     { id: 'learn1', label: 'Place value', type: 'slides', tag: 'Place value', slides: LEARN1 },
     { id: 'lab1', label: 'Number builder', type: 'lab', tag: 'Step 3 · We do it together', title: 'Build the number', lead: 'Tap the arrows to build each target number, one column at a time. Build three numbers.', mount: mountBuildLab },
     { id: 'learn2', label: 'Rounding', type: 'slides', tag: 'Rounding and estimating', slides: LEARN2 },
     { id: 'lab2', label: 'Rounding line', type: 'lab', tag: 'Step 5 · We do it together', title: 'Round on the number line', lead: 'Slide the number and choose 10, 100 or 1,000. See which landmark is nearer.', mount: mountRoundLab },
-    { id: 'practise', label: 'Practise', type: 'quiz', best: true, tag: 'Step 6 · Your turn', title: 'Practise', lead: '50 questions on place value, decimals and rounding. Use the hints one at a time.', make: practiceSet }
+    { id: 'practise', label: 'Practise', type: 'quiz', best: true, tag: 'Step 6 · Your turn', title: 'Practise', lead: '100 questions on place value, decimals and rounding. Use the hints one at a time.', make: practiceSet }
   ] });
 })();
 </script>
@@ -3861,13 +3868,13 @@ K.stage = function (sp) {
   var nm = function (f) { return f.name; };
   var verb = (sp.gens || []).filter(function (g) { return g.name === 'genVerbal'; });
   S.pools(sp.n, sp.year && sp.year.charAt(0) === 'S' ? -1 : sp.base, (sp.easy || []).concat(verb).map(nm), (sp.hard || []).concat(verb).map(nm));
-  var practise = function () { return H.buildPracticeSet(sp.gens, 50); };
-  S.addTopic({ n: sp.n, base: sp.base, year: sp.year, short: sp.short, title: sp.title, blurb: sp.blurb, practiceCount: 50, gens: {}, steps: [
+  var practise = function () { return H.buildPracticeSet(sp.gens, 100); };
+  S.addTopic({ n: sp.n, base: sp.base, year: sp.year, short: sp.short, title: sp.title, blurb: sp.blurb, practiceCount: 100, gens: {}, steps: [
     { id: 'warm', label: 'Warm-up', type: 'quiz', tag: 'Step 1 · Warm-up', title: 'Mental maths warm-up', lead: 'Four quick questions.', make: sp.warm, doneLabel: 'On to the lesson' },
     { id: 'learn1', label: sp.l1label || 'Learn', type: 'slides', tag: sp.l1tag || 'Learn it', slides: sp.learn1 },
     { id: 'lab1', label: 'Explore', type: 'lab', tag: 'Step 3 · We do it together', title: sp.lab.title, lead: sp.lab.lead, mount: K.explore(sp.lab) },
     { id: 'learn2', label: sp.l2label || 'Learn more', type: 'slides', tag: sp.l2tag || 'Learn more', slides: sp.learn2 },
-    { id: 'practise', label: 'Practise', type: 'quiz', best: true, tag: 'Step 5 · Your turn', title: 'Practise', lead: '50 questions for this stage. Use the hints one at a time.', make: practise }
+    { id: 'practise', label: 'Practise', type: 'quiz', best: true, tag: 'Step 5 · Your turn', title: 'Practise', lead: '100 questions for this stage. Use the hints one at a time.', make: practise }
   ] });
 };
 })();
@@ -7545,6 +7552,694 @@ Object.keys(S.topics).forEach(function (k) {
     if (wm) { var orig = wm.make; wm.make = function () { var b = orig(); if (!Array.isArray(b)) b = [b]; b = b.slice(); b.splice(1, 0, warmQ(c)); return b; }; }
     S.arrange(t);
   });
+})();
+</script>
+<script>
+/* Spatial awareness and reasoning: drawing library and shared helpers (part 1 of 3) */
+(function () { 'use strict';
+var S = Studio, H = S.h, K = S.kit, V = S.viz, rnd = H.rnd, pick = H.pick, shuffle = H.shuffle;
+var R = window.SPA = {};
+R.rnd = rnd; R.pick = pick; R.shuffle = shuffle;
+function svg(w, h, inner, alt, max) { return '<svg viewBox="0 0 ' + w + ' ' + h + '" role="img" aria-label="' + alt + '" style="width:100%;max-width:' + (max || w) + 'px;height:auto">' + inner + '</svg>'; }
+R.svg = svg;
+var LINE = 'stroke:var(--fg);stroke-width:2';
+var FILLS = ['fill:var(--surface)', 'fill:' + 'hsl(215 var(--dot-s) var(--dot-l))', 'fill:' + 'hsl(150 var(--dot-s) var(--dot-l))'];
+function hsl(h, dl) { return 'hsl(' + h + ' var(--dot-s) ' + (dl ? 'calc(var(--dot-l) + (' + dl + '))' : 'var(--dot-l)') + ')'; }
+R.hsl = hsl;
+
+/* ---------- shape tiles (non-verbal reasoning) ---------- */
+function polyPts(n, r, rot) { var p = []; for (var i = 0; i < n; i++) { var a = (rot - 90 + i * 360 / n) * Math.PI / 180; p.push((r * Math.cos(a)).toFixed(1) + ',' + (r * Math.sin(a)).toFixed(1)); } return p.join(' '); }
+var GLYPH = {
+  arrow: [[0, -1], [0.75, 0], [0.28, 0], [0.28, 0.85], [-0.28, 0.85], [-0.28, 0], [-0.75, 0]],
+  L: [[-0.6, -1], [-0.05, -1], [-0.05, 0.4], [0.65, 0.4], [0.65, 1], [-0.6, 1]],
+  flag: [[-0.5, -1], [0.8, -0.5], [-0.5, 0], [-0.5, 1], [-0.75, 1], [-0.75, -1]]
+};
+var SIDES = { tri: 3, sq: 4, pent: 5, hex: 6, hept: 7 };
+/* spec: { sh, fill 0|1|2, rot (degrees), sz (0.55..1), n (dots) } drawn in a 56 by 56 box with its top-left corner at (x, y) */
+R.tile = function (sp, x, y, box) {
+  box = box || 56; var cx = x + box / 2, cy = y + box / 2, r = box * 0.36 * (sp.sz || 1), s = '';
+  s += '<rect x="' + x + '" y="' + y + '" width="' + box + '" height="' + box + '" rx="6" style="fill:var(--surface);stroke:var(--line);stroke-width:1.5"/>';
+  var f = FILLS[sp.fill || 0], st = 'stroke:var(--fg);stroke-width:2';
+  var rot = ((sp.rot || 0) % 360 + 360) % 360;
+  if (sp.sh === 'circ') s += '<circle cx="' + cx + '" cy="' + cy + '" r="' + r.toFixed(1) + '" style="' + f + ';' + st + '"/>';
+  else if (SIDES[sp.sh]) s += '<polygon points="' + polyPts(SIDES[sp.sh], r * (sp.sh === 'sq' ? 1.12 : 1.05), sp.sh === 'sq' ? 45 : 0) + '" transform="translate(' + cx + ' ' + cy + ')" style="' + f + ';' + st + '"/>';
+  else if (GLYPH[sp.sh]) s += '<polygon points="' + GLYPH[sp.sh].map(function (p) { return (p[0] * r * 1.1).toFixed(1) + ',' + (p[1] * r * 1.1).toFixed(1); }).join(' ') + '" transform="translate(' + cx + ' ' + cy + ') rotate(' + rot + ')" style="' + f + ';' + st + '"/>';
+  if (sp.n) { var gap = 9, x0 = cx - (sp.n - 1) * gap / 2; for (var i = 0; i < sp.n; i++) s += '<circle cx="' + (x0 + i * gap).toFixed(1) + '" cy="' + cy + '" r="3" style="fill:var(--fg)"/>'; }
+  return s;
+};
+R.qbox = function (x, y, box) { box = box || 56; return '<rect x="' + x + '" y="' + y + '" width="' + box + '" height="' + box + '" rx="6" style="fill:var(--surface-2);stroke:var(--line);stroke-width:1.5;stroke-dasharray:5 4"/><text x="' + (x + box / 2) + '" y="' + (y + box / 2 + 9) + '" text-anchor="middle" style="font-size:28px;font-weight:700;fill:var(--fg)">?</text>'; };
+R.letter = function (L, x, y) { return '<text x="' + x + '" y="' + y + '" text-anchor="middle" style="font-size:15px;font-weight:700;fill:var(--fg)">' + L + '</text>'; };
+R.key = function (sp) { return JSON.stringify([sp.sh, sp.fill || 0, GLYPH[sp.sh] ? ((sp.rot || 0) % 360 + 360) % 360 : 0, sp.sz || 1, sp.n || 0]); };
+R.clone = function (o) { return JSON.parse(JSON.stringify(o)); };
+
+/* a row of lettered options under a picture */
+R.optionsRow = function (opts, y, box) {
+  box = box || 56; var gap = 14, w = opts.length * box + (opts.length - 1) * gap, x0 = 0, s = '';
+  opts.forEach(function (o, i) { var x = x0 + i * (box + gap); s += R.tile(o, x, y, box) + R.letter('ABCDE'.charAt(i), x + box / 2, y + box + 18); });
+  return { svg: s, w: w };
+};
+
+/* ---------- isometric cube stacks ---------- */
+R.cubes = function (hts, hue, hl, big) {
+  var c = big ? 26 : 22, rows = hts.length, cols = hts[0].length, list = [], i, j, k, mnx = 1e9, mxx = -1e9, mny = 1e9, mxy = -1e9;
+  for (i = 0; i < rows; i++) for (j = 0; j < cols; j++) for (k = 0; k < hts[i][j]; k++) list.push([i, j, k]);
+  list.sort(function (a, b) { return (a[0] + a[1]) - (b[0] + b[1]) || a[2] - b[2]; });
+  function P(x, y, z) { return [c * (x - y), c * (x + y) / 2 - c * z]; }
+  list.forEach(function (q) { [[q[0], q[1], q[2] + 1], [q[0] + 1, q[1] + 1, q[2]], [q[0], q[1] + 1, q[2]], [q[0] + 1, q[1], q[2]]].forEach(function (p) { var s = P(p[0], p[1], p[2]); mnx = Math.min(mnx, s[0]); mxx = Math.max(mxx, s[0]); mny = Math.min(mny, s[1]); mxy = Math.max(mxy, s[1]); }); });
+  if (!list.length) return svg(120, 60, '<text x="60" y="34" text-anchor="middle" style="font-size:14px;fill:var(--fg)">No cubes yet</text>', 'An empty grid', 160);
+  var pad = 8, W = mxx - mnx + 2 * pad, Hh = mxy - mny + 2 * pad, ox = pad - mnx, oy = pad - mny, out = '';
+  list.forEach(function (q) {
+    var x = q[0], y = q[1], z = q[2], A = P(x, y, z + 1), B = P(x + 1, y, z + 1), C = P(x + 1, y + 1, z + 1), D = P(x, y + 1, z + 1), B2 = P(x + 1, y, z), C2 = P(x + 1, y + 1, z), D2 = P(x, y + 1, z);
+    function pt(p) { return (p[0] + ox).toFixed(1) + ',' + (p[1] + oy).toFixed(1); }
+    var mark = hl && hl[x + ',' + y + ',' + z] ? 22 : hue;
+    out += '<polygon points="' + [D, C, C2, D2].map(pt).join(' ') + '" style="fill:' + hsl(mark, '0%') + ';stroke:var(--fg);stroke-width:1.6;stroke-linejoin:round"/>';
+    out += '<polygon points="' + [B, C, C2, B2].map(pt).join(' ') + '" style="fill:' + hsl(mark, '-14%') + ';stroke:var(--fg);stroke-width:1.6;stroke-linejoin:round"/>';
+    out += '<polygon points="' + [A, B, C, D].map(pt).join(' ') + '" style="fill:' + hsl(mark, '16%') + ';stroke:var(--fg);stroke-width:1.6;stroke-linejoin:round"/>';
+  });
+  return svg(W, Hh, out, 'A stack of cubes drawn in 3D', Math.min(300, Math.round(W * 1.5)));
+};
+R.total = function (h) { var t = 0; h.forEach(function (r) { r.forEach(function (v) { t += v; }); }); return t; };
+R.topView = function (h) { var t = 0; h.forEach(function (r) { r.forEach(function (v) { if (v > 0) t++; }); }); return t; };
+/* looking at the left-hand faces (faces that point towards +j): for each i, the tallest column along j */
+R.leftView = function (h) { var t = 0; h.forEach(function (r) { t += Math.max.apply(null, r); }); return t; };
+/* looking at the right-hand faces (faces that point towards +i): for each j, the tallest column along i */
+R.rightView = function (h) { var t = 0, i, j; for (j = 0; j < h[0].length; j++) { var m = 0; for (i = 0; i < h.length; i++) m = Math.max(m, h[i][j]); t += m; } return t; };
+R.visible = function (h) {
+  var cnt = 0; function at(i, j, k) { return h[i] && h[i][j] !== undefined && h[i][j] > k; }
+  h.forEach(function (r, i) { r.forEach(function (v, j) { for (var k = 0; k < v; k++) if (!at(i, j, k + 1) || !at(i + 1, j, k) || !at(i, j + 1, k)) cnt++; }); });
+  return cnt;
+};
+/* faces joined between neighbouring cubes, for surface area */
+R.surface = function (h) {
+  var s = 0; function at(i, j, k) { return h[i] && h[i][j] !== undefined && h[i][j] > k; }
+  h.forEach(function (r, i) { r.forEach(function (v, j) { for (var k = 0; k < v; k++) { [[1, 0, 0], [-1, 0, 0], [0, 1, 0], [0, -1, 0], [0, 0, 1], [0, 0, -1]].forEach(function (d) { var ni = i + d[0], nj = j + d[1], nk = k + d[2]; if (nk < 0) { s++; return; } if (!at(ni, nj, nk)) s++; }); } }); });
+  return s;
+};
+R.randStack = function (rows, cols, maxH, minTotal) {
+  for (var t = 0; t < 50; t++) {
+    var h = []; for (var i = 0; i < rows; i++) { var r = []; for (var j = 0; j < cols; j++) r.push(Math.random() < 0.18 ? 0 : rnd(1, maxH)); h.push(r); }
+    if (R.total(h) >= (minTotal || 4)) return h;
+  } return [[1, 2], [2, 1]];
+};
+
+/* ---------- nets of a cube (cube rolling over the net) ---------- */
+R.netLabels = function (cells) {
+  var seen = {}, key = function (c) { return c[0] + ',' + c[1]; }, set = {}; cells.forEach(function (c) { set[key(c)] = true; });
+  var lab = {}, st0 = { T: 0, B: 1, N: 2, S: 3, E: 4, W: 5 }, queue = [[cells[0], st0]]; lab[key(cells[0])] = st0.B; seen[key(cells[0])] = 1;
+  while (queue.length) {
+    var cur = queue.shift(), c = cur[0], s = cur[1];
+    [[1, 0, 'E'], [-1, 0, 'W'], [0, 1, 'S'], [0, -1, 'N']].forEach(function (d) {
+      var n = [c[0] + d[0], c[1] + d[1]], kn = key(n); if (!set[kn] || seen[kn]) return;
+      var t = { T: s.T, B: s.B, N: s.N, S: s.S, E: s.E, W: s.W };
+      if (d[2] === 'E') { t.B = s.E; t.E = s.T; t.T = s.W; t.W = s.B; }
+      else if (d[2] === 'W') { t.B = s.W; t.W = s.T; t.T = s.E; t.E = s.B; }
+      else if (d[2] === 'S') { t.B = s.S; t.S = s.T; t.T = s.N; t.N = s.B; }
+      else { t.B = s.N; t.N = s.T; t.T = s.S; t.S = s.B; }
+      lab[kn] = t.B; seen[kn] = 1; queue.push([n, t]);
+    });
+  }
+  return lab;
+};
+R.isNet = function (cells) {
+  var set = {}; cells.forEach(function (c) { set[c[0] + ',' + c[1]] = 1; });
+  for (var i = 0; i < cells.length; i++) { var x = cells[i][0], y = cells[i][1]; if (set[(x + 1) + ',' + y] && set[x + ',' + (y + 1)] && set[(x + 1) + ',' + (y + 1)]) return false; }
+  var lab = R.netLabels(cells), used = {}, ok = true; cells.forEach(function (c) { var l = lab[c[0] + ',' + c[1]]; if (l === undefined || used[l]) ok = false; used[l] = 1; });
+  return ok;
+};
+R.randHexomino = function () {
+  var cells = [[0, 0]], set = { '0,0': 1 };
+  while (cells.length < 6) {
+    var c = pick(cells), d = pick([[1, 0], [-1, 0], [0, 1], [0, -1]]), n = [c[0] + d[0], c[1] + d[1]];
+    if (!set[n[0] + ',' + n[1]]) { cells.push(n); set[n[0] + ',' + n[1]] = 1; }
+  }
+  var mx = Math.min.apply(null, cells.map(function (c) { return c[0]; })), my = Math.min.apply(null, cells.map(function (c) { return c[1]; }));
+  cells = cells.map(function (c) { return [c[0] - mx, c[1] - my]; });
+  var w = Math.max.apply(null, cells.map(function (c) { return c[0]; })) + 1, h = Math.max.apply(null, cells.map(function (c) { return c[1]; })) + 1;
+  return (w > 5 || h > 5) ? R.randHexomino() : cells;
+};
+R.netOfKind = function (valid) { for (var t = 0; t < 400; t++) { var c = R.randHexomino(); if (R.isNet(c) === valid) return c; } return valid ? [[0, 0], [1, 0], [2, 0], [3, 0], [1, 1], [1, -1]].map(function (c) { return [c[0], c[1] + 1]; }) : [[0, 0], [1, 0], [0, 1], [1, 1], [2, 0], [3, 0]]; };
+R.netPic = function (cells, letters, shade) {
+  var s = 30, w = Math.max.apply(null, cells.map(function (c) { return c[0]; })) + 1, h = Math.max.apply(null, cells.map(function (c) { return c[1]; })) + 1, out = '';
+  cells.forEach(function (c, i) {
+    var x = 6 + c[0] * s, y = 6 + c[1] * s, on = shade !== undefined && shade === i;
+    out += '<rect x="' + x + '" y="' + y + '" width="' + s + '" height="' + s + '" style="fill:' + (on ? hsl(22) : hsl(215)) + ';fill-opacity:' + (on ? 1 : 0.3) + ';stroke:var(--fg);stroke-width:2"/>';
+    if (letters) out += '<text x="' + (x + s / 2) + '" y="' + (y + s / 2 + 5) + '" text-anchor="middle" style="font-size:15px;font-weight:700;fill:var(--fg)">' + letters[i] + '</text>';
+  });
+  return svg(12 + w * s, 12 + h * s, out, 'A flat pattern of six joined squares', Math.min(260, 12 + w * s + 40));
+};
+
+/* ---------- polyomino pieces for turns and flips ---------- */
+R.PIECES = [
+  [[0, 0], [0, 1], [0, 2], [1, 2]],
+  [[0, 0], [1, 0], [1, 1], [2, 1]],
+  [[0, 0], [0, 1], [1, 1], [1, 2], [1, 3]],
+  [[1, 0], [2, 0], [0, 1], [1, 1], [1, 2]],
+  [[0, 0], [1, 0], [0, 1], [1, 1], [0, 2]],
+  [[0, 0], [0, 1], [0, 2], [1, 2], [1, 3]]
+];
+R.norm = function (cells) {
+  var mx = Math.min.apply(null, cells.map(function (c) { return c[0]; })), my = Math.min.apply(null, cells.map(function (c) { return c[1]; }));
+  return cells.map(function (c) { return [c[0] - mx, c[1] - my]; }).sort(function (a, b) { return a[1] - b[1] || a[0] - b[0]; });
+};
+R.pkey = function (cells) { return JSON.stringify(R.norm(cells)); };
+R.turnCW = function (cells) { return R.norm(cells.map(function (c) { return [-c[1], c[0]]; })); };
+R.turnCCW = function (cells) { return R.norm(cells.map(function (c) { return [c[1], -c[0]]; })); };
+R.flipLR = function (cells) { return R.norm(cells.map(function (c) { return [-c[0], c[1]]; })); };
+R.flipUD = function (cells) { return R.norm(cells.map(function (c) { return [c[0], -c[1]]; })); };
+R.pieceSvg = function (cells, cell, hue, box) {
+  cell = cell || 16; cells = R.norm(cells); box = box || 4; var W = box * cell + 8, out = '';
+  var w = Math.max.apply(null, cells.map(function (c) { return c[0]; })) + 1, h = Math.max.apply(null, cells.map(function (c) { return c[1]; })) + 1, ox = 4 + (box - w) * cell / 2, oy = 4 + (box - h) * cell / 2;
+  cells.forEach(function (c) { out += '<rect x="' + (ox + c[0] * cell) + '" y="' + (oy + c[1] * cell) + '" width="' + cell + '" height="' + cell + '" style="fill:' + hsl(hue || 215) + ';stroke:var(--fg);stroke-width:1.6"/>'; });
+  return out;
+};
+})();
+</script>
+<script>
+/* Spatial awareness and reasoning: question generators (part 2 of 3). Each generator takes a level lv: 1 = P5, 2 = P6, 3 = P7, 4 = S1, 5 = S2, 6 = S3 */
+(function () { 'use strict';
+var S = Studio, H = S.h, K = S.kit, R = window.SPA, Q = K.Q, rnd = H.rnd, pick = H.pick, shuffle = H.shuffle;
+var G = R.G = {};
+function mc(tag, text, pic, data, options, answer, hints, explain) {
+  var o = options.map(String), a = String(answer); if (o.indexOf(a) === -1) o[0] = a;
+  var seen = {}; o = o.filter(function (x) { if (seen[x]) return false; seen[x] = 1; return true; });
+  var letters = o.every(function (x) { return /^[A-F]$/.test(x); }), yn = o.length === 2 && o.indexOf('Yes') > -1 && o.indexOf('No') > -1;
+  o = letters ? o.slice().sort() : yn ? ['Yes', 'No'] : shuffle(o);
+  return Q({ tag: tag, type: 'mc', text: text, pic: pic, data: data, options: o, answer: a, hints: hints, explain: explain });
+}
+function T(v) { return H.trimNum(v); }
+function pad3(n) { n = ((n % 360) + 360) % 360; return (n < 10 ? '00' : n < 100 ? '0' : '') + n; }
+var D8 = ['North', 'North-East', 'East', 'South-East', 'South', 'South-West', 'West', 'North-West'];
+function compass(ang, size) {
+  size = size || 130; var c = size / 2, r = size / 2 - 22, rad = (ang - 90) * Math.PI / 180, ex = c + r * Math.cos(rad), ey = c + r * Math.sin(rad), s = '';
+  s += '<circle cx="' + c + '" cy="' + c + '" r="' + (r + 4) + '" style="fill:var(--surface);stroke:var(--line);stroke-width:2"/>';
+  [['N', 0, -1], ['E', 1, 0], ['S', 0, 1], ['W', -1, 0]].forEach(function (d) { s += '<text x="' + (c + d[1] * (r + 14)) + '" y="' + (c + d[2] * (r + 14) + 5) + '" text-anchor="middle" style="font-size:14px;font-weight:700;fill:var(--fg)">' + d[0] + '</text>'; });
+  s += '<line x1="' + c + '" y1="' + c + '" x2="' + ex.toFixed(1) + '" y2="' + ey.toFixed(1) + '" style="stroke:' + R.hsl(22) + ';stroke-width:5;stroke-linecap:round"/>';
+  var a1 = rad + 2.7, a2 = rad - 2.7; s += '<polygon points="' + ex.toFixed(1) + ',' + ey.toFixed(1) + ' ' + (ex + 12 * Math.cos(a1)).toFixed(1) + ',' + (ey + 12 * Math.sin(a1)).toFixed(1) + ' ' + (ex + 12 * Math.cos(a2)).toFixed(1) + ',' + (ey + 12 * Math.sin(a2)).toFixed(1) + '" style="fill:' + R.hsl(22) + ';stroke:' + R.hsl(22) + ';stroke-width:2"/>';
+  s += '<circle cx="' + c + '" cy="' + c + '" r="4" style="fill:var(--fg)"/>';
+  return R.svg(size, size, s, 'A compass with an arrow', size + 20);
+}
+R.compass = compass;
+
+/* ---------- turns and bearings ---------- */
+G.turn = function (lv) {
+  var cw = Math.random() < 0.5, word = cw ? 'clockwise' : 'anticlockwise';
+  if (lv >= 4) {
+    var b = rnd(1, 35) * 10, t = pick([30, 40, 50, 60, 70, 90, 110, 120, 130, 150, 160, 180, 200, 230, 250]), nb = ((cw ? b + t : b - t) % 360 + 360) % 360;
+    return Q({ tag: 'Turns and bearings', text: 'A ship is heading on a bearing of <b>' + pad3(b) + '°</b>. It turns <b>' + t + '°</b> ' + word + '. What is its new bearing? (3 figures, like 045)', pic: compass(b), data: 'A compass with an arrow showing a bearing of ' + pad3(b) + ' degrees.', answer: String(nb), show: pad3(nb), unit: '°', hints: ['Bearings are measured clockwise from north.', cw ? 'Turning clockwise adds the angle.' : 'Turning anticlockwise takes the angle away.', 'If the answer is more than 360 take 360 away. If it is below 0 add 360.'], explain: pad3(b) + (cw ? ' + ' : ' − ') + t + ' = ' + (cw ? b + t : b - t) + ', which is ' + pad3(nb) + '° as a bearing.' });
+  }
+  var set = lv >= 3 ? D8 : ['North', 'East', 'South', 'West'], step = lv >= 3 ? 45 : 90, si = rnd(0, set.length - 1), ts = lv >= 3 ? pick([45, 90, 135, 180, 225, 270]) : pick([90, 180, 270]);
+  var ni = (si + (cw ? 1 : -1) * ts / step + set.length * 4) % set.length, start = si * step, opts = lv >= 3 ? shuffle(D8.slice()).slice(0, 4) : set.slice();
+  return mc('Turns and bearings', 'The arrow points <b>' + set[si] + '</b>. It turns <b>' + ts + '°</b> ' + word + '. Which way does it point now?', compass(start), 'A compass with an arrow pointing ' + set[si] + '.', opts.concat(set[ni]), set[ni], ['A quarter turn is ' + 90 + '°, a half turn is 180°.', 'Clockwise goes North, East, South, West.', 'Count the turns one step at a time.'], 'Turning ' + ts + '° ' + word + ' from ' + set[si] + ' points ' + set[ni] + '.');
+};
+G.facing = function (lv) {
+  var dirs = ['North', 'East', 'South', 'West'], i = rnd(0, 3), n = rnd(2, lv >= 3 ? 4 : 3), moves = [], idx = i, txt = [];
+  for (var k = 0; k < n; k++) { var m = pick(['left', 'right', 'right', 'left', 'around']); moves.push(m); idx = (idx + (m === 'right' ? 1 : m === 'left' ? 3 : 2)) % 4; txt.push(m === 'around' ? 'turn around' : 'turn ' + m); }
+  return mc('Turns and bearings', 'You face <b>' + dirs[i] + '</b>. You ' + txt.join(', then ') + '. Which way do you face now?', compass(i * 90), 'A compass with an arrow pointing ' + dirs[i] + '.', dirs, dirs[idx], ['Imagine you are standing on the compass.', 'A right turn is a quarter turn clockwise. A left turn is a quarter turn anticlockwise.', 'Do one turn at a time and say the direction each time.'], 'Starting facing ' + dirs[i] + ', the turns end facing ' + dirs[idx] + '.');
+};
+
+/* ---------- mirror images and rotations of a piece ---------- */
+var CHIRAL = [0, 1, 2, 3, 4, 5];
+function pieceChoices(good, wrongs) {
+  var seen = {}, res = [good];
+  seen[R.pkey(good)] = 1;
+  wrongs.forEach(function (w) { var k = R.pkey(w); if (!seen[k]) { seen[k] = 1; res.push(w); } });
+  return res;
+}
+function optionsPieces(opts, y) {
+  var out = '', gap = 12, box = 4, cell = 16, wbox = box * cell + 8;
+  opts.forEach(function (o, i) { var x = i * (wbox + gap); out += '<rect x="' + x + '" y="' + y + '" width="' + wbox + '" height="' + wbox + '" rx="8" style="fill:var(--surface);stroke:var(--line);stroke-width:1.5"/><g transform="translate(' + x + ' ' + y + ')">' + R.pieceSvg(o, cell, 215, box) + '</g>' + R.letter('ABCD'.charAt(i), x + wbox / 2, y + wbox + 18); });
+  return { svg: out, w: opts.length * wbox + (opts.length - 1) * gap };
+}
+G.mirror = function (lv) {
+  var base, tries = 0, choices, vertical = lv < 2 ? true : Math.random() < 0.5;
+  do {
+    base = R.PIECES[pick(CHIRAL)]; if (Math.random() < 0.5) base = R.flipLR(base); base = R.norm(base);
+    var good = vertical ? R.flipLR(base) : R.flipUD(base);
+    choices = pieceChoices(good, [base, vertical ? R.flipUD(base) : R.flipLR(base), R.turnCW(base), R.turnCCW(base), R.norm(base.map(function (c) { return [-c[0], -c[1]]; }))]);
+    tries++;
+  } while (choices.length < 4 && tries < 40);
+  var rest = choices.slice(1, 4), opts = shuffle([choices[0]].concat(rest)), ans = 'ABCD'.charAt(opts.indexOf(choices[0]));
+  var wbox = 72, op = optionsPieces(opts, 120), W = op.w, out = '';
+  if (vertical) { out += '<g transform="translate(' + (W / 2 - 100) + ' 12)">' + R.pieceSvg(base, 16, 215, 4) + '</g><line x1="' + (W / 2 - 8) + '" y1="2" x2="' + (W / 2 - 8) + '" y2="100" style="stroke:' + R.hsl(22) + ';stroke-width:3;stroke-dasharray:7 5"/><text x="' + (W / 2 + 6) + '" y="54" style="font-size:14px;font-weight:700;fill:var(--fg)">mirror line</text>'; }
+  else { out += '<g transform="translate(' + (W / 2 - 122) + ' 2)">' + R.pieceSvg(base, 16, 215, 4) + '</g><line x1="' + (W / 2 - 140) + '" y1="86" x2="' + (W / 2 - 30) + '" y2="86" style="stroke:' + R.hsl(22) + ';stroke-width:3;stroke-dasharray:7 5"/><text x="' + (W / 2 - 14) + '" y="91" style="font-size:14px;font-weight:700;fill:var(--fg)">mirror line</text>'; }
+  out += op.svg;
+  return mc('Mirror images', 'The shape is reflected in the <b>' + (vertical ? 'vertical' : 'horizontal') + ' mirror line</b>. Which picture shows its mirror image?', R.svg(W, 120 + 72 + 24, out, 'A shape next to a mirror line and four possible pictures', 360), 'A shape is drawn beside a ' + (vertical ? 'vertical' : 'horizontal') + ' mirror line. Pictures A to D show four possible mirror images.', ['A', 'B', 'C', 'D'], ans, ['A mirror image is the same distance from the mirror line, but on the other side.', vertical ? 'Left and right swap. Up and down stay the same.' : 'Up and down swap. Left and right stay the same.', 'Try each picture. Pick the one that looks like the shape in a mirror, not the same shape turned.'], 'Picture ' + ans + ' shows the mirror image. ' + (vertical ? 'The parts nearest the mirror stay nearest, and left and right swap.' : 'The parts nearest the mirror stay nearest, and up and down swap.'));
+};
+G.turnShape = function (lv) {
+  var base, choices, tries = 0, kinds = lv < 3 ? [['quarter turn clockwise', R.turnCW], ['quarter turn anticlockwise', R.turnCCW], ['half turn', function (c) { return R.turnCW(R.turnCW(c)); }]] : [['quarter turn clockwise', R.turnCW], ['quarter turn anticlockwise', R.turnCCW], ['half turn', function (c) { return R.turnCW(R.turnCW(c)); }], ['three-quarter turn clockwise', R.turnCCW]], kd = pick(kinds), f = kd[1];
+  do {
+    base = R.norm(R.PIECES[pick(CHIRAL)]); var good = f(base);
+    choices = pieceChoices(good, [R.flipLR(good), R.flipUD(good), base, R.turnCW(good), R.turnCCW(good), R.turnCW(R.turnCW(good))]);
+    tries++;
+  } while (choices.length < 4 && tries < 60);
+  var opts = shuffle(choices.slice(0, 4)), ans = 'ABCD'.charAt(opts.indexOf(choices[0])), op = optionsPieces(opts, 108), W = op.w;
+  var out = '<g transform="translate(' + (W / 2 - 36) + ' 8)">' + R.pieceSvg(base, 16, 215, 4) + '</g>' + op.svg;
+  return mc('Turning shapes', 'Which picture shows the shape after a <b>' + kd[0] + '</b>? (Turning does not flip it over.)', R.svg(W, 108 + 72 + 24, out, 'A shape and four pictures of it', 360), 'A shape is drawn at the top. Pictures A to D show four possible turned shapes.', ['A', 'B', 'C', 'D'], ans, ['Pick one corner or one long arm and follow where it goes.', 'A quarter turn clockwise moves the top of the shape to the right.', 'A turned shape is never a mirror image. Rule out any picture that has been flipped.'], 'Picture ' + ans + ' is the shape after a ' + kd[0] + '.');
+};
+
+/* ---------- cubes ---------- */
+G.cubeCount = function (lv) {
+  var rows = lv <= 1 ? 2 : lv <= 3 ? pick([2, 3]) : 3, cols = lv <= 1 ? 2 : 3, maxH = lv <= 2 ? 3 : 4, h = R.randStack(rows, cols, maxH, 4), tot = R.total(h), pic = R.cubes(h, 150);
+  var ask = lv <= 1 ? 0 : lv === 2 ? pick([0, 0, 1]) : lv === 3 ? pick([0, 1, 2, 3]) : lv === 4 ? pick([1, 2, 3, 4]) : pick([2, 3, 4, 5, 6]);
+  var d = 'A stack of cubes with ' + rows + ' rows and ' + cols + ' columns. The heights are ' + h.map(function (r) { return r.join(', '); }).join('; ') + '.';
+  if (ask === 0) return Q({ tag: 'Counting cubes', text: 'How many cubes are in this stack? Remember the cubes you cannot see.', pic: pic, data: d + ' How many cubes are in the stack?', answer: String(tot), hints: ['Count one column at a time.', 'Each column holds as many cubes as its height. Hidden cubes sit under the top ones.', 'Add the columns together.'], explain: 'The columns hold ' + [].concat.apply([], h).filter(function (v) { return v > 0; }).join(' + ') + ' = ' + tot + ' cubes.' });
+  if (ask === 1) { var hid = tot - R.visible(h); return Q({ tag: 'Counting cubes', text: 'How many cubes in this stack are <b>completely hidden</b>? A hidden cube shows no face from this view.', pic: pic, data: d + ' How many cubes are completely hidden?', answer: String(hid), hints: ['First count all the cubes.', 'Then count the cubes that show at least one face.', 'Hidden = total − visible.'], explain: 'There are ' + tot + ' cubes. ' + R.visible(h) + ' show a face. So ' + hid + ' are hidden.' }); }
+  if (ask === 2) return Q({ tag: 'Views of cubes', text: 'You look straight down from <b>above</b>. How many squares do you see?', pic: pic, data: d + ' How many squares do you see from above?', answer: String(R.topView(h)), hints: ['From above you see the top of each column once.', 'Count the columns that have at least one cube.'], explain: 'A view from above shows one square for every column that has cubes. There are ' + R.topView(h) + ' of them.' });
+  if (ask === 3) { var left = Math.random() < 0.5; return Q({ tag: 'Views of cubes', text: 'You look straight at the <b>' + (left ? 'left-hand' : 'right-hand') + ' faces</b> (the faces drawn on the ' + (left ? 'left' : 'right') + '). How many squares can you see?', pic: pic, data: d + ' How many squares can you see looking at the ' + (left ? 'left' : 'right') + ' side?', answer: String(left ? R.leftView(h) : R.rightView(h)), hints: ['Look at one line of columns at a time.', 'In each line, only the tallest column counts. Shorter ones are hidden behind it.', 'Add up the tallest column in each line.'], explain: 'Add the tallest column in each line of the ' + (left ? 'left' : 'right') + ' view: the total is ' + (left ? R.leftView(h) : R.rightView(h)) + ' squares.' }); }
+  var e = pick([2, 3, 5]);
+  if (ask === 4) return Q({ tag: 'Volume of cubes', text: 'Each small cube has edges of <b>' + e + ' cm</b>. What is the volume of the whole stack? (cm³)', pic: pic, data: d + ' Each cube has edges of ' + e + ' centimetres.', answer: String(tot * e * e * e), unit: 'cm³', hints: ['Count the small cubes first.', 'One small cube has volume ' + e + ' × ' + e + ' × ' + e + '.', 'Multiply the volume of one cube by the number of cubes.'], explain: tot + ' cubes, each ' + (e * e * e) + ' cm³, so ' + tot * e * e * e + ' cm³.' });
+  return Q({ tag: 'Surface area of cubes', text: 'Each small cube has faces of <b>1 cm²</b>. What is the total <b>surface area</b> of the stack, including the bottom? (cm²)', pic: pic, data: d + ' Each small face is one square centimetre. Find the total surface area including the bottom.', answer: String(R.surface(h)), unit: 'cm²', hints: ['Surface area counts the outside faces only.', 'Count the faces you can see from above, from the front, and from each side, then double them for the faces on the opposite sides.', 'Faces where two cubes touch are not counted.'], explain: 'Each cube has 6 faces. Taking away the faces hidden where cubes touch leaves ' + R.surface(h) + ' cm².' });
+};
+G.solid = function (lv) {
+  var L = [['cube', 6, 12, 8], ['cuboid', 6, 12, 8], ['square-based pyramid', 5, 8, 5], ['triangular prism', 5, 9, 6], ['tetrahedron (triangular-based pyramid)', 4, 6, 4], ['pentagonal prism', 7, 15, 10], ['hexagonal prism', 8, 18, 12], ['pentagonal pyramid', 6, 10, 6], ['hexagonal pyramid', 7, 12, 7], ['octahedron', 8, 12, 6]];
+  var pool = lv <= 1 ? L.slice(0, 5) : lv <= 2 ? L.slice(0, 7) : L, s = pick(pool), what = pick([['faces', 1], ['edges', 2], ['vertices', 3]]);
+  if (lv >= 4 && Math.random() < 0.5) { var miss = pick([1, 2, 3]), names = ['', 'faces', 'edges', 'vertices'], F = s[1], E = s[2], Vv = s[3], known = miss === 1 ? 'edges and vertices' : miss === 2 ? 'faces and vertices' : 'faces and edges'; return Q({ tag: 'Solid shapes', text: 'A solid has <b>' + (miss === 1 ? E : F) + '</b> ' + (miss === 1 ? 'edges' : 'faces') + ' and <b>' + (miss === 3 ? E : Vv) + '</b> ' + (miss === 3 ? 'edges' : 'vertices') + '. Use Euler’s rule (faces + vertices − edges = 2) to find the number of <b>' + names[miss] + '</b>.', answer: String(s[miss]), hints: ['Euler’s rule: F + V − E = 2.', 'Put in the two numbers you know.', 'Rearrange to find the missing one.'], explain: 'F + V − E = 2. Here F = ' + F + ', E = ' + E + ', V = ' + Vv + ' and ' + F + ' + ' + Vv + ' − ' + E + ' = 2.' }); }
+  return Q({ tag: 'Solid shapes', text: 'How many <b>' + what[0] + '</b> does a <b>' + s[0] + '</b> have?', answer: String(s[what[1]]), hints: ['A face is a flat surface, an edge is where two faces meet, a vertex is a corner.', 'Picture the shape, or draw it, and count carefully.'], explain: 'A ' + s[0] + ' has ' + s[1] + ' faces, ' + s[2] + ' edges and ' + s[3] + ' vertices.' });
+};
+G.netValid = function (lv) {
+  var valid = Math.random() < 0.5, cells = R.netOfKind(valid);
+  return mc('Nets of a cube', 'Could this flat pattern of six squares be <b>folded to make a cube</b>?', R.netPic(cells), 'A flat pattern of six joined squares. Decide whether it folds into a cube.', ['Yes', 'No'], valid ? 'Yes' : 'No', ['Imagine folding each square up from the middle one.', 'Look for squares that would land on top of each other, and for gaps.', 'A row of four squares with one square above and one below always works.'], valid ? 'Yes. Each square folds to a different face of the cube.' : 'No. When it folds, two squares land on the same face and one face is missing.');
+};
+G.netOpposite = function (lv) {
+  var cells = R.netOfKind(true), lab = R.netLabels(cells), letters = shuffle(['A', 'B', 'C', 'D', 'E', 'F']), ti = rnd(0, 5), tl = lab[cells[ti][0] + ',' + cells[ti][1]], oi = -1;
+  cells.forEach(function (c, i) { if (lab[c[0] + ',' + c[1]] === (tl ^ 1)) oi = i; });
+  var ans = letters[oi], opts = letters.filter(function (l, i) { return i !== ti; });
+  return mc('Nets of a cube', 'This net folds to make a cube. Which letter is on the face <b>opposite ' + letters[ti] + '</b>?', R.netPic(cells, letters, ti), 'A net of a cube with the squares labelled with letters. Face ' + letters[ti] + ' is shaded.', shuffle(opts).slice(0, 4).concat(ans), ans, ['Opposite faces never touch when the cube is folded.', 'Squares that are two apart in a straight line of the net are opposite each other.', 'Fold the net in your mind, one square at a time.'], 'When folded, face ' + ans + ' ends up opposite face ' + letters[ti] + '.');
+};
+
+/* ---------- non-verbal reasoning tiles ---------- */
+var SHAPES = ['tri', 'sq', 'pent', 'hex', 'circ'];
+function variants(a, avoid) {
+  var out = [], seen = {}; (avoid || []).forEach(function (s) { seen[R.key(s)] = 1; }); seen[R.key(a)] = 1;
+  var mods = [function (s) { s.rot += 90; }, function (s) { s.rot += 180; }, function (s) { s.rot += 270; }, function (s) { s.rot += 45; }, function (s) { s.fill = (s.fill + 1) % 3; }, function (s) { s.fill = (s.fill + 2) % 3; }, function (s) { s.n = (s.n || 0) + 1; }, function (s) { s.n = Math.max(0, (s.n || 0) - 1); }, function (s) { s.sz = s.sz === 1 ? 0.7 : 1; }, function (s) { s.sh = pick(SHAPES.concat(['arrow', 'L', 'flag']).filter(function (x) { return x !== s.sh; })); }];
+  shuffle(mods).forEach(function (m) { if (out.length >= 3) return; var c = R.clone(a); c.rot = c.rot || 0; m(c); if (!seen[R.key(c)]) { seen[R.key(c)] = 1; out.push(c); } });
+  return out;
+}
+function asym(lv) { return pick(['arrow', 'L', 'flag']); }
+function seriesRow(items, answerIdx, opts) {
+  var box = 56, gap = 10, n = items.length + 1, W = Math.max(n * (box + gap) - gap, opts.length * (box + 14) - 14), x0 = (W - (n * (box + gap) - gap)) / 2, out = '';
+  items.forEach(function (it, i) { out += R.tile(it, x0 + i * (box + gap), 4, box); });
+  out += R.qbox(x0 + items.length * (box + gap), 4, box);
+  var ox = (W - (opts.length * (box + 14) - 14)) / 2;
+  opts.forEach(function (o, i) { out += R.tile(o, ox + i * (box + 14), 96, box) + R.letter('ABCDE'.charAt(i), ox + i * (box + 14) + box / 2, 96 + box + 18); });
+  return { svg: R.svg(W, 96 + box + 26, out, 'A row of shapes with the last one missing and four choices', Math.max(W, 300)), W: W };
+}
+G.shapeSeries = function (lv) {
+  var kinds = lv <= 1 ? ['rot90', 'fill', 'dots', 'sides'] : lv <= 2 ? ['rot90', 'fill', 'dots', 'sides', 'grow'] : lv <= 3 ? ['rot90', 'rot45', 'fill', 'dots', 'sides', 'grow', 'alt'] : ['rot45', 'rot90', 'rot135', 'dots', 'sides', 'grow', 'alt', 'altRot'];
+  var kind = pick(kinds), sh = asym(lv), f0 = rnd(0, 2), r0 = rnd(0, 7) * 45, items = [], rule = '';
+  var base = { sh: sh, fill: f0, rot: 0, sz: 1, n: 0 };
+  function mk(i) {
+    var s = R.clone(base);
+    if (kind === 'rot90') { s.rot = r0 + 90 * i; rule = 'turns 90° clockwise each time'; }
+    else if (kind === 'rot45') { s.rot = r0 + 45 * i; rule = 'turns 45° clockwise each time'; }
+    else if (kind === 'rot135') { s.rot = r0 + 135 * i; rule = 'turns 135° clockwise each time'; }
+    else if (kind === 'fill') { s.sh = pick(['tri', 'sq', 'pent']); s.fill = (f0 + i) % 3 === 0 ? 0 : ((f0 + i) % 3); rule = 'the shading changes in a repeating pattern'; s.sh = base.shape || (base.shape = s.sh); s.fill = [0, 1, 2][(f0 + i) % 3]; }
+    else if (kind === 'dots') { s.sh = base.shape || (base.shape = pick(['circ', 'sq', 'tri'])); s.n = 1 + i; s.fill = 0; rule = 'one more dot each time'; }
+    else if (kind === 'sides') { s.sh = ['tri', 'sq', 'pent', 'hex', 'hept'][i]; s.fill = f0; rule = 'one more side each time'; }
+    else if (kind === 'grow') { s.sh = base.shape || (base.shape = pick(['tri', 'sq', 'pent', 'circ'])); s.sz = [0.5, 0.65, 0.8, 0.95, 1.1][i] || 1; if (s.sz > 1) s.sz = 1; rule = 'the shape grows each time'; }
+    else if (kind === 'alt') { s.sh = base.shape || (base.shape = sh); s.rot = (i % 2) ? r0 + 180 : r0; s.fill = (i % 2) ? 1 : 0; rule = 'the shape and its shading swap every other tile'; }
+    else { s.sh = sh; s.rot = (i % 2 === 0) ? r0 + 90 * (i / 2) : r0 + 180 + 90 * ((i - 1) / 2); rule = 'two patterns take turns'; }
+    return s;
+  }
+  var all = []; for (var i = 0; i < 5; i++) all.push(mk(i));
+  if (kind === 'grow') { var sizes = [0.5, 0.62, 0.74, 0.86, 1]; all.forEach(function (s, j) { s.sz = sizes[j]; }); }
+  items = all.slice(0, 4); var good = all[4], wrong = variants(good, items), opts = shuffle([good].concat(wrong)), ans = 'ABCDE'.charAt(opts.findIndex(function (o) { return R.key(o) === R.key(good); }));
+  var pic = seriesRow(items, 4, opts);
+  return mc('Shape patterns', 'What comes <b>next</b> in the pattern? Choose the letter.', pic.svg, 'A row of four shapes follows a pattern. Choose the shape that comes next from A to D.', opts.map(function (o, i) { return 'ABCDE'.charAt(i); }), ans, ['Look at how the first shape changes into the second.', 'Check that the same change happens from the second to the third.', 'Follow the change one more time to get the missing shape.'], 'The pattern ' + rule + '. Picture ' + ans + ' is the next shape.');
+};
+G.matrix = function (lv) {
+  var type = pick(lv <= 2 ? ['fillCol', 'dotsCol'] : ['fillCol', 'dotsCol', 'rotCol', 'sizeCol']), shs = shuffle(['tri', 'sq', 'pent', 'circ']).slice(0, 3), arr = asym(lv), a = shuffle([0, 1, 2]), tiles = [], i, j, rule;
+  for (i = 0; i < 3; i++) { tiles.push([]); for (j = 0; j < 3; j++) {
+    var s = { sh: shs[i], fill: 0, rot: 0, sz: 1, n: 0 };
+    if (type === 'fillCol') { s.fill = a[j]; rule = 'Each row has its own shape. The shading changes across each row.'; }
+    else if (type === 'dotsCol') { s.n = j + 1; s.fill = i === 1 ? 1 : 0; rule = 'The number of dots goes up by one across each row. The shape and shading stay the same along a row.'; }
+    else if (type === 'rotCol') { s.sh = arr; s.rot = 90 * j + 45 * i; s.fill = [0, 1, 2][i]; rule = 'Each tile turns 90° more than the one to its left. Each row has its own shading.'; }
+    else { s.sz = [0.5, 0.75, 1][j]; s.fill = a[i]; rule = 'Each row has its own shading. The shapes get bigger across each row.'; }
+    tiles[i].push(s);
+  } }
+  var good = tiles[2][2], wrong = variants(good, [tiles[2][0], tiles[2][1]]), opts = shuffle([good].concat(wrong)), ans = 'ABCDE'.charAt(opts.findIndex(function (o) { return R.key(o) === R.key(good); })), box = 52, gap = 8, out = '';
+  for (i = 0; i < 3; i++) for (j = 0; j < 3; j++) out += (i === 2 && j === 2) ? R.qbox(j * (box + gap), i * (box + gap), box) : R.tile(tiles[i][j], j * (box + gap), i * (box + gap), box);
+  var gw = 3 * box + 2 * gap, W = Math.max(gw, 4 * (box + 14) - 14), gx = (W - gw) / 2, y = 3 * (box + gap) + 12, ox = (W - (4 * (box + 14) - 14)) / 2, body = '<g transform="translate(' + gx + ' 0)">' + out + '</g>';
+  opts.forEach(function (o, k) { body += R.tile(o, ox + k * (box + 14), y, box) + R.letter('ABCDE'.charAt(k), ox + k * (box + 14) + box / 2, y + box + 18); });
+  return mc('Pattern grids', 'Which tile completes the grid? Look along the <b>rows</b> and down the <b>columns</b>.', R.svg(W, y + box + 26, body, 'A three by three grid of shapes with the last tile missing', 340), 'A three by three grid of shapes with the bottom-right tile missing. Choose from A to D.', opts.map(function (o, k) { return 'ABCDE'.charAt(k); }), ans, ['Look at one row at a time. What changes from tile to tile?', 'Check that the same rule works for the other rows.', 'Apply the rule to the last row to find the missing tile.'], rule + ' So the missing tile is picture ' + ans + '.');
+};
+G.oddOne = function (lv) {
+  var attr = pick(lv <= 2 ? ['sh', 'fill', 'n'] : ['sh', 'fill', 'n', 'rot']), shs = shuffle(['tri', 'sq', 'pent', 'hex', 'circ']), common = { sh: shs[0], fill: rnd(0, 2), rot: 0, sz: 1, n: 0 }, odd = R.clone(common), tiles = [], i;
+  if (attr === 'sh') { odd.sh = shs[1]; } else if (attr === 'fill') { odd.fill = (common.fill + 1 + rnd(0, 1)) % 3; } else if (attr === 'n') { common.n = 2; odd.n = pick([1, 3]); } else { common.sh = asym(lv); odd.sh = common.sh; odd.rot = 180; common.rot = 0; }
+  var vary = lv >= 3 ? pick(['sz', 'rotX', 'none']) : 'none';
+  for (i = 0; i < 4; i++) { var t = R.clone(common); if (vary === 'sz' && attr !== 'sh') t.sz = [0.6, 0.8, 1, 0.7][i]; if (vary === 'rotX' && attr !== 'rot' && ['arrow','L','flag'].indexOf(common.sh) > -1) t.rot = [0, 90, 180, 270][i]; tiles.push(t); }
+  var pos = rnd(0, 4); tiles.splice(pos, 0, odd); if (vary === 'sz') odd.sz = 0.8;
+  var box = 52, gap = 12, W = 5 * (box + gap) - gap, out = ''; tiles.forEach(function (t, k) { out += R.tile(t, k * (box + gap), 4, box) + R.letter('ABCDE'.charAt(k), k * (box + gap) + box / 2, 4 + box + 18); });
+  var why = attr === 'sh' ? 'It is a different shape.' : attr === 'fill' ? 'It has different shading.' : attr === 'n' ? 'It has a different number of dots.' : 'It points a different way.';
+  return mc('Odd one out', 'Four of these tiles follow the same rule. Which one is the <b>odd one out</b>?', R.svg(W, box + 32, out, 'Five tiles in a row labelled A to E', 360), 'Five tiles labelled A to E. Four share a feature. Choose the odd one out.', ['A', 'B', 'C', 'D', 'E'], 'ABCDE'.charAt(pos), ['Say what the same four tiles have in common.', 'Check shape, shading, number of dots and which way they point.', 'Find the tile that breaks the rule.'], 'Tile ' + 'ABCDE'.charAt(pos) + ' is the odd one out. ' + why);
+};
+G.figAnalogy = function (lv) {
+  var tf = pick(lv <= 2 ? ['rot90', 'fill', 'dot'] : ['rot90', 'rot180', 'fill', 'dot', 'grow', 'next']);
+  var sh = tf === 'next' ? pick(['tri', 'sq', 'pent']) : (tf === 'rot90' || tf === 'rot180') ? asym(lv) : pick(['tri', 'sq', 'pent', 'circ']), sh2 = tf === 'next' ? pick(['tri', 'sq', 'pent']) : sh;
+  function a1() { return { sh: sh, fill: tf === 'fill' ? 0 : rnd(0, 2), rot: rnd(0, 3) * 90, sz: tf === 'grow' ? 0.6 : 1, n: 0 }; }
+  function apply(s) { var t = R.clone(s); if (tf === 'rot90') t.rot += 90; else if (tf === 'rot180') t.rot += 180; else if (tf === 'fill') t.fill = t.fill === 0 ? 1 : 0; else if (tf === 'dot') t.n = 1; else if (tf === 'grow') t.sz = 1; else if (tf === 'next') t.sh = { tri: 'sq', sq: 'pent', pent: 'hex' }[t.sh]; return t; }
+  var A = a1(), Bt = apply(A), C = a1(); if (tf !== 'next') C.sh = pick(['tri', 'sq', 'pent', 'circ'].concat((tf === 'rot90' || tf === 'rot180') ? ['arrow', 'L', 'flag'] : [])); if (tf === 'fill') C.fill = 0; if (tf === 'rot90' || tf === 'rot180') C.sh = pick(['arrow', 'L', 'flag']); if (tf === 'next') C.sh = pick(['tri', 'sq', 'pent']);
+  var good = apply(C), wrong = variants(good, [A, Bt, C]), opts = shuffle([good].concat(wrong)), ans = 'ABCDE'.charAt(opts.findIndex(function (o) { return R.key(o) === R.key(good); })), box = 52, out = '', y = 0;
+  var W = 4 * (box + 14) - 14, x0 = (W - (4 * box + 2 * 12 + 40)) / 2 + 0;
+  out += R.tile(A, 0, y, box) + '<text x="' + (box + 14) + '" y="' + (y + 34) + '" text-anchor="middle" style="font-size:22px;font-weight:700;fill:var(--fg)">→</text>' + R.tile(Bt, box + 28, y, box);
+  out += '<text x="' + (2 * box + 42) + '" y="' + (y + 34) + '" style="font-size:15px;font-weight:700;fill:var(--fg)">as</text>';
+  var cx = 2 * box + 74; out += R.tile(C, cx, y, box) + '<text x="' + (cx + box + 14) + '" y="' + (y + 34) + '" text-anchor="middle" style="font-size:22px;font-weight:700;fill:var(--fg)">→</text>' + R.qbox(cx + box + 28, y, box);
+  var W2 = cx + 2 * box + 28, ox = (W2 - (4 * (box + 14) - 14)) / 2, oy = 84;
+  opts.forEach(function (o, k) { out += R.tile(o, ox + k * (box + 14), oy, box) + R.letter('ABCDE'.charAt(k), ox + k * (box + 14) + box / 2, oy + box + 18); });
+  var rule = { rot90: 'turns a quarter turn clockwise', rot180: 'turns a half turn', fill: 'changes its shading', dot: 'gains a dot', grow: 'gets bigger', next: 'gains one more side' }[tf];
+  return mc('Shape analogies', 'The first shape changes into the second. Do the <b>same change</b> to the third. Which picture is the missing one?', R.svg(W2, oy + box + 26, out, 'Shape A changes into shape B. Shape C changes into a missing shape. Four choices.', 380), 'The first shape changes into the second in the same way the third changes into the missing shape. Choose from A to D.', opts.map(function (o, k) { return 'ABCDE'.charAt(k); }), ans, ['Compare the first two shapes. What has changed?', 'Do the very same change to the third shape.', 'Find the picture that matches.'], 'In the first pair the shape ' + rule + '. The same happens to the third shape, which gives picture ' + ans + '.');
+};
+
+/* ---------- position, coordinates and transformations ---------- */
+function coordMc(tag, text, pts, lo, hi, lines, ans, hints, explain, data) {
+  return Q({ tag: tag, kind: 'coord', placeholder: 'e.g. (3, 4)', text: text, pic: SK.grid(pts, lo, hi, lines), data: data, answer: ans, show: '(' + ans.split(',').join(', ') + ')', hints: hints, explain: explain });
+}
+G.reflectPoint = function (lv) {
+  if (lv <= 1) { var x = rnd(1, 6), y = rnd(1, 6), dx = rnd(1, 4), dy = rnd(0, 4), right = Math.random() < 0.5; var nx = right ? x + dx : x - dx; if (nx < 0) { nx = x + dx; right = true; } return coordMc('Position', 'The dot P is at <b>(' + x + ', ' + y + ')</b>. Move it <b>' + dx + '</b> square' + (dx === 1 ? '' : 's') + ' ' + (right ? 'right' : 'left') + ' and <b>' + dy + '</b> up. What are its new coordinates?', [[x, y, 'P']], 0, 10, null, nx + ',' + (y + dy), ['The first number is across, the second number is up.', 'Moving right or left changes the first number. Moving up changes the second.'], 'Across: ' + x + (right ? ' + ' : ' − ') + dx + ' = ' + nx + '. Up: ' + y + ' + ' + dy + ' = ' + (y + dy) + '. So the point is (' + nx + ', ' + (y + dy) + ').', 'A grid with a dot P at ' + x + ', ' + y + '.'); }
+  if (lv === 2) { var m = rnd(3, 6), px = rnd(Math.max(1, 2 * m - 10), m - 1), py = rnd(1, 9), ans = (2 * m - px) + ',' + py; return coordMc('Reflection', 'The point P <b>(' + px + ', ' + py + ')</b> is reflected in the mirror line <b>x = ' + m + '</b>. What are the coordinates of its image?', [[px, py, 'P']], 0, 10, [[[m, 0], [m, 10]]], ans, ['The mirror line is vertical. The image is the same height as P.', 'Find how far P is from the line, then go the same distance on the other side.'], 'P is ' + (m - px) + ' squares left of the line, so the image is ' + (m - px) + ' squares to the right: x = ' + (2 * m - px) + '. The height stays ' + py + '.', 'A grid with point P at ' + px + ', ' + py + ' and a vertical mirror line at x equals ' + m + '.'); }
+  var mmFix = 0, kind = lv === 3 ? pick(['x', 'y', 'xm']) : pick(['x', 'y', 'xm', 'ym', 'diag']), px2 = rnd(-5, 5), py2 = rnd(-5, 5); if (px2 === 0) px2 = 2; if (py2 === 0) py2 = -3;
+  
+  if (kind === 'x') return coordMc('Reflection', 'The point P <b>(' + px2 + ', ' + py2 + ')</b> is reflected in the <b>x-axis</b>. What are the coordinates of its image?', [[px2, py2, 'P']], -6, 6, [[[-6, 0], [6, 0]]], px2 + ',' + (-py2), ['The x-axis is the horizontal line through 0.', 'Reflecting in the x-axis keeps x the same and changes the sign of y.'], 'x stays ' + px2 + '. y changes from ' + py2 + ' to ' + (-py2) + '.', 'A grid with point P at ' + px2 + ', ' + py2 + '.');
+  if (kind === 'y') return coordMc('Reflection', 'The point P <b>(' + px2 + ', ' + py2 + ')</b> is reflected in the <b>y-axis</b>. What are the coordinates of its image?', [[px2, py2, 'P']], -6, 6, [[[0, -6], [0, 6]]], (-px2) + ',' + py2, ['The y-axis is the vertical line through 0.', 'Reflecting in the y-axis changes the sign of x and keeps y the same.'], 'x changes from ' + px2 + ' to ' + (-px2) + '. y stays ' + py2 + '.', 'A grid with point P at ' + px2 + ', ' + py2 + '.');
+  if (kind === 'xm') { var mm = pick([-2, -1, 1, 2, 3]); if (px2 === mm) px2 = mm + 2; var nx2 = 2 * mm - px2; if (Math.abs(nx2) > 6) { px2 = mm + 1; nx2 = mm - 1; } return coordMc('Reflection', 'The point P <b>(' + px2 + ', ' + py2 + ')</b> is reflected in the line <b>x = ' + mm + '</b>. What are the coordinates of its image?', [[px2, py2, 'P']], -6, 6, [[[mm, -6], [mm, 6]]], nx2 + ',' + py2, ['The mirror line is vertical, so y stays the same.', 'Find the distance from P to the line and go the same distance past it.'], 'The distance from P to the line is ' + Math.abs(px2 - mm) + '. The image is the same distance on the other side: x = ' + nx2 + '.', 'A grid with point P at ' + px2 + ', ' + py2 + ' and a mirror line at x equals ' + mm + '.'); }
+  if (kind === 'ym') { var my = pick([-2, -1, 1, 2, 3]); var ny = 2 * my - py2; if (Math.abs(ny) > 6) { py2 = my + 1; ny = my - 1; } return coordMc('Reflection', 'The point P <b>(' + px2 + ', ' + py2 + ')</b> is reflected in the line <b>y = ' + my + '</b>. What are the coordinates of its image?', [[px2, py2, 'P']], -6, 6, [[[-6, my], [6, my]]], px2 + ',' + ny, ['The mirror line is horizontal, so x stays the same.', 'Find the distance from P to the line and go the same distance past it.'], 'The distance from P to the line is ' + Math.abs(py2 - my) + '. The image is the same distance on the other side: y = ' + ny + '.', 'A grid with point P at ' + px2 + ', ' + py2 + ' and a mirror line at y equals ' + my + '.'); }
+  return coordMc('Reflection', 'The point P <b>(' + px2 + ', ' + py2 + ')</b> is reflected in the line <b>y = x</b>. What are the coordinates of its image?', [[px2, py2, 'P']], -6, 6, [[[-6, -6], [6, 6]]], py2 + ',' + px2, ['The line y = x goes through (1, 1), (2, 2) and so on.', 'Reflecting in y = x swaps the two coordinates.'], 'The x and y coordinates swap: (' + px2 + ', ' + py2 + ') becomes (' + py2 + ', ' + px2 + ').', 'A grid with point P at ' + px2 + ', ' + py2 + ' and the line y equals x.');
+};
+G.rotatePoint = function (lv) {
+  var px = rnd(-5, 5), py = rnd(-5, 5); if (px === 0) px = 3; if (py === 0) py = 2; var kind = lv <= 4 ? pick(['cw', 'ccw', 'half']) : pick(['cw', 'ccw', 'half']), ans;
+  if (kind === 'cw') ans = py + ',' + (-px); else if (kind === 'ccw') ans = (-py) + ',' + px; else ans = (-px) + ',' + (-py);
+  var name = { cw: '90° clockwise', ccw: '90° anticlockwise', half: '180°' }[kind];
+  return coordMc('Rotation', 'The point P <b>(' + px + ', ' + py + ')</b> is rotated <b>' + name + '</b> about the <b>origin (0, 0)</b>. What are the coordinates of its image?', [[px, py, 'P']], -6, 6, null, ans, ['The origin is the centre of the turn.', kind === 'half' ? 'A half turn changes the sign of both coordinates.' : kind === 'cw' ? 'A quarter turn clockwise turns (x, y) into (y, −x).' : 'A quarter turn anticlockwise turns (x, y) into (−y, x).', 'Sketch the turn on the grid to check.'], 'Rotating ' + name + ' about the origin turns (' + px + ', ' + py + ') into (' + ans.split(',').join(', ') + ').', 'A grid with point P at ' + px + ', ' + py + '.');
+};
+G.translatePoint = function (lv) {
+  var px = rnd(-4, 4), py = rnd(-4, 4), a = rnd(-3, 3), b = rnd(-3, 3); if (a === 0 && b === 0) a = 2;
+  var vec = '<span class="fr"><b>' + a + '</b><i></i><b>' + b + '</b></span>', words = (a === 0 ? '' : Math.abs(a) + (a > 0 ? ' right' : ' left')) + (a !== 0 && b !== 0 ? ' and ' : '') + (b === 0 ? '' : Math.abs(b) + (b > 0 ? ' up' : ' down'));
+  return coordMc('Translation', 'The point P <b>(' + px + ', ' + py + ')</b> is translated by the vector <b>(' + a + ', ' + b + ')</b>. This means ' + words + '. What are the coordinates of its image?', [[px, py, 'P']], -8, 8, null, (px + a) + ',' + (py + b), ['The top number moves the point across, the bottom number moves it up or down.', 'Add the first number to x. Add the second to y.'], 'x: ' + px + ' + ' + a + ' = ' + (px + a) + '. y: ' + py + ' + ' + b + ' = ' + (py + b) + '.', 'A grid with point P at ' + px + ', ' + py + '.');
+};
+G.enlargePoint = function (lv) {
+  var k = pick(lv <= 5 ? [2, 3] : [2, 3, 0.5]), px = k === 0.5 ? pick([-4, -2, 2, 4, 6]) : rnd(-3, 3), py = k === 0.5 ? pick([-4, -2, 2, 4]) : rnd(-3, 3); if (px === 0) px = 1; if (py === 0) py = 2;
+  var nx = px * k, ny = py * k, lim = Math.max(Math.abs(nx), Math.abs(ny), Math.abs(px), Math.abs(py)), hi = lim > 6 ? 10 : 8;
+  return coordMc('Enlargement', 'The point P <b>(' + px + ', ' + py + ')</b> is enlarged by scale factor <b>' + k + '</b> from the <b>origin</b>. What are the coordinates of its image?', [[px, py, 'P']], -hi, hi, null, T(nx) + ',' + T(ny), ['Multiply both coordinates by the scale factor.', 'The image lies on a straight line from the origin through P.'], T(px) + ' × ' + k + ' = ' + T(nx) + ' and ' + T(py) + ' × ' + k + ' = ' + T(ny) + '.', 'A grid with point P at ' + px + ', ' + py + '.');
+};
+G.backBearing = function (lv) {
+  var b = rnd(1, 35) * 10, back = (b + 180) % 360;
+  return Q({ tag: 'Bearings', text: 'A boat is on a bearing of <b>' + pad3(b) + '°</b> from the harbour. What is the bearing of the <b>harbour from the boat</b>? (3 figures, like 045)', pic: compass(b), data: 'A compass showing a bearing of ' + pad3(b) + ' degrees.', answer: String(back), show: pad3(back), unit: '°', hints: ['The way back points in exactly the opposite direction.', 'Opposite directions differ by 180°.', b < 180 ? 'The bearing is less than 180°, so add 180°.' : 'The bearing is 180° or more, so take away 180°.'], explain: pad3(b) + (b < 180 ? ' + 180 = ' : ' − 180 = ') + pad3(back) + '. The harbour is on a bearing of ' + pad3(back) + '° from the boat.' });
+};
+G.gridWalk = function (lv) {
+  var cols = ['A', 'B', 'C', 'D', 'E', 'F'], n = lv <= 1 ? 5 : 6, c = rnd(1, n - 2), r = rnd(2, n - 1), dc = rnd(1, n - 1 - c), dr = rnd(1, r - 1), size = 26, out = '', i, j;
+  for (i = 0; i < n; i++) for (j = 0; j < n; j++) out += '<rect x="' + (24 + i * size) + '" y="' + (4 + j * size) + '" width="' + size + '" height="' + size + '" style="fill:var(--surface);stroke:var(--line);stroke-width:1.5"/>';
+  for (i = 0; i < n; i++) out += '<text x="' + (24 + i * size + size / 2) + '" y="' + (4 + n * size + 16) + '" text-anchor="middle" style="font-size:13px;font-weight:700;fill:var(--fg)">' + cols[i] + '</text>';
+  for (j = 0; j < n; j++) out += '<text x="12" y="' + (4 + (n - 1 - j) * size + size / 2 + 5) + '" text-anchor="middle" style="font-size:13px;font-weight:700;fill:var(--fg)">' + (j + 1) + '</text>';
+  var sx = c - 1, sy = r - 1; out += '<circle cx="' + (24 + sx * size + size / 2) + '" cy="' + (4 + (n - 1 - sy) * size + size / 2) + '" r="8" style="fill:' + R.hsl(22) + ';stroke:var(--fg);stroke-width:2"/>';
+  var ex = c - 1 + dc, ey = r - 1 - dr, ansTxt = cols[ex] + (ey + 1);
+  return Q({ tag: 'Position', text: 'The counter is on <b>' + cols[sx] + (sy + 1) + '</b>. Move it <b>' + dc + '</b> square' + (dc === 1 ? '' : 's') + ' east and <b>' + dr + '</b> square' + (dr === 1 ? '' : 's') + ' south. Which square is it on now? (like C4)', pic: R.svg(48 + n * size, 32 + n * size, out, 'A square grid with letters across and numbers up the side', 240), data: 'A grid with letters across the bottom and numbers up the side. A counter is on ' + cols[sx] + (sy + 1) + '.', kind: 'text', placeholder: 'e.g. C4', answer: ansTxt, hints: ['East is to the right. South is down the page.', 'Moving east changes the letter. Moving south changes the number.'], explain: 'East ' + dc + ' takes the letter from ' + cols[sx] + ' to ' + cols[ex] + '. South ' + dr + ' takes the number from ' + (sy + 1) + ' to ' + (ey + 1) + '. The counter is on ' + ansTxt + '.' });
+};
+
+/* ---------- verbal reasoning ---------- */
+var AL = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+function shiftWord(w, k) { return w.split('').map(function (ch) { return AL.charAt(((AL.indexOf(ch) + k) % 26 + 26) % 26); }).join(''); }
+G.letterSeries = function (lv) {
+  var kind = pick(lv <= 1 ? ['step', 'back'] : lv <= 3 ? ['step', 'back', 'alt', 'grow'] : ['step', 'back', 'alt', 'grow', 'alt2']), seq = [], ans, st = rnd(1, lv <= 2 ? 2 : 3), s0 = rnd(0, 6), i, rule;
+  if (kind === 'step') { for (i = 0; i < 5; i++) seq.push(AL.charAt(s0 + i * st)); ans = AL.charAt(s0 + 5 * st); rule = 'The letters move on ' + st + ' place' + (st > 1 ? 's' : '') + ' each time.'; }
+  else if (kind === 'back') { s0 = rnd(18, 25); for (i = 0; i < 5; i++) seq.push(AL.charAt(s0 - i * st)); ans = AL.charAt(s0 - 5 * st); rule = 'The letters move back ' + st + ' place' + (st > 1 ? 's' : '') + ' each time.'; }
+  else if (kind === 'alt') { for (i = 0; i < 6; i++) seq.push(i % 2 === 0 ? AL.charAt(s0 + i / 2) : AL.charAt(25 - s0 - (i - 1) / 2)); ans = seq.pop(); rule = 'Two patterns take turns: one goes forward from the start of the alphabet, one goes back from the end.'; }
+  else if (kind === 'grow') { var gap = 1; seq.push(AL.charAt(s0)); var pos = s0; for (i = 1; i < 5; i++) { pos += gap; seq.push(AL.charAt(pos)); gap++; } ans = AL.charAt(pos + gap); rule = 'The jump grows by one each time: +1, +2, +3, +4, then +5.'; }
+  else { for (i = 0; i < 6; i++) seq.push(i % 2 === 0 ? AL.charAt(s0 + i) : AL.charAt(s0 + 10 - i)); ans = seq.pop(); rule = 'Two patterns take turns. Follow every other letter.'; }
+  var wrong = shuffle(AL.split('')).filter(function (x) { return x !== ans; }).slice(0, 3);
+  var q = mc('Letter series', 'What letter comes <b>next</b>? <span class="codeline"><b>' + seq.join(' , ') + ' , ?</b></span>', null, 'What letter comes next? ' + seq.join(', ') + '.', wrong.concat(ans), ans, ['Write the position of each letter in the alphabet: A is 1, B is 2.', 'Find how the positions change from one letter to the next.', 'Carry on the same pattern one more step.'], rule + ' The next letter is ' + ans + '.');
+  return q;
+};
+G.codeWord = function (lv) {
+  var words = ['CAT', 'DOG', 'SUN', 'MAP', 'PEN', 'BOX', 'HAT', 'BIRD', 'FISH', 'TREE', 'MOON', 'RAIN', 'LAMP', 'DOOR', 'BOOK', 'CAKE', 'STAR', 'SHIP'], w = pick(words), w2 = pick(words.filter(function (x) { return x !== w && (lv > 2 || x.length === w.length || true); })), k = rnd(1, lv <= 2 ? 3 : 5), back = lv >= 3 && Math.random() < 0.4;
+  var kk = back ? -k : k;
+  return Q({ tag: 'Codes', kind: 'text', placeholder: 'e.g. ABC', text: 'In a code, <b>' + w + '</b> is written as <b>' + shiftWord(w, kk) + '</b>. How is <b>' + w2 + '</b> written in the same code?', data: 'In a code, ' + w.split('').join(' ') + ' is written as ' + shiftWord(w, kk).split('').join(' ') + '. How is ' + w2.split('').join(' ') + ' written in the same code?', answer: shiftWord(w2, kk), hints: ['Compare the first letter of the word with the first letter of its code. How many places apart are they?', 'Check that the same jump works for the other letters.', 'Do the same jump to every letter of the new word. After Z the alphabet starts again at A.'], explain: 'Each letter moves ' + k + ' place' + (k > 1 ? 's' : '') + (back ? ' back' : ' on') + ' in the alphabet. So ' + w2 + ' becomes ' + shiftWord(w2, kk) + '.' });
+};
+G.letterValue = function (lv) {
+  var w = pick(['CAB', 'BED', 'DAD', 'FAD', 'ACE', 'BAG', 'HEN', 'FIG', 'DIG', 'JAM', 'TEN', 'SUN', 'BEE', 'LEG', 'ZOO']), v = 0; w.split('').forEach(function (ch) { v += AL.indexOf(ch) + 1; });
+  return Q({ tag: 'Codes', text: 'If A = 1, B = 2, C = 3 and so on to Z = 26, what is the <b>total value</b> of the letters in <b>' + w + '</b>?', data: 'If A is 1, B is 2 and so on, find the total value of the letters in ' + w.split('').join(' ') + '.', answer: String(v), hints: ['Write down the number for each letter.', 'Count along the alphabet if you need to.', 'Add the numbers together.'], explain: w.split('').map(function (ch) { return ch + ' = ' + (AL.indexOf(ch) + 1); }).join(', ') + '. The total is ' + v + '.' });
+};
+var HID = [['cow', 'c', 'ow', ['music', 'magic', 'picnic', 'traffic'], ['own', 'owner', 'owe']], ['hen', 'h', 'en', ['with', 'path', 'bath', 'wish'], ['end', 'enter', 'energy', 'enjoy']], ['pig', 'p', 'ig', ['help', 'stop', 'jump', 'sleep'], ['igloo']], ['dog', 'd', 'og', ['said', 'hand', 'red', 'bread'], ['ogre']], ['ant', 'an', 't', ['plan', 'man', 'can', 'scan'], ['the', 'table', 'time', 'tent']], ['ram', 'r', 'am', ['sister', 'water', 'after', 'winter'], ['amber', 'among', 'amount']], ['fox', 'f', 'ox', ['if', 'of', 'leaf'], ['oxen', 'oxygen']], ['rat', 'ra', 't', ['extra', 'camera'], ['the', 'table', 'time']], ['ape', 'ap', 'e', ['cap', 'map', 'nap', 'snap'], ['end', 'even', 'every']], ['cat', 'c', 'at', ['music', 'magic', 'picnic', 'traffic'], ['ate', 'attic', 'atlas']]];
+R.HID = HID;
+G.hiddenWord = function (lv) {
+  var h = pick(HID), l = pick(h[3].filter(function (w) { return w.slice(-h[1].length) === h[1]; })), r = pick(h[4].filter(function (w) { return w.indexOf(h[2]) === 0; })), frame = pick(['The ' + l + ' ' + r + ' was very old.', 'We saw the ' + l + ' ' + r + ' today.', 'Look at that ' + l + ' ' + r + ' over there.', 'I like the ' + l + ' ' + r + ' a lot.']);
+  var names = HID.map(function (x) { return x[0]; }), letters = (l + r).toLowerCase(), found = names.filter(function (n) { return letters.indexOf(n) > -1; });
+  if (found.length !== 1 || letters.indexOf(h[0]) === -1) return G.hiddenWord(lv);
+  var opts = shuffle(names.filter(function (n) { return n !== h[0]; })).slice(0, 3).concat(h[0]);
+  return mc('Hidden words', 'An animal is hidden across two words in this sentence. Which animal is it?<div class="codeline"><b>' + frame + '</b></div>', null, frame + ' An animal is hidden across two words. Which animal is it?', opts, h[0], ['Ignore the spaces. Read the letters in a row.', 'Look at the end of one word and the start of the next.', 'Try each animal in the choices.'], 'The letters "' + l + r + '" hide ' + h[0].toUpperCase() + ': ' + l.slice(0, l.length - h[1].length) + '<b>' + h[1] + '</b> <b>' + h[2] + '</b>' + r.slice(h[2].length) + '.');
+};
+var SYN = [['happy', 'joyful', ['angry', 'tired', 'quiet']], ['big', 'enormous', ['tiny', 'narrow', 'heavy']], ['quick', 'rapid', ['slow', 'late', 'early']], ['begin', 'start', ['finish', 'continue', 'pause']], ['brave', 'courageous', ['nervous', 'lazy', 'careful']], ['rich', 'wealthy', ['poor', 'generous', 'greedy']], ['silent', 'quiet', ['noisy', 'busy', 'rude']], ['clever', 'intelligent', ['foolish', 'kind', 'shy']], ['difficult', 'hard', ['simple', 'boring', 'early']], ['gift', 'present', ['bill', 'lesson', 'secret']], ['strange', 'odd', ['common', 'lovely', 'bright']], ['leave', 'depart', ['arrive', 'remain', 'return']], ['furious', 'angry', ['cheerful', 'gentle', 'sleepy']], ['tiny', 'small', ['huge', 'loud', 'dull']], ['huge', 'giant', ['narrow', 'shiny', 'slow']], ['sad', 'unhappy', ['excited', 'curious', 'hungry']], ['smart', 'clever', ['rude', 'slow', 'noisy']], ['mend', 'repair', ['break', 'borrow', 'bend']], ['fix', 'repair', ['spoil', 'forget', 'choose']], ['reply', 'answer', ['ask', 'shout', 'whisper']]], ANT = [['ancient', 'modern', ['old', 'broken', 'famous']], ['expand', 'shrink', ['grow', 'stretch', 'spread']], ['victory', 'defeat', ['prize', 'game', 'win']], ['generous', 'mean', ['kind', 'rich', 'happy']], ['accept', 'refuse', ['take', 'agree', 'receive']], ['rough', 'smooth', ['hard', 'bumpy', 'wet']], ['increase', 'decrease', ['rise', 'grow', 'add']], ['arrive', 'depart', ['reach', 'enter', 'stay']], ['hollow', 'solid', ['empty', 'light', 'round']], ['permit', 'forbid', ['allow', 'ask', 'help']], ['cheap', 'expensive', ['small', 'tidy', 'plain']], ['early', 'late', ['quick', 'soon', 'first']], ['absent', 'present', ['away', 'missing', 'late']], ['borrow', 'lend', ['take', 'buy', 'keep']], ['forget', 'remember', ['lose', 'learn', 'know']], ['brave', 'cowardly', ['bold', 'strong', 'loud']], ['transparent', 'opaque', ['clear', 'thin', 'bright']], ['rapid', 'slow', ['fast', 'late', 'short']]];
+function wordPick(bank, label, tag) {
+  var b = pick(bank), opts = b[2].concat(b[1]);
+  return mc(tag, 'Which word means the <b>' + (label === 'same' ? 'same as' : 'opposite of') + '</b> <b>' + b[0] + '</b>?', null, 'Which word means the ' + (label === 'same' ? 'same as' : 'opposite of') + ' ' + b[0] + '?', opts, b[1], ['Say the word in a sentence first.', 'Try each choice in the sentence and see which one fits best.'], b[1] + ' means ' + (label === 'same' ? 'the same as ' : 'the opposite of ') + b[0] + '.');
+}
+G.synonym = function (lv) { var q = wordPick(SYN, 'same', 'Word meanings'); return q; };
+G.antonym = function (lv) { return wordPick(ANT, 'opposite', 'Word meanings'); };
+var ODD = [[['apple', 'pear', 'plum', 'carrot'], 'carrot'], [['circle', 'square', 'triangle', 'cube'], 'cube'], [['Monday', 'Friday', 'April', 'Sunday'], 'April'], [['red', 'blue', 'green', 'round'], 'round'], [['hammer', 'spanner', 'saw', 'bread'], 'bread'], [['sparrow', 'eagle', 'salmon', 'robin'], 'salmon'], [['Glasgow', 'Dundee', 'Wales', 'Aberdeen'], 'Wales'], [['metre', 'kilometre', 'litre', 'centimetre'], 'litre'], [['violin', 'trumpet', 'flute', 'canvas'], 'canvas'], [['whale', 'dolphin', 'seal', 'shark'], 'shark'], [['Mars', 'Venus', 'Moon', 'Jupiter'], 'Moon'], [['oak', 'beech', 'rose', 'elm'], 'rose'], [['cube', 'cuboid', 'sphere', 'hexagon'], 'hexagon'], [['kilogram', 'gram', 'tonne', 'second'], 'second'], [['north', 'south', 'left', 'west'], 'left'], [['spoon', 'fork', 'knife', 'plate'], 'plate']];
+G.oddWord = function (lv) { var o = pick(ODD), opts = shuffle(o[0].slice()); return mc('Odd one out', 'Which word is the <b>odd one out</b>?<div class="codeline"><b>' + opts.join(' , ') + '</b></div>', null, 'Which word is the odd one out? ' + opts.join(', ') + '.', opts, o[1], ['Say what the other three words have in common.', 'Find the word that does not belong to that group.'], o[1] + ' is the odd one out. The other three belong together.'); };
+var WAN = [['bird', 'nest', 'bee', 'hive'], ['doctor', 'hospital', 'teacher', 'school'], ['finger', 'hand', 'toe', 'foot'], ['sad', 'happy', 'cold', 'hot'], ['page', 'book', 'petal', 'flower'], ['pen', 'write', 'knife', 'cut'], ['puppy', 'dog', 'kitten', 'cat'], ['day', 'night', 'summer', 'winter'], ['eye', 'see', 'ear', 'hear'], ['cow', 'calf', 'sheep', 'lamb'], ['wheel', 'car', 'wing', 'plane'], ['author', 'book', 'artist', 'painting'], ['sock', 'foot', 'glove', 'hand'], ['tall', 'short', 'wide', 'narrow'], ['painter', 'brush', 'writer', 'pen'], ['fish', 'swim', 'bird', 'fly'], ['hour', 'minute', 'metre', 'centimetre'], ['chef', 'kitchen', 'pilot', 'cockpit'], ['clock', 'time', 'ruler', 'length'], ['lion', 'pride', 'wolf', 'pack']];
+G.wordAnalogy = function (lv) {
+  var w = pick(WAN), pool = shuffle(WAN.map(function (x) { return x[3]; }).filter(function (x) { return x !== w[3]; })).slice(0, 3);
+  return mc('Word links', '<b>' + w[0] + '</b> is to <b>' + w[1] + '</b> as <b>' + w[2] + '</b> is to ...', null, w[0] + ' is to ' + w[1] + ' as ' + w[2] + ' is to what?', pool.concat(w[3]), w[3], ['Say how the first two words are linked in a sentence.', 'Use the same link for the third word.'], 'The link is the same each time, so ' + w[2] + ' goes with ' + w[3] + '.');
+};
+G.orderPeople = function (lv) {
+  var n = lv <= 2 ? 3 : 4, names = shuffle(['Ali', 'Beth', 'Cara', 'Dev', 'Eve', 'Finn']).slice(0, n), adj = pick([['taller', 'shortest', 'tallest'], ['older', 'youngest', 'oldest'], ['faster', 'slowest', 'fastest']]), facts = [], i;
+  for (i = 0; i < n - 1; i++) facts.push('<b>' + names[i] + '</b> is ' + adj[0] + ' than <b>' + names[i + 1] + '</b>.');
+  var ask = pick([0, 1, 2]); if (n === 3 && ask === 2) ask = 0; var qs, ans;
+  if (ask === 0) { qs = 'Who is the <b>' + adj[1] + '</b>?'; ans = names[n - 1]; } else if (ask === 1) { qs = 'Who is the <b>' + adj[2] + '</b>?'; ans = names[0]; } else { var m = rnd(1, n - 2); qs = 'Who is <b>number ' + (m + 1) + '</b> counting from the ' + adj[2] + '?'; ans = names[m]; }
+  return mc('Reasoning', shuffle(facts).join(' ') + ' ' + qs, null, facts.join(' ') + ' ' + qs.replace(/<[^>]+>/g, ''), names, ans, ['Put the people in order on a line.', 'Start with the person who is ' + adj[0] + ' than everyone.', 'Then read off the answer.'], 'The order from ' + adj[2] + ' to ' + adj[1] + ' is ' + names.join(', ') + '. So the answer is ' + ans + '.');
+};
+
+/* ---------- spatial word problems ---------- */
+G.packBox = function (lv) {
+  var e = lv <= 2 ? 1 : pick([1, 2]), a = rnd(2, 5) * e, b = rnd(2, 4) * e, c = rnd(2, 4) * e, n = (a / e) * (b / e) * (c / e), what = pick(['sugar cubes', 'building blocks', 'dice']);
+  return Q({ tag: 'Packing', text: 'A box is <b>' + a + ' cm</b> long, <b>' + b + ' cm</b> wide and <b>' + c + ' cm</b> high. It is packed with ' + what + ' that are <b>' + e + ' cm</b> cubes. How many ' + what + ' fit in the box?', answer: String(n), hints: ['Work out how many cubes fit along each edge.', 'Along each edge: divide the length by ' + e + '.', 'Multiply the three numbers together.'], explain: (a / e) + ' × ' + (b / e) + ' × ' + (c / e) + ' = ' + n + '.' });
+};
+G.paintedCube = function (lv) {
+  var n = lv <= 3 ? pick([3, 4]) : pick([3, 4, 5]), k = lv <= 3 ? pick([3, 2]) : pick([3, 2, 1, 0]), cnt = k === 3 ? 8 : k === 2 ? 12 * (n - 2) : k === 1 ? 6 * (n - 2) * (n - 2) : Math.pow(n - 2, 3);
+  return Q({ tag: 'Cubes in 3D', text: 'A large cube is made from <b>' + n + ' × ' + n + ' × ' + n + '</b> small cubes. The outside of the large cube is painted. How many small cubes have exactly <b>' + k + '</b> painted face' + (k === 1 ? '' : 's') + '?', answer: String(cnt), hints: [k === 3 ? 'Cubes with three painted faces are in the corners.' : k === 2 ? 'Cubes with two painted faces are on the edges, but not in the corners.' : k === 1 ? 'Cubes with one painted face are in the middle of a face.' : 'Cubes with no painted faces are inside, where paint cannot reach.', 'A cube has 8 corners, 12 edges and 6 faces.'], explain: k === 3 ? 'The 8 corner cubes have three painted faces.' : k === 2 ? 'Each of the 12 edges has ' + (n - 2) + ' such cubes: 12 × ' + (n - 2) + ' = ' + cnt + '.' : k === 1 ? 'Each of the 6 faces has ' + (n - 2) + ' × ' + (n - 2) + ' such cubes: ' + cnt + '.' : 'The inner cube is ' + (n - 2) + ' × ' + (n - 2) + ' × ' + (n - 2) + ' = ' + cnt + '.' });
+};
+G.frameCube = function (lv) {
+  var e = rnd(3, 12), kind = pick(['frame', 'wrap']); if (kind === 'frame') return Q({ tag: 'Cubes in 3D', text: 'A cube frame is made from straws. Each edge of the cube is <b>' + e + ' cm</b> long. What is the <b>total length</b> of straw needed? (cm)', answer: String(12 * e), unit: 'cm', hints: ['A cube has 12 edges.', 'All the edges are the same length.'], explain: '12 × ' + e + ' = ' + 12 * e + ' cm.' });
+  var l = rnd(3, 9), w = rnd(2, 6), h = rnd(2, 6), sa = 2 * (l * w + l * h + w * h);
+  return Q({ tag: 'Wrapping', text: 'A box is <b>' + l + ' cm</b> long, <b>' + w + ' cm</b> wide and <b>' + h + ' cm</b> high. What area of paper is needed to cover the whole outside? (cm²)', answer: String(sa), unit: 'cm²', hints: ['A box has 6 faces in 3 matching pairs.', 'Find the area of one of each: ' + l + ' × ' + w + ', ' + l + ' × ' + h + ' and ' + w + ' × ' + h + '.', 'Double the total.'], explain: '2 × (' + l * w + ' + ' + l * h + ' + ' + w * h + ') = ' + sa + ' cm².' });
+};
+G.walkMap = function (lv) {
+  var a = rnd(2, 8), b = rnd(2, 8), c = rnd(1, a - 1), d1 = pick(['north', 'south']), opp = d1 === 'north' ? 'south' : 'north', d2 = pick(['east', 'west']), net = a - c;
+  var ask = pick([0, 1]); if (ask === 0) return mc('Maps and directions', 'A hiker walks <b>' + a + ' km ' + d1 + '</b>, then <b>' + b + ' km ' + d2 + '</b>, then <b>' + c + ' km ' + opp + '</b>. How far is the hiker now <b>' + d1 + '</b> of the start? (km)', null, 'A hiker walks ' + a + ' kilometres ' + d1 + ', then ' + b + ' kilometres ' + d2 + ', then ' + c + ' kilometres ' + opp + '.', [String(net), String(a + c), String(b), String(a)], String(net), ['Draw a sketch of the walk.', 'Moving ' + opp + ' cancels some of the ' + d1 + ' walk.'], a + ' − ' + c + ' = ' + net + ' km ' + d1 + ' of the start.');
+  return Q({ tag: 'Maps and directions', text: 'A hiker walks <b>' + a + ' km ' + d1 + '</b>, then <b>' + b + ' km ' + d2 + '</b>, then <b>' + c + ' km ' + opp + '</b>. How many km is the hiker <b>' + d2 + '</b> of the start?', answer: String(b), hints: ['Draw a sketch of the walk.', 'Only the ' + d2 + ' walk moves the hiker ' + d2 + '.'], explain: 'The ' + d1 + ' and ' + opp + ' walks do not change the east-west position. The hiker is ' + b + ' km ' + d2 + '.' });
+};
+G.stairs = function (lv) {
+  var n = rnd(3, lv <= 3 ? 6 : 9), tot = n * (n + 1) / 2;
+  return Q({ tag: 'Patterns in 3D', text: 'A staircase is built from cubes. The first step is <b>1</b> cube high, the second is <b>2</b> cubes high, and so on up to step <b>' + n + '</b>. How many cubes are used altogether?', answer: String(tot), hints: ['The steps are 1, 2, 3, ... up to ' + n + '.', 'Add them up, or pair the first with the last: 1 + ' + n + ', 2 + ' + (n - 1) + '.'], explain: '1 + 2 + ... + ' + n + ' = ' + tot + ' cubes.' });
+};
+})();
+</script>
+<script>
+/* Spatial awareness and reasoning: lessons, activities and topic set-up for P5 to S3 (part 3 of 3) */
+(function () { 'use strict';
+var S = Studio, H = S.h, K = S.kit, V = S.viz, R = window.SPA, G = R.G, rnd = H.rnd, pick = H.pick, shuffle = H.shuffle, $ = H.$;
+var YEARS = [
+  { year: 'P5', n: 513, lv: 1 }, { year: 'P6', n: 13, lv: 2 }, { year: 'P7', n: 713, lv: 3 },
+  { year: 'S1', n: 813, lv: 4 }, { year: 'S2', n: 833, lv: 5 }, { year: 'S3', n: 853, lv: 6 }
+];
+function mk(name, lv) { var f = function () { return G[name](lv); }; Object.defineProperty(f, 'name', { value: name }); return f; }
+
+/* ---------- pictures used in the lessons ---------- */
+function mirrorPic() {
+  var p = R.PIECES[0], out = '<g transform="translate(10 8)">' + R.pieceSvg(p, 16, 215, 4) + '</g><line x1="98" y1="2" x2="98" y2="92" style="stroke:' + R.hsl(22) + ';stroke-width:3;stroke-dasharray:7 5"/><g transform="translate(112 8)">' + R.pieceSvg(R.flipLR(p), 16, 150, 4) + '</g><text x="98" y="108" text-anchor="middle" style="font-size:12px;font-weight:700;fill:var(--fg)">mirror line</text>';
+  return R.svg(200, 114, out, 'A shape and its mirror image on the other side of a dashed mirror line', 260);
+}
+function turnPic() {
+  var p = R.PIECES[0], out = '', ops = [[p, 'Start'], [R.turnCW(p), '¼ turn'], [R.turnCW(R.turnCW(p)), '½ turn'], [R.turnCCW(p), '¾ turn']];
+  ops.forEach(function (o, i) { out += '<g transform="translate(' + (i * 82) + ' 4)">' + R.pieceSvg(o[0], 14, i ? 150 : 215, 4) + '</g><text x="' + (i * 82 + 32) + '" y="86" text-anchor="middle" style="font-size:12px;font-weight:700;fill:var(--fg)">' + o[1] + '</text>'; });
+  return R.svg(330, 94, out, 'A shape turned a quarter turn, a half turn and three-quarters of a turn clockwise', 340);
+}
+function seriesPic() {
+  var out = '', specs = [0, 90, 180, 270].map(function (r) { return { sh: 'arrow', fill: 1, rot: r, sz: 1 }; });
+  specs.forEach(function (s, i) { out += R.tile(s, i * 66, 4, 56); });
+  out += R.qbox(4 * 66, 4, 56);
+  return R.svg(5 * 66 - 10, 66, out, 'An arrow turns a quarter turn each time and the next tile is missing', 340);
+}
+function matrixPic() {
+  var out = '', sh = ['tri', 'sq', 'circ'], i, j, box = 48;
+  for (i = 0; i < 3; i++) for (j = 0; j < 3; j++) out += (i === 2 && j === 2) ? R.qbox(j * 56, i * 56, box) : R.tile({ sh: sh[i], fill: j, rot: 0, sz: 1 }, j * 56, i * 56, box);
+  return R.svg(160, 160, out, 'A three by three grid. Each row has its own shape and the shading changes across each row. The last tile is missing.', 200);
+}
+function oddPic() {
+  var out = '', t = [{ sh: 'sq', fill: 1 }, { sh: 'sq', fill: 1 }, { sh: 'tri', fill: 1 }, { sh: 'sq', fill: 1 }, { sh: 'sq', fill: 1 }];
+  t.forEach(function (s, i) { out += R.tile(s, i * 66, 4, 56) + R.letter('ABCDE'.charAt(i), i * 66 + 28, 78); });
+  return R.svg(320, 86, out, 'Five tiles labelled A to E. Tile C is a triangle and the other four are squares.', 340);
+}
+function netPic() { var cells = [[0, 1], [1, 1], [2, 1], [3, 1], [1, 0], [2, 2]]; return R.netPic(cells, ['', '', '', '', '', '']); }
+function netLabelPic() { var cells = [[0, 1], [1, 1], [2, 1], [3, 1], [1, 0], [2, 2]]; return R.netPic(cells, ['A', 'B', 'C', 'D', 'E', 'F']); }
+function badNetPic() { return R.netPic([[0, 0], [1, 0], [0, 1], [1, 1], [2, 0], [3, 0]]); }
+function alphaPic() {
+  var out = '', L = 'ABCDEFGHIJKLM'.split(''), M = 'NOPQRSTUVWXYZ'.split('');
+  L.forEach(function (c, i) { out += '<text x="' + (14 + i * 22) + '" y="14" text-anchor="middle" style="font-size:14px;font-weight:700;fill:var(--fg)">' + c + '</text><text x="' + (14 + i * 22) + '" y="32" text-anchor="middle" style="font-size:11px;fill:var(--muted)">' + (i + 1) + '</text>'; });
+  M.forEach(function (c, i) { out += '<text x="' + (14 + i * 22) + '" y="58" text-anchor="middle" style="font-size:14px;font-weight:700;fill:var(--fg)">' + c + '</text><text x="' + (14 + i * 22) + '" y="76" text-anchor="middle" style="font-size:11px;fill:var(--muted)">' + (i + 14) + '</text>'; });
+  return R.svg(300, 86, out, 'The alphabet with each letter numbered from 1 to 26', 340);
+}
+function stackPic(lv) { return R.cubes(lv <= 1 ? [[2, 1], [1, 3]] : [[1, 2, 0], [3, 1, 1], [0, 2, 1]], 150); }
+function gridPic(lv) {
+  if (lv <= 1) return SK.grid([[2, 3, 'P'], [5, 5, 'Q']], 0, 8, null);
+  if (lv === 2) return SK.grid([[2, 3, 'P'], [8, 3, 'P′']], 0, 10, [[[5, 0], [5, 10]]]);
+  if (lv === 3) return SK.grid([[3, 2, 'P'], [3, -2, 'P′']], -6, 6, [[[-6, 0], [6, 0]]]);
+  if (lv === 4) return SK.grid([[3, 1, 'P'], [1, -3, 'P′']], -6, 6, null);
+  if (lv === 5) return SK.grid([[1, 2, 'P'], [3, 6, 'P′']], -6, 6, null);
+  return SK.grid([[2, 1, 'P'], [-1, 2, 'P′']], -6, 6, [[[-6, -6], [6, 6]]]);
+}
+function compassPic(lv) { return R.compass(lv >= 4 ? 70 : 90); }
+
+/* ---------- lessons ---------- */
+function T(x) { return x; }
+function lessons(lv) {
+  var A = [], B = [];
+  A.push({ title: lv <= 2 ? 'Turning shapes' : 'Turns and directions', v: function () { return lv <= 3 ? turnPic() : compassPic(lv); },
+    say: lv <= 1 ? ['A whole turn goes all the way round. A half turn is half of that, and a quarter turn is a quarter.', 'Clockwise turns go the same way as the hands of a clock. Anticlockwise goes the other way.', 'When a shape turns, it does not flip. It looks the same but points a new way.']
+      : lv === 2 ? ['A quarter turn is 90°, a half turn is 180° and three-quarters of a turn is 270°.', 'Follow one corner of the shape as it moves. Where that corner ends up tells you the whole picture.', 'Turning never flips the shape. The shape stays the same way round.']
+      : lv === 3 ? ['Turns are measured in degrees. Eighths of a turn are 45°, quarters are 90°, halves are 180°.', 'On a compass, North is at the top. Each step clockwise to the next point is 45°: N, NE, E, SE, S, SW, W, NW.', 'Add the turns one at a time. Turning 90° clockwise and then 90° anticlockwise takes you back to where you started.']
+      : ['A bearing measures a direction as an angle clockwise from North, always with three figures: 045°, 090°, 270°.', 'Turning clockwise adds to the bearing. Turning anticlockwise takes away from it. If you go past 360° take away 360°.', 'Facing opposite directions means the bearings differ by 180°. That gives the back bearing.'],
+    real: lv <= 3 ? 'Steering a bike or a car, and following instructions like "turn left at the lights", all use turns.' : 'Pilots, sailors and walkers with a compass describe directions with bearings.',
+    goal: lv <= 3 ? 'how shapes and arrows change when they turn.' : 'how to describe a direction as a bearing and work out new bearings after a turn.', more: ['Always say which way you turn (clockwise or anticlockwise) and how far.', lv <= 3 ? 'Check by picturing a clock hand pointing to the top, then turning it.' : 'Draw a quick sketch of North, then the angle clockwise.'], eg: lv <= 3 ? ['Example 1: facing North, a quarter turn clockwise faces East.', 'Example 2: a half turn from West faces East.', 'Example 3: facing South, a quarter turn anticlockwise faces East.'] : ['Example 1: 040° turned 90° clockwise is 130°.', 'Example 2: 300° turned 100° clockwise is 400° − 360° = 040°.', 'Example 3: 060° turned 80° anticlockwise is 340°.'] });
+  A.push({ title: 'Mirror images', v: mirrorPic,
+    say: ['A mirror image is a reflection. Each point is the same distance from the mirror line, but on the opposite side.', lv <= 1 ? 'Left and right swap, but up and down stay the same when the mirror line is vertical.' : 'With a vertical mirror line, left and right swap. With a horizontal mirror line, up and down swap.', 'A reflected shape is flipped over. That is different from a turn, where the shape is not flipped.', lv >= 3 ? 'Hold a letter such as F up to a mirror, or flip a piece of paper over, to check what a reflection looks like.' : 'Imagine the paper folded along the mirror line, so the two shapes fit exactly on top of each other.'],
+    real: 'Your reflection in a mirror, a lake that shows the mountains upside down, and the two halves of a butterfly all show reflection.', goal: 'how to pick out the mirror image of a shape.', more: ['A good test: the mirror image has the same size and shape, but it cannot be turned to fit the original.', 'Count squares to the mirror line to place each corner correctly.'], eg: ['Example 1: a shape touching the mirror line has an image that touches it too.', 'Example 2: a corner 3 squares left of the line has an image 3 squares right of it.', 'Example 3: for a horizontal mirror line, a point 2 above has an image 2 below.'] });
+  A.push({ title: 'Cubes and stacks', v: function () { return stackPic(lv); },
+    say: lv <= 1 ? ['A stack of cubes is built in columns. Each column can be one cube tall or more.', 'Some cubes are hidden behind or underneath others. They are still part of the stack.', 'To count them, go one column at a time and add up.']
+      : lv <= 3 ? ['Count the cubes column by column, including the ones you cannot see. A tall column has hidden cubes under the top.', 'From above you see only the top of each column. The number of squares seen from above is the number of columns that are not empty.', 'From the side you see the tallest column in each line. Shorter columns behind it are hidden.']
+      : ['Count cubes column by column. The total is the volume of the stack in unit cubes.', 'Surface area counts every square face on the outside, including the bottom. Faces where two cubes touch are inside, so they are not counted.', 'If each cube has edges of e cm, the volume is e³ cm³ for each cube, and each face is e² cm².'],
+    real: 'Packing boxes in a lorry, stacking crates in a shop and building with blocks all need cube counting.', goal: lv <= 3 ? 'how to count cubes in a stack, including hidden ones.' : 'how to find the volume and surface area of a stack of cubes.', more: ['Make a small table of column heights to keep track.', 'Build the stack with real blocks if you can, then check by counting.'], eg: lv <= 3 ? ['Example 1: columns of 2, 1, 1 and 3 hold 7 cubes.', 'Example 2: from above, 4 columns show 4 squares.', 'Example 3: a column 3 tall hides 2 cubes under its top.'] : ['Example 1: 7 cubes of edge 2 cm have volume 7 × 8 = 56 cm³.', 'Example 2: a 1 × 1 × 3 tower has surface area 14 square units.', 'Example 3: joining two cubes hides 2 faces, so 12 − 2 = 10 faces show.'] });
+  A.push({ title: 'Nets of a cube', v: netPic,
+    say: ['A net is a flat pattern that folds up to make a solid. The net of a cube is made of six squares.', 'Many different arrangements of six squares are nets. A row of four squares with one square above and one below always works.', 'A net does not work if two squares would land on the same face, or if there is a gap.', lv <= 2 ? 'Faces that are opposite each other on the cube are never next to each other in the net.' : 'Two squares with exactly one square between them in a straight line of the net are opposite faces on the cube.'],
+    real: 'Cereal boxes and packaging start as flat nets that are cut out, folded and glued.', goal: 'how to tell whether a pattern of six squares folds into a cube.', more: ['Pick one square as the bottom, then fold the others up around it.', lv <= 2 ? 'Beware of a 2 × 2 block of squares. It can never fold into a cube.' : 'A 2 × 2 block of squares can never fold into a cube, because four squares cannot meet at one corner.'], eg: ['Example 1: a cross shape with six squares folds to a cube.', 'Example 2: six squares in a straight line do not fold to a cube.', 'Example 3: a row of four with one above and one below is a net.'] });
+  B.push({ title: 'Shape patterns', v: seriesPic,
+    say: ['In a pattern of shapes, look for what changes from one shape to the next.', 'Things that can change are the way a shape points, its shading, its size, the number of sides and the number of dots.', 'Work out the rule from the first shapes, then check that it works for the others, then use it to find the missing shape.', lv >= 3 ? 'Sometimes two rules take turns, one for every other shape. Check the odd places and the even places separately.' : 'In this pattern the arrow turns a quarter turn clockwise each time, so the next arrow points to the left.'],
+    real: 'Tiling patterns on floors and fabrics repeat in the same way.', goal: 'how to find the rule in a pattern of shapes and use it.', more: ['Write down what changes. Say it in words: "turns a quarter turn clockwise".', 'If you cannot see a pattern, look at one thing at a time: shape, shading, size, then direction.'], eg: ['Example 1: shading goes white, blue, green, white, blue, ... then green comes next.', 'Example 2: a triangle, square, pentagon, hexagon pattern adds one side each time.', 'Example 3: one dot, two dots, three dots, then four dots.'] });
+  B.push({ title: lv <= 2 ? 'Odd one out and pattern grids' : 'Pattern grids, analogies and odd one out', v: function () { return lv <= 2 ? oddPic() : matrixPic(); },
+    say: lv <= 2 ? ['An odd one out is the picture that does not follow the same rule as the others.', 'Say what the other four have in common. Look at shape, shading, size and the way they point.', 'In this picture four tiles are squares and tile C is a triangle, so C is the odd one out.']
+      : ['In a pattern grid, look along each row and down each column. Find the rule, then use it on the last row.', 'In this grid every row has its own shape, and the shading changes across each row, so the missing tile is a green circle.', 'In a shape analogy the first shape changes into the second. Do the same change to the third shape.', 'In an odd one out, say what four of the pictures share, then find the one that breaks the rule.'],
+    real: 'Spotting patterns helps in puzzles, coding and design.', goal: lv <= 2 ? 'how to find the odd one out in a set of shapes.' : 'how to solve pattern grids, shape analogies and odd-one-out puzzles.', more: ['Check every feature, not just the shape. Shading and size matter too.', 'If two answers seem to work, look for a feature you have not checked yet.'], eg: ['Example 1: four circles and one square. The square is the odd one out.', 'Example 2: four black shapes and one white shape. The white shape is the odd one out.', 'Example 3: if a small arrow becomes a large arrow, a small circle becomes a large circle.'] });
+  B.push({ title: lv <= 1 ? 'Finding places on a grid' : lv === 2 ? 'Reflecting on a grid' : lv === 3 ? 'Reflection in the axes' : lv === 4 ? 'Rotation and translation' : lv === 5 ? 'Enlargement and combined moves' : 'Combined transformations',
+    v: function () { return gridPic(lv); },
+    say: lv <= 1 ? ['A coordinate pair gives a position. The first number says how far across. The second says how far up.', 'To move a point, change the first number to move across, or the second number to move up and down.', 'On a map grid the letters go across and the numbers go up, so C4 means column C and row 4.']
+      : lv === 2 ? ['To reflect a point in a vertical mirror line, keep the height the same. Find how far the point is from the line and go the same distance on the other side.', 'Point P (2, 3) is 3 squares left of the line x = 5. Its image is 3 squares right, at (8, 3).', 'The mirror line x = 5 is vertical and goes through 5 on the x-axis.']
+      : lv === 3 ? ['Reflecting in the x-axis keeps x the same and changes the sign of y. P (3, 2) becomes (3, −2).', 'Reflecting in the y-axis changes the sign of x and keeps y the same.', 'For a mirror line such as x = 2, find the distance from the point to the line and go the same distance past it.']
+      : lv === 4 ? ['Rotating 180° about the origin changes the signs of both coordinates. A quarter turn clockwise turns (x, y) into (y, −x).', 'A translation slides every point the same distance. The vector (a, b) means a across and b up.', 'P (3, 1) rotated 90° clockwise about the origin becomes (1, −3).']
+      : lv === 5 ? ['An enlargement multiplies the distance from the centre by the scale factor. From the origin, (x, y) becomes (kx, ky).', 'P (1, 2) enlarged by scale factor 3 from the origin goes to (3, 6).', 'When you combine transformations, do them one at a time and say each result.']
+      : ['Reflecting in y = x swaps the coordinates: (x, y) becomes (y, x). Reflecting in y = −x gives (−y, −x).', 'P (2, 1) reflected in y = x becomes (1, 2).', 'To combine transformations, do the first, write the new coordinates, then do the second. Order matters.'],
+    real: lv <= 1 ? 'Maps, games like battleships and chess boards all use grid positions.' : 'Computer graphics and video games move, turn and reflect shapes all the time.', goal: lv <= 1 ? 'how to give and use positions on a grid.' : 'how to find the image of a point after a transformation.', more: ['Sketch the point and the line or centre on a grid and check your answer against the picture.', 'The image of a point after a reflection or rotation is always the same distance from the line or centre as the original.'], eg: lv <= 1 ? ['Example 1: from (2, 3) move 3 right to (5, 3).', 'Example 2: from (2, 3) move 2 up to (2, 5).', 'Example 3: D3 means column D, row 3.'] : ['Example 1: (4, 2) reflected in the y-axis is (−4, 2).', 'Example 2: (1, 3) translated by (2, −1) is (3, 2).', 'Example 3: (2, 2) enlarged by scale factor 2 is (4, 4).'] });
+  B.push({ title: 'Verbal reasoning: letters and words', v: alphaPic,
+    say: ['Verbal reasoning uses letters and words. Learn the alphabet with numbers: A is 1, B is 2, up to Z which is 26.', 'In a letter series, work out the jump between the letters. In a code, every letter moves the same number of places.', 'In a word link, say how the first pair of words are related, then use the same link on the second pair. In a hidden word puzzle, ignore the spaces and read the letters in a row.', lv >= 4 ? 'For two patterns that take turns, look at every other letter separately.' : 'To find an odd one out, say what category three of the words belong to.'],
+    real: 'Crosswords, word games and quiz questions all use these skills.', goal: 'how to solve letter series, codes, hidden words and word links.', more: ['Write the number under each letter if it helps. Counting on your fingers is fine.', 'Do not guess too early. Check your rule works for every letter or word you were given.'], eg: ['Example 1: A, C, E, G, ... the jump is 2, so the next letter is I.', 'Example 2: in a code that moves each letter on 1, CAT becomes DBU.', 'Example 3: "magic attic" hides the word CAT.'] });
+  return { A: A, B: B };
+}
+
+/* ---------- activities ---------- */
+function cubeLab(lv) {
+  var N = lv <= 3 ? 3 : 4, MAX = lv <= 1 ? 3 : 4;
+  return function (host, ctx) {
+    var h = [], i, j, done = 0, need = 3, target = null;
+    for (i = 0; i < N; i++) { h.push([]); for (j = 0; j < N; j++) h[i].push(0); }
+    host.innerHTML = '<p class="say wq" id="cbTask"></p><div class="visual" id="cbVis" style="text-align:center"></div><p class="eyebrow" style="margin:10px 0 4px">Tap a square to add a cube to that column. After ' + MAX + ' cubes it goes back to empty.</p><div id="cbGrid" style="display:grid;grid-template-columns:repeat(' + N + ',54px);gap:6px;justify-content:center;margin:8px 0"></div><div class="lab-out say" id="cbOut" aria-live="polite"></div><div class="row" style="margin-top:8px"><button class="btn ghost" id="cbClear" type="button">Clear</button><button class="btn ghost" id="cbRand" type="button">Random stack</button></div><div class="fb" id="cbFb" aria-live="polite" style="display:none"></div>';
+    function newTarget() { var t = R.randStack(N, N, MAX, 5); target = { total: R.total(t), top: R.topView(t) }; $('cbTask').innerHTML = 'Challenge ' + (done + 1) + ' of ' + need + ': build a stack with <b>' + target.total + ' cubes</b> that shows <b>' + target.top + ' squares</b> from above.'; }
+    function draw() {
+      $('cbVis').innerHTML = R.cubes(h, 150, null, true);
+      var g = $('cbGrid'); g.innerHTML = '';
+      h.forEach(function (r, a) { r.forEach(function (v, b) { var bt = document.createElement('button'); bt.type = 'button'; bt.className = 'btn ghost'; bt.style.cssText = 'min-height:48px;font-size:1.1rem'; bt.textContent = v; bt.setAttribute('aria-label', 'Column row ' + (a + 1) + ' column ' + (b + 1) + ' has ' + v + ' cubes. Tap to add one.'); bt.addEventListener('click', function () { h[a][b] = (h[a][b] + 1) % (MAX + 1); draw(); check(); }); g.appendChild(bt); }); });
+      var t = R.total(h), out = 'Cubes: ' + t + '. From above you see ' + R.topView(h) + ' squares. Left-hand view: ' + R.leftView(h) + ' squares. Right-hand view: ' + R.rightView(h) + ' squares.'; if (lv >= 4) out += ' Surface area: ' + R.surface(h) + ' square units.';
+      $('cbOut').textContent = out;
+    }
+    function check() {
+      var fb = $('cbFb'); if (!target || R.total(h) !== target.total || R.topView(h) !== target.top) { fb.style.display = 'none'; return; }
+      done++; fb.style.display = ''; fb.className = 'fb ok say'; fb.innerHTML = '<strong>Brilliant!</strong>' + (done >= need ? ' You have finished all ' + need + ' challenges.' : ' That stack works. Here is the next challenge.');
+      if (done >= need) { ctx.complete(); $('cbTask').textContent = 'All ' + need + ' challenges done. You can keep building.'; target = null; } else newTarget();
+    }
+    $('cbClear').addEventListener('click', function () { h.forEach(function (r) { r.fill(0); }); draw(); });
+    $('cbRand').addEventListener('click', function () { var t = R.randStack(N, N, MAX, 4); for (var a = 0; a < N; a++) for (var b = 0; b < N; b++) h[a][b] = t[a][b]; draw(); check(); });
+    newTarget(); draw();
+  };
+}
+function turnLab(lv) {
+  return function (host, ctx) {
+    var start, cur, tgt, moves = 0, done = 0, need = 3;
+    function newRound(msg) {
+      start = R.norm(R.PIECES[lv <= 2 ? pick([0, 1, 2]) : rnd(0, 5)]); cur = start; moves = 0;
+      var ops = lv <= 1 ? [R.turnCW, R.turnCCW] : [R.turnCW, R.turnCCW, R.flipLR, R.flipUD], t = start, k, n = rnd(2, 4);
+      for (k = 0; k < n; k++) t = pick(ops)(t);
+      if (R.pkey(t) === R.pkey(start)) t = lv <= 1 ? R.turnCW(start) : R.flipLR(start);
+      tgt = t; draw(msg || '');
+    }
+    function go(f) {
+      cur = f(cur); moves++;
+      if (R.pkey(cur) === R.pkey(tgt)) { done++; var m = ' You matched it in ' + moves + ' moves.' + (done >= need ? ' All ' + need + ' challenges done. Keep playing if you like.' : ' Next challenge.'); if (done >= need) ctx.complete(); newRound(m); return; }
+      draw('');
+    }
+    function draw(msg) {
+      host.innerHTML = '<p class="say wq">' + (done >= need ? 'Keep practising: ' : 'Challenge ' + (done + 1) + ' of ' + need + ': ') + 'use the buttons to make <b>your shape</b> match the <b>target</b>.</p><div style="display:flex;gap:18px;justify-content:center;flex-wrap:wrap;margin:8px 0"><div style="text-align:center"><div class="eyebrow">Your shape</div><svg viewBox="0 0 88 88" width="140" height="140" role="img" aria-label="Your shape">' + R.pieceSvg(cur, 18, 215, 4) + '</svg></div><div style="text-align:center"><div class="eyebrow">Target</div><svg viewBox="0 0 88 88" width="140" height="140" role="img" aria-label="The target shape">' + R.pieceSvg(tgt, 18, 150, 4) + '</svg></div></div>' +
+        '<div class="row" style="justify-content:center;flex-wrap:wrap"><button class="btn" id="tlCW" type="button">Turn clockwise</button><button class="btn" id="tlCCW" type="button">Turn anticlockwise</button>' + (lv >= 2 ? '<button class="btn" id="tlLR" type="button">Flip left and right</button><button class="btn" id="tlUD" type="button">Flip up and down</button>' : '') + '<button class="btn ghost" id="tlReset" type="button">Start again</button></div><div class="lab-out say" aria-live="polite">Moves: ' + moves + '. A quarter turn is 90°.</div>' + (msg ? '<div class="fb ok say"><strong>Brilliant!</strong>' + msg + '</div>' : '');
+      $('tlCW').addEventListener('click', function () { go(R.turnCW); }); $('tlCCW').addEventListener('click', function () { go(R.turnCCW); });
+      if ($('tlLR')) { $('tlLR').addEventListener('click', function () { go(R.flipLR); }); $('tlUD').addEventListener('click', function () { go(R.flipUD); }); }
+      $('tlReset').addEventListener('click', function () { cur = start; moves = 0; draw(''); });
+    }
+    newRound('');
+  };
+}
+
+/* ---------- topic registration ---------- */
+var GEN_BY_LV = {
+  1: ['turn', 'facing', 'mirror', 'turnShape', 'cubeCount', 'solid', 'netValid', 'shapeSeries', 'oddOne', 'reflectPoint', 'gridWalk', 'letterSeries', 'letterValue', 'synonym', 'antonym', 'oddWord', 'wordAnalogy', 'orderPeople'],
+  2: ['turn', 'facing', 'mirror', 'turnShape', 'cubeCount', 'solid', 'netValid', 'netOpposite', 'shapeSeries', 'matrix', 'oddOne', 'reflectPoint', 'gridWalk', 'letterSeries', 'codeWord', 'letterValue', 'hiddenWord', 'synonym', 'antonym', 'oddWord', 'wordAnalogy', 'orderPeople'],
+  3: ['turn', 'facing', 'mirror', 'turnShape', 'cubeCount', 'solid', 'netValid', 'netOpposite', 'shapeSeries', 'matrix', 'oddOne', 'figAnalogy', 'reflectPoint', 'gridWalk', 'letterSeries', 'codeWord', 'letterValue', 'hiddenWord', 'synonym', 'antonym', 'oddWord', 'wordAnalogy', 'orderPeople'],
+  4: ['turn', 'mirror', 'turnShape', 'cubeCount', 'solid', 'netValid', 'netOpposite', 'shapeSeries', 'matrix', 'oddOne', 'figAnalogy', 'reflectPoint', 'rotatePoint', 'translatePoint', 'backBearing', 'letterSeries', 'codeWord', 'letterValue', 'hiddenWord', 'synonym', 'antonym', 'wordAnalogy', 'orderPeople'],
+  5: ['turn', 'mirror', 'turnShape', 'cubeCount', 'solid', 'netOpposite', 'shapeSeries', 'matrix', 'oddOne', 'figAnalogy', 'reflectPoint', 'rotatePoint', 'translatePoint', 'enlargePoint', 'backBearing', 'letterSeries', 'codeWord', 'hiddenWord', 'synonym', 'antonym', 'wordAnalogy', 'orderPeople'],
+  6: ['turn', 'mirror', 'turnShape', 'cubeCount', 'solid', 'netOpposite', 'shapeSeries', 'matrix', 'oddOne', 'figAnalogy', 'reflectPoint', 'rotatePoint', 'translatePoint', 'enlargePoint', 'backBearing', 'letterSeries', 'codeWord', 'hiddenWord', 'synonym', 'antonym', 'wordAnalogy', 'orderPeople']
+};
+var HARD = { mirror: 1, turnShape: 1, netOpposite: 1, matrix: 1, figAnalogy: 1, codeWord: 1, hiddenWord: 1, antonym: 1, wordAnalogy: 1, orderPeople: 1, rotatePoint: 1, enlargePoint: 1, backBearing: 1 };
+var PRACT = ['packBox', 'paintedCube', 'frameCube', 'walkMap', 'stairs'];
+var HARDP = { paintedCube: 1, frameCube: 1 };
+
+function register(Y) {
+  var lv = Y.lv, n = Y.n, ls = lessons(lv);
+  var names = GEN_BY_LV[lv], gens = names.map(function (nm) { return mk(nm, lv); });
+  var easy = names.filter(function (nm) { return !HARD[nm]; }), hard = names.filter(function (nm) { return HARD[nm] || nm === 'cubeCount' || nm === 'solid' || nm === 'turn' || nm === 'netValid' || nm === 'shapeSeries' || nm === 'oddOne'; });
+  if (lv >= 4) { easy = ['turn', 'solid', 'netValid', 'shapeSeries', 'oddOne', 'reflectPoint', 'translatePoint', 'letterSeries', 'letterValue', 'synonym', 'cubeCount']; hard = names.filter(function (nm) { return easy.indexOf(nm) === -1 || nm === 'cubeCount' || nm === 'turn' || nm === 'reflectPoint'; }); }
+  var pgens = PRACT.map(function (nm) { return mk(nm, lv); }), pnames = PRACT.slice();
+  var lbl = 'Spatial awareness';
+  window.SLIDE_GOALS[n + '.learn1'] = ls.A.map(function (s) { return s.goal; }); window.SLIDE_GOALS[n + '.learn2'] = ls.B.map(function (s) { return s.goal; });
+  window.SLIDE_MORE[n + '.learn1'] = ls.A.map(function (s) { return { more: s.more, eg: s.eg }; }); window.SLIDE_MORE[n + '.learn2'] = ls.B.map(function (s) { return { more: s.more, eg: s.eg }; });
+  S.pools(n, Y.year.charAt(0) === 'S' ? -1 : 13, easy, hard);
+  var warm = K.warmFrom([mk('turn', lv), mk('solid', lv), mk('shapeSeries', lv), mk('letterSeries', lv), mk('oddWord', lv > 3 ? 1 : lv), mk('cubeCount', Math.min(lv, 2)), mk('facing', Math.min(lv, 3)), mk('oddOne', lv)].filter(function (f) { return !!f; }));
+  var practise = function () { return H.buildPracticeSet(gens, 100); };
+  var practical = function () { var m = pgens.slice(); return H.buildPracticeSet(m, 30); };
+  var topic = { n: n, base: 13, year: Y.year === 'P6' ? undefined : Y.year, short: 'Spatial awareness', title: 'Spatial awareness and reasoning', practiceCount: 100, gens: {},
+    blurb: lv <= 1 ? 'Turns, mirror images, cube stacks, nets of a cube, shape patterns, positions on a grid, and letter and word puzzles.' : lv <= 3 ? 'Turns and reflections, cubes and their views, nets, shape patterns and grids, coordinates, and verbal reasoning with letters and words.' : 'Bearings and transformations, cubes, nets and 3D solids, non-verbal and verbal reasoning, with problems in context.',
+    steps: [
+      { id: 'warm', label: 'Warm-up', type: 'quiz', tag: 'Step 1 · Warm-up', title: 'Mental maths warm-up', lead: 'Four quick questions.', make: warm, doneLabel: 'On to the lesson' },
+      { id: 'learn1', label: 'Shapes and space', type: 'slides', tag: 'Shapes and space', slides: ls.A },
+      { id: 'lab1', label: 'Cube builder', type: 'lab', tag: 'Step 3 · We do it together', title: 'Cube builder', lead: 'Build stacks of cubes. See the total, the views and the challenges.', mount: cubeLab(lv) },
+      { id: 'lab2', label: 'Turn and flip', type: 'lab', tag: 'Step 3 · We do it together', title: 'Turn and flip', lead: 'Turn ' + (lv >= 2 ? 'and flip ' : '') + 'the shape to match the target.', mount: turnLab(lv) },
+      { id: 'learn2', label: 'Patterns and puzzles', type: 'slides', tag: 'Patterns and puzzles', slides: ls.B },
+      { id: 'practise', label: 'Practise', type: 'quiz', best: true, tag: 'Step 5 · Your turn', title: 'Practise', lead: '100 questions for this stage. Use the hints one at a time.', make: practise },
+      { id: 'practical', label: 'Real-time problem', type: 'quiz', tag: 'Step 6 · Real-time problems', title: 'Real-time problems', lead: '30 situation questions about boxes, cubes, maps and directions. Low, Medium and High change how many steps each problem has.', make: practical }
+    ] };
+  if (Y.year === 'P6') delete topic.year;
+  S.addTopic(topic);
+}
+YEARS.forEach(register);
+
+/* Reasoning questions mixed into the practice sets of every other topic (P5 to S3) */
+var LVOF = { P5: 1, P6: 2, P7: 3, S1: 4, S2: 5, S3: 6 }, OWN = { 13: 1, 513: 1, 713: 1, 813: 1, 833: 1, 853: 1 };
+var N_EASY = ['shapeSeries', 'oddOne', 'turn', 'cubeCount', 'solid', 'netValid'], N_HARD = ['matrix', 'figAnalogy', 'mirror', 'turnShape', 'netOpposite', 'shapeSeries', 'oddOne'];
+var V_EASY = ['letterSeries', 'oddWord', 'synonym', 'letterValue'], V_HARD = ['codeWord', 'hiddenWord', 'antonym', 'wordAnalogy', 'orderPeople', 'letterSeries'];
+S.extraMakers = function (n, level) {
+  n = Number(n); if (OWN[n]) return []; var t = S.topics[n]; if (!t) return [];
+  var lv = LVOF[t.year || 'P6'] || 2;
+  function ok(nm) { return !(nm === 'matrix' && lv < 2) && !(nm === 'figAnalogy' && lv < 3) && !(nm === 'netOpposite' && lv < 2); }
+  var nn = (level === 'low' ? N_EASY : level === 'high' ? N_HARD : N_EASY.concat(N_HARD)).filter(ok), vv = level === 'low' ? V_EASY : level === 'high' ? V_HARD : V_EASY.concat(V_HARD);
+  if (level === 'wide') { var all = N_EASY.concat(N_HARD, V_EASY, V_HARD).filter(ok), sw = {}; return all.filter(function (x) { if (sw[x]) return false; sw[x] = 1; return true; }).map(function (nm) { return mk(nm, lv); }); }
+  var out = [nn[n % nn.length], nn[(n + 3) % nn.length], vv[n % vv.length], vv[(n + 2) % vv.length]];
+  var seen = {}; return out.filter(function (x) { if (seen[x]) return false; seen[x] = 1; return true; }).map(function (nm) { return mk(nm, lv); });
+};
 })();
 </script>
 <script>
