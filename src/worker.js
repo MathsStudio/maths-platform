@@ -42,6 +42,7 @@ async function signup(request, env) {
   if (!(await db.rateOk(env, 'ip:' + ip(request), 12, 3600)) || !(await db.rateOk(env, 'em1:' + email, 1, 60)) || !(await db.rateOk(env, 'em2:' + email, 6, 86400)))
     return json({ error: 'Too many tries. Please wait a few minutes and try again.' }, 429);
   let u = await db.userByEmail(env, email);
+  if (u && u.verified_at) return json({ error: 'This email is already registered. Please go to Sign in to get your sign-in link.' }, 409);
   if (!u) { const r = await db.createUser(env, email, role, year, randomToken(24)); u = await db.userById(env, r.id); }
   else if (!u.verified_at) await db.setYearRole(env, u.id, role, year);
   try { await emailLink(env, request, u, marketing); }
