@@ -110,6 +110,7 @@
       try { pr.make(); } catch (e) { } finally { H.buildPracticeSet = origBuild; }
     }
     learnTags(captured); ['low', 'medium', 'high', 'wide'].forEach(function (lv) { try { learnTags(S.extraMakers(n, lv)); } catch (e) { } });
+    BT.tagMk = BT.tagMk || {}; BT.tagMk[n] = tagMk;
     function add(q) {
       if (q && !q._mk && tagMk[q.tag]) q._mk = tagMk[q.tag][Math.floor(Math.random() * tagMk[q.tag].length)];
       if (!q || !q.text || !q.hints || !q.explain || q.answer == null || q.answer === '') return;

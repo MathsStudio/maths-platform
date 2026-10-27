@@ -164,10 +164,5 @@
     }
   };
 
-  var t = S.topics[501], id = 'learn0';
-  if (!t.steps.some(function (s) { return s.id === id; })) {
-    BT.add(501, id, 'Place value: new lesson (preview)', [slide1, slide2, slide3]);
-    var st = t.steps.filter(function (s) { return s.id === id; })[0];
-    t.steps.splice(t.steps.indexOf(st), 1); t.steps.unshift(st); S.arrange(t);
-  }
+  BT.hand = BT.hand || {}; BT.hand['501.learn1.0'] = [slide1, slide2, slide3];
 })();
