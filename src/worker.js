@@ -102,7 +102,7 @@ export default {
         return redirect('/', { 'Set-Cookie': cookie('ms_session', '', request, 0) });
       }
       if (p.startsWith('/app')) {
-        if (!user) return redirect('/login/');
+        if (!user && env.REQUIRE_LOGIN === '1') return redirect('/login/');
         const res = await env.ASSETS.fetch(request);
         return withHeaders(res, { 'Cache-Control': 'private, no-store', 'X-Robots-Tag': 'noindex' });
       }

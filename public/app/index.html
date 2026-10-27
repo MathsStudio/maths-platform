@@ -1301,6 +1301,7 @@ var SLIDE_MORE = {"1.learn1": [{"more": ["Our number system uses only ten digits
     if (Nar.ok) { loadVoices(); speechSynthesis.onvoiceschanged = loadVoices; }
     window.addEventListener('pagehide', function () { if (Nar.ok) speechSynthesis.cancel(); });
     S.state = state; S.go = go; S.render = render;
+    try { var qy = new URLSearchParams(location.search).get('year'); if (['P5','P6','P7','S1','S2','S3'].indexOf(qy) > -1) { store.settings.year = qy; state.yearSel = true; save(); } } catch (e) {}
     render();
   };
 })();
