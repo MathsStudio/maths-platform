@@ -9969,7 +9969,7 @@ S.spatialExtra = S.extraMakers;
 })();
 </script>
 <script>
-/* bite6.js: long runs of worked-example slides for every P5, P6 and P7 topic.
+/* bite6.js: long runs of worked-example slides for every P5 to S3 topic.
    Each topic gets three extra lesson parts (easy, building up, challenge) of 8 slides each,
    made from the topic's own question makers, so every slide teaches a real worked question
    with the thinking shown step by step. */
@@ -9985,8 +9985,8 @@ S.spatialExtra = S.extraMakers;
   var BAN = null;
   function banned(tag) {
     if (!BAN) {
-      BAN = {};
-      [501, 1, 701, 2].forEach(function (n) { ['low', 'medium', 'high', 'wide'].forEach(function (lv) {
+      BAN = { 'Verbal reasoning': 1, 'Volume of cubes': 1, 'Surface area of cubes': 1, 'Non-verbal reasoning': 1 };
+      [501, 1, 701, 2, 801, 821, 841].forEach(function (n) { ['low', 'medium', 'high', 'wide'].forEach(function (lv) {
         var ms = []; try { ms = S.spatialExtra(n, lv) || []; } catch (e) { }
         ms.forEach(function (m) { for (var k = 0; k < 12; k++) { try { BAN[m().tag] = 1; } catch (e) { } } });
       }); });
@@ -10033,9 +10033,9 @@ S.spatialExtra = S.extraMakers;
                ['learn6', 'Worked examples: building up', 'medium', 'Building up'],
                ['learn7', 'Worked examples: challenge', 'high', 'Challenge']];
   function yearOf(t) { return t.year || 'P6'; }
-  var OWN = { 13: 1, 513: 1, 713: 1 };
+  var OWN = { 13: 1, 513: 1, 713: 1, 813: 1, 833: 1, 853: 1 };
   S.order.slice().forEach(function (n) {
-    var t = S.topics[n]; if (!t || ['P5', 'P6', 'P7'].indexOf(yearOf(t)) < 0) return;
+    var t = S.topics[n]; if (!t || ['P5', 'P6', 'P7', 'S1', 'S2', 'S3'].indexOf(yearOf(t)) < 0) return;
     var pr = t.steps.filter(function (s) { return s.id === 'practise'; })[0], pool = [], seen = {};
     function add(q) {
       if (!q || !q.text || !q.hints || !q.explain || q.answer == null || q.answer === '') return;
@@ -10045,11 +10045,24 @@ S.spatialExtra = S.extraMakers;
     ['low', 'medium', 'high'].forEach(function (lv) { pull(n, lv, []).forEach(add); });
     for (var r = 0; r < 4 && pr; r++) { try { (pr.make() || []).forEach(add); } catch (e) { } }
     pool.sort(function (x, y) { return diff(x) - diff(y); });
-    var third = Math.ceil(pool.length / 3), used = {};
+    var by = {}, tagOrder = [];
+    pool.forEach(function (q) { if (!by[q.tag]) { by[q.tag] = []; tagOrder.push(q.tag); } by[q.tag].push(q); });
+    tagOrder.sort(function (a, c) { return avg(by[a]) - avg(by[c]); });
+    function avg(l) { var s = 0; l.forEach(function (q) { s += diff(q); }); return s / l.length; }
+    var T = tagOrder.length, used = {};
     PARTS.forEach(function (p, i) {
-      var chunk = pool.slice(i * third, (i + 1) * third), step = Math.max(1, Math.floor(chunk.length / 24)), thin = [];
-      for (var z = 0; z < chunk.length; z += step) thin.push(chunk[z]);
-      var chosen = pick(thin.concat(chunk), 8, used); if (chosen.length < 4) return;
+      var from = Math.floor(i * T / 3), to = Math.max(from + 1, Math.floor((i + 1) * T / 3)), grp = tagOrder.slice(from, to);
+      if (grp.length < 3) grp = tagOrder.slice(Math.max(0, Math.min(from, T - 4)), Math.max(0, Math.min(from, T - 4)) + 4);
+      var chosen = [], round = 0;
+      while (chosen.length < 8 && round < 8) {
+        grp.forEach(function (tg) {
+          if (chosen.length >= 8) return;
+          var l = by[tg], q = l.filter(function (x) { return !used[plain(x.text)]; })[Math.min(round, 0)];
+          if (q) { used[plain(q.text)] = 1; chosen.push(q); }
+        });
+        round++;
+      }
+      if (chosen.length < 4) return;
       chosen.sort(function (x, y) { return diff(x) - diff(y); });
       BT.add(n, p[0], p[1], chosen.map(function (q, ix) { return slideFor(q, ix + 1, p[3]); }));
     });
