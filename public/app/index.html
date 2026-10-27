@@ -8479,6 +8479,1495 @@ S.extraMakers = function (n, level) {
 })();
 </script>
 <script>
+/* bite0.js: shared helpers for the Bitesize Second level upgrade (P5, P6, P7).
+   Pictures (number lines, coins, triangles, circles, grids), slide builders and a way
+   to add extra lesson parts (learn3, learn4) to any topic, so each topic can have as
+   many slides as it needs. */
+(function () {
+  'use strict';
+  var S = Studio, H = S.h, K = S.kit, V = S.viz, SK = window.SK;
+  var BT = window.BT = {};
+
+  function hs(h, k) { return V.hsl(h, k); }
+  function svg(w, h, alt, inner, max) { return '<svg viewBox="0 0 ' + w + ' ' + h + '" role="img" aria-label="' + alt + '" style="width:100%;max-width:' + (max || Math.min(w, 360)) + 'px;height:auto">' + inner + '</svg>'; }
+  function txt(x, y, s, sz, anchor, extra) { return '<text x="' + x + '" y="' + y + '" text-anchor="' + (anchor || 'middle') + '" class="pv-b" style="font-size:' + (sz || 13) + 'px' + (extra || '') + '">' + s + '</text>'; }
+  function sg(n) { return n < 0 ? '−' + (-n) : String(n); }
+  function fr(n, d) { return '<span class="fr"><b>' + n + '</b><i></i><b>' + d + '</b></span>'; }
+  function gcd(a, b) { return b ? gcd(b, a % b) : Math.abs(a); }
+  BT.hs = hs; BT.svg = svg; BT.txt = txt; BT.sg = sg; BT.fr = fr; BT.gcd = gcd;
+
+  /* number line from lo to hi; o.marks [[value,hue]], o.jumps [[from,to,label]], o.lab label every n, o.tick tick every n */
+  BT.NL = function (lo, hi, o) {
+    o = o || {}; var W = 340, x0 = 24, x1 = W - 24, y = 54, per = (x1 - x0) / (hi - lo), lab = o.lab || 1, tk = o.tick || 1;
+    function X(v) { return x0 + (v - lo) * per; }
+    var s = '<line x1="' + (x0 - 8) + '" y1="' + y + '" x2="' + (x1 + 8) + '" y2="' + y + '" style="stroke:var(--fg);stroke-width:3"/>';
+    for (var v = lo; v <= hi + 1e-9; v += tk) {
+      var big = Math.abs(v % lab) < 1e-9;
+      s += '<line x1="' + X(v) + '" y1="' + (y - (big ? 9 : 5)) + '" x2="' + X(v) + '" y2="' + (y + (big ? 9 : 5)) + '" style="stroke:var(--fg);stroke-width:2"/>';
+      if (big) s += txt(X(v), y + 28, sg(Math.round(v * 100) / 100), 12);
+    }
+    (o.jumps || []).forEach(function (j) {
+      var a = X(j[0]), b = X(j[1]), m = (a + b) / 2, h = 34;
+      s += '<path d="M' + a + ',' + (y - 8) + ' Q' + m + ',' + (y - 8 - h) + ' ' + b + ',' + (y - 8) + '" fill="none" style="stroke:' + hs(22) + ';stroke-width:3"/>';
+      if (j[2]) s += txt(m, y - h - 6, j[2], 13);
+    });
+    (o.marks || []).forEach(function (m) { s += '<circle cx="' + X(m[0]) + '" cy="' + y + '" r="7" style="fill:' + hs(m[1] || 215) + ';stroke:var(--fg);stroke-width:2"/>'; });
+    return svg(W, 96, o.alt || 'A number line', s);
+  };
+
+  /* a fraction bar: n of d parts shaded */
+  BT.bar = function (n, d, alt) {
+    var W = 300, w = W / d, s = '';
+    for (var i = 0; i < d; i++) s += '<rect x="' + (10 + i * w) + '" y="10" width="' + w + '" height="46" style="fill:' + (i < n ? hs(215) : 'transparent') + ';stroke:var(--fg);stroke-width:2.5"/>';
+    return svg(320, 66, alt || n + ' of ' + d + ' parts shaded', s);
+  };
+
+  /* coins: list of values in pence */
+  BT.coins = function (list, alt) {
+    var s = '', x = 22, rows = 0, per = 7;
+    list.forEach(function (v, i) {
+      var r = v >= 100 ? 21 : v >= 50 ? 18 : v >= 20 ? 16 : v >= 10 ? 17 : v >= 5 ? 13 : v >= 2 ? 18 : 14, col = v >= 100 ? 45 : v >= 20 ? 48 : v >= 10 ? 40 : 28;
+      var cx = 24 + (i % per) * 46, cy = 26 + Math.floor(i / per) * 46;
+      s += '<circle cx="' + cx + '" cy="' + cy + '" r="' + r + '" style="fill:' + hs(v >= 5 && v !== 2 && v !== 1 ? 215 : 30, 'band') + ';stroke:var(--fg);stroke-width:2.5"/>' + txt(cx, cy + 4, v >= 100 ? '£' + v / 100 : v + 'p', 11);
+      rows = Math.floor(i / per);
+    });
+    return svg(340, 52 + rows * 46, alt || 'Coins', s);
+  };
+
+  /* ruler with an object of the given length in cm (decimal) */
+  BT.ruler = function (len) {
+    var s = '', x0 = 20, cm = 30, y = 70;
+    s += '<rect x="' + x0 + '" y="26" width="' + (len * cm) + '" height="22" rx="4" style="fill:' + hs(40, 'band') + ';stroke:var(--fg);stroke-width:2.5"/>';
+    s += '<rect x="' + (x0 - 4) + '" y="' + y + '" width="' + (10 * cm + 8) + '" height="34" style="fill:transparent;stroke:var(--fg);stroke-width:2.5"/>';
+    for (var i = 0; i <= 100; i++) { var x = x0 + i * cm / 10, big = i % 10 === 0, half = i % 5 === 0; s += '<line x1="' + x + '" y1="' + y + '" x2="' + x + '" y2="' + (y + (big ? 20 : half ? 14 : 9)) + '" style="stroke:var(--fg);stroke-width:' + (big ? 2 : 1) + '"/>'; if (big) s += txt(x, y + 32, i / 10, 11); }
+    s += '<line x1="' + (x0 + len * cm) + '" y1="50" x2="' + (x0 + len * cm) + '" y2="' + (y + 20) + '" style="stroke:' + hs(22) + ';stroke-width:2" stroke-dasharray="4 3"/>';
+    return svg(340, 112, 'A pencil measured with a ruler: it ends at ' + len + ' centimetres', s);
+  };
+
+  /* triangle shapes: kind equilateral|isosceles|scalene|right */
+  function tri(kind, ox, oy, sc) {
+    var P, ticks = '', sq = '';
+    if (kind === 'equilateral') { P = [[0, 0], [60, 0], [30, -52]]; ticks = [[[30, 0], 'h'], [[45, -26], 'd'], [[15, -26], 'd']]; }
+    else if (kind === 'isosceles') { P = [[0, 0], [60, 0], [30, -66]]; ticks = [[[45, -33], 'd'], [[15, -33], 'd']]; }
+    else if (kind === 'right') { P = [[0, 0], [66, 0], [0, -52]]; sq = '<polyline points="' + (ox + 10 * sc) + ',' + oy + ' ' + (ox + 10 * sc) + ',' + (oy - 10 * sc) + ' ' + ox + ',' + (oy - 10 * sc) + '" fill="none" style="stroke:var(--fg);stroke-width:2"/>'; }
+    else { P = [[0, 0], [72, 0], [20, -48]]; }
+    var pts = P.map(function (p) { return (ox + p[0] * sc) + ',' + (oy + p[1] * sc); }).join(' ');
+    var s = '<polygon points="' + pts + '" style="fill:' + hs(kind === 'equilateral' ? 150 : kind === 'isosceles' ? 40 : kind === 'right' ? 215 : 330, 'band') + ';stroke:var(--fg);stroke-width:2.5;stroke-linejoin:round"/>' + sq;
+    if (ticks) ticks.forEach(function (t) { var x = ox + t[0][0] * sc, y = oy + t[0][1] * sc; if (t[1] === 'h') s += '<line x1="' + x + '" y1="' + (y - 5) + '" x2="' + x + '" y2="' + (y + 5) + '" style="stroke:var(--fg);stroke-width:2"/>'; else s += '<circle cx="' + x + '" cy="' + y + '" r="3" style="fill:var(--fg)"/>'; });
+    return s;
+  }
+  BT.tri = tri;
+  BT.triRow = function () {
+    var s = tri('equilateral', 14, 74, 1) + tri('isosceles', 98, 74, 1) + tri('scalene', 182, 74, 1) + tri('right', 266, 74, 1);
+    s += txt(44, 96, 'equilateral', 11) + txt(128, 96, 'isosceles', 11) + txt(218, 96, 'scalene', 11) + txt(299, 96, 'right-angled', 11);
+    return svg(340, 108, 'Four triangles: equilateral, isosceles, scalene and right-angled', s);
+  };
+  BT.single = function (kind) { return svg(120, 100, 'A ' + kind + ' triangle', tri(kind, 24, 84, 1.3), 160); };
+
+  /* regular polygon with n sides, centre cx,cy radius r */
+  function poly(n, cx, cy, r, rot, fill) {
+    var p = []; for (var i = 0; i < n; i++) { var a = rot + i * 2 * Math.PI / n; p.push((cx + r * Math.cos(a)).toFixed(1) + ',' + (cy + r * Math.sin(a)).toFixed(1)); }
+    return '<polygon points="' + p.join(' ') + '" style="fill:' + hs(fill || 215, 'band') + ';stroke:var(--fg);stroke-width:2.5;stroke-linejoin:round"/>';
+  }
+  BT.poly = poly;
+  BT.polyRow = function () {
+    var s = poly(5, 52, 52, 40, -Math.PI / 2, 215) + poly(6, 140, 52, 40, 0, 150) + '<polygon points="204,70 224,22 262,16 290,48 270,84" style="fill:' + hs(330, 'band') + ';stroke:var(--fg);stroke-width:2.5;stroke-linejoin:round"/>';
+    s += txt(52, 108, 'regular pentagon', 11) + txt(140, 108, 'regular hexagon', 11) + txt(250, 108, 'irregular pentagon', 11);
+    return svg(340, 118, 'A regular pentagon, a regular hexagon and an irregular pentagon', s);
+  };
+
+  /* circle with parts */
+  BT.circle = function () {
+    var cx = 120, cy = 82, r = 62, s = '<circle cx="' + cx + '" cy="' + cy + '" r="' + r + '" style="fill:' + hs(215, 'band') + ';stroke:var(--fg);stroke-width:3"/>';
+    s += '<line x1="' + (cx - r) + '" y1="' + cy + '" x2="' + (cx + r) + '" y2="' + cy + '" style="stroke:' + hs(22) + ';stroke-width:3"/>';
+    s += '<line x1="' + cx + '" y1="' + cy + '" x2="' + (cx + r * 0.7) + '" y2="' + (cy - r * 0.714) + '" style="stroke:' + hs(150) + ';stroke-width:3"/>';
+    s += '<circle cx="' + cx + '" cy="' + cy + '" r="4" style="fill:var(--fg)"/>';
+    s += txt(cx, cy + 20, 'diameter', 12) + txt(cx + 42, cy - 50, 'radius', 12, 'start') + txt(cx - r - 6, cy - r + 6, 'circumference', 12, 'end');
+    s += txt(cx + 8, cy - 6, 'centre', 11, 'start');
+    return svg(340, 160, 'A circle with its centre, radius, diameter and circumference labelled', s, 300);
+  };
+
+  /* parallel and perpendicular lines */
+  BT.parperp = function () {
+    var a = 'style="stroke:var(--fg);stroke-width:4;stroke-linecap:round"';
+    var s = '<line x1="20" y1="30" x2="150" y2="30" ' + a + '/><line x1="20" y1="80" x2="150" y2="80" ' + a + '/>';
+    s += '<polyline points="78,24 86,30 78,36" fill="none" style="stroke:' + hs(22) + ';stroke-width:3"/><polyline points="78,74 86,80 78,86" fill="none" style="stroke:' + hs(22) + ';stroke-width:3"/>';
+    s += txt(85, 108, 'parallel', 13);
+    s += '<line x1="200" y1="90" x2="320" y2="90" ' + a + '/><line x1="230" y1="20" x2="230" y2="90" ' + a + '/><polyline points="230,76 244,76 244,90" fill="none" style="stroke:' + hs(22) + ';stroke-width:3"/>';
+    s += txt(262, 108, 'perpendicular', 13);
+    return svg(340, 116, 'Two parallel lines and two perpendicular lines', s);
+  };
+
+  /* map grid with letters across and numbers up; marks [[col,row,label]] col 0-4 row 1-4 */
+  BT.gridMap = function (marks, hi) {
+    var x0 = 34, y0 = 10, c = 56, rows = 4, cols = 5, s = '';
+    for (var r = 0; r < rows; r++) for (var q = 0; q < cols; q++) s += '<rect x="' + (x0 + q * c) + '" y="' + (y0 + r * c * 0.7) + '" width="' + c + '" height="' + (c * 0.7) + '" style="fill:' + (hi && hi[0] === q && hi[1] === rows - r ? hs(50, 'band') : 'transparent') + ';stroke:var(--fg);stroke-width:1.5"/>';
+    'ABCDE'.split('').forEach(function (l, i) { s += txt(x0 + i * c + c / 2, y0 + rows * c * 0.7 + 18, l, 14); });
+    for (var n = 1; n <= rows; n++) s += txt(20, y0 + (rows - n) * c * 0.7 + c * 0.35 + 5, n, 14);
+    (marks || []).forEach(function (m) { s += txt(x0 + m[0] * c + c / 2, y0 + (rows - m[1]) * c * 0.7 + c * 0.35 + 7, m[2], 24); });
+    return svg(340, 140, 'A map split into a grid, with letters A to E across and numbers 1 to 4 up the side', s);
+  };
+
+  /* coordinate grid 0..cx by 0..cy with polygons [[points],hue] */
+  BT.coordGrid = function (cx, cy, polys, alt) {
+    var u = 30, x0 = 30, y0 = 10 + cy * u, s = '';
+    for (var i = 0; i <= cx; i++) s += '<line x1="' + (x0 + i * u) + '" y1="10" x2="' + (x0 + i * u) + '" y2="' + y0 + '" style="stroke:var(--line);stroke-width:1"/>' + txt(x0 + i * u, y0 + 16, i, 11);
+    for (var j = 0; j <= cy; j++) s += '<line x1="' + x0 + '" y1="' + (y0 - j * u) + '" x2="' + (x0 + cx * u) + '" y2="' + (y0 - j * u) + '" style="stroke:var(--line);stroke-width:1"/>' + txt(18, y0 - j * u + 4, j, 11);
+    polys.forEach(function (p) { s += '<polygon points="' + p[0].map(function (q) { return (x0 + q[0] * u) + ',' + (y0 - q[1] * u); }).join(' ') + '" style="fill:' + hs(p[1], 'band') + ';stroke:var(--fg);stroke-width:2.5;stroke-linejoin:round;fill-opacity:.85"/>'; });
+    return svg(x0 + cx * u + 14, y0 + 24, alt || 'A coordinate grid', s, 340);
+  };
+
+  /* a box made of unit cubes, l long, w wide, h high (isometric) */
+  BT.box = function (l, w, h) {
+    var c = 20, ht = 20, s = '', ox = 14 + w * c, oy = h * ht + 12;
+    function P(x, y, z) { return (ox + (x - y) * c) + ',' + (oy + (x + y) * c / 2 - z * ht); }
+    function pg(pts, f) { return '<polygon points="' + pts.map(function (q) { return P(q[0], q[1], q[2]); }).join(' ') + '" style="fill:' + f + ';stroke:var(--fg);stroke-width:1.2;stroke-linejoin:round"/>'; }
+    for (var x = 0; x < l; x++) for (var y = 0; y < w; y++) for (var z = 0; z < h; z++) {
+      if (x === l - 1) s += pg([[x + 1, y, z], [x + 1, y + 1, z], [x + 1, y + 1, z + 1], [x + 1, y, z + 1]], hs(215));
+      if (y === w - 1) s += pg([[x, y + 1, z], [x + 1, y + 1, z], [x + 1, y + 1, z + 1], [x, y + 1, z + 1]], hs(215, 'band'));
+      if (z === h - 1) s += pg([[x, y, z + 1], [x + 1, y, z + 1], [x + 1, y + 1, z + 1], [x, y + 1, z + 1]], hs(50, 'band'));
+    }
+    var W = 28 + (l + w) * c, Hh = oy + (l + w) * c / 2 + 8;
+    return svg(W, Hh, 'A box ' + l + ' cubes long, ' + w + ' wide and ' + h + ' high', s, Math.min(W, 300));
+  };
+
+  /* three small transformation panels on a grid */
+  BT.transforms = function () {
+    var u = 12, s = '';
+    function panel(ox, T, f, label, mirror) {
+      var I = T.map(f), q = '';
+      q += '<rect x="' + ox + '" y="6" width="' + 8 * u + '" height="' + 7 * u + '" style="fill:transparent;stroke:var(--line);stroke-width:1.5"/>';
+      function pts(a) { return a.map(function (p) { return (ox + p[0] * u) + ',' + (6 + (7 - p[1]) * u); }).join(' '); }
+      if (mirror) q += '<line x1="' + (ox + mirror * u) + '" y1="6" x2="' + (ox + mirror * u) + '" y2="' + (6 + 7 * u) + '" style="stroke:' + hs(150) + ';stroke-width:2" stroke-dasharray="5 3"/>';
+      q += '<polygon points="' + pts(T) + '" style="fill:' + hs(215, 'band') + ';stroke:var(--fg);stroke-width:2"/><polygon points="' + pts(I) + '" style="fill:' + hs(22, 'band') + ';stroke:var(--fg);stroke-width:2;stroke-dasharray:4 2"/>';
+      return q + txt(ox + 4 * u, 6 + 7 * u + 16, label, 12);
+    }
+    s += panel(6, [[1, 1], [4, 1], [1, 4]], function (p) { return [p[0] + 3, p[1] + 2]; }, 'translation');
+    s += panel(122, [[1, 1], [3, 1], [1, 4]], function (p) { return [8 - p[0], p[1]]; }, 'reflection', 4);
+    s += panel(238, [[4, 3], [7, 3], [4, 6]], function (p) { return [4 + (p[1] - 3), 3 - (p[0] - 4)]; }, 'rotation');
+    return svg(340, 114, 'A shape moved by a translation, a reflection and a rotation', s);
+  };
+
+  /* slides: plain, and text-chip worked examples */
+  BT.sl = function (title, say, vis, real, goal, more, eg) { return { title: title, v: vis || '', say: say, real: real, goal: goal, more: more, eg: eg }; };
+  BT.X = SK.X;
+  BT.XV = function (title, q, steps, final, vis, real, goal, more, eg) {
+    return SK.XV(title, q, steps, final, function (s) { var k = Math.max(1, Math.min(s, steps.length)); return (typeof vis === 'function' ? vis(k) : vis) + K.cap(steps[k - 1]); }, real, goal, more, eg);
+  };
+
+  /* add a new lesson part (a group of slides) to a topic; the part appears in the Learn row */
+  BT.add = function (n, id, label, slides) {
+    var t = S.topics[n]; if (!t) { if (window.console) console.warn('bite: no topic ' + n); return; }
+    if (t.steps.some(function (s) { return s.id === id; })) return;
+    var key = n + '.' + id, m = H.slideMeta;
+    m.goals[key] = slides.map(function (s) { return s.goal; });
+    m.more[key] = slides.map(function (s) { return { more: s.more || [], eg: s.eg || [] }; });
+    t.steps.push({ id: id, label: label, type: 'slides', tag: 'Let’s learn · ' + label, slides: slides });
+    S.arrange(t);
+  };
+})();
+</script>
+<script>
+/* st611.js: P6 Topic 11, Ratio and proportion (new). Bitesize Second level: what is a ratio,
+   convert between ratios, fractions and percentages, ratio in everyday situations.
+   P7 builds on it in topic 711. */
+(function () {
+  'use strict';
+  var H = Studio.h, K = Studio.kit, Q = K.Q, rnd = H.rnd, pick = H.pick, shuffle = H.shuffle, gcd = H.gcd, V = Studio.viz, T = H.trimNum, BT = window.BT;
+  var sl = BT.sl, X = BT.X, fr = BT.fr;
+
+  function dots(a, b, ca, cb) {
+    var s = '', n = a + b, per = 10, i;
+    for (i = 0; i < n; i++) {
+      var cx = 22 + (i % per) * 30, cy = 22 + Math.floor(i / per) * 30;
+      s += '<circle cx="' + cx + '" cy="' + cy + '" r="11" style="fill:' + V.hsl(i < a ? (ca || 215) : (cb || 22)) + ';stroke:var(--fg);stroke-width:2"/>';
+    }
+    var rows = Math.ceil(n / per);
+    return '<svg viewBox="0 0 322 ' + (rows * 30 + 14) + '" role="img" aria-label="' + a + ' blue counters and ' + b + ' orange counters" style="width:100%;max-width:340px;height:auto">' + s + '</svg>';
+  }
+  function two(a, b, k) { return dots(a, b) + K.cap(a + ' : ' + b); }
+
+  var LEARN1 = [
+    { title: 'What is a ratio?', v: function () { return dots(2, 3) + K.cap('2 blue to 3 orange, written 2 : 3'); },
+      say: ['A ratio compares two amounts. We write it with a colon.', 'For every 2 blue counters there are 3 orange counters. The ratio of blue to orange is 2 : 3.', 'Order matters. The ratio of orange to blue is 3 : 2.'],
+      real: 'A fruit drink uses 2 cups of juice for every 3 cups of lemonade. The ratio of juice to lemonade is 2 : 3.',
+      goal: 'what a ratio is and how to write one.', more: ['A ratio does not tell you how many there are in total. It tells you how the amounts compare.', 'Read 2 : 3 as “2 to 3”.'], eg: ['Example 1: 1 boy for every 2 girls is the ratio 1 : 2.', 'Example 2: 4 red and 1 green is 4 : 1.', 'Example 3: A bag with 3 apples and 5 pears has apples to pears 3 : 5.'] },
+    { title: 'Equivalent ratios', v: function () { return K.table([['2 : 3', 'one group of each'], ['4 : 6', 'two groups'], ['6 : 9', 'three groups'], ['10 : 15', 'five groups']], ['Ratio', 'Made by']); },
+      say: ['Equivalent ratios show the same comparison. We multiply both parts by the same number.', '2 : 3 = 4 : 6 = 6 : 9. Each time we multiply both numbers by the same amount.', 'It is like making a bigger batch of the same recipe.'],
+      real: 'Doubling a recipe keeps the ratio of the ingredients the same.',
+      goal: 'how to make equivalent ratios.', more: ['Always multiply or divide both parts by the same number.', 'Equivalent ratios have the same simplest form.'], eg: ['Example 1: 1 : 4 = 3 : 12.', 'Example 2: 3 : 5 = 9 : 15.', 'Example 3: 2 : 7 = 8 : 28.'] },
+    X('Simplifying ratios', 'Simplify the ratio 12 : 18.',
+      ['Find a number that divides into both parts. The biggest is 6.', '12 ÷ 6 = 2.', '18 ÷ 6 = 3.', 'So 12 : 18 = 2 : 3 in its simplest form.'],
+      ['12 : 18', '÷ 6', '2 and 3', '2 : 3'], '12 : 18 = 2 : 3',
+      'A team with 12 wins and 18 losses has a win to loss ratio of 2 : 3.',
+      'how to simplify a ratio.',
+      ['Divide both parts by the highest common factor.', 'A ratio is simplest when the only number that divides both parts is 1.'],
+      ['Example 1: 10 : 15 = 2 : 3.', 'Example 2: 8 : 20 = 2 : 5.', 'Example 3: 30 : 6 = 5 : 1.']),
+    X('Ratio and fractions', 'In a class the ratio of boys to girls is 2 : 3. What fraction of the class are boys?',
+      ['Add the parts to find the total number of parts: 2 + 3 = 5.', 'Boys are 2 parts out of 5, so the fraction is ' + fr(2, 5) + '.', 'Girls are 3 parts out of 5, so ' + fr(3, 5) + '.', 'Check: ' + fr(2, 5) + ' + ' + fr(3, 5) + ' = 1 whole.'],
+      ['2 : 3', '2 + 3 = 5 parts', 'boys ' + fr(2, 5) + ', girls ' + fr(3, 5), 'total 1 whole'], 'Boys are ' + fr(2, 5),
+      'In a pizza topping ratio of 1 : 3 for peppers to cheese, one quarter is peppers.',
+      'how to turn a ratio into fractions of the whole.',
+      ['The denominator is the sum of the parts, not the second number in the ratio.', 'The fractions of all the parts add up to 1.'],
+      ['Example 1: 1 : 3 gives ' + fr(1, 4) + ' and ' + fr(3, 4) + '.', 'Example 2: 3 : 2 gives ' + fr(3, 5) + ' and ' + fr(2, 5) + '.', 'Example 3: 1 : 1 gives ' + fr(1, 2) + ' each.']),
+    X('Ratio and percentages', 'Paint is mixed in the ratio 1 : 3 (blue : white). What percentage of the paint is blue?',
+      ['Add the parts: 1 + 3 = 4.', 'Blue is ' + fr(1, 4) + ' of the paint.', fr(1, 4) + ' = 25%.', 'So 25% of the paint is blue and 75% is white.'],
+      ['1 : 3', '1 + 3 = 4', fr(1, 4) + ' = 25%', '25% blue, 75% white'], '25% blue',
+      'A phone battery at 25% is a quarter full, the same as a 1 : 3 ratio of full to empty.',
+      'how to change a ratio into percentages.',
+      ['Turn the ratio into a fraction first, then into a percentage.', 'The percentages of all the parts add up to 100%.'],
+      ['Example 1: 1 : 1 is 50% each.', 'Example 2: 2 : 3 is 40% and 60%.', 'Example 3: 1 : 4 is 20% and 80%.'])
+  ];
+  var LEARN2 = [
+    X('Sharing in a ratio', 'Share £40 in the ratio 3 : 5.',
+      ['Add the parts: 3 + 5 = 8 parts.', 'Find one part: 40 ÷ 8 = £5.', 'Find each share: 3 × 5 = £15 and 5 × 5 = £25.', 'Check: 15 + 25 = 40.'],
+      ['3 + 5 = 8 parts', '40 ÷ 8 = £5 a part', '£15 and £25', '15 + 25 = 40'], '£15 and £25',
+      'Two friends who put in different amounts can share a prize in the ratio of what they paid.',
+      'how to share an amount in a given ratio.',
+      ['Add the parts, divide the total to find one part, then multiply.', 'Check that the shares add up to the total.'],
+      ['Example 1: Share 20 sweets 1 : 4 gives 4 and 16.', 'Example 2: Share £60 in the ratio 2 : 3 gives £24 and £36.', 'Example 3: Share 36 cards 1 : 2 gives 12 and 24.']),
+    X('Finding a missing amount', 'Paint is mixed 2 parts blue to 3 parts white. A painter uses 12 tins of blue. How many tins of white are needed?',
+      ['2 parts of blue is 12 tins, so 1 part is 12 ÷ 2 = 6 tins.', 'White is 3 parts: 3 × 6 = 18.', 'The painter needs 18 tins of white.', 'Check: 12 : 18 = 2 : 3.'],
+      ['2 parts = 12', '1 part = 6', '3 parts = 18', '12 : 18 = 2 : 3'], '18 tins of white',
+      'Scaling a recipe up for a party uses the same idea.',
+      'how to find the other amount when one amount in a ratio is known.',
+      ['Find the value of one part first. Then multiply by the other part.', 'You can also multiply both parts by the same number.'],
+      ['Example 1: 1 : 3 with 5 of the first needs 15 of the second.', 'Example 2: 3 : 4 with 9 of the first needs 12 of the second.', 'Example 3: 2 : 5 with 8 of the first needs 20 of the second.']),
+    X('Direct proportion', '5 pens cost £3.50. How much do 8 pens cost?',
+      ['Find the cost of 1 pen: 3.50 ÷ 5 = £0.70.', 'Multiply by the number of pens you want: 8 × 0.70.', '8 × 0.70 = £5.60.', 'So 8 pens cost £5.60.'],
+      ['5 pens = £3.50', '1 pen = £0.70', '8 × £0.70', '£5.60'], '£5.60',
+      'When you buy more of the same thing, the cost goes up in proportion.',
+      'how to find the cost of any number of items from the cost of some.',
+      ['This is called the unitary method: find the value of one, then scale up.', 'Twice as many items cost twice as much.'],
+      ['Example 1: 3 apples cost 90p, so 7 cost 210p.', 'Example 2: 4 books cost £12, so 6 cost £18.', 'Example 3: 10 stickers cost £1.50, so 4 cost 60p.']),
+    X('Recipes and scaling', 'A recipe for 4 people uses 200 g of flour. How much flour is needed for 10 people?',
+      ['Find the flour for 1 person: 200 ÷ 4 = 50 g.', 'Multiply by 10 people: 10 × 50.', '10 × 50 = 500 g.', 'So 10 people need 500 g of flour.'],
+      ['4 people: 200 g', '1 person: 50 g', '10 × 50', '500 g'], '500 g',
+      'Cooks scale recipes up and down for different numbers of people.',
+      'how to scale a recipe up or down using ratio.',
+      ['Find the amount for one person, then multiply.', 'Every ingredient is scaled by the same amount.'],
+      ['Example 1: 2 people need 100 g of rice, so 6 people need 300 g.', 'Example 2: 4 people need 3 eggs, so 8 people need 6 eggs.', 'Example 3: 6 people need 300 ml of milk, so 3 people need 150 ml.']),
+    X('Ratio in football', 'A team scored 12 goals and let in 8 goals this season. What is the ratio of goals scored to goals let in, in its simplest form?',
+      ['Write the ratio in the order of the question: 12 : 8.', 'Find the highest common factor of 12 and 8, which is 4.', '12 ÷ 4 = 3 and 8 ÷ 4 = 2.', 'The ratio is 3 : 2.'],
+      ['12 : 8', '÷ 4', '3 and 2', '3 : 2'], '3 : 2',
+      'Football leagues use goals scored and goals against to compare teams.',
+      'how to use ratio in everyday situations like sport.',
+      ['Always keep the numbers in the order the question gives.', 'Write the ratio in its simplest form.'],
+      ['Example 1: 10 wins and 5 losses is 2 : 1.', 'Example 2: 9 goals and 6 goals is 3 : 2.', 'Example 3: 20 shots and 4 goals is 5 : 1.'])
+  ];
+
+  function genWriteRatio() {
+    var a = rnd(2, 9), b = rnd(2, 9); while (b === a) b = rnd(2, 9);
+    var it = pick([['red', 'blue', 'counters'], ['boys', 'girls', 'pupils'], ['apples', 'pears', 'pieces of fruit']]), ans = a + ' : ' + b;
+    var wr = [b + ' : ' + a, a + ' : ' + (a + b), (a + b) + ' : ' + a].filter(function (v, i, r) { return v !== ans && r.indexOf(v) === i; });
+    return Q({ tag: 'Writing a ratio', type: 'mc', text: 'A group has <b>' + a + ' ' + it[0] + '</b> and <b>' + b + ' ' + it[1] + '</b>. What is the ratio of ' + it[0] + ' to ' + it[1] + '?', options: shuffle(wr.slice(0, 3).concat([ans])), answer: ans, hints: ['Write the first group first.', 'Put a colon between the two numbers.'], explain: 'The ratio of ' + it[0] + ' to ' + it[1] + ' is ' + ans + '.' });
+  }
+  function genEquivRatio() {
+    var a = rnd(1, 6), b = rnd(a + 1, 9), k = rnd(2, 6);
+    return Q({ tag: 'Equivalent ratios', text: 'Complete the equivalent ratio: <b>' + a + ' : ' + b + ' = ' + a * k + ' : ?</b>', answer: String(b * k), hints: ['What was ' + a + ' multiplied by to get ' + a * k + '?', 'Multiply the second number by the same amount.'], explain: 'Multiply both by ' + k + ': ' + b + ' × ' + k + ' = ' + b * k + '.' });
+  }
+  function genSimplifyR() {
+    var a = rnd(1, 5), b = rnd(a + 1, 8); while (gcd(a, b) !== 1) b = rnd(a + 1, 9);
+    var k = rnd(2, 8), ans = a + ' : ' + b;
+    var wr = [(a + 1) + ' : ' + b, a + ' : ' + (b + 1), (a * 2) + ' : ' + b, b + ' : ' + a].filter(function (v, i, r) { return v !== ans && r.indexOf(v) === i; });
+    return Q({ tag: 'Simplifying', type: 'mc', text: 'Simplify the ratio <b>' + a * k + ' : ' + b * k + '</b>.', options: shuffle(wr.slice(0, 3).concat([ans])), answer: ans, hints: ['Divide both numbers by the same number.', 'Keep going until no common factor is left.'], explain: 'Divide both by ' + k + ': ' + ans + '.' });
+  }
+  function genShareR() {
+    var a = rnd(1, 4), b = rnd(a + 1, 6), k = rnd(2, 9), tot = (a + b) * k, w = pick(['first', 'second']);
+    return Q({ tag: 'Sharing in a ratio', text: 'Share <b>£' + tot + '</b> in the ratio <b>' + a + ' : ' + b + '</b>. How much is the <b>' + w + '</b> share? (£)', answer: String(w === 'first' ? a * k : b * k), hints: ['Add the parts of the ratio.', 'Find one part, then multiply by the share you need.'], explain: tot + ' ÷ ' + (a + b) + ' = ' + k + ' for one part. The shares are £' + a * k + ' and £' + b * k + '.' });
+  }
+  function genRatioFindR() {
+    var a = rnd(1, 5), b = rnd(a + 1, 8), k = rnd(2, 9), t = pick(['paint', 'squash']);
+    return Q({ tag: 'Ratio', text: 'A mix uses <b>' + a + '</b> parts ' + (t === 'paint' ? 'red' : 'juice') + ' to <b>' + b + '</b> parts ' + (t === 'paint' ? 'white paint' : 'water') + '. With <b>' + a * k + ' ml</b> of ' + (t === 'paint' ? 'red' : 'juice') + ', how many ml of ' + (t === 'paint' ? 'white paint' : 'water') + ' are needed?', answer: String(b * k), hints: ['Find how many times the first amount was multiplied.', 'Multiply the second part by the same number.'], explain: a * k + ' ÷ ' + a + ' = ' + k + ', so ' + b + ' × ' + k + ' = ' + b * k + ' ml.' });
+  }
+  function genUnitaryR() {
+    var n1 = rnd(2, 6), u = pick([0.5, 1.5, 2, 2.5, 3, 4]), n2 = n1 + rnd(2, 5), c = Math.round(n1 * u * 100) / 100, ans = Math.round(n2 * u * 100) / 100, it = pick(['pens', 'apples', 'tickets', 'books']);
+    return Q({ tag: 'Proportion', text: '<b>' + n1 + '</b> ' + it + ' cost <b>£' + c.toFixed(2) + '</b>. How much do <b>' + n2 + '</b> ' + it + ' cost? (£)', answer: T(ans), hints: ['Find the cost of one.', 'Multiply by the number you want.'], explain: '£' + c.toFixed(2) + ' ÷ ' + n1 + ' = £' + u.toFixed(2) + ' each, × ' + n2 + ' = £' + ans.toFixed(2) + '.' });
+  }
+  function genRecipeR() {
+    var p = pick([25, 30, 40, 50, 60]), a = pick([2, 3, 4, 5]), b = pick([6, 8, 10, 12]);
+    return Q({ tag: 'Scaling a recipe', text: 'A recipe for <b>' + a + '</b> people uses <b>' + p * a + ' g</b> of pasta. How much pasta for <b>' + b + '</b> people? (g)', answer: String(p * b), hints: ['Find the pasta for one person.', 'Multiply by the number of people.'], explain: p * a + ' ÷ ' + a + ' = ' + p + ' g each, × ' + b + ' = ' + p * b + ' g.' });
+  }
+  function genRatioFraction() {
+    var a = rnd(1, 5), b = rnd(1, 6); while (b === a) b = rnd(1, 6);
+    var t = a + b, ans = a + '/' + t, f = pick([['boys', 'girls'], ['red', 'blue'], ['cats', 'dogs']]);
+    var wr = [b + '/' + t, a + '/' + b, a + '/' + (t + 1), (a + 1) + '/' + t].filter(function (v, i, r) { return v !== ans && r.indexOf(v) === i; });
+    return Q({ tag: 'Ratio and fractions', type: 'mc', text: 'The ratio of <b>' + f[0] + '</b> to <b>' + f[1] + '</b> is <b>' + a + ' : ' + b + '</b>. What fraction are ' + f[0] + '?', options: shuffle(wr.slice(0, 3).concat([ans])), answer: ans, hints: ['Add the parts to find the total.', 'The first part goes over the total.'], explain: a + ' + ' + b + ' = ' + t + ' parts, so ' + f[0] + ' are ' + ans + '.' });
+  }
+  function genRatioPercent() {
+    var c = pick([[1, 1, 50], [1, 3, 25], [1, 4, 20], [3, 7, 30], [2, 3, 40], [3, 2, 60], [9, 1, 90], [1, 9, 10]]);
+    return Q({ tag: 'Ratio and percentages', text: 'Squash and water are mixed in the ratio <b>' + c[0] + ' : ' + c[1] + '</b>. What percentage of the drink is squash?', answer: String(c[2]), hints: ['Add the parts to find the total.', 'Write the squash part as a fraction and change it to a percentage.'], explain: c[0] + ' + ' + c[1] + ' = ' + (c[0] + c[1]) + ' parts. Squash is ' + c[0] + '/' + (c[0] + c[1]) + ' = ' + c[2] + '%.' });
+  }
+  function genFootballRatio() {
+    var g = rnd(2, 6), k = rnd(2, 5), a = rnd(1, 5), b = rnd(1, 5); while (b === a || gcd(a, b) !== 1) b = rnd(1, 6);
+    var ans = a + ' : ' + b, tp = pick(['goals scored to goals let in', 'wins to losses']);
+    var wr = [b + ' : ' + a, (a * k) + ' : ' + (b * k), a + ' : ' + (b + 1)].filter(function (v, i, r) { return v !== ans && r.indexOf(v) === i; });
+    return Q({ tag: 'Ratio in sport', type: 'mc', text: 'A team has a ratio of ' + tp + ' of <b>' + a * k + ' : ' + b * k + '</b>. What is this in its simplest form?', options: shuffle(wr.slice(0, 3).concat([ans])), answer: ans, hints: ['Divide both numbers by the same number.', 'Keep the order the same.'], explain: 'Divide both by ' + k + ': ' + ans + '.' });
+  }
+  function genDifference() {
+    var a = rnd(1, 4), b = rnd(a + 1, 7), k = rnd(2, 8), d = (b - a) * k, tot = (a + b) * k;
+    return Q({ tag: 'Ratio problems', text: 'Ali and Bea share sweets in the ratio <b>' + a + ' : ' + b + '</b>. Bea gets <b>' + d + '</b> more than Ali. How many sweets are there in total?', answer: String(tot), hints: ['The difference in the ratio is ' + (b - a) + ' parts. Find the value of one part.', 'Multiply one part by the total number of parts.'], explain: (b - a) + ' parts = ' + d + ', so 1 part = ' + k + '. Total parts ' + (a + b) + ', so ' + (a + b) + ' × ' + k + ' = ' + tot + '.' });
+  }
+  var VERBAL = [
+    { text: 'Which is the <b>odd one out</b>? <b>2 : 3, 4 : 6, 6 : 9, 8 : 10</b>', options: ['2 : 3', '4 : 6', '6 : 9', '8 : 10'], answer: '8 : 10', hints: ['Simplify each ratio.', 'Three simplify to 2 : 3.'], explain: '8 : 10 simplifies to 4 : 5, the others simplify to 2 : 3.' },
+    { text: 'Which drink is <b>stronger</b>: squash to water in the ratio <b>1 : 4</b> or <b>1 : 5</b>?', options: ['1 : 4', '1 : 5', 'They are the same', 'You cannot tell'], answer: '1 : 4', hints: ['Find the fraction of the drink that is squash in each.', '1 part in 5 is more than 1 part in 6.'], explain: 'In 1 : 4 squash is 1/5 of the drink. In 1 : 5 it is only 1/6, so 1 : 4 is stronger.' },
+    { text: 'Which ratio is <b>equivalent</b> to <b>3 : 4</b>?', options: ['6 : 8', '4 : 3', '3 : 8', '6 : 7'], answer: '6 : 8', hints: ['Multiply both parts by the same number.', 'Try doubling.'], explain: 'Doubling both parts of 3 : 4 gives 6 : 8.' }
+  ];
+
+  (K.realStage||K.stage)({ n: 11, base: 11, year: 'P6', short: 'Ratio', title: 'Ratio and proportion', blurb: 'What a ratio is, equivalent and simplest ratios, ratio as fractions and percentages, sharing in a ratio, finding missing amounts, direct proportion, recipes and everyday ratios.',
+    l1label: 'Ratio', l1tag: 'Ratio', l2label: 'Sharing and proportion', l2tag: 'Sharing and proportion',
+    warm: K.warmFrom([
+      function () { var a = rnd(2, 9), b = rnd(2, 9); return Q({ tag: 'Mental maths', text: 'What is <b>' + a + ' × ' + b + '</b>?', answer: String(a * b), hints: ['Use your times tables.', 'Count in ' + a + 's.'], explain: a + ' × ' + b + ' = ' + a * b + '.' }); },
+      function () { var a = rnd(2, 9), k = rnd(2, 5); return Q({ tag: 'Mental maths', text: 'What is <b>' + a * k + ' ÷ ' + k + '</b>?', answer: String(a), hints: ['Think of the times table.', k + ' times what makes ' + a * k + '?'], explain: a * k + ' ÷ ' + k + ' = ' + a + '.' }); },
+      function () { var a = rnd(1, 4), b = rnd(a + 1, 7); return Q({ tag: 'Mental maths', text: 'How many parts in total in the ratio <b>' + a + ' : ' + b + '</b>?', answer: String(a + b), hints: ['Add the two parts.', 'Parts are the numbers in the ratio.'], explain: a + ' + ' + b + ' = ' + (a + b) + ' parts.' }); },
+      genEquivRatio, genRatioFindR
+    ]),
+    learn1: LEARN1, learn2: LEARN2,
+    lab: BT.mixerCfg = { title: 'Ratio mixer', lead: 'Change the two amounts. Watch the counters, the simplest ratio, the fractions and the percentages.', need: 6,
+      params: [{ id: 'a', label: 'Blue counters', min: 1, max: 8, val: 2 }, { id: 'b', label: 'Orange counters', min: 1, max: 8, val: 3 }],
+      render: function (v) {
+        var g = gcd(v.a, v.b), sa = v.a / g, sb = v.b / g, t = v.a + v.b, pa = Math.round(v.a / t * 1000) / 10;
+        return { vis: dots(v.a, v.b), out: 'Ratio ' + v.a + ' : ' + v.b + (g > 1 ? ', simplest form ' + sa + ' : ' + sb : ', already in its simplest form'),
+          explain: 'Total ' + t + ' counters. Blue is ' + v.a + '/' + t + ' = ' + pa + '% and orange is ' + v.b + '/' + t + ' = ' + Math.round((100 - pa) * 10) / 10 + '%.' };
+      } },
+    gens: [genWriteRatio, genEquivRatio, genSimplifyR, genShareR, genRatioFindR, genUnitaryR, genRecipeR, genRatioFraction, genRatioPercent, genFootballRatio, genDifference, K.verbal(VERBAL)],
+    easy: [genWriteRatio, genEquivRatio, genSimplifyR, genShareR, genRecipeR], hard: [genRatioFindR, genUnitaryR, genRatioFraction, genRatioPercent, genDifference, genFootballRatio] });
+
+  BT.add(11, 'learn3', 'Comparing ratios and scale', [
+    X('Comparing ratios', 'Which squash is stronger: 1 part squash to 4 parts water, or 1 part squash to 5 parts water?',
+      ['Find the fraction of the drink that is squash in each mix.', '1 : 4 has 5 parts in all, so squash is ' + fr(1, 5) + ' = 20%.', '1 : 5 has 6 parts in all, so squash is ' + fr(1, 6) + ', about 17%.', '20% is more than 17%, so 1 : 4 is the stronger squash.'],
+      ['1 : 4 or 1 : 5', fr(1, 5) + ' = 20%', fr(1, 6) + ' ≈ 17%', '1 : 4 is stronger'], '1 : 4 is stronger',
+      'Less water for the same squash makes a stronger drink.',
+      'how to compare two ratios using fractions or percentages.',
+      ['Turn both ratios into the same form, like percentages, to compare fairly.', 'Remember that the total number of parts is the sum of the parts.'],
+      ['Example 1: 1 : 1 is 50% squash, which is stronger than 1 : 3 at 25%.', 'Example 2: 3 : 2 gives 60% and 2 : 1 gives about 67%.', 'Example 3: 1 : 9 gives 10% and 1 : 4 gives 20%.']),
+    X('Scale on a map', 'A map scale says 1 cm : 5 km. Two towns are 4 cm apart on the map. How far apart are they in real life?',
+      ['The scale says 1 cm on the map is 5 km in real life.', 'Multiply the map distance by 5: 4 × 5.', '4 × 5 = 20.', 'The towns are 20 km apart.'],
+      ['1 cm : 5 km', '4 × 5', '= 20', '20 km'], '20 km',
+      'Maps use a ratio called a scale so a whole country can fit on a page.',
+      'how a scale is a ratio between a map and real life.',
+      ['Multiply to go from the map to real life, and divide to go the other way.', 'The scale 1 : 100 means 1 cm on the drawing is 100 cm in real life.'],
+      ['Example 1: 3 cm on a 1 cm : 2 km map is 6 km.', 'Example 2: 30 km on a 1 cm : 10 km map is 3 cm.', 'Example 3: 5 cm on a 1 : 100 plan is 500 cm = 5 m.']),
+    X('A ratio problem with a difference', 'Ali and Bea share sweets in the ratio 3 : 5. Bea gets 12 more than Ali. How many sweets are there altogether?',
+      ['Bea has 5 − 3 = 2 more parts than Ali.', '2 parts = 12 sweets, so 1 part = 6.', 'There are 3 + 5 = 8 parts altogether.', '8 × 6 = 48 sweets in total.'],
+      ['5 − 3 = 2 parts', '2 parts = 12, so 1 part = 6', '3 + 5 = 8 parts', '8 × 6 = 48'], '48 sweets',
+      'A bar model helps you see the difference between the shares.',
+      'how to use the difference between two shares to find one part.',
+      ['Draw a bar model: Ali has 3 blocks and Bea has 5 blocks.', 'The extra 2 blocks are the 12 sweets.'],
+      ['Example 1: 2 : 5, difference 9, gives 1 part = 3 and total 21.', 'Example 2: 1 : 4, difference 15, gives 1 part = 5 and total 25.', 'Example 3: 3 : 4, difference 8, gives 1 part = 8 and total 56.'])
+  ]);
+})();
+</script>
+<script>
+/* bite1.js: P5 additions from the BBC Bitesize Second level map.
+   Negative numbers, partitioning, counting on, short division, unit fractions,
+   fraction/decimal/percentage friends, coins and currency, imperial units, a ruler,
+   parallel and perpendicular lines, triangles, polygons and grid references. */
+(function () {
+  'use strict';
+  var BT = window.BT, K = Studio.kit, V = Studio.viz, sl = BT.sl, X = BT.X, XV = BT.XV, fr = BT.fr, NL = BT.NL;
+
+  /* ---- 501 Place value and rounding ---- */
+  BT.add(501, 'learn3', 'Negative numbers', [
+    sl('Numbers below zero', [
+      'A negative number is a number below zero. We write it with a minus sign, like −3.',
+      'On a number line, negative numbers sit to the left of zero. The further left a number is, the smaller it is.',
+      '−1 is just below zero. −5 is colder than −2.'],
+      NL(-5, 5, { marks: [[-3, 22]], alt: 'A number line from minus 5 to 5 with minus 3 marked' }),
+      'On a cold winter morning the temperature in Scotland can drop below zero, to −3 °C.',
+      'what negative numbers are and where they sit on a number line.',
+      ['Zero is neither positive nor negative. It is the dividing line between them.', 'We say “minus 3” or “negative 3”. Both mean 3 below zero.'],
+      ['Example 1: 3 degrees below zero is −3 °C.', 'Example 2: The basement of a shop might be floor −1.', 'Example 3: A freezer at −18 °C is far colder than a fridge at 4 °C.']),
+    XV('Counting back past zero', 'The temperature is 3 °C. It falls by 5 degrees. What is the new temperature?',
+      ['Start at 3 on the number line.', 'Count back 5 steps: 2, 1, 0, −1, −2.', 'You have gone past zero, so the answer is a negative number.', 'The temperature is now −2 °C.'],
+      '3 − 5 = −2',
+      function (k) { return NL(-5, 5, { marks: k >= 4 ? [[3, 215], [-2, 22]] : [[3, 215]], jumps: k >= 2 ? [[3, k >= 4 ? -2 : -2, '−5']] : [], alt: 'A number line showing a move from 3 back to minus 2' }); },
+      'A thermometer at 3 °C that drops 5 degrees reads −2 °C.',
+      'how to count back past zero.',
+      ['When you count back past zero, keep counting into the negatives.', 'Always check the direction: back means left on the number line.'],
+      ['Example 1: 2 − 4 = −2.', 'Example 2: 1 − 6 = −5.', 'Example 3: 0 − 3 = −3.']),
+    sl('Ordering negative numbers', [
+      'To order numbers, picture the number line. Numbers further to the right are bigger.',
+      'Order −6, 2, −1 and 0 from smallest to largest: −6, −1, 0, 2.',
+      'Be careful: −6 is smaller than −1, even though 6 is bigger than 1.'],
+      NL(-6, 2, { marks: [[-6, 22], [-1, 215], [0, 150], [2, 45]], alt: 'A number line with minus 6, minus 1, 0 and 2 marked' }),
+      'In a game, a score of −10 is worse than a score of −3.',
+      'how to put negative numbers in order.',
+      ['With negatives, the number that looks biggest is the smallest. −20 is smaller than −2.', 'Left is smaller and right is bigger, just like positive numbers.'],
+      ['Example 1: −5 < −2.', 'Example 2: Smallest to largest: −8, −3, 0, 4.', 'Example 3: The coldest is −7 °C when the others are −2 °C and 1 °C.']),
+    sl('Partitioning a number', [
+      'Partitioning means splitting a number into its place values.',
+      '4,372 = 4,000 + 300 + 70 + 2.',
+      'We can partition decimals as well: 3.45 = 3 + 0.4 + 0.05.'],
+      K.table([['4,372', '4,000 + 300 + 70 + 2'], ['605', '600 + 0 + 5'], ['3.45', '3 + 0.4 + 0.05']], ['Number', 'Partitioned']),
+      'Splitting £3.45 into £3, 40p and 5p is partitioning.',
+      'how to split a number into its place values.',
+      ['Partitioning helps with mental maths because you work with easier parts.', 'A zero means there are none of that place value, so we skip it.'],
+      ['Example 1: 52 = 50 + 2.', 'Example 2: 1,208 = 1,000 + 200 + 8.', 'Example 3: 7.6 = 7 + 0.6.'])
+  ]);
+
+  /* ---- 502 The four operations ---- */
+  BT.add(502, 'learn3', 'Mental and written methods', [
+    X('Partitioning to add', 'Work out 47 + 36 by partitioning.',
+      ['Split both numbers: 47 = 40 + 7 and 36 = 30 + 6.', 'Add the tens: 40 + 30 = 70.', 'Add the ones: 7 + 6 = 13.', 'Put the parts together: 70 + 13 = 83.'],
+      ['47 + 36', '40 + 7 and 30 + 6', '70 and 13', '70 + 13 = 83'], '47 + 36 = 83',
+      'Adding two prices, like 47p and 36p, in your head.',
+      'how to add two numbers by splitting them into tens and ones.',
+      ['Partition both numbers, add the tens, add the ones, then join the answers.', 'If the ones add to more than 9, carry the extra ten.'],
+      ['Example 1: 34 + 25: 30 + 20 = 50, 4 + 5 = 9, so 59.', 'Example 2: 58 + 27: 50 + 20 = 70, 8 + 7 = 15, so 85.', 'Example 3: 66 + 19: 60 + 10 = 70, 6 + 9 = 15, so 85.']),
+    XV('Counting on in tens and ones', 'Work out 47 + 36 by counting on.',
+      ['Start at the bigger number, 47.', 'Count on the tens first: 47 + 30 = 77.', 'Now count on the ones: 77 + 6 = 83.', 'The answer is 83.'],
+      '47 + 36 = 83',
+      function (k) { return NL(40, 90, { lab: 10, tick: 5, marks: k >= 4 ? [[47, 215], [83, 22]] : [[47, 215]], jumps: k >= 3 ? [[47, 77, '+30'], [77, 83, '+6']] : k >= 2 ? [[47, 77, '+30']] : [], alt: 'A number line counting on from 47 to 83' }); },
+      'Counting on is how you work out change at a shop.',
+      'how to count on in tens and ones using a number line.',
+      ['Counting on works well when one number is much easier to start from.', 'Jump the tens first because they are bigger steps.'],
+      ['Example 1: 52 + 24: 52 + 20 = 72, 72 + 4 = 76.', 'Example 2: 68 + 15: 68 + 10 = 78, 78 + 5 = 83.', 'Example 3: 29 + 43: 29 + 40 = 69, 69 + 3 = 72.']),
+    sl('Multiplying and dividing by 0 and 1', [
+      'Any number times 0 is 0. For example, 8 × 0 = 0.',
+      'Any number times 1 stays the same. 8 × 1 = 8.',
+      '0 divided by a number is 0, and a number divided by 1 stays the same. We can never divide by 0.'],
+      K.table([['8 × 0', '0'], ['8 × 1', '8'], ['0 ÷ 8', '0'], ['8 ÷ 1', '8']], ['Calculation', 'Answer']),
+      'Zero bags of 6 apples is no apples. One bag of 6 apples is 6 apples.',
+      'what happens when we multiply or divide by 0 and by 1.',
+      ['Multiplying by 1 does not change a number, so 1 is called the identity for multiplication.', 'Dividing by 0 has no answer, because you cannot share things into zero groups.'],
+      ['Example 1: 275 × 0 = 0.', 'Example 2: 275 × 1 = 275.', 'Example 3: 0 ÷ 5 = 0.']),
+    X('Short division: the bus stop', 'Work out 156 ÷ 3 using the bus stop method.',
+      ['Write 156 under the bus stop and 3 outside it.', '1 ÷ 3 does not go, so look at 15: 15 ÷ 3 = 5. Write 5 above the 5.', 'Bring down the 6: 6 ÷ 3 = 2. Write 2 above the 6.', 'The answer is 52. Check: 52 × 3 = 156.'],
+      ['3 ) 156', '15 ÷ 3 = 5', '6 ÷ 3 = 2', '156 ÷ 3 = 52'], '156 ÷ 3 = 52',
+      'Sharing 156 stickers equally between 3 friends gives each friend 52.',
+      'how to divide a bigger number by one digit using the bus stop method.',
+      ['Work from the left. Divide each digit in turn and bring the next digit down.', 'Always check with the opposite operation: multiply your answer by the divisor.'],
+      ['Example 1: 84 ÷ 4 = 21.', 'Example 2: 96 ÷ 3 = 32.', 'Example 3: 248 ÷ 4 = 62.']),
+    sl('Which operation first?', [
+      'When a calculation has more than one operation, we do multiplication and division before addition and subtraction.',
+      'In 4 + 3 × 2, do 3 × 2 = 6 first. Then 4 + 6 = 10. The answer is not 14.',
+      'Brackets come before everything. (4 + 3) × 2 = 14.'],
+      K.table([['4 + 3 × 2', '4 + 6 = 10'], ['(4 + 3) × 2', '7 × 2 = 14'], ['10 − 6 ÷ 2', '10 − 3 = 7']], ['Calculation', 'Working']),
+      'A rubber costs £4 and 3 pens cost £2 each. The total is 4 + 3 × 2 = £10.',
+      'the order in which to do the parts of a calculation.',
+      ['The order is: brackets, then multiplication and division, then addition and subtraction.', 'Two calculators can give different answers if one ignores the order.'],
+      ['Example 1: 5 + 2 × 3 = 11.', 'Example 2: (5 + 2) × 3 = 21.', 'Example 3: 20 − 12 ÷ 4 = 17.'])
+  ]);
+
+  /* ---- 503 Fractions ---- */
+  BT.add(503, 'learn3', 'Fraction words', [
+    sl('Numerator and denominator', [
+      'A fraction has two numbers. The bottom number is the denominator. It tells us how many equal parts the whole is cut into.',
+      'The top number is the numerator. It tells us how many of those parts we are talking about.',
+      'In ' + fr(3, 8) + ' the whole is cut into 8 equal parts and we have 3 of them.'],
+      BT.bar(3, 8, '3 of 8 equal parts shaded'),
+      'If a pizza is cut into 8 equal slices and you eat 3, you ate ' + fr(3, 8) + ' of the pizza.',
+      'what the numerator and the denominator of a fraction tell us.',
+      ['The parts must be equal in size. If they are not, it is not a fraction of the whole.', 'The denominator names the size of the parts: halves, thirds, quarters, fifths and so on.'],
+      ['Example 1: In ' + fr(2, 5) + ' the numerator is 2 and the denominator is 5.', 'Example 2: ' + fr(7, 10) + ' means 7 out of 10 equal parts.', 'Example 3: A fraction with denominator 4 is called quarters.']),
+    sl('Unit and non-unit fractions', [
+      'A unit fraction has 1 as its numerator, like ' + fr(1, 2) + ', ' + fr(1, 5) + ' or ' + fr(1, 10) + '.',
+      'A non-unit fraction has a numerator bigger than 1, like ' + fr(3, 5) + ' or ' + fr(7, 10) + '.',
+      fr(3, 5) + ' is three of the unit fraction ' + fr(1, 5) + ': ' + fr(1, 5) + ' + ' + fr(1, 5) + ' + ' + fr(1, 5) + '.'],
+      BT.bar(1, 5, 'A unit fraction, 1 of 5 parts shaded') + BT.bar(3, 5, 'A non-unit fraction, 3 of 5 parts shaded'),
+      'One slice of a cake cut in 5 is a unit fraction. Three slices is a non-unit fraction.',
+      'the difference between unit fractions and non-unit fractions.',
+      ['The smaller the unit fraction is, the bigger its denominator. ' + fr(1, 10) + ' is smaller than ' + fr(1, 2) + '.', 'Every non-unit fraction can be built from unit fractions.'],
+      ['Example 1: ' + fr(1, 8) + ' is a unit fraction.', 'Example 2: ' + fr(5, 8) + ' is five lots of ' + fr(1, 8) + '.', 'Example 3: ' + fr(1, 3) + ' is bigger than ' + fr(1, 4) + '.'])
+  ]);
+
+  /* ---- 504 Decimals and percentages ---- */
+  BT.add(504, 'learn3', 'Three ways to say it', [
+    sl('One amount, three names', [
+      'A fraction, a decimal and a percentage can all describe the same amount.',
+      'Half is ' + fr(1, 2) + ' = 0.5 = 50%. A quarter is ' + fr(1, 4) + ' = 0.25 = 25%.',
+      'Learn these friends well and many questions become quick.'],
+      K.table([[fr(1, 2), '0.5', '50%'], [fr(1, 4), '0.25', '25%'], [fr(3, 4), '0.75', '75%'], [fr(1, 10), '0.1', '10%'], [fr(1, 5), '0.2', '20%']], ['Fraction', 'Decimal', 'Percentage']),
+      'A phone at 50% battery is half full.',
+      'how fractions, decimals and percentages match each other.',
+      ['Percent means out of 100, so 25% is 25 out of 100, which simplifies to ' + fr(1, 4) + '.', 'Decimals with hundredths match percentages: 0.35 = 35%.'],
+      ['Example 1: 0.75 = 75% = ' + fr(3, 4) + '.', 'Example 2: ' + fr(1, 10) + ' = 0.1 = 10%.', 'Example 3: 20% = 0.2 = ' + fr(1, 5) + '.']),
+    X('Which is bigger?', 'Which is bigger, 0.7 or ' + fr(3, 5) + '?',
+      ['Write both as percentages so they are easy to compare.', '0.7 = 70%.', fr(3, 5) + ' = 6 tenths = 60%.', '70% is more than 60%, so 0.7 is bigger.'],
+      ['0.7 and ' + fr(3, 5), '0.7 = 70%', fr(3, 5) + ' = 60%', '0.7 is bigger'], '0.7 is bigger',
+      'A 0.7 litre bottle holds more than a three-fifths litre bottle.',
+      'how to compare a fraction and a decimal.',
+      ['Change everything to the same form, then compare. Percentages are often easiest.', 'You could also use decimals: 3 ÷ 5 = 0.6.'],
+      ['Example 1: 0.25 and ' + fr(1, 3) + ': 25% and about 33%, so ' + fr(1, 3) + ' is bigger.', 'Example 2: 0.5 and ' + fr(2, 5) + ': 50% and 40%, so 0.5 is bigger.', 'Example 3: 0.9 and ' + fr(4, 5) + ': 90% and 80%, so 0.9 is bigger.'])
+  ]);
+
+  /* ---- 505 Money, time and measurement ---- */
+  BT.add(505, 'learn3', 'Coins and currency', [
+    sl('Different coins, the same total', [
+      'We can make the same total with different coins and notes.',
+      '85p can be 50p + 20p + 10p + 5p, or 20p + 20p + 20p + 20p + 5p.',
+      'To use the fewest coins, start with the biggest coin that fits and keep going.'],
+      BT.coins([50, 20, 10, 5]) + BT.coins([20, 20, 20, 20, 5]),
+      'At the shop you can pay £1 with one £1 coin, or with two 50p coins.',
+      'how different coins and notes can make the same amount.',
+      ['Check your total by adding the coins in order, biggest first.', 'There is often more than one way. Only the total matters.'],
+      ['Example 1: £1 = 50p + 50p or 20p × 5.', 'Example 2: 30p = 20p + 10p or 10p + 10p + 10p.', 'Example 3: £2.50 = £2 + 50p or £1 + £1 + 20p + 20p + 10p.']),
+    X('Using the fewest coins', 'What is the fewest number of coins needed to make £1.37?',
+      ['Start with the biggest coin that fits: a £1 coin leaves 37p.', 'Next the biggest that fits 37p is 20p, which leaves 17p.', 'Then 10p leaves 7p, then 5p leaves 2p, then a 2p coin.', 'The coins are £1, 20p, 10p, 5p and 2p. That is 5 coins.'],
+      ['£1.37', '£1 + 37p', '£1 + 20p + 10p + 5p + 2p', '5 coins'], 'Fewest coins: 5',
+      'A shop till gives your change using as few coins as it can.',
+      'how to make an amount with the fewest coins.',
+      ['Always take the biggest coin that does not go over the amount.', 'Check by adding up: 100 + 20 + 10 + 5 + 2 = 137p.'],
+      ['Example 1: 68p = 50p + 10p + 5p + 2p + 1p.', 'Example 2: 90p = 50p + 20p + 20p.', 'Example 3: £2.45 = £2 + 20p + 20p + 5p.']),
+    X('Currency and exchange rates', 'Sam is on holiday in Spain. In this example £1 = €1.20. How many euros does he get for £50?',
+      ['Different countries use different currencies. Spain uses the euro, €.', 'The exchange rate says £1 buys €1.20.', 'Multiply: 50 × 1.20 = 60.', 'Sam gets €60.'],
+      ['£1 = €1.20', '£50 × 1.20', '50 × 1.2 = 60', '€60'], '€60',
+      'Exchange rates change every day, so the numbers here are only an example.',
+      'what a currency is and how to change pounds into another currency.',
+      ['The pound (£) is the UK currency. The euro (€) and the dollar ($) are others.', 'To change pounds to another currency, multiply by the exchange rate.'],
+      ['Example 1: £10 at £1 = €1.20 is €12.', 'Example 2: £20 at £1 = $1.25 is $25.', 'Example 3: £5 at £1 = €1.20 is €6.'])
+  ]);
+  BT.add(505, 'learn4', 'Imperial and metric', [
+    sl('Measuring length with a ruler', [
+      'Line the zero mark of the ruler up with one end of the object.',
+      'Read the number at the other end. Each small mark is 1 millimetre. 10 millimetres make 1 centimetre.',
+      'This pencil ends halfway between 6 and 7, so it is 6.5 cm, which is 65 mm.'],
+      BT.ruler(6.5),
+      'Measuring a pencil, a book or your hand span with a ruler.',
+      'how to measure the length of an object with a ruler.',
+      ['Always start at the zero mark, not at the edge of the ruler.', 'Say the unit when you give your answer: cm or mm.'],
+      ['Example 1: A rubber is 4.2 cm = 42 mm.', 'Example 2: A paper clip is about 3 cm.', 'Example 3: A pencil sharpener is about 2.5 cm.']),
+    sl('Metric and imperial', [
+      'At school in Scotland we use metric units: millimetres, centimetres, metres and kilometres, grams and kilograms, millilitres and litres.',
+      'Imperial units are older: inches, feet, yards and miles, ounces, pounds and stones, pints and gallons.',
+      'UK road signs still show miles, and milk is still sold in pints.'],
+      K.table([['length', 'mm, cm, m, km', 'inches, feet, yards, miles'], ['mass', 'g, kg', 'ounces, pounds, stones'], ['capacity', 'ml, l', 'pints, gallons']], ['We measure', 'Metric', 'Imperial']),
+      'A car speed limit sign says 30 miles per hour.',
+      'the difference between metric and imperial units.',
+      ['Metric units are based on 10, 100 and 1,000, so they are easy to change.', 'Imperial units have awkward links, like 12 inches in a foot.'],
+      ['Example 1: A kilometre is metric and a mile is imperial.', 'Example 2: A kilogram is metric and a pound is imperial.', 'Example 3: A litre is metric and a pint is imperial.']),
+    X('Imperial facts', 'A man is 6 feet tall. How many inches is that?',
+      ['There are 12 inches in 1 foot.', 'Multiply the number of feet by 12.', '6 × 12 = 72.', 'He is 72 inches tall.'],
+      ['1 foot = 12 inches', '6 × 12', '72', '72 inches'], '72 inches',
+      'Some people still give their height in feet and inches.',
+      'how to change between feet and inches.',
+      ['Useful facts: 12 inches = 1 foot, 3 feet = 1 yard, 16 ounces = 1 pound, 14 pounds = 1 stone, 8 pints = 1 gallon.', 'To change a bigger unit to a smaller one, multiply.'],
+      ['Example 1: 3 feet = 36 inches.', 'Example 2: 2 pounds = 32 ounces.', 'Example 3: 2 stone = 28 pounds.'])
+  ]);
+
+  /* ---- 507 Shape, angles and symmetry ---- */
+  BT.add(507, 'learn3', 'Lines, triangles and maps', [
+    sl('Parallel and perpendicular lines', [
+      'Parallel lines run side by side and never meet. They stay the same distance apart, like railway tracks.',
+      'Perpendicular lines meet at a right angle, 90°, like the corner of a page.',
+      'Arrows >> mark parallel lines. A small square marks a right angle.'],
+      BT.parperp(),
+      'Railway tracks are parallel. A lamp post stands perpendicular to the pavement.',
+      'what parallel and perpendicular lines are.',
+      ['Parallel lines can go on for ever and never touch.', 'Perpendicular lines make four right angles where they cross.'],
+      ['Example 1: The opposite sides of a rectangle are parallel.', 'Example 2: The sides of a rectangle that meet at a corner are perpendicular.', 'Example 3: The lines on lined paper are parallel.']),
+    sl('Types of triangle', [
+      'A triangle has 3 sides and 3 angles. We name triangles by their sides and angles.',
+      'Equilateral: all 3 sides are equal. Isosceles: 2 sides are equal. Scalene: no sides are equal.',
+      'A right-angled triangle has one angle of 90°.'],
+      BT.triRow(),
+      'A give way sign on the road is an equilateral triangle.',
+      'the names of the types of triangle.',
+      ['Small marks on the sides show which sides are equal.', 'A triangle can be both right-angled and isosceles when the two shorter sides are equal.'],
+      ['Example 1: A triangle with sides 5 cm, 5 cm and 5 cm is equilateral.', 'Example 2: A triangle with sides 4 cm, 4 cm and 6 cm is isosceles.', 'Example 3: A triangle with sides 3 cm, 4 cm and 5 cm is scalene (and right-angled).']),
+    sl('Regular and irregular polygons', [
+      'A polygon is a closed shape with straight sides. A pentagon has 5 sides, a hexagon 6, a heptagon 7 and an octagon 8.',
+      'A regular polygon has all its sides and all its angles equal. An irregular polygon does not.',
+      'A stop sign is a regular octagon.'],
+      BT.polyRow(),
+      'The cells in a honeycomb are regular hexagons.',
+      'the names of polygons and the difference between regular and irregular.',
+      ['The prefix tells the number of sides: pent- 5, hex- 6, hept- 7, oct- 8.', 'A circle is not a polygon because it has no straight sides.'],
+      ['Example 1: A square is a regular quadrilateral.', 'Example 2: A rectangle that is not a square is an irregular quadrilateral.', 'Example 3: A shape with 6 sides of different lengths is an irregular hexagon.']),
+    sl('Grid references', [
+      'A map can be split into squares with letters across the bottom and numbers up the side.',
+      'To give a grid reference, say the letter first and then the number: C3.',
+      'The tree is in square B2. Find B by looking along the bottom and 2 by looking up the side.'],
+      BT.gridMap([[1, 2, '🌳'], [2, 3, '⚓'], [3, 1, '🏠'], [0, 4, '⛰️']], [1, 2]),
+      'Maps in an atlas use grid references to help you find a town.',
+      'how to read and give a grid reference on a map.',
+      ['Letter then number: across first, then up.', 'Coordinates work the same way but use two numbers.'],
+      ['Example 1: The anchor is in C3.', 'Example 2: The house is in D1.', 'Example 3: The mountain is in A4.'])
+  ]);
+})();
+</script>
+<script>
+/* bite2.js: P6 additions from the BBC Bitesize Second level map.
+   Negatives, decimals, mental and short division, comparing and multiplying fractions,
+   imperial/currency/area/volume, triangles, polygons, circles, transformations, cubes. */
+(function () {
+  'use strict';
+  var BT = window.BT, K = Studio.kit, V = Studio.viz, sl = BT.sl, X = BT.X, XV = BT.XV, fr = BT.fr, NL = BT.NL;
+
+  /* ---- Topic 1 Place value and rounding ---- */
+  BT.add(1, 'learn3', 'Negatives and decimals', [
+    XV('Negative numbers on a number line', 'The temperature at night is −4 °C and in the day it is 3 °C. How many degrees warmer is it in the day?',
+      ['Mark −4 and 3 on a number line.', 'Count from −4 up to 0: that is 4 steps.', 'Then count from 0 up to 3: that is 3 more steps.', '4 + 3 = 7, so it is 7 degrees warmer.'],
+      '7 °C warmer',
+      function (k) { return NL(-5, 5, { marks: [[-4, 215], [3, 22]], jumps: k >= 3 ? [[-4, 0, '+4'], [0, 3, '+3']] : k >= 2 ? [[-4, 0, '+4']] : [], alt: 'A number line from minus 5 to 5 with minus 4 and 3 marked' }); },
+      'Weather forecasts give the lowest and highest temperatures. The difference tells you how much it warms up.',
+      'how to find the difference between a negative number and a positive number.',
+      ['To find the distance across zero, add the two distances from zero.', 'Count up the number line and keep the direction clear.'],
+      ['Example 1: From −2 to 5 is 7.', 'Example 2: From −6 to −1 is 5.', 'Example 3: From 4 down to −3 is 7.']),
+    X('Adding and subtracting with negatives', 'Work out −2 + 5 and 4 − 7.',
+      ['For −2 + 5, start at −2 and move 5 to the right: −1, 0, 1, 2, 3.', 'So −2 + 5 = 3.', 'For 4 − 7, start at 4 and move 7 to the left: 3, 2, 1, 0, −1, −2, −3.', 'So 4 − 7 = −3.'],
+      ['−2 + 5', '= 3', '4 − 7', '= −3'], '3 and −3',
+      'A bank account at £4 that pays out £7 is overdrawn by £3, which is −£3.',
+      'how to add and subtract using negative numbers.',
+      ['Adding moves to the right on a number line. Subtracting moves to the left.', 'If you finish to the left of zero, the answer is negative.'],
+      ['Example 1: −5 + 8 = 3.', 'Example 2: 2 − 9 = −7.', 'Example 3: −3 + 3 = 0.']),
+    sl('Rounding decimals', [
+      'To round to 1 decimal place, look at the second decimal digit. If it is 5 or more, round up.',
+      '3.47: the second decimal is 7, so round up to 3.5.',
+      'To round to 2 decimal places look at the third decimal digit: 6.384 rounds to 6.38.'],
+      K.table([['3.47', '1 d.p.', '3.5'], ['6.384', '2 d.p.', '6.38'], ['2.95', '1 d.p.', '3.0'], ['0.068', '2 d.p.', '0.07']], ['Number', 'Round to', 'Answer']),
+      'Prices and measurements are often rounded: £2.499 is about £2.50.',
+      'how to round decimals to 1 or 2 decimal places.',
+      ['Only look at the digit just after the place you are rounding to.', 'Write the zero at the end of 3.0 so it is clear you rounded to 1 decimal place.'],
+      ['Example 1: 5.62 to 1 d.p. is 5.6.', 'Example 2: 8.275 to 2 d.p. is 8.28.', 'Example 3: 0.449 to 1 d.p. is 0.4.']),
+    X('Partitioning decimals', 'Work out 2.6 + 3.7 by partitioning.',
+      ['Split each number into wholes and tenths: 2 + 0.6 and 3 + 0.7.', 'Add the wholes: 2 + 3 = 5.', 'Add the tenths: 0.6 + 0.7 = 1.3.', 'Put them together: 5 + 1.3 = 6.3.'],
+      ['2 + 0.6 and 3 + 0.7', '5 and 1.3', '5 + 1.3', '6.3'], '2.6 + 3.7 = 6.3',
+      'Adding two lengths of ribbon, 2.6 m and 3.7 m.',
+      'how to add decimals by splitting them into parts.',
+      ['Partitioning works for decimals in the same way as for whole numbers.', 'Add the whole numbers and the decimal parts separately, then join them.'],
+      ['Example 1: 4.3 + 2.5: 6 + 0.8 = 6.8.', 'Example 2: 1.8 + 2.6: 3 + 1.4 = 4.4.', 'Example 3: 5.9 + 0.7 = 6.6.'])
+  ]);
+
+  /* ---- Topic 2 The four operations ---- */
+  BT.add(2, 'learn3', 'Mental methods and short division', [
+    X('Multiplying in your head', 'Work out 23 × 4 and 18 × 5 in your head.',
+      ['Partition 23 = 20 + 3.', '20 × 4 = 80 and 3 × 4 = 12, so 80 + 12 = 92.', 'For × 5, do × 10 and then halve: 18 × 10 = 180, and half of 180 is 90.', 'So 23 × 4 = 92 and 18 × 5 = 90.'],
+      ['23 × 4', '80 + 12 = 92', '18 × 10 = 180', 'half of 180 = 90'], '92 and 90',
+      'Working out the cost of 4 tickets at £23 each without a calculator.',
+      'how to multiply in your head by splitting numbers or using × 10.',
+      ['Split the harder number into tens and ones and multiply each part.', '× 5 is the same as × 10 and then halving.'],
+      ['Example 1: 34 × 3 = 90 + 12 = 102.', 'Example 2: 16 × 5 = 160 ÷ 2 = 80.', 'Example 3: 52 × 6 = 300 + 12 = 312.']),
+    X('Doubling and halving', 'Work out 16 × 25.',
+      ['25 is a quarter of 100, so 25s are easy when paired with 4s.', 'Halve 16 and double 25: 8 × 50.', 'Halve again and double again: 4 × 100.', '4 × 100 = 400, so 16 × 25 = 400.'],
+      ['16 × 25', '8 × 50', '4 × 100', '400'], '16 × 25 = 400',
+      'Four 25p coins make £1, so sixteen 25p coins make £4.',
+      'how to double one number and halve the other to make a sum easier.',
+      ['Halving one number and doubling the other keeps the answer the same.', 'This works best when you end with a × 10 or × 100 sum.'],
+      ['Example 1: 14 × 5 = 7 × 10 = 70.', 'Example 2: 12 × 15 = 6 × 30 = 180.', 'Example 3: 8 × 25 = 2 × 100 = 200.']),
+    X('Short division with a remainder', 'Work out 157 ÷ 4 using the bus stop method.',
+      ['Write 157 under the bus stop and 4 outside.', '1 ÷ 4 does not go. 15 ÷ 4 = 3 remainder 3. Write 3 and carry 3.', 'The carried 3 makes 37: 37 ÷ 4 = 9 remainder 1.', 'The answer is 39 remainder 1. Check: 39 × 4 + 1 = 157.'],
+      ['4 ) 157', '15 ÷ 4 = 3 r 3', '37 ÷ 4 = 9 r 1', '39 r 1'], '157 ÷ 4 = 39 remainder 1',
+      'Sharing 157 cards between 4 players gives 39 each with 1 left over.',
+      'how to use the bus stop method when there is a remainder.',
+      ['Carry the remainder to the next digit and keep dividing.', 'Check by multiplying and adding the remainder back.'],
+      ['Example 1: 95 ÷ 4 = 23 remainder 3.', 'Example 2: 250 ÷ 7 = 35 remainder 5.', 'Example 3: 134 ÷ 5 = 26 remainder 4.'])
+  ]);
+
+  /* ---- Topic 3 Fractions ---- */
+  BT.add(3, 'learn3', 'Comparing and multiplying fractions', [
+    X('Comparing with a common denominator', 'Which is bigger, ' + fr(2, 3) + ' or ' + fr(3, 4) + '?',
+      ['The denominators are different, so find a common denominator.', 'The lowest common multiple of 3 and 4 is 12.', fr(2, 3) + ' = ' + fr(8, 12) + ' and ' + fr(3, 4) + ' = ' + fr(9, 12) + '.', fr(9, 12) + ' is bigger than ' + fr(8, 12) + ', so ' + fr(3, 4) + ' is bigger.'],
+      [fr(2, 3) + ' or ' + fr(3, 4), 'common denominator 12', fr(8, 12) + ' and ' + fr(9, 12), fr(3, 4) + ' is bigger'], fr(3, 4) + ' is bigger',
+      'Two pizza halves are not the same if the pizzas are different sizes, but fractions of the same whole can be compared.',
+      'how to compare two fractions with different denominators.',
+      ['Change both fractions so they have the same bottom number, then compare the tops.', 'Use the lowest common multiple of the denominators.'],
+      ['Example 1: ' + fr(1, 2) + ' and ' + fr(3, 5) + ' become ' + fr(5, 10) + ' and ' + fr(6, 10) + ', so ' + fr(3, 5) + ' is bigger.', 'Example 2: ' + fr(5, 6) + ' and ' + fr(3, 4) + ' become ' + fr(10, 12) + ' and ' + fr(9, 12) + ', so ' + fr(5, 6) + ' is bigger.', 'Example 3: ' + fr(2, 5) + ' and ' + fr(3, 10) + ' become ' + fr(4, 10) + ' and ' + fr(3, 10) + '.']),
+    sl('A fraction of a fraction', [
+      'To find a fraction of a fraction, multiply them.',
+      fr(1, 2) + ' of ' + fr(1, 4) + ' means ' + fr(1, 2) + ' × ' + fr(1, 4) + '. Multiply the tops: 1 × 1 = 1. Multiply the bottoms: 2 × 4 = 8.',
+      'So half of a quarter is one eighth, ' + fr(1, 8) + '.'],
+      (function () {
+        var s = '';
+        for (var i = 0; i < 4; i++) s += '<rect x="' + (10 + i * 75) + '" y="10" width="75" height="70" style="fill:' + (i === 0 ? BT.hs(215, 'band') : 'transparent') + ';stroke:var(--fg);stroke-width:2.5"/>';
+        s += '<line x1="10" y1="45" x2="85" y2="45" style="stroke:var(--fg);stroke-width:2.5"/><rect x="10" y="45" width="75" height="35" style="fill:' + BT.hs(22, 'band') + ';stroke:var(--fg);stroke-width:2.5"/>';
+        s += BT.txt(150, 100, 'half of one quarter is one eighth', 13);
+        return BT.svg(320, 108, 'A bar cut into four quarters; the first quarter is cut in half, making one eighth', s);
+      })(),
+      'Half of a quarter of a pizza is an eighth of the pizza.',
+      'how to find a fraction of a fraction by multiplying.',
+      ['Multiply the numerators together and the denominators together.', '“Of” in maths often means multiply.'],
+      ['Example 1: ' + fr(1, 3) + ' × ' + fr(1, 2) + ' = ' + fr(1, 6) + '.', 'Example 2: ' + fr(1, 2) + ' × ' + fr(3, 5) + ' = ' + fr(3, 10) + '.', 'Example 3: ' + fr(1, 4) + ' × ' + fr(1, 4) + ' = ' + fr(1, 16) + '.']),
+    X('Multiplying fractions', 'Work out ' + fr(2, 3) + ' × ' + fr(3, 5) + '.',
+      ['Multiply the numerators: 2 × 3 = 6.', 'Multiply the denominators: 3 × 5 = 15.', 'That gives ' + fr(6, 15) + '. Simplify by dividing both numbers by 3.', fr(6, 15) + ' = ' + fr(2, 5) + '.'],
+      [fr(2, 3) + ' × ' + fr(3, 5), fr(6, 15), '÷ 3', fr(2, 5)], fr(2, 5),
+      'Two thirds of a class are girls and three fifths of the girls walk to school. The part of the class who are girls that walk is 2/3 × 3/5 = 2/5.',
+      'how to multiply two fractions and simplify the answer.',
+      ['Always simplify your answer at the end.', 'You can also cancel common factors before multiplying to keep the numbers small.'],
+      ['Example 1: ' + fr(1, 2) + ' × ' + fr(2, 3) + ' = ' + fr(2, 6) + ' = ' + fr(1, 3) + '.', 'Example 2: ' + fr(3, 4) + ' × ' + fr(2, 5) + ' = ' + fr(6, 20) + ' = ' + fr(3, 10) + '.', 'Example 3: ' + fr(2, 5) + ' × ' + fr(5, 6) + ' = ' + fr(10, 30) + ' = ' + fr(1, 3) + '.'])
+  ]);
+
+  /* ---- Topic 4 Decimals and percentages ---- */
+  BT.add(4, 'learn3', 'Three ways to say it', [
+    sl('Fractions, decimals and percentages', [
+      'We can write an amount as a fraction, a decimal or a percentage.',
+      'To change a fraction to a decimal, divide the top by the bottom. ' + fr(3, 8) + ' = 3 ÷ 8 = 0.375.',
+      'To change a decimal to a percentage, multiply by 100. 0.375 = 37.5%.'],
+      K.table([[fr(1, 5), '0.2', '20%'], [fr(2, 5), '0.4', '40%'], [fr(3, 5), '0.6', '60%'], [fr(1, 8), '0.125', '12.5%'], [fr(3, 8), '0.375', '37.5%']], ['Fraction', 'Decimal', 'Percentage']),
+      'A shop sale sign says “¼ off”, which is the same as 25% off.',
+      'how to change between fractions, decimals and percentages.',
+      ['Fraction to decimal: divide. Decimal to percentage: multiply by 100.', 'Percentage to fraction: write it over 100 and simplify.'],
+      ['Example 1: ' + fr(7, 10) + ' = 0.7 = 70%.', 'Example 2: 45% = ' + fr(45, 100) + ' = ' + fr(9, 20) + '.', 'Example 3: 0.04 = 4% = ' + fr(1, 25) + '.']),
+    X('Putting them in order', 'Put 0.45, ' + fr(2, 5) + ' and 48% in order, smallest first.',
+      ['Change everything to percentages so they can be compared.', '0.45 = 45%, ' + fr(2, 5) + ' = 40% and 48% stays as it is.', 'The order is 40%, 45%, 48%.', 'So the order is ' + fr(2, 5) + ', 0.45, 48%.'],
+      ['0.45, ' + fr(2, 5) + ', 48%', '45%, 40%, 48%', '40% < 45% < 48%', fr(2, 5) + ', 0.45, 48%'], fr(2, 5) + ', 0.45, 48%',
+      'Comparing test scores written as 18/40, 0.48 and 47%.',
+      'how to put fractions, decimals and percentages in order.',
+      ['Turn every number into the same form first.', 'Percentages are usually the easiest form to compare.'],
+      ['Example 1: 0.3, ' + fr(1, 4) + ', 28% becomes 30%, 25%, 28%.', 'Example 2: ' + fr(3, 5) + ', 0.55, 62% becomes 60%, 55%, 62%.', 'Example 3: 0.9, 85%, ' + fr(4, 5) + ' becomes 90%, 85%, 80%.'])
+  ]);
+
+  /* ---- Topic 5 Money, time and measurement ---- */
+  BT.add(5, 'learn3', 'Imperial, currency and volume', [
+    sl('Imperial and metric together', [
+      'We can change between imperial and metric units using rough rules.',
+      '1 inch is about 2.5 cm. 1 mile is about 1.6 km. 1 kg is about 2.2 pounds.',
+      'These are approximate, so we write “about” or use the ≈ sign.'],
+      K.table([['1 inch', '≈ 2.5 cm'], ['1 foot', '≈ 30 cm'], ['1 mile', '≈ 1.6 km'], ['1 pound', '≈ 450 g'], ['1 kg', '≈ 2.2 pounds'], ['1 pint', '≈ 570 ml'], ['1 gallon', '≈ 4.5 litres']], ['Imperial', 'Metric']),
+      'Cars show speed in miles per hour, but a map app might give distances in kilometres.',
+      'how imperial units relate to metric units.',
+      ['The rules are approximate. Exact conversions have more decimal places.', 'Use them to get a feel for size, like a 100 m race being about 110 yards.'],
+      ['Example 1: 10 inches is about 25 cm.', 'Example 2: A 2 kg bag of sugar is about 4.4 pounds.', 'Example 3: A 5 mile run is about 8 km.']),
+    X('Miles to kilometres', 'A road sign says 30 miles. About how many kilometres is that?',
+      ['1 mile is about 1.6 km.', 'Multiply the miles by 1.6.', '30 × 1.6 = 48.', '30 miles is about 48 km.'],
+      ['1 mile ≈ 1.6 km', '30 × 1.6', '= 48', '≈ 48 km'], 'About 48 km',
+      'Tourists often change a distance in miles into kilometres to understand it.',
+      'how to change miles into kilometres.',
+      ['To go from miles to kilometres, multiply by 1.6.', 'To go the other way, divide by 1.6.'],
+      ['Example 1: 10 miles ≈ 16 km.', 'Example 2: 50 miles ≈ 80 km.', 'Example 3: 80 km ≈ 50 miles.']),
+    X('Currency both ways', 'In this example £1 = $1.25. A toy costs $15. What is that in pounds?',
+      ['£1 buys $1.25. To go from dollars to pounds we divide by the rate.', '15 ÷ 1.25: multiply both numbers by 4 to get 60 ÷ 5.', '60 ÷ 5 = 12.', 'The toy costs £12.'],
+      ['£1 = $1.25', '15 ÷ 1.25', '60 ÷ 5 = 12', '£12'], '£12',
+      'Exchange rates change daily, so this is only an example rate.',
+      'how to change foreign money back into pounds.',
+      ['Pounds to foreign money: multiply by the rate. Foreign money to pounds: divide by the rate.', 'Check with a sensible estimate: $15 should be a bit less than £15.'],
+      ['Example 1: £40 × 1.25 = $50.', 'Example 2: $50 ÷ 1.25 = £40.', 'Example 3: £8 × 1.2 = €9.60.']),
+    XV('Area of a triangle', 'Find the area of a right-angled triangle with base 8 cm and height 5 cm.',
+      ['A triangle is half of a rectangle with the same base and height.', 'The rectangle is 8 × 5 = 40 cm².', 'Half of 40 is 20.', 'The area of the triangle is 20 cm².'],
+      '20 cm²',
+      function (k) {
+        var s = '<rect x="30" y="14" width="200" height="110" style="fill:transparent;stroke:var(--fg);stroke-width:2;stroke-dasharray:6 4"/><polygon points="30,124 230,124 30,14" style="fill:' + BT.hs(215, 'band') + ';stroke:var(--fg);stroke-width:3;stroke-linejoin:round"/>';
+        s += BT.txt(130, 144, '8 cm', 13) + BT.txt(16, 74, '5 cm', 13, 'end');
+        if (k >= 3) s += BT.txt(110, 84, 'half = 20 cm²', 14);
+        return BT.svg(260, 154, 'A right-angled triangle with base 8 centimetres and height 5 centimetres inside a rectangle', s, 300);
+      },
+      'A triangular sail or a slice of toast cut corner to corner is half of a rectangle.',
+      'how to find the area of a triangle as half of a rectangle.',
+      ['Area of a triangle = base × height ÷ 2.', 'The height is measured at a right angle to the base.'],
+      ['Example 1: Base 6 cm, height 4 cm: 24 ÷ 2 = 12 cm².', 'Example 2: Base 10 m, height 3 m: 30 ÷ 2 = 15 m².', 'Example 3: Base 7 cm, height 6 cm: 42 ÷ 2 = 21 cm².']),
+    XV('What is volume?', 'A box is 4 cubes long, 3 cubes wide and 2 cubes high. How many cubes fill it?',
+      ['Count the cubes in one layer: 4 × 3 = 12.', 'There are 2 layers.', '12 × 2 = 24.', 'The volume is 24 cubes. If each cube is 1 cm³, the volume is 24 cm³.'],
+      '24 cubes (24 cm³)',
+      function () { return BT.box(4, 3, 2); },
+      'The volume of a fish tank tells you how much water it can hold.',
+      'what volume is and how to find it by counting cubes.',
+      ['Volume is the amount of space inside a 3D shape. It is measured in cubic units like cm³.', 'For a box, volume = length × width × height.'],
+      ['Example 1: 3 × 2 × 2 = 12 cubes.', 'Example 2: 5 × 4 × 1 = 20 cubes.', 'Example 3: 2 × 2 × 2 = 8 cubes.'])
+  ]);
+
+  /* ---- Topic 7 Shape, angles and symmetry ---- */
+  BT.add(7, 'learn3', 'Triangles, circles and transformations', [
+    sl('Types of triangle', [
+      'We name triangles by their sides: equilateral has 3 equal sides, isosceles has 2 equal sides and scalene has no equal sides.',
+      'We also name them by an angle: a right-angled triangle has one angle of 90°.',
+      'In an equilateral triangle all angles are 60°. In an isosceles triangle the two angles opposite the equal sides are equal.'],
+      BT.triRow(),
+      'The roof end of a house is often an isosceles triangle.',
+      'the types of triangle and what makes each one special.',
+      ['The three angles of any triangle add up to 180°.', 'Tick marks on the sides show which sides are equal.'],
+      ['Example 1: Sides 6, 6, 6 is equilateral.', 'Example 2: Sides 5, 5, 8 is isosceles.', 'Example 3: Sides 3, 4, 5 is scalene and right-angled.']),
+    sl('Polygons', [
+      'A polygon is a closed shape made of straight sides. We name it by the number of sides.',
+      'Pentagon 5, hexagon 6, heptagon 7, octagon 8, nonagon 9 and decagon 10.',
+      'A regular polygon has equal sides and equal angles. An irregular polygon does not.'],
+      BT.polyRow(),
+      'A stop sign is a regular octagon and a honeycomb cell is a regular hexagon.',
+      'the names of polygons and how to tell regular from irregular.',
+      ['The number of sides equals the number of corners (vertices).', 'The word polygon means “many angles”.'],
+      ['Example 1: A regular hexagon has 6 equal sides.', 'Example 2: A nonagon has 9 sides.', 'Example 3: A shape with 8 sides that are not all equal is an irregular octagon.']),
+    sl('Parts of a circle', [
+      'The circumference is the distance all the way round the circle. The diameter goes straight across through the centre.',
+      'The radius goes from the centre to the edge. The diameter is twice the radius: d = 2 × r.',
+      'The circumference is a little more than 3 times the diameter.'],
+      BT.circle(),
+      'A bicycle wheel has a radius from the hub to the tyre. The tyre length round is its circumference.',
+      'the names of the parts of a circle.',
+      ['All radii in a circle are the same length.', 'The distance across a circle that does not pass through the centre is shorter than the diameter.'],
+      ['Example 1: A radius of 5 cm means a diameter of 10 cm.', 'Example 2: A diameter of 12 m means a radius of 6 m.', 'Example 3: A circle of diameter 10 cm has a circumference of about 31 cm.']),
+    sl('Parallel and perpendicular lines', [
+      'Parallel lines never meet and stay the same distance apart. Perpendicular lines meet at a right angle.',
+      'A rectangle has two pairs of parallel sides, and each side is perpendicular to the sides next to it.',
+      'A trapezium has just one pair of parallel sides.'],
+      BT.parperp(),
+      'The edges of a door frame show parallel and perpendicular lines.',
+      'how to spot parallel and perpendicular lines in shapes.',
+      ['Use arrows to mark parallel lines and a small square to mark right angles.', 'A parallelogram has two pairs of parallel sides but no right angles.'],
+      ['Example 1: Opposite sides of a square are parallel.', 'Example 2: A square has four right angles.', 'Example 3: Railway tracks are parallel.']),
+    sl('Translation, reflection and rotation', [
+      'A translation slides a shape without turning it. Every point moves the same distance in the same direction.',
+      'A reflection flips a shape in a mirror line. The image is the same distance from the mirror as the original.',
+      'A rotation turns a shape about a point. We say the angle and the direction, like a quarter turn clockwise.'],
+      BT.transforms(),
+      'A slide puzzle translates tiles, a mirror reflects your face and a fan rotates.',
+      'the three ways to move a shape: translate, reflect and rotate.',
+      ['The size and shape do not change in any of these three moves.', 'In a reflection the image is back to front, like writing in a mirror.'],
+      ['Example 1: Move a shape 3 squares right: a translation.', 'Example 2: Flip it over the dotted line: a reflection.', 'Example 3: Turn it a quarter turn about a corner: a rotation.'])
+  ]);
+
+  /* ---- Topic 10 Factors, multiples and primes ---- */
+  BT.add(10, 'learn3', 'Cube numbers', [
+    sl('Cube numbers', [
+      'A cube number is a number multiplied by itself and then by itself again. 3 × 3 × 3 = 27.',
+      'We write it with a small 3: 3³ = 27. We say “3 cubed”.',
+      'The first cube numbers are 1, 8, 27, 64 and 125.'],
+      BT.box(3, 3, 3) + K.table([['1³', '1 × 1 × 1', '1'], ['2³', '2 × 2 × 2', '8'], ['3³', '3 × 3 × 3', '27'], ['4³', '4 × 4 × 4', '64'], ['5³', '5 × 5 × 5', '125'], ['10³', '10 × 10 × 10', '1,000']], ['Cube', 'Working', 'Answer']),
+      'A cube-shaped box 3 cm long, wide and high holds 27 cubic centimetres.',
+      'what cube numbers are and how to work them out.',
+      ['Squares are n × n. Cubes are n × n × n. Do not mix them up: 3² = 9 but 3³ = 27.', 'A cube number is the number of small cubes in a bigger cube.'],
+      ['Example 1: 2³ = 2 × 2 × 2 = 8.', 'Example 2: 4³ = 64.', 'Example 3: 10³ = 1,000.'])
+  ]);
+})();
+</script>
+<script>
+/* bite3.js: P7 additions from the BBC Bitesize Second level map.
+   Significant figures, negatives in context, long multiplication, decimal division,
+   fraction proportion, multipliers, currency and imperial, circles, triangles, transformations. */
+(function () {
+  'use strict';
+  var BT = window.BT, K = Studio.kit, sl = BT.sl, X = BT.X, XV = BT.XV, fr = BT.fr, NL = BT.NL;
+
+  /* ---- 701 Place value and rounding ---- */
+  BT.add(701, 'learn3', 'Significant figures and negatives', [
+    X('Significant figures', 'Round 4 872 to 2 significant figures, and 0.03684 to 2 significant figures.',
+      ['Significant figures start at the first digit that is not zero.', '4 872: the first two significant digits are 4 and 8. The next digit is 7, so round up to 4 900.', '0.03684: the zeros before the 3 do not count. The first two significant digits are 3 and 6, and the next digit is 8, so round up to 0.037.', 'The answers are 4 900 and 0.037.'],
+      ['4 872 and 0.03684', '4 900', '0.037', '2 s.f.'], '4 900 and 0.037',
+      'A calculator might show 0.03684 but a lab report would give 0.037.',
+      'how to round to a number of significant figures.',
+      ['Count from the first non-zero digit. Zeros inside or at the end of a number can be significant, zeros at the start are not.', 'Fill the gap with zeros so the size of the number stays right.'],
+      ['Example 1: 7 351 to 1 s.f. is 7 000.', 'Example 2: 0.0652 to 1 s.f. is 0.07.', 'Example 3: 25.48 to 3 s.f. is 25.5.']),
+    XV('Negative numbers in context', 'A submarine is at −120 m. It rises 85 m. Where is it now?',
+      ['Sea level is 0. Below sea level is negative, so the submarine starts at −120.', 'Rising means going up, so add 85.', '−120 + 85 = −35.', 'It is now 35 m below the surface.'],
+      '−35 m',
+      function (k) { return NL(-130, 0, { lab: 10, tick: 10, marks: k >= 3 ? [[-120, 215], [-35, 22]] : [[-120, 215]], jumps: k >= 2 ? [[-120, -35, '+85']] : [], alt: 'A number line from minus 130 to 0 showing a rise from minus 120 to minus 35' }); },
+      'Heights above and below sea level, temperatures and bank balances all use negative numbers.',
+      'how to use negative numbers in real situations.',
+      ['Change a context into a calculation: rising is adding, falling is subtracting.', 'To find the difference between two heights, count the distance on the number line.'],
+      ['Example 1: From −10 °C to 6 °C is a rise of 16 degrees.', 'Example 2: An account at £20 that pays £35 is at −£15.', 'Example 3: A diver at −40 m descends 25 m to −65 m.'])
+  ]);
+
+  /* ---- 702 The four operations ---- */
+  BT.add(702, 'learn3', 'Written and mental methods', [
+    X('Long multiplication', 'Work out 346 × 24.',
+      ['Multiply by the ones digit: 346 × 4 = 1 384.', 'Multiply by the tens digit: 346 × 20 = 6 920.', 'Add the two answers: 1 384 + 6 920 = 8 304.', 'So 346 × 24 = 8 304.'],
+      ['346 × 24', '346 × 4 = 1 384', '346 × 20 = 6 920', '= 8 304'], '346 × 24 = 8 304',
+      '24 boxes each holding 346 pencils hold 8 304 pencils.',
+      'how to multiply a 3-digit number by a 2-digit number with a written method.',
+      ['Write a zero in the ones column when you multiply by the tens digit.', 'Estimate first: 346 × 24 is about 350 × 25 = 8 750, so 8 304 is sensible.'],
+      ['Example 1: 125 × 12 = 1 250 + 250 = 1 500.', 'Example 2: 238 × 15 = 2 380 + 1 190 = 3 570.', 'Example 3: 412 × 31 = 12 360 + 412 = 12 772.']),
+    X('Short division with a decimal remainder', 'Work out 7 ÷ 4 and 53 ÷ 8 as decimals.',
+      ['7 ÷ 4 = 1 remainder 3. Add a decimal point and a zero: 30 ÷ 4 = 7 remainder 2. Add another zero: 20 ÷ 4 = 5.', 'So 7 ÷ 4 = 1.75.', '53 ÷ 8 = 6 remainder 5. Then 50 ÷ 8 = 6 remainder 2, 20 ÷ 8 = 2 remainder 4 and 40 ÷ 8 = 5.', 'So 53 ÷ 8 = 6.625.'],
+      ['7 ÷ 4', '1.75', '53 ÷ 8', '6.625'], '1.75 and 6.625',
+      'Sharing 7 metres of ribbon between 4 people gives 1.75 metres each.',
+      'how to carry on dividing with a decimal point instead of leaving a remainder.',
+      ['Put the decimal point in the answer straight above the decimal point and keep adding zeros.', 'Check: 1.75 × 4 = 7.'],
+      ['Example 1: 9 ÷ 2 = 4.5.', 'Example 2: 13 ÷ 5 = 2.6.', 'Example 3: 15 ÷ 8 = 1.875.']),
+    X('Multiplying in your head with factors', 'Work out 35 × 12 and 48 × 15 in your head.',
+      ['Split 12 into 3 × 4. 35 × 3 = 105 and 105 × 4 = 420.', 'Or 35 × 10 = 350 and 35 × 2 = 70, so 350 + 70 = 420.', 'For 48 × 15: 48 × 10 = 480 and half of that is 240, so 480 + 240 = 720.', 'So 35 × 12 = 420 and 48 × 15 = 720.'],
+      ['35 × 12', '35 × 10 + 35 × 2', '48 × 10 + 48 × 5', '420 and 720'], '420 and 720',
+      'Working out the cost of 12 tickets at £35 each in your head.',
+      'how to use factors and partitioning to multiply in your head.',
+      ['× 15 is the same as × 10 plus half of that again.', 'Choose the method that makes the sum easiest for you.'],
+      ['Example 1: 24 × 15 = 240 + 120 = 360.', 'Example 2: 45 × 12 = 450 + 90 = 540.', 'Example 3: 18 × 20 = 36 × 10 = 360.'])
+  ]);
+
+  /* ---- 703 Fractions ---- */
+  BT.add(703, 'learn3', 'Fractions as proportion', [
+    X('Cancel before you multiply', 'Work out ' + fr(4, 9) + ' × ' + fr(3, 8) + '.',
+      ['Look for common factors between a top and a bottom. 4 and 8 share the factor 4. 3 and 9 share the factor 3.', 'Divide 4 and 8 by 4 to get 1 and 2. Divide 3 and 9 by 3 to get 1 and 3.', 'Multiply what is left: ' + fr(1, 3) + ' × ' + fr(1, 2) + ' = ' + fr(1, 6) + '.', 'So ' + fr(4, 9) + ' × ' + fr(3, 8) + ' = ' + fr(1, 6) + '.'],
+      [fr(4, 9) + ' × ' + fr(3, 8), 'cancel 4 and 8, 3 and 9', fr(1, 3) + ' × ' + fr(1, 2), fr(1, 6)], fr(1, 6),
+      'Cancelling first keeps the numbers small so there is less to simplify.',
+      'how to cancel common factors before multiplying fractions.',
+      ['You can cancel a top with the bottom of the other fraction. This is a shortcut for simplifying at the end.', 'Check: ' + fr(4, 9) + ' × ' + fr(3, 8) + ' = ' + fr(12, 72) + ' = ' + fr(1, 6) + '.'],
+      ['Example 1: ' + fr(2, 5) + ' × ' + fr(5, 6) + ' = ' + fr(1, 3) + '.', 'Example 2: ' + fr(3, 4) + ' × ' + fr(8, 9) + ' = ' + fr(2, 3) + '.', 'Example 3: ' + fr(6, 7) + ' × ' + fr(7, 12) + ' = ' + fr(1, 2) + '.']),
+    X('What fraction is it?', 'In a class of 28 pupils, 21 walk to school. What fraction walks, in its simplest form, and what percentage is that?',
+      ['Write the part over the whole: ' + fr(21, 28) + '.', 'Divide both numbers by 7: ' + fr(21, 28) + ' = ' + fr(3, 4) + '.', fr(3, 4) + ' = 75%.', 'Three quarters of the class, 75%, walk to school.'],
+      [fr(21, 28), fr(3, 4), '75%', 'answer'], fr(3, 4) + ' = 75%',
+      'Writing one amount as a fraction of another is how we describe proportion.',
+      'how to write one amount as a fraction of another.',
+      ['Part over whole, then simplify.', 'Then change to a decimal or percentage if you need to.'],
+      ['Example 1: 6 out of 15 is ' + fr(2, 5) + ' = 40%.', 'Example 2: 12 out of 48 is ' + fr(1, 4) + ' = 25%.', 'Example 3: 35 out of 50 is ' + fr(7, 10) + ' = 70%.'])
+  ]);
+
+  /* ---- 704 Decimals and percentages ---- */
+  BT.add(704, 'learn3', 'Comparing and multipliers', [
+    X('Order fractions, decimals and percentages', 'Put 0.6, ' + fr(5, 8) + ' and 59% in order, smallest first.',
+      ['Change all three to decimals.', '0.6 stays 0.6. ' + fr(5, 8) + ' = 5 ÷ 8 = 0.625. 59% = 0.59.', 'Order the decimals: 0.59, 0.6, 0.625.', 'So the order is 59%, 0.6, ' + fr(5, 8) + '.'],
+      ['0.6, ' + fr(5, 8) + ', 59%', '0.6, 0.625, 0.59', '0.59 < 0.6 < 0.625', '59%, 0.6, ' + fr(5, 8)], '59%, 0.6, ' + fr(5, 8),
+      'Comparing scores shown in different forms, like 5/8, 0.6 and 59%.',
+      'how to compare and order numbers in different forms.',
+      ['Decimals are often easiest because the order is clear place by place.', 'Line up the decimal places by adding zeros: 0.590, 0.600, 0.625.'],
+      ['Example 1: 0.7, ' + fr(2, 3) + ', 68% becomes 0.7, 0.667, 0.68.', 'Example 2: ' + fr(3, 20) + ', 0.2, 14% becomes 0.15, 0.2, 0.14.', 'Example 3: ' + fr(7, 8) + ', 0.85, 86% becomes 0.875, 0.85, 0.86.']),
+    X('Percentage multipliers', 'A coat costs £80 and is reduced by 15%. A scarf costing £12 rises in price by 5%. Find both new prices.',
+      ['A 15% reduction leaves 85%, so multiply by 0.85.', '80 × 0.85 = 68, so the coat is £68.', 'A 5% rise gives 105%, so multiply by 1.05.', '12 × 1.05 = 12.60, so the scarf is £12.60.'],
+      ['100% − 15% = 85%', '80 × 0.85 = £68', '100% + 5% = 105%', '12 × 1.05 = £12.60'], 'Coat £68, scarf £12.60',
+      'Sales and price rises use multipliers all the time.',
+      'how to use a multiplier to find a new price after a percentage change.',
+      ['A multiplier is the new amount as a decimal of the old amount.', 'Reduction: subtract the percentage from 100%. Increase: add it to 100%.'],
+      ['Example 1: 20% off multiplies by 0.8.', 'Example 2: 10% more multiplies by 1.1.', 'Example 3: 35% off multiplies by 0.65.'])
+  ]);
+
+  /* ---- 705 Money, time and measurement ---- */
+  BT.add(705, 'learn3', 'Currency, imperial and money decisions', [
+    X('Exchange rates both ways', 'In this example £1 = €1.15. Convert £240 to euros and €172.50 to pounds.',
+      ['Pounds to euros: multiply by 1.15. 240 × 1.15 = 276, so £240 = €276.', 'Euros to pounds: divide by 1.15.', '172.50 ÷ 1.15 = 150.', 'So €172.50 = £150. Check: 150 × 1.15 = 172.50.'],
+      ['£240 × 1.15', '€276', '€172.50 ÷ 1.15', '£150'], '€276 and £150',
+      'A travel shop shows buy and sell rates for each currency, and the rate changes daily.',
+      'how to change money in both directions.',
+      ['To go from pounds, multiply. To go back to pounds, divide.', 'A bank may charge a fee, so you get a little less.'],
+      ['Example 1: £100 at £1 = €1.15 is €115.', 'Example 2: €230 ÷ 1.15 = £200.', 'Example 3: £50 at £1 = $1.30 is $65.']),
+    X('Imperial and metric conversions', 'About how many grams is 8 oz of butter, and how many kilometres is 5 miles? (1 oz ≈ 28 g and 1 mile ≈ 1.6 km)',
+      ['For the butter, multiply 8 by 28.', '8 × 28 = 224, so 8 oz is about 224 g.', 'For the distance, multiply 5 by 1.6.', '5 × 1.6 = 8, so 5 miles is about 8 km.'],
+      ['8 × 28', '≈ 224 g', '5 × 1.6', '≈ 8 km'], 'About 224 g and 8 km',
+      'Old recipes use ounces and pints, but kitchen scales show grams.',
+      'how to convert between imperial and metric units.',
+      ['Use the rule for the units you have and multiply or divide.', 'Some rules to know: 1 inch ≈ 2.5 cm, 1 lb ≈ 450 g, 1 pint ≈ 570 ml.'],
+      ['Example 1: 6 inches ≈ 15 cm.', 'Example 2: 3 lb ≈ 1 350 g.', 'Example 3: 2 pints ≈ 1 140 ml.']),
+    X('Making a money decision', 'Mia gets £60 a month. She wants a £150 bike. She saves £25 a month and spends the rest. How long to save, and how much does she spend each month?',
+      ['She spends the rest of her money each month: 60 − 25 = £35.', 'To save £150 at £25 a month, divide: 150 ÷ 25 = 6.', 'It takes 6 months.', 'Check: 6 × 25 = 150.'],
+      ['60 − 25 = £35', '150 ÷ 25 = 6', '6 months', '6 × 25 = 150'], '6 months, and £35 spent each month',
+      'A budget helps you plan how much you can spend and how much you can save.',
+      'how to use a budget to make a choice about saving and spending.',
+      ['A budget lists what comes in and what goes out.', 'Saving more each month means you reach your goal sooner.'],
+      ['Example 1: Saving £50 a month for £400 takes 8 months.', 'Example 2: Income £200, bills £150 leaves £50.', 'Example 3: A £12 per month plan costs £144 a year.'])
+  ]);
+
+  /* ---- 707 Shape, angles and symmetry ---- */
+  BT.add(707, 'learn3', 'Circles, triangles and transformations', [
+    X('The circumference of a circle', 'A circular pond has a diameter of 6 m. Find its circumference. Use π ≈ 3.14.',
+      ['The circumference is the distance round a circle. C = π × diameter.', 'Use π ≈ 3.14, so C = 3.14 × 6.', '3.14 × 6 = 18.84.', 'The circumference is about 18.84 m.'],
+      ['C = π × d', 'C = 3.14 × 6', '= 18.84', '≈ 18.84 m'], '≈ 18.84 m',
+      'The distance once round a bicycle wheel is its circumference.',
+      'how to find the circumference from the diameter.',
+      ['π is the number of times the diameter fits round the circle. It is about 3.14.', 'If you are given the radius, double it first to get the diameter.'],
+      ['Example 1: d = 10 cm gives C ≈ 31.4 cm.', 'Example 2: r = 5 m means d = 10 m, so C ≈ 31.4 m.', 'Example 3: d = 2 m gives C ≈ 6.28 m.']),
+    X('Angles in an isosceles triangle', 'An isosceles triangle has a 40° angle between its two equal sides. Find the other two angles.',
+      ['The angles in a triangle add up to 180°.', 'The other two angles are equal because the triangle is isosceles.', '180 − 40 = 140, and 140 ÷ 2 = 70.', 'Each of the other two angles is 70°.'],
+      ['180° in total', 'two equal angles', '180 − 40 = 140 → 70 each', '70° and 70°'], '70° and 70°',
+      'Designers use these facts when they draw roof frames and bridge supports.',
+      'how to find missing angles in an isosceles triangle.',
+      ['In an equilateral triangle all three angles are 60°.', 'In a right-angled triangle the other two angles add up to 90°.'],
+      ['Example 1: An apex of 50° gives base angles of 65°.', 'Example 2: Base angles of 40° give an apex of 100°.', 'Example 3: A right-angled isosceles triangle has angles 90°, 45° and 45°.']),
+    XV('Translating a shape', 'A triangle has corners (1, 1), (3, 1) and (1, 4). It is translated 4 right and 2 up. Find the new corners.',
+      ['A translation moves every corner the same way: add 4 to x and 2 to y.', '(1, 1) moves to (5, 3).', '(3, 1) moves to (7, 3).', '(1, 4) moves to (5, 6).'],
+      '(5, 3), (7, 3) and (5, 6)',
+      function (k) { var p = [[[1, 1], [3, 1], [1, 4]], 215]; var polys = [p]; if (k >= 2) polys.push([[[5, 3], [7, 3], [5, 6]], 22]); return BT.coordGrid(8, 7, polys, 'A triangle and its translation 4 right and 2 up'); },
+      'A chess piece slid across the board is a translation.',
+      'how to translate a shape and find the new coordinates.',
+      ['Add the move to the x-coordinate for left and right, and to the y-coordinate for up and down.', 'Left or down is a negative move.'],
+      ['Example 1: (2, 3) moved 3 right and 1 up is (5, 4).', 'Example 2: (6, 5) moved 2 left and 3 down is (4, 2).', 'Example 3: (0, 0) moved 4 right is (4, 0).'])
+  ]);
+
+  /* ---- 711 Ratio, proportion and money ---- */
+  BT.add(711, 'learn3', 'Ratio, fractions and percentages', [
+    X('Ratios, fractions and percentages', 'Squash is mixed with water in the ratio 1 : 4. What fraction and what percentage of the drink is squash?',
+      ['Add the parts to find the total: 1 + 4 = 5 parts.', 'Squash is 1 part out of 5, so the fraction is ' + fr(1, 5) + '.', fr(1, 5) + ' = 20%.', 'Water is 4 parts, which is ' + fr(4, 5) + ' = 80%.'],
+      ['1 : 4', '1 + 4 = 5 parts', fr(1, 5) + ' = 20%', fr(4, 5) + ' = 80%'], 'Squash is ' + fr(1, 5) + ' or 20%',
+      'In a 1 : 4 mix there are 4 parts of water for every 1 part of squash, so one fifth of the whole drink is squash.',
+      'how to change between a ratio, a fraction and a percentage.',
+      ['The denominator of the fraction is the total number of parts, not the other number in the ratio.', 'Check: the fractions of all the parts add up to 1.'],
+      ['Example 1: 2 : 3 means ' + fr(2, 5) + ' and ' + fr(3, 5) + ', which is 40% and 60%.', 'Example 2: 3 : 1 means ' + fr(3, 4) + ' and ' + fr(1, 4) + ', which is 75% and 25%.', 'Example 3: 1 : 1 means half each, 50%.'])
+  ]);
+})();
+</script>
+<script>
+/* bite4.js: new practice-question makers for the Bitesize Second level upgrade.
+   They are mixed into the practice sets (and so into the games and warm-ups that reuse them)
+   of the P5, P6 and P7 topics, by difficulty level. */
+(function () {
+  'use strict';
+  var S = Studio, H = S.h, K = S.kit, Q = K.Q, rnd = H.rnd, pick = H.pick, shuffle = H.shuffle, T = H.trimNum, BT = window.BT, sg = BT.sg, gcd = BT.gcd;
+  function frs(n, d) { return n + '/' + d; }
+  /* answer plus distractors, as formatted strings, 4 options */
+  function mcNum(ans, cands, fmt) {
+    fmt = fmt || String; var out = [ans], k = 1;
+    cands.forEach(function (c) { if (out.length < 4 && out.indexOf(c) < 0) out.push(c); });
+    while (out.length < 4) { if (out.indexOf(ans + k) < 0) out.push(ans + k); if (out.length < 4 && out.indexOf(ans - k) < 0) out.push(ans - k); k++; }
+    return { options: shuffle(out.map(fmt)), answer: fmt(ans) };
+  }
+  function mcStr(ans, wrong) {
+    var out = [ans]; wrong.forEach(function (w) { if (out.length < 4 && out.indexOf(w) < 0) out.push(w); });
+    return { options: shuffle(out), answer: ans };
+  }
+  function mk(o, m) { o.type = 'mc'; o.options = m.options; o.answer = m.answer; return Q(o); }
+  var M = '−';
+
+  /* ---------------- P5 ---------------- */
+  function gNegOrder() {
+    var a = rnd(-9, 9), b = rnd(-9, 9), c = rnd(-9, 9); while (b === a) b = rnd(-9, 9); while (c === a || c === b) c = rnd(-9, 9);
+    var small = Math.random() < 0.5, ans = small ? Math.min(a, b, c) : Math.max(a, b, c);
+    var m = mcNum(ans, [a, b, c], sg);
+    return mk({ tag: 'Negative numbers', text: 'Which is the <b>' + (small ? 'smallest' : 'largest') + '</b> number: <b>' + sg(a) + '</b>, <b>' + sg(b) + '</b> or <b>' + sg(c) + '</b>?', hints: ['Picture a number line. Numbers on the right are bigger.', 'A negative number is smaller than zero.'], explain: 'On the number line the ' + (small ? 'furthest left' : 'furthest right') + ' number is ' + sg(ans) + '.' }, m);
+  }
+  function gNegMove() {
+    var t = rnd(0, 6), d = rnd(t + 1, t + 7), ans = t - d, m = mcNum(ans, [d - t, t + d, ans - 1, ans + 2], sg);
+    return mk({ tag: 'Negative numbers', text: 'The temperature is <b>' + t + ' °C</b>. It falls by <b>' + d + ' degrees</b>. What is the new temperature?', hints: ['Count back from ' + t + ' on a number line.', 'You will go past zero into the negatives.'], explain: t + ' ' + M + ' ' + d + ' = ' + sg(ans) + ' °C.' }, m);
+  }
+  function gPartition() {
+    var a = rnd(1, 9), b = rnd(0, 9), c = rnd(0, 9), d = rnd(1, 9), n = a * 1000 + b * 100 + c * 10 + d;
+    return Q({ tag: 'Partitioning', text: 'What number is <b>' + a * 1000 + ' + ' + b * 100 + ' + ' + c * 10 + ' + ' + d + '</b>?', answer: String(n), hints: ['Each part is a place value: thousands, hundreds, tens and ones.', 'Write each digit in its column.'], explain: 'The number is ' + n + '.' });
+  }
+  function gPartAdd() {
+    var a = rnd(21, 68), b = rnd(21, 49);
+    return Q({ tag: 'Mental addition', text: 'Work out <b>' + a + ' + ' + b + '</b> by partitioning.', answer: String(a + b), hints: ['Split each number into tens and ones.', 'Add the tens, add the ones, then join them.'], explain: Math.floor(a / 10) * 10 + ' + ' + Math.floor(b / 10) * 10 + ' = ' + (Math.floor(a / 10) + Math.floor(b / 10)) * 10 + '. ' + a % 10 + ' + ' + b % 10 + ' = ' + (a % 10 + b % 10) + '. Together: ' + (a + b) + '.' });
+  }
+  function gZeroOne() {
+    var a = rnd(2, 99), k = pick([0, 1, 2, 3]), txt, ans;
+    if (k === 0) { txt = a + ' × 0'; ans = 0; } else if (k === 1) { txt = a + ' × 1'; ans = a; } else if (k === 2) { txt = '0 ÷ ' + a; ans = 0; } else { txt = a + ' ÷ 1'; ans = a; }
+    return Q({ tag: 'Multiplying by 0 and 1', text: 'What is <b>' + txt + '</b>?', answer: String(ans), hints: ['Anything times 0 is 0. Anything times 1 stays the same.', 'Zero divided by a number is 0. A number divided by 1 stays the same.'], explain: txt + ' = ' + ans + '.' });
+  }
+  function gBus() {
+    var d = rnd(2, 6), q = rnd(21, 97), n = d * q;
+    return Q({ tag: 'Short division', text: 'Work out <b>' + n + ' ÷ ' + d + '</b>.', answer: String(q), hints: ['Use the bus stop method. Divide each digit in turn.', 'Check by multiplying your answer by ' + d + '.'], explain: n + ' ÷ ' + d + ' = ' + q + '. Check: ' + q + ' × ' + d + ' = ' + n + '.' });
+  }
+  function gOrderOps() {
+    var a = rnd(2, 9), b = rnd(2, 6), c = rnd(2, 6), k = pick([0, 1, 2]);
+    if (k === 0) return Q({ tag: 'Order of operations', text: 'Work out <b>' + a + ' + ' + b + ' × ' + c + '</b>.', answer: String(a + b * c), hints: ['Multiply before you add.', 'Do ' + b + ' × ' + c + ' first.'], explain: b + ' × ' + c + ' = ' + b * c + ', then ' + a + ' + ' + b * c + ' = ' + (a + b * c) + '.' });
+    if (k === 1) return Q({ tag: 'Order of operations', text: 'Work out <b>(' + a + ' + ' + b + ') × ' + c + '</b>.', answer: String((a + b) * c), hints: ['Brackets come first.', 'Add inside the brackets, then multiply.'], explain: '(' + a + ' + ' + b + ') = ' + (a + b) + ', then × ' + c + ' = ' + (a + b) * c + '.' });
+    var big = a * 4 + b * c;
+    return Q({ tag: 'Order of operations', text: 'Work out <b>' + big + ' − ' + b * c + ' ÷ ' + c + '</b>.', answer: String(big - b), hints: ['Divide before you subtract.', b * c + ' ÷ ' + c + ' comes first.'], explain: b * c + ' ÷ ' + c + ' = ' + b + ', then ' + big + ' − ' + b + ' = ' + (big - b) + '.' });
+  }
+  function gNumDen() {
+    var d = rnd(3, 12), n = rnd(1, d - 1), k = pick(['numerator', 'denominator', 'unit']);
+    if (k === 'unit') { var ans = n === 1 ? 'Yes' : 'No'; return mk({ tag: 'Fraction words', text: 'Is <b>' + frs(n, d) + '</b> a unit fraction?', hints: ['A unit fraction has 1 as its numerator.', 'Look at the top number.'], explain: frs(n, d) + (n === 1 ? ' has numerator 1, so it is a unit fraction.' : ' has numerator ' + n + ', which is not 1, so it is not a unit fraction.') }, mcStr(ans, ['Yes', 'No'].filter(function (x) { return x !== ans; }).concat(['Only if the bottom is 2', 'Cannot tell']))); }
+    return Q({ tag: 'Fraction words', text: 'What is the <b>' + k + '</b> of the fraction <b>' + frs(n, d) + '</b>?', answer: String(k === 'numerator' ? n : d), hints: [k === 'numerator' ? 'The numerator is the top number.' : 'The denominator is the bottom number.', 'It tells you ' + (k === 'numerator' ? 'how many parts we have.' : 'how many equal parts the whole is cut into.')], explain: 'In ' + frs(n, d) + ' the numerator is ' + n + ' and the denominator is ' + d + '.' });
+  }
+  var FRIEND = [['1/2', '0.5', 50], ['1/4', '0.25', 25], ['3/4', '0.75', 75], ['1/10', '0.1', 10], ['1/5', '0.2', 20], ['2/5', '0.4', 40], ['3/5', '0.6', 60], ['7/10', '0.7', 70]];
+  function gFDPFriend() {
+    var f = pick(FRIEND), k = pick([0, 1, 2]);
+    if (k === 0) return Q({ tag: 'Fractions, decimals, percentages', text: 'Write <b>' + f[0] + '</b> as a percentage. (Give the number only.)', answer: String(f[2]), hints: ['Change the fraction to a fraction out of 100.', 'Or divide the top by the bottom and multiply by 100.'], explain: f[0] + ' = ' + f[1] + ' = ' + f[2] + '%.' });
+    if (k === 1) return Q({ tag: 'Fractions, decimals, percentages', text: 'Write <b>' + f[1] + '</b> as a percentage. (Give the number only.)', answer: String(f[2]), hints: ['Multiply the decimal by 100.', 'Move the digits two places.'], explain: f[1] + ' × 100 = ' + f[2] + '%.' });
+    var others = FRIEND.filter(function (x) { return x !== f; }).map(function (x) { return x[0]; });
+    return mk({ tag: 'Fractions, decimals, percentages', text: 'Which fraction is the same as <b>' + f[2] + '%</b>?', hints: ['Write the percentage over 100.', 'Then simplify.'], explain: f[2] + '% = ' + f[2] + '/100 = ' + f[0] + '.' }, mcStr(f[0], shuffle(others).slice(0, 3)));
+  }
+  function gCompareFD() {
+    var f = pick([['1/2', 0.5], ['3/5', 0.6], ['1/4', 0.25], ['4/5', 0.8], ['3/10', 0.3], ['2/5', 0.4]]), d = pick([0.2, 0.3, 0.35, 0.45, 0.55, 0.65, 0.7, 0.75, 0.85, 0.9]);
+    if (d === f[1]) d += 0.05;
+    var bigF = f[1] > d, ans = bigF ? f[0] : String(d);
+    return mk({ tag: 'Comparing', text: 'Which is <b>bigger</b>: <b>' + f[0] + '</b> or <b>' + d + '</b>?', hints: ['Write both as decimals or both as percentages.', f[0] + ' = ' + f[1] + '.'], explain: f[0] + ' = ' + f[1] + ' and the other is ' + d + ', so ' + ans + ' is bigger.' }, mcStr(ans, [bigF ? String(d) : f[0], 'They are equal', 'Cannot tell']));
+  }
+  var COIN = [200, 100, 50, 20, 10, 5, 2, 1];
+  function money(p) { return p >= 100 ? '£' + (p / 100).toFixed(2) : p + 'p'; }
+  function gCoins() {
+    var p = rnd(31, 299), left = p, n = 0;
+    COIN.forEach(function (c) { while (left >= c) { left -= c; n++; } });
+    return Q({ tag: 'Coins and notes', text: 'What is the <b>fewest</b> number of coins that make <b>' + money(p) + '</b>? (The coins are 1p, 2p, 5p, 10p, 20p, 50p, £1 and £2.)', answer: String(n), hints: ['Start with the biggest coin that fits.', 'Keep taking the biggest coin that does not go over what is left.'], explain: 'Using the biggest coin each time, ' + money(p) + ' needs ' + n + ' coins.' });
+  }
+  function gCurrency() {
+    var r = pick([1.2, 1.5, 2, 1.25]), a = pick([10, 20, 40, 50, 80]), cur = pick([['euros', '€'], ['dollars', '$']]), ans = Math.round(a * r * 100) / 100;
+    return Q({ tag: 'Currency', text: 'In this example, £1 = ' + cur[1] + r.toFixed(2) + '. How many ' + cur[0] + ' do you get for <b>£' + a + '</b>? (Give the number only.)', answer: T(ans), hints: ['Multiply the pounds by the exchange rate.', a + ' × ' + r + '.'], explain: a + ' × ' + r + ' = ' + T(ans) + ', so you get ' + cur[1] + T(ans) + '.' });
+  }
+  var IMP = [['inches', 'foot', 12, 'feet'], ['feet', 'yard', 3, 'yards'], ['ounces', 'pound', 16, 'pounds'], ['pounds', 'stone', 14, 'stone'], ['pints', 'gallon', 8, 'gallons']];
+  function gImperial() {
+    var c = pick(IMP), n = rnd(2, 6);
+    return Q({ tag: 'Imperial units', text: 'There are ' + c[2] + ' ' + c[0] + ' in 1 ' + c[1] + '. How many ' + c[0] + ' are in <b>' + n + ' ' + c[3] + '</b>?', answer: String(n * c[2]), hints: ['Going to a smaller unit means multiplying.', 'Multiply ' + n + ' by ' + c[2] + '.'], explain: n + ' × ' + c[2] + ' = ' + n * c[2] + ' ' + c[0] + '.' });
+  }
+  function gParPerp() {
+    var items = [
+      ['Which word describes two lines that never meet?', 'parallel', ['perpendicular', 'curved', 'diagonal'], 'Parallel lines stay the same distance apart and never meet.'],
+      ['Which word describes two lines that meet at a right angle?', 'perpendicular', ['parallel', 'equal', 'curved'], 'Perpendicular lines cross at 90°.'],
+      ['How many pairs of parallel sides does a rectangle have?', '2', ['1', '3', '4'], 'A rectangle has two pairs of parallel sides.'],
+      ['The size of a right angle is...', '90°', ['45°', '180°', '60°'], 'A right angle is 90°, like the corner of a page.'],
+      ['Which pair of things are parallel?', 'Railway tracks', ['The corner of a page', 'A clock’s hands at 3 o’clock', 'A tree and the ground'], 'Railway tracks run side by side and never meet.']
+    ], it = pick(items);
+    return mk({ tag: 'Lines', text: it[0], hints: ['Think about what each word means.', 'Parallel: side by side. Perpendicular: at a right angle.'], explain: it[3] }, mcStr(it[1], it[2]));
+  }
+  function gTriType() {
+    var t = pick(['equilateral', 'isosceles', 'scalene']), a = rnd(3, 8), b = rnd(3, 8), c, sides;
+    if (t === 'equilateral') sides = [a, a, a];
+    else if (t === 'isosceles') { while (b === a) b = rnd(3, 8); if (b >= 2 * a) b = a + 1; sides = [a, a, b]; }
+    else { var tr = pick([[3, 4, 5], [4, 5, 6], [5, 6, 7], [5, 7, 9], [4, 6, 7], [6, 8, 10]]); sides = tr; }
+    return mk({ tag: 'Triangles', text: 'A triangle has sides <b>' + sides.join(' cm, ') + ' cm</b>. What type of triangle is it?', hints: ['Count how many sides are equal.', 'Three equal is equilateral, two equal is isosceles, none equal is scalene.'], explain: 'It has ' + (t === 'equilateral' ? 'three equal sides' : t === 'isosceles' ? 'two equal sides' : 'no equal sides') + ', so it is ' + t + '.' }, mcStr(t, ['equilateral', 'isosceles', 'scalene', 'right-angled'].filter(function (x) { return x !== t; })));
+  }
+  function gGridRef() {
+    var col = pick('ABCDE'.split('')), row = rnd(1, 4), ans = col + row;
+    var m = mcStr(ans, [row + col, col + (row % 4 + 1), String.fromCharCode(((col.charCodeAt(0) - 65 + 1) % 5) + 65) + row]);
+    return mk({ tag: 'Grid references', text: 'On a map, a castle is in <b>column ' + col + '</b> and <b>row ' + row + '</b>. What is its grid reference?', hints: ['Give the letter first and then the number.', 'Across, then up.'], explain: 'Column ' + col + ' and row ' + row + ' gives ' + ans + '.' }, m);
+  }
+  var POLY = [['triangle', 3], ['quadrilateral', 4], ['pentagon', 5], ['hexagon', 6], ['heptagon', 7], ['octagon', 8], ['nonagon', 9], ['decagon', 10]];
+  function gPolyName() {
+    var p = pick(POLY);
+    if (Math.random() < 0.5) return Q({ tag: 'Polygons', text: 'How many sides does a <b>' + p[0] + '</b> have?', answer: String(p[1]), hints: ['Think of the prefix: pent-, hex-, hept-, oct-.', 'The number of sides is the number of corners.'], explain: 'A ' + p[0] + ' has ' + p[1] + ' sides.' });
+    return mk({ tag: 'Polygons', text: 'Which polygon has <b>' + p[1] + ' sides</b>?', hints: ['Match the number of sides to the name.', 'Pentagon 5, hexagon 6, heptagon 7, octagon 8.'], explain: 'A ' + p[0] + ' has ' + p[1] + ' sides.' }, mcStr(p[0], shuffle(POLY.filter(function (x) { return x !== p; }).map(function (x) { return x[0]; })).slice(0, 3)));
+  }
+
+  /* ---------------- P6 ---------------- */
+  function gNegDiff() {
+    var a = rnd(1, 9), b = rnd(1, 9);
+    return Q({ tag: 'Negative numbers', text: 'The temperature is <b>' + M + a + ' °C</b> at night and <b>' + b + ' °C</b> in the day. How many degrees warmer is it in the day?', answer: String(a + b), hints: ['Count from ' + M + a + ' up to 0, then on to ' + b + '.', 'Add the two distances.'], explain: a + ' + ' + b + ' = ' + (a + b) + ' degrees.' });
+  }
+  function gNegAddSub() {
+    var a = rnd(-6, 6), b = rnd(1, 9), add = Math.random() < 0.5, ans = add ? a + b : a - b, m = mcNum(ans, [ans + 2, ans - 2, add ? a - b : a + b], sg);
+    return mk({ tag: 'Negative numbers', text: 'Work out <b>' + sg(a) + (add ? ' + ' : ' ' + M + ' ') + b + '</b>.', hints: ['Use a number line. Adding moves right and subtracting moves left.', 'Start at ' + sg(a) + '.'], explain: sg(a) + (add ? ' + ' : ' ' + M + ' ') + b + ' = ' + sg(ans) + '.' }, m);
+  }
+  function gRound1dp() {
+    var w = rnd(1, 9), d1 = rnd(1, 8), d2 = rnd(0, 9), x = w + d1 / 10 + d2 / 100, r = d2 >= 5 ? w + (d1 + 1) / 10 : w + d1 / 10;
+    return Q({ tag: 'Rounding decimals', text: 'Round <b>' + x.toFixed(2) + '</b> to <b>1 decimal place</b>.', answer: T(Math.round(r * 10) / 10), hints: ['Look at the second decimal digit.', '5 or more rounds up. Less than 5 stays the same.'], explain: 'The second decimal digit is ' + d2 + ', so ' + (d2 >= 5 ? 'round up' : 'round down') + ' to ' + T(Math.round(r * 10) / 10) + '.' });
+  }
+  function gRound2dp() {
+    var w = rnd(1, 9), d1 = rnd(1, 9), d2 = rnd(1, 8), d3 = rnd(0, 9), x = w + d1 / 10 + d2 / 100 + d3 / 1000, r = d3 >= 5 ? w + d1 / 10 + (d2 + 1) / 100 : w + d1 / 10 + d2 / 100;
+    return Q({ tag: 'Rounding decimals', text: 'Round <b>' + x.toFixed(3) + '</b> to <b>2 decimal places</b>.', answer: T(Math.round(r * 100) / 100), hints: ['Look at the third decimal digit.', '5 or more rounds up.'], explain: 'The third decimal digit is ' + d3 + ', so the answer is ' + T(Math.round(r * 100) / 100) + '.' });
+  }
+  function gMentalMult() {
+    var a = rnd(12, 49), b = rnd(3, 9);
+    return Q({ tag: 'Multiplying in your head', text: 'Work out <b>' + a + ' × ' + b + '</b> in your head.', answer: String(a * b), hints: ['Split ' + a + ' into tens and ones.', Math.floor(a / 10) * 10 + ' × ' + b + ' and ' + a % 10 + ' × ' + b + ', then add.'], explain: Math.floor(a / 10) * 10 * b + ' + ' + (a % 10) * b + ' = ' + a * b + '.' });
+  }
+  function gDoubleHalve() {
+    var a = pick([4, 6, 8, 12, 14, 16, 18, 24]), k = pick([5, 25]);
+    return Q({ tag: 'Multiplying in your head', text: 'Work out <b>' + a + ' × ' + k + '</b>.', answer: String(a * k), hints: [k === 5 ? 'Multiply by 10 and then halve.' : 'Halve one number and double the other.', k === 5 ? a + ' × 10 = ' + a * 10 + '.' : 'Aim for × 100.'], explain: a + ' × ' + k + ' = ' + a * k + '.' });
+  }
+  function gShortDivRem() {
+    var d = rnd(3, 8), q = rnd(12, 40), r = rnd(1, d - 1), n = d * q + r, askRem = Math.random() < 0.5;
+    return Q({ tag: 'Short division', text: askRem ? 'What is the <b>remainder</b> when <b>' + n + '</b> is divided by <b>' + d + '</b>?' : 'How many <b>whole groups</b> of <b>' + d + '</b> are in <b>' + n + '</b>?', answer: String(askRem ? r : q), hints: ['Use the bus stop method for ' + n + ' ÷ ' + d + '.', 'The whole number is the answer to the division, and what is left over is the remainder.'], explain: n + ' ÷ ' + d + ' = ' + q + ' remainder ' + r + '.' });
+  }
+  function frSimp(n, d) { var g = gcd(n, d); return [n / g, d / g]; }
+  function gCompareFr() {
+    var d1 = pick([2, 3, 4, 5, 6, 8]), d2 = pick([3, 4, 5, 6, 8, 10]); while (d2 === d1) d2 = pick([3, 4, 5, 6, 8, 10]);
+    var n1 = rnd(1, d1 - 1), n2 = rnd(1, d2 - 1); if (n1 * d2 === n2 * d1) n1 = n1 === d1 - 1 ? n1 - 1 || 1 : n1 + 1;
+    if (n1 * d2 === n2 * d1) return gCompareFr();
+    var a = frs(n1, d1), b = frs(n2, d2), ans = n1 * d2 > n2 * d1 ? a : b, lcm = d1 * d2 / gcd(d1, d2);
+    return mk({ tag: 'Comparing fractions', text: 'Which is <b>bigger</b>: <b>' + a + '</b> or <b>' + b + '</b>?', hints: ['Find a common denominator.', 'The lowest common multiple of ' + d1 + ' and ' + d2 + ' is ' + lcm + '.'], explain: a + ' = ' + frs(n1 * lcm / d1, lcm) + ' and ' + b + ' = ' + frs(n2 * lcm / d2, lcm) + ', so ' + ans + ' is bigger.' }, mcStr(ans, [ans === a ? b : a, 'They are equal', 'Cannot tell']));
+  }
+  function gMultFr() {
+    var pairs = [[1, 2, 1, 4], [1, 3, 1, 2], [2, 3, 3, 5], [1, 2, 3, 5], [3, 4, 2, 5], [2, 5, 5, 6], [1, 4, 1, 4], [3, 4, 4, 9], [2, 3, 3, 4]], p = pick(pairs), n = p[0] * p[2], d = p[1] * p[3], s = frSimp(n, d), ans = frs(s[0], s[1]);
+    var wr = [frs(p[0] + p[2], p[1] + p[3]), frs(n, d), frs(p[0] * p[3], p[1] * p[2]), frs(s[0], s[1] + 1)].filter(function (x) { return x !== ans; });
+    return mk({ tag: 'Multiplying fractions', text: 'Work out <b>' + frs(p[0], p[1]) + ' × ' + frs(p[2], p[3]) + '</b>. Give the answer in its simplest form.', hints: ['Multiply the tops, then multiply the bottoms.', 'Then simplify.'], explain: frs(p[0], p[1]) + ' × ' + frs(p[2], p[3]) + ' = ' + frs(n, d) + (frs(n, d) !== ans ? ' = ' + ans : '') + '.' }, mcStr(ans, wr));
+  }
+  var FORMS = [['1/4', 0.25, 25], ['1/5', 0.2, 20], ['2/5', 0.4, 40], ['1/2', 0.5, 50], ['3/5', 0.6, 60], ['3/4', 0.75, 75], ['7/10', 0.7, 70], ['9/10', 0.9, 90], ['1/10', 0.1, 10]];
+  function gFDPOrder() {
+    var t = shuffle(FORMS.slice()).slice(0, 3), f = [0, 1, 2].map(function (i) { var x = t[i]; return i === 0 ? x[0] : i === 1 ? String(x[1]) : x[2] + '%'; });
+    var items = t.map(function (x, i) { return { s: f[i], v: x[2] }; }), small = Math.random() < 0.5;
+    var sorted = items.slice().sort(function (a, b) { return a.v - b.v; }), ans = small ? sorted[0].s : sorted[2].s;
+    return mk({ tag: 'Comparing', text: 'Which is the <b>' + (small ? 'smallest' : 'largest') + '</b>: <b>' + f.join('</b>, <b>') + '</b>?', hints: ['Change them all to percentages.', 'Then compare.'], explain: items.map(function (x) { return x.s + ' = ' + x.v + '%'; }).join(', ') + '. The ' + (small ? 'smallest' : 'largest') + ' is ' + ans + '.' }, mcStr(ans, f.filter(function (x) { return x !== ans; }).concat(['They are all equal'])));
+  }
+  function gMilesKm() {
+    var a = pick([5, 10, 20, 30, 50, 100]);
+    return Q({ tag: 'Imperial and metric', text: 'About how many <b>kilometres</b> is <b>' + a + ' miles</b>? (1 mile ≈ 1.6 km)', answer: T(a * 1.6), hints: ['Multiply the miles by 1.6.', a + ' × 1.6.'], explain: a + ' × 1.6 = ' + T(a * 1.6) + ' km.' });
+  }
+  function gTriArea() {
+    var b = rnd(3, 12), h = rnd(2, 10); if ((b * h) % 2) b += 1;
+    return Q({ tag: 'Area of a triangle', text: 'A triangle has a base of <b>' + b + ' cm</b> and a height of <b>' + h + ' cm</b>. What is its area in cm²?', answer: String(b * h / 2), hints: ['A triangle is half of a rectangle.', 'Multiply base by height, then halve.'], explain: b + ' × ' + h + ' = ' + b * h + ', and half of that is ' + b * h / 2 + ' cm².' });
+  }
+  function gVolBox() {
+    var l = rnd(2, 6), w = rnd(2, 5), h = rnd(2, 4);
+    return Q({ tag: 'Volume', text: 'A box is <b>' + l + ' cubes long</b>, <b>' + w + ' cubes wide</b> and <b>' + h + ' cubes high</b>. How many cubes fill it?', answer: String(l * w * h), hints: ['Count the cubes in one layer first: ' + l + ' × ' + w + '.', 'Multiply by the number of layers.'], explain: l + ' × ' + w + ' × ' + h + ' = ' + l * w * h + ' cubes.' });
+  }
+  function gCurrencyBack() {
+    var r = pick([1.25, 1.5, 2, 1.2]), a = pick([8, 10, 12, 20, 40]), x = Math.round(a * r * 100) / 100, cur = pick([['$', 'dollars'], ['€', 'euros']]);
+    return Q({ tag: 'Currency', text: 'In this example, £1 = ' + cur[0] + r.toFixed(2) + '. A toy costs <b>' + cur[0] + T(x) + '</b>. How much is that in pounds? (Give the number only.)', answer: String(a), hints: ['You are going from ' + cur[1] + ' back to pounds, so divide by the rate.', T(x) + ' ÷ ' + r + '.'], explain: T(x) + ' ÷ ' + r + ' = ' + a + ', so it costs £' + a + '.' });
+  }
+  function gCircleParts() {
+    var r = rnd(2, 15), toD = Math.random() < 0.5;
+    return Q({ tag: 'Parts of a circle', text: toD ? 'A circle has a <b>radius</b> of <b>' + r + ' cm</b>. What is its <b>diameter</b>?' : 'A circle has a <b>diameter</b> of <b>' + r * 2 + ' cm</b>. What is its <b>radius</b>?', answer: String(toD ? r * 2 : r), hints: ['The diameter is twice the radius.', toD ? 'Double ' + r + '.' : 'Halve ' + r * 2 + '.'], explain: toD ? '2 × ' + r + ' = ' + r * 2 + ' cm.' : r * 2 + ' ÷ 2 = ' + r + ' cm.' });
+  }
+  function gTransform() {
+    var items = [
+      ['Which move slides a shape without turning or flipping it?', 'translation', ['reflection', 'rotation', 'enlargement']],
+      ['Which move flips a shape in a mirror line?', 'reflection', ['translation', 'rotation', 'enlargement']],
+      ['Which move turns a shape about a point?', 'rotation', ['translation', 'reflection', 'enlargement']],
+      ['A shape is moved 3 squares right. What is this transformation?', 'translation', ['reflection', 'rotation', 'enlargement']],
+      ['A quarter turn about a corner is a...', 'rotation', ['translation', 'reflection', 'symmetry']]
+    ], it = pick(items);
+    return mk({ tag: 'Transformations', text: it[0], hints: ['Translation slides, reflection flips, rotation turns.', 'Think about what happens to the shape.'], explain: 'The answer is ' + it[1] + '.' }, mcStr(it[1], it[2]));
+  }
+  function gCube() {
+    var n = rnd(2, 6), askCube = Math.random() < 0.6;
+    if (askCube) return Q({ tag: 'Cube numbers', text: 'What is <b>' + n + '³</b>?', answer: String(n * n * n), hints: [n + '³ means ' + n + ' × ' + n + ' × ' + n + '.', n + ' × ' + n + ' = ' + n * n + ', then × ' + n + '.'], explain: n + ' × ' + n + ' × ' + n + ' = ' + n * n * n + '.' });
+    var ans = n * n * n, m = mcNum(ans, [n * n, n * 3, n * n + n], String);
+    return mk({ tag: 'Cube numbers', text: 'Which of these is a <b>cube number</b>?', hints: ['A cube number is a number multiplied by itself, then by itself again.', 'Try 2 × 2 × 2, 3 × 3 × 3.'], explain: ans + ' = ' + n + ' × ' + n + ' × ' + n + ', so it is a cube number.' }, m);
+  }
+
+  /* ---------------- P7 ---------------- */
+  function gSigFig() {
+    var k = pick([1, 2, 3]), digs = rnd(4, 5), n = rnd(Math.pow(10, digs - 1) + 100, Math.pow(10, digs) - 100);
+    while (String(n).charAt(k) === '5') n += 10;
+    var p = Math.pow(10, digs - k), ans = Math.round(n / p) * p;
+    return Q({ tag: 'Significant figures', text: 'Round <b>' + n + '</b> to <b>' + k + ' significant figure' + (k > 1 ? 's' : '') + '</b>.', answer: String(ans), hints: ['Find the ' + (k === 1 ? 'first' : k === 2 ? 'first two' : 'first three') + ' digits. Look at the digit after them.', '5 or more rounds up. Fill with zeros.'], explain: n + ' to ' + k + ' s.f. is ' + ans + '.' });
+  }
+  function gNegContext() {
+    var a = rnd(2, 9) * 10, b = rnd(2, 9) * 10, down = Math.random() < 0.5, ans = down ? -(a + b) : b - a, m = mcNum(ans, [a + b, a - b, -(a - b), ans + 10], sg);
+    return mk({ tag: 'Negative numbers', text: down ? 'A diver is at <b>' + M + a + ' m</b> and descends another <b>' + b + ' m</b>. Where is the diver now?' : 'A submarine is at <b>' + M + a + ' m</b> and rises <b>' + b + ' m</b>. Where is it now?', hints: [down ? 'Going down makes the number smaller.' : 'Going up means adding.', 'Use a number line.'], explain: down ? M + a + ' ' + M + ' ' + b + ' = ' + sg(ans) + ' m.' : M + a + ' + ' + b + ' = ' + sg(ans) + ' m.' }, m);
+  }
+  function gLongMult() {
+    var a = rnd(120, 480), b = rnd(12, 39);
+    return Q({ tag: 'Long multiplication', text: 'Work out <b>' + a + ' × ' + b + '</b>.', answer: String(a * b), hints: ['Multiply by the ones digit, then by the tens digit.', a + ' × ' + b % 10 + ' = ' + a * (b % 10) + ' and ' + a + ' × ' + Math.floor(b / 10) * 10 + ' = ' + a * Math.floor(b / 10) * 10 + '.'], explain: a * (b % 10) + ' + ' + a * Math.floor(b / 10) * 10 + ' = ' + a * b + '.' });
+  }
+  function gDivDec() {
+    var d = pick([2, 4, 5, 8]), n = rnd(3, 40); while (n % d === 0) n = rnd(3, 40);
+    var ans = n / d;
+    return Q({ tag: 'Division with decimals', text: 'Work out <b>' + n + ' ÷ ' + d + '</b> as a decimal.', answer: T(ans), hints: ['Divide, then add a decimal point and zeros to carry on.', 'Check: ' + T(ans) + ' × ' + d + ' should be ' + n + '.'], explain: n + ' ÷ ' + d + ' = ' + T(ans) + '.' });
+  }
+  function gFactorMult() {
+    var a = rnd(12, 48), k = pick([12, 15]);
+    return Q({ tag: 'Multiplying in your head', text: 'Work out <b>' + a + ' × ' + k + '</b>.', answer: String(a * k), hints: [k === 12 ? '× 12 is × 10 plus × 2.' : '× 15 is × 10 plus half as much again.', a + ' × 10 = ' + a * 10 + '.'], explain: a + ' × ' + k + ' = ' + a * k + '.' });
+  }
+  function gCancelMult() {
+    var pairs = [[4, 9, 3, 8], [2, 5, 5, 6], [3, 4, 8, 9], [6, 7, 7, 12], [5, 8, 4, 15], [9, 10, 5, 6], [4, 15, 5, 8]], p = pick(pairs), n = p[0] * p[2], d = p[1] * p[3], s = frSimp(n, d), ans = frs(s[0], s[1]);
+    var wr = [frs(n, d), frs(p[0] + p[2], p[1] + p[3]), frs(s[0] + 1, s[1]), frs(s[0], s[1] * 2)].filter(function (x) { return x !== ans; });
+    return mk({ tag: 'Multiplying fractions', text: 'Work out <b>' + frs(p[0], p[1]) + ' × ' + frs(p[2], p[3]) + '</b> in its simplest form.', hints: ['Look for common factors to cancel first.', 'Or multiply across, then simplify.'], explain: frs(p[0], p[1]) + ' × ' + frs(p[2], p[3]) + ' = ' + frs(n, d) + ' = ' + ans + '.' }, mcStr(ans, wr));
+  }
+  function gFracOfWhole() {
+    var w = pick([20, 24, 25, 28, 30, 36, 40, 45, 48, 50]), n = rnd(2, w - 1), s = frSimp(n, w), ans = frs(s[0], s[1]);
+    var wr = [frs(n, w), frs(w - n, w), frs(s[0], s[1] + 1), frs(s[1], s[0])].filter(function (x) { return x !== ans; });
+    return mk({ tag: 'Fractions as proportion', text: '<b>' + n + '</b> out of <b>' + w + '</b> pupils walk to school. What fraction walk, in its simplest form?', hints: ['Write the part over the whole.', 'Then simplify.'], explain: frs(n, w) + ' simplifies to ' + ans + '.' }, mcStr(ans, wr));
+  }
+  function gMultiplier() {
+    var p = pick([40, 60, 80, 120, 200]), d = pick([10, 15, 20, 25, 30, 40]), up = Math.random() < 0.5, mult = (up ? 100 + d : 100 - d) / 100, ans = Math.round(p * mult * 100) / 100;
+    return Q({ tag: 'Percentage multipliers', text: 'A price of <b>£' + p + '</b> is ' + (up ? 'increased' : 'reduced') + ' by <b>' + d + '%</b>. What is the new price? (£)', answer: T(ans), hints: ['The multiplier is ' + (up ? '100% + ' : '100% − ') + d + '% = ' + (up ? 100 + d : 100 - d) + '%.', 'Multiply the price by ' + mult + '.'], explain: p + ' × ' + mult + ' = £' + T(ans) + '.' });
+  }
+  function gExchBack() {
+    var r = pick([1.15, 1.2, 1.25, 1.5]), a = pick([40, 80, 120, 200, 240]), x = Math.round(a * r * 100) / 100;
+    return Q({ tag: 'Exchange rates', text: 'In this example £1 = €' + r.toFixed(2) + '. How many pounds is <b>€' + T(x) + '</b>? (Give the number only.)', answer: String(a), hints: ['Going from euros to pounds means dividing by the rate.', T(x) + ' ÷ ' + r + '.'], explain: T(x) + ' ÷ ' + r + ' = ' + a + ', so £' + a + '.' });
+  }
+  function gImpConv() {
+    var c = pick([['oz', 'grams', 28], ['miles', 'km', 1.6], ['inches', 'cm', 2.5], ['pounds', 'grams', 450], ['pints', 'ml', 570]]), n = rnd(2, 9) * (c[2] === 1.6 ? 5 : 1), ans = Math.round(n * c[2] * 10) / 10;
+    return Q({ tag: 'Imperial and metric', text: 'About how many <b>' + c[1] + '</b> is <b>' + n + ' ' + c[0] + '</b>? (1 ' + c[0].replace(/s$/, '') + ' ≈ ' + c[2] + ' ' + c[1] + ')', answer: T(ans), hints: ['Multiply by the conversion rate.', n + ' × ' + c[2] + '.'], explain: n + ' × ' + c[2] + ' = ' + T(ans) + ' ' + c[1] + '.' });
+  }
+  function gBudgetSave() {
+    var s = rnd(2, 8) * 5, m = rnd(4, 12), g = s * m;
+    return Q({ tag: 'Budgeting', text: 'Mia wants a bike that costs <b>£' + g + '</b>. She saves <b>£' + s + '</b> a month. How many months does she need?', answer: String(m), hints: ['Divide the cost by the amount saved each month.', g + ' ÷ ' + s + '.'], explain: g + ' ÷ ' + s + ' = ' + m + ' months.' });
+  }
+  function gCirc() {
+    var d = pick([2, 4, 5, 6, 8, 10, 12, 20]), r = Math.random() < 0.4, ans = Math.round(3.14 * d * 100) / 100;
+    return Q({ tag: 'Circumference', text: 'A circle has a ' + (r ? '<b>radius</b> of <b>' + d / 2 + ' cm</b>' : '<b>diameter</b> of <b>' + d + ' cm</b>') + '. Find its circumference. Use π ≈ 3.14. (cm)', answer: T(ans), hints: [r ? 'Double the radius to get the diameter.' : 'Circumference = π × diameter.', '3.14 × ' + d + '.'], explain: '3.14 × ' + d + ' = ' + T(ans) + ' cm.' });
+  }
+  function gBaseAngle() {
+    var apex = pick([20, 30, 40, 50, 60, 80, 100, 120, 140]), ans = (180 - apex) / 2;
+    return Q({ tag: 'Triangle angles', text: 'An <b>isosceles</b> triangle has an angle of <b>' + apex + '°</b> between its two equal sides. What size is each of the other two angles? (°)', answer: String(ans), hints: ['The three angles add up to 180°.', '180 − ' + apex + ', then divide by 2.'], explain: '(180 − ' + apex + ') ÷ 2 = ' + ans + '°.' });
+  }
+  function gTranslate() {
+    var x = rnd(0, 6), y = rnd(0, 6), r = rnd(-3, 4), u = rnd(-3, 4); while (x + r < 0) r++; while (y + u < 0) u++;
+    var ans = '(' + (x + r) + ', ' + (y + u) + ')', wr = ['(' + (x + u) + ', ' + (y + r) + ')', '(' + (x - r < 0 ? x + r + 1 : x - r) + ', ' + (y + u) + ')', '(' + (x + r) + ', ' + (y + u + 1) + ')'].filter(function (v) { return v !== ans; });
+    return mk({ tag: 'Translation', text: 'The point <b>(' + x + ', ' + y + ')</b> is translated <b>' + Math.abs(r) + ' ' + (r >= 0 ? 'right' : 'left') + '</b> and <b>' + Math.abs(u) + ' ' + (u >= 0 ? 'up' : 'down') + '</b>. Where does it move to?', hints: ['Right and left change x. Up and down change y.', 'Add for right or up, subtract for left or down.'], explain: 'x: ' + x + (r >= 0 ? ' + ' : ' − ') + Math.abs(r) + ' = ' + (x + r) + '. y: ' + y + (u >= 0 ? ' + ' : ' − ') + Math.abs(u) + ' = ' + (y + u) + '.' }, mcStr(ans, wr));
+  }
+
+  /* ---------- which topic gets which makers; e easy, m medium, h hard ---------- */
+  var MAP = {
+    501: [[gNegOrder, 'e'], [gNegMove, 'e'], [gPartition, 'm']],
+    502: [[gPartAdd, 'e'], [gZeroOne, 'e'], [gBus, 'm'], [gOrderOps, 'm']],
+    503: [[gNumDen, 'e']],
+    504: [[gFDPFriend, 'e'], [gCompareFD, 'm']],
+    505: [[gCoins, 'e'], [gImperial, 'm'], [gCurrency, 'm']],
+    507: [[gParPerp, 'e'], [gTriType, 'm'], [gGridRef, 'e'], [gPolyName, 'e']],
+    1: [[gNegDiff, 'm'], [gNegAddSub, 'm'], [gRound1dp, 'e'], [gRound2dp, 'h']],
+    2: [[gMentalMult, 'e'], [gDoubleHalve, 'm'], [gShortDivRem, 'm']],
+    3: [[gCompareFr, 'm'], [gMultFr, 'h']],
+    4: [[gFDPOrder, 'm'], [gFDPFriend, 'e']],
+    5: [[gMilesKm, 'm'], [gTriArea, 'm'], [gVolBox, 'e'], [gCurrencyBack, 'h'], [gImperial, 'e']],
+    7: [[gTriType, 'e'], [gPolyName, 'e'], [gCircleParts, 'e'], [gTransform, 'm'], [gParPerp, 'm']],
+    10: [[gCube, 'm']],
+    701: [[gSigFig, 'm'], [gNegContext, 'm']],
+    702: [[gLongMult, 'e'], [gDivDec, 'h'], [gFactorMult, 'm']],
+    703: [[gCancelMult, 'h'], [gFracOfWhole, 'm']],
+    704: [[gMultiplier, 'm'], [gFDPOrder, 'h']],
+    705: [[gExchBack, 'm'], [gImpConv, 'm'], [gBudgetSave, 'e']],
+    707: [[gCirc, 'm'], [gBaseAngle, 'm'], [gTranslate, 'h'], [gTransform, 'e']]
+  };
+  window.BT.MAP = MAP;
+  var prev = S.extraMakers;
+  S.extraMakers = function (n, level) {
+    var base = prev ? (prev(n, level) || []) : [], list = MAP[Number(n)];
+    if (!list) return base;
+    var out = list.filter(function (x) { return level === 'low' ? x[1] === 'e' || x[1] === 'm' && list.length < 3 : level === 'high' ? x[1] !== 'e' : true; }).map(function (x) { return x[0]; });
+    if (!out.length) out = list.map(function (x) { return x[0]; });
+    /* a longer line-up so the new skills show up several times in every set of 100 */
+    return out.concat(out.length < 4 ? out : []).concat(base);
+  };
+})();
+</script>
+<script>
+/* bite5.js: new games for the Bitesize Second level upgrade.
+   Number line jumper (negatives), Coin counter (money), Triangle sorter, Treasure map (grid references),
+   Circle labeller, and the Ratio mixer for P7. Each game is a lab step that finishes after a set of rounds. */
+(function () {
+  'use strict';
+  var S = Studio, H = S.h, K = S.kit, V = S.viz, BT = window.BT, rnd = H.rnd, pick = H.pick, shuffle = H.shuffle, sg = BT.sg;
+  function $(id) { return document.getElementById(id); }
+  var CHEER = ['Brilliant!', 'Nice one!', 'You got it!', 'Great thinking!', 'Spot on!', 'Superstar!'];
+  var TRY = ['Not this time.', 'Close. Keep going!', 'Good try!', 'Nearly. Next one!'];
+  var css = document.createElement('style');
+  css.textContent = '.bg-opts{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin:12px 0}.bg-opt{min-height:56px;font-size:1.15rem;font-weight:800;background:var(--surface-2);border:2px solid var(--line);border-radius:12px;color:inherit}' +
+    '.bg-opt.ok{border-color:var(--good);background:var(--good-bg)}.bg-opt.no{border-color:var(--bad);background:var(--bad-bg)}' +
+    '.bg-map{display:grid;grid-template-columns:28px repeat(5,minmax(44px,1fr));gap:4px;max-width:360px;margin:8px auto}.bg-cell{min-height:48px;font-size:1.5rem;border:2px solid var(--line);border-radius:8px;background:var(--surface-2);color:inherit}' +
+    '.bg-cell.ok{border-color:var(--good);background:var(--good-bg)}.bg-cell.no{border-color:var(--bad);background:var(--bad-bg)}.bg-lab{display:flex;align-items:center;justify-content:center;font-weight:800}' +
+    '.bg-coins{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin:10px 0}.bg-coin{width:60px;height:60px;border-radius:50%;font-weight:900;font-size:1rem;border:3px solid var(--fg);background:var(--surface-2);color:inherit}' +
+    '.bg-total{font-size:1.6rem;font-weight:900;text-align:center;margin:6px 0}.bg-tray{min-height:40px;text-align:center;font-weight:800}';
+  document.head.appendChild(css);
+
+  /* a multiple-choice round game: cfg.make(round) -> { vis, q, options:[strings], answer:string, explain } */
+  function roundGame(cfg) {
+    return function (host, ctx) {
+      var i = 0, score = 0, cur, locked;
+      function draw(fb, cls) {
+        host.innerHTML = '<div class="gm-top"><span class="gm-pill">Round ' + (i + 1) + ' of ' + cfg.rounds + '</span><span class="gm-pill">Score ' + score + '</span></div>' +
+          '<div class="visual">' + cur.vis + '</div><div class="gm-say say">' + cur.q + '</div>' +
+          '<div class="bg-opts">' + cur.options.map(function (o, k) { return '<button class="bg-opt" type="button" data-k="' + k + '">' + o + '</button>'; }).join('') + '</div>' +
+          '<div class="fbk ' + (cls || '') + '" aria-live="polite" style="min-height:2.4em">' + (fb || '') + '</div><div class="row">' + (locked ? '<button class="btn" id="bgNext" type="button">' + (i + 1 >= cfg.rounds ? 'See my score' : 'Next') + '</button>' : '') + '</div>';
+        if (locked) {
+          [].forEach.call(host.querySelectorAll('.bg-opt'), function (b) { b.disabled = true; if (cur.options[Number(b.getAttribute('data-k'))] === cur.answer) b.classList.add('ok'); else if (b.getAttribute('data-k') === String(locked - 1)) b.classList.add('no'); });
+          $('bgNext').addEventListener('click', function () { i++; if (i >= cfg.rounds) finish(); else { cur = cfg.make(i); locked = 0; draw(); } });
+        } else {
+          [].forEach.call(host.querySelectorAll('.bg-opt'), function (b) { b.addEventListener('click', function () {
+            var k = Number(b.getAttribute('data-k')), ok = cur.options[k] === cur.answer; if (ok) score++; locked = k + 1;
+            draw('<b>' + (ok ? CHEER[rnd(0, CHEER.length - 1)] : TRY[rnd(0, TRY.length - 1)]) + '</b> ' + cur.explain, ok ? 'ok' : 'no');
+          }); });
+        }
+      }
+      function finish() {
+        host.innerHTML = '<div class="gm-top"><span class="gm-pill">Finished!</span></div><p class="gm-say say">You got <b>' + score + ' out of ' + cfg.rounds + '</b>. ' + (score === cfg.rounds ? 'A perfect round!' : score >= cfg.rounds - 2 ? 'Great work!' : 'Have another go to beat your score.') + '</p><div class="row"><button class="btn" id="bgAgain" type="button">Play again</button></div>';
+        $('bgAgain').addEventListener('click', function () { i = 0; score = 0; locked = 0; cur = cfg.make(0); draw(); });
+        if (ctx && ctx.complete) ctx.complete();
+      }
+      cur = cfg.make(0); locked = 0; draw();
+    };
+  }
+  function opts4(ans, cands, fmt) {
+    fmt = fmt || String; var out = [ans], k = 1;
+    shuffle(cands.slice()).forEach(function (c) { if (out.length < 4 && out.indexOf(c) < 0) out.push(c); });
+    while (out.length < 4) { if (out.indexOf(ans + k) < 0) out.push(ans + k); if (out.length < 4 && out.indexOf(ans - k) < 0) out.push(ans - k); k++; }
+    return shuffle(out.map(fmt));
+  }
+
+  /* ---------- Number line jumper ---------- */
+  function numLine(level) {
+    var lim = level === 1 ? 8 : level === 2 ? 12 : 60, u = level === 3 ? 10 : 1, maxm = level === 1 ? 7 : level === 2 ? 10 : 50;
+    return roundGame({ rounds: 6, make: function () {
+      var s = rnd(-lim / u + 2, lim / u - 2) * u, m = rnd(2, maxm / u) * u, right = Math.random() < 0.5, end = s + (right ? m : -m);
+      if (end < -lim || end > lim) { right = !right; end = s + (right ? m : -m); }
+      if (end < -lim || end > lim) { m = u * 2; end = s + (right ? m : -m); if (end < -lim || end > lim) { right = !right; end = s + (right ? m : -m); } }
+      var vis = BT.NL(-lim, lim, { lab: level === 1 ? 2 : level === 2 ? 2 : 10, tick: level === 3 ? 10 : 1, marks: [[s, 215]], jumps: [], alt: 'A number line from ' + sg(-lim) + ' to ' + lim + ' with a start point at ' + sg(s) });
+      return { vis: vis, q: 'Start at <b>' + sg(s) + '</b>. Move <b>' + m + ' ' + (right ? 'to the right' : 'to the left') + '</b> (' + (right ? 'add' : 'subtract') + '). Where do you land?', options: opts4(end, [end + u, end - u, end + 2 * u, end - 2 * u, s + m, s - m, -end].filter(function (x) { return x >= -lim - 2 * u && x <= lim + 2 * u; }), sg), answer: sg(end),
+        explain: sg(s) + (right ? ' + ' : ' − ') + m + ' = ' + sg(end) + '.' };
+    } });
+  }
+
+  /* ---------- Coin counter ---------- */
+  var COINS = [1, 2, 5, 10, 20, 50, 100, 200];
+  function money(p) { return p >= 100 ? '£' + (p / 100).toFixed(2) : p + 'p'; }
+  function coinName(p) { return p >= 100 ? '£' + p / 100 : p + 'p'; }
+  function coinCounter(level) {
+    return function (host, ctx) {
+      var round = 0, tray = [], target, fewest, rounds = 4;
+      function newTarget() {
+        var lo = level === 1 ? 31 : 81, hi = level === 1 ? 199 : 499;
+        target = rnd(lo, hi); var left = target; fewest = 0; COINS.slice().reverse().forEach(function (c) { while (left >= c) { left -= c; fewest++; } });
+        tray = [];
+      }
+      function total() { return tray.reduce(function (a, b) { return a + b; }, 0); }
+      function draw(fb, cls) {
+        host.innerHTML = '<div class="gm-top"><span class="gm-pill">Challenge ' + (round + 1) + ' of ' + rounds + '</span></div>' +
+          '<p class="gm-say say">Make exactly <b>' + money(target) + '</b>. Tap coins to add them. Try to use the fewest coins you can.</p>' +
+          '<div class="bg-coins">' + COINS.map(function (c) { return '<button class="bg-coin" type="button" data-c="' + c + '" aria-label="Add ' + coinName(c) + '">' + coinName(c) + '</button>'; }).join('') + '</div>' +
+          '<div class="bg-tray" aria-live="polite">' + (tray.length ? tray.map(coinName).join(' + ') : 'No coins yet') + '</div><div class="bg-total">Total: ' + money(total()) + '</div>' +
+          '<div class="row"><button class="btn ghost" id="cUndo" type="button">Undo</button><button class="btn ghost" id="cClear" type="button">Clear</button><button class="btn" id="cDone" type="button">Check</button></div>' +
+          '<div class="fbk ' + (cls || '') + '" aria-live="polite" style="min-height:2.4em;margin-top:8px">' + (fb || '') + '</div>';
+        [].forEach.call(host.querySelectorAll('.bg-coin'), function (b) { b.addEventListener('click', function () { tray.push(Number(b.getAttribute('data-c'))); draw(); }); });
+        $('cUndo').addEventListener('click', function () { tray.pop(); draw(); });
+        $('cClear').addEventListener('click', function () { tray = []; draw(); });
+        $('cDone').addEventListener('click', function () {
+          var t = total();
+          if (t === target) {
+            var n = tray.length, msg = n === fewest ? '<b>Spot on, and the fewest coins possible!</b>' : '<b>Exactly right!</b> You used ' + n + ' coins. The fewest possible is ' + fewest + '.';
+            round++;
+            if (round >= rounds) { host.innerHTML = '<div class="gm-top"><span class="gm-pill">Finished!</span></div><p class="gm-say say">' + msg + ' You made all ' + rounds + ' totals.</p><div class="row"><button class="btn" id="cAgain" type="button">Play again</button></div>'; $('cAgain').addEventListener('click', function () { round = 0; newTarget(); draw(); }); if (ctx && ctx.complete) ctx.complete(); }
+            else { draw(msg + ' <button class="btn" id="cNext" type="button">Next challenge</button>', 'ok'); $('cNext').addEventListener('click', function () { newTarget(); draw(); }); }
+          } else draw(t > target ? '<b>Too much.</b> You have ' + money(t) + ', which is ' + money(t - target) + ' over. Undo a coin.' : '<b>Not enough yet.</b> You need ' + money(target - t) + ' more.', 'no');
+        });
+      }
+      newTarget(); draw();
+    };
+  }
+
+  /* ---------- Triangle sorter ---------- */
+  function triSvg(a, b, c) {
+    var cx = (a * a + c * c - b * b) / (2 * c), cy = Math.sqrt(Math.max(0.01, a * a - cx * cx)), k = Math.min(210 / c, 110 / cy, 40), pts = [[0, 0], [c, 0], [cx, cy]].map(function (p) { return [40 + p[0] * k, 130 - p[1] * k]; });
+    var s = '<polygon points="' + pts.map(function (p) { return p[0].toFixed(1) + ',' + p[1].toFixed(1); }).join(' ') + '" style="fill:' + V.hsl(215, 'band') + ';stroke:var(--fg);stroke-width:3;stroke-linejoin:round"/>';
+    function lab(p, q, v, dx, dy) { return BT.txt((p[0] + q[0]) / 2 + dx, (p[1] + q[1]) / 2 + dy, v + ' cm', 13); }
+    s += lab(pts[0], pts[1], c, 0, 20) + lab(pts[1], pts[2], b, 20, 0) + lab(pts[0], pts[2], a, -22, 0);
+    return BT.svg(300, 150, 'A triangle with sides ' + a + ', ' + b + ' and ' + c + ' centimetres', s, 320);
+  }
+  function triGame(level) {
+    var T = [[1, 1, 1], [1, 1, 'x'], [1, 'x', 'y']];
+    return roundGame({ rounds: 6, make: function () {
+      var t = pick(['equilateral', 'isosceles', 'scalene']), a = rnd(3, level === 1 ? 7 : 12), b, c, sides;
+      if (t === 'equilateral') sides = [a, a, a];
+      else if (t === 'isosceles') { b = rnd(2, a + a - 1); while (b === a) b = rnd(2, a + a - 1); sides = shuffle([a, a, b]); }
+      else { var tr = pick([[3, 4, 5], [4, 5, 6], [5, 6, 7], [5, 7, 9], [4, 6, 7], [6, 8, 10], [6, 9, 11], [7, 8, 12]]); sides = shuffle(tr.slice()); }
+      return { vis: triSvg(sides[0], sides[1], sides[2]), q: 'What type of triangle has sides of <b>' + sides.join(' cm, ') + ' cm</b>?', options: ['equilateral', 'isosceles', 'scalene'], answer: t,
+        explain: t === 'equilateral' ? 'All three sides are equal.' : t === 'isosceles' ? 'Exactly two sides are equal.' : 'No two sides are equal.' };
+    } });
+  }
+
+  /* ---------- Treasure map (grid references) ---------- */
+  function mapGame(level) {
+    return function (host, ctx) {
+      var ICONS = [['🏠', 'house'], ['🌳', 'tree'], ['⚓', 'anchor'], ['⛰️', 'mountain'], ['🏰', 'castle'], ['⛺', 'tent']];
+      var items, i = 0, score = 0, rounds = 6, mode, ask;
+      function setup() {
+        items = {}; shuffle(ICONS.slice()).slice(0, 5).forEach(function (ic) { var ref; do { ref = pick('ABCDE'.split('')) + rnd(1, 4); } while (items[ref]); items[ref] = ic; });
+      }
+      function ref(c, r) { return 'ABCDE'.charAt(c) + r; }
+      function newRound() { mode = i % 2 === 0 ? 'tap' : 'name'; var keys = Object.keys(items); ask = pick(keys); if (mode === 'tap') { var e; do { e = pick('ABCDE'.split('')) + rnd(1, 4); } while (items[e] && Math.random() < 0.5); ask = e; } }
+      function draw(fb, cls, done) {
+        var cells = '';
+        for (var r = 4; r >= 1; r--) { cells += '<div class="bg-lab">' + r + '</div>'; for (var c = 0; c < 5; c++) { var rf = ref(c, r), it = items[rf]; cells += '<button class="bg-cell" type="button" data-r="' + rf + '" aria-label="Square ' + rf + (it ? ', ' + it[1] : '') + '">' + (it ? it[0] : '') + '</button>'; } }
+        cells += '<div></div>' + 'ABCDE'.split('').map(function (l) { return '<div class="bg-lab">' + l + '</div>'; }).join('');
+        var q = mode === 'tap' ? 'Tap square <b>' + ask + '</b> on the map.' : 'Which square is the <b>' + items[ask][1] + '</b> in?';
+        var optsHtml = '';
+        if (mode === 'name') { var near = []; for (var cc = 0; cc < 5; cc++) for (var rr = 1; rr <= 4; rr++) { var q2 = ref(cc, rr); if (q2 !== ask && (q2.charAt(0) === ask.charAt(0) || q2.charAt(1) === ask.charAt(1))) near.push(q2); } var o = shuffle([ask].concat(shuffle(near).slice(0, 3))); optsHtml = '<div class="bg-opts">' + o.map(function (x) { return '<button class="bg-opt" type="button" data-o="' + x + '">' + x + '</button>'; }).join('') + '</div>'; }
+        host.innerHTML = '<div class="gm-top"><span class="gm-pill">Round ' + (i + 1) + ' of ' + rounds + '</span><span class="gm-pill">Score ' + score + '</span></div><p class="gm-say say">' + q + '</p><div class="bg-map">' + cells + '</div>' + optsHtml +
+          '<div class="fbk ' + (cls || '') + '" aria-live="polite" style="min-height:2.4em">' + (fb || '') + '</div><div class="row">' + (done ? '<button class="btn" id="mNext" type="button">' + (i + 1 >= rounds ? 'See my score' : 'Next') + '</button>' : '') + '</div>';
+        if (done) { $('mNext').addEventListener('click', function () { i++; if (i >= rounds) finish(); else { newRound(); draw(); } }); return; }
+        function answer(given) {
+          var ok = given === ask; if (ok) score++;
+          draw('<b>' + (ok ? CHEER[rnd(0, CHEER.length - 1)] : TRY[rnd(0, TRY.length - 1)]) + '</b> ' + (mode === 'tap' ? 'Square ' + ask + ' is column ' + ask.charAt(0) + ', row ' + ask.charAt(1) + '.' : 'The ' + items[ask][1] + ' is in ' + ask + '. Letter first, then number.'), ok ? 'ok' : 'no', true);
+          var tgt = host.querySelector('[data-r="' + ask + '"]'); if (tgt) tgt.classList.add('ok');
+        }
+        if (mode === 'tap') [].forEach.call(host.querySelectorAll('.bg-cell'), function (b) { b.addEventListener('click', function () { answer(b.getAttribute('data-r')); }); });
+        else [].forEach.call(host.querySelectorAll('.bg-opt'), function (b) { b.addEventListener('click', function () { answer(b.getAttribute('data-o')); }); });
+      }
+      function finish() {
+        host.innerHTML = '<div class="gm-top"><span class="gm-pill">Finished!</span></div><p class="gm-say say">You got <b>' + score + ' out of ' + rounds + '</b>. ' + (score >= rounds - 1 ? 'You are a grid reference expert!' : 'Have another go.') + '</p><div class="row"><button class="btn" id="mAgain" type="button">Play again</button></div>';
+        $('mAgain').addEventListener('click', function () { i = 0; score = 0; setup(); newRound(); draw(); });
+        if (ctx && ctx.complete) ctx.complete();
+      }
+      setup(); newRound(); draw();
+    };
+  }
+
+  /* ---------- Circle labeller ---------- */
+  function circleSvg(part) {
+    var cx = 130, cy = 80, r = 62, ang = rnd(10, 80) * Math.PI / 180, a2 = rnd(0, 160) * Math.PI / 180, ink = 'var(--fg)', hl = V.hsl(22);
+    var s = '<circle cx="' + cx + '" cy="' + cy + '" r="' + r + '" style="fill:' + V.hsl(215, 'band') + ';stroke:' + (part === 'circumference' ? hl : ink) + ';stroke-width:' + (part === 'circumference' ? 7 : 3) + '"/>';
+    if (part === 'radius') s += '<line x1="' + cx + '" y1="' + cy + '" x2="' + (cx + r * Math.cos(ang)) + '" y2="' + (cy - r * Math.sin(ang)) + '" style="stroke:' + hl + ';stroke-width:5;stroke-linecap:round"/>';
+    if (part === 'diameter') s += '<line x1="' + (cx - r * Math.cos(a2)) + '" y1="' + (cy + r * Math.sin(a2)) + '" x2="' + (cx + r * Math.cos(a2)) + '" y2="' + (cy - r * Math.sin(a2)) + '" style="stroke:' + hl + ';stroke-width:5;stroke-linecap:round"/>';
+    s += '<circle cx="' + cx + '" cy="' + cy + '" r="' + (part === 'centre' ? 8 : 4) + '" style="fill:' + (part === 'centre' ? hl : ink) + '"/>';
+    return BT.svg(260, 160, 'A circle with one part picked out in orange', s, 300);
+  }
+  function circleGame() {
+    var NAMES = ['radius', 'diameter', 'circumference', 'centre'], WHY = { radius: 'The radius goes from the centre to the edge.', diameter: 'The diameter goes straight across through the centre.', circumference: 'The circumference is the distance all the way round.', centre: 'The centre is the middle point of the circle.' };
+    return roundGame({ rounds: 6, make: function () { var p = pick(NAMES); return { vis: circleSvg(p), q: 'Which part of the circle is shown in <b>orange</b>?', options: shuffle(NAMES.slice()), answer: p, explain: WHY[p] }; } });
+  }
+
+  /* ---------- install ---------- */
+  function lab(n, id, label, title, lead, mount) {
+    var t = S.topics[n]; if (!t || t.steps.some(function (s) { return s.id === id; })) return;
+    t.steps.push({ id: id, label: label, type: 'lab', tag: 'Activity time · Game', title: title, lead: lead, mount: mount }); S.arrange(t);
+  }
+  lab(501, 'g_numline', 'Number line jumper', 'Number line jumper', 'Start on the number line, make the move and find where you land.', numLine(1));
+  lab(1, 'g_numline', 'Number line jumper', 'Number line jumper', 'Start on the number line, make the move and find where you land.', numLine(2));
+  lab(701, 'g_numline', 'Number line jumper', 'Number line jumper', 'Jump along the number line in tens, past zero and back again.', numLine(3));
+  lab(505, 'g_coins', 'Coin counter', 'Coin counter', 'Make each total with coins. Can you use the fewest coins?', coinCounter(1));
+  lab(5, 'g_coins', 'Coin counter', 'Coin counter', 'Make each total with coins. Can you use the fewest coins?', coinCounter(2));
+  lab(507, 'g_tri', 'Triangle sorter', 'Triangle sorter', 'Look at the sides and name each triangle.', triGame(1));
+  lab(507, 'g_map', 'Treasure map', 'Treasure map', 'Use grid references to find places on the map. Letter first, then number.', mapGame(1));
+  lab(7, 'g_tri', 'Triangle sorter', 'Triangle sorter', 'Look at the sides and name each triangle.', triGame(2));
+  lab(7, 'g_circle', 'Circle labeller', 'Circle labeller', 'Name the part of the circle that is shown in orange.', circleGame());
+  lab(707, 'g_circle', 'Circle labeller', 'Circle labeller', 'Name the part of the circle that is shown in orange.', circleGame());
+  if (BT.mixerCfg) { var t7 = S.topics[711]; if (t7 && !t7.steps.some(function (s) { return s.id === 'lab_mixer'; })) { t7.steps.push({ id: 'lab_mixer', label: 'Ratio mixer', type: 'lab', tag: 'Activity time · We do it together', title: BT.mixerCfg.title, lead: BT.mixerCfg.lead, mount: K.explore(BT.mixerCfg) }); S.arrange(t7); } }
+})();
+</script>
+<script>
 /* act.js: four game-style activities added to every topic.
    Beat the clock, Match-up, Right or wrong?, Steps in order.
    They reuse each topic's own practice questions and worked examples. */
