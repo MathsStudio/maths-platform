@@ -215,4 +215,13 @@
     t.steps.push({ id: 'plot', label: 'Plot it', type: 'lab', tag: 'Graphs', title: coordsOnly ? 'Plot the points' : 'Draw the graph', lead: coordsOnly ? 'Plot points on a coordinate grid. Tap where each point belongs.' : 'Draw graphs from tables. Tap the grid to plot points or set the height of bars.', mount: mountPlot(kinds, t.year || 'P6') });
     if (S.arrange) S.arrange(t);
   });
+
+  /* P6 Ratio is registered late, so it missed the Real-time problem step the other topics have */
+  (function () {
+    var t = S.topics[11];
+    if (!t || t.steps.some(function (x) { return x.id === 'practical'; }) || !S.storyFor || !S.storyFor(11)) return;
+    t.steps.push({ id: 'practical', label: 'Real-time problem', type: 'quiz', tag: 'Step ' + (t.steps.length + 1) + ' \u00B7 Real-time problems', title: 'Real-time problems', lead: '30 situation questions on ratio, sharing, recipes and unit prices. Think about which skill from this topic the problem needs. Low, Medium and High change how many steps each problem has.',
+      make: function () { var m = []; m.storyMode = true; return H.buildPracticeSet(m, 30); } });
+    if (S.arrange) S.arrange(t);
+  })();
 })();

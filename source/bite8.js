@@ -68,7 +68,7 @@
   function threeFrom(n, stepId, k, s, goal, m, offset) {
     var title = s.title, vis = visualOf(s), blob = [s.title, goal, (s.say || []).join(' '), s.ex ? s.ex.q : '', m && m.more ? m.more.join(' ') : ''].join(' ');
     var tags = tagsFor(n, blob, offset), tA = tags[0], tB = tags[1] || tags[0], tC = tags[2] || tags[0];
-    var real = s.real && typeof s.real === 'string' ? s.real : '';
+    var real = (BT.pickStory && BT.pickStory(n, title, goal, k)) || (s.real && typeof s.real === 'string' ? s.real : '');
     var A = s.live ? s : {
       title: title, v: '', say: [], real: null, goal: goal || 'the key idea of this lesson.',
       live: function (host) {
