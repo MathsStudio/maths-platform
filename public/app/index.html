@@ -327,6 +327,8 @@ table.plan th, table.plan td { text-align: left; padding: 8px 10px; border-botto
 .pstat { color: var(--muted); font-size: .85rem; font-weight: 700; flex: 1; min-width: 120px; }
 
 
+body[data-view="lesson"] .top .level-switch { display: none; }
+.level-switch.in-quiz { width: fit-content; margin: 4px 0; }
 /* mobile: nothing may push the page wider than the screen */
 html, body { overflow-x: hidden; max-width: 100vw; }
 .wrap, .player-in, .card, .visual, .slide { min-width: 0; max-width: 100%; }
@@ -1222,7 +1224,12 @@ var SLIDE_MORE = {"1.learn1": [{"more": ["Our number system uses only ten digits
   }
 
   function mountStepQuiz(pane, t, step) {
-    pane.innerHTML = head(step.tag, step.title, step.lead) + '<div id="quizHost"></div>';
+    var lv = store.settings.difficulty || 'medium';
+    pane.innerHTML = head(step.tag, step.title, step.lead) +
+      '<div class="level-switch in-quiz" role="group" aria-label="Question level"><span class="level-switch-label">Question level</span>' +
+      ['low', 'medium', 'high'].map(function (l) { return '<button class="level-pill" type="button" data-qlevel="' + l + '" aria-pressed="' + (l === lv) + '">' + l.charAt(0).toUpperCase() + l.slice(1) + '</button>'; }).join('') +
+      '</div><p class="note" style="min-height:0;margin:6px 0 10px">The level changes the questions, not the explanations.</p><div id="quizHost"></div>';
+    pane.querySelectorAll('[data-qlevel]').forEach(function (b) { b.addEventListener('click', function () { changeDifficulty(b.getAttribute('data-qlevel')); }); });
     var isLast = t.steps[t.steps.length - 1].id === step.id;
     var makeSet = step.id === 'warm' ? function () { return freshWarmupSet(step.make, t.n); } : step.make;
     mountQuiz($('quizHost'), makeSet(), {
