@@ -8662,7 +8662,7 @@ S.spatialExtra = S.extraMakers;
     if (t.steps.some(function (s) { return s.id === id; })) return;
     var key = n + '.' + id, m = H.slideMeta;
     m.goals[key] = slides.map(function (s) { return s.goal; });
-    m.more[key] = slides.map(function (s) { return { more: s.more || [], eg: s.eg || [] }; });
+    m.more[key] = slides.map(function (s) { return s.noMore ? null : { more: s.more || [], eg: s.eg || [] }; });
     t.steps.push({ id: id, label: label, type: 'slides', tag: 'Let’s learn · ' + label, slides: slides });
     S.arrange(t);
   };
@@ -9998,7 +9998,7 @@ S.spatialExtra = S.extraMakers;
     try { ms = (S.extraMakers ? S.extraMakers(n, lv) : []) || []; } catch (e) { }
     for (var k = 0; k < 60 && ms.length; k++) {
       try {
-        var q = ms[k % ms.length]();
+        var mk = ms[k % ms.length], q = mk(); if (q) q._mk = mk;
         if (!q || !q.text || !q.hints || !q.explain || q.answer == null || q.answer === '' || banned(q.tag)) continue;
         var key = plain(q.text); if (seen[key]) continue; seen[key] = 1; out.push(q);
       } catch (e) { }
@@ -10017,22 +10017,48 @@ S.spatialExtra = S.extraMakers;
     out.forEach(function (q) { used[plain(q.text)] = 1; });
     return out;
   }
-  function slideFor(q, ix, lead) {
+  function esc(x) { return String(x == null ? '' : x); }
+  function answerOf(q) { return q.type === 'mc' && typeof q.answer === 'number' && q.options ? q.options[q.answer] : q.answer; }
+  function showQ(host, q, regen, lead) {
     var steps = [];
-    (q.hints || []).forEach(function (h) { steps.push('Think: ' + h); });
+    (q.hints || []).forEach(function (h) { steps.push('Think: ' + esc(h)); });
     sentences(q.explain).forEach(function (s) { steps.push(s); });
-    if (!steps.length) steps.push(q.explain);
-    var ans = q.type === 'mc' && typeof q.answer === 'number' && q.options ? q.options[q.answer] : q.answer;
-    var vis = q.pic || '';
-    return SK.XV((lead || 'Worked example') + ' ' + ix + ': ' + q.tag, q.text, steps, 'Answer: ' + plain(ans),
-      function () { return vis; }, null,
-      'how to answer a question about ' + String(q.tag).toLowerCase() + ', one step at a time.',
-      [(q.hints || []).join(' ') || 'Take it one step at a time.'], ['Check your answer by putting it back into the question.']);
+    var shown = 0, ans = 'Answer: ' + plain(answerOf(q));
+    var opts = q.options && q.options.length ? '<p class="note say" style="min-height:0">Choices: ' + q.options.map(function (o) { return '<b>' + esc(plain(o)) + '</b>'; }).join(', ') + '</p>' : '';
+    host.style.userSelect = 'none'; host.style.webkitUserSelect = 'none'; host.style.caretColor = 'transparent';
+    function draw() {
+      var list = steps.slice(0, shown).map(function (s) { return '<li><span class="say">' + s + '</span></li>'; }).join('');
+      host.innerHTML = '<div class="worked">' + (q.pic ? '<div class="wvis">' + q.pic + '</div>' : '') +
+        '<p class="wq say">' + q.text + '</p>' + opts +
+        (shown ? '<ol class="wsteps" style="min-height:0">' + list + '</ol>' : '') +
+        (shown >= steps.length ? '<p class="wres">' + ans + '</p>' : '') +
+        '<div class="row"><button class="btn ghost" type="button" data-step>' + (shown >= steps.length ? 'Start again' : 'Show step ' + (shown + 1)) + '</button>' +
+        '<button class="btn" type="button" data-try>Try different numbers</button></div></div>';
+      host.querySelector('[data-step]').addEventListener('click', function () { shown = shown >= steps.length ? 0 : shown + 1; draw(); });
+      host.querySelector('[data-try]').addEventListener('click', function () { showQ(host, regen(q), regen, lead); });
+    }
+    draw();
+  }
+  function slideFor(q, ix, lead, regen) {
+    return {
+      title: (lead || 'Worked example') + ' ' + ix + ': ' + q.tag, v: '', say: [], real: null,
+      goal: 'how to answer a question about ' + String(q.tag).toLowerCase() + ', one step at a time. You can also try new numbers.',
+      more: [(q.hints || []).join(' ') || 'Take it one step at a time.'], eg: ['Check your answer by putting it back into the question.'],
+      live: function (host) { showQ(host, q, regen, lead); }
+    };
   }
   var PARTS = [['learn5', 'Worked examples: getting started', 'low', 'Getting started'],
                ['learn6', 'Worked examples: building up', 'medium', 'Building up'],
                ['learn7', 'Worked examples: challenge', 'high', 'Challenge']];
   function yearOf(t) { return t.year || 'P6'; }
+  function regenFor(pr) {
+    return function (q) {
+      var key = plain(q.text), cand = [], k;
+      if (q._mk) { for (k = 0; k < 12; k++) { try { var nq = q._mk(); if (nq && plain(nq.text) !== key) { nq._mk = q._mk; return nq; } } catch (e) { } } }
+      if (pr) { for (k = 0; k < 3; k++) { try { (pr.make() || []).forEach(function (x) { if (x && x.tag === q.tag && x.hints && x.explain && plain(x.text) !== key) cand.push(x); }); } catch (e) { } } }
+      return cand.length ? cand[Math.floor(Math.random() * cand.length)] : q;
+    };
+  }
   var OWN = { 13: 1, 513: 1, 713: 1, 813: 1, 833: 1, 853: 1 };
   S.order.slice().forEach(function (n) {
     var t = S.topics[n]; if (!t || ['P5', 'P6', 'P7', 'S1', 'S2', 'S3'].indexOf(yearOf(t)) < 0) return;
@@ -10064,7 +10090,7 @@ S.spatialExtra = S.extraMakers;
       }
       if (chosen.length < 4) return;
       chosen.sort(function (x, y) { return diff(x) - diff(y); });
-      BT.add(n, p[0], p[1], chosen.map(function (q, ix) { return slideFor(q, ix + 1, p[3]); }));
+      BT.add(n, p[0], p[1], chosen.map(function (q, ix) { return slideFor(q, ix + 1, p[3], regenFor(pr)); }));
     });
   });
 })();

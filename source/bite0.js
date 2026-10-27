@@ -180,7 +180,7 @@
     if (t.steps.some(function (s) { return s.id === id; })) return;
     var key = n + '.' + id, m = H.slideMeta;
     m.goals[key] = slides.map(function (s) { return s.goal; });
-    m.more[key] = slides.map(function (s) { return { more: s.more || [], eg: s.eg || [] }; });
+    m.more[key] = slides.map(function (s) { return s.noMore ? null : { more: s.more || [], eg: s.eg || [] }; });
     t.steps.push({ id: id, label: label, type: 'slides', tag: 'Let’s learn · ' + label, slides: slides });
     S.arrange(t);
   };
