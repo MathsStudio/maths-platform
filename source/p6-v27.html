@@ -953,7 +953,7 @@ var SLIDE_MORE = {"1.learn1": [{"more": ["Our number system uses only ten digits
     $('tabs').querySelectorAll('.tab').forEach(function (b) {
       b.addEventListener('click', function () {
         var v = b.dataset.tab;
-        if (v === 'home') go('home');
+        if (v === 'home') { window.location.href = '/'; return; }
         else { var cu = S.topics[state.tab], t = openTopicFor(Number(v), cu ? stageOf(cu) : null); enter(t); }
       });
     });
