@@ -10036,13 +10036,16 @@ S.spatialExtra = S.extraMakers;
         (shown ? '<ol class="wsteps" style="min-height:0">' + list + '</ol>' : '') +
         (shown >= steps.length ? '<p class="wres">' + ans + '</p>' : '') +
         '<div class="row" style="align-items:center"><button class="btn" type="button" data-step>' + (shown >= steps.length ? 'Start again' : 'Show step ' + (shown + 1)) + '</button>' +
-        '<button class="btn" type="button" data-try style="margin-left:auto">Try different numbers</button></div></div>';
+        (regen.can ? '<button class="btn" type="button" data-try style="margin-left:auto">Try different numbers</button>' : '') + '</div></div>';
       host.querySelector('[data-step]').addEventListener('click', function () { shown = shown >= steps.length ? 0 : shown + 1; draw(); });
-      host.querySelector('[data-try]').addEventListener('click', function () { showQ(host, regen(q), regen, lead); });
+      var tb = host.querySelector('[data-try]'); if (tb) tb.addEventListener('click', function () { showQ(host, regen(q), regen, lead); });
     }
     draw();
   }
-  function slideFor(q, ix, lead, regen) {
+  function slideFor(q, ix, lead, regen0) {
+    var can = false, t0 = plain(q.text) + (q.pic || '');
+    for (var z = 0; z < 6 && !can; z++) { try { var r0 = regen0(q); can = plain(r0.text) + (r0.pic || '') !== t0; } catch (e) { } }
+    var regen = function (x) { return regen0(x); }; regen.can = can;
     return {
       title: (lead || 'Worked example') + ' ' + ix + ': ' + q.tag, v: '', say: [], real: null,
       goal: 'how to answer a question about ' + String(q.tag).toLowerCase() + ', one step at a time. You can also try new numbers.',
@@ -10056,17 +10059,33 @@ S.spatialExtra = S.extraMakers;
   function yearOf(t) { return t.year || 'P6'; }
   function regenFor(pr) {
     return function (q) {
-      var key = plain(q.text), cand = [], k;
-      if (q._mk) { for (k = 0; k < 12; k++) { try { var nq = q._mk(); if (nq && plain(nq.text) !== key) { nq._mk = q._mk; return nq; } } catch (e) { } } }
-      if (pr) { for (k = 0; k < 3; k++) { try { (pr.make() || []).forEach(function (x) { if (x && x.tag === q.tag && x.hints && x.explain && plain(x.text) !== key) cand.push(x); }); } catch (e) { } } }
+      var key = plain(q.text) + (q.pic || ''), cand = [], k;
+      if (q._mk) { for (k = 0; k < 40; k++) { try { var nq = q._mk(); if (nq && nq.hints && nq.explain && plain(nq.text) + (nq.pic || '') !== key) { nq._mk = q._mk; return nq; } } catch (e) { } } }
+      if (pr) { for (k = 0; k < 3; k++) { try { (pr.make() || []).forEach(function (x) { if (x && x.tag === q.tag && x.hints && x.explain && plain(x.text) + (x.pic || '') !== key) cand.push(x); }); } catch (e) { } } }
       return cand.length ? cand[Math.floor(Math.random() * cand.length)] : q;
     };
   }
   var OWN = { 13: 1, 513: 1, 713: 1, 813: 1, 833: 1, 853: 1 };
   S.order.slice().forEach(function (n) {
     var t = S.topics[n]; if (!t || ['P5', 'P6', 'P7', 'S1', 'S2', 'S3'].indexOf(yearOf(t)) < 0) return;
-    var pr = t.steps.filter(function (s) { return s.id === 'practise'; })[0], pool = [], seen = {};
+    var pr = t.steps.filter(function (s) { return s.id === 'practise'; })[0], pool = [], seen = {}, tagMk = {};
+    /* find every question maker behind this topic's practice set (not cut down by the level), so each slide can make new numbers at any level */
+    var captured = null, origBuild = H.buildPracticeSet;
+    function learnTags(list) {
+      (list || []).forEach(function (mk) {
+        if (typeof mk !== 'function') return;
+        for (var z = 0; z < 4; z++) {
+          try { var q = mk(); if (q && q.tag && q.hints && q.explain && (OWN[n] || !banned(q.tag))) { (tagMk[q.tag] = tagMk[q.tag] || []).push(mk); break; } } catch (e) { }
+        }
+      });
+    }
+    if (pr) {
+      H.buildPracticeSet = function (m) { if (!captured) captured = m; return origBuild.apply(this, arguments); };
+      try { pr.make(); } catch (e) { } finally { H.buildPracticeSet = origBuild; }
+    }
+    learnTags(captured); ['low', 'medium', 'high', 'wide'].forEach(function (lv) { try { learnTags(S.extraMakers(n, lv)); } catch (e) { } });
     function add(q) {
+      if (q && !q._mk && tagMk[q.tag]) q._mk = tagMk[q.tag][Math.floor(Math.random() * tagMk[q.tag].length)];
       if (!q || !q.text || !q.hints || !q.explain || q.answer == null || q.answer === '') return;
       if (!OWN[n] && banned(q.tag)) return;
       var key = plain(q.text); if (seen[key]) return; seen[key] = 1; pool.push(q);
