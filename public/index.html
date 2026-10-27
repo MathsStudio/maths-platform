@@ -38,17 +38,15 @@ a:focus-visible,button:focus-visible,input:focus-visible{outline:3px solid #ffd1
 </div>
 
 <div style="flex:1 1 420px;min-width:0">
-<div id="game" style="background:#ffffff;border-radius:24px;padding:24px;box-shadow:0 18px 40px rgba(20,33,61,0.14);border:1px solid #dbe3f7">
-<div id="gTabs" role="tablist" aria-label="Choose a game" style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:16px"></div>
-<div id="gKicker" style="font-size:13px;font-weight:800;letter-spacing:0.06em;text-transform:uppercase;color:#2b5fd9"></div>
-<div id="gTitle" style="font-family:'Fredoka',sans-serif;font-weight:600;font-size:28px;margin:6px 0 4px"></div>
-<div id="gHelp" style="color:#4a587a;margin-bottom:14px"></div>
-<div id="gStage" style="background:#e8eefb;border-radius:16px;padding:14px 12px;display:flex;justify-content:center;min-height:210px;align-items:center"></div>
-<div id="gQ" style="font-family:'Fredoka',sans-serif;font-weight:600;font-size:24px;text-align:center;margin:14px 0 10px"></div>
-<div id="gOpts" style="display:grid;grid-template-columns:repeat(2,1fr);gap:10px"></div>
-<div id="gMsg" role="status" aria-live="polite" style="min-height:48px;text-align:center;margin-top:12px;font-weight:700"></div>
+<div id="game" style="background:#ffffff;border-radius:20px;padding:18px 20px;max-width:360px;margin:0 auto;box-shadow:0 18px 40px rgba(20,33,61,0.14);border:1px solid #dbe3f7">
+<div id="gTitle" style="font-family:'Fredoka',sans-serif;font-weight:600;font-size:20px;margin:0 0 2px"></div>
+<div id="gHelp" style="color:#4a587a;font-size:14px;margin-bottom:10px"></div>
+<div id="gStage" style="background:#e8eefb;border-radius:16px;padding:10px;display:flex;justify-content:center;min-height:170px;align-items:center"></div>
+<div id="gQ" style="font-family:'Fredoka',sans-serif;font-weight:600;font-size:19px;text-align:center;margin:10px 0 8px"></div>
+<div id="gOpts" style="display:grid;grid-template-columns:repeat(2,1fr);gap:8px"></div>
+<div id="gMsg" role="status" aria-live="polite" style="min-height:40px;font-size:14px;text-align:center;margin-top:8px;font-weight:700"></div>
 <div style="display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;color:#4a587a">
-<span id="gCount"></span><button id="gNext" type="button" style="min-height:44px;padding:0 20px;border:0;border-radius:12px;background:#14213d;color:#fff;font-weight:800;font-size:16px;font-family:inherit;cursor:pointer;display:none"></button>
+<span id="gCount" style="font-size:14px"></span><button id="gSwap" type="button" style="min-height:36px;padding:0 12px;border:2px solid #b8c4e6;border-radius:10px;background:#fff;color:#14213d;font-weight:800;font-size:14px;font-family:inherit;cursor:pointer">Try another game</button><button id="gNext" type="button" style="min-height:36px;padding:0 16px;border:0;border-radius:10px;background:#14213d;color:#fff;font-weight:800;font-size:14px;font-family:inherit;cursor:pointer;display:none"></button>
 </div>
 </div>
 </div>
@@ -69,7 +67,7 @@ function cubesSvg(h){var c=24,ht=28,w=h.length*c+c*2+20,top=Math.max.apply(null,
   o+=poly([[i,1,z],[i+1,1,z],[i+1,1,z+1],[i,1,z+1]],'#4f83e8');
   o+=poly([[i+1,0,z],[i+1,1,z],[i+1,1,z+1],[i+1,0,z+1]],'#2b5fd9');
   o+=poly([[i,0,z+1],[i+1,0,z+1],[i+1,1,z+1],[i,1,z+1]],'#9cc0ff')}
- return'<svg width="'+Math.min(w+h.length*c,300)+'" height="'+H+'" viewBox="0 0 '+(w+h.length*c)+' '+H+'" role="img" aria-label="A row of cube stacks, '+h.join(', ')+' cubes high">'+o+'</svg>'}
+ var W=(h.length+1)*c+30;return'<svg width="'+W+'" height="'+H+'" viewBox="0 0 '+W+' '+H+'" role="img" aria-label="A row of cube stacks, '+h.join(', ')+' cubes high">'+o+'</svg>'}
 /* fraction bar */
 function barSvg(n,d){var W=260,w=W/d,o='';for(var i=0;i<d;i++)o+='<rect x="'+(i*w+2)+'" y="10" width="'+(w)+'" height="60" fill="'+(i<n?'#2b5fd9':'#fff')+'" stroke="'+D+'" stroke-width="2"/>';
  return'<svg width="270" height="80" viewBox="0 0 270 80" role="img" aria-label="A bar cut into '+d+' equal parts with '+n+' shaded">'+o+'</svg>'}
@@ -88,21 +86,19 @@ var G=[
 {k:'Equations',kick:'Algebra · S3',t:'Solve it',help:'Undo the + first, then undo the ×.',year:'S3',make:function(){var x=R(2,9),m=pick([2,3,4,5]),a=R(1,9),b=m*x+a;return{svg:eqSvg(m+'x + '+a+' = '+b),q:'What is x?',ans:x,o:opts(x,[x+1,x-1,x+2,x-2,Math.round(b/m)]),why:b+' − '+a+' = '+(b-a)+', then '+(b-a)+' ÷ '+m+' = '+x+'.'}}}
 ];
 var gi=0,round=0,score=0,cur=null,done=false;
-var tabs=$('gTabs');
-G.forEach(function(g,i){var b=document.createElement('button');b.type='button';b.setAttribute('role','tab');b.textContent=g.k;b.style.cssText='min-height:40px;padding:0 14px;border-radius:999px;font-weight:800;font-size:15px;font-family:inherit;cursor:pointer;border:2px solid #b8c4e6';b.onclick=function(){gi=i;start()};tabs.appendChild(b)});
-function paintTabs(){[].forEach.call(tabs.children,function(b,i){var on=i===gi;b.setAttribute('aria-selected',on);b.style.background=on?'#14213d':'#fff';b.style.color=on?'#fff':'#14213d';b.style.borderColor=on?'#14213d':'#b8c4e6'})}
-function start(){round=0;score=0;paintTabs();next()}
+$('gSwap').onclick=function(){gi=(gi+1)%G.length;start()};
+function start(){round=0;score=0;next()}
 function next(){var g=G[gi];done=false;$('gNext').style.display='none';$('gMsg').textContent='';
- $('gKicker').textContent='Activity time · '+g.kick;$('gTitle').textContent=g.t;$('gHelp').textContent=g.help;
+ $('gTitle').textContent=g.t;$('gHelp').textContent=g.help;
  cur=g.make();$('gStage').innerHTML=cur.svg;$('gQ').textContent=cur.q;$('gCount').textContent='Challenge '+(round+1)+' of 3';
- var O=$('gOpts');O.innerHTML='';cur.o.forEach(function(op){var b=document.createElement('button');b.type='button';b.textContent=op.t;b.style.cssText='min-height:52px;border:2px solid #b8c4e6;border-radius:14px;background:#fff;color:#14213d;font-family:Fredoka,sans-serif;font-weight:600;font-size:22px;cursor:pointer';b.onclick=function(){answer(b,op)};O.appendChild(b)})}
+ var O=$('gOpts');O.innerHTML='';cur.o.forEach(function(op){var b=document.createElement('button');b.type='button';b.textContent=op.t;b.style.cssText='min-height:42px;border:2px solid #b8c4e6;border-radius:12px;background:#fff;color:#14213d;font-family:Fredoka,sans-serif;font-weight:600;font-size:18px;cursor:pointer';b.onclick=function(){answer(b,op)};O.appendChild(b)})}
 function answer(b,op){if(done)return;done=true;var ok=op.v===cur.ans,m=$('gMsg');
  [].forEach.call($('gOpts').children,function(x,i){x.disabled=true;x.style.cursor='default';if(cur.o[i].v===cur.ans){x.style.background='#d9f4e6';x.style.borderColor='#2f9e6e'}});
  if(ok){score++}else{b.style.background='#fde3e3';b.style.borderColor='#c0392b'}
  m.style.color=ok?'#14613f':'#9b2c2c';m.textContent=(ok?'Yes! ':'Not quite. ')+cur.why;
  var n=$('gNext');n.style.display='inline-block';n.textContent=round<2?'Next challenge':'See my score';n.onclick=function(){round++;if(round<3)next();else finish()}}
-function finish(){var g=G[gi],nx=G[(gi+1)%G.length];$('gOpts').innerHTML='';$('gStage').innerHTML='<div style="text-align:center;padding:10px"><div style="font-family:Fredoka,sans-serif;font-weight:700;font-size:48px;color:#2b5fd9">'+score+' out of 3</div><div style="font-weight:700">'+(score===3?'Perfect round!':score>1?'Nicely done.':'Good effort. Try again!')+'</div></div>';
- $('gQ').innerHTML='Want more '+g.k.toLowerCase()+'?';$('gMsg').innerHTML='<a href="/app/?year='+g.year+'" style="color:#2b5fd9">Open the full '+g.year+' lessons</a>';$('gCount').textContent='';
+function finish(){var g=G[gi],nx=G[(gi+1)%G.length];$('gOpts').innerHTML='';$('gStage').innerHTML='<div style="text-align:center;padding:10px"><div style="font-family:Fredoka,sans-serif;font-weight:700;font-size:40px;color:#2b5fd9">'+score+' out of 3</div><div style="font-weight:700">'+(score===3?'Perfect round!':score>1?'Nicely done.':'Good effort. Try again!')+'</div></div>';
+ $('gQ').innerHTML='Want more?';$('gMsg').innerHTML='<a href="/app/?year='+g.year+'" style="color:#2b5fd9">Open the full '+g.year+' lessons</a>';$('gCount').textContent='';
  var n=$('gNext');n.textContent='Play '+nx.k.toLowerCase();n.onclick=function(){gi=(gi+1)%G.length;start()}}
 start();
 })();
