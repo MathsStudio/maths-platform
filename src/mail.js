@@ -17,8 +17,8 @@ function wrap(inner) {
 export function verifyMail(link) {
   return {
     subject: 'Confirm your email for MathsStudio',
-    text: 'Welcome to MathsStudio.\n\nOpen this link to confirm your email and sign in (it works once and lasts 24 hours). You only need to do this once. Next time, sign in with your email and password:\n' + link + '\n\nIf this was not you, ignore this email and nothing will happen.\n\nMathsStudio',
-    html: wrap('<p>Welcome to MathsStudio.</p><p>Press the button to confirm your email and sign in. The link works once and lasts 24 hours.</p><p><a href="' + esc(link) + '" style="display:inline-block;background:#2b5fd9;color:#ffffff;padding:12px 22px;border-radius:10px;text-decoration:none;font-weight:700">Confirm and sign in</a></p><p style="font-size:13px;color:#5b6788">Or copy this address into your browser:<br>' + esc(link) + '</p>')
+    text: 'Welcome to MathsStudio.\n\nOpen this link to confirm your email and choose your password (it works once and lasts 24 hours). You only need to do this once. Next time, sign in with your email and password:\n' + link + '\n\nIf this was not you, ignore this email and nothing will happen.\n\nMathsStudio',
+    html: wrap('<p>Welcome to MathsStudio.</p><p>Press the button to confirm your email and choose your password. The link works once and lasts 24 hours. After that you sign in with your email and password.</p><p><a href="' + esc(link) + '" style="display:inline-block;background:#2b5fd9;color:#ffffff;padding:12px 22px;border-radius:10px;text-decoration:none;font-weight:700">Confirm and choose my password</a></p><p style="font-size:13px;color:#5b6788">Or copy this address into your browser:<br>' + esc(link) + '</p>')
   };
 }
 export function loginMail(link) {

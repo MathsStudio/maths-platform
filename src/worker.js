@@ -20,7 +20,7 @@ async function currentUser(env, request) {
 async function emailLink(env, request, user, marketing) {
   const verified = !!user.verified_at, purpose = verified ? 'login' : 'verify', token = randomToken();
   await db.saveToken(env, await sha256(token), user.id, purpose, marketing, verified ? LOGIN_SEC : VERIFY_SEC);
-  const link = new URL(request.url).origin + '/auth/verify?t=' + token;
+  const link = new URL(request.url).origin + (verified ? '/auth/verify?t=' : '/welcome/?t=') + token;
   const m = verified ? loginMail(link) : verifyMail(link);
   await sendMail(env, user.email, m.subject, m.text, m.html);
 }
@@ -37,18 +37,14 @@ async function signup(request, env) {
   if (!validEmail(email)) return json({ error: 'Please enter a valid email address.' }, 400);
   const role = ROLES.includes(b.role) ? b.role : null, year = pg.YEARS.includes(b.year) ? b.year : null;
   if (!role || !year) return json({ error: 'Please choose parent or teacher, and a year group.' }, 400);
-  const pw = String(b.password || '');
-  if (pw.length < 8) return json({ error: 'Please choose a password with at least 8 characters.' }, 400);
-  if (pw.length > 200) return json({ error: 'That password is too long.' }, 400);
   if (!env.RESEND_API_KEY || !env.FROM_EMAIL) return json({ error: 'Sign-up is not open yet. Please try again soon.' }, 503);
   const marketing = b.marketing === true || b.marketing === 'on' || b.marketing === '1' || b.marketing === 'true';
   if (!(await db.rateOk(env, 'ip:' + ip(request), 12, 3600)) || !(await db.rateOk(env, 'em1:' + email, 1, 60)) || !(await db.rateOk(env, 'em2:' + email, 6, 86400)))
     return json({ error: 'Too many tries. Please wait a few minutes and try again.' }, 429);
   let u = await db.userByEmail(env, email);
   if (u && u.verified_at) return json({ error: 'This email is already registered. Please go to Sign in to get your sign-in link.' }, 409);
-  const hash = await hashPassword(pw);
-  if (!u) { const r = await db.createUser(env, email, role, year, randomToken(24)); u = await db.userById(env, r.id); await db.setPassword(env, u.id, hash); }
-  else if (!u.verified_at) { await db.setYearRole(env, u.id, role, year); await db.setPassword(env, u.id, hash); }
+  if (!u) { const r = await db.createUser(env, email, role, year, randomToken(24)); u = await db.userById(env, r.id); }
+  else if (!u.verified_at) await db.setYearRole(env, u.id, role, year);
   try { await emailLink(env, request, u, marketing); }
   catch (e) { return json({ error: 'We could not send the email. Please try again soon.' }, 502); }
   if (Math.random() < 0.02) await db.cleanup(env);
@@ -60,6 +56,11 @@ async function login(request, env) {
   if (!(await db.rateOk(env, 'ip:' + ip(request), 30, 3600)) || !(await db.rateOk(env, 'lg:' + email, 10, 900)))
     return json({ error: 'Too many tries. Please wait a few minutes and try again.' }, 429);
   const u = await db.userByEmail(env, email);
+  if (u && !u.pw && !u.verified_at) {
+    if (!env.RESEND_API_KEY || !env.FROM_EMAIL) return json({ error: 'Sign-in is not open yet. Please try again soon.' }, 503);
+    if (await db.rateOk(env, 'em1:' + email, 1, 60)) { try { await emailLink(env, request, u, false); } catch (e) { return json({ error: 'We could not send the email. Please try again soon.' }, 502); } }
+    return json({ error: 'Please confirm your email first. We have sent you a new link, and you will choose your password there.' }, 403);
+  }
   if (u && !u.pw) return json({ error: 'This account has no password yet. Press “Forgot your password?” to choose one.' }, 401);
   if (!u || !(await checkPassword(pw, u.pw))) return json({ error: 'That email and password do not match. Check them, or press “Forgot your password?”.' }, 401);
   if (!u.verified_at) {
@@ -91,9 +92,9 @@ async function reset(request, env) {
   if (pw.length < 8) return json({ error: 'Please choose a password with at least 8 characters.' }, 400);
   if (pw.length > 200) return json({ error: 'That password is too long.' }, 400);
   const row = tok ? await db.useToken(env, await sha256(tok)) : null;
-  if (!row || row.purpose !== 'reset') return json({ error: 'This link has already been used or has run out. Please ask for a new one.' }, 400);
+  if (!row || (row.purpose !== 'reset' && row.purpose !== 'verify')) return json({ error: 'This link has already been used or has run out. Please ask for a new one.' }, 400);
   await db.setPassword(env, row.user_id, await hashPassword(pw));
-  await db.confirmUser(env, row.user_id, false);                  // the link went to their inbox, so the email is confirmed too
+  await db.confirmUser(env, row.user_id, !!row.marketing);        // the link went to their inbox, so the email is confirmed too
   return json({ ok: true, next: '/account/' }, 200, { 'Set-Cookie': await startSession(env, request, row.user_id) });
 }
 async function verifyPost(request, env) {

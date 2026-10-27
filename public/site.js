@@ -20,9 +20,8 @@
   if (s) {
     var q = new URLSearchParams(location.search), y = q.get('year'), em = q.get('email'); if (em) s.email.value = em;
     if (y && s.year.querySelector('option[value="' + y + '"]')) s.year.value = y;
-    s.addEventListener('submit', function (e) { if (s.password.value !== s.password2.value) { e.stopImmediatePropagation(); e.preventDefault(); var m = s.querySelector('.msg'); m.className = 'msg err'; m.textContent = 'The two passwords do not match. Please type them again.'; m.hidden = false; } }, true);
-    wire(s, '/api/signup', function (f) { return { email: f.email.value, password: f.password.value, role: f.role.value, year: f.year.value, marketing: f.marketing.checked, website: f.website.value }; },
-      function (f) { f.innerHTML = '<h2>Check your email</h2><p>We sent a link to <b></b>. Open it to confirm your address and sign in. It can take a minute, so check your junk folder too.</p>'; f.querySelector('b').textContent = f.dataset.email || ''; });
+    wire(s, '/api/signup', function (f) { return { email: f.email.value, role: f.role.value, year: f.year.value, marketing: f.marketing.checked, website: f.website.value }; },
+      function (f) { f.innerHTML = '<h2>Check your email</h2><p>We sent a link to <b></b>. Open it to confirm your address and choose your password. It can take a minute, so check your junk folder too.</p>'; f.querySelector('b').textContent = f.dataset.email || ''; });
     s.addEventListener('submit', function () { s.dataset.email = s.email ? s.email.value : ''; }, true);
   }
   function go(f, msg, res) { location.href = (res && res.j && res.j.next) || '/account/'; }
