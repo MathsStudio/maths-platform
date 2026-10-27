@@ -107,7 +107,7 @@
     S1: { dmin: 3, dmax: 12, wmax: 8, impN: 38, impD: 7, miW: 5, miR: 3, miD: 7 },
     S2: { dmin: 3, dmax: 12, wmax: 9, impN: 47, impD: 8, miW: 6, miR: 5, miD: 8 }
   };
-  function slidesFor(y) {
+  function introSlides(y) {
     var c = YEAR[y], iw = Math.floor(c.impN / c.impD), ir = c.impN % c.impD, mn = c.miW * c.miD + c.miR;
     return [
       { title: 'Improper fractions: more than one whole', v: wholeBars(c.impD + 3, c.impD, c.impD + 3 + ' parts of size 1/' + c.impD), say: [
@@ -133,6 +133,66 @@
         'Going to an improper fraction: multiply the whole number by the bottom number, then add the top number. The bottom number does not change.',
         'You can always check by drawing the bars!'] },
       { title: 'Try it yourself', v: '', say: ['Convert these. You will get both kinds: improper to mixed, and mixed to improper. Use the bars and hints if you need them.'], live: tryit(c) }
+    ];
+  }
+
+  /* worked example helper: question, steps, final line, and a picture or sum panel */
+  function wex(q, steps, final, vis) { return { q: q, steps: steps, final: final, render: function () { return vis; } }; }
+  function slidesFor(y) {
+    var c = YEAR[y];
+    if (y === 'P5') return introSlides('P5');
+    var ty = function (txt) { return { title: 'Try it yourself', v: '', say: [txt], live: tryit(c) }; };
+    if (y === 'P6') return [
+      { title: 'Fractions bigger than one: a quick recap', v: wholeBars(11, 4, '11 quarters drawn as bars'), say: [
+        'In Primary 5 you met fractions that are worth more than one whole. Here ' + fr(11, 4) + ' fills 2 whole bars and 3 more quarters.',
+        'Written as a mixed number it is ' + mx(2, 3, 4) + '. Both forms show exactly the same amount.',
+        'Today you will change between the two forms with bigger numbers, and then compare them.'] },
+      { title: 'Improper to mixed using division', ex: wex('Write ' + fr(43, 6) + ' as a mixed number.', [
+        'The bottom number 6 tells you how many parts make one whole.', 'Divide the top by the bottom: 43 ÷ 6 = 7 remainder 1. There are 7 wholes.', 'The remainder 1 is the parts left over, so it goes on top of the 6.', 'So ' + fr(43, 6) + ' = ' + mx(7, 1, 6) + '.'], '43/6 = 7 1/6', wholeBars(43, 6)) },
+      { title: 'Mixed to improper by multiplying', ex: wex('Write ' + mx(5, 3, 8) + ' as an improper fraction.', [
+        'Each whole is ' + fr(8, 8) + '. Five wholes make 5 × 8 = 40 eighths.', 'Add the 3 extra eighths: 40 + 3 = 43.', 'The bottom number stays 8. So ' + mx(5, 3, 8) + ' = ' + fr(43, 8) + '.'], '5 3/8 = 43/8', wholeBars(43, 8)) },
+      { title: 'Which is bigger?', v: panel(mx(2, 3, 4) + ' or ' + mx(2, 5, 8) + ' ?'), say: [
+        'To compare two mixed numbers, look at the whole numbers first. If they are different, the bigger whole number wins.',
+        'If the wholes are the same, compare the fraction parts. Make the bottom numbers match: ' + fr(3, 4) + ' = ' + fr(6, 8) + '.',
+        'Since ' + fr(6, 8) + ' is more than ' + fr(5, 8) + ', ' + mx(2, 3, 4) + ' is bigger than ' + mx(2, 5, 8) + '.'] },
+      ty('Convert these in both directions. The numbers are bigger than before, so write your division or multiplication down.')
+    ];
+    if (y === 'P7') return [
+      { title: 'Why change a mixed number?', v: panel(mx(2, 1, 2) + ' + ' + mx(1, 3, 4)), say: [
+        'You can already move between improper fractions and mixed numbers. Now you will use that to calculate.',
+        'Mixed numbers are easy to read, but improper fractions are easier to add, subtract and multiply, because there is only one fraction to deal with.',
+        'The plan is: convert, calculate, then change the answer back to a mixed number.'] },
+      { title: 'Adding mixed numbers', ex: wex('Work out ' + mx(2, 1, 2) + ' + ' + mx(1, 3, 4) + '.', [
+        'Add the whole numbers: 2 + 1 = 3.', 'Add the fractions. Make the bottom numbers match: ' + fr(1, 2) + ' = ' + fr(2, 4) + '. Then ' + fr(2, 4) + ' + ' + fr(3, 4) + ' = ' + fr(5, 4) + '.', 'That is more than one whole: ' + fr(5, 4) + ' = ' + mx(1, 1, 4) + '.', 'Put it together: 3 + ' + mx(1, 1, 4) + ' = ' + mx(4, 1, 4) + '.'], '2 1/2 + 1 3/4 = 4 1/4', wholeBars(17, 4)) },
+      { title: 'Subtracting by converting', ex: wex('Work out ' + mx(3, 1, 5) + ' − ' + mx(1, 3, 5) + '.', [
+        'Convert both to improper fractions: ' + mx(3, 1, 5) + ' = ' + fr(16, 5) + ' and ' + mx(1, 3, 5) + ' = ' + fr(8, 5) + '.', 'The bottom numbers match, so subtract the tops: 16 − 8 = 8.', 'That gives ' + fr(8, 5) + '. Change it back: 8 ÷ 5 = 1 remainder 3, so ' + mx(1, 3, 5) + '.'], '3 1/5 − 1 3/5 = 1 3/5', wholeBars(8, 5)) },
+      { title: 'A mixed number times a whole number', ex: wex('A bottle holds ' + mx(2, 1, 4) + ' litres. How much do 3 bottles hold?', [
+        'Convert: ' + mx(2, 1, 4) + ' = ' + fr(9, 4) + '.', 'Multiply the top by 3: 3 × 9 = 27. The bottom stays 4.', 'Change back: 27 ÷ 4 = 6 remainder 3, so ' + mx(6, 3, 4) + ' litres.'], '3 × 2 1/4 = 6 3/4', wholeBars(27, 4)) },
+      ty('Convert these first. You will need this skill every time you calculate with mixed numbers.')
+    ];
+    if (y === 'S1') return [
+      { title: 'A fraction is a division', v: panel(fr(38, 7) + ' = 38 ÷ 7'), say: [
+        'The line in a fraction means divide. ' + fr(38, 7) + ' is the same as 38 ÷ 7.',
+        '38 ÷ 7 = 5 remainder 3, so ' + fr(38, 7) + ' = ' + mx(5, 3, 7) + '. As a decimal it is about 5.43.',
+        'Seeing a fraction as a division links improper fractions, mixed numbers and decimals.'] },
+      { title: 'Multiplying mixed numbers', ex: wex('Work out ' + mx(1, 1, 2) + ' × ' + mx(2, 2, 3) + '.', [
+        'Convert both to improper fractions: ' + mx(1, 1, 2) + ' = ' + fr(3, 2) + ' and ' + mx(2, 2, 3) + ' = ' + fr(8, 3) + '.', 'Cancel before multiplying: the 3 on top cancels with the 3 on the bottom.', 'That leaves 1 × 8 over 2 × 1, which is ' + fr(8, 2) + ' = 4.'], '1 1/2 × 2 2/3 = 4', panel(fr(3, 2) + ' × ' + fr(8, 3) + ' = 4')) },
+      { title: 'Dividing mixed numbers', ex: wex('Work out ' + mx(2, 1, 4) + ' ÷ ' + mx(1, 1, 2) + '.', [
+        'Convert: ' + mx(2, 1, 4) + ' = ' + fr(9, 4) + ' and ' + mx(1, 1, 2) + ' = ' + fr(3, 2) + '.', 'To divide, flip the second fraction and multiply: ' + fr(9, 4) + ' × ' + fr(2, 3) + '.', 'Cancel: 9 and 3 share a factor 3, and 2 and 4 share a factor 2. That gives ' + fr(3, 2) + '.', 'Change back: ' + fr(3, 2) + ' = ' + mx(1, 1, 2) + '.'], '2 1/4 ÷ 1 1/2 = 1 1/2', panel(fr(9, 4) + ' ÷ ' + fr(3, 2) + ' = ' + mx(1, 1, 2))) },
+      { title: 'Fraction problems with mixed numbers', ex: wex('A recipe needs ' + mx(2, 3, 4) + ' cups of flour. How much flour is needed for 3 batches?', [
+        'Each batch uses ' + mx(2, 3, 4) + ' = ' + fr(11, 4) + ' cups.', 'For 3 batches multiply: 3 × 11 = 33, so ' + fr(33, 4) + ' cups.', 'Change back: 33 ÷ 4 = 8 remainder 1, so ' + mx(8, 1, 4) + ' cups.'], '3 × 2 3/4 = 8 1/4', wholeBars(33, 4)) },
+      ty('Convert these between improper fractions and mixed numbers. The denominators are larger now, so check each answer by dividing.')
+    ];
+    return [
+      { title: 'Terminating and recurring decimals', v: panel(fr(5, 6) + ' = 0.8333…'), say: [
+        'Every fraction can be written as a decimal by dividing the top by the bottom.',
+        'Some stop, like ' + fr(3, 8) + ' = 0.375. Others repeat for ever, like ' + fr(5, 6) + ' = 0.8333…',
+        'A fraction in its simplest form stops only when its bottom number has no prime factors except 2 and 5.'] },
+      { title: 'Subtracting mixed numbers with different denominators', ex: wex('Work out ' + mx(3, 2, 3) + ' − ' + mx(1, 3, 4) + '.', [
+        'Convert: ' + mx(3, 2, 3) + ' = ' + fr(11, 3) + ' and ' + mx(1, 3, 4) + ' = ' + fr(7, 4) + '.', 'The lowest common denominator of 3 and 4 is 12: ' + fr(11, 3) + ' = ' + fr(44, 12) + ' and ' + fr(7, 4) + ' = ' + fr(21, 12) + '.', 'Subtract: 44 − 21 = 23, so ' + fr(23, 12) + '.', 'Change back: ' + mx(1, 11, 12) + '.'], '3 2/3 − 1 3/4 = 1 11/12', wholeBars(23, 12)) },
+      { title: 'Reverse fraction problems', ex: wex(fr(3, 5) + ' of a number is 45. What is the number?', [
+        'Three fifths is 45, so one fifth is 45 ÷ 3 = 15.', 'The whole is five fifths: 5 × 15 = 75.', 'Check: ' + fr(3, 5) + ' of 75 = 45. ✓'], 'The number is 75', panel('3 parts = 45, so 5 parts = 75')) },
+      ty('Convert these. Then try to explain each answer in your own words, as you would in an exam.')
     ];
   }
 

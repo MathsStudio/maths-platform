@@ -509,6 +509,7 @@ var SLIDE_MORE = {"1.learn1": [{"more": ["Our number system uses only ten digits
     var raw = localStorage.getItem('pm-studio');
     if (raw) { var o = JSON.parse(raw); if (o && o.progress) store.progress = o.progress; if (o && o.warmHistory) store.warmHistory = o.warmHistory; if (o && o.settings) Object.assign(store.settings, o.settings); }
   } catch (e) { /* storage unavailable: progress lasts this visit only */ }
+  store.settings.readMode = false; store.settings.auto = false; /* voice always starts off each visit */
   function save() { try { localStorage.setItem('pm-studio', JSON.stringify(store)); } catch (e) { /* ignore */ } }
   function pkey(n) { return 't' + n; }
   function markDone(n, step) { var p = store.progress[pkey(n)] = store.progress[pkey(n)] || { steps: {} }; if (!p.steps) p.steps = {}; if (!p.steps[step]) { p.steps[step] = true; save(); } }
@@ -1048,11 +1049,11 @@ var SLIDE_MORE = {"1.learn1": [{"more": ["Our number system uses only ten digits
     if (!state.yearSel) { renderYearGate(v); return; }
     var yr = yearOf(), rank = { core: 0, start: 1, extend: 2 };
     var order = visibleOrder(), cs = wantStage();
-    var cards = order.map(function (n) {
+    var cards = order.map(function (n, ix) {
       var t = openTopicFor(n), have = stageOf(t) === cs || cs === 'P6', pr = progOf(t), c = pr.done, pct = pr.total ? Math.round(c / pr.total * 100) : 0, label = c === 0 ? 'Start topic' : (c >= pr.total ? 'Review topic' : 'Continue');
       var role = yr === 'all' ? '' : (YEAR_ROLE[n] || {})[yr], badge = role ? '<span class="tag role-' + role + '">' + yr + ' · ' + ROLE_LABEL[role] + '</span>' : '';
       var note = have ? '' : '<p class="note" style="margin:0;min-height:0">' + cs + ' stage is coming. Showing the ' + stageOf(t) + ' stage for now.</p>';
-      return '<div class="card topic"><span class="tn">Topic ' + n + '</span>' + badge + '<h3>' + t.title + '</h3><p class="note" style="margin:0;min-height:0">' + t.blurb + '</p>' + '<div class="bar" aria-label="' + pct + ' percent complete"><i style="width:' + pct + '%"></i></div>' +
+      return '<div class="card topic"><span class="tn">Topic ' + (ix + 1) + '</span>' + badge + '<h3>' + t.title + '</h3><p class="note" style="margin:0;min-height:0">' + t.blurb + '</p>' + '<div class="bar" aria-label="' + pct + ' percent complete"><i style="width:' + pct + '%"></i></div>' +
         '<p class="note" style="margin:0;min-height:0">' + c + ' of ' + pr.total + ' parts done · ' + pct + '%</p><button class="btn" data-open="' + t.n + '" type="button" style="margin-top:auto">' + label + '</button></div>';
     }).join('');
     var tot = 0, dn = 0, full = 0; order.forEach(function (n) { var p = progOf(openTopicFor(n)); tot += p.total; dn += p.done; if (p.total && p.done >= p.total) full++; });
@@ -1062,7 +1063,7 @@ var SLIDE_MORE = {"1.learn1": [{"more": ["Our number system uses only ten digits
       return '<div class="card topic soon"><span class="tn">Topic ' + c.n + ' · coming next</span><h3>' + c.title + '</h3><p class="note" style="margin:0;min-height:0">' + c.blurb + '</p></div>';
     }).join('');
     var seg = ['P5', 'P6', 'P7', 'all'].map(function (y) { return '<button class="yr' + (y === yr ? ' on' : '') + '" type="button" data-year="' + y + '" aria-pressed="' + (y === yr) + '">' + (y === 'all' ? 'All of Second level' : y) + '</button>'; }).join('');
-    var rows = visibleOrder().map(function (n) { var t = openTopicFor(n); return '<tr><td>' + n + '. ' + t.title + '</td><td>' + t.steps.map(function (s) { return s.label; }).join(', ') + '</td></tr>'; }).join('');
+    var rows = visibleOrder().map(function (n, ix) { var t = openTopicFor(n); return '<tr><td>' + (ix + 1) + '. ' + t.title + '</td><td>' + t.steps.map(function (s) { return s.label; }).join(', ') + '</td></tr>'; }).join('');
     var bm = document.getElementById('brandMark'); if (bm) bm.textContent = yr === 'all' ? 'P5-7' : yr;
     v.innerHTML =
       '<section class="yrtop"><div class="yrbar"><span class="tag">' + (yr === 'all' ? 'All years' : yr) + '</span><button class="yr" type="button" id="chgYear">Change year</button></div><p class="note say" style="margin:8px 0 0">' + YEAR_NOTE[yr] + '</p></section>' +
