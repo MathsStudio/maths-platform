@@ -10197,7 +10197,7 @@ S.spatialExtra = S.extraMakers;
       host.innerHTML = '<div class="worked">' + (ex.pic ? '<div class="wvis">' + ex.pic + '</div>' : '') + '<p class="wq say">' + ex.q + '</p>' + inputHtml + '<div data-fb aria-live="polite">' + (keepFb ? fb : '') + '</div>' +
         (shown ? '<ol class="wsteps" style="min-height:0">' + ex.steps.slice(0, shown).map(function (t) { return '<li><span class="say">' + t + '</span></li>'; }).join('') + '</ol>' : '') +
         (shown >= ex.steps.length ? '<p class="wres say">' + ex.answer + '</p>' : '') +
-        '<div class="row" style="align-items:center;margin-top:10px"><button class="btn ghost" type="button" data-s>' + (shown >= ex.steps.length ? 'Hide steps' : 'Show step ' + (shown + 1)) + '</button>' +
+        '<div class="row" style="align-items:center;margin-top:10px"><button class="btn" type="button" data-s>' + (shown >= ex.steps.length ? 'Hide steps' : 'Show step ' + (shown + 1)) + '</button>' +
         (canTry ? '<button class="btn" type="button" data-t style="margin-left:auto">' + (tryLabel || 'Try a different question') + '</button>' : '') + '</div></div>';
       host.querySelector('[data-s]').addEventListener('click', function () { var el = host.querySelector('#wIn'); if (el) typed = el.value; shown = shown >= ex.steps.length ? 0 : shown + 1; draw(true); });
       var t = host.querySelector('[data-t]'); if (t) t.addEventListener('click', function () { var e2 = gen(); if (e2) { ex = e2; shown = 0; fb = ''; typed = ''; done = false; draw(); } });
