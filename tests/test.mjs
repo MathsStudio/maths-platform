@@ -89,6 +89,9 @@ r = await call('/api/login', { method: 'POST', json: { email: 'new@example.com',
 sqlite.prepare('DELETE FROM rate').run(); await call('/api/login', { method: 'POST', json: { email: 'parent@example.com', password: 'NewPassw0rd!y' } });
 r = await call('/api/me'); ok(r.status === 200 && JSON.parse(r.text).signedIn === true, 'api/me reports signed in');
 cookieJar = ''; r = await call('/api/me'); ok(JSON.parse(r.text).signedIn === false, 'api/me reports signed out');
+env.OWNER_EMAILS = 'Someone@x.com, PARENT@example.com'; await call('/api/login', { method: 'POST', json: { email: 'parent@example.com', password: 'NewPassw0rd!y' } });
+r = await call('/account/'); ok(r.status === 200 && /Owner \(full access\)/.test(r.text), 'owner email shows the owner plan'); delete env.OWNER_EMAILS;
+r = await call('/account/'); ok(/>Free</.test(r.text) || /Free/.test(r.text), 'without the owner list it is the normal plan');
 // unsubscribe link
 sqlite.prepare('UPDATE users SET marketing = 1').run();
 const ut = sqlite.prepare('SELECT unsub_token FROM users').get().unsub_token;

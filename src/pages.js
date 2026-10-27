@@ -19,7 +19,7 @@ export function confirmLink(token) {
 export function account(u) {
   const mk = u.marketing ? 'You are getting news, tips and offers by email.' : 'You are not getting news, tips or offers.';
   return shell('Your account', '<div class="card"><h1>Your account</h1>' +
-    '<dl class="kv"><dt>Email</dt><dd>' + esc(u.email) + '</dd><dt>Year group</dt><dd>' + esc(u.year || 'Not chosen') + '</dd><dt>Plan</dt><dd>' + (u.plan === 'free' ? 'Free' : esc(u.plan)) + '</dd><dt>News and offers</dt><dd>' + mk + '</dd></dl>' +
+    '<dl class="kv"><dt>Email</dt><dd>' + esc(u.email) + '</dd><dt>Year group</dt><dd>' + esc(u.year || 'Not chosen') + '</dd><dt>Plan</dt><dd>' + (u.plan === 'free' ? 'Free' : u.plan === 'owner' ? 'Owner (full access)' : esc(u.plan)) + '</dd><dt>News and offers</dt><dd>' + mk + '</dd></dl>' +
     '<p><a class="btn" href="/">Open MathsStudio</a></p>' +
     '<form method="post" action="/account/marketing"><input type="hidden" name="on" value="' + (u.marketing ? '0' : '1') + '"><button class="btn alt" type="submit">' + (u.marketing ? 'Stop news and offers' : 'Send me news and offers') + '</button></form>' +
     '<form method="post" action="/logout"><button class="btn alt" type="submit">Sign out</button></form>' +

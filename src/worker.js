@@ -15,7 +15,12 @@ async function readForm(request) {
 function ip(request) { return request.headers.get('CF-Connecting-IP') || 'local'; }
 async function currentUser(env, request) {
   const t = parseCookies(request).ms_session; if (!t) return null;
-  return db.sessionUser(env, await sha256(t));
+  const u = await db.sessionUser(env, await sha256(t));
+  if (u && isOwner(env, u.email)) u.plan = 'owner';              // owners always have full access
+  return u;
+}
+export function isOwner(env, email) {
+  return String(env.OWNER_EMAILS || '').toLowerCase().split(/[\s,;]+/).filter(Boolean).includes(String(email || '').toLowerCase());
 }
 async function emailLink(env, request, user, marketing) {
   const verified = !!user.verified_at, purpose = verified ? 'login' : 'verify', token = randomToken();
