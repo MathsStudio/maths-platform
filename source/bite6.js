@@ -61,8 +61,8 @@
         '<p class="wq say">' + q.text + '</p>' + opts +
         (shown ? '<ol class="wsteps" style="min-height:0">' + list + '</ol>' : '') +
         (shown >= steps.length ? '<p class="wres">' + ans + '</p>' : '') +
-        '<div class="row"><button class="btn ghost" type="button" data-step>' + (shown >= steps.length ? 'Start again' : 'Show step ' + (shown + 1)) + '</button>' +
-        '<button class="btn" type="button" data-try>Try different numbers</button></div></div>';
+        '<div class="row" style="align-items:center"><button class="btn" type="button" data-step>' + (shown >= steps.length ? 'Start again' : 'Show step ' + (shown + 1)) + '</button>' +
+        '<button class="btn ghost" type="button" data-try style="margin-left:auto">Try different numbers</button></div></div>';
       host.querySelector('[data-step]').addEventListener('click', function () { shown = shown >= steps.length ? 0 : shown + 1; draw(); });
       host.querySelector('[data-try]').addEventListener('click', function () { showQ(host, regen(q), regen, lead); });
     }

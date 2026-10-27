@@ -23,7 +23,7 @@
   function gNegOrder() {
     var a = rnd(-9, 9), b = rnd(-9, 9), c = rnd(-9, 9); while (b === a) b = rnd(-9, 9); while (c === a || c === b) c = rnd(-9, 9);
     var small = Math.random() < 0.5, ans = small ? Math.min(a, b, c) : Math.max(a, b, c);
-    var m = mcNum(ans, [a, b, c], sg);
+    var m = { options: shuffle([a, b, c].map(sg)), answer: sg(ans) };
     return mk({ tag: 'Negative numbers', text: 'Which is the <b>' + (small ? 'smallest' : 'largest') + '</b> number: <b>' + sg(a) + '</b>, <b>' + sg(b) + '</b> or <b>' + sg(c) + '</b>?', hints: ['Picture a number line. Numbers on the right are bigger.', 'A negative number is smaller than zero.'], explain: 'On the number line the ' + (small ? 'furthest left' : 'furthest right') + ' number is ' + sg(ans) + '.' }, m);
   }
   function gNegMove() {
