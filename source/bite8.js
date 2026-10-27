@@ -8,7 +8,7 @@
   'use strict';
   var S = Studio, H = S.h, BT = window.BT;
   if (!BT || !BT.tagMk) return;
-  var YEARS = { P5: [501, 502, 503, 504, 505, 506, 507, 508, 509, 510, 513] };
+  var YEARS = { all: S.order.slice() };
   var STEPS = ['learn1', 'learn2', 'learn3', 'learn4'];
 
   function rnd(a, b) { return a + Math.floor(Math.random() * (b - a + 1)); }

@@ -6,13 +6,19 @@
   'use strict';
   var S = Studio, H = S.h, BT = window.BT = window.BT || {};
   function set(a) { var o = {}; a.forEach(function (t) { o[t] = 1; }); return o; }
-  var SPATIAL = ['Counting cubes', 'Solid shapes', 'Nets of a cube', 'Turns and bearings', 'Mirror images', 'Turning shapes', 'Shape patterns', 'Position', 'Volume of cubes', 'Surface area of cubes'];
+  var SPATIAL = ['Counting cubes', 'Solid shapes', 'Nets of a cube', 'Turns and bearings', 'Mirror images', 'Turning shapes', 'Shape patterns', 'Position', 'Volume of cubes', 'Surface area of cubes', 'Pattern grids', 'Views of cubes', 'Shape analogies'];
   var VERBAL = ['Verbal reasoning', 'Word meanings', 'Word links', 'Hidden words', 'Letter series', 'Codes', 'Reasoning', 'Odd one out', 'Non-verbal reasoning', 'Logic'];
+  var VOLUME = ['Volume of cubes', 'Surface area of cubes'];
+  var PURE_SPATIAL = SPATIAL.filter(function (t) { return VOLUME.indexOf(t) < 0; });
   var BAN = {};
-  [501, 502, 503, 504, 505, 506, 508, 510].forEach(function (n) { BAN[n] = set(SPATIAL.concat(VERBAL)); });
-  BAN[507] = set(VERBAL.concat(['Counting cubes', 'Solid shapes', 'Nets of a cube', 'Turns and bearings', 'Shape patterns', 'Position', 'Volume of cubes', 'Surface area of cubes']));
-  BAN[509] = set(SPATIAL.filter(function (t) { return t !== 'Shape patterns'; }));
-  BAN[513] = set(['Verbal reasoning', 'Word meanings', 'Word links', 'Hidden words', 'Letter series', 'Codes', 'Reasoning', 'Logic']);
+  S.order.forEach(function (n) {
+    var title = (S.topics[n] && S.topics[n].title) || '', list;
+    if (/spatial awareness/i.test(title)) list = ['Verbal reasoning', 'Word meanings', 'Word links', 'Hidden words', 'Letter series', 'Codes', 'Reasoning', 'Logic'].concat(VOLUME);
+    else if (/mixed reasoning/i.test(title)) list = PURE_SPATIAL.filter(function (t) { return t !== 'Shape patterns'; }).concat(VOLUME);
+    else if (/shape|symmetry|bearing/i.test(title)) { var ok = []; if (/shape|symmetry/i.test(title)) ok = ok.concat(['Mirror images', 'Turning shapes']); if (/bearing/i.test(title)) ok.push('Turns and bearings'); list = VERBAL.concat(PURE_SPATIAL.filter(function (t) { return ok.indexOf(t) < 0; }), VOLUME); }
+    else list = VERBAL.concat(PURE_SPATIAL, /volume|surface/i.test(title) ? [] : VOLUME);
+    BAN[n] = set(list);
+  });
   BT.banFor = function (n, tag) { return !!(BAN[Number(n)] && BAN[Number(n)][tag]); };
 
   var orig = H.buildPracticeSet;
