@@ -39,7 +39,7 @@ async function signup(request, env) {
   if (!role || !year) return json({ error: 'Please choose parent or teacher, and a year group.' }, 400);
   if (!env.RESEND_API_KEY || !env.FROM_EMAIL) return json({ error: 'Sign-up is not open yet. Please try again soon.' }, 503);
   const marketing = b.marketing === true || b.marketing === 'on' || b.marketing === '1' || b.marketing === 'true';
-  if (!(await db.rateOk(env, 'ip:' + ip(request), 12, 3600)) || !(await db.rateOk(env, 'em1:' + email, 1, 60)) || !(await db.rateOk(env, 'em2:' + email, 6, 86400)))
+  if (!(await db.rateOk(env, 'ipS:' + ip(request), 60, 3600)) || !(await db.rateOk(env, 'em1:' + email, 1, 60)) || !(await db.rateOk(env, 'em2:' + email, 6, 86400)))
     return json({ error: 'Too many tries. Please wait a few minutes and try again.' }, 429);
   let u = await db.userByEmail(env, email);
   if (u && u.verified_at) return json({ error: 'This email is already registered. Please go to Sign in to get your sign-in link.' }, 409);
@@ -53,7 +53,7 @@ async function signup(request, env) {
 async function login(request, env) {
   const b = await readForm(request), email = String(b.email || '').trim().toLowerCase(), pw = String(b.password || '');
   if (!validEmail(email) || !pw) return json({ error: 'Please enter your email and password.' }, 400);
-  if (!(await db.rateOk(env, 'ip:' + ip(request), 30, 3600)) || !(await db.rateOk(env, 'lg:' + email, 10, 900)))
+  if (!(await db.rateOk(env, 'ipL:' + ip(request), 100, 3600)) || !(await db.rateOk(env, 'lg:' + email, 10, 900)))
     return json({ error: 'Too many tries. Please wait a few minutes and try again.' }, 429);
   const u = await db.userByEmail(env, email);
   if (u && !u.pw && !u.verified_at) {
@@ -75,7 +75,7 @@ async function forgot(request, env) {
   const b = await readForm(request), email = String(b.email || '').trim().toLowerCase();
   if (!validEmail(email)) return json({ error: 'Please enter a valid email address.' }, 400);
   if (!env.RESEND_API_KEY || !env.FROM_EMAIL) return json({ error: 'This is not open yet. Please try again soon.' }, 503);
-  if (!(await db.rateOk(env, 'ip:' + ip(request), 12, 3600)) || !(await db.rateOk(env, 'em1:' + email, 1, 60)) || !(await db.rateOk(env, 'em2:' + email, 6, 86400)))
+  if (!(await db.rateOk(env, 'ipF:' + ip(request), 40, 3600)) || !(await db.rateOk(env, 'em1:' + email, 1, 60)) || !(await db.rateOk(env, 'em2:' + email, 6, 86400)))
     return json({ error: 'Too many tries. Please wait a few minutes and try again.' }, 429);
   const u = await db.userByEmail(env, email);
   if (u) {
