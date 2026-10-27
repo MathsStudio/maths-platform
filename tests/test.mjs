@@ -32,7 +32,8 @@ let fails = 0; const ok = (c, m) => { console.log((c ? 'PASS ' : 'FAIL ') + m); 
 let r;
 
 r = await call('/'); ok(r.status === 200 && r.text.startsWith('STATIC'), 'static page passes through');
-r = await call('/app/'); ok(r.status === 303 && r.loc === '/login/', 'app needs sign-in');
+r = await call('/app/'); ok(r.status === 200, 'app is open while REQUIRE_LOGIN is off');
+env.REQUIRE_LOGIN = '1'; r = await call('/app/'); ok(r.status === 303 && r.loc === '/login/', 'app needs sign-in when REQUIRE_LOGIN is on'); delete env.REQUIRE_LOGIN;
 r = await call('/account/'); ok(r.status === 303, 'account needs sign-in');
 r = await call('/api/signup', { method: 'POST', json: { email: 'bad', role: 'parent', year: 'P6' } }); ok(r.status === 400, 'bad email rejected');
 r = await call('/api/signup', { method: 'POST', json: { email: 'a@b.com', role: 'kid', year: 'P6' } }); ok(r.status === 400, 'bad role rejected');
