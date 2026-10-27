@@ -9,7 +9,8 @@
     var msg = form.querySelector('.msg'), btn = form.querySelector('button[type=submit]');
     form.addEventListener('submit', function (e) {
       e.preventDefault(); msg.className = 'msg'; msg.hidden = true; btn.disabled = true;
-      post(url, build(form)).then(function (res) {
+      var data; try { data = build(form); } catch (err) { btn.disabled = false; msg.className = 'msg err'; msg.textContent = 'Something went wrong on this page. Please refresh it (Ctrl+Shift+R) and try again.'; msg.hidden = false; return; }
+      post(url, data).then(function (res) {
         btn.disabled = false;
         if (res.ok) { done(form, msg, res); }
         else { msg.className = 'msg err'; msg.textContent = res.j.error || 'Something went wrong. Please try again.'; msg.hidden = false; }
