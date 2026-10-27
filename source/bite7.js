@@ -30,21 +30,39 @@
     return '<table class="tbl" aria-label="Place value table for ' + fmt(n) + '"><tr>' + COLS.map(function (c) { return '<th>' + c + '</th>'; }).join('') + '</tr><tr>' +
       d.map(function (x, i) { return '<td' + (i === hi ? ' style="background:var(--accent-bg,#dfe9ff);font-size:1.4rem"' : ' style="font-size:1.3rem"') + '>' + x + '</td>'; }).join('') + '</tr></table>';
   }
-  /* a worked example with Show step and Try different numbers; gen() gives { q, steps, answer } */
-  function worked(host, gen, canTry) {
-    var ex = gen(), shown = 0;
-    host.style.userSelect = 'none'; host.style.caretColor = 'transparent';
-    function draw() {
-      host.innerHTML = '<div class="worked"><p class="wq say">' + ex.q + '</p>' +
-        (shown ? '<ol class="wsteps" style="min-height:0">' + ex.steps.slice(0, shown).map(function (s) { return '<li><span class="say">' + s + '</span></li>'; }).join('') + '</ol>' : '') +
-        (shown >= ex.steps.length ? '<p class="wres">' + ex.answer + '</p>' : '') +
-        '<div class="row" style="align-items:center"><button class="btn" type="button" data-s>' + (shown >= ex.steps.length ? 'Start again' : 'Show step ' + (shown + 1)) + '</button>' +
-        (canTry ? '<button class="btn" type="button" data-t style="margin-left:auto">Try a different question</button>' : '') + '</div></div>';
-      host.querySelector('[data-s]').addEventListener('click', function () { shown = shown >= ex.steps.length ? 0 : shown + 1; draw(); });
-      var t = host.querySelector('[data-t]'); if (t) t.addEventListener('click', function () { ex = gen(); shown = 0; draw(); });
+  /* A worked question. The pupil types an answer (or taps a choice) and presses Check; Show step is their choice.
+     gen() gives { q, pic, steps, answer, options?, correct?, accept? (a quiz question for H.matches), test? (fn) } */
+  function esc2(x) { return String(x).replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;'); }
+  function workedCard(host, gen, canTry, tryLabel) {
+    var ex = gen(); if (!ex) { host.style.display = 'none'; return; }
+    var shown = 0, fb = '', typed = '', done = false;
+    function grade(val) {
+      var ok = false;
+      try { ok = ex.test ? !!ex.test(val) : H.matches(ex.accept, val); } catch (e) { ok = false; }
+      done = ok; typed = val;
+      fb = ok ? '<div class="fb ok say" style="margin-top:10px"><strong>Right!</strong> Well done. Press Show step if you would like to see how it works.</div>'
+               : '<div class="fb no say" style="margin-top:10px"><strong>Not quite.</strong> Have another go, or press Show step for some help.</div>';
+      draw(true);
+    }
+    function draw(keepFb) {
+      var canAnswer = ex.options || ex.test || ex.accept, acc = ex.accept || {}, mc = !!ex.options;
+      var inputHtml = '';
+      if (canAnswer && mc) inputHtml = '<div class="row" style="gap:8px;margin-top:10px">' + ex.options.map(function (o, i) { return '<button class="btn ghost" type="button" data-o="' + i + '"' + (done ? ' disabled' : '') + '>' + o + '</button>'; }).join('') + '</div>';
+      else if (canAnswer) inputHtml = '<form class="ans" data-f style="margin-top:10px"><label class="eyebrow" for="wIn" style="width:100%">Your answer' + (acc.unit ? ' (' + esc2(acc.unit) + ')' : '') + '</label><input id="wIn" type="text" inputmode="' + (ex.text || acc.kind === 'text' || acc.kind === 'time' || acc.kind === 'frac' ? 'text' : 'decimal') + '" autocomplete="off" value="' + esc2(typed) + '"' + (done ? ' disabled' : '') + ' placeholder="' + esc2(ex.placeholder || acc.placeholder || 'Type your answer') + '"><button class="btn" type="submit"' + (done ? ' disabled' : '') + '>Check</button></form>';
+      host.innerHTML = '<div class="worked">' + (ex.pic ? '<div class="wvis">' + ex.pic + '</div>' : '') + '<p class="wq say">' + ex.q + '</p>' + inputHtml + '<div data-fb aria-live="polite">' + (keepFb ? fb : '') + '</div>' +
+        (shown ? '<ol class="wsteps" style="min-height:0">' + ex.steps.slice(0, shown).map(function (t) { return '<li><span class="say">' + t + '</span></li>'; }).join('') + '</ol>' : '') +
+        (shown >= ex.steps.length ? '<p class="wres say">' + ex.answer + '</p>' : '') +
+        '<div class="row" style="align-items:center;margin-top:10px"><button class="btn ghost" type="button" data-s>' + (shown >= ex.steps.length ? 'Hide steps' : 'Show step ' + (shown + 1)) + '</button>' +
+        (canTry ? '<button class="btn" type="button" data-t style="margin-left:auto">' + (tryLabel || 'Try a different question') + '</button>' : '') + '</div></div>';
+      host.querySelector('[data-s]').addEventListener('click', function () { var el = host.querySelector('#wIn'); if (el) typed = el.value; shown = shown >= ex.steps.length ? 0 : shown + 1; draw(true); });
+      var t = host.querySelector('[data-t]'); if (t) t.addEventListener('click', function () { var e2 = gen(); if (e2) { ex = e2; shown = 0; fb = ''; typed = ''; done = false; draw(); } });
+      var f = host.querySelector('[data-f]'); if (f) f.addEventListener('submit', function (e) { e.preventDefault(); var v = host.querySelector('#wIn').value.trim(); if (v) grade(v); });
+      host.querySelectorAll('[data-o]').forEach(function (b) { b.addEventListener('click', function () { var o = ex.options[Number(b.getAttribute('data-o'))]; var ok = o === ex.correct; done = ok; fb = ok ? '<div class="fb ok say" style="margin-top:10px"><strong>Right!</strong> Well done. Press Show step if you would like to see how it works.</div>' : '<div class="fb no say" style="margin-top:10px"><strong>Not quite.</strong> Have another go, or press Show step for some help.</div>'; draw(true); }); });
     }
     draw();
   }
+  H.workedCard = workedCard;
+  var worked = workedCard;
   function box(html) { return '<div class="card" style="background:var(--surface-2);margin:10px 0">' + html + '</div>'; }
   function tag(t) { return '<span class="step-tag say" style="margin-top:8px">' + t + '</span>'; }
   function say(t) { return '<p class="say" style="margin:0">' + t + '</p>'; }
@@ -60,14 +78,14 @@
   /* worked-example makers, each written as a teacher would say it */
   function genValue() {
     var ds = shuffle([1, 2, 3, 4, 5, 6, 7, 8, 9]).slice(0, 5), n = Number(ds.join('')), i = rnd(0, 4), d = ds[i];
-    return { q: 'In ' + fmt(n) + ', what is the ' + d + ' worth?', answer: 'The ' + d + ' is worth ' + fmt(valueAt(n, i)) + '.',
+    return { q: 'In ' + fmt(n) + ', what is the ' + d + ' worth?', accept: { answer: String(valueAt(n, i)) }, answer: 'The ' + d + ' is worth ' + fmt(valueAt(n, i)) + '.',
       steps: ['First, spot the ' + d + ' in the number.',
         'Now ask: which column is it sitting in? Count from the right: ones, tens, hundreds, thousands, ten thousands. Your ' + d + ' is in the ' + COLS[i] + ' column.',
         'So we have ' + d + ' ' + COLS[i] + '. That is ' + fmt(valueAt(n, i)) + '.'] };
   }
   function genWords() {
     var ds = shuffle([1, 2, 3, 4, 5, 6, 7, 8, 9]).slice(0, 5), n = Number(ds.join(''));
-    return { q: 'Say the number ' + fmt(n) + ' in words.', answer: words(n) + '.',
+    return { q: 'Say the number ' + fmt(n) + ' in words.', accept: { kind: 'text', answer: words(n) }, text: true, placeholder: 'Type it in words', answer: words(n) + '.',
       steps: ['Start with the thousands part. Everything before the comma is read first: ' + words(Math.floor(n / 1000)) + ' thousand.',
         'Now read the last three digits as a number on their own: ' + words(n % 1000) + '.',
         'Put them together and you get ' + words(n) + '.'] };
@@ -76,7 +94,7 @@
     var a = rnd(1, 9), b = rnd(1, 9), c = rnd(1, 9), pat = pick([[1, 0, 1, 0, 0], [1, 0, 0, 1, 0], [1, 0, 0, 0, 1], [1, 1, 0, 0, 1]]), mult = [a, b, c], k = 0,
       ds = pat.map(function (p) { return p ? mult[k++ % 3] : 0; }), n = Number(ds.join(''));
     var parts = []; ds.forEach(function (d, i) { if (d) parts.push(fmt(d * Math.pow(10, 4 - i))); });
-    return { q: 'Write ' + fmt(n) + ' as a sum of its parts. (Expanded form)', answer: parts.join(' + ') + '.',
+    return { q: 'Write ' + fmt(n) + ' as a sum of its parts. (Expanded form)', text: true, placeholder: 'For example 20,000 + 300', test: function (v) { var a = String(v).replace(/,/g, '').match(/\\d+/g) || [], b = parts.map(function (x) { return x.replace(/,/g, ''); }); return a.length === b.length && a.slice().sort().join() === b.slice().sort().join(); }, answer: parts.join(' + ') + '.',
       steps: ['Look for the digits that are not zero. The zeros do not add anything, they just hold the places open.',
         'Now say what each of those digits is worth: ' + parts.join(', ') + '.',
         'Join them with plus signs: ' + parts.join(' + ') + '.'] };
@@ -85,6 +103,7 @@
     var ds = shuffle([1, 2, 3, 4, 5, 6, 7, 8, 9]).slice(0, 5), n = Number(ds.join('')), i = rnd(0, 3), j = i + 1, d = ds[i];
     var ok = rnd(0, 1);
     return { q: 'Sam says: "In ' + fmt(n) + ', the ' + d + ' is worth ' + (ok ? fmt(valueAt(n, i)) : String(d)) + '." Is she right?',
+      options: ['Yes', 'No'], correct: ok ? 'Yes' : 'No',
       answer: ok ? 'Yes, Sam is right.' : 'No. The ' + d + ' is worth ' + fmt(valueAt(n, i)) + '.',
       steps: ['Let’s check by finding the ' + d + ' in the table. It is in the ' + COLS[i] + ' column.',
         ok ? 'A ' + d + ' in the ' + COLS[i] + ' column is worth ' + fmt(valueAt(n, i)) + ', which is what Sam said.' : 'A ' + d + ' in the ' + COLS[i] + ' column is worth ' + fmt(valueAt(n, i)) + ', not just ' + d + '. Sam forgot the column.',

@@ -45,7 +45,7 @@
           var q = pick(mks)(); if (!q || !q.hints || !q.explain) continue;
           var sig = plain(q.text) + (q.pic || ''); if (sig === last && k < 25) continue; last = sig;
           var steps = (q.hints || []).map(function (h) { return 'Here’s a clue: ' + h; }).concat(sentences(q.explain));
-          return { q: q.text, pic: q.pic || '', steps: steps, answer: 'The answer is ' + plain(answerOf(q)) + '.', options: q.type === 'mc' && q.options ? q.options.map(function (o) { return plain(o); }) : null, correct: plain(answerOf(q)), explain: q.explain };
+          return { q: q.text, pic: q.pic || '', steps: steps, accept: q.type === 'mc' ? null : q, placeholder: q.placeholder, answer: 'The answer is ' + plain(answerOf(q)) + '.', options: q.type === 'mc' && q.options ? q.options.map(function (o) { return plain(o); }) : null, correct: plain(answerOf(q)), explain: q.explain };
         } catch (e) { }
       }
       return null;
@@ -61,43 +61,8 @@
       return null;
     };
   }
-  function worked(host, gen, canTry) {
-    var ex = gen(); if (!ex) { host.style.display = 'none'; return; }
-    var shown = 0;
-    host.style.userSelect = 'none'; host.style.caretColor = 'transparent';
-    function draw() {
-      host.innerHTML = '<div class="worked">' + (ex.pic ? '<div class="wvis">' + ex.pic + '</div>' : '') + '<p class="wq say">' + ex.q + '</p>' +
-        (ex.options ? '<p class="note say" style="min-height:0">Choices: ' + ex.options.map(function (o) { return '<b>' + o + '</b>'; }).join(', ') + '</p>' : '') +
-        (shown ? '<ol class="wsteps" style="min-height:0">' + ex.steps.slice(0, shown).map(function (s) { return '<li><span class="say">' + s + '</span></li>'; }).join('') + '</ol>' : '') +
-        (shown >= ex.steps.length ? '<p class="wres">' + ex.answer + '</p>' : '') +
-        '<div class="row" style="align-items:center"><button class="btn" type="button" data-s>' + (shown >= ex.steps.length ? 'Start again' : 'Show step ' + (shown + 1)) + '</button>' +
-        (canTry ? '<button class="btn" type="button" data-t style="margin-left:auto">Try a different question</button>' : '') + '</div></div>';
-      host.querySelector('[data-s]').addEventListener('click', function () { shown = shown >= ex.steps.length ? 0 : shown + 1; draw(); });
-      var t = host.querySelector('[data-t]'); if (t) t.addEventListener('click', function () { var e2 = gen(); if (e2) { ex = e2; shown = 0; draw(); } });
-    }
-    draw();
-  }
-  /* a question the pupil answers: tap a choice, or press to see the answer */
-  function check(host, gen) {
-    var ex = gen(); if (!ex) { host.style.display = 'none'; return; }
-    host.style.userSelect = 'none'; host.style.caretColor = 'transparent';
-    function draw() {
-      var opts = ex.options ? '<div class="row" style="gap:8px">' + ex.options.map(function (o, i) { return '<button class="btn" type="button" data-o="' + i + '">' + o + '</button>'; }).join('') + '</div>'
-        : '<div class="row"><button class="btn" type="button" data-r>Show the answer</button></div>';
-      host.innerHTML = '<div class="worked">' + (ex.pic ? '<div class="wvis">' + ex.pic + '</div>' : '') + '<p class="wq say">' + ex.q + '</p>' + opts + '<div data-out></div>' +
-        '<div class="row"><button class="btn" type="button" data-n style="margin-left:auto">Try another one</button></div></div>';
-      var out = host.querySelector('[data-out]');
-      host.querySelectorAll('[data-o]').forEach(function (b) {
-        b.addEventListener('click', function () {
-          var ok = ex.options[Number(b.getAttribute('data-o'))] === ex.correct;
-          out.innerHTML = box(ok ? '<b>Yes, well done!</b> ' + ex.explain : '<b>Not quite.</b> ' + ex.explain + ' Have another go!');
-        });
-      });
-      var r = host.querySelector('[data-r]'); if (r) r.addEventListener('click', function () { out.innerHTML = box('<b>' + ex.answer + '</b> ' + ex.explain); });
-      host.querySelector('[data-n]').addEventListener('click', function () { var e2 = gen(); if (e2) { ex = e2; draw(); } });
-    }
-    draw();
-  }
+  function worked(host, gen, canTry) { H.workedCard(host, gen, canTry); }
+  function check(host, gen) { H.workedCard(host, gen, true, 'Try another one'); }
 
   /* ----- build the three slides from one old slide ----- */
   function threeFrom(n, stepId, k, s, goal, m, offset) {
@@ -111,7 +76,7 @@
         host.innerHTML = (vis ? '<div class="visual" style="max-width:340px;margin:0 auto;width:100%">' + vis + '</div>' : '') + say(OPEN_A[(offset + k) % OPEN_A.length]) +
           (s.say || []).map(say).join('') + tag('Let’s work some out together') + say('Press <b>Show step</b> and I will take you through it one step at a time.') +
           card('', 'w0');
-        var firstEx = s.ex ? { q: s.ex.q, pic: '', steps: s.ex.steps, answer: 'The answer is ' + plain(s.ex.final) + '.' } : null;
+        var fin = s.ex ? plain(s.ex.final).replace(/\.$/, '') : '', firstEx = s.ex ? { q: s.ex.q, pic: '', steps: s.ex.steps, answer: 'The answer is ' + plain(s.ex.final) + '.', accept: /^[\d,.\s−-]+$/.test(fin) ? { answer: fin.replace(/,/g, '').replace(/−/g, '-') } : null } : null;
         worked(host.querySelector('#w0'), mixFor(n, tags.slice(0, 4), firstEx), true);
       }
     };
