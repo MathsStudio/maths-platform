@@ -1051,7 +1051,7 @@ var SLIDE_MORE = {"1.learn1": [{"more": ["Our number system uses only ten digits
     var order = visibleOrder(), cs = wantStage();
     var cards = order.map(function (n, ix) {
       var t = openTopicFor(n), have = stageOf(t) === cs || cs === 'P6', pr = progOf(t), c = pr.done, pct = pr.total ? Math.round(c / pr.total * 100) : 0, label = c === 0 ? 'Start topic' : (c >= pr.total ? 'Review topic' : 'Continue');
-      var role = yr === 'all' ? '' : (YEAR_ROLE[n] || {})[yr], badge = role ? '<span class="tag role-' + role + '">' + yr + ' · ' + ROLE_LABEL[role] + '</span>' : '';
+      var role = yr === 'all' ? '' : ((YEAR_ROLE[n] || {})[yr] || (n === 11 && yr === 'P6' ? 'start' : 'core')), badge = role ? '<span class="tag role-' + role + '">' + yr + ' · ' + ROLE_LABEL[role] + '</span>' : '';
       var note = have ? '' : '<p class="note" style="margin:0;min-height:0">' + cs + ' stage is coming. Showing the ' + stageOf(t) + ' stage for now.</p>';
       return '<div class="card topic"><span class="tn">Topic ' + (ix + 1) + '</span>' + badge + '<h3>' + t.title + '</h3><p class="note" style="margin:0;min-height:0">' + t.blurb + '</p>' + '<div class="bar" aria-label="' + pct + ' percent complete"><i style="width:' + pct + '%"></i></div>' +
         '<p class="note" style="margin:0;min-height:0">' + c + ' of ' + pr.total + ' parts done · ' + pct + '%</p><button class="btn" data-open="' + t.n + '" type="button" style="margin-top:auto">' + label + '</button></div>';
