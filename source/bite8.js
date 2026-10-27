@@ -92,13 +92,12 @@
     };
     var more = (m && m.more) || [], eg = (m && m.eg) || [];
     var C = {
-      title: title + ': let’s go deeper', v: '', say: [], real: null, goal: 'more about this idea, with extra examples and a quick check.',
+      title: title + ': let’s go deeper', v: '', say: [], real: null, goal: 'a deeper look at why this works, a worked example with explanation, and a quick check.',
       live: function (host) {
         host.style.cssText = 'display:flex;flex-direction:column;gap:14px';
         host.innerHTML = say(OPEN_C[(offset + k) % OPEN_C.length]) +
-          (more.length ? more.map(say).join('') : say('Let’s look at one more way to think about it.')) +
-          (eg.length ? tag('More examples') + '<ul class="say" style="margin:0;padding-left:1.3rem;display:grid;gap:6px">' + eg.map(function (x) { return '<li>' + x + '</li>'; }).join('') + '</ul>' : '') +
-          tag('Let’s work one out together') + say('Press <b>Show step</b> and I will take you through it. Then try a different question.') + card('', 'd1') + tag('Check yourself') + say('One more for luck. Choose your answer.') + card('', 'e1');
+          (BT.pickInsight ? BT.pickInsight(n, title, goal).map(say).join('') : (more.length ? more.map(say).join('') : '')) +
+          tag('Let’s see the idea in action') + say('Try this one yourself, then press <b>Show step</b> and I will explain why each step works. You can try a different question too.') + card('', 'd1') + tag('Check yourself') + say('One more for luck. Choose your answer.') + card('', 'e1');
         worked(host.querySelector('#d1'), mixFor(n, tags.slice(0, 4)), true);
         check(host.querySelector('#e1'), genFor(n, tB));
       }
