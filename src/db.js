@@ -23,7 +23,9 @@ const SCHEMA = [
 ];
 let ready = null;
 export function init(env) {
-  if (!ready) ready = env.DB.batch(SCHEMA.map(s => env.DB.prepare(s))).catch(e => { ready = null; throw e; });
+  if (!ready) ready = env.DB.batch(SCHEMA.map(s => env.DB.prepare(s)))
+    .then(() => env.DB.prepare('ALTER TABLE users ADD COLUMN pw TEXT').run().catch(() => {}))   // adds the password column once; harmless if it already exists
+    .catch(e => { ready = null; throw e; });
   return ready;
 }
 export const MARKETING_TEXT = 'v1: I would like to get news, tips and offers from MathsStudio by email. I can unsubscribe at any time.';
@@ -88,3 +90,6 @@ export async function cleanup(env) {
     env.DB.prepare("DELETE FROM users WHERE verified_at IS NULL AND created_at < ?").bind(new Date(Date.now() - 7 * 86400000).toISOString())
   ]);
 }
+
+export const setPassword = (env, id, hash) => env.DB.prepare('UPDATE users SET pw = ? WHERE id = ?').bind(hash, id).run();
+export const markLogin = (env, id) => env.DB.prepare('UPDATE users SET last_login = ? WHERE id = ?').bind(new Date().toISOString(), id).run();

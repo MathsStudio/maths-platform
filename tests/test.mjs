@@ -38,13 +38,13 @@ r = await call('/account/'); ok(r.status === 303, 'account needs sign-in');
 r = await call('/api/signup', { method: 'POST', json: { email: 'bad', role: 'parent', year: 'P6' } }); ok(r.status === 400, 'bad email rejected');
 r = await call('/api/signup', { method: 'POST', json: { email: 'a@b.com', role: 'kid', year: 'P6' } }); ok(r.status === 400, 'bad role rejected');
 r = await call('/api/signup', { method: 'POST', headers: { Origin: 'https://evil.test' }, json: { email: 'a@b.com', role: 'parent', year: 'P6' } }); ok(r.status === 403, 'other origin blocked');
-r = await call('/api/signup', { method: 'POST', json: { email: 'Parent@Example.com ', role: 'parent', year: 'P6', marketing: true } });
+r = await call('/api/signup', { method: 'POST', json: { email: 'Parent@Example.com ', role: 'parent', year: 'P6', marketing: true, password: 'Passw0rd!x' } });
 ok(r.status === 200 && sent.length === 1, 'signup sends one email');
 ok(sent[0].to[0] === 'parent@example.com' && /\/auth\/verify\?t=/.test(sent[0].text), 'email has a verify link');
 const link1 = sent[0].text.match(/https:\/\/x\.test(\/auth\/verify\?t=[^\s]+)/)[1];
 let u = sqlite.prepare('SELECT * FROM users').get();
 ok(u.verified_at === null && u.marketing === 0, 'not verified and no marketing consent before the link is used');
-r = await call('/api/signup', { method: 'POST', json: { email: 'parent@example.com', role: 'parent', year: 'P6' } }); ok(r.status === 429, 'second try within a minute is limited');
+r = await call('/api/signup', { method: 'POST', json: { email: 'parent@example.com', role: 'parent', year: 'P6', password: 'Passw0rd!x' } }); ok(r.status === 429, 'second try within a minute is limited');
 r = await call(link1); ok(r.status === 200 && /<form method="post"/.test(r.text), 'opening the link (like an email scanner) only shows a button');
 u = sqlite.prepare('SELECT * FROM users').get(); ok(u.verified_at === null, 'scanner visit does not use the link');
 const tok = link1.split('t=')[1];
@@ -61,9 +61,32 @@ r = await call('/learn'); ok(r.status === 200 && r.text.startsWith('STATIC /app/
 r = await call('/account/marketing', { method: 'POST', body: { on: '0' } }); u = sqlite.prepare('SELECT * FROM users').get(); ok(u.marketing === 0 && u.unsub_at, 'stop news from account');
 // login for existing verified user
 cookieJar = ''; sent.length = 0;
-r = await call('/api/login', { method: 'POST', json: { email: 'nobody@example.com' } }); ok(r.status === 200 && sent.length === 0, 'login for unknown email: same answer, no email');
+r = await call('/api/login', { method: 'POST', json: { email: 'nobody@example.com', password: 'whatever123' } }); ok(r.status === 401 && sent.length === 0 && cookieJar === '', 'login for unknown email is refused, no email');
 sqlite.prepare('DELETE FROM rate').run();
-r = await call('/api/login', { method: 'POST', json: { email: 'parent@example.com' } }); ok(r.status === 200 && sent.length === 1 && /sign-in link/i.test(sent[0].subject), 'login email sent to known user');
+r = await call('/api/login', { method: 'POST', json: { email: 'parent@example.com', password: 'wrong-password' } }); ok(r.status === 401 && cookieJar === '', 'wrong password refused');
+r = await call('/api/login', { method: 'POST', json: { email: 'parent@example.com', password: 'Passw0rd!x' } }); ok(r.status === 200 && r.r.headers.get('Set-Cookie').startsWith('ms_session=') && sent.length === 0, 'right password signs in with no email');
+ok(!/pw/.test(sqlite.prepare('SELECT unsub_token FROM users').get().unsub_token) && sqlite.prepare('SELECT pw FROM users').get().pw.startsWith('p1$'), 'password is stored hashed');
+r = await call('/api/signup', { method: 'POST', json: { email: 'PARENT@example.com', role: 'parent', year: 'P6', password: 'Passw0rd!x' }, headers: { 'CF-Connecting-IP': '3.3.3.3' } }); ok(r.status === 409 && /already registered/i.test(r.text), 'signing up again with a registered email says so');
+r = await call('/api/signup', { method: 'POST', json: { email: 'short@example.com', role: 'parent', year: 'P6', password: 'abc' } }); ok(r.status === 400, 'short password refused');
+// forgot / reset
+sqlite.prepare('DELETE FROM rate').run(); cookieJar = ''; sent.length = 0;
+r = await call('/api/forgot', { method: 'POST', json: { email: 'nobody@example.com' } }); ok(r.status === 200 && sent.length === 0, 'forgot for unknown email: same answer, no email');
+r = await call('/api/forgot', { method: 'POST', json: { email: 'parent@example.com' } }); ok(r.status === 200 && sent.length === 1 && /password/i.test(sent[0].subject) && /\/reset\/\?t=/.test(sent[0].text), 'reset email sent');
+const rt = sent[0].text.match(/\/reset\/\?t=([^\s]+)/)[1];
+r = await call('/api/reset', { method: 'POST', json: { t: rt, password: 'short' } }); ok(r.status === 400, 'reset refuses a short password');
+r = await call('/api/reset', { method: 'POST', json: { t: rt, password: 'NewPassw0rd!y' } }); ok(r.status === 200 && cookieJar.startsWith('ms_session='), 'reset sets the new password and signs in');
+cookieJar = ''; r = await call('/api/reset', { method: 'POST', json: { t: rt, password: 'Another1234' } }); ok(r.status === 400, 'reset link works once');
+sqlite.prepare('DELETE FROM rate').run();
+r = await call('/api/login', { method: 'POST', json: { email: 'parent@example.com', password: 'Passw0rd!x' } }); ok(r.status === 401, 'old password no longer works');
+r = await call('/api/login', { method: 'POST', json: { email: 'parent@example.com', password: 'NewPassw0rd!y' } }); ok(r.status === 200, 'new password works');
+// account created before passwords existed
+sqlite.prepare("INSERT INTO users (email, unsub_token, created_at, verified_at) VALUES ('old@example.com','t2','2026-01-01','2026-01-01')").run();
+cookieJar = ''; r = await call('/api/login', { method: 'POST', json: { email: 'old@example.com', password: 'anything123' } }); ok(r.status === 401 && /no password/i.test(r.text), 'old account is told to set a password');
+// unverified account: right password sends a fresh confirmation link instead of signing in
+sqlite.prepare('DELETE FROM rate').run(); sent.length = 0;
+await call('/api/signup', { method: 'POST', json: { email: 'new@example.com', role: 'teacher', year: 'S1', password: 'Passw0rd!z' }, headers: { 'CF-Connecting-IP': '4.4.4.4' } });
+sqlite.prepare('DELETE FROM rate').run(); sent.length = 0;
+r = await call('/api/login', { method: 'POST', json: { email: 'new@example.com', password: 'Passw0rd!z' } }); ok(r.status === 403 && sent.length === 1 && /confirm/i.test(sent[0].subject) && cookieJar === '', 'unverified account: new confirmation email, no sign-in');
 // unsubscribe link
 sqlite.prepare('UPDATE users SET marketing = 1').run();
 const ut = sqlite.prepare('SELECT unsub_token FROM users').get().unsub_token;
@@ -77,7 +100,7 @@ sqlite.prepare("INSERT INTO users (email, unsub_token, created_at, verified_at, 
 r = await call('/admin/export.csv', { auth: 'pw' }); ok(r.status === 200 && /text\/csv/.test(r.r.headers.get('Content-Type')) && r.text.includes("\"'=cmd@x.com\""), 'csv export guards formulas');
 const env2 = { ...env, ADMIN_PASSWORD: undefined }; const r2 = await worker.fetch(new Request(B + '/admin', { headers: { Authorization: 'Basic ' + btoa('a:') } }), env2); ok(r2.status === 503, 'admin fails closed without a password');
 // no email service => no signup
-const env3 = { ...env, RESEND_API_KEY: undefined }; const r3 = await worker.fetch(new Request(B + '/api/signup', { method: 'POST', headers: { 'Content-Type': 'application/json', Origin: B }, body: JSON.stringify({ email: 'z@z.com', role: 'parent', year: 'P5' }) }), env3); ok(r3.status === 503, 'signup closed until email is set up');
+const env3 = { ...env, RESEND_API_KEY: undefined }; const r3 = await worker.fetch(new Request(B + '/api/signup', { method: 'POST', headers: { 'Content-Type': 'application/json', Origin: B }, body: JSON.stringify({ email: 'z@z.com', role: 'parent', year: 'P5', password: 'Passw0rd!x' }) }), env3); ok(r3.status === 503, 'signup closed until email is set up');
 // delete account
 cookieJar = ''; sent.length = 0;
 await call('/api/login', { method: 'POST', json: { email: 'parent@example.com' }, headers: { 'CF-Connecting-IP': '2.2.2.2' } }).catch(() => {});

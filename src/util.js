@@ -58,3 +58,21 @@ export function sameOrigin(request) {
 export function validEmail(e) {
   return typeof e === 'string' && e.length <= 254 && /^[^\s@<>"',;()]+@[^\s@<>"',;()]+\.[^\s@<>"',;()]{2,}$/.test(e);
 }
+
+/* Passwords: PBKDF2-SHA256 with a random salt. Stored as p1$iterations$salt$hash */
+const PW_ITER = 100000;
+async function pbkdf2(pw, salt, iter) {
+  const key = await crypto.subtle.importKey('raw', enc.encode(pw), 'PBKDF2', false, ['deriveBits']);
+  const bits = await crypto.subtle.deriveBits({ name: 'PBKDF2', hash: 'SHA-256', salt, iterations: iter }, key, 256);
+  return [...new Uint8Array(bits)].map(b => b.toString(16).padStart(2, '0')).join('');
+}
+export async function hashPassword(pw) {
+  const salt = new Uint8Array(16); crypto.getRandomValues(salt);
+  const sh = [...salt].map(b => b.toString(16).padStart(2, '0')).join('');
+  return 'p1$' + PW_ITER + '$' + sh + '$' + await pbkdf2(pw, salt, PW_ITER);
+}
+export async function checkPassword(pw, stored) {
+  const parts = String(stored || '').split('$'); if (parts.length !== 4 || parts[0] !== 'p1') return false;
+  const salt = new Uint8Array((parts[2].match(/../g) || []).map(h => parseInt(h, 16)));
+  return safeEqual(await pbkdf2(pw, salt, Number(parts[1])), parts[3]);
+}
