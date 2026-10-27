@@ -1213,7 +1213,7 @@ var SLIDE_MORE = {"1.learn1": [{"more": ["Our number system uses only ten digits
     if (!ins.length) return '';
     return '<section class="more"><span class="step-tag">Let\u2019s go deeper</span>' +
       ins.map(function (x) { return '<p class="say">' + x + '</p>'; }).join('') +
-      '<p class="say">Now see this idea in action: use the blue <b>Show step 1</b> button in the question box just above. Each press shows the next step with its explanation.</p>' +
+      '<p class="say stepnote">Now see this idea in action: use the blue <b>Show step 1</b> button in the question box just above. Each press shows the next step with its explanation.</p>' +
       '</section>';
   }
 
@@ -1245,6 +1245,7 @@ var SLIDE_MORE = {"1.learn1": [{"more": ["Our number system uses only ten digits
       $('sNext').addEventListener('click', function () { if (lastSlide) go(t.n, state.step + 1); else { state.slide++; draw(); } });
       if (s.ex) mountWorked($('workedHost'), s.ex);
       if (s.live) s.live($('liveHost'));
+      (function () { var nt = pane.querySelector('.stepnote'); if (nt && !Array.prototype.some.call(pane.querySelectorAll('button'), function (b) { return /show step/i.test(b.textContent) && !nt.contains(b); })) nt.parentNode.removeChild(nt); })();
       animateIn(pane);
       if ((store.settings.auto || store.settings.readMode) && Nar.ok) narPlay(true);
     }
