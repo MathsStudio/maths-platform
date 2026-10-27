@@ -46,7 +46,7 @@ a:focus-visible,button:focus-visible,input:focus-visible{outline:3px solid #ffd1
 <div id="gOpts" style="display:grid;grid-template-columns:repeat(2,1fr);gap:8px"></div>
 <div id="gMsg" role="status" aria-live="polite" style="min-height:40px;font-size:14px;text-align:center;margin-top:8px;font-weight:700"></div>
 <div style="display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;color:#4a587a">
-<span id="gCount" style="font-size:14px"></span><button id="gSwap" type="button" style="min-height:36px;padding:0 12px;border:2px solid #b8c4e6;border-radius:10px;background:#fff;color:#14213d;font-weight:800;font-size:14px;font-family:inherit;cursor:pointer">Try another game</button><button id="gNext" type="button" style="min-height:36px;padding:0 16px;border:0;border-radius:10px;background:#14213d;color:#fff;font-weight:800;font-size:14px;font-family:inherit;cursor:pointer;display:none"></button>
+<span></span><button id="gSwap" type="button" style="min-height:36px;padding:0 12px;border:2px solid #b8c4e6;border-radius:10px;background:#fff;color:#14213d;font-weight:800;font-size:14px;font-family:inherit;cursor:pointer">Try another game</button><button id="gNext" type="button" style="min-height:36px;padding:0 16px;border:0;border-radius:10px;background:#14213d;color:#fff;font-weight:800;font-size:14px;font-family:inherit;cursor:pointer;display:none"></button>
 </div>
 </div>
 </div>
@@ -90,7 +90,7 @@ $('gSwap').onclick=function(){gi=(gi+1)%G.length;start()};
 function start(){round=0;score=0;next()}
 function next(){var g=G[gi];done=false;$('gNext').style.display='none';$('gMsg').textContent='';
  $('gTitle').textContent=g.t;$('gHelp').textContent=g.help;
- cur=g.make();$('gStage').innerHTML=cur.svg;$('gQ').textContent=cur.q;$('gCount').textContent='Challenge '+(round+1)+' of 3';
+ cur=g.make();$('gStage').innerHTML=cur.svg;$('gQ').textContent=cur.q;
  var O=$('gOpts');O.innerHTML='';cur.o.forEach(function(op){var b=document.createElement('button');b.type='button';b.textContent=op.t;b.style.cssText='min-height:42px;border:2px solid #b8c4e6;border-radius:12px;background:#fff;color:#14213d;font-family:Fredoka,sans-serif;font-weight:600;font-size:18px;cursor:pointer';b.onclick=function(){answer(b,op)};O.appendChild(b)})}
 function answer(b,op){if(done)return;done=true;var ok=op.v===cur.ans,m=$('gMsg');
  [].forEach.call($('gOpts').children,function(x,i){x.disabled=true;x.style.cursor='default';if(cur.o[i].v===cur.ans){x.style.background='#d9f4e6';x.style.borderColor='#2f9e6e'}});
@@ -98,7 +98,7 @@ function answer(b,op){if(done)return;done=true;var ok=op.v===cur.ans,m=$('gMsg')
  m.style.color=ok?'#14613f':'#9b2c2c';m.textContent=(ok?'Yes! ':'Not quite. ')+cur.why;
  var n=$('gNext');n.style.display='inline-block';n.textContent=round<2?'Next challenge':'See my score';n.onclick=function(){round++;if(round<3)next();else finish()}}
 function finish(){var g=G[gi],nx=G[(gi+1)%G.length];$('gOpts').innerHTML='';$('gStage').innerHTML='<div style="text-align:center;padding:10px"><div style="font-family:Fredoka,sans-serif;font-weight:700;font-size:40px;color:#2b5fd9">'+score+' out of 3</div><div style="font-weight:700">'+(score===3?'Perfect round!':score>1?'Nicely done.':'Good effort. Try again!')+'</div></div>';
- $('gQ').innerHTML='Want more?';$('gMsg').innerHTML='<a href="/app/?year='+g.year+'" style="color:#2b5fd9">Open the full '+g.year+' lessons</a>';$('gCount').textContent='';
+ $('gQ').innerHTML='Want more?';$('gMsg').innerHTML='<a href="/app/?year='+g.year+'" style="color:#2b5fd9">Open the full '+g.year+' lessons</a>';
  var n=$('gNext');n.textContent='Play '+nx.k.toLowerCase();n.onclick=function(){gi=(gi+1)%G.length;start()}}
 start();
 })();
