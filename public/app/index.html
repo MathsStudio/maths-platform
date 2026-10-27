@@ -1206,10 +1206,14 @@ var SLIDE_MORE = {"1.learn1": [{"more": ["Our number system uses only ten digits
 
   function esc(x){return String(x).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/"/g,'&quot;');}
   function moreBlock(t, step, k) {
-    var m = (SLIDE_MORE[t.n + '.' + step.id] || [])[k]; if (!m) return '';
+    var m = (SLIDE_MORE[t.n + '.' + step.id] || [])[k];
+    var sl = step.slides && step.slides[k];
+    var ins = (window.BT && BT.pickInsight && sl) ? BT.pickInsight(t.n, sl.title, '') : [];
+    if (!ins.length && m && m.more) ins = m.more;
+    if (!ins.length) return '';
     return '<section class="more"><span class="step-tag">Let\u2019s go deeper</span>' +
-      m.more.map(function (x) { return '<p class="say">' + x + '</p>'; }).join('') +
-      '<span class="step-tag">More examples</span><ul>' + m.eg.map(function (x) { return '<li class="say">' + x + '</li>'; }).join('') + '</ul>' +
+      ins.map(function (x) { return '<p class="say">' + x + '</p>'; }).join('') +
+      '<p class="say">Work through the question above to see this idea in action. Press <b>Show step</b> and read each explanation.</p>' +
       '</section>';
   }
 
