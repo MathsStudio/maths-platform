@@ -101,7 +101,7 @@
       (list || []).forEach(function (mk) {
         if (typeof mk !== 'function') return;
         for (var z = 0; z < 4; z++) {
-          try { var q = mk(); if (q && q.tag && q.hints && q.explain && (OWN[n] || !banned(q.tag))) { (tagMk[q.tag] = tagMk[q.tag] || []).push(mk); break; } } catch (e) { }
+          try { var q = mk(); if (q && q.tag && q.hints && q.explain && (!(BT.banFor && BT.banFor(n, q.tag))) && (OWN[n] || !banned(q.tag))) { (tagMk[q.tag] = tagMk[q.tag] || []).push(mk); break; } } catch (e) { }
         }
       });
     }
@@ -114,7 +114,7 @@
     function add(q) {
       if (q && !q._mk && tagMk[q.tag]) q._mk = tagMk[q.tag][Math.floor(Math.random() * tagMk[q.tag].length)];
       if (!q || !q.text || !q.hints || !q.explain || q.answer == null || q.answer === '') return;
-      if (!OWN[n] && banned(q.tag)) return;
+      if ((BT.banFor && BT.banFor(n, q.tag)) || (!OWN[n] && banned(q.tag))) return;
       var key = plain(q.text); if (seen[key]) return; seen[key] = 1; pool.push(q);
     }
     ['low', 'medium', 'high'].forEach(function (lv) { pull(n, lv, []).forEach(add); });
