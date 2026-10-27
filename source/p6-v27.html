@@ -438,7 +438,7 @@ input[type=range].slider { width: 100%; }
       <button class="level-pill" type="button" data-level-choice="high" aria-pressed="false">High</button>
     </div>
     <div class="row">
-      <a class="tb" id="tbSite" href="/" style="text-decoration:none;display:inline-flex;align-items:center;color:inherit">Home page</a>
+      <a class="tb" id="tbSite" href="/" style="text-decoration:none;display:inline-flex;align-items:center;color:inherit">Home</a>
       <a class="tb sitenav" href="/#levels" style="text-decoration:none;display:inline-flex;align-items:center;color:inherit">Levels</a>
       <a class="tb sitenav" href="/#how" style="text-decoration:none;display:inline-flex;align-items:center;color:inherit">How it works</a>
       <a class="tb sitenav" href="/#pricing" style="text-decoration:none;display:inline-flex;align-items:center;color:inherit">Pricing</a>
@@ -944,7 +944,7 @@ var SLIDE_MORE = {"1.learn1": [{"more": ["Our number system uses only ten digits
     }).join('');
   }
   function renderTabs() {
-    var html = '<button class="tab' + (state.tab === 'home' ? ' cur' : '') + '" role="tab" aria-selected="' + (state.tab === 'home') + '" data-tab="home" type="button">Home</button>';
+    var html = '';
     visibleOrder().forEach(function (n) {
       var t = openTopicFor(n), d = doneCount(t) >= t.steps.length, curTab = state.tab !== 'home' && S.topics[state.tab] && baseOf(S.topics[state.tab]) === n;
       html += '<button class="tab' + (curTab ? ' cur' : '') + (d ? ' done' : '') + '" role="tab" aria-selected="' + curTab + '" data-tab="' + n + '" type="button"><b>' + dnum(t) + '</b> ' + t.short + (d ? ' ✓' : '') + '</button>';
