@@ -42,8 +42,9 @@
       done = ok; typed = val;
       fb = ok ? '<div class="fb ok say" style="margin-top:10px"><strong>Right!</strong> Well done. Press Show step if you would like to see how it works.</div>'
                : '<div class="fb no say" style="margin-top:10px"><strong>Not quite.</strong> Have another go, or press Show step for some help.</div>';
-      draw(true);
+      draw(true); speakBack('[data-fb]');
     }
+    function speakBack(sel) { try { if (H.readActive && H.readActive() && H.narPlayFn) { var r = host.querySelector(sel); if (r && (r.matches('.say') || r.querySelector('.say'))) H.narPlayFn(true, r); } } catch (e) { } }
     function draw(keepFb) {
       var canAnswer = ex.options || ex.test || ex.accept, acc = ex.accept || {}, mc = !!ex.options;
       var inputHtml = '';
@@ -54,10 +55,10 @@
         (shown >= ex.steps.length ? '<p class="wres say">' + ex.answer + '</p>' : '') +
         '<div class="row" style="align-items:center;margin-top:10px"><button class="btn" type="button" data-s>' + (shown >= ex.steps.length ? 'Hide steps' : 'Show step ' + (shown + 1)) + '</button>' +
         (canTry ? '<button class="btn" type="button" data-t style="margin-left:auto">' + (tryLabel || 'Try a different question') + '</button>' : '') + '</div></div>';
-      host.querySelector('[data-s]').addEventListener('click', function () { var el = host.querySelector('#wIn'); if (el) typed = el.value; shown = shown >= ex.steps.length ? 0 : shown + 1; draw(true); });
-      var t = host.querySelector('[data-t]'); if (t) t.addEventListener('click', function () { var e2 = gen(); if (e2) { ex = e2; shown = 0; fb = ''; typed = ''; done = false; draw(); } });
+      host.querySelector('[data-s]').addEventListener('click', function () { var el = host.querySelector('#wIn'); if (el) typed = el.value; shown = shown >= ex.steps.length ? 0 : shown + 1; draw(true); if (shown) speakBack('.wsteps li:last-child, .wres'); });
+      var t = host.querySelector('[data-t]'); if (t) t.addEventListener('click', function () { var e2 = gen(); if (e2) { ex = e2; shown = 0; fb = ''; typed = ''; done = false; draw(); speakBack('.wq'); } });
       var f = host.querySelector('[data-f]'); if (f) f.addEventListener('submit', function (e) { e.preventDefault(); var v = host.querySelector('#wIn').value.trim(); if (v) grade(v); });
-      host.querySelectorAll('[data-o]').forEach(function (b) { b.addEventListener('click', function () { var o = ex.options[Number(b.getAttribute('data-o'))]; var ok = o === ex.correct; done = ok; fb = ok ? '<div class="fb ok say" style="margin-top:10px"><strong>Right!</strong> Well done. Press Show step if you would like to see how it works.</div>' : '<div class="fb no say" style="margin-top:10px"><strong>Not quite.</strong> Have another go, or press Show step for some help.</div>'; draw(true); }); });
+      host.querySelectorAll('[data-o]').forEach(function (b) { b.addEventListener('click', function () { var o = ex.options[Number(b.getAttribute('data-o'))]; var ok = o === ex.correct; done = ok; fb = ok ? '<div class="fb ok say" style="margin-top:10px"><strong>Right!</strong> Well done. Press Show step if you would like to see how it works.</div>' : '<div class="fb no say" style="margin-top:10px"><strong>Not quite.</strong> Have another go, or press Show step for some help.</div>'; draw(true); speakBack('[data-fb]'); }); });
     }
     draw();
   }

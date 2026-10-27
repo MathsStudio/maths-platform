@@ -576,8 +576,10 @@ var SLIDE_MORE = {"1.learn1": [{"more": ["Our number system uses only ten digits
   }
   function freshStart() { try { if (speechSynthesis.speaking || speechSynthesis.pending) speechSynthesis.cancel(); speechSynthesis.resume(); } catch (e) { /* ignore */ } }
   function collect(root) {
-    var out = [];
-    (root || document.querySelector('#view')).querySelectorAll('.say').forEach(function (el) {
+    var out = [], base = root || document.querySelector('#view');
+    var list = Array.prototype.slice.call(base.querySelectorAll('.say'));
+    if (root && root.matches && root.matches('.say')) list.unshift(root);
+    list.forEach(function (el) {
       if (el.closest('.hide') || el.hasAttribute('hidden')) return;
       var txt = el.getAttribute('data-say') || el.textContent;
       if (txt && txt.trim()) out.push({ el: el, text: txt });
@@ -605,18 +607,39 @@ var SLIDE_MORE = {"1.learn1": [{"more": ["Our number system uses only ten digits
     }, 3000);
     setPlayerUI();
   }
+  /* Where should reading begin? The text the pupil selected or tapped, else where they paused, else the first line on screen. */
+  function inView(el) { try { var r = el.getBoundingClientRect(), vh = window.innerHeight || 700; return r.bottom > 70 && r.top < vh - 90; } catch (e) { return false; } }
+  function unitAt(units, node) {
+    if (!node) return -1;
+    if (node.nodeType === 3) node = node.parentNode;
+    for (var i = 0; i < units.length; i++) if (units[i].el === node || units[i].el.contains(node)) return i;
+    return -1;
+  }
+  function pickStart(units, resumeAt) {
+    try {
+      var sel = window.getSelection && window.getSelection();
+      if (sel && sel.rangeCount && !sel.isCollapsed) { var k = unitAt(units, sel.getRangeAt(0).startContainer); if (k > -1) return k; }
+    } catch (e) { /* ignore */ }
+    if (Nar.tapEl && Nar.tapEl.isConnected && Date.now() - Nar.tapAt < 60000) { var t = unitAt(units, Nar.tapEl); if (t > -1) return t; }
+    if (resumeAt > 0 && resumeAt < units.length && inView(units[resumeAt].el)) return resumeAt;
+    for (var j = 0; j < units.length; j++) if (inView(units[j].el)) return j;
+    return 0;
+  }
   function narPlay(fromStart, root) {
     if (!Nar.ok) return;
     freshStart(); Nar.token++;
-    var tk = Nar.token;
+    var tk = Nar.token, prev = Nar.at;
     Nar.units = collect(root && root.isConnected ? root : null); Nar.err = '';
-    if (fromStart || Nar.at >= Nar.units.length) Nar.at = 0;
+    if (fromStart === 'here') Nar.at = pickStart(Nar.units, prev);
+    else if (fromStart || Nar.at >= Nar.units.length) Nar.at = 0;
     Nar.playing = true;
     run(Nar.at, tk);
     setPlayerUI();
   }
   function narPause() { if (!Nar.ok) return; Nar.token++; speechSynthesis.cancel(); Nar.playing = false; unmarkAll(); setPlayerUI(); }
   S.h.narPlayFn = function (fromStart, root) { narPlay(fromStart, root); };
+  /* true when the voice was on (or had just been reading) when the pupil acted, so the page should speak back */
+  S.h.readActive = function () { return !!(store.settings.readMode || store.settings.auto || Nar.playing || (Nar.wasPlaying && Date.now() - Nar.wasAt < 8000)); };
   S.h.readOn = function () { return !!(store.settings.readMode || store.settings.auto); };
   function narStop() { if (Nar.ok) { Nar.token++; try { speechSynthesis.cancel(); } catch (e) { /* ignore */ } } Nar.playing = false; Nar.at = 0; Nar.units = []; Nar.err = ''; unmarkAll(); setPlayerUI(); }
   function narSpeakNow(text, report) {
@@ -1312,14 +1335,16 @@ var SLIDE_MORE = {"1.learn1": [{"more": ["Our number system uses only ten digits
       narSpeakNow('Hello! I will read your maths lessons out loud. Each sentence lights up as I read it.', function (m) { $('voiceNote').textContent = m; });
     });
     $('voiceNote').textContent = Nar.ok ? 'Voices come from your device. If you hear nothing, check the volume and that the page is not muted.' : 'The voice is not available in this viewer. You can still read every page and use all of the activities.';
-    $('pPlay').addEventListener('click', function () { if (Nar.playing) narPause(); else narPlay(false); });
+    $('pPlay').addEventListener('click', function () { if (Nar.playing) narPause(); else narPlay('here'); });
     $('pStop').addEventListener('click', narStop);
     /* Answering never has to wait for the voice: touching an answer control pauses the reading at once. */
     document.getElementById('view').addEventListener('pointerdown', function (e) {
-      if (Nar.playing && e.target.closest && e.target.closest('button, input, select, textarea, label, [role="button"]')) narPause();
+      var tg = e.target && e.target.closest ? e.target : null;
+      if (tg && !tg.closest('button, input, select, textarea, label, [role="button"]')) { var sy = tg.closest('.say'); if (sy) { Nar.tapEl = sy; Nar.tapAt = Date.now(); } }
+      if (Nar.playing && tg && tg.closest('button, input, select, textarea, label, [role="button"]')) { Nar.wasPlaying = true; Nar.wasAt = Date.now(); narPause(); }
     }, true);
     document.getElementById('view').addEventListener('keydown', function (e) {
-      if (Nar.playing && e.target && /^(INPUT|TEXTAREA|SELECT)$/.test(e.target.tagName)) narPause();
+      if (Nar.playing && e.target && /^(INPUT|TEXTAREA|SELECT)$/.test(e.target.tagName)) { Nar.wasPlaying = true; Nar.wasAt = Date.now(); narPause(); }
     }, true);
     $('readToggle').addEventListener('click', function () {
       store.settings.readMode = !store.settings.readMode; save(); setPlayerUI();
@@ -10187,8 +10212,9 @@ S.spatialExtra = S.extraMakers;
       done = ok; typed = val;
       fb = ok ? '<div class="fb ok say" style="margin-top:10px"><strong>Right!</strong> Well done. Press Show step if you would like to see how it works.</div>'
                : '<div class="fb no say" style="margin-top:10px"><strong>Not quite.</strong> Have another go, or press Show step for some help.</div>';
-      draw(true);
+      draw(true); speakBack('[data-fb]');
     }
+    function speakBack(sel) { try { if (H.readActive && H.readActive() && H.narPlayFn) { var r = host.querySelector(sel); if (r && (r.matches('.say') || r.querySelector('.say'))) H.narPlayFn(true, r); } } catch (e) { } }
     function draw(keepFb) {
       var canAnswer = ex.options || ex.test || ex.accept, acc = ex.accept || {}, mc = !!ex.options;
       var inputHtml = '';
@@ -10199,10 +10225,10 @@ S.spatialExtra = S.extraMakers;
         (shown >= ex.steps.length ? '<p class="wres say">' + ex.answer + '</p>' : '') +
         '<div class="row" style="align-items:center;margin-top:10px"><button class="btn" type="button" data-s>' + (shown >= ex.steps.length ? 'Hide steps' : 'Show step ' + (shown + 1)) + '</button>' +
         (canTry ? '<button class="btn" type="button" data-t style="margin-left:auto">' + (tryLabel || 'Try a different question') + '</button>' : '') + '</div></div>';
-      host.querySelector('[data-s]').addEventListener('click', function () { var el = host.querySelector('#wIn'); if (el) typed = el.value; shown = shown >= ex.steps.length ? 0 : shown + 1; draw(true); });
-      var t = host.querySelector('[data-t]'); if (t) t.addEventListener('click', function () { var e2 = gen(); if (e2) { ex = e2; shown = 0; fb = ''; typed = ''; done = false; draw(); } });
+      host.querySelector('[data-s]').addEventListener('click', function () { var el = host.querySelector('#wIn'); if (el) typed = el.value; shown = shown >= ex.steps.length ? 0 : shown + 1; draw(true); if (shown) speakBack('.wsteps li:last-child, .wres'); });
+      var t = host.querySelector('[data-t]'); if (t) t.addEventListener('click', function () { var e2 = gen(); if (e2) { ex = e2; shown = 0; fb = ''; typed = ''; done = false; draw(); speakBack('.wq'); } });
       var f = host.querySelector('[data-f]'); if (f) f.addEventListener('submit', function (e) { e.preventDefault(); var v = host.querySelector('#wIn').value.trim(); if (v) grade(v); });
-      host.querySelectorAll('[data-o]').forEach(function (b) { b.addEventListener('click', function () { var o = ex.options[Number(b.getAttribute('data-o'))]; var ok = o === ex.correct; done = ok; fb = ok ? '<div class="fb ok say" style="margin-top:10px"><strong>Right!</strong> Well done. Press Show step if you would like to see how it works.</div>' : '<div class="fb no say" style="margin-top:10px"><strong>Not quite.</strong> Have another go, or press Show step for some help.</div>'; draw(true); }); });
+      host.querySelectorAll('[data-o]').forEach(function (b) { b.addEventListener('click', function () { var o = ex.options[Number(b.getAttribute('data-o'))]; var ok = o === ex.correct; done = ok; fb = ok ? '<div class="fb ok say" style="margin-top:10px"><strong>Right!</strong> Well done. Press Show step if you would like to see how it works.</div>' : '<div class="fb no say" style="margin-top:10px"><strong>Not quite.</strong> Have another go, or press Show step for some help.</div>'; draw(true); speakBack('[data-fb]'); }); });
     }
     draw();
   }
