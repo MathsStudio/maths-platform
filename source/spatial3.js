@@ -280,4 +280,5 @@ S.extraMakers = function (n, level) {
   var out = [nn[n % nn.length], nn[(n + 3) % nn.length], vv[n % vv.length], vv[(n + 2) % vv.length]];
   var seen = {}; return out.filter(function (x) { if (seen[x]) return false; seen[x] = 1; return true; }).map(function (nm) { return mk(nm, lv); });
 };
+S.spatialExtra = S.extraMakers;
 })();
