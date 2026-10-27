@@ -41,7 +41,7 @@ details{border-top:1px solid var(--line);padding:14px 0}details summary{cursor:p
 .foot a{color:var(--mute)}
 /* forms */
 label{display:block;font-weight:800;margin:14px 0 6px;font-size:15px}
-input[type=email],select{width:100%;min-height:52px;padding:0 16px;border:2px solid var(--field);border-radius:14px;font:inherit;color:var(--ink);background:#fff}
+input[type=email],input[type=password],input[type=text],select{width:100%;min-height:52px;padding:0 16px;border:2px solid var(--field);border-radius:14px;font:inherit;color:var(--ink);background:#fff}
 .chk{display:flex;gap:10px;align-items:flex-start;font-weight:600;margin:14px 0}.chk input{width:22px;height:22px;margin-top:3px;flex:0 0 auto}
 .hp{position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden}
 .msg{margin:14px 0 0;padding:12px 14px;border-radius:12px;font-weight:700}.msg.err{background:#fde8e8;color:#8a1c1c}.msg.ok{background:#e1f6ea;color:#14532d}
