@@ -16,7 +16,7 @@
   function plain(h) { return String(h == null ? '' : h).replace(/<[^>]*>/g, '').replace(/\s+/g, ' ').trim(); }
   function sentences(t) { return String(t || '').split(/(?<=[.!?])\s+(?=[A-Z0-9£−(])/).map(function (x) { return x.trim(); }).filter(Boolean); }
   function say(t) { return '<p class="say" style="margin:0">' + t + '</p>'; }
-  function tag(t) { return '<span class="step-tag" style="margin-top:8px">' + t + '</span>'; }
+  function tag(t) { return '<span class="step-tag say" style="margin-top:8px">' + t + '</span>'; }
   function card(inner, id) { return '<div' + (id ? ' id="' + id + '"' : '') + ' class="card" style="background:var(--surface-2)">' + inner + '</div>'; }
   function box(html) { return '<div class="card" style="background:var(--surface-2);margin:10px 0"><p class="say" style="margin:0">' + html + '</p></div>'; }
   function visualOf(s) { return s.ex ? (s.ex.render ? s.ex.render(s.ex.steps.length) : '') : (typeof s.v === 'function' ? s.v() : (s.v || '')); }
@@ -51,6 +51,16 @@
       return null;
     };
   }
+  /* a generator that moves between the topic's different kinds of question each time */
+  function mixFor(n, tagList, first) {
+    var gens = tagList.map(function (t) { return genFor(n, t); }), i = -1, used = false;
+    return function () {
+      if (first && !used) { used = true; return first; }
+      if (!gens.length) return null;
+      for (var k = 0; k < gens.length; k++) { i = (i + 1 + (k === 0 ? rnd(0, gens.length - 1) : 0)) % gens.length; var e = gens[i](); if (e) return e; }
+      return null;
+    };
+  }
   function worked(host, gen, canTry) {
     var ex = gen(); if (!ex) { host.style.display = 'none'; return; }
     var shown = 0;
@@ -61,7 +71,7 @@
         (shown ? '<ol class="wsteps" style="min-height:0">' + ex.steps.slice(0, shown).map(function (s) { return '<li><span class="say">' + s + '</span></li>'; }).join('') + '</ol>' : '') +
         (shown >= ex.steps.length ? '<p class="wres">' + ex.answer + '</p>' : '') +
         '<div class="row" style="align-items:center"><button class="btn" type="button" data-s>' + (shown >= ex.steps.length ? 'Start again' : 'Show step ' + (shown + 1)) + '</button>' +
-        (canTry ? '<button class="btn" type="button" data-t style="margin-left:auto">Try different numbers</button>' : '') + '</div></div>';
+        (canTry ? '<button class="btn" type="button" data-t style="margin-left:auto">Try a different question</button>' : '') + '</div></div>';
       host.querySelector('[data-s]').addEventListener('click', function () { shown = shown >= ex.steps.length ? 0 : shown + 1; draw(); });
       var t = host.querySelector('[data-t]'); if (t) t.addEventListener('click', function () { var e2 = gen(); if (e2) { ex = e2; shown = 0; draw(); } });
     }
@@ -98,12 +108,11 @@
       title: title, v: '', say: [], real: null, goal: goal || 'the key idea of this lesson.',
       live: function (host) {
         host.style.cssText = 'display:flex;flex-direction:column;gap:14px';
-        host.innerHTML = (vis ? '<div class="visual" style="max-width:460px;margin:0 auto;width:100%">' + vis + '</div>' : '') + say(OPEN_A[(offset + k) % OPEN_A.length]) +
+        host.innerHTML = (vis ? '<div class="visual" style="max-width:340px;margin:0 auto;width:100%">' + vis + '</div>' : '') + say(OPEN_A[(offset + k) % OPEN_A.length]) +
           (s.say || []).map(say).join('') + tag('Let’s work some out together') + say('Press <b>Show step</b> and I will take you through it one step at a time.') +
-          (s.ex ? card('', 'w0') : '') + (tA ? card('', 'w1') : '') + (tA && tB !== tA ? card('', 'w2') : '');
-        if (s.ex) worked(host.querySelector('#w0'), function () { return { q: s.ex.q, pic: '', steps: s.ex.steps, answer: s.ex.final }; }, false);
-        if (tA) worked(host.querySelector('#w1'), genFor(n, tA), true);
-        if (tA && tB !== tA) worked(host.querySelector('#w2'), genFor(n, tB), true);
+          card('', 'w0');
+        var firstEx = s.ex ? { q: s.ex.q, pic: '', steps: s.ex.steps, answer: 'The answer is ' + plain(s.ex.final) + '.' } : null;
+        worked(host.querySelector('#w0'), mixFor(n, tags.slice(0, 4), firstEx), true);
       }
     };
     var B = {
@@ -124,9 +133,8 @@
         host.innerHTML = say(OPEN_C[(offset + k) % OPEN_C.length]) +
           (more.length ? more.map(say).join('') : say('Let’s look at one more way to think about it.')) +
           (eg.length ? tag('More examples') + '<ul class="say" style="margin:0;padding-left:1.3rem;display:grid;gap:6px">' + eg.map(function (x) { return '<li>' + x + '</li>'; }).join('') + '</ul>' : '') +
-          tag('A few more to try') + card('', 'd1') + card('', 'd2') + tag('Check yourself') + say('One more for luck. Choose your answer.') + card('', 'e1');
-        worked(host.querySelector('#d1'), genFor(n, tC), true);
-        worked(host.querySelector('#d2'), genFor(n, tA || tC), true);
+          tag('Let’s work one out together') + say('Press <b>Show step</b> and I will take you through it. Then try a different question.') + card('', 'd1') + tag('Check yourself') + say('One more for luck. Choose your answer.') + card('', 'e1');
+        worked(host.querySelector('#d1'), mixFor(n, tags.slice(0, 4)), true);
         check(host.querySelector('#e1'), genFor(n, tB));
       }
     };

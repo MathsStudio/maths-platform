@@ -39,16 +39,24 @@
         (shown ? '<ol class="wsteps" style="min-height:0">' + ex.steps.slice(0, shown).map(function (s) { return '<li><span class="say">' + s + '</span></li>'; }).join('') + '</ol>' : '') +
         (shown >= ex.steps.length ? '<p class="wres">' + ex.answer + '</p>' : '') +
         '<div class="row" style="align-items:center"><button class="btn" type="button" data-s>' + (shown >= ex.steps.length ? 'Start again' : 'Show step ' + (shown + 1)) + '</button>' +
-        (canTry ? '<button class="btn" type="button" data-t style="margin-left:auto">Try different numbers</button>' : '') + '</div></div>';
+        (canTry ? '<button class="btn" type="button" data-t style="margin-left:auto">Try a different question</button>' : '') + '</div></div>';
       host.querySelector('[data-s]').addEventListener('click', function () { shown = shown >= ex.steps.length ? 0 : shown + 1; draw(); });
       var t = host.querySelector('[data-t]'); if (t) t.addEventListener('click', function () { ex = gen(); shown = 0; draw(); });
     }
     draw();
   }
   function box(html) { return '<div class="card" style="background:var(--surface-2);margin:10px 0">' + html + '</div>'; }
-  function tag(t) { return '<span class="step-tag" style="margin-top:8px">' + t + '</span>'; }
+  function tag(t) { return '<span class="step-tag say" style="margin-top:8px">' + t + '</span>'; }
   function say(t) { return '<p class="say" style="margin:0">' + t + '</p>'; }
 
+  /* each press gives a different kind of question: starts with `first`, then moves round the list */
+  function mix(list, first) {
+    var last = first, used = false;
+    return function () {
+      if (!used) { used = true; return first(); }
+      var c = list.filter(function (g) { return g !== last; }); last = c[Math.floor(Math.random() * c.length)] || first; return last();
+    };
+  }
   /* worked-example makers, each written as a teacher would say it */
   function genValue() {
     var ds = shuffle([1, 2, 3, 4, 5, 6, 7, 8, 9]).slice(0, 5), n = Number(ds.join('')), i = rnd(0, 4), d = ds[i];
@@ -90,14 +98,12 @@
     live: function (host) {
       host.style.cssText = 'display:flex;flex-direction:column;gap:14px';
       host.innerHTML = '<div class="visual">' + table(34527, 1) + '<div class="caption">34,527: the 4 is in the thousands column</div></div>' +
-        say('Hello! Let’s start with a big idea. We write every number using just ten digits: zero to nine. So how can ten little digits make a number as big as thirty-four thousand, five hundred and twenty-seven?') +
+        say('Let’s start with a big idea. We write every number using just ten digits: zero to nine. So how can ten little digits make a number as big as thirty-four thousand, five hundred and twenty-seven?') +
         say('The secret is where each digit sits. Have a look at the table. Every column has a name: ones, tens, hundreds, thousands and ten thousands. We always count the columns from the right.') +
         say('See the 4? It is sitting in the thousands column, so it is not worth four. It is worth four thousand!') +
         tag('Let’s work some out together') + say('Press <b>Show step</b> and I will take you through it one step at a time.') +
-        '<div id="w1" class="card" style="background:var(--surface-2)"></div><div id="w2" class="card" style="background:var(--surface-2)"></div><div id="w3" class="card" style="background:var(--surface-2)"></div>';
-      worked(host.querySelector('#w1'), genValue, true);
-      worked(host.querySelector('#w2'), genWords, true);
-      worked(host.querySelector('#w3'), genWhole, true);
+        '<div id="w1" class="card" style="background:var(--surface-2)"></div>';
+      worked(host.querySelector('#w1'), mix([genValue, genWords, genWhole], genValue), true);
     }
   };
 
@@ -145,7 +151,7 @@
         say('Now meet the zero. A zero is worth nothing by itself, but it has a very important job. It holds a place open. Compare <b>325</b> with <b>3,025</b>. The zero in 3,025 keeps the 3 in the thousands column. Take the zero away and the number shrinks to 325!') +
         tag('A mistake to watch for') +
         say('Many people read a digit as if it was on its own. They see the 7 in 70,402 and say "seven". But it is in the ten thousands column, so it is worth seventy thousand. Always ask: which column is it in?') +
-        tag('A few more to try') + '<div id="d1" class="card" style="background:var(--surface-2)"></div><div id="d2" class="card" style="background:var(--surface-2)"></div>' +
+        tag('Let’s work one out together') + say('Press <b>Show step</b>, then try a different question.') + '<div id="d1" class="card" style="background:var(--surface-2)"></div>' +
         tag('Check yourself') + say('In 56,031, which digit is worth six thousand?') +
         '<div class="row" id="ck" style="gap:8px"></div><div id="ckOut"></div>';
       var out = host.querySelector('#s5Out');
@@ -153,8 +159,7 @@
         var b = e.target.closest('button[data-i]'); if (!b) return; var i = Number(b.getAttribute('data-i')), v = 5 * Math.pow(10, 4 - i);
         out.innerHTML = '<div style="font-size:2.2rem;font-weight:800">' + fmt(v) + '</div><p class="say" style="margin:0">A 5 in the <b>' + COLS[i] + '</b> column is worth <b>' + words(v) + '</b>.</p>';
       });
-      worked(host.querySelector('#d1'), genZero, true);
-      worked(host.querySelector('#d2'), genValue, true);
+      worked(host.querySelector('#d1'), mix([genZero, genValue, genWords, genWhole], genZero), true);
       var opts = shuffle(['5', '6', '3', '1']), ck = host.querySelector('#ck');
       opts.forEach(function (o) { var b = document.createElement('button'); b.type = 'button'; b.className = 'btn'; b.textContent = o; b.style.minWidth = '64px'; ck.appendChild(b); });
       ck.addEventListener('click', function (e) {
