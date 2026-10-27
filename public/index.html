@@ -240,4 +240,19 @@ start();
 </div>
 
 </div>
+<script>
+(function () {
+  fetch('/api/me', { credentials: 'same-origin' }).then(function (r) { return r.json(); }).then(function (me) {
+    if (!me || !me.signedIn) return;
+    var open = '/learn/' + (me.year ? '?year=' + encodeURIComponent(me.year) : '');
+    document.querySelectorAll('a[href="/login/"]').forEach(function (a) { a.textContent = 'My account'; a.setAttribute('href', '/account/'); });
+    document.querySelectorAll('a[href="/signup/"]').forEach(function (a) { a.textContent = 'Open my lessons'; a.setAttribute('href', open); });
+    var j = document.getElementById('join');
+    if (j) {
+      j.outerHTML = '<div style="max-width:560px;padding:18px 20px;border:2px solid #b8c4e6;border-radius:14px;background:#ffffff"><div style="font-weight:800;font-size:17px;color:#14213d">You are signed in</div><div id="meEmail" style="font-size:15px;color:#4a587a;margin:4px 0 14px"></div><a href="' + open + '" style="display:inline-flex;align-items:center;min-height:48px;padding:0 24px;border-radius:14px;background:#2b5fd9;color:#ffffff;text-decoration:none;font-weight:800;font-size:17px">Open my lessons</a> <form method="post" action="/logout" style="display:inline"><button type="submit" style="min-height:48px;padding:0 20px;border:2px solid #14213d;border-radius:14px;background:#ffffff;color:#14213d;font-weight:800;font-size:16px;font-family:inherit;cursor:pointer">Sign out</button></form></div>';
+      var e = document.getElementById('meEmail'); if (e) e.textContent = me.email;
+    }
+  }).catch(function () {});
+})();
+</script>
 </body></html>

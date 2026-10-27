@@ -86,6 +86,9 @@ sqlite.prepare('DELETE FROM rate').run(); sent.length = 0;
 await call('/api/signup', { method: 'POST', json: { email: 'new@example.com', role: 'teacher', year: 'S1' }, headers: { 'CF-Connecting-IP': '4.4.4.4' } });
 sqlite.prepare('DELETE FROM rate').run(); sent.length = 0;
 r = await call('/api/login', { method: 'POST', json: { email: 'new@example.com', password: 'Passw0rd!z' } }); ok(r.status === 403 && sent.length === 1 && /confirm/i.test(sent[0].subject) && /\/welcome\//.test(sent[0].text) && cookieJar === '', 'unverified account: new confirmation email, no sign-in');
+sqlite.prepare('DELETE FROM rate').run(); await call('/api/login', { method: 'POST', json: { email: 'parent@example.com', password: 'NewPassw0rd!y' } });
+r = await call('/api/me'); ok(r.status === 200 && JSON.parse(r.text).signedIn === true, 'api/me reports signed in');
+cookieJar = ''; r = await call('/api/me'); ok(JSON.parse(r.text).signedIn === false, 'api/me reports signed out');
 // unsubscribe link
 sqlite.prepare('UPDATE users SET marketing = 1').run();
 const ut = sqlite.prepare('SELECT unsub_token FROM users').get().unsub_token;
