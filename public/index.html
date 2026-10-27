@@ -98,7 +98,7 @@ function answer(b,op){if(done)return;done=true;var ok=op.v===cur.ans,m=$('gMsg')
  m.style.color=ok?'#14613f':'#9b2c2c';m.textContent=(ok?'Yes! ':'Not quite. ')+cur.why;
  var n=$('gNext');n.style.display='inline-block';n.textContent=round<2?'Next challenge':'See my score';n.onclick=function(){round++;if(round<3)next();else finish()}}
 function finish(){var g=G[gi],nx=G[(gi+1)%G.length];$('gOpts').innerHTML='';$('gStage').innerHTML='<div style="text-align:center;padding:10px"><div style="font-family:Fredoka,sans-serif;font-weight:700;font-size:40px;color:#2b5fd9">'+score+' out of 3</div><div style="font-weight:700">'+(score===3?'Perfect round!':score>1?'Nicely done.':'Good effort. Try again!')+'</div></div>';
- $('gQ').innerHTML='Want more?';$('gMsg').innerHTML='<a href="/app/?year='+g.year+'" style="color:#2b5fd9">Open the full '+g.year+' lessons</a>';
+ $('gQ').innerHTML='Want more?';$('gMsg').innerHTML='<a href="/learn/?year='+g.year+'" style="color:#2b5fd9">Open the full '+g.year+' lessons</a>';
  var n=$('gNext');n.textContent='Play '+nx.k.toLowerCase();n.onclick=function(){gi=(gi+1)%G.length;start()}}
 start();
 })();
@@ -120,9 +120,9 @@ start();
 <div style="font-weight:700;font-size:15px">P5 to P7</div>
 </div>
 <div style="display:flex;flex-wrap:wrap;gap:10px">
-<a href="/app/?year=P5" style="min-height:48px;min-width:64px;display:inline-flex;align-items:center;justify-content:center;background:#ffffff;color:#14613f;border-radius:14px;text-decoration:none;font-family:'Fredoka',sans-serif;font-weight:700;font-size:22px;padding:0 16px">P5</a>
-<a href="/app/?year=P6" style="min-height:48px;min-width:64px;display:inline-flex;align-items:center;justify-content:center;background:#ffffff;color:#14613f;border-radius:14px;text-decoration:none;font-family:'Fredoka',sans-serif;font-weight:700;font-size:22px;padding:0 16px">P6</a>
-<a href="/app/?year=P7" style="min-height:48px;min-width:64px;display:inline-flex;align-items:center;justify-content:center;background:#ffffff;color:#14613f;border-radius:14px;text-decoration:none;font-family:'Fredoka',sans-serif;font-weight:700;font-size:22px;padding:0 16px">P7</a>
+<a href="/learn/?year=P5" style="min-height:48px;min-width:64px;display:inline-flex;align-items:center;justify-content:center;background:#ffffff;color:#14613f;border-radius:14px;text-decoration:none;font-family:'Fredoka',sans-serif;font-weight:700;font-size:22px;padding:0 16px">P5</a>
+<a href="/learn/?year=P6" style="min-height:48px;min-width:64px;display:inline-flex;align-items:center;justify-content:center;background:#ffffff;color:#14613f;border-radius:14px;text-decoration:none;font-family:'Fredoka',sans-serif;font-weight:700;font-size:22px;padding:0 16px">P6</a>
+<a href="/learn/?year=P7" style="min-height:48px;min-width:64px;display:inline-flex;align-items:center;justify-content:center;background:#ffffff;color:#14613f;border-radius:14px;text-decoration:none;font-family:'Fredoka',sans-serif;font-weight:700;font-size:22px;padding:0 16px">P7</a>
 </div>
 </div>
 
@@ -133,9 +133,9 @@ start();
 <div style="font-weight:700;font-size:15px">S1 to S3</div>
 </div>
 <div style="display:flex;flex-wrap:wrap;gap:10px">
-<a href="/app/?year=S1" style="min-height:48px;min-width:64px;display:inline-flex;align-items:center;justify-content:center;background:#ffffff;color:#1b4f7d;border-radius:14px;text-decoration:none;font-family:'Fredoka',sans-serif;font-weight:700;font-size:22px;padding:0 16px">S1</a>
-<a href="/app/?year=S2" style="min-height:48px;min-width:64px;display:inline-flex;align-items:center;justify-content:center;background:#ffffff;color:#1b4f7d;border-radius:14px;text-decoration:none;font-family:'Fredoka',sans-serif;font-weight:700;font-size:22px;padding:0 16px">S2</a>
-<a href="/app/?year=S3" style="min-height:48px;min-width:64px;display:inline-flex;align-items:center;justify-content:center;background:#ffffff;color:#1b4f7d;border-radius:14px;text-decoration:none;font-family:'Fredoka',sans-serif;font-weight:700;font-size:22px;padding:0 16px">S3</a>
+<a href="/learn/?year=S1" style="min-height:48px;min-width:64px;display:inline-flex;align-items:center;justify-content:center;background:#ffffff;color:#1b4f7d;border-radius:14px;text-decoration:none;font-family:'Fredoka',sans-serif;font-weight:700;font-size:22px;padding:0 16px">S1</a>
+<a href="/learn/?year=S2" style="min-height:48px;min-width:64px;display:inline-flex;align-items:center;justify-content:center;background:#ffffff;color:#1b4f7d;border-radius:14px;text-decoration:none;font-family:'Fredoka',sans-serif;font-weight:700;font-size:22px;padding:0 16px">S2</a>
+<a href="/learn/?year=S3" style="min-height:48px;min-width:64px;display:inline-flex;align-items:center;justify-content:center;background:#ffffff;color:#1b4f7d;border-radius:14px;text-decoration:none;font-family:'Fredoka',sans-serif;font-weight:700;font-size:22px;padding:0 16px">S3</a>
 </div>
 </div>
 

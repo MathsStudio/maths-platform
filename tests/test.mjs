@@ -33,7 +33,7 @@ let r;
 
 r = await call('/'); ok(r.status === 200 && r.text.startsWith('STATIC'), 'static page passes through');
 r = await call('/app/'); ok(r.status === 200, 'app is open while REQUIRE_LOGIN is off');
-env.REQUIRE_LOGIN = '1'; r = await call('/app/'); ok(r.status === 303 && r.loc === '/login/', 'app needs sign-in when REQUIRE_LOGIN is on'); delete env.REQUIRE_LOGIN;
+env.REQUIRE_LOGIN = '1'; r = await call('/learn/'); ok(r.status === 303 && r.loc === '/login/', '/learn/ needs sign-in when REQUIRE_LOGIN is on'); r = await call('/app/'); ok(r.status === 303 && r.loc === '/login/', 'app needs sign-in when REQUIRE_LOGIN is on'); delete env.REQUIRE_LOGIN;
 r = await call('/account/'); ok(r.status === 303, 'account needs sign-in');
 r = await call('/api/signup', { method: 'POST', json: { email: 'bad', role: 'parent', year: 'P6' } }); ok(r.status === 400, 'bad email rejected');
 r = await call('/api/signup', { method: 'POST', json: { email: 'a@b.com', role: 'kid', year: 'P6' } }); ok(r.status === 400, 'bad role rejected');
@@ -56,6 +56,8 @@ cookieJar = ''; r = await call('/auth/verify', { method: 'POST', body: { t: tok 
 cookieJar = jar;
 r = await call('/account/'); ok(r.status === 200 && r.text.includes('parent@example.com') && r.text.includes('P6'), 'account page shows details');
 r = await call('/app/'); ok(r.status === 200 && r.text.startsWith('STATIC /app/') && /no-store/.test(r.r.headers.get('Cache-Control')), 'app opens when signed in');
+r = await call('/learn/?year=P5'); ok(r.status === 200 && r.text.startsWith('STATIC /app/') && /no-store/.test(r.r.headers.get('Cache-Control')), '/learn/ opens the app');
+r = await call('/learn'); ok(r.status === 200 && r.text.startsWith('STATIC /app/'), '/learn without slash opens the app');
 r = await call('/account/marketing', { method: 'POST', body: { on: '0' } }); u = sqlite.prepare('SELECT * FROM users').get(); ok(u.marketing === 0 && u.unsub_at, 'stop news from account');
 // login for existing verified user
 cookieJar = ''; sent.length = 0;

@@ -83,7 +83,7 @@ export default {
     const url = new URL(request.url), p = url.pathname, m = request.method;
     try {
       if (p === '/admin' || p === '/admin/' || p === '/admin/export.csv') { await db.init(env); return await admin(request, env, url); }
-      const dynamic = p.startsWith('/api/') || p.startsWith('/auth/') || p === '/logout' || p === '/unsubscribe' || p === '/account' || p.startsWith('/account/') || p === '/app' || p.startsWith('/app/');
+      const dynamic = p.startsWith('/api/') || p.startsWith('/auth/') || p === '/logout' || p === '/unsubscribe' || p === '/account' || p.startsWith('/account/') || p === '/app' || p.startsWith('/app/') || p === '/learn' || p.startsWith('/learn/');
       if (!dynamic) return withHeaders(await env.ASSETS.fetch(request));
       await db.init(env);
       if (m === 'POST' && !sameOrigin(request)) return json({ error: 'Not allowed' }, 403);
@@ -101,9 +101,10 @@ export default {
         const t = parseCookies(request).ms_session; if (t) await db.dropSession(env, await sha256(t));
         return redirect('/', { 'Set-Cookie': cookie('ms_session', '', request, 0) });
       }
-      if (p.startsWith('/app')) {
+      if (p.startsWith('/app') || p === '/learn' || p.startsWith('/learn/')) {
         if (!user && env.REQUIRE_LOGIN === '1') return redirect('/login/');
-        const res = await env.ASSETS.fetch(request);
+        const isLearn = p === '/learn' || p.startsWith('/learn/');
+        const res = await env.ASSETS.fetch(isLearn ? new Request(new URL('/app/' + url.search, url), request) : request);
         return withHeaders(res, { 'Cache-Control': 'private, no-store', 'X-Robots-Tag': 'noindex' });
       }
       if (p === '/account' || p === '/account/') return user ? page(pg.account(user)) : redirect('/login/');
