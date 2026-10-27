@@ -10148,7 +10148,15 @@ S.spatialExtra = S.extraMakers;
       title: (lead || 'Worked example') + ' ' + ix + ': ' + q.tag, v: '', say: [], real: null,
       goal: 'how to answer a question about ' + String(q.tag).toLowerCase() + ', one step at a time. You can also try new numbers.',
       more: [(q.hints || []).join(' ') || 'Take it one step at a time.'], eg: ['Check your answer by putting it back into the question.'],
-      live: function (host) { showQ(host, q, regen, lead); }
+      live: function (host) {
+        var cur = q, first = true;
+        H.workedCard(host, function () {
+          var x = cur;
+          if (!first) { try { x = regen(cur); } catch (e) { x = cur; } cur = x; } first = false;
+          var steps = (x.hints || []).map(function (h) { return 'Here’s a clue: ' + h; }).concat(sentences(x.explain));
+          return { q: x.text, pic: x.pic || '', steps: steps, accept: x.type === 'mc' ? null : x, placeholder: x.placeholder, answer: 'The answer is ' + plain(answerOf(x)) + '.', options: x.type === 'mc' && x.options ? x.options.map(function (o) { return plain(o); }) : null, correct: plain(answerOf(x)), explain: x.explain };
+        }, can, 'Try different numbers');
+      }
     };
   }
   var PARTS = [['learn5', 'Worked examples: getting started', 'low', 'Getting started'],
