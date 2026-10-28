@@ -17,10 +17,10 @@
     if (!el) return; st = st || {};
     var tool = 'pen', col = COLS[0];
     function render() {
-      el.innerHTML = '<div class="padbar"><button class="btn" type="button" data-t aria-expanded="' + (st.open ? 'true' : 'false') + '">✏️ ' + (st.open ? 'Hide scribble pad' : 'Scribble pad') + '</button>' + (st.open ? '' : '<span style="font-size:.9rem;opacity:.75">Work it out here</span>') + '</div>' +
+      el.innerHTML = '<div class="padbar"><button class="btn" type="button" data-padt aria-expanded="' + (st.open ? 'true' : 'false') + '">✏️ ' + (st.open ? 'Hide scribble pad' : 'Scribble pad') + '</button>' + (st.open ? '' : '<span style="font-size:.9rem;opacity:.75">Work it out here</span>') + '</div>' +
         (st.open ? '<div class="padbox"><canvas aria-label="Scribble pad. Draw your working here."></canvas></div><div class="padtools"><button class="btn" type="button" data-pen aria-pressed="true">Pen</button><button class="btn" type="button" data-er aria-pressed="false">Eraser</button>' +
           COLS.map(function (c, i) { return '<button class="btn padcol" type="button" data-c="' + i + '" aria-label="Pen colour ' + (i + 1) + '" aria-pressed="' + (i === 0) + '" style="background:' + c + '"></button>'; }).join('') + '<button class="btn" type="button" data-clr style="margin-left:auto">Clear</button></div>' : '');
-      el.querySelector('[data-t]').addEventListener('click', function () { st.open = !st.open; render(); });
+      el.querySelector("[data-padt]").addEventListener('click', function () { st.open = !st.open; render(); });
       if (!st.open) return;
       var cv = el.querySelector('canvas'), dpr = window.devicePixelRatio || 1, w = cv.clientWidth || 320, h = cv.clientHeight || 210;
       cv.width = Math.round(w * dpr); cv.height = Math.round(h * dpr);

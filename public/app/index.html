@@ -10756,6 +10756,7 @@ S.spatialExtra = S.extraMakers;
       var key = plain(q.text) + (q.pic || ''), cand = [], k;
       if (q._mk) { for (k = 0; k < 40; k++) { try { var nq = q._mk(); if (nq && nq.hints && nq.explain && plain(nq.text) + (nq.pic || '') !== key) { nq._mk = q._mk; return nq; } } catch (e) { } } }
       if (pr) { for (k = 0; k < 3; k++) { try { (pr.make() || []).forEach(function (x) { if (x && x.tag === q.tag && x.hints && x.explain && plain(x.text) + (x.pic || '') !== key) cand.push(x); }); } catch (e) { } } }
+      if (!cand.length && pr) { for (k = 0; k < 3; k++) { try { (pr.make() || []).forEach(function (x) { if (x && x.hints && x.explain && x.type !== 'mc' === (q.type !== 'mc') && plain(x.text) + (x.pic || '') !== key) cand.push(x); }); } catch (e) { } } }
       return cand.length ? cand[Math.floor(Math.random() * cand.length)] : q;
     };
   }
@@ -10872,7 +10873,7 @@ S.spatialExtra = S.extraMakers;
         (canTry ? '<button class="btn" type="button" data-t style="margin-left:auto">' + (tryLabel || 'Try a different question') + '</button>' : '') + '</div></div>';
       if (H.scribble && H.padWanted(ex.q, canAnswer && !mc)) H.scribble(host.querySelector('[data-pad]'), ex._pad || (ex._pad = {}));
       host.querySelector('[data-s]').addEventListener('click', function () { var el = host.querySelector('#wIn'); if (el) typed = el.value; shown = shown >= ex.steps.length ? 0 : shown + 1; draw(true); if (shown) speakBack('.wsteps li:last-child, .wres'); });
-      var t = host.querySelector('[data-t]'); if (t) t.addEventListener('click', function () { var e2 = gen(); if (e2) { ex = e2; shown = 0; fb = ''; typed = ''; done = false; draw(); speakBack('.wq'); } });
+      var t = host.querySelector('[data-t]'); if (t) t.addEventListener('click', function () { var e2 = gen(), kk = 0; while (e2 && ex && e2.q === ex.q && (e2.pic || '') === (ex.pic || '') && String(e2.options) === String(ex.options) && kk++ < 12) e2 = gen(); if (e2) { ex = e2; shown = 0; fb = ''; typed = ''; done = false; draw(); speakBack('.wq'); } });
       var f = host.querySelector('[data-f]'); if (f) f.addEventListener('submit', function (e) { e.preventDefault(); var v = host.querySelector('#wIn').value.trim(); if (v) grade(v); });
       host.querySelectorAll('[data-o]').forEach(function (b) { b.addEventListener('click', function () { var o = ex.options[Number(b.getAttribute('data-o'))]; var ok = o === ex.correct; done = ok; fb = ok ? '<div class="fb ok say" style="margin-top:10px"><strong>Right!</strong> Well done. Press Show step if you would like to see how it works.</div>' : '<div class="fb no say" style="margin-top:10px"><strong>Not quite.</strong> Have another go, or press Show step for some help.</div>'; draw(true); speakBack('[data-fb]'); }); });
     }
@@ -11028,10 +11029,10 @@ S.spatialExtra = S.extraMakers;
     if (!el) return; st = st || {};
     var tool = 'pen', col = COLS[0];
     function render() {
-      el.innerHTML = '<div class="padbar"><button class="btn" type="button" data-t aria-expanded="' + (st.open ? 'true' : 'false') + '">✏️ ' + (st.open ? 'Hide scribble pad' : 'Scribble pad') + '</button>' + (st.open ? '' : '<span style="font-size:.9rem;opacity:.75">Work it out here</span>') + '</div>' +
+      el.innerHTML = '<div class="padbar"><button class="btn" type="button" data-padt aria-expanded="' + (st.open ? 'true' : 'false') + '">✏️ ' + (st.open ? 'Hide scribble pad' : 'Scribble pad') + '</button>' + (st.open ? '' : '<span style="font-size:.9rem;opacity:.75">Work it out here</span>') + '</div>' +
         (st.open ? '<div class="padbox"><canvas aria-label="Scribble pad. Draw your working here."></canvas></div><div class="padtools"><button class="btn" type="button" data-pen aria-pressed="true">Pen</button><button class="btn" type="button" data-er aria-pressed="false">Eraser</button>' +
           COLS.map(function (c, i) { return '<button class="btn padcol" type="button" data-c="' + i + '" aria-label="Pen colour ' + (i + 1) + '" aria-pressed="' + (i === 0) + '" style="background:' + c + '"></button>'; }).join('') + '<button class="btn" type="button" data-clr style="margin-left:auto">Clear</button></div>' : '');
-      el.querySelector('[data-t]').addEventListener('click', function () { st.open = !st.open; render(); });
+      el.querySelector("[data-padt]").addEventListener('click', function () { st.open = !st.open; render(); });
       if (!st.open) return;
       var cv = el.querySelector('canvas'), dpr = window.devicePixelRatio || 1, w = cv.clientWidth || 320, h = cv.clientHeight || 210;
       cv.width = Math.round(w * dpr); cv.height = Math.round(h * dpr);

@@ -96,6 +96,7 @@
       var key = plain(q.text) + (q.pic || ''), cand = [], k;
       if (q._mk) { for (k = 0; k < 40; k++) { try { var nq = q._mk(); if (nq && nq.hints && nq.explain && plain(nq.text) + (nq.pic || '') !== key) { nq._mk = q._mk; return nq; } } catch (e) { } } }
       if (pr) { for (k = 0; k < 3; k++) { try { (pr.make() || []).forEach(function (x) { if (x && x.tag === q.tag && x.hints && x.explain && plain(x.text) + (x.pic || '') !== key) cand.push(x); }); } catch (e) { } } }
+      if (!cand.length && pr) { for (k = 0; k < 3; k++) { try { (pr.make() || []).forEach(function (x) { if (x && x.hints && x.explain && x.type !== 'mc' === (q.type !== 'mc') && plain(x.text) + (x.pic || '') !== key) cand.push(x); }); } catch (e) { } } }
       return cand.length ? cand[Math.floor(Math.random() * cand.length)] : q;
     };
   }
