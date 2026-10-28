@@ -767,9 +767,10 @@ var SLIDE_MORE = {"1.learn1": [{"more": ["Our number system uses only ten digits
       host.innerHTML = prog + '<div class="qtag">Question ' + (qi + 1) + ' of ' + qs.length + ' · ' + q.tag + '</div>' +
         (q.ctx ? '<div class="qctx say">' + q.ctx + '</div>' : '') +
         (q.pic ? '<div class="visual" style="margin-top:8px">' + q.pic + '</div>' : '') +
-        '<div class="qtext say"' + (q.data ? ' data-say="' + esc(q.data) + '"' : '') + '>' + q.text + '</div>' + body +
+        '<div class="qtext say"' + (q.data ? ' data-say="' + esc(q.data) + '"' : '') + '>' + q.text + '</div>' + body + '<div id="padHost"></div>' +
         '<div class="row" style="margin-top:12px"><button class="btn ghost" id="hintBtn" type="button">Need a hint?</button></div><div id="hints" aria-live="polite"></div><div id="fb" aria-live="polite"></div>';
       answered = false;
+      if (S.h.scribble && S.h.padWanted(q.text, q.type !== 'mc')) S.h.scribble($('padHost'), q._pad || (q._pad = {}));
       $('hintBtn').addEventListener('click', function () {
         if (hintIdx >= q.hints.length) return;
         var d = document.createElement('div'); d.className = 'fb hint say'; d.innerHTML = '<strong>Hint ' + (hintIdx + 1) + ' of ' + q.hints.length + '</strong>' + q.hints[hintIdx];
