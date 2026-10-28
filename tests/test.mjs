@@ -104,6 +104,11 @@ r = await call('/admin', { auth: 'pw' }); ok(r.status === 200 && r.text.includes
 sqlite.prepare("INSERT INTO users (email, unsub_token, created_at, verified_at, marketing) VALUES ('=cmd@x.com','t','2026-01-01','2026-01-01',1)").run();
 r = await call('/admin/export.csv', { auth: 'pw' }); ok(r.status === 200 && /text\/csv/.test(r.r.headers.get('Content-Type')) && r.text.includes("\"'=cmd@x.com\""), 'csv export guards formulas');
 const env2 = { ...env, ADMIN_PASSWORD: undefined }; const r2 = await worker.fetch(new Request(B + '/admin', { headers: { Authorization: 'Basic ' + btoa('a:') } }), env2); ok(r2.status === 503, 'admin fails closed without a password');
+for (let i = 0; i < 11; i++) await call('/admin', { auth: 'wrong' + i, headers: { 'CF-Connecting-IP': '9.9.9.9' } });
+r = await call('/admin', { auth: 'pw', headers: { 'CF-Connecting-IP': '9.9.9.9' } }); ok(r.status === 429, 'admin locks out after repeated wrong passwords, even for the right one');
+r = await call('/admin', { auth: 'pw' }); ok(r.status === 200, 'other connections are not affected');
+r = await call('/account/', { headers: { 'Sec-Fetch-Site': 'same-origin' } }); ok(/Content-Security-Policy/i.test([...r.r.headers.keys()].join(',')) || r.r.headers.get('Content-Security-Policy'), 'CSP header present');
+r = await call('/api/forgot', { method: 'POST', json: { email: 'x@y.com' }, headers: { 'Sec-Fetch-Site': 'cross-site' } }); ok(r.status === 403, 'cross-site POST blocked');
 // no email service => no signup
 const env3 = { ...env, RESEND_API_KEY: undefined }; const r3 = await worker.fetch(new Request(B + '/api/signup', { method: 'POST', headers: { 'Content-Type': 'application/json', Origin: B }, body: JSON.stringify({ email: 'z@z.com', role: 'parent', year: 'P5' }) }), env3); ok(r3.status === 503, 'signup closed until email is set up');
 // delete account

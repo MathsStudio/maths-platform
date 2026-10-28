@@ -93,3 +93,9 @@ export async function cleanup(env) {
 
 export const setPassword = (env, id, hash) => env.DB.prepare('UPDATE users SET pw = ? WHERE id = ?').bind(hash, id).run();
 export const markLogin = (env, id) => env.DB.prepare('UPDATE users SET last_login = ? WHERE id = ?').bind(new Date().toISOString(), id).run();
+/* counts tries in a window without adding one (used to lock out repeated wrong admin passwords) */
+export async function rateOkPeek(env, key, limit, windowSec) {
+  const since = Math.floor(Date.now() / 1000) - windowSec;
+  const r = await env.DB.prepare('SELECT COUNT(*) AS n FROM rate WHERE k = ? AND ts > ?').bind(key, since).first();
+  return !(r && r.n > limit);
+}

@@ -32,7 +32,9 @@ export const SECURITY = {
   'X-Content-Type-Options': 'nosniff',
   'Referrer-Policy': 'strict-origin-when-cross-origin',
   'X-Frame-Options': 'DENY',
-  'Permissions-Policy': 'camera=(), microphone=(), geolocation=()'
+  'Permissions-Policy': 'camera=(), microphone=(), geolocation=()',
+  'Strict-Transport-Security': 'max-age=31536000; includeSubDomains',
+  'Content-Security-Policy': "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self'; frame-ancestors 'none'; base-uri 'self'; form-action 'self'; object-src 'none'"
 };
 export function withHeaders(res, extra) {
   const r = new Response(res.body, res);
@@ -52,6 +54,7 @@ export function redirect(url, extra) {
   return withHeaders(r);
 }
 export function sameOrigin(request) {
+  if (request.headers.get('Sec-Fetch-Site') === 'cross-site') return false;
   const o = request.headers.get('Origin'); if (!o) return true;
   try { return new URL(o).host === new URL(request.url).host; } catch (e) { return false; }
 }

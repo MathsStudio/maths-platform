@@ -113,6 +113,8 @@ async function verifyPost(request, env) {
 async function admin(request, env, url) {
   if (!env.ADMIN_PASSWORD) return page(pg.message('Admin locked', 'The admin password has not been set yet.'), 503);
   const h = request.headers.get('Authorization') || '', ok = h.startsWith('Basic ') && (() => { try { const s = atob(h.slice(6)), i = s.indexOf(':'); return safeEqual(s.slice(i + 1), env.ADMIN_PASSWORD); } catch (e) { return false; } })();
+  if (!(await db.rateOkPeek(env, 'adminfail:' + ip(request), 10, 900))) return new Response('Too many wrong tries. Wait 15 minutes.', { status: 429, headers: { 'Cache-Control': 'no-store' } });
+  if (!ok && h) await db.rateOk(env, 'adminfail:' + ip(request), 1000, 900);   // only wrong passwords count, not the browser's first empty request
   if (!ok) return new Response('Password required.', { status: 401, headers: { 'WWW-Authenticate': 'Basic realm="MathsStudio admin", charset="UTF-8"', 'Cache-Control': 'no-store' } });
   const rows = await db.adminList(env);
   if (url.pathname === '/admin/export.csv')
