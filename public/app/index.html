@@ -127,15 +127,14 @@ button:focus-visible, input:focus-visible, select:focus-visible, summary:focus-v
 .tb { background: var(--surface); border: 1px solid var(--line); border-radius: 999px; padding: 8px 14px; font-weight: 800; font-size: .9rem; min-height: 40px; }
 .tb[aria-pressed="true"] { border-color: var(--accent); }
 .voice-tb { margin-left: auto; }
-.brk { display: none; }
+.voice-in { display: none; }
 .voice-tb[aria-pressed="true"] { background: var(--good-bg); border-color: var(--good); }
 .level-switch { display: flex; align-items: center; gap: 3px; padding: 4px; border: 1px solid var(--line); border-radius: 999px; background: var(--surface); }
 .level-switch-label { padding: 0 5px; font-size: .78rem; font-weight: 800; color: var(--muted); }
 .level-pill { min-height: 34px; padding: 5px 10px; border: 0; border-radius: 999px; background: transparent; color: var(--fg); font-weight: 800; font-size: .83rem; }
 .level-pill:hover, .level-pill:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
 .level-pill[aria-pressed="true"] { background: var(--accent); color: var(--accent-fg); }
-@media (max-width: 560px) { .brk { display: block; flex-basis: 100%; height: 0; } }
-@media (max-width: 820px) { .top { justify-content: flex-start; } .top > .row { display: contents; } .voice-tb { margin-left: 0; } .top .tb { padding: 8px 11px; font-size: .84rem; min-height: 38px; } }
+@media (max-width: 820px) { .top > .voice-tb { display: none; } .row > .voice-in { display: block; margin-left: 0; } }
 @media (max-width: 560px) { .top { gap: 8px; } .level-switch { order: 3; width: fit-content; } .level-pill { padding-inline: 9px; } }
 
 /* Settings */
@@ -460,8 +459,8 @@ input[type=range].slider { width: 100%; }
       <a class="tb sitenav" href="/#pricing" style="text-decoration:none;display:inline-flex;align-items:center;color:inherit">Pricing</a>
       <button class="tb" id="tbHome" type="button">All topics</button>
       <button class="tb" id="tbSettings" type="button" aria-pressed="false" aria-controls="settings">Settings</button>
-      <span class="brk" aria-hidden="true"></span>
       <a class="tb" id="tbAccount" href="/account" style="text-decoration:none;display:inline-flex;align-items:center;color:inherit">Account</a>
+      <button class="tb voice-tb voice-in" id="readToggle2" type="button" aria-pressed="false">🔈 Voice off</button>
     </div>
     <button class="tb voice-tb" id="readToggle" type="button" aria-pressed="false">🔈 Voice off</button>
   </header>
@@ -565,6 +564,8 @@ var SLIDE_MORE = {"1.learn1": [{"more": ["Our number system uses only ten digits
     $('pPlay').textContent = Nar.playing ? 'Pause' : (Nar.at > 0 && Nar.at < Nar.units.length ? 'Keep listening' : 'Listen to this page');
     $('pPlay').disabled = !Nar.ok; $('pStop').disabled = !Nar.ok;
     var toggle = $('readToggle');
+    var toggle2 = $('readToggle2');
+    if (toggle2) { toggle2.setAttribute('aria-pressed', store.settings.readMode ? 'true' : 'false'); toggle2.textContent = store.settings.readMode ? '🔊 Voice on' : '🔈 Voice off'; toggle2.disabled = !Nar.ok; }
     if (toggle) { toggle.setAttribute('aria-pressed', store.settings.readMode ? 'true' : 'false'); toggle.textContent = store.settings.readMode ? '🔊 Voice on' : '🔈 Voice off'; var _rd = $('readerDock'); if (_rd) _rd.classList.toggle('on', !!store.settings.readMode); var _rn = $('readModeNote'); if (_rn) _rn.textContent = store.settings.readMode ? 'Reading will continue automatically on new pages and questions until you switch it off.' : 'Switch this on once. I’ll keep reading new lesson pages and questions until you switch it off.'; toggle.disabled = !Nar.ok; }
     if (!Nar.ok) $('pStat').textContent = 'The voice is not available in this viewer. Open the page in Chrome or Safari, or turn on your phone’s Select to Speak or Speak Screen to hear the text.';
     else if (Nar.err) $('pStat').textContent = Nar.err;
@@ -1003,7 +1004,7 @@ var SLIDE_MORE = {"1.learn1": [{"more": ["Our number system uses only ten digits
     if (!['low','medium','high'].includes(store.settings.difficulty) && !state.yearSel) {
       $('tabs').classList.add('hide'); $('player').classList.add('hide'); $('settings').classList.add('hide');
       document.body.setAttribute('data-view', 'gate');
-      ['#readToggle', '#tbHome', '#brandMark'].forEach(function (q) { var el = document.querySelector(q); if (el) el.classList.add('hide'); });
+      ['#readToggle', '#readToggle2', '#tbHome', '#brandMark'].forEach(function (q) { var el = document.querySelector(q); if (el) el.classList.add('hide'); });
       renderYearGate(v); setPlayerUI(); return;
     }
     if (!['low','medium','high'].includes(store.settings.difficulty)) { store.settings.difficulty = 'medium'; save(); updateLevelChoices(); }
@@ -1015,7 +1016,7 @@ var SLIDE_MORE = {"1.learn1": [{"more": ["Our number system uses only ten digits
     $('tabs').classList.toggle('hide', state.tab === 'home' && !state.yearSel);
     var onGate = state.tab === 'home' && !state.yearSel;
     document.body.setAttribute('data-view', onGate ? 'gate' : (state.tab === 'home' ? 'home' : 'lesson'));
-    ['#readToggle', '#tbHome', '#brandMark'].forEach(function (q) { var el = document.querySelector(q); if (el) el.classList.toggle('hide', onGate); });
+    ['#readToggle', '#readToggle2', '#tbHome', '#brandMark'].forEach(function (q) { var el = document.querySelector(q); if (el) el.classList.toggle('hide', onGate); });
     renderTabs();
     $('player').classList.toggle('hide', state.tab === 'home');
     if (state.tab === 'home') renderHome(v); else renderLesson(v);
@@ -1345,11 +1346,11 @@ var SLIDE_MORE = {"1.learn1": [{"more": ["Our number system uses only ten digits
     document.getElementById('view').addEventListener('keydown', function (e) {
       if (Nar.playing && e.target && /^(INPUT|TEXTAREA|SELECT)$/.test(e.target.tagName)) { Nar.wasPlaying = true; Nar.wasAt = Date.now(); narPause(); }
     }, true);
-    $('readToggle').addEventListener('click', function () {
+    ['readToggle', 'readToggle2'].forEach(function (id) { var el = $(id); if (el) el.addEventListener('click', function () {
       store.settings.readMode = !store.settings.readMode; save(); setPlayerUI();
       if (store.settings.readMode) narPlay(true); else narStop();
       setPlayerUI();
-    });
+    }); });
     if (Nar.ok) { loadVoices(); speechSynthesis.onvoiceschanged = loadVoices; }
     window.addEventListener('pagehide', function () { if (Nar.ok) speechSynthesis.cancel(); });
     S.state = state; S.go = go; S.render = render;
