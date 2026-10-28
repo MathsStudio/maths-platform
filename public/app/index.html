@@ -10604,6 +10604,649 @@ S.spatialExtra = S.extraMakers;
 })();
 </script>
 <script>
+/* bmx2.js: fills the gaps found when the Bitesize Third and Fourth level maps were checked against S1, S2 and S3.
+   New question makers (with pictures where they help) and new lesson parts for the secondary years:
+   writing numbers as powers, multiples and factors in context, wages and VAT, bank statements, days and dates, time zones,
+   naming and measuring angles, complementary and supplementary angles, constructing triangles, prisms and pyramids,
+   fair samples, sample size, survey questions, tally charts, two-way tables, trends, misleading graphs,
+   relative frequency and expected outcomes, percentage change, improper fractions, estimating, converting area and volume units,
+   budgeting, and factorising and solving quadratics.
+   Makers are added through S.extraMakers; lessons through BT.add (part "learn8"). */
+(function () {
+  'use strict';
+  var S = Studio, H = S.h, K = S.kit, Q = K.Q, rnd = H.rnd, pick = H.pick, shuffle = H.shuffle, T = H.trimNum, BT = window.BT;
+  if (!BT || !BT.add) return;
+  var hs = BT.hs, svg = BT.svg, txt = BT.txt, M = '−';
+  function mcStr(ans, wrong) {
+    var out = [ans]; wrong.forEach(function (w) { if (out.length < 4 && out.indexOf(w) < 0) out.push(w); });
+    return { options: shuffle(out), answer: ans };
+  }
+  function mk(o, m) { o.type = 'mc'; o.options = m.options; o.answer = m.answer; return Q(o); }
+  function fmt(n) { return Math.abs(n) >= 10000 ? String(Math.round(n)).replace(/\B(?=(\d{3})+(?!\d))/g, ',') : T(Math.round(n * 100) / 100); }
+  function gbp(x) { return '£' + (Math.round(x * 100) % 100 === 0 ? fmt(Math.round(x)) : (Math.round(x * 100) / 100).toFixed(2)); }
+  var SUP = { 0: '⁰', 1: '¹', 2: '²', 3: '³', 4: '⁴', 5: '⁵', 6: '⁶', 7: '⁷', 8: '⁸', 9: '⁹', '-': '⁻' };
+  function sup(n) { return String(n).replace('-', M === '−' ? '-' : '-').split('').map(function (c) { return SUP[c] || c; }).join(''); }
+  function pw(b, e) { return b + sup(e); }
+  function gcd(a, b) { return b ? gcd(b, a % b) : Math.abs(a); }
+  var STROKE = 'stroke:var(--fg);stroke-width:2.5;stroke-linejoin:round';
+
+  /* ================= POWERS ================= */
+  function gPowWrite(lv) {
+    var b = pick(lv <= 1 ? [2, 3, 5, 10] : [2, 3, 4, 5, 6, 7, 10]), e = lv <= 1 ? rnd(2, 4) : rnd(2, 6), v = Math.pow(b, e);
+    if (b === 10 && e > 4) e = 4, v = 10000;
+    var branch = lv <= 1 ? pick(['eval', 'write']) : pick(['eval', 'write', 'compare']);
+    if (branch === 'eval') return Q({ tag: 'Writing numbers as powers', text: 'Work out <b>' + pw(b, e) + '</b>.', answer: String(v),
+      hints: ['The small raised number (the index) says how many times to write the base in a multiplication.', pw(b, e) + ' means ' + Array(e + 1).join(b + ' × ').replace(/ × $/, '') + '.'],
+      explain: pw(b, e) + ' = ' + Array(e + 1).join(b + ' × ').replace(/ × $/, '') + ' = ' + fmt(v) + '.' });
+    if (branch === 'write') return mk({ tag: 'Writing numbers as powers', text: 'Write <b>' + fmt(v) + '</b> as a power of ' + b + '.',
+      hints: ['Keep multiplying ' + b + ' by itself until you reach ' + fmt(v) + '.', 'Count how many ' + b + 's you multiplied. That count is the index.'],
+      explain: fmt(v) + ' = ' + Array(e + 1).join(b + ' × ').replace(/ × $/, '') + ', so it is ' + pw(b, e) + '.' },
+      mcStr(pw(b, e), [pw(b, e + 1), pw(b, e - 1), pw(b + 1, e)]));
+    var x = pick([2, 3, 4]), p1 = rnd(3, 5), y = x + pick([1, 2]), p2 = rnd(2, 3);
+    var A = Math.pow(x, p1), Bv = Math.pow(y, p2), bigger = A > Bv ? pw(x, p1) : pw(y, p2);
+    return mk({ tag: 'Writing numbers as powers', text: 'Which is bigger, <b>' + pw(x, p1) + '</b> or <b>' + pw(y, p2) + '</b>?',
+      hints: ['Work each power out in full.', pw(x, p1) + ' = ' + fmt(A) + '.'], explain: pw(x, p1) + ' = ' + fmt(A) + ' and ' + pw(y, p2) + ' = ' + fmt(Bv) + ', so ' + bigger + ' is bigger.' },
+      { options: shuffle([pw(x, p1), pw(y, p2)]), answer: bigger });
+  }
+  function gIndexLaw(lv) {
+    var b = pick([2, 3, 5, 7]), m = rnd(2, 6), n = rnd(2, 5), kind = pick(lv >= 3 ? ['mul', 'div', 'zero', 'neg'] : ['mul', 'div']);
+    if (kind === 'mul') return mk({ tag: 'Laws of indices', text: 'Simplify <b>' + pw(b, m) + ' × ' + pw(b, n) + '</b>. Give your answer as a power of ' + b + '.',
+      hints: ['When you multiply powers with the same base, add the indices.'], explain: pw(b, m) + ' × ' + pw(b, n) + ' = ' + pw(b, m + n) + '. Add the indices: ' + m + ' + ' + n + ' = ' + (m + n) + '.' },
+      mcStr(pw(b, m + n), [pw(b, m * n), pw(b * b, m + n), pw(b, Math.abs(m - n))]));
+    if (kind === 'div') { var hi = Math.max(m, n) + 1, lo = Math.min(m, n); return mk({ tag: 'Laws of indices', text: 'Simplify <b>' + pw(b, hi) + ' ÷ ' + pw(b, lo) + '</b>. Give your answer as a power of ' + b + '.',
+      hints: ['When you divide powers with the same base, subtract the indices.'], explain: pw(b, hi) + ' ÷ ' + pw(b, lo) + ' = ' + pw(b, hi - lo) + '. Subtract the indices: ' + hi + ' − ' + lo + ' = ' + (hi - lo) + '.' },
+      mcStr(pw(b, hi - lo), [pw(b, hi + lo), pw(b, hi / lo), pw(b, hi * lo)])); }
+    if (kind === 'zero') return Q({ tag: 'Laws of indices', text: 'What is the value of <b>' + pw(b, 0) + '</b>?', answer: '1',
+      hints: ['Any number to the power 0 is the same.', pw(b, 3) + ' ÷ ' + pw(b, 3) + ' = 1, and by the index rule that is also ' + pw(b, 0) + '.'], explain: 'Any non-zero number to the power 0 equals 1, so ' + pw(b, 0) + ' = 1.' });
+    var e = rnd(1, 3), den = Math.pow(b, e);
+    return mk({ tag: 'Laws of indices', text: 'Write <b>' + pw(b, -e) + '</b> as a fraction.',
+      hints: ['A negative index means “one over” the positive power.'], explain: pw(b, -e) + ' = 1 ÷ ' + pw(b, e) + ' = 1/' + den + '.' }, mcStr('1/' + den, ['-' + den, '1/' + (den + b), String(den)]));
+  }
+
+  /* ================= MULTIPLES AND FACTORS IN CONTEXT ================= */
+  function gMFStory(lv) {
+    var cop = lv <= 1 ? [[2, 3], [3, 4], [2, 5], [3, 5], [4, 5]] : [[3, 4], [2, 7], [3, 5], [4, 5], [5, 6], [3, 7], [5, 7]], c = pick(cop), g = pick(lv <= 1 ? [2, 3, 4] : [2, 3, 4, 5, 6]), a = g * c[0], b = g * c[1];
+    var l = g * c[0] * c[1];
+    if (Math.random() < 0.5) {
+      var who = pick([['buses', 'minutes', 'A bus to the school leaves the station every ', ' and a bus to the park leaves every '], ['lights', 'seconds', 'A red light flashes every ', ' and a blue light flashes every ']]);
+      return Q({ tag: 'Multiples and factors in context', text: who[2] + a + ' ' + who[1] + who[3] + b + ' ' + who[1] + '. They both start together. After how many ' + who[1] + ' will they next go <b>together</b>?', answer: String(l),
+        hints: ['“Together again” means a number both times divide into. That is a common multiple.', 'You want the lowest common multiple (LCM) of ' + a + ' and ' + b + '.'], explain: 'The multiples of ' + a + ' and ' + b + ' first meet at ' + l + ', the LCM. They go together again after ' + l + ' ' + who[1] + '.' });
+    }
+    return Q({ tag: 'Multiples and factors in context', text: 'A builder cuts two planks, ' + a + ' cm and ' + b + ' cm long, into equal pieces with no wood left over. What is the <b>longest</b> each piece can be, in cm?', answer: String(g),
+      hints: ['The length must divide into both ' + a + ' and ' + b + ' exactly. That is a common factor.', 'The longest one is the highest common factor (HCF).'], explain: 'The HCF of ' + a + ' and ' + b + ' is ' + g + ', so each piece can be ' + g + ' cm long.' });
+  }
+
+  /* ================= WAGES, VAT, BUDGETS, STATEMENTS ================= */
+  function gWageVat(lv) {
+    var kind = pick(lv <= 1 ? ['wage', 'vat'] : ['wage', 'vat', 'ot', 'novat']);
+    if (kind === 'wage') { var h = rnd(12, 38), r = pick([8, 9, 10, 11, 12, 13, 14]); return Q({ tag: 'Wages and VAT', text: 'Sam is paid £' + r + ' an hour and works ' + h + ' hours. How much does Sam earn, in pounds?', answer: String(h * r),
+      hints: ['Pay = hours worked × rate per hour.'], explain: h + ' × £' + r + ' = £' + h * r + '.' }); }
+    if (kind === 'ot') { var base = rnd(25, 38), over = rnd(2, 8), rr = pick([10, 12, 14, 16]), tot = base * rr + over * rr * 1.5;
+      return Q({ tag: 'Wages and VAT', text: 'Ria earns £' + rr + ' an hour. She works ' + base + ' normal hours and ' + over + ' hours of overtime at time and a half (1.5 times the rate). How much does she earn, in pounds?', answer: T(tot),
+        hints: ['Work out the normal pay and the overtime pay separately.', 'Overtime rate = £' + rr + ' × 1.5 = £' + T(rr * 1.5) + ' an hour.'], explain: 'Normal: ' + base + ' × ' + rr + ' = £' + base * rr + '. Overtime: ' + over + ' × £' + T(rr * 1.5) + ' = £' + T(over * rr * 1.5) + '. Total £' + T(tot) + '.' }); }
+    var pr = pick([40, 50, 60, 80, 120, 150, 200, 250, 400]);
+    if (kind === 'novat') { var inc = pr * 1.2; return Q({ tag: 'Wages and VAT', text: 'A price including 20% VAT is £' + T(inc) + '. What was the price <b>before</b> VAT, in pounds?', answer: String(pr),
+      hints: ['£' + T(inc) + ' is 120% of the original price.', 'Divide by 1.2 to get back to 100%.'], explain: '£' + T(inc) + ' ÷ 1.2 = £' + pr + '.' }); }
+    return Q({ tag: 'Wages and VAT', text: 'A phone case costs £' + pr + ' before VAT. VAT is 20%. What is the price <b>including</b> VAT, in pounds?', answer: T(pr * 1.2),
+      hints: ['20% of £' + pr + ' is £' + T(pr * 0.2) + '.', 'Add the VAT to the price.'], explain: 'VAT = 20% of £' + pr + ' = £' + T(pr * 0.2) + '. Price with VAT = £' + pr + ' + £' + T(pr * 0.2) + ' = £' + T(pr * 1.2) + '.' });
+  }
+  function stmtPic(open, rows) {
+    var y = 22, s = '<rect x="4" y="4" width="352" height="' + (30 + rows.length * 24 + 24) + '" rx="8" style="fill:var(--surface);stroke:var(--line);stroke-width:1.5"/>';
+    s += txt(14, y, 'Date', 12, 'start', ';font-weight:700') + txt(70, y, 'Details', 12, 'start', ';font-weight:700') + txt(214, y, 'Out', 12, 'end', ';font-weight:700') + txt(272, y, 'In', 12, 'end', ';font-weight:700') + txt(346, y, 'Balance', 12, 'end', ';font-weight:700');
+    s += '<line x1="8" y1="30" x2="352" y2="30" style="stroke:var(--line);stroke-width:1.5"/>'; y = 50;
+    s += txt(14, y, '1 Mar', 12, 'start') + txt(70, y, 'Opening balance', 12, 'start') + txt(346, y, gbp(open), 12, 'end');
+    var bal = open;
+    rows.forEach(function (r) { y += 24; bal += (r.inn || 0) - (r.out || 0);
+      s += txt(14, y, r.d, 12, 'start') + txt(70, y, r.t, 12, 'start') + (r.out ? txt(214, y, gbp(r.out), 12, 'end') : '') + (r.inn ? txt(272, y, gbp(r.inn), 12, 'end') : '') + txt(346, y, r.hide ? '?' : gbp(bal), 12, 'end', r.hide ? ';font-weight:700;fill:var(--accent)' : ''); });
+    return svg(360, 50 + rows.length * 24 + 16, 'A bank statement with money in, money out and a running balance', s, 360);
+  }
+  function gStatement(lv) {
+    var open = rnd(8, 30) * 10, items = [['Shop', 'Supermarket'], ['Train', 'Rail ticket'], ['Phone', 'Phone bill'], ['Cafe', 'Cafe']];
+    var rows = [{ d: '3 Mar', t: 'Wages', inn: rnd(6, 14) * 50 }, { d: '5 Mar', t: pick(items)[1], out: rnd(4, 18) * 5 }, { d: '9 Mar', t: 'Rent', out: rnd(3, 6) * 50 }];
+    if (lv >= 2) rows.push({ d: '12 Mar', t: 'Refund', inn: rnd(2, 9) * 5 });
+    var final = open; rows.forEach(function (r) { final += (r.inn || 0) - (r.out || 0); });
+    var totOut = 0; rows.forEach(function (r) { totOut += r.out || 0; });
+    if (Math.random() < 0.5) return Q({ tag: 'Bank statements', text: 'Look at the bank statement. What is the <b>final balance</b>, in pounds?', pic: stmtPic(open, rows), answer: T(final),
+      hints: ['Start from the opening balance. Add money in, take away money out.', 'Work down the rows one at a time.'], explain: 'Opening ' + gbp(open) + ' plus money in minus money out gives ' + gbp(final) + '.' });
+    return Q({ tag: 'Bank statements', text: 'How much money was <b>paid out</b> in total on this statement, in pounds?', pic: stmtPic(open, rows), answer: T(totOut),
+      hints: ['Only use the “Out” column. Ignore the “In” column.'], explain: 'Add the Out column: ' + gbp(totOut) + '.' });
+  }
+  function gBudgetS(lv) {
+    var inc = rnd(15, 32) * 100, rent = Math.round(inc * pick([0.3, 0.35, 0.4]) / 10) * 10, bills = rnd(12, 24) * 10, food = rnd(25, 40) * 10, tr = rnd(5, 15) * 10, left = inc - rent - bills - food - tr;
+    if (lv >= 2 && Math.random() < 0.5) { var pc = Math.round(rent / inc * 1000) / 10; return Q({ tag: 'Budgeting', text: 'Jo earns £' + fmt(inc) + ' a month. Rent is £' + rent + '. What percentage of the income is spent on rent? Give your answer to 1 decimal place.', answer: T(pc),
+      hints: ['Percentage = part ÷ whole × 100.'], explain: rent + ' ÷ ' + inc + ' × 100 = ' + T(pc) + '%.' }); }
+    return Q({ tag: 'Budgeting', text: 'Jo earns £' + fmt(inc) + ' a month. Rent £' + rent + ', bills £' + bills + ', food £' + food + ', travel £' + tr + '. How much is left to save each month, in pounds?', answer: String(left),
+      hints: ['Add up all the spending first.', 'Subtract the total spending from the income.'], explain: 'Spending: ' + rent + ' + ' + bills + ' + ' + food + ' + ' + tr + ' = £' + (rent + bills + food + tr) + '. £' + fmt(inc) + ' − £' + (rent + bills + food + tr) + ' = £' + left + '.' });
+  }
+
+  /* ================= DAYS, DATES, TIME ZONES ================= */
+  var MONTHS = [['January', 31], ['February', 28], ['March', 31], ['April', 30], ['May', 31], ['June', 30], ['July', 31], ['August', 31], ['September', 30], ['October', 31], ['November', 30], ['December', 31]];
+  function gDays(lv) {
+    var m = rnd(0, 10), d1 = rnd(5, MONTHS[m][1] - 2), span = rnd(6, lv <= 1 ? 25 : 45), tot = d1, mm = m, d = d1 + span;
+    while (d > MONTHS[mm][1]) { d -= MONTHS[mm][1]; mm = (mm + 1) % 12; }
+    if (Math.random() < 0.5) return mk({ tag: 'Days and dates', text: 'A project starts on <b>' + d1 + ' ' + MONTHS[m][0] + '</b> and takes <b>' + span + ' days</b>. On what date does it end?',
+      hints: ['Count the days left in ' + MONTHS[m][0] + ' first: ' + MONTHS[m][1] + ' − ' + d1 + ' = ' + (MONTHS[m][1] - d1) + '.', MONTHS[m][0] + ' has ' + MONTHS[m][1] + ' days.'], explain: 'Counting on ' + span + ' days from ' + d1 + ' ' + MONTHS[m][0] + ' lands on ' + d + ' ' + MONTHS[mm][0] + '.' },
+      mcStr(d + ' ' + MONTHS[mm][0], [(d + 1) + ' ' + MONTHS[mm][0], Math.max(1, d - 1) + ' ' + MONTHS[mm][0], d + ' ' + MONTHS[(mm + 1) % 12][0]]));
+    var m2 = (m + 1) % 12, d2 = rnd(3, 25), ans = (MONTHS[m][1] - d1) + d2;
+    return Q({ tag: 'Days and dates', text: 'How many days are there from <b>' + d1 + ' ' + MONTHS[m][0] + '</b> to <b>' + d2 + ' ' + MONTHS[m2][0] + '</b>?', answer: String(ans),
+      hints: ['Days left in ' + MONTHS[m][0] + ' after the ' + d1 + 'th: ' + MONTHS[m][1] + ' − ' + d1 + '.', 'Then add the days into ' + MONTHS[m2][0] + '.'], explain: MONTHS[m][1] + ' − ' + d1 + ' = ' + (MONTHS[m][1] - d1) + ' days left in ' + MONTHS[m][0] + ', then ' + d2 + ' more. ' + (MONTHS[m][1] - d1) + ' + ' + d2 + ' = ' + ans + ' days.' });
+  }
+  var ZONES = [['Paris', 1], ['Athens', 2], ['Dubai', 4], ['Mumbai', 5], ['Bangkok', 7], ['Tokyo', 9], ['Sydney', 10], ['New York', -5], ['Chicago', -6], ['Los Angeles', -8]];
+  function clock(h, m) { return (h < 10 ? '0' : '') + h + ':' + (m < 10 ? '0' : '') + (m || 0) + (m === undefined ? '0' : ''); }
+  function t24(h) { h = ((h % 24) + 24) % 24; return (h < 10 ? '0' : '') + h + ':00'; }
+  function gZone() {
+    var z = pick(ZONES), h = rnd(7, 20), diff = z[1], ahead = diff > 0;
+    var ans = t24(h + diff), rel = Math.abs(diff) + ' hour' + (Math.abs(diff) > 1 ? 's' : '') + (ahead ? ' ahead of' : ' behind');
+    var wrong = [t24(h - diff), t24(h + diff + 1), t24(h + diff - 1)];
+    return mk({ tag: 'Time zones', text: z[0] + ' is ' + rel + ' London. It is <b>' + t24(h) + '</b> in London. What time is it in ' + z[0] + '?',
+      hints: [ahead ? 'Ahead means later, so add the hours.' : 'Behind means earlier, so subtract the hours.', 'Use the 24-hour clock. If you pass 24:00, start again from 00:00.'], explain: t24(h) + (ahead ? ' + ' : ' − ') + Math.abs(diff) + ' hours = ' + ans + '.' }, mcStr(ans, wrong));
+  }
+
+  /* ================= ANGLES ================= */
+  function pt(cx, cy, r, deg) { var a = deg * Math.PI / 180; return [cx + r * Math.cos(a), cy - r * Math.sin(a)]; }
+  function gAngName() {
+    var a = pick([40, 60, 100, 120, 140]), ba = pick([0, 15]), vx = 130, vy = 118, L = 78;
+    var letters = shuffle(['P', 'Q', 'R', 'S', 'T', 'X', 'Y', 'Z']).slice(0, 3), V = letters[0], A = letters[1], C = letters[2];
+    var pA = pt(vx, vy, L, ba), pC = pt(vx, vy, L, ba + a), arcP = pt(vx, vy, 28, ba), arcQ = pt(vx, vy, 28, ba + a);
+    var s = '<line x1="' + vx + '" y1="' + vy + '" x2="' + pA[0].toFixed(1) + '" y2="' + pA[1].toFixed(1) + '" style="' + STROKE + '"/><line x1="' + vx + '" y1="' + vy + '" x2="' + pC[0].toFixed(1) + '" y2="' + pC[1].toFixed(1) + '" style="' + STROKE + '"/>';
+    s += '<path d="M' + arcP[0].toFixed(1) + ' ' + arcP[1].toFixed(1) + ' A28 28 0 0 0 ' + arcQ[0].toFixed(1) + ' ' + arcQ[1].toFixed(1) + '" style="fill:' + hs(35, 'band') + ';stroke:var(--accent);stroke-width:3"/>';
+    var lA = pt(vx, vy, L + 14, ba), lC = pt(vx, vy, L + 14, ba + a);
+    s += txt(vx - 14, vy + 18, V, 15, 'middle', ';font-weight:700') + txt(lA[0].toFixed(1), (lA[1] + 5).toFixed(1), A, 15, 'middle', ';font-weight:700') + txt(lC[0].toFixed(1), (lC[1] + 5).toFixed(1), C, 15, 'middle', ';font-weight:700');
+    var ans = '∠' + A + V + C;
+    return mk({ tag: 'Naming angles', text: 'Which name describes the <b>marked angle</b>? (The middle letter is the corner where the angle is.)', pic: svg(260, 140, 'Two lines meeting at point ' + V + ' with an angle marked, ends labelled ' + A + ' and ' + C, s, 260),
+      hints: ['An angle is named with three letters. The middle letter is the point where the two lines meet.', 'Here the lines meet at ' + V + ', so ' + V + ' goes in the middle.'], explain: 'The lines meet at ' + V + ', so ' + V + ' is the middle letter: ' + ans + ' (or ∠' + C + V + A + ').' },
+      mcStr(ans, ['∠' + V + A + C, '∠' + A + C + V, '∠' + V + C + A]));
+  }
+  function protPic(theta, flip) {
+    var cx = 190, cy = 150, R = 140, s = '<path d="M' + (cx - R) + ' ' + cy + ' A' + R + ' ' + R + ' 0 0 1 ' + (cx + R) + ' ' + cy + ' Z" style="fill:' + hs(200, 'band') + ';fill-opacity:.5;stroke:var(--fg);stroke-width:1.5"/>';
+    for (var d = 0; d <= 180; d += 10) { var p1 = pt(cx, cy, R, d), p2 = pt(cx, cy, R - 10, d), t = pt(cx, cy, R - 21, d), t2 = pt(cx, cy, R - 40, d);
+      s += '<line x1="' + p1[0].toFixed(1) + '" y1="' + p1[1].toFixed(1) + '" x2="' + p2[0].toFixed(1) + '" y2="' + p2[1].toFixed(1) + '" style="stroke:var(--fg);stroke-width:1.5"/>' + txt(t[0].toFixed(1), (t[1] + 3).toFixed(1), String(d), 9) + txt(t2[0].toFixed(1), (t2[1] + 3).toFixed(1), String(180 - d), 9, 'middle', ';fill:var(--accent)'); }
+    for (var m = 0; m <= 180; m += 5) { if (m % 10 === 0) continue; var q1 = pt(cx, cy, R, m), q2 = pt(cx, cy, R - 6, m); s += '<line x1="' + q1[0].toFixed(1) + '" y1="' + q1[1].toFixed(1) + '" x2="' + q2[0].toFixed(1) + '" y2="' + q2[1].toFixed(1) + '" style="stroke:var(--fg);stroke-width:1"/>'; }
+    var rayDeg = flip ? 180 - theta : theta, ray = pt(cx, cy, R + 12, rayDeg);
+    s += '<line x1="' + (cx - R - 14) + '" y1="' + cy + '" x2="' + (cx + R + 14) + '" y2="' + cy + '" style="stroke:var(--fg);stroke-width:1.5"/>';
+    s += '<line x1="' + cx + '" y1="' + cy + '" x2="' + (flip ? cx - R - 14 : cx + R + 14) + '" y2="' + cy + '" style="stroke:var(--fg);stroke-width:4"/>';
+    s += '<line x1="' + cx + '" y1="' + cy + '" x2="' + ray[0].toFixed(1) + '" y2="' + ray[1].toFixed(1) + '" style="stroke:#d33;stroke-width:3.5"/>';
+    s += '<circle cx="' + cx + '" cy="' + cy + '" r="3.5" style="fill:var(--fg)"/>' + txt(flip ? cx - R - 10 : cx + R + 10, cy + 16, 'arm', 11, 'middle');
+    return svg(380, 172, 'A protractor with a thick arm along the base line and a red line from the centre', s, 380);
+  }
+  function gProt(lv) {
+    var theta = rnd(3, 34) * 5, flip = Math.random() < 0.5;
+    if (lv <= 1 && theta % 10) theta -= 5, theta = Math.max(20, theta);
+    return Q({ tag: 'Measuring angles with a protractor', text: 'Read the size of the angle between the thick <b>arm</b> and the red line, in degrees. ' + (flip ? 'The arm points to the <b>left</b>.' : 'The arm points to the <b>right</b>.'), pic: protPic(theta, flip), answer: String(theta),
+      hints: ['Start at the 0 on the arm. Use the scale that begins with 0 on the arm.', 'The two scales run in opposite directions. Pick the one that has 0 on the arm.'], explain: 'The thick arm lies on 0° of one scale. Following that scale up to the red line gives ' + theta + '°.' });
+  }
+  function gCompSupp(lv) {
+    var comp = Math.random() < 0.5, tot = comp ? 90 : 180, a = comp ? rnd(10, 80) : rnd(20, 160), nm = comp ? 'complementary' : 'supplementary';
+    if (lv >= 2 && Math.random() < 0.6) { var k = pick([2, 3, 4]), x = Math.round(tot / (k + 1)); tot = x * (k + 1);
+      return Q({ tag: 'Complementary and supplementary angles', text: 'Two ' + nm + ' angles are ' + 'x° and ' + k + 'x°. (They add up to ' + tot + '°.) Find <b>x</b>.', answer: String(x),
+        hints: ['Write an equation: x + ' + k + 'x = ' + tot + '.', 'Combine the x terms first.'], explain: (k + 1) + 'x = ' + tot + ', so x = ' + tot + ' ÷ ' + (k + 1) + ' = ' + x + '.' }); }
+    return Q({ tag: 'Complementary and supplementary angles', text: (comp ? 'Complementary angles add up to 90°.' : 'Supplementary angles add up to 180°.') + ' What angle is ' + nm + ' to <b>' + a + '°</b>?', answer: String(tot - a),
+      hints: ['Subtract the angle from ' + tot + '°.'], explain: tot + '° − ' + a + '° = ' + (tot - a) + '°.' });
+  }
+  function arcPic(L, r1, r2) {
+    var sc = 26, ax = 30, ay = 150, bx = ax + L * sc, xx = (L * L + r1 * r1 - r2 * r2) / (2 * L), hh = Math.sqrt(Math.max(0, r1 * r1 - xx * xx)), thA = Math.atan2(hh, xx), thB = Math.PI - Math.atan2(hh, L - xx);
+    function arc(px, rr, th) { var a1 = th - 0.22, a2 = th + 0.22, x1 = px + rr * sc * Math.cos(a1), y1 = ay - rr * sc * Math.sin(a1), x2 = px + rr * sc * Math.cos(a2), y2 = ay - rr * sc * Math.sin(a2); return '<path d="M' + x1.toFixed(1) + ' ' + y1.toFixed(1) + ' A' + (rr * sc) + ' ' + (rr * sc) + ' 0 0 0 ' + x2.toFixed(1) + ' ' + y2.toFixed(1) + '" style="fill:none;stroke:var(--accent);stroke-width:2.5"/>'; }
+    var s = '<line x1="' + ax + '" y1="' + ay + '" x2="' + bx + '" y2="' + ay + '" style="' + STROKE + '"/>' + arc(ax, r1, thA) + arc(bx, r2, thB);
+    s += '<circle cx="' + ax + '" cy="' + ay + '" r="4" style="fill:var(--fg)"/><circle cx="' + bx + '" cy="' + ay + '" r="4" style="fill:var(--fg)"/>' + txt(ax, ay + 20, 'A', 14) + txt(bx, ay + 20, 'B', 14) + txt((ax + bx) / 2, ay + 20, L + ' cm', 12);
+    return svg(260, 176, 'A base line AB with two arcs, one from each end, crossing above the line', s, 260);
+  }
+  function gConstruct(lv) {
+    var kind = pick(['exists', 'which', 'arcs']);
+    if (kind === 'exists') { var a = rnd(3, 9), b = rnd(3, 9), ok = Math.random() < 0.5, c = ok ? rnd(Math.abs(a - b) + 1, a + b - 1) : (Math.random() < 0.5 ? a + b + rnd(1, 3) : Math.max(1, Math.abs(a - b) - rnd(0, 1)));
+      if (ok && c <= Math.abs(a - b)) c = Math.abs(a - b) + 1; ok = (a + b > c) && (a + c > b) && (b + c > a);
+      return mk({ tag: 'Constructing triangles', text: 'Can a triangle be drawn with sides <b>' + a + ' cm, ' + b + ' cm and ' + c + ' cm</b>?', hints: ['The two shorter sides must add up to more than the longest side, or the arcs will not meet.'],
+        explain: ok ? 'The two shorter sides add to more than the longest, so the arcs meet and the triangle can be drawn.' : 'The two shorter sides do not add to more than the longest, so the arcs cannot meet. No triangle.' }, { options: ['Yes', 'No'], answer: ok ? 'Yes' : 'No' }); }
+    if (kind === 'which') return mk({ tag: 'Constructing triangles', text: 'Which measurements are <b>enough</b> to construct one exact triangle?', hints: ['Three angles give the shape but not the size.', 'Sides and angles together can fix both the shape and the size.'],
+      explain: 'Three sides (SSS), two sides and the angle between them (SAS) or two angles and a side (ASA) fix one exact triangle. Three angles only give the shape, not the size.' },
+      mcStr('Two sides and the angle between them', ['Three angles only', 'One side and one angle', 'Two angles only']));
+    var L = pick([5, 6, 7]), r1 = pick([4, 5]), r2 = pick([4, 5]);
+    return mk({ tag: 'Constructing triangles', text: 'To construct a triangle with sides ' + L + ' cm, ' + r1 + ' cm and ' + r2 + ' cm, you draw the ' + L + ' cm base AB first. What do you draw next?', pic: arcPic(L, r1, r2),
+      hints: ['You need a third corner that is ' + r1 + ' cm from A and ' + r2 + ' cm from B.', 'A compass draws a curve at a fixed distance from a point.'], explain: 'Set the compass to ' + r1 + ' cm and draw an arc from A. Then set it to ' + r2 + ' cm and draw an arc from B. Where the arcs cross is the third corner.' },
+      mcStr('Two arcs with a compass, one from each end of AB', ['A straight line at 90° to AB', 'A circle with AB as the diameter', 'Two lines at 60° from AB']));
+  }
+  function gSolidKind() {
+    var base = pick([['triangular', 3], ['square', 4], ['pentagonal', 5], ['hexagonal', 6]]), prism = Math.random() < 0.5, n = base[1], nm = base[0] + ' ' + (prism ? 'prism' : 'pyramid');
+    var f = prism ? n + 2 : n + 1, v = prism ? 2 * n : n + 1, e = prism ? 3 * n : 2 * n, pick1 = pick(['faces', 'vertices', 'edges']), ans = pick1 === 'faces' ? f : pick1 === 'vertices' ? v : e;
+    if (Math.random() < 0.4) return mk({ tag: 'Prisms and pyramids', text: 'A solid has the <b>same cross-section</b> all the way along its length, and its end faces are ' + base[0] + (n === 4 ? 's' : ' shapes') + '. What kind of solid is it?', hints: ['A prism has the same cross-section all the way through. A pyramid tapers to a point.'],
+      explain: 'Same cross-section all the way along means a prism: a ' + base[0] + ' prism.' }, mcStr(base[0] + ' prism', [base[0] + ' pyramid', 'cylinder', 'cone']));
+    return Q({ tag: 'Prisms and pyramids', text: 'How many <b>' + pick1 + '</b> does a ' + nm + ' have?', answer: String(ans),
+      hints: [prism ? 'A prism has 2 end faces and ' + n + ' side faces.' : 'A pyramid has 1 base and ' + n + ' sloping faces.', 'Euler’s check: faces + vertices − edges = 2.'], explain: 'A ' + nm + ' has ' + f + ' faces, ' + v + ' vertices and ' + e + ' edges. Check: ' + f + ' + ' + v + ' − ' + e + ' = 2.' });
+  }
+
+  /* ================= DATA HANDLING ================= */
+  function gBias() {
+    var qs = [['the favourite sport of pupils in the school', 'Ask 40 pupils chosen at random from the school roll', ['Ask only the pupils in the football team', 'Ask 3 of your friends', 'Ask the pupils waiting outside the gym']],
+      ['how people in a town travel to work', 'Ask 100 people chosen at random from the electoral roll', ['Ask people at the bus station', 'Ask only your neighbours', 'Ask people leaving a cycle shop']],
+      ['the favourite lunch of pupils in S2', 'Ask a random sample of S2 pupils from every class', ['Ask only pupils in the lunch queue', 'Ask the first 5 pupils you see', 'Ask only your own class']],
+      ['how many hours teenagers sleep', 'Survey a random sample of teenagers from different schools', ['Survey only members of the school choir', 'Survey only pupils who arrive late', 'Survey one teenager']]], q = pick(qs);
+    return mk({ tag: 'Fair samples', text: 'You want to find out <b>' + q[0] + '</b>. Which sample is the <b>fairest</b>?', hints: ['A fair sample is chosen at random, covers different people, and is not too small.'],
+      explain: 'A random sample that covers different people gives every person an equal chance and avoids bias. The other samples leave out important groups or are too small.' }, mcStr(q[1], q[2]));
+  }
+  function gSampleSize() {
+    var a = pick([10, 20, 30]), b = pick([100, 150, 200]), swap = Math.random() < 0.5, x = swap ? b : a, y = swap ? a : b;
+    return mk({ tag: 'Sample size', text: 'Survey A asks <b>' + x + '</b> people chosen at random. Survey B asks <b>' + y + '</b> people chosen at random. Which survey is likely to be <b>more reliable</b>?', hints: ['A larger random sample is closer to the whole population.'],
+      explain: 'A bigger random sample is more likely to represent everybody, so Survey ' + (x > y ? 'A' : 'B') + ' is more reliable.' }, { options: ['Survey A', 'Survey B', 'They are equally reliable'], answer: x > y ? 'Survey A' : 'Survey B' });
+  }
+  function gSurveyQ() {
+    var ts = [['school uniform', 'Do you agree that the awful school uniform should be changed?', 'What do you think about the school uniform?'], ['homework', 'Surely too much homework is bad for you, isn’t it?', 'How much time do you spend on homework each night?'],
+      ['school lunches', 'Don’t you think the new lunch menu is brilliant?', 'How would you rate the new lunch menu: poor, fair, good or very good?']], t = pick(ts);
+    return mk({ tag: 'Survey questions', text: 'You are writing a questionnaire about <b>' + t[0] + '</b>. Which question is <b>fair</b> (not leading)?', hints: ['A leading question pushes people towards one answer. A fair question lets people give their own view.'],
+      explain: 'A fair question uses neutral words. The other question pushes the person towards one answer.' }, { options: shuffle([t[2], t[1]]), answer: t[2] });
+  }
+  function tallyMarks(n) { var s = '', x = 0; for (var g = 0; g < Math.floor(n / 5); g++) { for (var i = 0; i < 4; i++) s += '<line x1="' + (x + i * 6) + '" y1="-10" x2="' + (x + i * 6) + '" y2="8" style="stroke:var(--fg);stroke-width:2"/>'; s += '<line x1="' + (x - 3) + '" y1="5" x2="' + (x + 21) + '" y2="-7" style="stroke:var(--fg);stroke-width:2"/>'; x += 34; } for (var j = 0; j < n % 5; j++) s += '<line x1="' + (x + j * 6) + '" y1="-10" x2="' + (x + j * 6) + '" y2="8" style="stroke:var(--fg);stroke-width:2"/>'; return s; }
+  function gTally() {
+    var cats = pick([['Cat', 'Dog', 'Fish', 'Rabbit'], ['Bus', 'Car', 'Walk', 'Cycle'], ['Red', 'Blue', 'Green', 'Yellow']]), vals = cats.map(function () { return rnd(3, 17); }), s = '';
+    cats.forEach(function (c, i) { var y = 24 + i * 32; s += txt(10, y + 4, c, 13, 'start') + '<g transform="translate(90 ' + y + ')">' + tallyMarks(vals[i]) + '</g>'; });
+    var i = rnd(0, 3), j = (i + rnd(1, 3)) % 4, tot = vals.reduce(function (a, b) { return a + b; }, 0), kind = pick(['one', 'total', 'diff']);
+    var text = kind === 'one' ? 'How many chose <b>' + cats[i] + '</b>?' : kind === 'total' ? 'How many people were asked <b>altogether</b>?' : 'How many <b>more</b> chose ' + cats[i] + ' than ' + cats[j] + '? (If fewer, give a negative number.)';
+    var ans = kind === 'one' ? vals[i] : kind === 'total' ? tot : vals[i] - vals[j];
+    return Q({ tag: 'Tally charts', text: 'Look at the tally chart. ' + text, pic: svg(300, 130, 'A tally chart for ' + cats.join(', '), s, 300), answer: String(ans),
+      hints: ['Each group of five is four lines with one line across them.', 'Count the groups of 5, then add the single lines.'], explain: kind === 'one' ? cats[i] + ' = ' + vals[i] + '.' : kind === 'total' ? vals.join(' + ') + ' = ' + tot + '.' : vals[i] + ' − ' + vals[j] + ' = ' + ans + '.' });
+  }
+  function gTwoWay() {
+    var a = rnd(5, 18), b = rnd(5, 18), c = rnd(5, 18), d = rnd(5, 18), rows = ['Boys', 'Girls'], cols = ['Walk', 'Bus'], v = [[a, b], [c, d]], hide = pick([[0, 0], [0, 1], [1, 0], [1, 1]]);
+    var s = '', cx = [110, 170, 230], i, j;
+    s += txt(cx[0] + 0, 22, cols[0], 13, 'middle', ';font-weight:700') + txt(cx[1], 22, cols[1], 13, 'middle', ';font-weight:700') + txt(cx[2], 22, 'Total', 13, 'middle', ';font-weight:700');
+    for (i = 0; i < 2; i++) { s += txt(10, 50 + i * 28, rows[i], 13, 'start', ';font-weight:700'); for (j = 0; j < 2; j++) s += txt(cx[j], 50 + i * 28, (i === hide[0] && j === hide[1]) ? '?' : String(v[i][j]), 14, 'middle', (i === hide[0] && j === hide[1]) ? ';font-weight:700;fill:var(--accent)' : ''); s += txt(cx[2], 50 + i * 28, String(v[i][0] + v[i][1]), 14); }
+    s += txt(10, 106, 'Total', 13, 'start', ';font-weight:700') + txt(cx[0], 106, String(a + c), 14) + txt(cx[1], 106, String(b + d), 14) + txt(cx[2], 106, String(a + b + c + d), 14);
+    s += '<line x1="6" y1="30" x2="260" y2="30" style="stroke:var(--line);stroke-width:1.5"/><line x1="6" y1="92" x2="260" y2="92" style="stroke:var(--line);stroke-width:1.5"/><line x1="140" y1="6" x2="140" y2="116" style="stroke:var(--line);stroke-width:1" opacity="0"/>';
+    return Q({ tag: 'Two-way tables', text: 'The two-way table shows how pupils travel to school. Find the <b>missing number</b> (the ?).', pic: svg(270, 120, 'A two-way table of boys and girls against walk and bus with one missing value', s, 300), answer: String(v[hide[0]][hide[1]]),
+      hints: ['Each row adds up to its total, and each column adds up to its total.', 'Use the row or the column that has the ? and only one other number missing.'], explain: 'Use the totals. The missing number is ' + v[hide[0]][hide[1]] + '.' });
+  }
+  function gTrend() {
+    var months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'], shape = pick(['up', 'down', 'peak', 'dip']), base = rnd(20, 40), vals = [];
+    for (var i = 0; i < 6; i++) { var t = i / 5, v = shape === 'up' ? base + t * 40 : shape === 'down' ? base + 40 - t * 40 : shape === 'peak' ? base + (t < 0.5 ? t : 1 - t) * 80 : base + 40 - (t < 0.5 ? t : 1 - t) * 80; vals.push(Math.round(v / 5) * 5 + rnd(-1, 1) * 0); }
+    var mx = 120, mn = 0, s = '', pts = [];
+    for (var k = 0; k <= 4; k++) { var yy = 120 - k * 25; s += '<line x1="40" y1="' + yy + '" x2="320" y2="' + yy + '" style="stroke:var(--line);stroke-width:1"/>' + txt(32, yy + 4, String(k * 25), 10, 'end'); }
+    vals.forEach(function (v, ii) { var x = 60 + ii * 50, y = 120 - v / 100 * 100; pts.push(x + ',' + y); s += '<circle cx="' + x + '" cy="' + y + '" r="4" style="fill:var(--accent)"/>' + txt(x, 138, months[ii], 11); });
+    s += '<polyline points="' + pts.join(' ') + '" style="fill:none;stroke:var(--accent);stroke-width:2.5"/>';
+    var names = { up: 'It rises steadily', down: 'It falls steadily', peak: 'It rises, then falls', dip: 'It falls, then rises' };
+    return mk({ tag: 'Trends in graphs', text: 'The line graph shows the number of ice creams sold each month. Which sentence <b>describes the trend</b>?', pic: svg(340, 148, 'A line graph over six months. ' + names[shape], s, 340), hints: ['Follow the line from left to right. Is it going up, going down, or changing direction?'],
+      explain: names[shape] + '.' }, mcStr(names[shape], Object.keys(names).filter(function (x) { return x !== shape; }).map(function (x) { return names[x]; })));
+  }
+  function gMislead() {
+    var items = [['A bar chart’s vertical axis starts at 80 instead of 0.', 'Small differences look much bigger than they are'], ['A graph has no labels or title on its axes.', 'Nobody can tell what the numbers mean'], ['A pictogram uses a big picture for one value and a tiny picture for another.', 'The sizes of the pictures make the values look different from the data'],
+      ['A line graph squashes the scale so a big rise looks flat.', 'A real change looks smaller than it is']], t = pick(items);
+    return mk({ tag: 'Misleading graphs', text: t[0] + ' Why can this be <b>misleading</b>?', hints: ['Think about what a reader sees at a glance compared with the real numbers.'], explain: t[1] + '. A good graph has a fair scale, clear labels and a title.' },
+      mcStr(t[1], items.filter(function (x) { return x !== t; }).map(function (x) { return x[1]; })));
+  }
+  function gRelFreq(lv) {
+    var n = pick([50, 100, 200, 250, 500]), p = rnd(2, 8) / 10, x = Math.round(n * p);
+    if (Math.random() < 0.5) return Q({ tag: 'Relative frequency', text: 'A spinner is spun ' + n + ' times and lands on blue ' + x + ' times. What is the <b>relative frequency</b> of blue? Give a decimal.', answer: T(x / n),
+      hints: ['Relative frequency = number of times the result happens ÷ total number of trials.'], explain: x + ' ÷ ' + n + ' = ' + T(x / n) + '.' });
+    var pr = pick([0.1, 0.2, 0.25, 0.3, 0.4, 0.5]), tr = pick([100, 200, 300, 400, 500]);
+    return Q({ tag: 'Expected outcomes', text: 'The probability that a drawing pin lands point up is ' + pr + '. If it is dropped <b>' + tr + '</b> times, how many times would you expect it to land point up?', answer: T(pr * tr),
+      hints: ['Expected number = probability × number of trials.'], explain: pr + ' × ' + tr + ' = ' + T(pr * tr) + '.' });
+  }
+
+  /* ================= NUMBER SKILLS ================= */
+  function gPctChg(lv) {
+    var inc = Math.random() < 0.5, p = pick(lv <= 1 ? [10, 20, 25, 50] : [5, 10, 15, 20, 25, 30, 35]), v = pick([20, 40, 60, 80, 120, 200, 240, 300, 400]), ch = v * p / 100, nv = inc ? v + ch : v - ch;
+    return Q({ tag: 'Percentage increase and decrease', text: 'A price of £' + v + ' is ' + (inc ? 'increased' : 'reduced') + ' by <b>' + p + '%</b>. What is the new price, in pounds?', answer: T(nv),
+      hints: ['Find ' + p + '% of £' + v + ' first.', inc ? 'Add it on to the original price.' : 'Take it off the original price.'], explain: p + '% of £' + v + ' = £' + T(ch) + '. £' + v + (inc ? ' + ' : ' − ') + '£' + T(ch) + ' = £' + T(nv) + '.' });
+  }
+  function gImproper(lv) {
+    var d = pick([3, 4, 5, 6, 8]), w = rnd(1, lv <= 1 ? 4 : 7), n = rnd(1, d - 1), imp = w * d + n, mixed = w + ' ' + n + '/' + d;
+    if (Math.random() < 0.5) return mk({ tag: 'Improper fractions and mixed numbers', text: 'Write <b>' + imp + '/' + d + '</b> as a mixed number.', hints: ['Divide ' + imp + ' by ' + d + '. The whole part is the answer, the remainder is the new numerator.'], explain: imp + ' ÷ ' + d + ' = ' + w + ' remainder ' + n + ', so ' + imp + '/' + d + ' = ' + mixed + '.' },
+      mcStr(mixed, [(w + 1) + ' ' + n + '/' + d, w + ' ' + (n + 1) + '/' + d, n + ' ' + w + '/' + d]));
+    return mk({ tag: 'Improper fractions and mixed numbers', text: 'Write <b>' + mixed + '</b> as an improper fraction.', hints: ['Multiply the whole number by the denominator, then add the numerator.'], explain: w + ' × ' + d + ' + ' + n + ' = ' + imp + ', so ' + mixed + ' = ' + imp + '/' + d + '.' },
+      mcStr(imp + '/' + d, [(imp + d) + '/' + d, (w + n) + '/' + d, (imp - 1) + '/' + d]));
+  }
+  function r1sf(x) { var e = Math.floor(Math.log10(Math.abs(x))), p = Math.pow(10, e); return Math.round(x / p) * p; }
+  function gEst1sf(lv) {
+    var kind = pick(['mul', 'div']), a, b, ans, txtq;
+    if (kind === 'mul') { a = pick(lv <= 1 ? [38, 47, 62, 71, 83, 19, 52] : [4.8, 6.1, 38.7, 51.2, 0.48, 19.6, 297]); b = pick(lv <= 1 ? [21, 32, 48, 19, 29] : [5.2, 29, 2.9, 41, 9.8, 3.1]); ans = r1sf(a) * r1sf(b); txtq = a + ' × ' + b; }
+    else { b = pick([19, 21, 29, 31, 48, 52, 4.8, 5.1]); a = pick([612, 389, 4180, 7800, 891, 2960, 2390]); ans = r1sf(a) / r1sf(b); txtq = fmt(a) + ' ÷ ' + b; }
+    if (ans !== Math.round(ans * 100) / 100) return gEst1sf(lv);
+    return Q({ tag: 'Estimating by rounding', text: 'Estimate <b>' + txtq + '</b> by rounding each number to <b>1 significant figure</b>.', answer: T(ans),
+      hints: ['Round each number to 1 significant figure first.', 'Then do the easy calculation with the rounded numbers.'], explain: txtq + ' ≈ ' + fmt(r1sf(a)) + (kind === 'mul' ? ' × ' : ' ÷ ') + fmt(r1sf(b)) + ' = ' + fmt(ans) + '.' });
+  }
+  function gAreaConv(lv) {
+    var kind = pick(lv >= 3 ? ['a1', 'a2', 'v1', 'v2'] : ['a1', 'a2', 'v1']);
+    if (kind === 'a1') { var v = pick([2, 3, 4.5, 0.5, 7]); return Q({ tag: 'Converting units of area and volume', text: 'Convert <b>' + v + ' m²</b> to cm².', answer: String(v * 10000), hints: ['1 m = 100 cm, so 1 m² = 100 × 100 cm².'], explain: '1 m² = 10,000 cm², so ' + v + ' m² = ' + fmt(v * 10000) + ' cm².' }); }
+    if (kind === 'a2') { var w = pick([200, 350, 40, 1200]); return Q({ tag: 'Converting units of area and volume', text: 'Convert <b>' + w + ' mm²</b> to cm².', answer: T(w / 100), hints: ['1 cm = 10 mm, so 1 cm² = 10 × 10 mm² = 100 mm².'], explain: '1 cm² = 100 mm², so ' + w + ' ÷ 100 = ' + T(w / 100) + ' cm².' }); }
+    if (kind === 'v1') { var c = pick([2, 3, 5, 0.5]); return Q({ tag: 'Converting units of area and volume', text: 'Convert <b>' + c + ' litres</b> to cm³. (1 litre = 1,000 cm³.)', answer: String(c * 1000), hints: ['Multiply the litres by 1,000.'], explain: c + ' × 1,000 = ' + fmt(c * 1000) + ' cm³.' }); }
+    var m3 = pick([2, 3, 0.5, 1.5]); return Q({ tag: 'Converting units of area and volume', text: 'Convert <b>' + m3 + ' m³</b> to cm³.', answer: String(m3 * 1000000), hints: ['1 m = 100 cm, so 1 m³ = 100 × 100 × 100 cm³.'], explain: '1 m³ = 1,000,000 cm³, so ' + m3 + ' m³ = ' + fmt(m3 * 1000000) + ' cm³.' });
+  }
+
+  /* ================= QUADRATICS ================= */
+  function lin(v, k) { return k >= 0 ? v + ' + ' + k : v + ' ' + M + ' ' + (-k); }
+  function quad(b, c) { return 'x² ' + (b >= 0 ? '+ ' + (b === 1 ? '' : b) : M + ' ' + (b === -1 ? '' : -b)) + 'x ' + (c >= 0 ? '+ ' + c : M + ' ' + (-c)); }
+  function gFactQuad() {
+    var p = pick([-6, -5, -4, -3, -2, -1, 1, 2, 3, 4, 5, 6, 7]), q = pick([-7, -5, -4, -3, -2, -1, 1, 2, 3, 4, 5, 8]);
+    var b = p + q, c = p * q, ans = '(' + lin('x', p) + ')(' + lin('x', q) + ')';
+    var wrong = ['(' + lin('x', -p) + ')(' + lin('x', -q) + ')', '(' + lin('x', p) + ')(' + lin('x', -q) + ')', '(' + lin('x', p + 1) + ')(' + lin('x', q - 1) + ')'];
+    return mk({ tag: 'Factorising quadratics', text: 'Factorise <b>' + quad(b, c) + '</b>.', hints: ['Find two numbers that multiply to give ' + c + ' and add to give ' + b + '.', 'Put those numbers in the brackets: (x + ...)(x + ...).'], explain: 'The numbers are ' + p + ' and ' + q + ': ' + p + ' × ' + q + ' = ' + c + ' and ' + p + ' + ' + q + ' = ' + b + '. So ' + quad(b, c) + ' = ' + ans + '.' }, mcStr(ans, wrong));
+  }
+  function gSolveQuad() {
+    var p = pick([-5, -4, -3, -2, -1, 1, 2, 3, 4, 5, 6]), q = pick([-6, -3, -2, 1, 2, 3, 4, 7]);
+    if (p === q) q += 1; if (q === 0) q = 1;
+    var b = -(p + q), c = p * q, lo = Math.min(p, q), hi = Math.max(p, q), f = function (a) { return 'x = ' + (a < 0 ? M + (-a) : a); };
+    var ans = f(lo) + ' or ' + f(hi);
+    return mk({ tag: 'Solving quadratics', text: 'Solve <b>' + quad(b, c) + ' = 0</b>.', hints: ['Factorise first: find two numbers that multiply to ' + c + ' and add to ' + b + '.', 'Then set each bracket equal to 0.'], explain: quad(b, c) + ' = (x ' + (-p >= 0 ? '+ ' + (-p) : M + ' ' + p) + ')(x ' + (-q >= 0 ? '+ ' + (-q) : M + ' ' + q) + ') = 0, so ' + ans + '.' },
+      mcStr(ans, [f(-lo) + ' or ' + f(-hi), f(lo) + ' or ' + f(-hi), f(lo + 1) + ' or ' + f(hi - 1)]));
+  }
+
+  /* ================= WIRING ================= */
+  var MAP = {
+    802: [[gPowWrite, 'e', 1], [gMFStory, 'm', 1]],
+    821: [[gPowWrite, 'e', 2], [gIndexLaw, 'm', 2], [gEst1sf, 'm', 2]],
+    841: [[gEst1sf, 'm', 3], [gIndexLaw, 'm', 3]],
+    803: [[gImproper, 'e', 1]],
+    804: [[gPctChg, 'e', 1]],
+    806: [[gWageVat, 'e', 1], [gStatement, 'm', 1]],
+    824: [[gWageVat, 'e', 2], [gStatement, 'm', 2], [gBudgetS, 'm', 2]],
+    842: [[gBudgetS, 'm', 3], [gWageVat, 'h', 3]],
+    807: [[gDays, 'e', 1], [gZone, 'm', 1]],
+    825: [[gDays, 'e', 2], [gZone, 'm', 2]],
+    810: [[gAngName, 'e', 1], [gProt, 'e', 1], [gCompSupp, 'e', 1], [gConstruct, 'm', 1]],
+    829: [[gCompSupp, 'm', 2], [gConstruct, 'm', 2], [gAngName, 'e', 2]],
+    811: [[gSolidKind, 'm', 1]],
+    826: [[gAreaConv, 'm', 2]],
+    844: [[gAreaConv, 'm', 3]],
+    812: [[gBias, 'e', 1], [gSampleSize, 'e', 1], [gSurveyQ, 'e', 1], [gTally, 'e', 1], [gTwoWay, 'm', 1], [gTrend, 'm', 1], [gMislead, 'm', 1]],
+    832: [[gBias, 'e', 2], [gSampleSize, 'e', 2], [gSurveyQ, 'e', 2], [gTwoWay, 'm', 2], [gTrend, 'm', 2], [gMislead, 'm', 2], [gRelFreq, 'm', 2]],
+    852: [[gBias, 'e', 3], [gSampleSize, 'e', 3], [gTrend, 'm', 3], [gMislead, 'm', 3], [gRelFreq, 'm', 3]],
+    845: [[gFactQuad, 'h', 3]],
+    846: [[gSolveQuad, 'h', 3]]
+  };
+  function bind(e) { var f = function () { return e[0](e[2]); }; Object.defineProperty(f, 'name', { value: e[0].name }); return f; }
+  var prev = S.extraMakers;
+  S.extraMakers = function (n, level) {
+    var base = prev ? (prev(n, level) || []) : [], list = MAP[Number(n)];
+    if (!list) return base;
+    var pick1 = list.filter(function (x) { return level === 'low' ? x[1] === 'e' || (x[1] === 'm' && list.length < 4) : level === 'high' ? x[1] !== 'e' : true; });
+    if (!pick1.length) pick1 = list;
+    return pick1.map(bind).concat(base);
+  };
+  BT.bmx2 = { pics: { protPic: protPic, arcPic: arcPic, stmtPic: stmtPic, pw: pw }, MAP: MAP, makers: { gPowWrite: gPowWrite, gIndexLaw: gIndexLaw, gMFStory: gMFStory, gWageVat: gWageVat, gStatement: gStatement, gBudgetS: gBudgetS, gDays: gDays, gZone: gZone, gAngName: gAngName, gProt: gProt, gCompSupp: gCompSupp, gConstruct: gConstruct, gSolidKind: gSolidKind,
+    gBias: gBias, gSampleSize: gSampleSize, gSurveyQ: gSurveyQ, gTally: gTally, gTwoWay: gTwoWay, gTrend: gTrend, gMislead: gMislead, gRelFreq: gRelFreq, gPctChg: gPctChg, gImproper: gImproper, gEst1sf: gEst1sf, gAreaConv: gAreaConv, gFactQuad: gFactQuad, gSolveQuad: gSolveQuad } };
+})();
+</script>
+<script>
+/* bmx3.js: lesson parts ("learn8") for the S1, S2 and S3 gaps filled by bmx2.js. */
+(function () {
+  'use strict';
+  var S = Studio, K = S.kit, BT = window.BT;
+  if (!BT || !BT.add || !BT.bmx2) return;
+  var sl = BT.sl, XV = BT.XV, P = BT.bmx2.pics, hs = BT.hs, svg = BT.svg, txt = BT.txt;
+  function table(rows, heads) { return K.table(rows, heads); }
+  var pw = P.pw;
+
+  function L_pow() {
+    return [
+      XV('Writing numbers as powers', 'Write 81 as a power of 3.', ['Keep multiplying 3 by itself: 3 × 3 = 9, 9 × 3 = 27, 27 × 3 = 81.', 'You used four 3s.', 'So 81 = 3 × 3 × 3 × 3 = ' + pw(3, 4) + '.'], '81 = ' + pw(3, 4),
+        function () { return table([[pw(3, 1), '3'], [pw(3, 2), '9'], [pw(3, 3), '27'], [pw(3, 4), '81']], ['Power', 'Value']); },
+        'Computer memory doubles each time: 2, 4, 8, 16, 32 … These are the powers of 2.', 'how to write a number as a power and how to work a power out.',
+        ['The base is the number being multiplied. The index tells you how many of them to multiply.', 'To write a number as a power, divide by the base again and again and count the steps.'],
+        ['Example 1: ' + pw(2, 5) + ' = 2 × 2 × 2 × 2 × 2 = 32.', 'Example 2: 125 = 5 × 5 × 5 = ' + pw(5, 3) + '.', 'Example 3: 10,000 = ' + pw(10, 4) + '.'])
+    ];
+  }
+  function L_index() {
+    return [
+      XV('Laws of indices', 'Simplify ' + pw(2, 5) + ' × ' + pw(2, 3) + '.', ['Both powers have the same base, 2.', 'When you multiply powers with the same base, add the indices: 5 + 3 = 8.', 'So ' + pw(2, 5) + ' × ' + pw(2, 3) + ' = ' + pw(2, 8) + '.'], pw(2, 8),
+        function () { return table([['Multiply', 'add the indices'], ['Divide', 'subtract the indices'], [pw('a', 0), '1'], [pw('a', -1), '1 ÷ a']], ['Rule', 'What to do']); },
+        'Scientists write huge and tiny numbers as powers, so they can multiply them without writing every zero.', 'the rules for multiplying and dividing powers.',
+        ['The rules only work when the bases are the same.', 'Any non-zero number to the power 0 is 1. A negative index means “one over”.'],
+        ['Example 1: ' + pw(3, 4) + ' × ' + pw(3, 2) + ' = ' + pw(3, 6) + '.', 'Example 2: ' + pw(5, 7) + ' ÷ ' + pw(5, 3) + ' = ' + pw(5, 4) + '.', 'Example 3: ' + pw(2, -3) + ' = 1/8.'])
+    ];
+  }
+  function L_mf() {
+    return [
+      XV('Multiples and factors in context', 'A bus leaves every 6 minutes and a tram every 8 minutes. They leave together at 9:00. When do they leave together again?', ['“Together again” means a common multiple of 6 and 8.', 'Multiples of 6: 6, 12, 18, 24 …', 'Multiples of 8: 8, 16, 24 …', 'The lowest common multiple is 24, so they leave together again after 24 minutes, at 9:24.'], '9:24',
+        function () { return table([['6', '6, 12, 18, 24'], ['8', '8, 16, 24']], ['Number', 'Multiples']); },
+        'Timetables, flashing lights and gear teeth all repeat on a cycle, which is a multiple problem.', 'how to decide between LCM and HCF in a word problem.',
+        ['Meeting again later → lowest common multiple (LCM).', 'Cutting or sharing into equal pieces → highest common factor (HCF).'],
+        ['Example 1: Lights flash every 4 s and 6 s. Together every 12 s.', 'Example 2: Planks 12 cm and 18 cm cut into equal pieces: the longest piece is 6 cm.', 'Example 3: 20 pens and 30 rubbers shared into identical packs: 10 packs.'])
+    ];
+  }
+  function L_improper() {
+    return [
+      XV('Improper fractions and mixed numbers', 'Write 17/5 as a mixed number.', ['Divide the numerator by the denominator: 17 ÷ 5 = 3 remainder 2.', 'The whole number is 3.', 'The remainder 2 goes over the denominator 5.', 'So 17/5 = 3 2/5.'], '17/5 = 3 2/5',
+        function () { return table([['17/5', '3 whole ones and 2/5'], ['3 2/5', '3 × 5 + 2 = 17, so 17/5']], ['Form', 'Meaning']); },
+        'Three and two fifths of a pizza is more than one pizza, so it is a mixed number.', 'how to change between improper fractions and mixed numbers.',
+        ['An improper fraction has a numerator bigger than its denominator.', 'To go back: whole × denominator + numerator, over the same denominator.'],
+        ['Example 1: 7/2 = 3 1/2.', 'Example 2: 2 3/4 = 11/4.', 'Example 3: 13/3 = 4 1/3.'])
+    ];
+  }
+  function L_pctchg() {
+    return [
+      XV('Percentage increase and decrease', 'A £60 jacket is reduced by 25%. What is the sale price?', ['Find 25% of £60. 25% is a quarter: £60 ÷ 4 = £15.', 'It is a reduction, so subtract: £60 − £15.', 'The sale price is £45.'], '£45',
+        function () { return table([['10%', '÷ 10'], ['25%', '÷ 4'], ['50%', '÷ 2'], ['1%', '÷ 100']], ['Percentage', 'Quick method']); },
+        'Shops show sales as a percentage off the original price.', 'how to increase or decrease an amount by a percentage.',
+        ['Increase: add the percentage on. Decrease: take it off.', 'You can also use a multiplier: a 25% decrease is × 0.75.'],
+        ['Example 1: £80 increased by 10% = £88.', 'Example 2: £200 reduced by 30% = £140.', 'Example 3: 50 kg increased by 20% = 60 kg.'])
+    ];
+  }
+  function L_wage() {
+    return [
+      XV('Wages and VAT', 'Ria earns £12 an hour. She works 30 normal hours and 4 hours of overtime at time and a half. What does she earn?', ['Normal pay: 30 × £12 = £360.', 'Overtime rate: £12 × 1.5 = £18 an hour.', 'Overtime pay: 4 × £18 = £72.', 'Total: £360 + £72 = £432.'], '£432',
+        function () { return table([['Normal', '30 × £12', '£360'], ['Overtime', '4 × £18', '£72'], ['Total', '', '£432']], ['Type', 'Working', 'Pay']); },
+        'Many jobs pay extra for overtime and weekend hours.', 'how to work out pay with overtime, and prices with VAT.',
+        ['VAT is a tax on goods and services. It is 20% in the UK.', 'To add VAT: price × 1.2. To remove it: divide by 1.2.'],
+        ['Example 1: £50 + 20% VAT = £60.', 'Example 2: A price including VAT of £144 is £120 before VAT.', 'Example 3: 8 hours at £11 = £88.'])
+    ];
+  }
+  function L_stmt() {
+    return [
+      XV('Reading a bank statement', 'The opening balance is £90. £450 wages goes in, then £30 and £200 go out. What is the final balance?', ['Start at £90.', 'Money in: £90 + £450 = £540.', 'Money out: £540 − £30 = £510.', 'Money out again: £510 − £200 = £310.'], '£310',
+        function () { return P.stmtPic(90, [{ d: '3 Mar', t: 'Wages', inn: 450 }, { d: '5 Mar', t: 'Phone bill', out: 30 }, { d: '9 Mar', t: 'Rent', out: 200 }]); },
+        'A bank statement lists every payment in and out, so you can check your money.', 'how to read a bank statement and find the balance.',
+        ['“In” adds to the balance. “Out” takes away from it.', 'Check: opening balance + total in − total out = final balance.'],
+        ['Example 1: £100 + £50 in − £30 out = £120.', 'Example 2: A negative balance means you are overdrawn.', 'Example 3: Total out of £30 + £200 = £230.'])
+    ];
+  }
+  function L_budget() {
+    return [
+      XV('Budgeting with a monthly income', 'Jo earns £2,400 a month. Rent £900, bills £150, food £300, travel £100. How much is left to save?', ['Add the spending: £900 + £150 + £300 + £100 = £1,450.', 'Subtract from the income: £2,400 − £1,450 = £950.', 'Jo can save £950 a month.'], '£950',
+        function () { return table([['Income', '£2,400'], ['Rent', '£900'], ['Bills', '£150'], ['Food', '£300'], ['Travel', '£100'], ['Left to save', '£950']], ['Item', 'Amount']); },
+        'A budget lets you plan to save for something big, like a holiday.', 'how to plan income against spending.',
+        ['A percentage of income spent on rent: £900 ÷ £2,400 × 100 = 37.5%.', 'Compare needs (rent, food) with wants.'],
+        ['Example 1: Income £1,800, spending £1,500: £300 left.', 'Example 2: £400 ÷ £2,000 = 20% on food.', 'Example 3: Saving £950 a month for 12 months = £11,400.'])
+    ];
+  }
+  function L_days() {
+    return [
+      XV('Days and dates', 'How many days are there from 20 March to 8 April?', ['March has 31 days. Days left in March after the 20th: 31 − 20 = 11.', 'Then count the days into April: 8.', '11 + 8 = 19 days.'], '19 days',
+        function () { return table([['January', '31', 'July', '31'], ['February', '28', 'August', '31'], ['March', '31', 'September', '30'], ['April', '30', 'October', '31'], ['May', '31', 'November', '30'], ['June', '30', 'December', '31']], ['Month', 'Days', 'Month', 'Days']); },
+        'Delivery dates and holiday lengths are all counted in days.', 'how to count days across months.',
+        ['“30 days has September, April, June and November.”', 'To find an end date, count the days left in the month and carry on.'],
+        ['Example 1: 25 Jan to 3 Feb = 6 + 3 = 9 days.', 'Example 2: 10 days after 25 June is 5 July.', 'Example 3: February has 28 days (29 in a leap year).'])
+    ];
+  }
+  function L_zone() {
+    return [
+      XV('Time zones', 'Tokyo is 9 hours ahead of London. It is 15:00 in London. What time is it in Tokyo?', ['Ahead means later, so add 9 hours.', '15:00 + 9 hours = 24:00, which is 00:00.', 'It is midnight in Tokyo, the start of the next day.'], '00:00 the next day',
+        function () { return table([['Paris', '+1'], ['Dubai', '+4'], ['Tokyo', '+9'], ['New York', '−5']], ['City', 'Hours from London']); },
+        'A video call between London and Tokyo has to fit into both working days.', 'how to change the time between places.',
+        ['Ahead of London: add hours. Behind London: subtract hours.', 'If you pass 24:00, move to the next day.'],
+        ['Example 1: 10:00 in London is 14:00 in Dubai (add 4).', 'Example 2: 18:00 London = 13:00 in New York.', 'Example 3: 22:00 London = 07:00 the next day in Tokyo.'])
+    ];
+  }
+  function L_angname() {
+    return [
+      sl('Naming angles with three letters', ['An angle is named with three letters. The middle letter is the corner, where the two lines meet.', 'The angle at corner R between points P and Z is ∠PRZ. You can also write it ∠ZRP.', 'A small curved arc shows which angle you mean.'],
+        BT.hs ? svg(260, 140, 'An angle at point R between points P and Z', '<line x1="130" y1="118" x2="190" y2="68" style="stroke:var(--fg);stroke-width:2.5"/><line x1="130" y1="118" x2="208" y2="118" style="stroke:var(--fg);stroke-width:2.5"/><path d="M152 118 A22 22 0 0 0 146 102" style="fill:none;stroke:var(--accent);stroke-width:3"/>' + txt(122, 136, 'R', 15, 'middle', ';font-weight:700') + txt(196, 62, 'P', 15, 'middle', ';font-weight:700') + txt(220, 123, 'Z', 15, 'middle', ';font-weight:700'), 260) : '',
+        'Maps and diagrams use letters so everybody knows exactly which angle is meant.', 'how to name an angle with three letters.',
+        ['The middle letter is always the corner.', 'Both ∠PRZ and ∠ZRP name the same angle.'], ['Example 1: Lines meeting at B between A and C: ∠ABC.', 'Example 2: The angle at corner Q between P and R is ∠PQR.', 'Example 3: ∠XYZ has its corner at Y.'])
+    ];
+  }
+  function L_prot() {
+    return [
+      XV('Measuring with a protractor', 'Measure the angle between the thick arm and the red line.', ['Put the centre of the protractor on the corner of the angle.', 'Line the base line up with the arm.', 'Find the 0 on the arm and use the scale that starts there.', 'Read where the red line crosses that scale: 40°.'], '40°',
+        function () { return P.protPic(40, false); },
+        'Builders and designers use a protractor to measure and draw exact angles.', 'how to read the correct scale on a protractor.',
+        ['Two scales run in opposite directions. Use the one that starts at 0 on the arm.', 'Check: an acute angle is under 90°, an obtuse angle is between 90° and 180°.'],
+        ['Example 1: A small angle reads about 30°.', 'Example 2: An obtuse angle reads about 120°.', 'Example 3: A straight line is 180°.'])
+    ];
+  }
+  function L_compsupp() {
+    return [
+      XV('Complementary and supplementary angles', 'Find the angle that is complementary to 35°, and the angle that is supplementary to 35°.', ['Complementary angles add up to 90°: 90° − 35° = 55°.', 'Supplementary angles add up to 180°: 180° − 35° = 145°.'], '55° and 145°',
+        function () { return table([['Complementary', '90°', '90° − 35° = 55°'], ['Supplementary', '180°', '180° − 35° = 145°']], ['Pair', 'Total', 'Example']); },
+        'A set square makes a right angle, which splits into two complementary angles.', 'what complementary and supplementary mean.',
+        ['Complementary: forms a right angle. Supplementary: forms a straight line.', 'With algebra: x + 2x = 90 gives 3x = 90, so x = 30.'],
+        ['Example 1: 90° − 20° = 70°.', 'Example 2: 180° − 120° = 60°.', 'Example 3: x and 2x supplementary: 3x = 180, x = 60.'])
+    ];
+  }
+  function L_construct() {
+    return [
+      XV('Constructing a triangle with a compass', 'Construct a triangle with sides 6 cm, 4 cm and 5 cm.', ['Draw the 6 cm base AB with a ruler.', 'Set the compass to 4 cm. Put the point on A and draw an arc.', 'Set the compass to 5 cm. Put the point on B and draw a second arc.', 'Where the arcs cross is the third corner. Join it to A and B.'], 'A triangle with sides 6, 4 and 5',
+        function () { return P.arcPic(6, 4, 5); },
+        'Architects and engineers draw accurate triangles for roof frames and bridges.', 'how to construct a triangle from three sides.',
+        ['The two shorter sides must add up to more than the longest, or the arcs will not meet.', 'Two sides and the angle between them (SAS), or two angles and a side (ASA), also fix one exact triangle.'],
+        ['Example 1: 3, 4, 5 works because 3 + 4 > 5.', 'Example 2: 2, 3, 7 does not work because 2 + 3 < 7.', 'Example 3: Three angles only give the shape, not the size.'])
+    ];
+  }
+  function L_solid() {
+    return [
+      sl('Prisms and pyramids', ['A prism has the same cross-section all the way along. A pyramid has a flat base and tapers to a point.', 'A triangular prism: 5 faces, 6 vertices, 9 edges. A square-based pyramid: 5 faces, 5 vertices, 8 edges.', 'Euler’s check: faces + vertices − edges = 2.'],
+        table([['Triangular prism', '5', '6', '9'], ['Cuboid', '6', '8', '12'], ['Square-based pyramid', '5', '5', '8'], ['Hexagonal prism', '8', '12', '18']], ['Solid', 'Faces', 'Vertices', 'Edges']),
+        'Tents are prisms, and the Egyptian pyramids are square-based pyramids.', 'the properties of prisms and pyramids.', ['For an n-sided prism: n + 2 faces, 2n vertices, 3n edges.', 'For an n-sided pyramid: n + 1 faces, n + 1 vertices, 2n edges.'],
+        ['Example 1: A pentagonal prism has 7 faces.', 'Example 2: A hexagonal pyramid has 7 vertices.', 'Example 3: 7 + 10 − 15 = 2 for a pentagonal prism.'])
+    ];
+  }
+  function L_sample() {
+    return [
+      sl('Fair samples and survey questions', ['We usually ask a sample, not everybody. A fair sample is chosen at random and is large enough.', 'Asking only your friends, or only one group, gives a biased sample.', 'A fair question is neutral. A leading question pushes people towards one answer.'],
+        table([['Random, large, mixed', 'Fair'], ['Only friends or one team', 'Biased'], ['Too few people', 'Unreliable'], ['“Don’t you agree it’s awful?”', 'Leading']], ['Sample or question', 'Verdict']),
+        'Polls before an election ask a few thousand people chosen to represent everyone.', 'how to tell a fair sample and a fair question from a biased one.',
+        ['A bigger random sample is more reliable.', 'Always think about who was left out.'],
+        ['Example 1: 30 random pupils is fairer than 3 friends.', 'Example 2: “How would you rate the lunches?” is fair.', 'Example 3: A survey outside a sports shop is biased towards sport fans.'])
+    ];
+  }
+  function L_tally() {
+    return [
+      sl('Tally charts and two-way tables', ['A tally chart records data as it is collected. Four lines with a fifth across them make a group of 5.', 'A two-way table sorts people by two features at once, with totals for each row and column.', 'Use the totals to find a missing number.'],
+        table([['Boys', '14', '6', '20'], ['Girls', '10', '?', '17'], ['Total', '24', '', '37']], ['', 'Walk', 'Bus', 'Total']),
+        'A school survey on travel can be recorded with tallies and then sorted by year group in a two-way table.', 'how to count a tally and use a two-way table.',
+        ['Count the groups of 5 first, then the single lines.', 'Each row and column adds up to its total.'], ['Example 1: one group of five plus three single lines is 5 + 3 = 8.', 'Example 2: 17 − 10 = 7 girls take the bus.', 'Example 3: Add the column totals to check the grand total.'])
+    ];
+  }
+  function L_trend() {
+    return [
+      sl('Describing trends and spotting misleading graphs', ['A trend is the overall pattern in data over time: rising, falling, steady, or changing direction.', 'Describe a trend in words and say when it changes.', 'A graph can mislead if the axis does not start at 0, has no labels, or has an uneven scale.'],
+        table([['Line goes up', 'Rising trend'], ['Line goes down', 'Falling trend'], ['Up then down', 'A peak'], ['Axis starts at 80', 'Differences look bigger']], ['What you see', 'What it means']),
+        'News graphs sometimes start the axis high to make a small change look dramatic.', 'how to describe a trend and check a graph is fair.',
+        ['Read the axes before you read the line.', 'A fair graph has a title, labels and an even scale.'], ['Example 1: Sales rise each month: a rising trend.', 'Example 2: Rises to June then falls: a peak in June.', 'Example 3: A bar chart axis starting at 80 exaggerates small differences.'])
+    ];
+  }
+  function L_relfreq() {
+    return [
+      XV('Relative frequency and expected outcomes', 'A spinner lands on blue 30 times in 50 spins. What is the relative frequency of blue? How many blues would you expect in 200 spins?', ['Relative frequency = 30 ÷ 50 = 0.6.', 'Expected number = probability × number of trials.', '0.6 × 200 = 120.'], '0.6 and 120',
+        function () { return table([['Relative frequency', 'times it happens ÷ number of trials'], ['Expected number', 'probability × number of trials']], ['Idea', 'Rule']); },
+        'Weather forecasters use past results to say how likely rain is.', 'how to use results to estimate probability and predict outcomes.',
+        ['More trials make relative frequency closer to the true probability.', 'Expected is an average, not a promise.'], ['Example 1: 18 heads in 40 tosses: 0.45.', 'Example 2: P = 0.25, 400 trials: expect 100.', 'Example 3: 6 sixes in 60 rolls: 0.1.'])
+    ];
+  }
+  function L_est() {
+    return [
+      XV('Estimating by rounding to 1 significant figure', 'Estimate 48.7 × 5.2.', ['Round each number to 1 significant figure: 48.7 → 50 and 5.2 → 5.', 'Multiply the rounded numbers: 50 × 5 = 250.', 'So 48.7 × 5.2 is about 250. (The exact answer is 253.24.)'], '≈ 250',
+        function () { return table([['48.7', '50'], ['5.2', '5'], ['50 × 5', '250']], ['Number', 'Rounded to 1 s.f.']); },
+        'Checking a bill in your head uses estimating to spot big mistakes.', 'how to estimate a calculation quickly.',
+        ['The first non-zero digit is the 1st significant figure.', 'An estimate is a check, not an exact answer.'], ['Example 1: 612 ÷ 29 ≈ 600 ÷ 30 = 20.', 'Example 2: 0.48 × 19.6 ≈ 0.5 × 20 = 10.', 'Example 3: 3,980 + 5,120 ≈ 4,000 + 5,000 = 9,000.'])
+    ];
+  }
+  function L_areaconv() {
+    return [
+      XV('Converting units of area and volume', 'Convert 3 m² to cm².', ['1 m = 100 cm.', 'For area, square the scale factor: 100 × 100 = 10,000.', '3 × 10,000 = 30,000 cm².'], '30,000 cm²',
+        function () { return table([['Length', '1 m = 100 cm'], ['Area', '1 m² = 10,000 cm²'], ['Volume', '1 m³ = 1,000,000 cm³'], ['Capacity', '1 litre = 1,000 cm³']], ['Type', 'Conversion']); },
+        'A carpet sold in m² but a floor measured in cm needs the conversion.', 'how to convert units of area and volume.',
+        ['Area: square the length factor. Volume: cube it.', 'Do not use 100 for area. It is 100 × 100.'], ['Example 1: 1 cm² = 100 mm².', 'Example 2: 2 litres = 2,000 cm³.', 'Example 3: 5 m³ = 5,000,000 cm³.'])
+    ];
+  }
+  function L_fq() {
+    return [
+      XV('Factorising quadratics', 'Factorise x² + 7x + 12.', ['Find two numbers that multiply to 12 and add to 7.', '3 × 4 = 12 and 3 + 4 = 7.', 'So x² + 7x + 12 = (x + 3)(x + 4).', 'Check by expanding: x² + 4x + 3x + 12 = x² + 7x + 12.'], '(x + 3)(x + 4)',
+        function () { return table([['Multiply to', '12 (the number)'], ['Add to', '7 (the x term)'], ['Numbers', '3 and 4']], ['Clue', 'Value']); },
+        'Quadratics describe the path of a ball and the area of a rectangle.', 'how to factorise x² + bx + c.',
+        ['If the number term is negative, the two numbers have different signs.', 'Always check by expanding the brackets.'], ['Example 1: x² + 5x + 6 = (x + 2)(x + 3).', 'Example 2: x² − 2x − 8 = (x − 4)(x + 2).', 'Example 3: x² − 9x + 20 = (x − 4)(x − 5).'])
+    ];
+  }
+  function L_sq() {
+    return [
+      XV('Solving quadratics by factorising', 'Solve x² − 5x + 6 = 0.', ['Factorise: (x − 2)(x − 3) = 0.', 'If two things multiply to 0, one of them is 0.', 'x − 2 = 0 gives x = 2. x − 3 = 0 gives x = 3.'], 'x = 2 or x = 3',
+        function () { return table([['(x − 2)(x − 3) = 0', 'x − 2 = 0 or x − 3 = 0'], ['Solutions', 'x = 2 or x = 3']], ['Step', 'Working']); },
+        'Finding when a thrown ball lands is a quadratic equation.', 'how to solve a quadratic equation by factorising.',
+        ['The equation must equal 0 first.', 'A quadratic can have two solutions.'], ['Example 1: (x + 1)(x − 4) = 0 gives x = −1 or x = 4.', 'Example 2: x² = 49 gives x = 7 or x = −7.', 'Example 3: Check by substituting back.'])
+    ];
+  }
+
+  var META = {
+    'Writing numbers as powers': { tags: ['Writing numbers as powers'], story: 'A video file doubles in size each time it is copied with extra detail: 2, 4, 8, 16, 32. Those numbers are the powers of 2, and computer memory is built on them.',
+      insight: ['A power is a short way to write repeated multiplication. The base is the number you multiply and the index counts how many times, so 3⁴ means four 3s multiplied together.', 'To write a number as a power, divide by the base again and again and count the steps. Watch out for 2³, which is 8, not 6.'] },
+    'Laws of indices': { tags: ['Laws of indices'], story: 'Scientists write the distance to the Sun as a power of 10 so they can multiply and divide huge numbers without writing every zero.',
+      insight: ['When you multiply powers with the same base, you add the indices. When you divide, you subtract. This works because each index counts how many copies of the base there are.', 'The rules only work for the same base. Any non-zero number to the power 0 equals 1, and a negative index means one over the positive power.'] },
+    'Multiples and factors in context': { tags: ['Multiples and factors in context'], story: 'Two buses leave a station at the same moment. One returns every 6 minutes and the other every 8 minutes. Working out when they next leave together is a multiples problem.',
+      insight: ['Ask what the problem wants. If things repeat and meet again, you want the lowest common multiple. If you cut or share into equal pieces, you want the highest common factor.', 'List multiples or factors of both numbers and find the first or biggest one they have in common.'] },
+    'Improper fractions and mixed numbers': { tags: ['Improper fractions and mixed numbers'], story: 'You eat 3 whole pizzas and 2 fifths of another. As a mixed number that is 3 2/5, and as an improper fraction it is 17/5.',
+      insight: ['A mixed number and an improper fraction are two ways of writing the same amount. Dividing the numerator by the denominator gives the whole number, and the remainder is the new numerator.', 'To go back, multiply the whole number by the denominator and add the numerator.'] },
+    'Percentage increase and decrease': { tags: ['Percentage increase and decrease'], story: 'A jacket costs £60 and the shop takes 25% off. A quarter of £60 is £15, so you pay £45.',
+      insight: ['To change an amount by a percentage, work out the percentage first, then add it on for an increase or take it off for a decrease.', 'Quick percentages help: 10% is a tenth, 25% is a quarter and 50% is a half.'] },
+    'Wages and VAT': { tags: ['Wages and VAT'], story: 'A cafe worker earns £12 an hour. For extra hours on a Sunday she gets time and a half. When she buys a phone, 20% VAT is already in the price.',
+      insight: ['Pay is hours multiplied by the rate. Overtime has its own higher rate, so work it out separately and then add.', 'VAT is a tax on goods and services. Multiply by 1.2 to add 20% VAT, and divide by 1.2 to remove it.'] },
+    'Reading a bank statement': { tags: ['Bank statements'], story: 'A bank statement is a list of every payment in and out of your account, with the balance after each one. It helps you spot mistakes and plan.',
+      insight: ['Money in adds to the balance and money out takes away from it. Start at the opening balance and work down the rows.', 'To check, add all the money in, subtract all the money out, and see if you reach the final balance.'] },
+    'Budgeting with a monthly income': { tags: ['Budgeting'], story: 'Jo wants to save for a holiday. She lists her income, takes off rent, bills, food and travel, and sees how much is left to save.',
+      insight: ['A budget compares income with spending. Add the spending first, then subtract from the income.', 'Percentages show how much of your income goes on each item, which helps you decide where to cut back.'] },
+    'Days and dates': { tags: ['Days and dates'], story: 'A parcel is posted on 20 March and arrives on 8 April. Counting the days across two months is a dates problem.',
+      insight: ['Count the days left in the first month, then add the days into the next. Remember how many days each month has.', 'To find an end date, keep subtracting the month lengths until you are within one month.'] },
+    'Time zones': { tags: ['Time zones'], story: 'A video call between London and Tokyo has to fit in both working days, because Tokyo is nine hours ahead.',
+      insight: ['Places east of London are ahead, so add hours. Places west are behind, so subtract hours.', 'If you pass 24:00, the date moves on by one day. Write times on the 24-hour clock to avoid mixing up am and pm.'] },
+    'Naming angles with three letters': { tags: ['Naming angles'], story: 'On a diagram with many lines, saying “the angle” is not enough. Mathematicians name an angle with three letters, like ∠PRZ, so everybody knows which one is meant.',
+      insight: ['The middle letter is the corner where the two lines meet. The other two letters are points on each line.', 'Both ∠PRZ and ∠ZRP describe the same angle, but ∠RPZ would be a different angle at P.'] },
+    'Measuring with a protractor': { tags: ['Measuring angles with a protractor'], story: 'A carpenter cutting a roof timber uses a protractor to check that the angle is exactly right before the saw touches the wood.',
+      insight: ['A protractor has two scales running in opposite directions. Use the scale that starts at 0 on the arm of the angle.', 'Check that your answer makes sense: an acute angle is under 90° and an obtuse angle is between 90° and 180°.'] },
+    'Complementary and supplementary angles': { tags: ['Complementary and supplementary angles'], story: 'A set square has a right angle. If you draw a line from the corner into the square, you split the right angle into two complementary angles.',
+      insight: ['Complementary angles add up to 90°, so they make a right angle. Supplementary angles add up to 180°, so they make a straight line.', 'With algebra, add the angles and set them equal to 90 or 180, then solve.'] },
+    'Constructing a triangle with a compass': { tags: ['Constructing triangles'], story: 'A roof frame builder draws a full-size triangle on the floor with a long ruler and a string compass to make sure every beam fits.',
+      insight: ['To construct a triangle from three sides, draw one side as the base, then draw arcs from each end with the other two lengths. The arcs cross at the third corner.', 'If the two shorter sides do not add up to more than the longest, the arcs never meet and no triangle exists.'] },
+    'Prisms and pyramids': { tags: ['Prisms and pyramids'], story: 'A tent is a triangular prism and the pyramids of Giza are square-based pyramids. Counting faces, vertices and edges tells you which solid you have.',
+      insight: ['A prism has the same cross-section all the way along. A pyramid has a base and tapers to a point.', 'Check your counts with Euler’s rule: faces plus vertices minus edges equals 2.'] },
+    'Fair samples and survey questions': { tags: ['Fair samples', 'Sample size', 'Survey questions'], story: 'Before an election, pollsters ask a few thousand people chosen to represent the whole country, not just the people who walk past one office.',
+      insight: ['A fair sample is chosen at random, is big enough, and includes different kinds of people. Asking only friends gives a biased sample.', 'A fair question is neutral. A leading question pushes people towards an answer, so it gives unreliable data.'] },
+    'Tally charts and two-way tables': { tags: ['Tally charts', 'Two-way tables'], story: 'A school survey counts how pupils travel. Tallies record the answers as they come in, and a two-way table sorts them by boys and girls.',
+      insight: ['A tally uses groups of five so counting is quick. A two-way table has totals for every row and column.', 'Because totals must agree, a missing number can always be found by subtracting from a total.'] },
+    'Describing trends and spotting misleading graphs': { tags: ['Trends in graphs', 'Misleading graphs'], story: 'A newspaper graph starts its axis at 80 so a small rise looks huge. A careful reader checks the axis before believing the picture.',
+      insight: ['A trend is the overall pattern over time. Say whether it rises, falls, stays steady or changes direction.', 'A fair graph has a title, labelled axes and an even scale that starts at 0.'] },
+    'Relative frequency and expected outcomes': { tags: ['Relative frequency', 'Expected outcomes'], story: 'A factory tests 200 bulbs and 6 fail. The relative frequency of a faulty bulb is 0.03, which helps the factory predict how many will fail in a batch of 10,000.',
+      insight: ['Relative frequency is the number of times something happens divided by the number of trials. More trials give a better estimate of probability.', 'Expected number is probability multiplied by the number of trials. It is an average, not a promise.'] },
+    'Estimating by rounding to 1 significant figure': { tags: ['Estimating by rounding'], story: 'Before paying a bill of 48.7 × 5.2, you can estimate 50 × 5 = 250 in your head to check it is about right.',
+      insight: ['Round each number to 1 significant figure, then do the easy calculation. The first non-zero digit is the first significant figure.', 'An estimate is a check on the size of an answer. If your calculator gives 2,532 you know something went wrong.'] },
+    'Converting units of area and volume': { tags: ['Converting units of area and volume'], story: 'A carpet is sold by the square metre, but the room is measured in centimetres. Converting units of area correctly avoids buying the wrong amount.',
+      insight: ['For area, the length factor is squared. 1 m = 100 cm, so 1 m² = 100 × 100 = 10,000 cm². For volume it is cubed.', 'The common mistake is to use 100 for area. Draw a 1 m square made of 100 by 100 small squares to see why.'] },
+    'Factorising quadratics': { tags: ['Factorising quadratics'], story: 'The area of a rectangular garden is x² + 7x + 12. Factorising gives the side lengths (x + 3) and (x + 4).',
+      insight: ['To factorise x² + bx + c, find two numbers that multiply to c and add to b. Then write them in two brackets.', 'Check by expanding the brackets. If the signs are wrong, the middle term will not match.'] },
+    'Solving quadratics by factorising': { tags: ['Solving quadratics'], story: 'When a ball is thrown up and comes down, the times when it is at ground level are the solutions of a quadratic equation.',
+      insight: ['Rearrange so the equation equals 0, factorise, then use the fact that if two things multiply to 0, one of them must be 0.', 'A quadratic can have two solutions, so give both.'] }
+  };
+
+  var LESS = [
+    [802, 'Powers and problems', function () { return L_pow().concat(L_mf()); }],
+    [803, 'Mixed numbers', function () { return L_improper(); }],
+    [804, 'Percentage change', function () { return L_pctchg(); }],
+    [806, 'Wages, VAT and statements', function () { return L_wage().concat(L_stmt()); }],
+    [807, 'Dates and time zones', function () { return L_days().concat(L_zone()); }],
+    [810, 'Naming and measuring angles', function () { return L_angname().concat(L_prot(), L_compsupp(), L_construct()); }],
+    [811, 'Prisms and pyramids', function () { return L_solid(); }],
+    [812, 'Fair data and trends', function () { return L_sample().concat(L_tally(), L_trend()); }],
+    [821, 'Powers and estimating', function () { return L_pow().concat(L_index(), L_est()); }],
+    [824, 'Wages, VAT and budgets', function () { return L_wage().concat(L_stmt(), L_budget()); }],
+    [825, 'Dates and time zones', function () { return L_days().concat(L_zone()); }],
+    [826, 'Converting area and volume', function () { return L_areaconv(); }],
+    [829, 'Angles and constructions', function () { return L_compsupp().concat(L_construct()); }],
+    [832, 'Fair data, trends and chance', function () { return L_sample().concat(L_trend(), L_relfreq()); }],
+    [841, 'Estimating and indices', function () { return L_est().concat(L_index()); }],
+    [842, 'Budgeting', function () { return L_budget(); }],
+    [844, 'Converting area and volume', function () { return L_areaconv(); }],
+    [845, 'Factorising quadratics', function () { return L_fq(); }],
+    [846, 'Solving quadratics', function () { return L_sq(); }],
+    [852, 'Fair data and chance', function () { return L_sample().concat(L_relfreq()); }]
+  ];
+  LESS.forEach(function (e) { try { var ss = e[2](); ss.forEach(function (x) { var m = META[x.title]; if (m) { x.tags = m.tags; x.story = m.story; x.insight = m.insight; } }); BT.add(e[0], 'learn8', e[1], ss); } catch (err) { if (window.console) console.warn('bmx3 lesson ' + e[0], err); } });
+})();
+</script>
+<script>
 /* ban.js: keeps every question inside the topic it belongs to (P5 first).
    Practice, warm-ups, Real-time problems, the games (which reuse practice questions) and the
    lesson worked examples all draw from the same makers, and some makers add general reasoning
