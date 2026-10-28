@@ -275,7 +275,11 @@ table.plan th, table.plan td { text-align: left; padding: 8px 10px; border-botto
 .qtag { font-size: .78rem; font-weight: 800; letter-spacing: .07em; text-transform: uppercase; color: var(--muted); }
 .qtext { font-size: 1.15rem; font-weight: 600; margin: 6px 0 14px; }
 .opts { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px; }
-.opt { background: var(--surface-2); border: 2px solid transparent; border-radius: 12px; padding: 12px; font-weight: 800; min-height: 48px; text-align: left; }
+.opt { background: var(--surface); border: 2px solid var(--accent); box-shadow: 0 2px 0 var(--line); cursor: pointer; border-radius: 12px; padding: 12px; font-weight: 800; min-height: 48px; text-align: left; }
+.opt:not(:disabled):hover { background: var(--surface-2); }
+.worked [data-o] { background: var(--surface); border: 2px solid var(--accent); color: var(--fg); box-shadow: 0 2px 0 var(--line); min-width: 110px; cursor: pointer; }
+.worked [data-o]:not(:disabled):hover { background: var(--surface-2); }
+.worked [data-o]:disabled { opacity: .75; cursor: default; }
 .opt.ok { border-color: var(--good); background: var(--good-bg); }
 .opt.no { border-color: var(--bad); background: var(--bad-bg); }
 .ans { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
