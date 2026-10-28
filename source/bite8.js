@@ -9,7 +9,7 @@
   var S = Studio, H = S.h, BT = window.BT;
   if (!BT || !BT.tagMk) return;
   var YEARS = { all: S.order.slice() };
-  var STEPS = ['learn1', 'learn2', 'learn3', 'learn4'];
+  var STEPS = ['learn1', 'learn2', 'learn3', 'learn4', 'learn8'];
 
   function rnd(a, b) { return a + Math.floor(Math.random() * (b - a + 1)); }
   function pick(a) { return a[rnd(0, a.length - 1)]; }
@@ -67,8 +67,10 @@
   /* ----- build the three slides from one old slide ----- */
   function threeFrom(n, stepId, k, s, goal, m, offset) {
     var title = s.title, vis = visualOf(s), blob = [s.title, goal, (s.say || []).join(' '), s.ex ? s.ex.q : '', m && m.more ? m.more.join(' ') : ''].join(' ');
-    var tags = tagsFor(n, blob, offset), tA = tags[0], tB = tags[1] || tags[0], tC = tags[2] || tags[0];
-    var real = (BT.pickStory && BT.pickStory(n, title, goal, k)) || (s.real && typeof s.real === 'string' ? s.real : '');
+    var tags = tagsFor(n, blob, offset), own = (s.tags || []).filter(function (t) { return (BT.tagMk[n] || {})[t]; });
+    if (own.length) tags = own;
+    var tA = tags[0], tB = tags[1] || tags[0], tC = tags[2] || tags[0];
+    var real = s.story || (BT.pickStory && BT.pickStory(n, title, goal, k)) || (s.real && typeof s.real === 'string' ? s.real : '');
     var A = s.live ? s : {
       title: title, v: '', say: [], real: null, goal: goal || 'the key idea of this lesson.',
       live: function (host) {
@@ -96,7 +98,7 @@
       live: function (host) {
         host.style.cssText = 'display:flex;flex-direction:column;gap:14px';
         host.innerHTML = say(OPEN_C[(offset + k) % OPEN_C.length]) +
-          (BT.pickInsight ? BT.pickInsight(n, title, goal).map(say).join('') : (more.length ? more.map(say).join('') : '')) +
+          (s.insight ? s.insight.map(say).join('') : BT.pickInsight ? BT.pickInsight(n, title, goal).map(say).join('') : (more.length ? more.map(say).join('') : '')) +
           tag('Let’s see the idea in action') + say('Try this one yourself, then press <b>Show step</b> and I will explain why each step works. You can try a different question too.') + card('', 'd1') + tag('Check yourself') + say('One more for luck. Choose your answer.') + card('', 'e1');
         worked(host.querySelector('#d1'), mixFor(n, tags.slice(0, 4)), true);
         check(host.querySelector('#e1'), genFor(n, tB));
