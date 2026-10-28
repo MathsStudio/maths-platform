@@ -127,12 +127,15 @@ button:focus-visible, input:focus-visible, select:focus-visible, summary:focus-v
 .tb { background: var(--surface); border: 1px solid var(--line); border-radius: 999px; padding: 8px 14px; font-weight: 800; font-size: .9rem; min-height: 40px; }
 .tb[aria-pressed="true"] { border-color: var(--accent); }
 .voice-tb { margin-left: auto; }
+.brk { display: none; }
 .voice-tb[aria-pressed="true"] { background: var(--good-bg); border-color: var(--good); }
 .level-switch { display: flex; align-items: center; gap: 3px; padding: 4px; border: 1px solid var(--line); border-radius: 999px; background: var(--surface); }
 .level-switch-label { padding: 0 5px; font-size: .78rem; font-weight: 800; color: var(--muted); }
 .level-pill { min-height: 34px; padding: 5px 10px; border: 0; border-radius: 999px; background: transparent; color: var(--fg); font-weight: 800; font-size: .83rem; }
 .level-pill:hover, .level-pill:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
 .level-pill[aria-pressed="true"] { background: var(--accent); color: var(--accent-fg); }
+@media (max-width: 560px) { .brk { display: block; flex-basis: 100%; height: 0; } }
+@media (max-width: 820px) { .top { justify-content: flex-start; } .top > .row { display: contents; } .voice-tb { margin-left: 0; } .top .tb { padding: 8px 11px; font-size: .84rem; min-height: 38px; } }
 @media (max-width: 560px) { .top { gap: 8px; } .level-switch { order: 3; width: fit-content; } .level-pill { padding-inline: 9px; } }
 
 /* Settings */
@@ -457,6 +460,7 @@ input[type=range].slider { width: 100%; }
       <a class="tb sitenav" href="/#pricing" style="text-decoration:none;display:inline-flex;align-items:center;color:inherit">Pricing</a>
       <button class="tb" id="tbHome" type="button">All topics</button>
       <button class="tb" id="tbSettings" type="button" aria-pressed="false" aria-controls="settings">Settings</button>
+      <span class="brk" aria-hidden="true"></span>
       <a class="tb" id="tbAccount" href="/account" style="text-decoration:none;display:inline-flex;align-items:center;color:inherit">Account</a>
     </div>
     <button class="tb voice-tb" id="readToggle" type="button" aria-pressed="false">🔈 Voice off</button>
