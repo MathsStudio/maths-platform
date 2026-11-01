@@ -561,7 +561,10 @@ var SLIDE_MORE = {"1.learn1": [{"more": ["Our number system uses only ten digits
   function pickVoice() {
     var name = store.settings.voice, v = null;
     if (name) v = Nar.voices.find(function (x) { return x.name === name; });
-    if (!v) v = Nar.voices.find(function (x) { return /en[-_]GB/i.test(x.lang); });
+    if (!v) {
+      var sc = function (x) { var n = 0; if (/natural|online/i.test(x.name)) n += 4; if (/en[-_]GB/i.test(x.lang)) n += 3; if (/en[-_](AU|IE|US)/i.test(x.lang)) n += 1; if (/female|sonia|libby|hazel|susan|serena|google uk english female/i.test(x.name)) n += 1; return n; };
+      var best = -1; Nar.voices.forEach(function (x) { if (/^en/i.test(x.lang) && sc(x) > best) { best = sc(x); v = x; } });
+    }
     return v || Nar.voices[0] || null;
   }
   function unmarkAll() { document.querySelectorAll('.say.on').forEach(function (e) { e.classList.remove('on'); }); }
@@ -643,7 +646,7 @@ var SLIDE_MORE = {"1.learn1": [{"more": ["Our number system uses only ten digits
   /* true when the voice was on (or had just been reading) when the pupil acted, so the page should speak back */
   S.h.readActive = function () { return !!(store.settings.readMode || store.settings.auto || Nar.playing || (Nar.wasPlaying && Date.now() - Nar.wasAt < 8000)); };
   S.h.readOn = function () { return !!(store.settings.readMode || store.settings.auto); };
-  function narStop() { if (Nar.ok) { Nar.token++; try { speechSynthesis.cancel(); } catch (e) { /* ignore */ } } Nar.playing = false; Nar.at = 0; Nar.units = []; Nar.err = ''; unmarkAll(); setPlayerUI(); }
+  function narStop() { if (S.h.storyStop) S.h.storyStop(); if (Nar.ok) { Nar.token++; try { speechSynthesis.cancel(); } catch (e) { /* ignore */ } } Nar.playing = false; Nar.at = 0; Nar.units = []; Nar.err = ''; unmarkAll(); setPlayerUI(); }
   function narSpeakNow(text, report) {
     if (!Nar.ok) { if (report) report('The voice is not available in this viewer.'); return; }
     freshStart(); Nar.token++; Nar.playing = false; Nar.units = []; Nar.at = 0; unmarkAll();
@@ -655,6 +658,22 @@ var SLIDE_MORE = {"1.learn1": [{"more": ["Our number system uses only ten digits
     speechSynthesis.speak(ut);
     setTimeout(function () { if (!started && report) report('No sound started. Check the volume and silent switch. The voice may be blocked in this viewer.'); }, 3000);
   }
+  /* used by the story lessons: speak one sentence with the pupil's chosen voice and speed; cb(true) when it finishes */
+  S.h.speakStory = function (text, cb, onstart) {
+    if (!Nar.ok) return false;
+    freshStart(); Nar.token++; Nar.playing = false; Nar.units = []; Nar.at = 0; unmarkAll();
+    try { speechSynthesis.cancel(); } catch (e) { /* ignore */ }
+    var ut = new SpeechSynthesisUtterance(speakable(text)); ut.lang = 'en-GB'; ut.rate = Math.min(1.1, (Number(store.settings.rate) || 1) * 0.94); ut.pitch = 1.02;
+    var v = pickVoice(); if (v) { ut.voice = v; ut.lang = v.lang; }
+    ut.onstart = function () { if (onstart) onstart(); }; ut.onend = function () { cb(true); }; ut.onerror = function () { cb(false); };
+    speechSynthesis.speak(ut); return true;
+  };
+  S.h.voiceOk = function () { return Nar.ok; };
+  S.h.voiceList = function () { return Nar.voices.filter(function (x) { return /^en/i.test(x.lang); }).map(function (x) { return x.name; }); };
+  S.h.voiceCur = function () { var v = pickVoice(); return v ? v.name : ''; };
+  S.h.setVoice = function (n) { store.settings.voice = n; save(); };
+  S.h.rateCur = function () { return Number(store.settings.rate) || 1; };
+  S.h.setRate = function (r) { store.settings.rate = r; save(); };
   // Automatically read answer feedback aloud: brief praise when correct, worked
   // correction when incorrect. Uses the same British English voice/settings.
   function speakAnswerFeedback(ok, answer, explanation) {
