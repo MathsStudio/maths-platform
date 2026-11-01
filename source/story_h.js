@@ -35,4 +35,37 @@
     var s = '<circle cx="110" cy="100" r="80" style="fill:var(--surface-2);' + S + '"/><line x1="110" y1="100" x2="190" y2="100" style="stroke:var(--accent);stroke-width:4"/><line x1="30" y1="100" x2="190" y2="100" style="stroke:var(--bad);stroke-width:2.5;stroke-dasharray:6 5"/><circle cx="110" cy="100" r="4" style="fill:var(--fg)"/>' + V.t(150, 90, 'radius', 'middle', 'var(--accent)') + V.t(110, 128, 'diameter', 'middle', 'var(--bad)');
     return V.svg(220, 200, s, 'A circle with its radius and diameter', 240);
   };
+  /* parallel lines cut by a transversal, with labels [[x,y,text]] */
+  V.par = function (labels) {
+    var L = 'stroke:var(--fg);stroke-width:3.5;stroke-linecap:round;';
+    var s = '<line x1="20" y1="60" x2="280" y2="60" style="' + L + '"/><line x1="20" y1="140" x2="280" y2="140" style="' + L + '"/><line x1="90" y1="20" x2="210" y2="180" style="stroke:var(--accent);stroke-width:3.5"/>';
+    s += '<path d="M60 52 l12 8 l-12 8" style="fill:none;stroke:var(--fg);stroke-width:2"/><path d="M60 132 l12 8 l-12 8" style="fill:none;stroke:var(--fg);stroke-width:2"/>';
+    labels.forEach(function (l) { s += V.t(l[0], l[1], l[2], 'middle', 'var(--bad)'); });
+    return V.svg(300, 200, s, 'Two parallel lines cut by a transversal') + V.note('Not drawn to scale');
+  };
+  /* general graph: axes from x0..x1, y0..y1; items: {l:[[x,y],...],c,d}, {p:[x,y,label,c]}, {poly:[[x,y],...],c}; o: {tx,ty,xl,yl} */
+  V.plot = function (x0, x1, y0, y1, items, o) {
+    o = o || {}; var W = 320, H = 260, L = 36, B = 28, T = 10, R = 12, ux = (W - L - R) / (x1 - x0), uy = (H - B - T) / (y1 - y0), tx = o.tx || 1, ty = o.ty || 1, s = '';
+    var X = function (x) { return L + (x - x0) * ux; }, Y = function (y) { return H - B - (y - y0) * uy; };
+    for (var x = Math.ceil(x0 / tx) * tx; x <= x1 + 1e-9; x += tx) { s += '<line x1="' + X(x) + '" y1="' + T + '" x2="' + X(x) + '" y2="' + (H - B) + '" style="stroke:var(--line);stroke-width:1.2"/>' + V.t(X(x), H - B + 16, +x.toFixed(2), 'middle', 'var(--muted)'); }
+    for (var y = Math.ceil(y0 / ty) * ty; y <= y1 + 1e-9; y += ty) { s += '<line x1="' + L + '" y1="' + Y(y) + '" x2="' + (W - R) + '" y2="' + Y(y) + '" style="stroke:var(--line);stroke-width:1.2"/>' + V.t(L - 5, Y(y) + 5, +y.toFixed(2), 'end', 'var(--muted)'); }
+    if (y0 <= 0 && y1 >= 0) s += '<line x1="' + L + '" y1="' + Y(0) + '" x2="' + (W - R) + '" y2="' + Y(0) + '" style="stroke:var(--fg);stroke-width:2.5"/>';
+    if (x0 <= 0 && x1 >= 0) s += '<line x1="' + X(0) + '" y1="' + T + '" x2="' + X(0) + '" y2="' + (H - B) + '" style="stroke:var(--fg);stroke-width:2.5"/>';
+    items.forEach(function (it) {
+      if (it.l) s += '<polyline points="' + it.l.map(function (q) { return X(q[0]) + ',' + Y(q[1]); }).join(' ') + '" style="fill:none;stroke:' + (it.c || 'var(--accent)') + ';stroke-width:4;stroke-linejoin:round;stroke-linecap:round' + (it.d ? ';stroke-dasharray:8 6' : '') + '"/>';
+      if (it.poly) s += '<polygon points="' + it.poly.map(function (q) { return X(q[0]) + ',' + Y(q[1]); }).join(' ') + '" style="fill:' + (it.c || 'var(--accent)') + ';fill-opacity:.4;stroke:var(--fg);stroke-width:3;stroke-linejoin:round"/>';
+      if (it.p) s += '<circle cx="' + X(it.p[0]) + '" cy="' + Y(it.p[1]) + '" r="5.5" style="fill:' + (it.p[3] || 'var(--bad)') + ';stroke:var(--fg);stroke-width:2"/>' + (it.p[2] ? V.t(X(it.p[0]) + 9, Y(it.p[1]) - 8, it.p[2], 'start', it.p[3] || 'var(--bad)') : '');
+    });
+    if (o.xl) s += V.t(W - R, H - 2, o.xl, 'end', 'var(--muted)');
+    if (o.yl) s += V.t(L + 4, T + 12, o.yl, 'start', 'var(--muted)');
+    return V.svg(W, H, s, o.alt || 'A graph', 340);
+  };
+  /* right-angled triangle, right angle bottom-left; labels {a: bottom, b: left, c: hypotenuse, ang: angle at bottom-right} */
+  V.rt = function (lab) {
+    lab = lab || {};
+    var s = '<polygon points="30,150 30,30 210,150" style="fill:var(--surface-2);stroke:var(--fg);stroke-width:3.5;stroke-linejoin:round"/><path d="M30 134 h16 v16" style="fill:none;stroke:var(--accent);stroke-width:3"/>';
+    if (lab.a) s += V.t(120, 174, lab.a); if (lab.b) s += V.t(14, 95, lab.b, 'end'); if (lab.c) s += V.t(138, 80, lab.c, 'start', 'var(--accent)'); if (lab.ang) s += V.t(168, 144, lab.ang, 'middle', 'var(--bad)');
+    return V.svg(250, 190, s, 'A right-angled triangle', 270);
+  };
+
 })();
