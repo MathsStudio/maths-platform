@@ -12733,6 +12733,39 @@ S.spatialExtra = S.extraMakers;
     var s = '<circle cx="110" cy="100" r="80" style="fill:var(--surface-2);' + S + '"/><line x1="110" y1="100" x2="190" y2="100" style="stroke:var(--accent);stroke-width:4"/><line x1="30" y1="100" x2="190" y2="100" style="stroke:var(--bad);stroke-width:2.5;stroke-dasharray:6 5"/><circle cx="110" cy="100" r="4" style="fill:var(--fg)"/>' + V.t(150, 90, 'radius', 'middle', 'var(--accent)') + V.t(110, 128, 'diameter', 'middle', 'var(--bad)');
     return V.svg(220, 200, s, 'A circle with its radius and diameter', 240);
   };
+  /* parallel lines cut by a transversal, with labels [[x,y,text]] */
+  V.par = function (labels) {
+    var L = 'stroke:var(--fg);stroke-width:3.5;stroke-linecap:round;';
+    var s = '<line x1="20" y1="60" x2="280" y2="60" style="' + L + '"/><line x1="20" y1="140" x2="280" y2="140" style="' + L + '"/><line x1="90" y1="20" x2="210" y2="180" style="stroke:var(--accent);stroke-width:3.5"/>';
+    s += '<path d="M60 52 l12 8 l-12 8" style="fill:none;stroke:var(--fg);stroke-width:2"/><path d="M60 132 l12 8 l-12 8" style="fill:none;stroke:var(--fg);stroke-width:2"/>';
+    labels.forEach(function (l) { s += V.t(l[0], l[1], l[2], 'middle', 'var(--bad)'); });
+    return V.svg(300, 200, s, 'Two parallel lines cut by a transversal') + V.note('Not drawn to scale');
+  };
+  /* general graph: axes from x0..x1, y0..y1; items: {l:[[x,y],...],c,d}, {p:[x,y,label,c]}, {poly:[[x,y],...],c}; o: {tx,ty,xl,yl} */
+  V.plot = function (x0, x1, y0, y1, items, o) {
+    o = o || {}; var W = 320, H = 260, L = 36, B = 28, T = 10, R = 12, ux = (W - L - R) / (x1 - x0), uy = (H - B - T) / (y1 - y0), tx = o.tx || 1, ty = o.ty || 1, s = '';
+    var X = function (x) { return L + (x - x0) * ux; }, Y = function (y) { return H - B - (y - y0) * uy; };
+    for (var x = Math.ceil(x0 / tx) * tx; x <= x1 + 1e-9; x += tx) { s += '<line x1="' + X(x) + '" y1="' + T + '" x2="' + X(x) + '" y2="' + (H - B) + '" style="stroke:var(--line);stroke-width:1.2"/>' + V.t(X(x), H - B + 16, +x.toFixed(2), 'middle', 'var(--muted)'); }
+    for (var y = Math.ceil(y0 / ty) * ty; y <= y1 + 1e-9; y += ty) { s += '<line x1="' + L + '" y1="' + Y(y) + '" x2="' + (W - R) + '" y2="' + Y(y) + '" style="stroke:var(--line);stroke-width:1.2"/>' + V.t(L - 5, Y(y) + 5, +y.toFixed(2), 'end', 'var(--muted)'); }
+    if (y0 <= 0 && y1 >= 0) s += '<line x1="' + L + '" y1="' + Y(0) + '" x2="' + (W - R) + '" y2="' + Y(0) + '" style="stroke:var(--fg);stroke-width:2.5"/>';
+    if (x0 <= 0 && x1 >= 0) s += '<line x1="' + X(0) + '" y1="' + T + '" x2="' + X(0) + '" y2="' + (H - B) + '" style="stroke:var(--fg);stroke-width:2.5"/>';
+    items.forEach(function (it) {
+      if (it.l) s += '<polyline points="' + it.l.map(function (q) { return X(q[0]) + ',' + Y(q[1]); }).join(' ') + '" style="fill:none;stroke:' + (it.c || 'var(--accent)') + ';stroke-width:4;stroke-linejoin:round;stroke-linecap:round' + (it.d ? ';stroke-dasharray:8 6' : '') + '"/>';
+      if (it.poly) s += '<polygon points="' + it.poly.map(function (q) { return X(q[0]) + ',' + Y(q[1]); }).join(' ') + '" style="fill:' + (it.c || 'var(--accent)') + ';fill-opacity:.4;stroke:var(--fg);stroke-width:3;stroke-linejoin:round"/>';
+      if (it.p) s += '<circle cx="' + X(it.p[0]) + '" cy="' + Y(it.p[1]) + '" r="5.5" style="fill:' + (it.p[3] || 'var(--bad)') + ';stroke:var(--fg);stroke-width:2"/>' + (it.p[2] ? V.t(X(it.p[0]) + 9, Y(it.p[1]) - 8, it.p[2], 'start', it.p[3] || 'var(--bad)') : '');
+    });
+    if (o.xl) s += V.t(W - R, H - 2, o.xl, 'end', 'var(--muted)');
+    if (o.yl) s += V.t(L + 4, T + 12, o.yl, 'start', 'var(--muted)');
+    return V.svg(W, H, s, o.alt || 'A graph', 340);
+  };
+  /* right-angled triangle, right angle bottom-left; labels {a: bottom, b: left, c: hypotenuse, ang: angle at bottom-right} */
+  V.rt = function (lab) {
+    lab = lab || {};
+    var s = '<polygon points="30,150 30,30 210,150" style="fill:var(--surface-2);stroke:var(--fg);stroke-width:3.5;stroke-linejoin:round"/><path d="M30 134 h16 v16" style="fill:none;stroke:var(--accent);stroke-width:3"/>';
+    if (lab.a) s += V.t(120, 174, lab.a); if (lab.b) s += V.t(14, 95, lab.b, 'end'); if (lab.c) s += V.t(138, 80, lab.c, 'start', 'var(--accent)'); if (lab.ang) s += V.t(168, 144, lab.ang, 'middle', 'var(--bad)');
+    return V.svg(250, 190, s, 'A right-angled triangle', 270);
+  };
+
 })();
 </script>
 <script>
@@ -13215,6 +13248,669 @@ S.spatialExtra = S.extraMakers;
         st("A rotation needs a centre, an angle and a direction. Turning the point two, one a quarter turn clockwise about the origin sends it to one, minus two.", V.eq('(x, y) → (y, −x)') + V.eq('(2, 1) → (1, −2)', 'g')),
         st("An enlargement needs a centre and a scale factor. Scale factor two from the origin doubles every coordinate. One, two becomes two, four.", V.eq('(1, 2) → (2, 4)', 'g'))]),
       REC("Translation needs a vector. Rotation needs a centre, angle and direction. Enlargement needs a centre and a scale factor.", ['Translation: vector', 'Rotation: centre, angle, direction', 'Enlargement: centre, scale factor'])] }
+  ]);
+})();
+</script>
+<script>
+/* story_s1.js: teacher story lessons for S1 (topics 801 to 813). */
+(function () {
+  'use strict';
+  var BT = window.BT; if (!BT || !BT.story || !BT.sv || !BT.sv.plot) return;
+  var V = BT.sv, NL = BT.NL;
+  var SC = function (h, sub, steps) { return { h: h, sub: sub, steps: steps }; };
+  var st = function (say, html) { return { say: say, html: html || '' }; };
+  var REC = function (say, items) { return SC('Let’s recap', '', [st(say, V.list(items))]); };
+
+  /* 801 WHOLE NUMBERS AND DECIMALS */
+  BT.story(801, 'Watch', [
+    { title: 'Calculating with decimals', goal: 'how to multiply and divide decimals accurately.', scenes: [
+      SC('Multiplying decimals', '3.6 × 0.4', [
+        st("Welcome to secondary maths! Let's multiply three point six by zero point four. First ignore the decimal points and multiply the whole numbers: thirty-six times four is one hundred and forty-four.", V.eq('36 × 4 = 144', 'b')),
+        st("Now count the decimal places in the question. Three point six has one, and zero point four has one. That is two altogether, so the answer has two decimal places: one point four four.", V.eq('3.6 × 0.4 = 1.44', 'g') + V.rule('Count the decimal places in the question.')),
+        st("Check by estimating. Four times a bit less than half is a bit less than two. One point four four is sensible.", V.eq('≈ 4 × 0.4 = 1.6 ✓'))]),
+      SC('Dividing decimals', '12.5 ÷ 0.5', [
+        st("To divide by a decimal, make the divisor a whole number. Multiply both numbers by ten. Twelve point five divided by zero point five becomes a hundred and twenty-five divided by five, which is twenty-five.", V.eq('12.5 ÷ 0.5 = 125 ÷ 5 = 25', 'g'))]),
+      REC("Multiply as whole numbers and put back the decimal places. To divide by a decimal, multiply both numbers by the same power of ten.", ['Multiply as whole numbers', 'Count the decimal places', 'Divide: make the divisor whole'])] },
+    { title: 'Rounding and estimating', goal: 'how to round to decimal places and significant figures and estimate answers.', scenes: [
+      SC('Rounding', 'Decimal places and significant figures', [
+        st("Round zero point zero six seven eight to two significant figures. Count from the first digit that is not zero. The first two are six and seven. Next door is an eight, so round up: zero point zero six eight.", V.eq('0.0678 → 0.068', 'g') + V.rule('Leading zeros are not significant.')),
+        st("Round forty-seven point three five to one decimal place. Look at the second decimal. It is a five, so round up: forty-seven point four.", V.eq('47.35 → 47.4 (1 d.p.)', 'g'))]),
+      SC('Estimating', '4.87 × 6.1', [
+        st("To estimate, round each number to one significant figure. Four point eight seven is about five. Six point one is about six. Five times six is thirty.", V.eq('5 × 6 = 30', 'g')),
+        st("The exact answer is twenty-nine point seven, which is close. If your calculator said two hundred and ninety-seven, you would know you had slipped a decimal place.", V.eq('exact: 29.707 ✓', 'g'))]),
+      REC("Round to one significant figure to estimate. Use the estimate to catch slips.", ['d.p. or s.f.?', 'Estimate with 1 s.f.', 'Compare with the exact answer'])] }
+  ]);
+
+  /* 802 INTEGERS, BODMAS, FACTORS, POWERS */
+  BT.story(802, 'Watch', [
+    { title: 'Negative numbers', goal: 'the rules for adding, subtracting, multiplying and dividing negatives.', scenes: [
+      SC('Adding and subtracting', 'On the number line', [
+        st("Subtracting a positive moves left. Minus five minus three: start at minus five and move three left, to minus eight.", NL(-10, 2, { lab: 2, tick: 1, jumps: [[-5, -8, '−3']] }) + V.eq('−5 − 3 = −8', 'g')),
+        st("Subtracting a negative is like adding. Four take away minus two is four plus two, which is six. Two minuses make a plus.", V.eq('4 − (−2) = 4 + 2 = 6', 'g'))]),
+      SC('Multiplying and dividing', 'Same signs give positive', [
+        st("When you multiply or divide, the same signs give a positive answer, and different signs give a negative. Minus four times minus three is plus twelve. Minus twelve divided by four is minus three.", V.eq('−4 × −3 = 12') + V.eq('−12 ÷ 4 = −3', 'g') + V.rule('Same signs: positive. Different signs: negative.'))]),
+      REC("Subtracting a negative is adding. For × and ÷: same signs positive, different signs negative.", ['− (−a) = + a', 'Same signs → positive', 'Different signs → negative'])] },
+    { title: 'Powers, roots and prime factors', goal: 'how indices, roots and prime factors work together.', scenes: [
+      SC('Index laws', 'Multiplying powers', [
+        st("A power says how many times to multiply. Two to the five is two times itself five times, thirty-two. When you multiply powers of the same base, add the indices. Three squared times three to the four is three to the six.", V.eq('2⁵ = 32') + V.eq('3² × 3⁴ = 3⁶', 'g') + V.rule('Same base: add the indices.'))]),
+      SC('Roots and prime factors', '60 as a product of primes', [
+        st("A square root undoes a square. The square root of forty-nine is seven. Now break sixty into primes. Sixty is six times ten, which is two times three times two times five.", V.eq('√49 = 7') + V.eq('60 = 2² × 3 × 5', 'g')),
+        st("And remember BODMAS: brackets, orders, then divide and multiply, then add and subtract.", V.list(['Brackets', 'Orders (powers, roots)', 'Divide / Multiply', 'Add / Subtract']))]),
+      REC("Add indices when multiplying the same base. Roots undo powers. Prime factors are the building blocks of a number.", ['aᵐ × aⁿ = aᵐ⁺ⁿ', 'Roots undo powers', 'Prime factor trees'])] }
+  ]);
+
+  /* 803 FRACTIONS */
+  BT.story(803, 'Watch', [
+    { title: 'Adding and subtracting mixed numbers', goal: 'how to add mixed numbers by using a common denominator.', scenes: [
+      SC('Whole numbers first', '2 1/3 + 1 3/4', [
+        st("Two and a third plus one and three quarters. Add the whole numbers: two plus one is three. Now the fractions. The common denominator of three and four is twelve.", V.eq('2 + 1 = 3') + V.eq('1/3 = 4/12    3/4 = 9/12')),
+        st("Four twelfths plus nine twelfths is thirteen twelfths. That is more than one whole: one and one twelfth. Add that to the three: four and one twelfth.", V.eq('4/12 + 9/12 = 13/12 = 1 1/12') + V.eq('3 + 1 1/12 = 4 1/12', 'g'))]),
+      REC("Add whole numbers and fractions separately. Use a common denominator, and convert any improper fraction at the end.", ['Whole numbers first', 'Common denominator', 'Convert improper fractions'])] },
+    { title: 'Multiplying and dividing fractions', goal: 'how to multiply and divide fractions and mixed numbers.', scenes: [
+      SC('Multiplying mixed numbers', '2 1/2 × 1 1/3', [
+        st("Turn mixed numbers into improper fractions first. Two and a half is five halves. One and a third is four thirds. Multiply tops and bottoms: twenty sixths. Simplify to ten thirds, which is three and a third.", V.eq('5/2 × 4/3 = 20/6 = 10/3 = 3 1/3', 'g'))]),
+      SC('Dividing', '3/5 ÷ 2/3', [
+        st("To divide, keep the first fraction, change to multiply, and flip the second. Three fifths times three halves is nine tenths.", V.eq('3/5 × 3/2 = 9/10', 'g') + V.rule('Keep, change, flip.'))]),
+      REC("Improper fractions first. To multiply: tops and bottoms. To divide: keep, change, flip.", ['Mixed → improper', 'Multiply across', 'Divide: keep, change, flip'])] }
+  ]);
+
+  /* 804 PERCENTAGES */
+  BT.story(804, 'Watch', [
+    { title: 'Percentages of amounts', goal: 'how to find a percentage of an amount and write one amount as a percentage.', scenes: [
+      SC('Finding a percentage', '35% of 240', [
+        st("Find thirty-five per cent of two hundred and forty. Ten per cent is twenty-four. Thirty per cent is three times that, seventy-two. Five per cent is half of ten per cent, twelve. Add them: eighty-four.", V.eq('30% = 72') + V.eq('5% = 12') + V.eq('35% = 84', 'g')),
+        st("Or use a calculator. Thirty-five per cent is zero point three five. Zero point three five times two hundred and forty is also eighty-four.", V.eq('0.35 × 240 = 84', 'g'))]),
+      SC('One amount as a percentage', '18 out of 45', [
+        st("Write eighteen out of forty-five as a percentage. Divide eighteen by forty-five to get zero point four. Multiply by a hundred: forty per cent.", V.eq('18 ÷ 45 = 0.4 = 40%', 'g'))]),
+      REC("Build percentages from ten per cent, or use the decimal multiplier. For a percentage, divide then multiply by a hundred.", ['10% then build', 'Decimal multiplier', 'Part ÷ whole × 100'])] },
+    { title: 'Percentage increase and decrease', goal: 'how to use multipliers for percentage change.', scenes: [
+      SC('The multiplier', 'Increase by 12%', [
+        st("To increase by twelve per cent, you have one hundred per cent plus twelve, a hundred and twelve per cent. As a decimal, that is the multiplier one point one two. Two hundred and fifty times one point one two is two hundred and eighty.", V.eq('250 × 1.12 = 280', 'g')),
+        st("To decrease by fifteen per cent, you keep eighty-five per cent. The multiplier is zero point eight five. Sixty times zero point eight five is fifty-one.", V.eq('60 × 0.85 = 51', 'g')),
+        st("So the multiplier is a hundred per cent, plus or minus the change, written as a decimal.", V.tbl([['+12%', '1.12'], ['−15%', '0.85'], ['+5%', '1.05'], ['−30%', '0.70']], ['Change', 'Multiplier']))]),
+      REC("Increase: one plus the decimal. Decrease: one minus the decimal. Multiply the original amount.", ['Increase: 1 + p', 'Decrease: 1 − p', 'Multiply the original'])] }
+  ]);
+
+  /* 805 RATIO */
+  BT.story(805, 'Watch', [
+    { title: 'Simplifying and sharing in a ratio', goal: 'how to simplify a ratio and share an amount in a given ratio.', scenes: [
+      SC('Simplifying', '24 : 36', [
+        st("To simplify a ratio, divide both parts by their highest common factor. The highest common factor of twenty-four and thirty-six is twelve. So twenty-four to thirty-six is two to three.", V.eq('24 : 36 = 2 : 3', 'g')),
+        st("Ratios with different units need the same units first. Fifty centimetres to two metres is fifty to two hundred, which is one to four.", V.eq('50 cm : 2 m = 50 : 200 = 1 : 4', 'g'))]),
+      SC('Sharing', '£150 in the ratio 2 : 3', [
+        st("Share a hundred and fifty pounds in the ratio two to three. Add the parts: five. A hundred and fifty divided by five is thirty pounds a part. So the shares are sixty and ninety.", V.bm([['A', [[80, '2']]], ['B', [[120, '3']]]]) + V.eq('150 ÷ 5 = £30') + V.eq('£60 and £90', 'g'))]),
+      REC("Simplify by dividing by the highest common factor, with the same units. To share, add the parts, find one part, multiply.", ['Same units first', 'Divide by the HCF', 'Add parts → one part → multiply'])] },
+    { title: 'Direct proportion', goal: 'how to solve proportion problems with the unitary method.', scenes: [
+      SC('The unitary method', '3 kg costs £4.50', [
+        st("Three kilograms of apples cost four pounds fifty. How much for five kilograms? Find the cost of one kilogram: four fifty divided by three is one pound fifty.", V.eq('£4.50 ÷ 3 = £1.50 per kg')),
+        st("Now multiply by five. Five times one pound fifty is seven pounds fifty.", V.eq('5 × £1.50 = £7.50', 'g')),
+        st("This is direct proportion: double the apples, double the cost. The graph of cost against mass is a straight line through the origin.", V.plot(0, 6, 0, 9, [{ l: [[0, 0], [6, 9]] }, { p: [5, 7.5, '£7.50'] }], { tx: 1, ty: 1, xl: 'kg', yl: '£' }))]),
+      REC("Find one unit first, then multiply. In direct proportion the graph is a straight line through the origin.", ['Find the cost of one', 'Multiply', 'Straight line through the origin'])] }
+  ]);
+
+  /* 806 MONEY AND FINANCE */
+  BT.story(806, 'Watch', [
+    { title: 'Wages and overtime', goal: 'how to calculate pay including overtime.', scenes: [
+      SC('Basic pay', '35 hours at £9.50', [
+        st("Maya works thirty-five hours at nine pounds fifty an hour. Her basic pay is thirty-five times nine fifty, three hundred and thirty-two pounds fifty.", V.eq('35 × £9.50 = £332.50', 'b')),
+        st("Overtime at time and a half means one and a half times the normal rate. Nine fifty times one point five is fourteen pounds twenty-five an hour. For six hours: eighty-five pounds fifty.", V.eq('£9.50 × 1.5 = £14.25') + V.eq('6 × £14.25 = £85.50', 'g')),
+        st("Her total is basic pay plus overtime, four hundred and eighteen pounds.", V.eq('£332.50 + £85.50 = £418', 'g'))]),
+      REC("Basic pay is hours times rate. Overtime uses a higher rate. Add the two.", ['Hours × rate', 'Overtime rate: × 1.5 or × 2', 'Add the pay'])] },
+    { title: 'VAT and simple interest', goal: 'how to add VAT, remove it, and calculate simple interest.', scenes: [
+      SC('Adding VAT', '£35 plus 20% VAT', [
+        st("VAT of twenty per cent on thirty-five pounds. The multiplier is one point two. Thirty-five times one point two is forty-two pounds.", V.eq('£35 × 1.2 = £42', 'g'))]),
+      SC('Removing VAT', 'Price with VAT is £60', [
+        st("Going backwards: a price of sixty pounds already includes twenty per cent VAT. Sixty is one hundred and twenty per cent. Divide by one point two to get back to a hundred per cent: fifty pounds.", V.eq('£60 ÷ 1.2 = £50', 'g') + V.rule('To go backwards, divide by the multiplier.'))]),
+      SC('Simple interest', '£800 at 3% for 2 years', [
+        st("Simple interest is the same each year. Three per cent of eight hundred is twenty-four pounds. For two years that is forty-eight pounds.", V.eq('3% of £800 = £24') + V.eq('2 × £24 = £48', 'g'))]),
+      REC("Use multipliers to add VAT, and divide by the multiplier to take it off. Simple interest is the same every year.", ['× 1.2 adds 20% VAT', '÷ 1.2 removes it', 'Interest = amount × rate × years'])] }
+  ]);
+
+  /* 807 TIME, DISTANCE, SPEED */
+  BT.story(807, 'Watch', [
+    { title: 'Speed, distance and time', goal: 'how to use the speed formula and convert times.', scenes: [
+      SC('The formula', 'Speed = distance ÷ time', [
+        st("Speed tells us how far we go in one hour. A car travels a hundred and eighty kilometres in two and a half hours. Divide the distance by the time: seventy-two kilometres per hour.", V.eq('180 ÷ 2.5 = 72 km/h', 'g')),
+        st("Rearranged, distance is speed times time, and time is distance divided by speed. A triangle with D at the top, S and T at the bottom helps you remember.", V.cols([V.card('D', 'b'), V.card('S × T', 'g'), V.card('D ÷ S = T', 'r')], 3).replace('sv-cols"', 'sv-cols" '))]),
+      SC('Hours and minutes', '2 h 15 min', [
+        st("Careful with time. Two hours fifteen minutes is not two point one five hours. Fifteen minutes is a quarter of an hour, so it is two point two five hours.", V.eq('2 h 15 min = 2.25 h', 'g') + V.rule('Minutes ÷ 60 gives hours.'))]),
+      REC("Speed is distance over time. Change minutes into hours by dividing by sixty before you use the formula.", ['S = D ÷ T', 'D = S × T', 'T = D ÷ S', 'Minutes ÷ 60'])] },
+    { title: 'Distance–time graphs', goal: 'how to read a distance–time graph.', scenes: [
+      SC('A journey', 'Three stages', [
+        st("This graph shows a journey. Time is along the bottom, distance from home up the side. For the first hour the line goes up steadily to sixty kilometres.", V.plot(0, 4, 0, 180, [{ l: [[0, 0], [1, 60]] }], { tx: 1, ty: 60, xl: 'hours', yl: 'km' })),
+        st("Then the line is flat for an hour. The distance is not changing, so the traveller has stopped.", V.plot(0, 4, 0, 180, [{ l: [[0, 0], [1, 60], [2, 60]] }], { tx: 1, ty: 60, xl: 'hours', yl: 'km' })),
+        st("In the last two hours the line climbs from sixty to a hundred and eighty. That is a hundred and twenty kilometres in two hours, sixty kilometres an hour. The steeper the line, the faster the speed.", V.plot(0, 4, 0, 180, [{ l: [[0, 0], [1, 60], [2, 60], [4, 180]] }], { tx: 1, ty: 60, xl: 'hours', yl: 'km' }) + V.eq('gradient = 120 ÷ 2 = 60 km/h', 'g'))]),
+      REC("The gradient of a distance–time graph is the speed. A flat line means stopped.", ['Steeper = faster', 'Flat = stopped', 'Gradient = speed'])] }
+  ]);
+
+  /* 808 MEASURE, AREA, VOLUME */
+  BT.story(808, 'Watch', [
+    { title: 'Area of triangles, parallelograms and trapeziums', goal: 'the area formulas for common 2D shapes.', scenes: [
+      SC('Parallelogram', 'Base times perpendicular height', [
+        st("A parallelogram can be cut and moved to make a rectangle. Its area is the base times the perpendicular height, not the slanted side. With base eight and height five, the area is forty.", V.eq('8 × 5 = 40 cm²', 'g') + V.rule('Use the perpendicular height.')),
+        st("A triangle is half of a parallelogram. Half base times height.", V.eq('A = ½ × b × h', 'b'))]),
+      SC('Trapezium', 'Two parallel sides', [
+        st("A trapezium has two parallel sides. Add them, halve, and multiply by the height. With parallel sides six and ten and height four: half of sixteen is eight, times four is thirty-two.", V.eq('A = ½ (a + b) h') + V.eq('½ × (6 + 10) × 4 = 32 cm²', 'g'))]),
+      REC("Parallelogram: base times height. Triangle: half base times height. Trapezium: half the sum of the parallel sides times the height.", ['Parallelogram: b × h', 'Triangle: ½ b h', 'Trapezium: ½ (a + b) h'])] },
+    { title: 'Volume of a prism', goal: 'how to find the volume of a prism from its cross-section.', scenes: [
+      SC('Cross-section times length', 'A triangular prism', [
+        st("A prism has the same cross-section all the way along. Its volume is the area of the cross-section times the length. This triangle has base six and height four, so its area is twelve square centimetres.", V.eq('½ × 6 × 4 = 12 cm²')),
+        st("The prism is ten centimetres long. Twelve times ten is a hundred and twenty cubic centimetres.", V.eq('V = 12 × 10 = 120 cm³', 'g') + V.rule('Volume = area of cross-section × length.'))]),
+      REC("Find the area of the end face, then multiply by the length.", ['Area of the cross-section', '× length', 'Units are cubed'])] }
+  ]);
+
+  /* 809 SEQUENCES, FORMULAE, ALGEBRA */
+  BT.story(809, 'Watch', [
+    { title: 'Simplifying and expanding', goal: 'how to collect like terms and expand brackets.', scenes: [
+      SC('Like terms', '3a + 2b + 4a − b', [
+        st("Like terms have the same letter. Three a and four a make seven a. Two b take away b leaves one b. So three a plus two b plus four a minus b simplifies to seven a plus b.", V.eq('3a + 2b + 4a − b = 7a + b', 'g')),
+        st("Think of letters as fruit. You can add apples to apples, but not apples to bananas.", V.rule('Only add like terms.'))]),
+      SC('Expanding brackets', '3(x + 4)', [
+        st("To expand a bracket, multiply everything inside by the number outside. Three times x is three x, and three times four is twelve.", V.eq('3(x + 4) = 3x + 12', 'g'))]),
+      REC("Collect like terms. Multiply every term in a bracket by the number outside.", ['Like terms only', 'Multiply every term in the bracket'])] },
+    { title: 'Formulae and equations', goal: 'how to substitute into formulae and solve two-step equations.', scenes: [
+      SC('Substitution', 'P = 2l + 2w', [
+        st("A formula is a rule written in letters. The perimeter of a rectangle is two l plus two w. When length is seven and width is four, the perimeter is fourteen plus eight, twenty-two.", V.eq('2 × 7 + 2 × 4 = 22', 'g'))]),
+      SC('Solving equations', 'Undo in reverse order', [
+        st("To solve two x plus five equals seventeen, undo the plus five first: two x equals twelve. Then undo the times two: x equals six.", V.eq('2x + 5 = 17') + V.eq('2x = 12') + V.eq('x = 6', 'g')),
+        st("Another: x over three, minus one, equals four. Add one: x over three is five. Multiply by three: x is fifteen.", V.eq('x/3 − 1 = 4 → x/3 = 5 → x = 15', 'g'))]),
+      REC("Substitute carefully. In equations, undo the operations in reverse order, doing the same to both sides.", ['Substitute, then calculate', 'Undo + and − first', 'Then undo × and ÷'])] }
+  ]);
+
+  /* 810 ANGLES */
+  BT.story(810, 'Watch', [
+    { title: 'Angle rules', goal: 'the basic angle facts and how to use them.', scenes: [
+      SC('Facts to know', 'Lines and points', [
+        st("Angles on a straight line add up to one eighty. Angles around a point add up to three sixty. Where two straight lines cross, the opposite angles, called vertically opposite, are equal.", V.tbl([['Straight line', '180°'], ['Around a point', '360°'], ['Vertically opposite', 'equal']], ['Fact', 'Rule']))]),
+      SC('Triangles', 'Angles add to 180', [
+        st("The angles in a triangle add up to one eighty. In an isosceles triangle, two sides are equal and the two base angles are equal. If the top angle is forty, the other two share a hundred and forty, seventy each.", V.eq('180 − 40 = 140') + V.eq('140 ÷ 2 = 70° each', 'g'))]),
+      REC("Straight line one eighty, point three sixty, triangle one eighty. Isosceles triangles have two equal angles.", ['Line: 180°', 'Point: 360°', 'Triangle: 180°', 'Vertically opposite: equal'])] },
+    { title: 'Parallel lines', goal: 'corresponding, alternate and co-interior angles.', scenes: [
+      SC('F, Z and C', 'Equal or supplementary', [
+        st("When a line crosses two parallel lines, corresponding angles in an F shape are equal.", V.par([[155, 72, '65°'], [215, 152, '65°']])),
+        st("Alternate angles in a Z shape are equal too.", V.par([[155, 72, '65°'], [138, 130, '65°']])),
+        st("Co-interior angles in a C shape add up to one eighty. If one is sixty-five, the other is one hundred and fifteen.", V.par([[155, 72, '65°'], [203, 130, '115°']]) + V.eq('180 − 65 = 115°', 'g'))]),
+      REC("F: corresponding, equal. Z: alternate, equal. C: co-interior, add to one eighty.", ['F: equal', 'Z: equal', 'C: sum to 180°'])] }
+  ]);
+
+  /* 811 SHAPE, SYMMETRY, COORDINATES, SCALE */
+  BT.story(811, 'Watch', [
+    { title: 'Four-quadrant coordinates and reflection', goal: 'how to plot points in all four quadrants and reflect shapes.', scenes: [
+      SC('The four quadrants', 'x first, then y', [
+        st("Coordinates tell us where a point is. The first number is along, the x direction. The second is up or down, the y direction. Negative numbers go left and down.", V.plot(-4, 4, -4, 4, [{ p: [3, 2, '(3, 2)', 'var(--accent)'] }, { p: [-3, 2, '(−3, 2)'] }, { p: [-3, -2, '(−3, −2)', 'var(--good)'] }], { tx: 1, ty: 1 })),
+        st("Reflect the point three, two in the y axis. It flips to the other side, to minus three, two. The y value stays the same, and the x value changes sign.", V.eq('(3, 2) → (−3, 2)', 'g') + V.rule('Reflect in the y-axis: x changes sign.'))]),
+      REC("Along then up. Reflecting in the y-axis changes the sign of x. Reflecting in the x-axis changes the sign of y.", ['(x, y): along, then up', 'y-axis: x changes sign', 'x-axis: y changes sign'])] },
+    { title: 'Symmetry and scale drawings', goal: 'rotational symmetry and scale factors.', scenes: [
+      SC('Rotational symmetry', 'Order of rotation', [
+        st("A shape has rotational symmetry if it looks the same after a turn of less than a full turn. The order is how many times it fits in one full turn. A square fits four times. An equilateral triangle fits three times.", V.tbl([['Square', '4'], ['Equilateral triangle', '3'], ['Rectangle', '2']], ['Shape', 'Order']))]),
+      SC('Scale', 'Scale 1 : 100', [
+        st("A scale of one to a hundred means one centimetre on the drawing is a hundred centimetres, one metre, in real life. So a wall drawn five centimetres long is five metres.", V.eq('5 cm × 100 = 500 cm = 5 m', 'g'))]),
+      REC("The order of rotational symmetry counts how many times a shape fits on itself in a full turn. Multiply by the scale to get real lengths.", ['Order = number of fits', 'Drawing × scale = real', 'Change units'])] }
+  ]);
+
+  /* 812 INFORMATION HANDLING AND PROBABILITY */
+  BT.story(812, 'Watch', [
+    { title: 'Averages and the spread of data', goal: 'mean, median, mode and range for a data set.', scenes: [
+      SC('Even number of values', '2, 4, 4, 5, 7, 8', [
+        st("We have six values: two, four, four, five, seven, eight. The mean is the total, thirty, divided by six, which is five.", V.cards(['2', '4', '4', '5', '7', '8'], ['b'], true) + V.eq('30 ÷ 6 = 5', 'g')),
+        st("The median is the middle value. With six values, the middle is between the third and fourth: four and five. The median is four point five. The mode is four, and the range is eight minus two, six.", V.tbl([['mean', '5'], ['median', '4.5'], ['mode', '4'], ['range', '6']], ['Measure', 'Value']))]),
+      REC("Order the data for the median. With two middle values, find halfway between them.", ['Mean = total ÷ count', 'Median: middle of ordered data', 'Mode: most common', 'Range = max − min'])] },
+    { title: 'Probability and relative frequency', goal: 'theoretical probability and experimental estimates.', scenes: [
+      SC('Theoretical probability', 'A fair dice', [
+        st("The probability of an even number on a fair dice is three out of six, one half. Probability is favourable outcomes over all outcomes.", V.eq('P(even) = 3/6 = 1/2', 'g'))]),
+      SC('Relative frequency', 'Testing a dice', [
+        st("Roll a dice ninety times and get eighteen sixes. The relative frequency is eighteen over ninety, zero point two. That is a bit more than one sixth, which is about zero point one seven, but experiments vary.", V.eq('18 ÷ 90 = 0.2') + V.eq('1/6 ≈ 0.167')),
+        st("We can use probability to predict. In a hundred and twenty rolls, we expect a sixth to be sixes: twenty.", V.eq('120 × 1/6 = 20', 'g'))]),
+      REC("Probability is favourable over total. More trials make relative frequency closer to the true probability.", ['Favourable ÷ total', 'Relative frequency = successes ÷ trials', 'Expected = probability × trials'])] }
+  ]);
+
+  /* 813 SPATIAL */
+  BT.story(813, 'Watch', [
+    { title: 'Nets and surface area', goal: 'how to find the surface area of a cuboid from its net.', scenes: [
+      SC('Unfold the cuboid', 'Six rectangles', [
+        st("A cuboid six centimetres long, three wide and two high has six faces. They come in three matching pairs. Six by three is eighteen. Six by two is twelve. Three by two is six.", V.tbl([['6 × 3', '18'], ['6 × 2', '12'], ['3 × 2', '6']], ['Pair of faces', 'Area'])),
+        st("Add the three areas, thirty-six, and double because each face appears twice. The surface area is seventy-two square centimetres.", V.eq('2 × (18 + 12 + 6) = 72 cm²', 'g'))]),
+      REC("Find the three different face areas, add them, and double.", ['Three pairs of faces', 'Add and double'])] },
+    { title: 'Views and cross-sections', goal: 'how to picture a solid from different directions.', scenes: [
+      SC('Plan, front and side', 'Three views', [
+        st("Architects draw three views of a solid. The plan is the view from above. The front elevation is from the front, and the side elevation is from the side. A cylinder has a circle as its plan, and a rectangle for both elevations.", V.tbl([['Cylinder', 'circle', 'rectangle', 'rectangle'], ['Cone', 'circle', 'triangle', 'triangle']], ['Solid', 'Plan', 'Front', 'Side']))]),
+      SC('Cross-sections', 'Slicing a solid', [
+        st("A cross-section is the shape you see when you slice a solid. Slice a cylinder across and you see a circle. Slice a cube parallel to a face and you see a square.", V.cards(['cylinder → circle', 'cube → square'], ['b', 'g'], true))]),
+      REC("Plan from above, elevations from the side. A cross-section is the shape of a slice.", ['Plan: from above', 'Elevations: from the side', 'Cross-section: a slice'])] }
+  ]);
+})();
+</script>
+<script>
+/* story_s2.js: teacher story lessons for S2 (topics 821 to 833). */
+(function () {
+  'use strict';
+  var BT = window.BT; if (!BT || !BT.story || !BT.sv || !BT.sv.plot) return;
+  var V = BT.sv, NL = BT.NL;
+  var SC = function (h, sub, steps) { return { h: h, sub: sub, steps: steps }; };
+  var st = function (say, html) { return { say: say, html: html || '' }; };
+  var REC = function (say, items) { return SC('Let’s recap', '', [st(say, V.list(items))]); };
+
+  /* 821 NUMBER: POWERS, ROOTS, STANDARD FORM */
+  BT.story(821, 'Watch', [
+    { title: 'Standard form', goal: 'how to write very big and very small numbers in standard form.', scenes: [
+      SC('Big numbers', '45,000', [
+        st("Scientists need a short way to write very large and very small numbers. It is called standard form. A number in standard form is a number between one and ten, multiplied by a power of ten.", V.eq('a × 10ⁿ', 'b') + V.note('1 ≤ a < 10')),
+        st("Forty-five thousand: put the decimal point after the first digit to get four point five. We moved the point four places, so the power is ten to the four.", V.eq('45,000 = 4.5 × 10⁴', 'g'))]),
+      SC('Small numbers', '0.00032', [
+        st("For a small number, the power is negative. Zero point zero zero zero three two. Move the point four places right to get three point two. The power is minus four.", V.eq('0.00032 = 3.2 × 10⁻⁴', 'g'))]),
+      SC('Calculating', 'Multiply in standard form', [
+        st("To multiply, multiply the numbers and add the powers. Three times ten to the three, times two times ten to the two. Three times two is six. Ten to the three times ten squared is ten to the five.", V.eq('(3 × 10³) × (2 × 10²) = 6 × 10⁵', 'g'))]),
+      REC("Standard form is a number from one to ten times a power of ten. Big numbers have positive powers, small numbers negative.", ['1 ≤ a < 10', 'Big: positive power', 'Small: negative power'])] },
+    { title: 'Index laws and negative indices', goal: 'the laws of indices, including zero and negative powers.', scenes: [
+      SC('Index laws', 'Same base', [
+        st("When you multiply the same base, add the powers. When you divide, subtract. Brackets raised to a power: multiply the powers.", V.tbl([['aᵐ × aⁿ', 'aᵐ⁺ⁿ'], ['aᵐ ÷ aⁿ', 'aᵐ⁻ⁿ'], ['(aᵐ)ⁿ', 'aᵐⁿ']], ['Law', 'Result'])),
+        st("An example: five to the six divided by five to the four is five squared, twenty-five.", V.eq('5⁶ ÷ 5⁴ = 5² = 25', 'g'))]),
+      SC('Zero and negative powers', 'What do they mean?', [
+        st("Anything to the power zero is one. A negative power means a reciprocal. Two to the minus three is one over two cubed, which is one eighth.", V.eq('a⁰ = 1') + V.eq('2⁻³ = 1/2³ = 1/8', 'g'))]),
+      REC("Add powers to multiply, subtract to divide. Power zero is one. A negative power is a reciprocal.", ['× add, ÷ subtract', 'a⁰ = 1', 'a⁻ⁿ = 1/aⁿ'])] }
+  ]);
+
+  /* 822 PERCENTAGES */
+  BT.story(822, 'Watch', [
+    { title: 'Compound percentage change', goal: 'how to apply a percentage change repeatedly.', scenes: [
+      SC('Compound interest', '£2000 at 5% for 3 years', [
+        st("With compound interest, each year's interest is added, so next year you earn interest on interest. Five per cent growth has the multiplier one point oh five.", V.eq('multiplier = 1.05', 'b')),
+        st("After one year, two thousand times one point oh five. After three years, multiply three times: two thousand times one point oh five cubed.", V.eq('2000 × 1.05³', 'b')),
+        st("One point oh five cubed is one point one five seven six two five. Times two thousand is two thousand, three hundred and fifteen pounds twenty-five.", V.eq('2000 × 1.157625 = £2,315.25', 'g') + V.rule('Amount × multiplier to the power of the years.'))]),
+      REC("For repeated percentage change, raise the multiplier to the power of the number of years.", ['Find the multiplier', 'Raise to the power n', 'Multiply the original'])] },
+    { title: 'Percentage change and reverse percentages', goal: 'how to calculate percentage change and work backwards.', scenes: [
+      SC('Percentage change', 'From 40 to 50', [
+        st("Percentage change is the change divided by the original, times a hundred. A price rises from forty to fifty. The change is ten. Ten over forty is a quarter, so twenty-five per cent.", V.eq('(50 − 40) ÷ 40 × 100 = 25%', 'g') + V.rule('Always divide by the original.'))]),
+      SC('Reverse percentages', 'After a 20% increase the price is £90', [
+        st("After a twenty per cent increase, the price is ninety pounds. What was it before? Ninety pounds is a hundred and twenty per cent of the original. So divide by one point two: seventy-five pounds.", V.eq('£90 ÷ 1.2 = £75', 'g')),
+        st("Check: twenty per cent of seventy-five is fifteen, and seventy-five plus fifteen is ninety.", V.eq('75 + 15 = 90 ✓', 'g'))]),
+      REC("Change over original times a hundred. For reverse problems, divide by the multiplier.", ['Change ÷ original × 100', 'Reverse: ÷ multiplier', 'Check by going forwards'])] }
+  ]);
+
+  /* 823 RATIO AND PROPORTION */
+  BT.story(823, 'Watch', [
+    { title: 'Combining ratios', goal: 'how to link two ratios into one.', scenes: [
+      SC('A shared quantity', 'a : b = 2 : 3 and b : c = 4 : 5', [
+        st("Suppose a to b is two to three, and b to c is four to five. The b in both ratios is different: three in the first, four in the second. Make them match using the lowest common multiple, twelve.", V.eq('a : b = 2 : 3', 'b') + V.eq('b : c = 4 : 5', 'b')),
+        st("Multiply the first ratio by four, to get eight to twelve. Multiply the second by three, to get twelve to fifteen. Now b is twelve in both.", V.eq('a : b = 8 : 12') + V.eq('b : c = 12 : 15')),
+        st("So the combined ratio is eight to twelve to fifteen.", V.eq('a : b : c = 8 : 12 : 15', 'g'))]),
+      REC("To combine ratios, make the shared part the same number in both, then join them.", ['Find the shared part', 'Make it equal using the LCM', 'Join the ratios'])] },
+    { title: 'Direct and inverse proportion', goal: 'the difference between direct and inverse proportion.', scenes: [
+      SC('Direct proportion', 'y = kx', [
+        st("In direct proportion, when one quantity doubles, so does the other. The graph is a straight line through the origin. The rule is y equals k x, where k is the constant of proportionality.", V.plot(0, 5, 0, 10, [{ l: [[0, 0], [5, 10]] }], { tx: 1, ty: 2, xl: 'x', yl: 'y' }) + V.eq('y = kx', 'b'))]),
+      SC('Inverse proportion', 'More workers, less time', [
+        st("In inverse proportion, when one doubles the other halves. Six workers take ten days. Their total work is sixty worker-days. Four workers need sixty divided by four, fifteen days.", V.eq('6 × 10 = 60') + V.eq('60 ÷ 4 = 15 days', 'g') + V.rule('Direct: ÷ and ×. Inverse: x × y stays the same.'))]),
+      REC("Direct proportion: y over x stays the same. Inverse: x times y stays the same.", ['Direct: y = kx', 'Inverse: y = k/x', 'Find k first'])] }
+  ]);
+
+  /* 824 FINANCE */
+  BT.story(824, 'Watch', [
+    { title: 'Income tax', goal: 'how income tax is worked out using an allowance and a rate.', scenes: [
+      SC('Taxable income', 'A worked example', [
+        st("Income tax is only paid on the part of your income above a tax-free personal allowance. In this example, take an allowance of twelve thousand five hundred pounds, and a rate of twenty per cent. The real rates change, so always use the figures in the question.", V.eq('Example: allowance £12,500, rate 20%', 'b')),
+        st("Someone earns thirty thousand. Taxable income is thirty thousand minus twelve thousand five hundred, seventeen thousand five hundred. Twenty per cent of that is three thousand five hundred pounds tax.", V.eq('30,000 − 12,500 = 17,500') + V.eq('20% of 17,500 = £3,500', 'g'))]),
+      REC("Subtract the allowance to find taxable income. Apply the tax rate to that part only.", ['Income − allowance', '× tax rate', 'Use the figures in the question'])] },
+    { title: 'Hire purchase and exchange rates', goal: 'how to compare ways of paying and convert currency.', scenes: [
+      SC('Hire purchase', 'Cash £550 or credit?', [
+        st("A sofa costs five hundred and fifty pounds cash. On hire purchase it is a hundred pounds deposit and twelve payments of forty-five pounds. The payments are five hundred and forty. With the deposit, the total is six hundred and forty.", V.eq('12 × £45 = £540') + V.eq('£100 + £540 = £640', 'b')),
+        st("The extra cost of credit is six forty minus five fifty, ninety pounds. That is the price of paying slowly.", V.eq('£640 − £550 = £90 extra', 'g'))]),
+      SC('Exchange rates', '£1 = €1.18', [
+        st("To change pounds to euros, multiply by the rate. To change euros to pounds, divide. Two hundred and fifty euros divided by one point one eight is two hundred and eleven pounds eighty-six.", V.eq('250 ÷ 1.18 = £211.86', 'g') + V.rule('Pounds to euros: ×. Euros to pounds: ÷.'))]),
+      REC("Total credit cost is deposit plus all payments. For currency, multiply to go to the bigger number of units, divide to come back.", ['Deposit + payments', 'Compare with cash', '£ → €: ×, € → £: ÷'])] }
+  ]);
+
+  /* 825 TIME, DISTANCE, SPEED */
+  BT.story(825, 'Watch', [
+    { title: 'Average speed', goal: 'why average speed is total distance over total time.', scenes: [
+      SC('A common mistake', '30 km/h then 60 km/h', [
+        st("A car drives sixty kilometres at thirty kilometres an hour, then sixty kilometres at sixty an hour. Is the average forty-five? Let's check carefully.", V.eq('average = 45?', 'r')),
+        st("The first part takes two hours. The second takes one hour. Total distance is a hundred and twenty kilometres, in three hours.", V.eq('60 ÷ 30 = 2 h') + V.eq('60 ÷ 60 = 1 h')),
+        st("Average speed is total distance over total time: a hundred and twenty divided by three is forty kilometres an hour, not forty-five.", V.eq('120 ÷ 3 = 40 km/h', 'g') + V.rule('Average speed = total distance ÷ total time.'))]),
+      REC("Never average the speeds. Divide the total distance by the total time.", ['Total distance', 'Total time', 'Divide'])] },
+    { title: 'Distance–time graphs with a return', goal: 'how to read speeds from a graph with several stages.', scenes: [
+      SC('Out, rest and back', 'A cycle ride', [
+        st("A cyclist rides out for two hours to eighty kilometres. That is forty kilometres an hour.", V.plot(0, 5, 0, 100, [{ l: [[0, 0], [2, 80]] }], { tx: 1, ty: 20, xl: 'hours', yl: 'km' })),
+        st("Then she rests for an hour. The line is flat. Then she rides home, and the line goes back down to zero over two hours. The speed is still forty, but the gradient is negative because she is coming back.", V.plot(0, 5, 0, 100, [{ l: [[0, 0], [2, 80], [3, 80], [5, 0]] }], { tx: 1, ty: 20, xl: 'hours', yl: 'km' }) + V.eq('80 ÷ 2 = 40 km/h each way', 'g'))]),
+      REC("Gradient is speed. Flat is stopped. A line coming down is moving back towards the start.", ['Gradient = speed', 'Flat = rest', 'Downward = coming back'])] }
+  ]);
+
+  /* 826 AREA, VOLUME, SURFACE AREA */
+  BT.story(826, 'Watch', [
+    { title: 'Circles', goal: 'how to find the area and circumference of a circle.', scenes: [
+      SC('Two formulas', 'Radius 5 cm', [
+        st("The circumference is the distance around. It is two pi r. The area is pi r squared. Pi is about three point one four. With radius five centimetres, the circumference is ten pi, about thirty-one point four.", V.circle() + V.eq('C = 2πr = 10π ≈ 31.4 cm', 'g')),
+        st("The area is pi times five squared, twenty-five pi, about seventy-eight point five square centimetres. Careful: square the radius first, then multiply by pi.", V.eq('A = πr² = 25π ≈ 78.5 cm²', 'g') + V.rule('Square the radius first.'))]),
+      REC("Circumference is two pi r. Area is pi r squared. Use the radius, half the diameter.", ['C = 2πr', 'A = πr²', 'Radius = ½ diameter'])] },
+    { title: 'Cylinders', goal: 'volume and surface area of a cylinder.', scenes: [
+      SC('Volume', 'Radius 3 cm, height 10 cm', [
+        st("A cylinder is a circle stretched up. Its volume is the area of the circle times the height. Pi times three squared is nine pi. Times ten gives ninety pi, about two hundred and eighty-two point seven cubic centimetres.", V.eq('V = πr²h = π × 9 × 10 = 90π ≈ 282.7 cm³', 'g'))]),
+      SC('Surface area', 'Two circles and a rectangle', [
+        st("The surface is two circles plus a curved part, which unrolls into a rectangle. The rectangle's width is the circumference. So the surface area is two pi r squared plus two pi r h. Eighteen pi plus sixty pi is seventy-eight pi, about two hundred and forty-five square centimetres.", V.eq('SA = 2πr² + 2πrh = 18π + 60π = 78π ≈ 245 cm²', 'g'))]),
+      REC("Cylinder volume is pi r squared times h. The surface is two circles plus a rectangle.", ['V = πr²h', 'SA = 2πr² + 2πrh', 'Circle area × height'])] }
+  ]);
+
+  /* 827 ALGEBRA */
+  BT.story(827, 'Watch', [
+    { title: 'Expanding two brackets', goal: 'how to multiply two brackets.', scenes: [
+      SC('Every term times every term', '(x + 3)(x + 2)', [
+        st("To expand two brackets, multiply every term in the first by every term in the second. x times x is x squared. x times two is two x. Three times x is three x. Three times two is six.", V.eq('x·x = x²   x·2 = 2x   3·x = 3x   3·2 = 6')),
+        st("Add them up and collect the like terms. Two x plus three x is five x. The answer is x squared plus five x plus six.", V.eq('(x + 3)(x + 2) = x² + 5x + 6', 'g'))]),
+      REC("Multiply every term by every term, then collect the like terms.", ['4 multiplications', 'Collect like terms', 'Check with a number'])] },
+    { title: 'Equations, inequalities and formulae', goal: 'solving equations and inequalities and rearranging formulae.', scenes: [
+      SC('Brackets in equations', '2(x + 3) = 14', [
+        st("Divide both sides by two: x plus three equals seven. Then take away three. x equals four.", V.eq('x + 3 = 7') + V.eq('x = 4', 'g'))]),
+      SC('Inequalities', '3x − 5 > 10', [
+        st("An inequality is solved like an equation. Three x minus five is greater than ten. Add five: three x is greater than fifteen. Divide by three: x is greater than five.", V.eq('3x > 15') + V.eq('x > 5', 'g') + NL(0, 10, { lab: 1, tick: 1, marks: [[5, 135]] }))]),
+      SC('Changing the subject', 'v = u + at', [
+        st("To make a the subject of v equals u plus a t, take away u from both sides: v minus u equals a t. Then divide by t. a equals v minus u, all over t.", V.eq('v − u = at') + V.eq('a = (v − u) ÷ t', 'g'))]),
+      REC("Do the same to both sides. Inequalities flip only when you multiply or divide by a negative.", ['Same to both sides', 'Flip < > if × or ÷ by negative', 'Rearrange step by step'])] }
+  ]);
+
+  /* 828 STRAIGHT LINES AND SEQUENCES */
+  BT.story(828, 'Watch', [
+    { title: 'The equation y = mx + c', goal: 'what the gradient and intercept tell you about a line.', scenes: [
+      SC('Gradient and intercept', 'y = 2x + 1', [
+        st("A straight line has the equation y equals m x plus c. The m is the gradient, how steep the line is. The c is the y-intercept, where it crosses the y axis. For y equals two x plus one, the gradient is two and the intercept is one.", V.plot(-2, 4, -3, 9, [{ l: [[-2, -3], [4, 9]] }, { p: [0, 1, '(0, 1)'] }], { tx: 1, ty: 1, xl: 'x', yl: 'y' })),
+        st("To draw it, make a table of values. When x is zero, y is one. When x is two, y is five. Plot and join with a straight line.", V.tbl([['0', '1'], ['1', '3'], ['2', '5']], ['x', 'y']))]),
+      REC("In y equals m x plus c, m is the gradient and c is where it cuts the y axis.", ['m = gradient', 'c = y-intercept', 'Table of values to plot'])] },
+    { title: 'Finding a line from two points', goal: 'how to find the gradient and equation of a line.', scenes: [
+      SC('Rise over run', 'Points (1, 3) and (4, 9)', [
+        st("The gradient is the change in y divided by the change in x. From the point one, three to four, nine, y goes up six and x goes across three. The gradient is two.", V.eq('(9 − 3) ÷ (4 − 1) = 6 ÷ 3 = 2', 'g')),
+        st("Now find c. Put the point one, three into y equals two x plus c. Three equals two plus c, so c is one. The line is y equals two x plus one.", V.eq('3 = 2(1) + c → c = 1') + V.eq('y = 2x + 1', 'g'))]),
+      REC("Gradient is rise over run. Substitute a point to find c.", ['m = Δy ÷ Δx', 'Substitute a point', 'Write y = mx + c'])] }
+  ]);
+
+  /* 829 ANGLES, POLYGONS, BEARINGS */
+  BT.story(829, 'Watch', [
+    { title: 'Interior and exterior angles', goal: 'how to use exterior angles to find the shape of a regular polygon.', scenes: [
+      SC('Exterior angles', 'They always add to 360', [
+        st("Walk round the edge of any polygon and turn at each corner. By the time you are back at the start you have made a full turn. So the exterior angles always add up to three hundred and sixty.", V.eq('exterior angles sum = 360°', 'b')),
+        st("A regular polygon has equal exterior angles. If each is forty-five, there are three sixty divided by forty-five, eight sides. It is an octagon. Each interior angle is one eighty minus forty-five, one hundred and thirty-five.", V.eq('360 ÷ 45 = 8 sides') + V.eq('180 − 45 = 135°', 'g'))]),
+      REC("Exterior angles add to three sixty. Interior plus exterior on a straight line is one eighty.", ['Sum of exterior angles = 360°', 'n = 360 ÷ exterior', 'Interior = 180° − exterior'])] },
+    { title: 'Bearings', goal: 'how to measure and calculate bearings.', scenes: [
+      SC('Measuring a bearing', 'Clockwise from north', [
+        st("A bearing is the angle clockwise from north, written with three figures. Draw a north line at the starting point and measure clockwise to the line. If the bearing of B from A is zero six five degrees, B is a little north of east.", V.tbl([['N', '000°'], ['E', '090°'], ['S', '180°'], ['W', '270°']], ['Direction', 'Bearing']))]),
+      SC('The back bearing', 'From B back to A', [
+        st("To go back the other way, add or subtract one eighty. The bearing of B from A is zero six five. So the bearing of A from B is zero six five plus one eighty, two four five.", V.eq('065° + 180° = 245°', 'g') + V.rule('Back bearing: ± 180°.'))]),
+      REC("Bearings are measured clockwise from north with three figures. Back bearing: add or subtract one eighty.", ['From north, clockwise', 'Three figures', 'Back bearing: ± 180°'])] }
+  ]);
+
+  /* 830 PYTHAGORAS AND THE CIRCLE */
+  BT.story(830, 'Watch', [
+    { title: 'Pythagoras’ theorem', goal: 'how to find a missing side in a right-angled triangle.', scenes: [
+      SC('The theorem', 'a² + b² = c²', [
+        st("In a right-angled triangle, the longest side, opposite the right angle, is the hypotenuse. Pythagoras found that the squares on the two shorter sides add up to the square on the hypotenuse.", V.rt({ a: 'a', b: 'b', c: 'c' }) + V.eq('a² + b² = c²', 'b')),
+        st("With sides six and eight: thirty-six plus sixty-four is a hundred. The square root of a hundred is ten. So the hypotenuse is ten.", V.eq('6² + 8² = 36 + 64 = 100') + V.eq('c = √100 = 10', 'g'))]),
+      SC('A shorter side', 'Hypotenuse 13, other side 5', [
+        st("To find a shorter side, subtract. Thirteen squared is a hundred and sixty-nine. Take away five squared, twenty-five. That leaves a hundred and forty-four. The square root is twelve.", V.eq('13² − 5² = 169 − 25 = 144') + V.eq('b = √144 = 12', 'g') + V.rule('Finding the longest side: add. A shorter side: subtract.'))]),
+      REC("Add the squares to find the hypotenuse. Subtract to find a shorter side. Then take the square root.", ['Hypotenuse: add squares', 'Short side: subtract', 'Square root at the end'])] },
+    { title: 'Arcs and sectors', goal: 'how to find the arc length and area of a sector.', scenes: [
+      SC('A fraction of a circle', 'A 90° sector, radius 6 cm', [
+        st("A sector is a slice of a circle. A ninety degree sector is ninety out of three sixty, a quarter of the whole circle.", V.pie([[90, 'var(--accent)', '90°'], [270, 'var(--surface-2)', '']]) + V.eq('90 ÷ 360 = 1/4', 'b')),
+        st("The area of the whole circle is pi times six squared, thirty-six pi. A quarter of that is nine pi, about twenty-eight point three square centimetres.", V.eq('¼ × 36π = 9π ≈ 28.3 cm²', 'g')),
+        st("The arc is a quarter of the circumference. The whole circumference is twelve pi, so the arc is three pi, about nine point four centimetres.", V.eq('¼ × 12π = 3π ≈ 9.4 cm', 'g'))]),
+      REC("Take the fraction angle over three sixty of the whole circle's area or circumference.", ['Fraction = angle ÷ 360', 'Sector area: × πr²', 'Arc length: × 2πr'])] }
+  ]);
+
+  /* 831 SIMILARITY AND ENLARGEMENT */
+  BT.story(831, 'Watch', [
+    { title: 'Similar shapes and scale factors', goal: 'how lengths, areas and volumes scale in similar shapes.', scenes: [
+      SC('Scale factor', 'A 3-4-5 triangle becomes 6-8-10', [
+        st("Similar shapes have the same shape but different size. Every length is multiplied by the same scale factor. Three, four, five becomes six, eight, ten. The scale factor is two.", V.tbl([['3', '6'], ['4', '8'], ['5', '10']], ['Small', 'Large']) + V.eq('scale factor = 6 ÷ 3 = 2', 'g'))]),
+      SC('Areas', 'Scale factor squared', [
+        st("Areas do not scale by the same factor. If lengths are multiplied by three, areas are multiplied by three squared, nine. Volumes are multiplied by three cubed, twenty-seven.", V.tbl([['Length', '× k'], ['Area', '× k²'], ['Volume', '× k³']], ['Measure', 'Scales by']))]),
+      REC("Lengths scale by k, areas by k squared, volumes by k cubed.", ['Length × k', 'Area × k²', 'Volume × k³'])] },
+    { title: 'Enlargement', goal: 'how to enlarge a shape from a centre.', scenes: [
+      SC('From the origin', 'Scale factor 2', [
+        st("To enlarge from the origin with scale factor two, double each coordinate. The triangle with corners one, one; three, one; and one, two becomes two, two; six, two; and two, four.", V.plot(0, 7, 0, 5, [{ poly: [[1, 1], [3, 1], [1, 2]] }, { poly: [[2, 2], [6, 2], [2, 4]], c: 'var(--good)' }], { tx: 1, ty: 1 })),
+        st("The new shape is twice as wide and twice as tall, but has the same angles. Its area is four times bigger.", V.eq('area × 2² = × 4', 'g'))]),
+      REC("Multiply each coordinate by the scale factor to enlarge from the origin.", ['Multiply coordinates', 'Same angles', 'Area × k²'])] }
+  ]);
+
+  /* 832 DATA HANDLING AND PROBABILITY */
+  BT.story(832, 'Watch', [
+    { title: 'Scatter graphs', goal: 'how to describe correlation and use a line of best fit.', scenes: [
+      SC('Correlation', 'Revision time and test score', [
+        st("A scatter graph shows two sets of data at once. Here, students who revised longer scored higher. The points trend upwards: positive correlation.", V.plot(0, 6, 0, 100, [{ p: [1, 25, '', 'var(--accent)'] }, { p: [2, 40, '', 'var(--accent)'] }, { p: [2.5, 50, '', 'var(--accent)'] }, { p: [3, 55, '', 'var(--accent)'] }, { p: [4, 70, '', 'var(--accent)'] }, { p: [5, 85, '', 'var(--accent)'] }], { tx: 1, ty: 20, xl: 'hours', yl: 'score' })),
+        st("Draw a line of best fit through the middle of the points, with about as many points on each side. Then you can estimate: for four and a half hours of revision, the score is about seventy-eight.", V.plot(0, 6, 0, 100, [{ l: [[0.5, 15], [5.5, 92]], d: true }, { p: [1, 25, '', 'var(--accent)'] }, { p: [2, 40, '', 'var(--accent)'] }, { p: [2.5, 50, '', 'var(--accent)'] }, { p: [3, 55, '', 'var(--accent)'] }, { p: [4, 70, '', 'var(--accent)'] }, { p: [5, 85, '', 'var(--accent)'] }], { tx: 1, ty: 20, xl: 'hours', yl: 'score' }) + V.rule('Correlation is not the same as cause.'))]),
+      REC("Describe the correlation, draw a line of best fit through the middle, and only estimate inside the range of the data.", ['Positive, negative or none', 'Best fit through the middle', 'Estimate within the data'])] },
+    { title: 'Tree diagrams', goal: 'how to find probabilities of combined events.', scenes: [
+      SC('Without replacement', '3 red and 7 blue counters', [
+        st("A bag has three red and seven blue counters. Two are taken without putting the first back. What is the chance both are red? The first is red with probability three out of ten.", V.eq('P(1st red) = 3/10', 'b')),
+        st("Now there are nine counters left, two of them red. The second is red with probability two ninths. Multiply along the branches.", V.eq('P(2nd red) = 2/9', 'b') + V.eq('3/10 × 2/9 = 6/90 = 1/15', 'g') + V.rule('Along the branches, multiply.')),
+        st("If the first counter were replaced, the second chance would still be three out of ten, and the answer would be nine over a hundred.", V.eq('with replacement: 3/10 × 3/10 = 9/100'))]),
+      REC("Multiply along the branches. Without replacement, the numbers change on the second pick.", ['Multiply along branches', 'Add different routes', 'Without replacement: change the total'])] }
+  ]);
+
+  /* 833 SPATIAL */
+  BT.story(833, 'Watch', [
+    { title: 'Rotation on a grid', goal: 'how to rotate a shape about the origin.', scenes: [
+      SC('A quarter turn anticlockwise', 'About the origin', [
+        st("To rotate you need three things: a centre, an angle and a direction. Here we turn a triangle ninety degrees anticlockwise about the origin. The point x, y goes to minus y, x.", V.eq('(x, y) → (−y, x)', 'b')),
+        st("The corner at one, one goes to minus one, one. The corner at three, one goes to minus one, three. And one, two goes to minus two, one.", V.plot(-4, 4, -1, 4, [{ poly: [[1, 1], [3, 1], [1, 2]] }, { poly: [[-1, 1], [-1, 3], [-2, 1]], c: 'var(--good)' }], { tx: 1, ty: 1 }))]),
+      REC("Rotation needs a centre, an angle and a direction. The shape stays the same size.", ['Centre', 'Angle', 'Direction'])] },
+    { title: 'Views of solids', goal: 'how to draw and read plans and elevations of solids.', scenes: [
+      SC('Plan and elevations', 'Prisms and pyramids', [
+        st("A plan is the view from above. The front and side elevations are the views from the front and side. A square-based pyramid has a square with diagonals as its plan, and a triangle for both elevations.", V.tbl([['Cube', 'square', 'square', 'square'], ['Square pyramid', 'square', 'triangle', 'triangle'], ['Triangular prism', 'rectangle', 'rectangle', 'triangle']], ['Solid', 'Plan', 'Front', 'Side']))]),
+      REC("Imagine looking at the solid from above, the front and the side, and draw what you see.", ['Plan: from above', 'Front elevation', 'Side elevation'])] }
+  ]);
+})();
+</script>
+<script>
+/* story_s3.js: teacher story lessons for S3 (topics 841 to 853). */
+(function () {
+  'use strict';
+  var BT = window.BT; if (!BT || !BT.story || !BT.sv || !BT.sv.plot) return;
+  var V = BT.sv, NL = BT.NL;
+  var SC = function (h, sub, steps) { return { h: h, sub: sub, steps: steps }; };
+  var st = function (say, html) { return { say: say, html: html || '' }; };
+  var REC = function (say, items) { return SC('Let’s recap', '', [st(say, V.list(items))]); };
+  function boxplot() {
+    var X = function (v) { return 20 + v * 17; }, s = '';
+    for (var v = 0; v <= 16; v += 2) s += '<line x1="' + X(v) + '" y1="78" x2="' + X(v) + '" y2="84" style="stroke:var(--fg);stroke-width:2"/>' + V.t(X(v), 100, v, 'middle', 'var(--muted)');
+    s += '<line x1="20" y1="80" x2="292" y2="80" style="stroke:var(--fg);stroke-width:2"/>';
+    s += '<line x1="' + X(3) + '" y1="40" x2="' + X(5) + '" y2="40" style="stroke:var(--fg);stroke-width:3"/><line x1="' + X(12) + '" y1="40" x2="' + X(14) + '" y2="40" style="stroke:var(--fg);stroke-width:3"/>';
+    s += '<rect x="' + X(5) + '" y="20" width="' + (X(12) - X(5)) + '" height="40" style="fill:var(--accent);fill-opacity:.35;stroke:var(--fg);stroke-width:3"/><line x1="' + X(8) + '" y1="20" x2="' + X(8) + '" y2="60" style="stroke:var(--fg);stroke-width:4"/>';
+    s += V.t(X(3), 14, '3') + V.t(X(5), 14, 'Q1 5') + V.t(X(8), 14, '8') + V.t(X(12), 14, 'Q3 12') + V.t(X(14), 14, '14');
+    return V.svg(310, 112, s, 'A box plot', 340);
+  }
+
+  /* 841 NUMBER AND PERCENTAGES */
+  BT.story(841, 'Watch', [
+    { title: 'Surds', goal: 'how to simplify and multiply surds.', scenes: [
+      SC('What is a surd?', 'A root that does not simplify', [
+        st("A surd is a square root that is not a whole number, like root two or root twelve. Its decimal goes on forever, so we leave it as a root to be exact. We can still simplify them.", V.eq('√2 = 1.41421…', 'b')),
+        st("To simplify root twelve, look for a square number that divides into twelve. Four does. Root twelve is root four times root three. Root four is two, so we get two root three.", V.eq('√12 = √4 × √3 = 2√3', 'g'))]),
+      SC('Multiplying', '√2 × √8', [
+        st("To multiply surds, multiply the numbers inside the roots. Root two times root eight is root sixteen, which is four.", V.eq('√2 × √8 = √16 = 4', 'g') + V.rule('√a × √b = √(ab)'))]),
+      REC("Simplify a surd by pulling out the biggest square factor. Multiply surds by multiplying what is inside.", ['Find a square factor', '√(ab) = √a × √b', 'Leave exact answers as roots'])] },
+    { title: 'Compound growth and depreciation', goal: 'how to model repeated percentage growth and decay.', scenes: [
+      SC('Depreciation', 'A car loses 20% a year', [
+        st("A car worth fifteen thousand pounds loses twenty per cent of its value each year. The multiplier is zero point eight. After three years, multiply by zero point eight three times.", V.eq('15,000 × 0.8³', 'b')),
+        st("Zero point eight cubed is zero point five one two. Fifteen thousand times that is seven thousand, six hundred and eighty pounds.", V.eq('15,000 × 0.512 = £7,680', 'g') + V.rule('Final = original × multiplierⁿ'))]),
+      REC("For growth the multiplier is more than one. For decay it is less than one. Raise it to the power of the number of periods.", ['Growth: 1 + rate', 'Decay: 1 − rate', 'Raise to the power n'])] }
+  ]);
+
+  /* 842 FINANCE */
+  BT.story(842, 'Watch', [
+    { title: 'Compound interest', goal: 'how savings grow with compound interest.', scenes: [
+      SC('Interest on interest', '£5,000 at 3% for 4 years', [
+        st("With compound interest, the interest is added to the savings each year, and then earns interest too. Three per cent growth has the multiplier one point oh three. Four years: one point oh three to the power four.", V.eq('5000 × 1.03⁴', 'b')),
+        st("One point oh three to the fourth is about one point one two five five. Times five thousand is five thousand, six hundred and twenty-seven pounds fifty-four.", V.eq('5000 × 1.1255 ≈ £5,627.54', 'g')),
+        st("Compare with simple interest. Three per cent of five thousand is a hundred and fifty a year, six hundred in four years, giving five thousand, six hundred. Compound gives a little more.", V.eq('simple: £5,600'))]),
+      REC("Compound interest uses the multiplier to the power of the number of years. It beats simple interest over time.", ['Multiplier = 1 + rate', 'Power = years', 'Interest = final − original'])] },
+    { title: 'Tax bands', goal: 'how tax is worked out when there is more than one rate.', scenes: [
+      SC('Two rates', 'An example with made-up bands', [
+        st("Some tax systems charge different rates on different slices of income. In this example, the first ten thousand of taxable income is taxed at twenty per cent and the rest at forty per cent. Always use the rates in the question, as real ones change.", V.eq('First £10,000 at 20%, the rest at 40%', 'b')),
+        st("Taxable income is seventeen thousand five hundred. Twenty per cent of ten thousand is two thousand. The remaining seven thousand five hundred at forty per cent is three thousand. The total tax is five thousand pounds.", V.eq('20% of 10,000 = 2,000') + V.eq('40% of 7,500 = 3,000') + V.eq('Tax = £5,000', 'g'))]),
+      REC("Split the income into slices, tax each slice at its own rate, then add.", ['Slice the income', 'Tax each slice', 'Add the results'])] }
+  ]);
+
+  /* 843 RATIO, PROPORTION, RATES AND SPEED */
+  BT.story(843, 'Watch', [
+    { title: 'Density and other rates', goal: 'how to use rates such as density.', scenes: [
+      SC('Density', 'Mass ÷ volume', [
+        st("Density is a rate: how much mass fits in each cubic centimetre. A block has a mass of five hundred and forty grams and a volume of two hundred cubic centimetres. Density is mass divided by volume.", V.eq('ρ = m ÷ V') + V.eq('540 ÷ 200 = 2.7 g/cm³', 'g')),
+        st("Rearranged, mass is density times volume, and volume is mass over density. Many rate problems use this same triangle idea.", V.tbl([['mass', 'density × volume'], ['volume', 'mass ÷ density']], ['Find', 'Use']))]),
+      REC("A rate compares two different quantities. Density is mass over volume, and speed is distance over time.", ['Rate = quantity ÷ quantity', 'Rearrange for the unknown', 'Check the units'])] },
+    { title: 'Changing units of speed', goal: 'how to convert between km/h and m/s.', scenes: [
+      SC('km/h to m/s', '90 km/h', [
+        st("To change ninety kilometres per hour into metres per second, think about both units. Ninety kilometres is ninety thousand metres. One hour is three thousand, six hundred seconds.", V.eq('90 km = 90,000 m') + V.eq('1 h = 3,600 s')),
+        st("Divide ninety thousand by three thousand six hundred and you get twenty-five metres per second.", V.eq('90,000 ÷ 3,600 = 25 m/s', 'g') + V.rule('km/h ÷ 3.6 = m/s'))]),
+      REC("Change the distance unit and the time unit separately. Dividing by three point six converts km/h to m/s.", ['Convert distance', 'Convert time', 'Divide'])] }
+  ]);
+
+  /* 844 SOLIDS */
+  BT.story(844, 'Watch', [
+    { title: 'Volume of cones and spheres', goal: 'how to use the volume formulae for a cone and sphere.', scenes: [
+      SC('Cone', 'Radius 3 cm, height 4 cm', [
+        st("A cone is a third of the cylinder that fits around it. Its volume is one third pi r squared h. With radius three and height four: a third of pi times nine times four is twelve pi, about thirty-seven point seven cubic centimetres.", V.eq('V = ⅓πr²h = ⅓ × π × 9 × 4 = 12π ≈ 37.7 cm³', 'g'))]),
+      SC('Sphere', 'Radius 3 cm', [
+        st("The volume of a sphere is four thirds pi r cubed. With radius three, r cubed is twenty-seven. Four thirds of twenty-seven is thirty-six, so thirty-six pi, about a hundred and thirteen point one.", V.eq('V = 4/3 πr³ = 4/3 × π × 27 = 36π ≈ 113.1 cm³', 'g'))]),
+      REC("Cone: a third pi r squared h. Sphere: four thirds pi r cubed. Substitute carefully and keep pi until the end.", ['Cone: ⅓πr²h', 'Sphere: 4/3 πr³', 'Cube r before multiplying'])] },
+    { title: 'Surface area of cones and spheres', goal: 'how to find the curved surface area of a cone and sphere.', scenes: [
+      SC('Sphere', '4πr²', [
+        st("The surface area of a sphere is four pi r squared. With radius three, that is thirty-six pi, about a hundred and thirteen square centimetres.", V.eq('SA = 4πr² = 36π ≈ 113.1 cm²', 'g'))]),
+      SC('Cone', 'The slant height', [
+        st("The curved surface of a cone is pi r l, where l is the slant height. We need l. With radius three and height four, use Pythagoras: three squared plus four squared is twenty-five. So l is five.", V.rt({ a: 'r = 3', b: 'h = 4', c: 'l = 5' }) + V.eq('l = √(3² + 4²) = 5', 'b')),
+        st("The curved area is pi times three times five, fifteen pi, about forty-seven point one square centimetres.", V.eq('πrl = 15π ≈ 47.1 cm²', 'g'))]),
+      REC("Sphere: four pi r squared. Cone curved surface: pi r l, with l from Pythagoras.", ['Sphere: 4πr²', 'Cone curved: πrl', 'Slant height by Pythagoras'])] }
+  ]);
+
+  /* 845 ALGEBRA: BRACKETS AND FACTORISING */
+  BT.story(845, 'Watch', [
+    { title: 'Common factors and difference of two squares', goal: 'how to factorise by taking out a common factor and spotting a difference of squares.', scenes: [
+      SC('Common factor', '6x + 9', [
+        st("Factorising is expanding backwards. Look for the highest number that divides both terms. Six x and nine are both divisible by three. Take out the three: three brackets two x plus three.", V.eq('6x + 9 = 3(2x + 3)', 'g') + V.rule('Check by expanding.'))]),
+      SC('Difference of two squares', 'x² − 16', [
+        st("When you see one square minus another square, like x squared minus sixteen, it factorises into two brackets with the same terms and opposite signs. x squared minus four squared is x minus four, times x plus four.", V.eq('x² − 16 = (x − 4)(x + 4)', 'g'))]),
+      REC("Take out the highest common factor first. A difference of two squares factorises into (a − b)(a + b).", ['HCF first', 'a² − b² = (a − b)(a + b)', 'Check by expanding'])] },
+    { title: 'Factorising quadratics', goal: 'how to factorise a quadratic with two numbers.', scenes: [
+      SC('Two numbers', 'x² + 7x + 12', [
+        st("To factorise x squared plus seven x plus twelve, find two numbers that multiply to twelve and add to seven. Three and four work: three times four is twelve, three plus four is seven.", V.tbl([['1, 12', '13'], ['2, 6', '8'], ['3, 4', '7 ✓']], ['Multiply to 12', 'Add to']) + V.eq('x² + 7x + 12 = (x + 3)(x + 4)', 'g'))]),
+      SC('With a negative', 'x² − 5x + 6', [
+        st("For x squared minus five x plus six, the numbers multiply to plus six and add to minus five. Minus two and minus three work. So it is x minus two, times x minus three.", V.eq('(x − 2)(x − 3)', 'g'))]),
+      REC("Find two numbers that multiply to the last term and add to the middle term.", ['Multiply to c', 'Add to b', 'Check by expanding'])] }
+  ]);
+
+  /* 846 EQUATIONS, INEQUATIONS, SUBJECT */
+  BT.story(846, 'Watch', [
+    { title: 'Equations with fractions', goal: 'how to solve equations with a fraction on each side.', scenes: [
+      SC('Cross-multiplying', '(x + 1)/2 = (x − 2)/3', [
+        st("To get rid of fractions, multiply both sides by the common denominator, six. Six times x plus one over two is three times x plus one. Six times x minus two over three is two times x minus two.", V.eq('3(x + 1) = 2(x − 2)', 'b')),
+        st("Expand: three x plus three equals two x minus four. Take away two x: x plus three equals minus four. Take three: x equals minus seven.", V.eq('3x + 3 = 2x − 4') + V.eq('x = −7', 'g')),
+        st("Check: minus seven plus one is minus six, over two, minus three. Minus seven minus two is minus nine, over three, minus three. Both sides match.", V.eq('−3 = −3 ✓', 'g'))]),
+      REC("Multiply through by the common denominator, expand the brackets, collect terms, and check.", ['Clear the fractions', 'Expand', 'Collect terms', 'Check'])] },
+    { title: 'Changing the subject and inequations', goal: 'how to rearrange formulae and solve inequations with a negative.', scenes: [
+      SC('Rearranging', 'Make r the subject of A = πr²', [
+        st("A equals pi r squared. Divide both sides by pi: r squared equals A over pi. Then take the square root: r equals the square root of A over pi.", V.eq('r² = A/π') + V.eq('r = √(A/π)', 'g')),
+        st("Another one: y equals m x plus c. Take c from both sides, then divide by m. x equals y minus c, over m.", V.eq('x = (y − c)/m', 'g'))]),
+      SC('Inequations', 'Dividing by a negative', [
+        st("Solve minus two x is less than eight. Divide by minus two. Because we divide by a negative, the inequality sign flips. x is greater than minus four.", V.eq('−2x < 8') + V.eq('x > −4', 'g') + V.rule('Divide or multiply by a negative: flip the sign.') + NL(-8, 2, { lab: 1, tick: 1, marks: [[-4, 135]] }))]),
+      REC("Undo operations in reverse order when rearranging. Flip an inequality sign when you multiply or divide by a negative.", ['Reverse order', 'Same to both sides', 'Negative: flip the sign'])] }
+  ]);
+
+  /* 847 STRAIGHT LINES */
+  BT.story(847, 'Watch', [
+    { title: 'Parallel and perpendicular lines', goal: 'how gradients show whether lines are parallel or perpendicular.', scenes: [
+      SC('Parallel', 'The same gradient', [
+        st("Parallel lines never meet. They have exactly the same gradient. The lines y equals two x plus one, and y equals two x minus three are parallel, because both have gradient two.", V.plot(-2, 4, -5, 7, [{ l: [[-2, -3], [3, 7]] }, { l: [[-1, -5], [4, 5]], c: 'var(--good)' }], { tx: 1, ty: 2 }) + V.eq('y = 2x + 1   y = 2x − 3', 'g'))]),
+      SC('Perpendicular', 'Gradients multiply to −1', [
+        st("Perpendicular lines meet at a right angle. Their gradients multiply to minus one. A line with gradient two is perpendicular to a line with gradient minus a half, because two times minus a half is minus one.", V.eq('m₁ × m₂ = −1') + V.eq('2 × (−½) = −1 ✓', 'g'))]),
+      REC("Parallel: equal gradients. Perpendicular: gradients multiply to minus one.", ['Parallel: m₁ = m₂', 'Perpendicular: m₁m₂ = −1', 'Write gradients first'])] },
+    { title: 'Lines in the form ax + by = c', goal: 'how to sketch a line from its intercepts.', scenes: [
+      SC('Using intercepts', '2x + 3y = 12', [
+        st("To sketch two x plus three y equals twelve, find where it crosses each axis. When x is zero, three y is twelve, so y is four. When y is zero, two x is twelve, so x is six.", V.eq('x = 0: y = 4') + V.eq('y = 0: x = 6')),
+        st("Plot the points zero, four and six, zero, and join them with a straight line.", V.plot(-1, 7, -1, 5, [{ l: [[0, 4], [6, 0]] }, { p: [0, 4, '(0, 4)'] }, { p: [6, 0, '(6, 0)'] }], { tx: 1, ty: 1, xl: 'x', yl: 'y' }))]),
+      REC("Set x to zero and y to zero to find the two intercepts, then join them.", ['x = 0 → y-intercept', 'y = 0 → x-intercept', 'Join with a straight line'])] }
+  ]);
+
+  /* 848 SIMULTANEOUS EQUATIONS */
+  BT.story(848, 'Watch', [
+    { title: 'Solving by graph', goal: 'how the intersection of two lines solves two equations at once.', scenes: [
+      SC('Where the lines cross', 'y = x + 1 and y = −x + 5', [
+        st("Simultaneous equations ask for values of x and y that satisfy two equations at once. If we draw both lines, the solution is the point where they cross.", V.plot(0, 6, 0, 6, [{ l: [[0, 1], [5, 6]] }, { l: [[0, 5], [5, 0]], c: 'var(--good)' }, { p: [2, 3, '(2, 3)'] }], { tx: 1, ty: 1, xl: 'x', yl: 'y' })),
+        st("The lines cross at two, three. Check in both: three equals two plus one, and three equals minus two plus five. Both work, so x is two and y is three.", V.eq('3 = 2 + 1 ✓') + V.eq('3 = −2 + 5 ✓') + V.eq('x = 2, y = 3', 'g'))]),
+      REC("The solution is where the two lines cross. Always check in both equations.", ['Plot both lines', 'Read the crossing point', 'Check in both'])] },
+    { title: 'Solving by elimination', goal: 'how to eliminate a variable to solve simultaneous equations.', scenes: [
+      SC('Subtract to eliminate', 'x + y = 7 and 2x + y = 11', [
+        st("Both equations have a plus y. Subtract the first from the second and the y disappears. Two x take x is x. Eleven take seven is four. So x is four.", V.eq('2x + y = 11') + V.eq('x + y = 7') + V.eq('x = 4', 'g')),
+        st("Put x equals four into the first equation: four plus y equals seven, so y is three. Check in the second: eight plus three is eleven.", V.eq('y = 3', 'g') + V.eq('2(4) + 3 = 11 ✓', 'g') + V.rule('Same sign: subtract. Opposite signs: add.'))]),
+      REC("Make the coefficients of one letter match. Add or subtract to eliminate it, solve, then substitute back.", ['Match a coefficient', 'Add or subtract', 'Substitute back', 'Check'])] }
+  ]);
+
+  /* 849 PYTHAGORAS AND TRIGONOMETRY */
+  BT.story(849, 'Watch', [
+    { title: 'SOH CAH TOA', goal: 'how to use sine, cosine and tangent to find a missing side.', scenes: [
+      SC('Naming the sides', 'Hypotenuse, opposite, adjacent', [
+        st("In a right-angled triangle, the hypotenuse is opposite the right angle. The opposite is across from the angle you are using, and the adjacent is next to it. Three ratios link them: sine is opposite over hypotenuse, cosine is adjacent over hypotenuse, tangent is opposite over adjacent.", V.tbl([['sin θ', 'O ÷ H'], ['cos θ', 'A ÷ H'], ['tan θ', 'O ÷ A']], ['Ratio', 'Sides']) + V.rule('SOH CAH TOA'))]),
+      SC('Finding a side', 'Hypotenuse 10 cm, angle 30°', [
+        st("The hypotenuse is ten and the angle is thirty degrees. We want the opposite side. That is sine: sine thirty equals opposite over ten. So opposite equals ten times sine thirty, which is five centimetres.", V.rt({ a: 'adjacent', b: 'opposite ?', c: '10 cm', ang: '30°' }) + V.eq('sin 30° = O ÷ 10 → O = 10 × 0.5 = 5 cm', 'g'))]),
+      REC("Label the sides first. Choose sine, cosine or tangent from the two sides involved.", ['Label O, A, H', 'Choose SOH, CAH or TOA', 'Rearrange and solve'])] },
+    { title: 'Finding an angle', goal: 'how to use the inverse trigonometric functions.', scenes: [
+      SC('Inverse tangent', 'Opposite 3, adjacent 4', [
+        st("If we know two sides and want the angle, we use the inverse function. The opposite is three and the adjacent is four. Tangent of the angle is three over four, zero point seven five.", V.rt({ a: '4', b: '3', c: '', ang: 'θ ?' }) + V.eq('tan θ = 3/4 = 0.75', 'b')),
+        st("Now press shift tan on the calculator: inverse tangent of zero point seven five is thirty-six point nine degrees.", V.eq('θ = tan⁻¹(0.75) = 36.9°', 'g') + V.rule('Check your calculator is in degrees.'))]),
+      REC("To find an angle, use the inverse function: shift sin, cos or tan.", ['Ratio of two known sides', 'Inverse function', 'Degrees mode'])] }
+  ]);
+
+  /* 850 THE CIRCLE */
+  BT.story(850, 'Watch', [
+    { title: 'Circle theorems', goal: 'the angle in a semicircle, the angle at the centre and tangents.', scenes: [
+      SC('Angle in a semicircle', 'Always 90°', [
+        st("Draw a diameter and join its ends to any point on the circle. The angle at that point is always a right angle. This is the angle in a semicircle theorem.", V.circle() + V.eq('angle in a semicircle = 90°', 'g')),
+        st("Another: the angle at the centre is twice the angle at the circumference, when both stand on the same arc. If the angle at the circumference is forty, the angle at the centre is eighty.", V.eq('centre = 2 × circumference') + V.eq('2 × 40° = 80°', 'g'))]),
+      SC('Tangents', 'Perpendicular to the radius', [
+        st("A tangent touches a circle at one point. The radius to that point meets the tangent at ninety degrees.", V.eq('tangent ⟂ radius', 'g'))]),
+      REC("The angle in a semicircle is ninety. The centre angle is double the edge angle. A tangent is perpendicular to the radius.", ['Semicircle: 90°', 'Centre = 2 × edge', 'Tangent ⟂ radius'])] },
+    { title: 'Chords and tangent lengths', goal: 'how to use Pythagoras with chords and tangents.', scenes: [
+      SC('Chord', 'Radius 5, perpendicular distance 3', [
+        st("A perpendicular from the centre to a chord cuts it exactly in half. With radius five and perpendicular distance three, half the chord is a side of a right-angled triangle. Five squared minus three squared is sixteen, so half the chord is four.", V.eq('5² − 3² = 16 → half chord = 4') + V.eq('chord = 8', 'g'))]),
+      SC('Tangent length', 'A point 13 from the centre', [
+        st("A tangent is perpendicular to the radius, so the radius, the tangent and the line to the centre make a right-angled triangle. The hypotenuse is thirteen and the radius is five. Thirteen squared minus five squared is a hundred and forty-four. The tangent is twelve.", V.eq('13² − 5² = 144') + V.eq('tangent = 12', 'g'))]),
+      REC("Look for the right angle. A perpendicular to a chord bisects it, and a tangent meets the radius at ninety degrees.", ['Find the right angle', 'Use Pythagoras', 'Double for a whole chord'])] }
+  ]);
+
+  /* 851 SIMILARITY, SCALE, BEARINGS, ELEVATION */
+  BT.story(851, 'Watch', [
+    { title: 'Similar triangles', goal: 'how to use similar triangles to find an unknown length.', scenes: [
+      SC('Shadows', 'A pole and a tree', [
+        st("A two metre pole casts a three metre shadow. At the same moment, a tree casts a twelve metre shadow. The sun makes the two triangles similar, so the sides are in the same ratio.", V.eq('pole : shadow = 2 : 3', 'b')),
+        st("Twelve is four times three, so the scale factor is four. The tree is four times two, eight metres tall.", V.eq('scale factor = 12 ÷ 3 = 4') + V.eq('height = 2 × 4 = 8 m', 'g'))]),
+      REC("Match corresponding sides, find the scale factor, then multiply or divide.", ['Match corresponding sides', 'Find the scale factor', 'Apply it'])] },
+    { title: 'Angles of elevation', goal: 'how to use tangent to find heights from angles of elevation.', scenes: [
+      SC('Looking up', 'A tower 50 m away', [
+        st("The angle of elevation is the angle up from the horizontal to the top of something. You stand fifty metres from a tower and the angle of elevation of the top is thirty-five degrees.", V.rt({ a: '50 m', b: 'h ?', c: '', ang: '35°' })),
+        st("We know the adjacent side and want the opposite. That is tangent. h equals fifty times tan thirty-five, which is about thirty-five metres.", V.eq('tan 35° = h ÷ 50') + V.eq('h = 50 × 0.7002 ≈ 35.0 m', 'g'))]),
+      REC("Sketch a right-angled triangle. The angle of elevation is measured up from the horizontal.", ['Draw the right-angled triangle', 'Pick sin, cos or tan', 'Add eye height if needed'])] }
+  ]);
+
+  /* 852 STATISTICS AND PROBABILITY */
+  BT.story(852, 'Watch', [
+    { title: 'Standard deviation', goal: 'how to calculate the standard deviation to measure spread.', scenes: [
+      SC('Measuring spread', '2, 4, 6, 8', [
+        st("The standard deviation tells us how spread out the data is. Take the data two, four, six, eight. The mean is five.", V.cards(['2', '4', '6', '8'], ['b'], true) + V.eq('mean = 20 ÷ 4 = 5')),
+        st("Find each value minus the mean, and square it: minus three squared is nine, minus one squared is one, one squared is one, three squared is nine. They add to twenty.", V.tbl([['2', '−3', '9'], ['4', '−1', '1'], ['6', '1', '1'], ['8', '3', '9']], ['x', 'x − mean', 'squared']) + V.eq('sum = 20')),
+        st("Divide by n minus one, which is three: six point six seven. Take the square root: two point five eight.", V.eq('s = √(20 ÷ 3) ≈ 2.58', 'g') + V.rule('Divide by n − 1, then square root.'))]),
+      REC("Subtract the mean, square, add, divide by n minus one, take the square root.", ['x − mean', 'Square and add', '÷ (n − 1)', 'Square root'])] },
+    { title: 'Quartiles and box plots', goal: 'how to find quartiles and draw a box plot.', scenes: [
+      SC('Five-figure summary', '3, 5, 6, 8, 9, 12, 14', [
+        st("Put the data in order. The median is the middle value, eight. The lower quartile is the middle of the lower half, five. The upper quartile is the middle of the upper half, twelve.", V.cards(['3', '5', '6', '8', '9', '12', '14'], ['b'], true) + V.tbl([['Q1', '5'], ['median', '8'], ['Q3', '12']], ['', 'value'])),
+        st("The interquartile range is the upper quartile minus the lower quartile, twelve minus five, seven. A box plot shows the minimum, quartiles, median and maximum.", boxplot() + V.eq('IQR = 12 − 5 = 7', 'g'))]),
+      REC("Order the data, find the median, then the medians of each half. The IQR is Q3 minus Q1.", ['Order the data', 'Q1, median, Q3', 'IQR = Q3 − Q1'])] }
+  ]);
+
+  /* 853 SPATIAL */
+  BT.story(853, 'Watch', [
+    { title: 'Vectors as journeys', goal: 'how to describe a movement with a vector.', scenes: [
+      SC('Column vectors', 'Right and up', [
+        st("A vector describes a journey. The top number is how far right, and the bottom number is how far up. Negative means left or down. The vector three, two is three right and two up.", V.plot(0, 5, 0, 4, [{ l: [[1, 1], [4, 3]] }, { p: [1, 1, 'A', 'var(--accent)'] }, { p: [4, 3, 'B', 'var(--good)'] }], { tx: 1, ty: 1 }) + V.eq('AB = (3, 2)', 'g')),
+        st("To add vectors, add the tops and add the bottoms. Three, two plus one, minus four gives four, minus two. To double a vector, double both numbers.", V.eq('(3, 2) + (1, −4) = (4, −2)') + V.eq('2(3, 2) = (6, 4)', 'g'))]),
+      REC("Top is across, bottom is up. Add vectors component by component.", ['Top: across, bottom: up', 'Add tops and bottoms', 'Multiply both numbers'])] },
+    { title: 'The magnitude of a vector', goal: 'how to find the length of a vector.', scenes: [
+      SC('Pythagoras again', '|(3, 2)|', [
+        st("The magnitude is the length of the vector. The vector goes three across and two up, so it is the hypotenuse of a right-angled triangle. Three squared plus two squared is thirteen. The magnitude is root thirteen, about three point six one.", V.rt({ a: '3', b: '2', c: '|a| = ?' }) + V.eq('|a| = √(3² + 2²) = √13 ≈ 3.61', 'g'))]),
+      REC("The magnitude of a vector is found with Pythagoras on its two components.", ['Square both components', 'Add', 'Square root'])] }
   ]);
 })();
 </script>
