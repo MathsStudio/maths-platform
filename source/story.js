@@ -10,7 +10,7 @@
 
   var css = document.createElement('style');
   css.textContent = [
-    '.story{display:flex;flex-direction:column;gap:12px;margin:6px 0 14px}',
+    '.story{display:flex;flex-direction:column;gap:12px;margin:6px auto 14px;max-width:980px;width:100%}',
     '.story .st-stage{background:var(--surface);border:2px solid var(--line);border-radius:20px;min-height:340px;padding:18px 16px;overflow:hidden}',
     '.story .st-scene{display:flex;flex-direction:column;align-items:center;gap:12px;animation:stfade .45s ease}',
     '@keyframes stfade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}',
