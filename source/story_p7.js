@@ -91,7 +91,7 @@
   BT.story(705, 'Watch', [
     { title: 'Area of triangles and compound shapes', goal: 'how to find the area of triangles and shapes made from rectangles.', scenes: [
       SC('Triangles', 'Half a rectangle', [
-        st("A triangle is half of a rectangle. With base ten centimetres and height six centimetres, the rectangle has area sixty, so the triangle has area thirty square centimetres.", V.poly([[20, 100], [200, 100], [110, 20]], 'var(--surface-2)', 230, 130, 'A triangle', [[110, 120, 'base 10 cm'], [160, 66, 'h 6 cm']]) + V.eq('½ × 10 × 6 = 30 cm²', 'g'))]),
+        st("A triangle is half of a rectangle. With base ten centimetres and height six centimetres, the rectangle has area sixty, so the triangle has area thirty square centimetres.", V.poly([[20, 100], [200, 100], [110, 20]], 'var(--surface-2)', 230, 130, 'A triangle', [[110, 120, 'base 10 cm'], [112, 78, 'h 6 cm']]) + V.eq('½ × 10 × 6 = 30 cm²', 'g'))]),
       SC('Compound shapes', 'Take away the corner', [
         st("For an L-shape, we can take a rectangle and remove a corner. A rectangle eight by five has area forty. The missing corner is three by two, which is six. Forty minus six is thirty-four square centimetres.", V.eq('8 × 5 = 40') + V.eq('3 × 2 = 6') + V.eq('40 − 6 = 34 cm²', 'g'))]),
       REC("Triangle area is half base times height. Split compound shapes into rectangles, or take a corner away.", ['Triangle: ½ × base × height', 'Split or subtract', 'Units are squared'])] },
@@ -134,7 +134,7 @@
       SC('Corresponding angles', 'The F shape', [
         st("When a line crosses two parallel lines, some angles are equal. Corresponding angles sit in the same position at each crossing. Look for an F shape. They are equal.", par([[155, 72, '65°'], [215, 152, '65°']]))]),
       SC('Alternate angles', 'The Z shape', [
-        st("Alternate angles are on opposite sides of the crossing line, between the parallels. Look for a Z shape. They are equal too.", par([[155, 72, '65°'], [150, 130, '65°']]))]),
+        st("Alternate angles are on opposite sides of the crossing line, between the parallels. Look for a Z shape. They are equal too.", par([[155, 72, '65°'], [138, 130, '65°']]))]),
       SC('Co-interior angles', 'The C shape', [
         st("Co-interior angles are on the same side, between the parallel lines. Look for a C shape. They add up to one hundred and eighty degrees. So if one is sixty-five, the other is one hundred and fifteen.", par([[155, 72, '65°'], [203, 130, '115°']]) + V.eq('180 − 65 = 115°', 'g'))]),
       REC("F: corresponding, equal. Z: alternate, equal. C: co-interior, add to one eighty.", ['F: corresponding, equal', 'Z: alternate, equal', 'C: co-interior, sum 180°'])] }
