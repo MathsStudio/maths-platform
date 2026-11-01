@@ -98,7 +98,7 @@ function answer(b,op){if(done)return;done=true;var ok=op.v===cur.ans,m=$('gMsg')
  m.style.color=ok?'#14613f':'#9b2c2c';m.textContent=(ok?'Yes! ':'Not quite. ')+cur.why;
  var n=$('gNext');n.style.display='inline-block';n.textContent=round<2?'Next challenge':'See my score';n.onclick=function(){round++;if(round<3)next();else finish()}}
 function finish(){var g=G[gi],nx=G[(gi+1)%G.length];$('gOpts').innerHTML='';$('gStage').innerHTML='<div style="text-align:center;padding:10px"><div style="font-family:Fredoka,sans-serif;font-weight:700;font-size:40px;color:#2b5fd9">'+score+' out of 3</div><div style="font-weight:700">'+(score===3?'Perfect round!':score>1?'Nicely done.':'Good effort. Try again!')+'</div></div>';
- $('gQ').innerHTML='Want more?';$('gMsg').innerHTML='<a href="/learn/?year='+g.year+'" style="color:#2b5fd9">Open the full '+g.year+' lessons</a>';
+ $('gQ').innerHTML='';$('gMsg').innerHTML='';
  var n=$('gNext');n.textContent='Play '+nx.k.toLowerCase();n.onclick=function(){gi=(gi+1)%G.length;start()}}
 start();
 })();
