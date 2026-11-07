@@ -175,7 +175,7 @@
   S.extraMakers = function (n, level) {
     var base = prev ? (prev(n, level) || []) : [], list = MAP[Number(n)];
     if (!list) return base;
-    var lv = G.lvOf(Number(n)), pick1 = list.filter(function (x) { return level === 'low' ? x[1] === 'e' : level === 'high' ? x[1] !== 'e' : true; });
+    var nE = list.filter(function (x) { return x[1] === 'e'; }).length, lv = G.lvOf(Number(n)), pick1 = list.filter(function (x) { return level === 'low' ? (x[1] === 'e' || (x[1] === 'm' && nE < 3)) : level === 'high' ? x[1] !== 'e' : true; });
     if (!pick1.length) pick1 = list;
     return pick1.map(function (e) { var f = function () { return e[0](lv); }; Object.defineProperty(f, 'name', { value: e[0].name }); f.__gap = true; return f; }).concat(base);
   };
