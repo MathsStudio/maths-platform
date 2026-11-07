@@ -283,6 +283,6 @@
     if (!list) return base;
     var lv = lvOf(Number(n)), pick1 = list.filter(function (x) { return level === 'low' ? x[1] === 'e' : level === 'high' ? x[1] !== 'e' : true; });
     if (!pick1.length) pick1 = list;
-    return pick1.map(function (e) { var f = function () { return e[0](lv); }; Object.defineProperty(f, 'name', { value: e[0].name }); return f; }).concat(base);
+    return pick1.map(function (e) { var f = function () { return e[0](lv); }; Object.defineProperty(f, 'name', { value: e[0].name }); f.__gap = true; return f; }).concat(base);
   };
 })();

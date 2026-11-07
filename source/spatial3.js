@@ -259,7 +259,7 @@ function register(Y) {
       { id: 'lab1', label: 'Cube builder', type: 'lab', tag: 'Step 3 · We do it together', title: 'Cube builder', lead: 'Build stacks of cubes. See the total, the views and the challenges.', mount: cubeLab(lv) },
       { id: 'lab2', label: 'Turn and flip', type: 'lab', tag: 'Step 3 · We do it together', title: 'Turn and flip', lead: 'Turn ' + (lv >= 2 ? 'and flip ' : '') + 'the shape to match the target.', mount: turnLab(lv) },
       { id: 'learn2', label: 'Patterns and puzzles', type: 'slides', tag: 'Patterns and puzzles', slides: ls.B },
-      { id: 'practise', label: 'Practise', type: 'quiz', best: true, tag: 'Step 5 · Your turn', title: 'Practise', lead: '100 questions for this stage. Use the hints one at a time.', make: practise },
+      { id: 'practise', label: 'Practise', type: 'quiz', best: true, tag: 'Step 5 · Your turn', title: 'Practise', lead: '150 questions for this stage. Use the hints one at a time.', make: practise },
       { id: 'practical', label: 'Real-time problem', type: 'quiz', tag: 'Step 6 · Real-time problems', title: 'Real-time problems', lead: '30 situation questions about boxes, cubes, maps and directions. Low, Medium and High change how many steps each problem has.', make: practical }
     ] };
   if (Y.year === 'P6') delete topic.year;

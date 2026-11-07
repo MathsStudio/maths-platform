@@ -27,16 +27,17 @@
     var n = Number(S.state && S.state.tab), ban = BAN[n];
     var out = orig.apply(this, arguments);
     if (!ban || makers.storyMode) return out;
+    var want = out.length;
     var bad = function (q) { return q && ban[q.tag]; };
     for (var round = 0; round < 12 && out.some(bad); round++) {
       var keep = out.filter(function (q) { return !bad(q); }), seen = {}; keep.forEach(function (q) { seen[sig(q)] = 1; });
-      var need = count - keep.length, batch = orig.call(this, makers, Math.max(need * 3, 30));
-      batch.forEach(function (q) { if (keep.length < count && !bad(q) && !seen[sig(q)]) { seen[sig(q)] = 1; keep.push(q); } });
-      out = keep.length >= count ? keep : keep.concat(out.filter(bad).slice(0, count - keep.length));
+      var need = want - keep.length, batch = orig.call(this, makers, Math.max(need * 3, 30));
+      batch.forEach(function (q) { if (keep.length < want && !bad(q) && !seen[sig(q)]) { seen[sig(q)] = 1; keep.push(q); } });
+      out = keep.length >= want ? keep : keep.concat(out.filter(bad).slice(0, want - keep.length));
     }
     var good = out.filter(function (q) { return !bad(q); });
-    while (good.length && good.length < count) good.push(good[good.length % good.length ? Math.floor(Math.random() * good.length) : 0]);
-    return good.length >= count ? good.slice(0, count) : out;
+    while (good.length && good.length < want) good.push(good[good.length % good.length ? Math.floor(Math.random() * good.length) : 0]);
+    return good.length >= want ? good.slice(0, want) : out;
   };
 
   /* warm-ups come from their own makers: keep them on topic as well */
