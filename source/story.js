@@ -173,4 +173,20 @@
     if (i > 0) { t.steps.splice(i, 1); t.steps.unshift(st); }
     S.arrange(t);
   };
+  /* append extra lessons to a topic's existing Watch step (skips titles already there) */
+  BT.storyMore = function (n, episodes) {
+    var t = S.topics[n]; if (!t) return;
+    var st = t.steps.filter(function (s) { return s.id === 'watch'; })[0];
+    if (!st) { BT.story(n, 'Watch', episodes); return; }
+    var have = {}; (st.slides || []).forEach(function (sl) { have[sl.title] = 1; });
+    var add = episodes.filter(function (ep) { return !have[ep.title]; }).map(function (ep) {
+      return { title: ep.title, say: [ep.intro || 'Press play and your teacher will explain this step by step.'], goal: ep.goal || ep.title.toLowerCase() + '.', noMore: true, kind: 'Watch', live: function (host) { H.storyPlayer(host, ep); } };
+    });
+    if (!add.length) return;
+    var key = n + '.watch', m = H.slideMeta;
+    m.goals[key] = (m.goals[key] || []).concat(add.map(function (x) { return x.goal; }));
+    m.more[key] = (m.more[key] || []).concat(add.map(function () { return null; }));
+    st.slides = (st.slides || []).concat(add);
+    S.arrange(t);
+  };
 })();
