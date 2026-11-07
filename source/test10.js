@@ -8,17 +8,50 @@
   function plain(h) { return String(h).replace(/<svg[\s\S]*?<\/svg>/g, ' [picture] ').replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim(); }
   function fmtT(s) { s = Math.max(0, s); return (s < 600 ? '0' : '') + Math.floor(s / 60) + ':' + (s % 60 < 10 ? '0' : '') + (s % 60); }
 
+  /* The test follows a blueprint: one question from each kind of mental maths question, then extras from the busiest kinds, so every test covers a wide spread. */
+  var KINDS = [
+    ['number', /place value|number line|digit|in words|round|order|decimal places|whole number|numbers to|standard form|significant|powers and roots|laws of indices/i],
+    ['estimate', /estimat|sensible|unit|convert|measure/i],
+    ['calc', /add|subtract|multipl|divid|bodmas|mental|given fact|shortcut|negative|operation|missing number|calculat/i],
+    ['fraction', /fraction|equivalent|simplif|counting/i],
+    ['percent', /percent|reverse|compound|discount|sale/i],
+    ['money', /money|coin|best buy|wage|tax|interest|hire|exchange|change|finance|cost|price/i],
+    ['time', /time|calendar|clock|speed|zone|duration|timetable/i],
+    ['area', /perimeter|area|volume|surface|measure/i],
+    ['shape', /angle|shape|solid|symmetr|polygon|prism|reflect|circle|pythag|trig|bearing|coordinate|similar|scale|transform/i],
+    ['algebra', /sequence|nth|algebra|expression|equation|machine|bracket|formula|substitut|like terms|inequalit|pattern|straight line|gradient|simultaneous|factoris|expanding|subject/i],
+    ['data', /graph|chart|table|mean|average|median|pie|venn|probab|quartile|statistic|frequency|tally|data|range|scatter/i],
+    ['factor', /factor|multiple|prime/i],
+    ['ratio', /ratio|proportion|rate|in every|sharing/i],
+    ['reason', /cube|net|odd one|analogy|code|reason|must be|puzzle|clue|deduc|spatial|series|grid|matrix|stack|pattern/i]
+  ];
+  var EXTRA = ['calc', 'fraction', 'data', 'algebra', 'number', 'shape', 'time', 'money'];
+  function kindOf(q, topicTitle) {
+    var tag = String(q.tag || ''), k, i;
+    for (i = 0; i < KINDS.length; i++) if (KINDS[i][1].test(tag)) return KINDS[i][0];
+    for (i = 0; i < KINDS.length; i++) if (KINDS[i][1].test(topicTitle || '')) return KINDS[i][0];
+    return 'calc';
+  }
   function build() {
-    var topics = S.yearTopics().filter(function (t) { return t && t.steps; }), qs = [], per = {}, saved = S.state.tab, order = H.shuffle(topics.slice()), guard = 0;
-    var packs = [];
-    order.forEach(function (t) {
+    var topics = S.yearTopics().filter(function (t) { return t && t.steps; }), saved = S.state.tab, byKind = {}, seen = {}, qs = [];
+    topics.forEach(function (t) {
       var st = t.steps.filter(function (x) { return x.id === 'practise' && typeof x.make === 'function'; })[0]; if (!st) return;
-      try { S.state.tab = t.n; var arr = st.make(); if (Array.isArray(arr) && arr.length) packs.push({ t: t, arr: H.shuffle(arr.slice()) }); } catch (e) {}
+      try {
+        S.state.tab = t.n; var arr = st.make();
+        (Array.isArray(arr) ? arr : []).forEach(function (q) { if (!q || !q.text) return; q.__topic = t.title; var k = kindOf(q, t.title); (byKind[k] = byKind[k] || []).push(q); });
+      } catch (e) {}
     });
     S.state.tab = saved;
-    while (qs.length < NQ && packs.length && guard++ < 400) {
-      packs.forEach(function (p) { if (qs.length >= NQ || !p.arr.length) return; var q = p.arr.pop(); if (q) { q.__topic = p.t.title; qs.push(q); } });
+    Object.keys(byKind).forEach(function (k) { byKind[k] = H.shuffle(byKind[k]); });
+    function take(k) { var a = byKind[k]; while (a && a.length) { var q = a.pop(), sig = plain(q.text) + '|' + (q.options || []).join(','); if (!seen[sig]) { seen[sig] = 1; return q; } } return null; }
+    var kinds = H.shuffle(Object.keys(byKind)), r;
+    kinds.forEach(function (k) { if (qs.length < NQ) { var q = take(k); if (q) qs.push(q); } });
+    var guard = 0;
+    while (qs.length < NQ && guard++ < 200) {
+      var k2 = EXTRA[guard % EXTRA.length]; if (guard > EXTRA.length * 3) k2 = kinds[guard % kinds.length];
+      var q2 = take(k2); if (q2) qs.push(q2);
     }
+    S._tenKinds = qs.map(function (q) { return kindOf(q, q.__topic); });
     return H.shuffle(qs).slice(0, NQ);
   }
 
