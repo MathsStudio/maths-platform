@@ -1014,8 +1014,9 @@ var SLIDE_MORE = {"1.learn1": [{"more": ["Our number system uses only ten digits
     }).join('');
   }
   /* Access: the first topic of each year is free. Other topics need a pass for that year (or the owner login). */
+  var LOCK_TOPICS = true;   /* set to false to unlock every topic for everyone again */
   var access = { owner: location.protocol === 'file:', years: [] };
-  function isLocked(base) { var y = yearOf(); if (y === 'all') y = 'P6'; return !access.owner && access.years.indexOf(y) < 0 && visibleOrder()[0] !== base; }
+  function isLocked(base) { if (!LOCK_TOPICS) return false; var y = yearOf(); if (y === 'all') y = 'P6'; return !access.owner && access.years.indexOf(y) < 0 && visibleOrder()[0] !== base; }
   function renderLocked(v) {
     var t = topic(), y = yearOf() === 'all' ? 'P6' : yearOf();
     v.innerHTML = '<section class="card" style="max-width:640px;margin:20px auto"><span class="tag">🔒 ' + y + ' pass</span><h2 style="margin:10px 0 6px">' + t.title + '</h2>' +
