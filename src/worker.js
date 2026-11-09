@@ -122,6 +122,45 @@ async function admin(request, env, url) {
   return page(pg.admin(rows));
 }
 
+
+/* ---- Payments: Stripe Checkout (card, plus PayPal/Apple Pay/Google Pay if switched on in the Stripe dashboard) ---- */
+const PRICE_PENCE = 1500, PAY_YEARS = ['P5', 'P6', 'P7', 'S1', 'S2', 'S3'];
+async function checkout(request, env, user) {
+  if (!env.STRIPE_SECRET_KEY) return json({ error: 'Payments are not open yet.' }, 503);
+  if (!user) return json({ error: 'Please sign in first.' }, 401);
+  const b = await readForm(request), year = String(b.year || '');
+  if (!PAY_YEARS.includes(year)) return json({ error: 'Unknown year group.' }, 400);
+  const origin = new URL(request.url).origin, f = new URLSearchParams();
+  f.set('mode', 'payment'); f.set('client_reference_id', String(user.id)); f.set('customer_email', user.email);
+  f.set('metadata[user_id]', String(user.id)); f.set('metadata[year]', year);
+  f.set('line_items[0][quantity]', '1'); f.set('line_items[0][price_data][currency]', 'gbp'); f.set('line_items[0][price_data][unit_amount]', String(PRICE_PENCE));
+  f.set('line_items[0][price_data][product_data][name]', 'MathsStudio ' + year + ' – all topics, 12 months');
+  f.set('success_url', origin + '/learn/?year=' + year + '&paid=1'); f.set('cancel_url', origin + '/learn/?year=' + year);
+  const r = await fetch('https://api.stripe.com/v1/checkout/sessions', { method: 'POST', headers: { Authorization: 'Bearer ' + env.STRIPE_SECRET_KEY, 'Content-Type': 'application/x-www-form-urlencoded' }, body: f });
+  const j = await r.json().catch(() => ({}));
+  if (!r.ok || !j.url) return json({ error: 'We could not start the payment. Please try again.' }, 502);
+  return json({ url: j.url });
+}
+async function hmacHex(key, msg) {
+  const k = await crypto.subtle.importKey('raw', new TextEncoder().encode(key), { name: 'HMAC', hash: 'SHA-256' }, false, ['sign']);
+  return [...new Uint8Array(await crypto.subtle.sign('HMAC', k, new TextEncoder().encode(msg)))].map(x => x.toString(16).padStart(2, '0')).join('');
+}
+async function stripeWebhook(request, env) {
+  if (!env.STRIPE_WEBHOOK_SECRET) return json({ error: 'Not configured' }, 503);
+  const raw = await request.text(), h = request.headers.get('Stripe-Signature') || '';
+  const parts = Object.fromEntries(h.split(',').map(x => x.split('=')).filter(x => x.length === 2).map(x => [x[0].trim(), x[1]]));
+  const sigs = h.split(',').filter(x => x.trim().startsWith('v1=')).map(x => x.trim().slice(3));
+  if (!parts.t || Math.abs(Date.now() / 1000 - Number(parts.t)) > 600) return json({ error: 'Bad signature' }, 400);
+  const want = await hmacHex(env.STRIPE_WEBHOOK_SECRET, parts.t + '.' + raw);
+  if (!sigs.some(s => safeEqual(s, want))) return json({ error: 'Bad signature' }, 400);
+  let ev; try { ev = JSON.parse(raw); } catch (e) { return json({ error: 'Bad body' }, 400); }
+  if (ev.type === 'checkout.session.completed' || ev.type === 'checkout.session.async_payment_succeeded') {
+    const o = ev.data && ev.data.object || {}, md = o.metadata || {}, uid = Number(md.user_id), year = String(md.year || '');
+    if (o.payment_status === 'paid' && uid && PAY_YEARS.includes(year) && !(await db.seenEvent(env, ev.id))) await db.addPurchase(env, uid, year);
+  }
+  return json({ received: true });
+}
+
 export default {
   async scheduled(event, env) { await db.init(env); await db.cleanup(env); },
   async fetch(request, env) {
@@ -131,6 +170,7 @@ export default {
       const dynamic = p.startsWith('/api/') || p.startsWith('/auth/') || p === '/logout' || p === '/unsubscribe' || p === '/account' || p.startsWith('/account/') || p === '/app' || p.startsWith('/app/') || p === '/learn' || p.startsWith('/learn/');
       if (!dynamic) return withHeaders(await env.ASSETS.fetch(request));
       await db.init(env);
+      if (p === '/api/stripe-webhook' && m === 'POST') return await stripeWebhook(request, env);
       if (m === 'POST' && !sameOrigin(request)) return json({ error: 'Not allowed' }, 403);
 
       if (p === '/api/signup' && m === 'POST') return await signup(request, env);
@@ -144,7 +184,8 @@ export default {
         return row ? page(pg.unsubPage(t)) : page(pg.message('Link not valid', 'This unsubscribe link is not valid.'), 400);
       }
       const user = await currentUser(env, request);
-      if (p === '/api/me' && m === 'GET') return json(user ? { signedIn: true, email: user.email, year: user.year || '', owner: user.plan === 'owner', years: user.plan === 'owner' ? [] : await db.userYears(env, user.id) } : { signedIn: false, owner: false, years: [] }, 200, { 'Cache-Control': 'private, no-store' });
+      if (p === '/api/me' && m === 'GET') return json(user ? { signedIn: true, email: user.email, year: user.year || '', owner: user.plan === 'owner', years: user.plan === 'owner' ? [] : await db.userYears(env, user.id), pay: !!env.STRIPE_SECRET_KEY } : { signedIn: false, owner: false, years: [], pay: !!env.STRIPE_SECRET_KEY }, 200, { 'Cache-Control': 'private, no-store' });
+      if (p === '/api/checkout' && m === 'POST') return await checkout(request, env, user);
       if (p === '/logout' && m === 'POST') {
         const t = parseCookies(request).ms_session; if (t) await db.dropSession(env, await sha256(t));
         return redirect('/', { 'Set-Cookie': cookie('ms_session', '', request, 0) });

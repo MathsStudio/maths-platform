@@ -103,6 +103,19 @@ export async function rateOkPeek(env, key, limit, windowSec) {
   return !(r && r.n > limit);
 }
 
+/* records a paid 12-month pass; paying again before it ends adds 12 more months */
+export async function addPurchase(env, userId, year) {
+  const now = Math.floor(Date.now() / 1000), cur = await env.DB.prepare('SELECT until FROM purchases WHERE user_id = ? AND year = ?').bind(userId, year).first();
+  const start = cur && cur.until > now ? cur.until : now, until = start + 365 * 86400;
+  await env.DB.prepare('INSERT INTO purchases (user_id, year, until, created_at) VALUES (?, ?, ?, ?) ON CONFLICT(user_id, year) DO UPDATE SET until = excluded.until').bind(userId, year, until, new Date().toISOString()).run();
+  return until;
+}
+export async function seenEvent(env, id) {
+  await env.DB.prepare('CREATE TABLE IF NOT EXISTS pay_events (id TEXT PRIMARY KEY, created_at TEXT NOT NULL)').run();
+  const r = await env.DB.prepare('INSERT OR IGNORE INTO pay_events (id, created_at) VALUES (?, ?)').bind(id, new Date().toISOString()).run();
+  return !(r.meta && r.meta.changes);   // true = already handled
+}
+
 /* year passes a user has paid for and that have not run out (payments will fill this table; until is a Unix time in seconds) */
 export async function userYears(env, userId) {
   const r = await env.DB.prepare('SELECT year FROM purchases WHERE user_id = ? AND until > ?').bind(userId, Math.floor(Date.now() / 1000)).all();

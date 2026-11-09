@@ -115,4 +115,25 @@ const env3 = { ...env, RESEND_API_KEY: undefined }; const r3 = await worker.fetc
 cookieJar = ''; sent.length = 0;
 await call('/api/login', { method: 'POST', json: { email: 'parent@example.com' }, headers: { 'CF-Connecting-IP': '2.2.2.2' } }).catch(() => {});
 r = await call('/api/signup', { method: 'POST', json: { email: 'bot@example.com', role: 'parent', year: 'P5', website: 'http://spam' } }); ok(r.status === 200 && !sqlite.prepare("SELECT 1 FROM users WHERE email='bot@example.com'").get(), 'honeypot ignored silently');
+// payments (Stripe Checkout + webhook)
+import { createHmac } from 'node:crypto';
+const realFetch = globalThis.fetch; let stripeBody = null;
+globalThis.fetch = async (u, o) => { if (String(u).includes('api.stripe.com')) { stripeBody = String(o.body); return new Response(JSON.stringify({ url: 'https://checkout.stripe.test/s1' }), { status: 200 }); } return realFetch(u, o); };
+cookieJar = ''; sqlite.prepare('DELETE FROM rate').run();
+await call('/api/login', { method: 'POST', json: { email: 'parent@example.com', password: 'NewPassw0rd!y' }, headers: { 'CF-Connecting-IP': '7.7.7.7' } });
+r = await call('/api/checkout', { method: 'POST', json: { year: 'P6' } }); ok(r.status === 503, 'checkout closed until Stripe key is set');
+env.STRIPE_SECRET_KEY = 'sk_test_x'; env.STRIPE_WEBHOOK_SECRET = 'whsec_x';
+r = await call('/api/checkout', { method: 'POST', json: { year: 'XX' } }); ok(r.status === 400, 'checkout rejects unknown year');
+r = await call('/api/checkout', { method: 'POST', json: { year: 'P6' } }); ok(r.status === 200 && JSON.parse(r.text).url.startsWith('https://checkout.stripe.test') && /unit_amount%5D=1500/.test(stripeBody) && /gbp/.test(stripeBody) && /metadata%5Byear%5D=P6/.test(stripeBody), 'checkout makes a 15 GBP Stripe session for the year');
+const uid = sqlite.prepare("SELECT id FROM users WHERE email='parent@example.com'").get().id;
+const evt = { id: 'evt_1', type: 'checkout.session.completed', data: { object: { payment_status: 'paid', metadata: { user_id: String(uid), year: 'P6' } } } };
+async function hook(e, secret = 'whsec_x', t = Math.floor(Date.now() / 1000)) { const raw = JSON.stringify(e); const sig = createHmac('sha256', secret).update(t + '.' + raw).digest('hex'); return worker.fetch(new Request(B + '/api/stripe-webhook', { method: 'POST', headers: { 'Stripe-Signature': 't=' + t + ',v1=' + sig }, body: raw }), env); }
+r = await hook(evt, 'wrong'); ok(r.status === 400, 'webhook with a bad signature is refused');
+r = await call('/api/me'); ok(JSON.parse(r.text).years.length === 0 && JSON.parse(r.text).pay === true, 'before paying: no years, payments on');
+r = await hook(evt); ok(r.status === 200, 'webhook accepted');
+r = await call('/api/me'); ok(JSON.stringify(JSON.parse(r.text).years) === '["P6"]', 'after paying: P6 unlocked');
+const u1 = sqlite.prepare('SELECT until FROM purchases WHERE user_id=?').get(uid).until; await hook(evt);
+ok(sqlite.prepare('SELECT until FROM purchases WHERE user_id=?').get(uid).until === u1, 'repeated webhook is not counted twice');
+ok(u1 - Math.floor(Date.now() / 1000) > 364 * 86400, 'pass lasts 12 months');
+globalThis.fetch = realFetch; delete env.STRIPE_SECRET_KEY; delete env.STRIPE_WEBHOOK_SECRET;
 console.log(fails ? fails + ' FAILED' : 'ALL PASSED');
