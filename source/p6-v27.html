@@ -1013,11 +1013,27 @@ var SLIDE_MORE = {"1.learn1": [{"more": ["Our number system uses only ten digits
       return '<button class="stg' + (st === cur ? ' on' : '') + (full ? ' done' : '') + '" type="button" ' + attr + '="' + tp.n + '" aria-pressed="' + (st === cur) + '">' + st + (full ? ' ✓' : (c ? ' · ' + c + '/' + tp.steps.length : '')) + '</button>';
     }).join('');
   }
+  /* Access: the first topic of each year is free. Other topics need a pass for that year (or the owner login). */
+  var access = { owner: location.protocol === 'file:', years: [] };
+  function isLocked(base) { var y = yearOf(); if (y === 'all') y = 'P6'; return !access.owner && access.years.indexOf(y) < 0 && visibleOrder()[0] !== base; }
+  function renderLocked(v) {
+    var t = topic(), y = yearOf() === 'all' ? 'P6' : yearOf();
+    v.innerHTML = '<section class="card" style="max-width:640px;margin:20px auto"><span class="tag">🔒 ' + y + ' pass</span><h2 style="margin:10px 0 6px">' + t.title + '</h2>' +
+      '<p class="lead">This topic is part of the ' + y + ' pass. Topic 1 of ' + y + ' is free to try, with every lesson, game and practice question.</p>' +
+      '<div class="row" style="gap:10px;flex-wrap:wrap;margin:14px 0"><a class="btn" href="/login/">Sign in</a><a class="btn ghost" href="/signup/">Create an account</a><button class="btn ghost" type="button" disabled aria-disabled="true">Buy ' + y + ' · coming soon</button></div>' +
+      '<p class="note">Already bought it? Sign in with the same email.</p><button class="btn ghost" type="button" id="lockBack">Back to topics</button></section>';
+    $('lockBack').addEventListener('click', function () { go('home'); });
+  }
+  try {
+    if (location.protocol !== 'file:') fetch('/api/me', { credentials: 'same-origin' }).then(function (r) { return r.json(); }).then(function (j) {
+      access.owner = !!j.owner; access.years = j.years || []; render();
+    }).catch(function () { access.owner = true; });
+  } catch (e) { access.owner = true; }
   function renderTabs() {
     var html = '';
     visibleOrder().forEach(function (n) {
       var t = openTopicFor(n), d = doneCount(t) >= t.steps.length, curTab = state.tab !== 'home' && S.topics[state.tab] && baseOf(S.topics[state.tab]) === n;
-      html += '<button class="tab' + (curTab ? ' cur' : '') + (d ? ' done' : '') + '" role="tab" aria-selected="' + curTab + '" data-tab="' + n + '" type="button"><b>' + dnum(t) + '</b> ' + t.short + (d ? ' ✓' : '') + '</button>';
+      html += '<button class="tab' + (curTab ? ' cur' : '') + (d ? ' done' : '') + '" role="tab" aria-selected="' + curTab + '" data-tab="' + n + '" type="button"><b>' + dnum(t) + '</b> ' + (isLocked(n) ? '🔒 ' : '') + t.short + (d ? ' ✓' : '') + '</button>';
     });
     $('tabs').innerHTML = html;
     $('tabs').querySelectorAll('.tab').forEach(function (b) {
@@ -1052,7 +1068,7 @@ var SLIDE_MORE = {"1.learn1": [{"more": ["Our number system uses only ten digits
     ['#readToggle', '#readToggle2', '#tbHome', '#brandMark'].forEach(function (q) { var el = document.querySelector(q); if (el) el.classList.toggle('hide', onGate); });
     renderTabs();
     $('player').classList.toggle('hide', state.tab === 'home');
-    if (state.tab === 'home') renderHome(v); else renderLesson(v);
+    if (state.tab === 'home') renderHome(v); else if (isLocked(baseOf(topic()))) { $('player').classList.add('hide'); renderLocked(v); } else renderLesson(v);
     setPlayerUI();
     var st = state.tab !== 'home' && allSteps(topic())[state.step];
     var readAutomatically = !!(store.settings.auto || store.settings.readMode) && Nar.ok;
@@ -1128,8 +1144,8 @@ var SLIDE_MORE = {"1.learn1": [{"more": ["Our number system uses only ten digits
       var t = openTopicFor(n), have = stageOf(t) === cs || cs === 'P6', pr = progOf(t), c = pr.done, pct = pr.total ? Math.round(c / pr.total * 100) : 0, label = c === 0 ? 'Start topic' : (c >= pr.total ? 'Review topic' : 'Continue');
       var role = yr === 'all' ? '' : ((YEAR_ROLE[n] || {})[yr] || (n === 11 && yr === 'P6' ? 'start' : 'core')), badge = role ? '<span class="tag role-' + role + '">' + yr + ' · ' + ROLE_LABEL[role] + '</span>' : '';
       var note = have ? '' : '<p class="note" style="margin:0;min-height:0">' + cs + ' stage is coming. Showing the ' + stageOf(t) + ' stage for now.</p>';
-      return '<div class="card topic"><span class="tn">Topic ' + (ix + 1) + '</span>' + badge + '<h3>' + t.title + '</h3><p class="note" style="margin:0;min-height:0">' + t.blurb + '</p>' + '<div class="bar" aria-label="' + pct + ' percent complete"><i style="width:' + pct + '%"></i></div>' +
-        '<p class="note" style="margin:0;min-height:0">' + c + ' of ' + pr.total + ' parts done · ' + pct + '%</p><button class="btn" data-open="' + t.n + '" type="button" style="margin-top:auto">' + label + '</button></div>';
+      return '<div class="card topic"><span class="tn">Topic ' + (ix + 1) + '</span>' + badge + (ix === 0 && !access.owner && access.years.indexOf(yr === 'all' ? 'P6' : yr) < 0 ? '<span class="tag role-core">Free</span>' : '') + '<h3>' + t.title + '</h3><p class="note" style="margin:0;min-height:0">' + t.blurb + '</p>' + '<div class="bar" aria-label="' + pct + ' percent complete"><i style="width:' + pct + '%"></i></div>' +
+        '<p class="note" style="margin:0;min-height:0">' + c + ' of ' + pr.total + ' parts done · ' + pct + '%</p><button class="btn' + (isLocked(n) ? ' ghost' : '') + '" data-open="' + t.n + '" type="button" style="margin-top:auto">' + (isLocked(n) ? '🔒 Unlock ' + (yr === 'all' ? 'P6' : yr) : label) + '</button></div>';
     }).join('');
     var tot = 0, dn = 0, full = 0; order.forEach(function (n) { var p = progOf(openTopicFor(n)); tot += p.total; dn += p.done; if (p.total && p.done >= p.total) full++; });
     var opct = tot ? Math.round(dn / tot * 100) : 0;

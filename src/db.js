@@ -19,7 +19,10 @@ const SCHEMA = [
     hash TEXT PRIMARY KEY, user_id INTEGER NOT NULL, expires_at INTEGER NOT NULL
   )`,
   `CREATE TABLE IF NOT EXISTS rate (k TEXT NOT NULL, ts INTEGER NOT NULL)`,
-  `CREATE INDEX IF NOT EXISTS rate_k ON rate (k, ts)`
+  `CREATE INDEX IF NOT EXISTS rate_k ON rate (k, ts)`,
+  `CREATE TABLE IF NOT EXISTS purchases (
+    user_id INTEGER NOT NULL, year TEXT NOT NULL, until INTEGER NOT NULL, created_at TEXT NOT NULL, PRIMARY KEY (user_id, year)
+  )`
 ];
 let ready = null;
 export function init(env) {
@@ -98,4 +101,10 @@ export async function rateOkPeek(env, key, limit, windowSec) {
   const since = Math.floor(Date.now() / 1000) - windowSec;
   const r = await env.DB.prepare('SELECT COUNT(*) AS n FROM rate WHERE k = ? AND ts > ?').bind(key, since).first();
   return !(r && r.n > limit);
+}
+
+/* year passes a user has paid for and that have not run out (payments will fill this table; until is a Unix time in seconds) */
+export async function userYears(env, userId) {
+  const r = await env.DB.prepare('SELECT year FROM purchases WHERE user_id = ? AND until > ?').bind(userId, Math.floor(Date.now() / 1000)).all();
+  return (r.results || []).map(x => x.year);
 }

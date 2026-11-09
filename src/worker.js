@@ -144,7 +144,7 @@ export default {
         return row ? page(pg.unsubPage(t)) : page(pg.message('Link not valid', 'This unsubscribe link is not valid.'), 400);
       }
       const user = await currentUser(env, request);
-      if (p === '/api/me' && m === 'GET') return json(user ? { signedIn: true, email: user.email, year: user.year || '' } : { signedIn: false });
+      if (p === '/api/me' && m === 'GET') return json(user ? { signedIn: true, email: user.email, year: user.year || '', owner: user.plan === 'owner', years: user.plan === 'owner' ? [] : await db.userYears(env, user.id) } : { signedIn: false, owner: false, years: [] }, 200, { 'Cache-Control': 'private, no-store' });
       if (p === '/logout' && m === 'POST') {
         const t = parseCookies(request).ms_session; if (t) await db.dropSession(env, await sha256(t));
         return redirect('/', { 'Set-Cookie': cookie('ms_session', '', request, 0) });
