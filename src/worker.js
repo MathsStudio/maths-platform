@@ -135,11 +135,22 @@ async function checkout(request, env, user) {
   f.set('metadata[user_id]', String(user.id)); f.set('metadata[year]', year);
   f.set('line_items[0][quantity]', '1'); f.set('line_items[0][price_data][currency]', 'gbp'); f.set('line_items[0][price_data][unit_amount]', String(PRICE_PENCE));
   f.set('line_items[0][price_data][product_data][name]', 'MathsStudio ' + year + ' – all topics, 12 months');
-  f.set('success_url', origin + '/learn/?year=' + year + '&paid=1'); f.set('cancel_url', origin + '/learn/?year=' + year);
+  f.set('success_url', origin + '/learn/?year=' + year + '&paid=1&sid={CHECKOUT_SESSION_ID}'); f.set('cancel_url', origin + '/learn/?year=' + year);
   const r = await fetch('https://api.stripe.com/v1/checkout/sessions', { method: 'POST', headers: { Authorization: 'Bearer ' + env.STRIPE_SECRET_KEY, 'Content-Type': 'application/x-www-form-urlencoded' }, body: f });
   const j = await r.json().catch(() => ({}));
   if (!r.ok || !j.url) return json({ error: 'We could not start the payment. Please try again.' }, 502);
   return json({ url: j.url });
+}
+async function confirmPay(request, env, user) {
+  if (!env.STRIPE_SECRET_KEY) return json({ error: 'Payments are not open yet.' }, 503);
+  if (!user) return json({ error: 'Please sign in first.' }, 401);
+  const b = await readForm(request), sid = String(b.session_id || '');
+  if (!/^cs_[A-Za-z0-9_]{10,200}$/.test(sid)) return json({ error: 'Bad session.' }, 400);
+  const r = await fetch('https://api.stripe.com/v1/checkout/sessions/' + sid, { headers: { Authorization: 'Bearer ' + env.STRIPE_SECRET_KEY } });
+  const o = await r.json().catch(() => ({})), md = o.metadata || {}, year = String(md.year || '');
+  if (!r.ok || o.payment_status !== 'paid' || String(md.user_id) !== String(user.id) || !PAY_YEARS.includes(year)) return json({ ok: false }, 200);
+  if (!(await db.seenEvent(env, 'cs:' + o.id))) await db.addPurchase(env, user.id, year);
+  return json({ ok: true, year });
 }
 async function hmacHex(key, msg) {
   const k = await crypto.subtle.importKey('raw', new TextEncoder().encode(key), { name: 'HMAC', hash: 'SHA-256' }, false, ['sign']);
@@ -156,7 +167,7 @@ async function stripeWebhook(request, env) {
   let ev; try { ev = JSON.parse(raw); } catch (e) { return json({ error: 'Bad body' }, 400); }
   if (ev.type === 'checkout.session.completed' || ev.type === 'checkout.session.async_payment_succeeded') {
     const o = ev.data && ev.data.object || {}, md = o.metadata || {}, uid = Number(md.user_id), year = String(md.year || '');
-    if (o.payment_status === 'paid' && uid && PAY_YEARS.includes(year) && !(await db.seenEvent(env, ev.id))) await db.addPurchase(env, uid, year);
+    if (o.payment_status === 'paid' && uid && PAY_YEARS.includes(year) && !(await db.seenEvent(env, 'cs:' + (o.id || ev.id)))) await db.addPurchase(env, uid, year);
   }
   return json({ received: true });
 }
@@ -185,6 +196,7 @@ export default {
       }
       const user = await currentUser(env, request);
       if (p === '/api/me' && m === 'GET') return json(user ? { signedIn: true, email: user.email, year: user.year || '', owner: user.plan === 'owner', years: user.plan === 'owner' ? [] : await db.userYears(env, user.id), pay: !!env.STRIPE_SECRET_KEY } : { signedIn: false, owner: false, years: [], pay: !!env.STRIPE_SECRET_KEY }, 200, { 'Cache-Control': 'private, no-store' });
+      if (p === '/api/confirm' && m === 'POST') return await confirmPay(request, env, user);
       if (p === '/api/checkout' && m === 'POST') return await checkout(request, env, user);
       if (p === '/logout' && m === 'POST') {
         const t = parseCookies(request).ms_session; if (t) await db.dropSession(env, await sha256(t));

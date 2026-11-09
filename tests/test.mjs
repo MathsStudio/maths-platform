@@ -135,5 +135,16 @@ r = await call('/api/me'); ok(JSON.stringify(JSON.parse(r.text).years) === '["P6
 const u1 = sqlite.prepare('SELECT until FROM purchases WHERE user_id=?').get(uid).until; await hook(evt);
 ok(sqlite.prepare('SELECT until FROM purchases WHERE user_id=?').get(uid).until === u1, 'repeated webhook is not counted twice');
 ok(u1 - Math.floor(Date.now() / 1000) > 364 * 86400, 'pass lasts 12 months');
+// confirm on return from Stripe
+const sess = { id: 'cs_test_abc1234567890', payment_status: 'paid', metadata: { user_id: String(uid), year: 'S1' } };
+globalThis.fetch = async (u, o) => String(u).includes('/checkout/sessions/cs_') ? new Response(JSON.stringify(sess), { status: 200 }) : realFetch(u, o);
+env.STRIPE_SECRET_KEY = 'sk_test_x';
+r = await call('/api/confirm', { method: 'POST', json: { session_id: 'bad' } }); ok(r.status === 400, 'confirm rejects a bad session id');
+r = await call('/api/confirm', { method: 'POST', json: { session_id: 'cs_test_abc1234567890' } }); ok(JSON.parse(r.text).ok === true, 'confirm grants the year after Stripe says paid');
+r = await call('/api/me'); ok(JSON.parse(r.text).years.includes('S1'), 'S1 unlocked by confirm');
+const u2 = sqlite.prepare("SELECT until FROM purchases WHERE user_id=? AND year='S1'").get(uid).until; await call('/api/confirm', { method: 'POST', json: { session_id: 'cs_test_abc1234567890' } });
+ok(sqlite.prepare("SELECT until FROM purchases WHERE user_id=? AND year='S1'").get(uid).until === u2, 'confirming twice does not add time');
+sess.metadata.user_id = '99999'; sess.id = 'cs_test_other1234567'; r = await call('/api/confirm', { method: 'POST', json: { session_id: 'cs_test_other1234567' } }); ok(JSON.parse(r.text).ok === false, 'confirm refuses a session that belongs to someone else');
+sess.metadata.user_id = String(uid); sess.id = 'cs_test_unpaid123456'; sess.payment_status = 'unpaid'; r = await call('/api/confirm', { method: 'POST', json: { session_id: 'cs_test_unpaid123456' } }); ok(JSON.parse(r.text).ok === false, 'confirm refuses an unpaid session');
 globalThis.fetch = realFetch; delete env.STRIPE_SECRET_KEY; delete env.STRIPE_WEBHOOK_SECRET;
 console.log(fails ? fails + ' FAILED' : 'ALL PASSED');

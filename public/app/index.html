@@ -1040,11 +1040,18 @@ var SLIDE_MORE = {"1.learn1": [{"more": ["Our number system uses only ten digits
     });
     o.addEventListener('click', function (e) { if (e.target === o) close(); });
   }
+  var paidSid = (location.search.match(/[?&]sid=(cs_[A-Za-z0-9_]+)/) || [])[1];
+  function confirmThenMe() {
+    if (!paidSid) return Promise.resolve();
+    return fetch('/api/confirm', { method: 'POST', credentials: 'same-origin', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ session_id: paidSid }) }).catch(function () {}).then(function () {
+      try { history.replaceState(null, '', location.pathname + '?year=' + yearOf() + '&paid=1'); } catch (e) {}
+    });
+  }
   try {
-    if (location.protocol !== 'file:') fetch('/api/me', { credentials: 'same-origin' }).then(function (r) { return r.json(); }).then(function (j) {
+    if (location.protocol !== 'file:') confirmThenMe().then(function () { return fetch('/api/me', { credentials: 'same-origin' }).then(function (r) { return r.json(); }).then(function (j) {
       access.owner = !!j.owner; access.years = j.years || []; access.signedIn = !!j.signedIn; access.email = j.email || ''; access.pay = !!j.pay; render();
       if (/[?&]paid=1/.test(location.search) && !access.owner && access.years.indexOf(yearOf()) < 0 && (window.__payTry = (window.__payTry || 0) + 1) < 8) setTimeout(function () { fetch('/api/me', { credentials: 'same-origin' }).then(function (r) { return r.json(); }).then(function (k) { access.years = k.years || []; render(); }); }, 2500);
-    }).catch(function () { access.owner = true; });
+    }); }).catch(function () { access.owner = true; });
   } catch (e) { access.owner = true; }
   function renderTabs() {
     var html = '';
