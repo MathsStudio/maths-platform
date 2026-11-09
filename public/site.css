@@ -57,3 +57,17 @@ body.plain{background:var(--tint);min-height:100vh}
 .legal{max-width:760px;margin:0 auto;padding:12px 20px 40px}.legal h2{font-size:26px;margin-top:1.6em}
 @media(max-width:560px){.years a{font-size:24px;min-height:76px}.card{padding:22px}}
 .mark{display:block;flex:0 0 auto}.word{font-family:'Fredoka',sans-serif;font-weight:700;font-size:26px;color:var(--ink)}.word .st{color:var(--blue)}
+
+/* account page */
+.acct .who{display:flex;gap:16px;align-items:center;margin:0 0 20px}.acct .who h1{margin:0;font-size:30px}
+.avatar{flex:0 0 auto;width:56px;height:56px;border-radius:50%;background:var(--blue);color:#fff;display:flex;align-items:center;justify-content:center;font:800 26px 'Fredoka','Nunito',sans-serif}
+.mail{color:var(--soft);overflow-wrap:anywhere;font-weight:600}
+.acct .kv{grid-template-columns:140px 1fr;gap:0;border:1px solid var(--line);border-radius:16px;overflow:hidden;margin:0 0 20px}
+.acct .kv dt,.acct .kv dd{padding:13px 16px;border-bottom:1px solid var(--line);margin:0}.acct .kv dt{background:var(--tint);color:var(--soft)}
+.acct .kv dt:nth-last-of-type(1),.acct .kv dd:last-of-type{border-bottom:0}
+.pill{display:inline-block;padding:4px 12px;border-radius:999px;background:#eef2fb;color:var(--ink);font-weight:800;font-size:14px}.pill.ok{background:#dff5e6;color:#14602e}
+.acct .btn{font-family:'Nunito',system-ui,sans-serif}.acct .btn.big{width:100%;min-height:58px;font-size:19px;margin:0}
+.hint{margin:10px 0 0;color:var(--soft);font-size:15px;text-align:center}
+.acct .two{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:18px}.acct .two form{margin:0}.acct .two .btn{width:100%;margin:0;min-height:48px;font-size:15px}
+.danger summary{font-size:15px;color:var(--soft);font-weight:700}
+@media(max-width:560px){.acct .two{grid-template-columns:1fr}.acct .kv{grid-template-columns:1fr}.acct .kv dt{border-bottom:0;padding-bottom:2px}.acct .kv dd{padding-top:2px}}

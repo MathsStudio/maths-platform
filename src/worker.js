@@ -196,7 +196,7 @@ export default {
         const res = await env.ASSETS.fetch(isLearn ? new Request(new URL('/app/' + url.search, url), request) : request);
         return withHeaders(res, { 'Cache-Control': 'private, no-store', 'X-Robots-Tag': 'noindex' });
       }
-      if (p === '/account' || p === '/account/') return user ? page(pg.account(user)) : redirect('/login/');
+      if (p === '/account' || p === '/account/') return user ? page(pg.account(user, user.plan === 'owner' ? [] : await db.userYears(env, user.id))) : redirect('/login/');
       if (p === '/account/marketing' && m === 'POST') {
         if (!user) return redirect('/login/'); const b = await readForm(request), on = b.on === '1';
         if (on) await env.DB.prepare('UPDATE users SET marketing = 1, marketing_at = ?, marketing_text = ?, unsub_at = NULL WHERE id = ?').bind(new Date().toISOString(), db.MARKETING_TEXT, user.id).run();
