@@ -46,13 +46,24 @@ export function csv(rows) {
   rows.forEach(r => lines.push([r.id, r.email, r.role, r.year, r.plan, r.verified_at ? 'yes' : 'no', (r.marketing && r.verified_at) ? 'yes' : 'no', r.marketing_at, r.unsub_at, r.last_login, r.created_at].map(csvCell).join(',')));
   return lines.join('\r\n') + '\r\n';
 }
-export function admin(rows) {
+export function admin(rows, o) {
+  o = o || {};
   const verified = rows.filter(r => r.verified_at).length, mk = rows.filter(r => r.verified_at && r.marketing).length;
+  const mkBy = { P5: 0, P6: 0, P7: 0, S1: 0, S2: 0, S3: 0 }; rows.forEach(r => { if (r.verified_at && r.marketing && !r.unsub_at && mkBy[r.year] !== undefined) mkBy[r.year]++; });
   const by = {}; rows.forEach(r => { if (r.verified_at) by[r.year || '-'] = (by[r.year || '-'] || 0) + 1; });
   const tr = rows.map(r => '<tr><td>' + esc(r.email) + '</td><td>' + esc(r.role || '') + '</td><td>' + esc(r.year || '') + '</td><td>' + (r.verified_at ? 'Yes' : 'No') + '</td><td>' + ((r.verified_at && r.marketing) ? 'Yes' : 'No') + '</td><td>' + esc((r.created_at || '').slice(0, 10)) + '</td><td>' + esc((r.last_login || '').slice(0, 10)) + '</td></tr>').join('');
   return '<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="robots" content="noindex"><title>Admin · MathsStudio</title><link rel="stylesheet" href="/site.css?v=3"></head><body class="plain"><main class="wide">' +
     '<h1>People who signed up</h1><div class="stats"><div><b>' + rows.length + '</b><span>Sign-ups</span></div><div><b>' + verified + '</b><span>Verified</span></div><div><b>' + mk + '</b><span>OK to email with news</span></div>' +
     Object.keys(by).sort().map(k => '<div><b>' + by[k] + '</b><span>' + esc(k) + ' verified</span></div>').join('') + '</div>' +
+    '<section class="card nl"><h2>Send a newsletter</h2><p class="note">Goes only to people who verified their email, said yes to news and have not unsubscribed (<b>' + mk + '</b> now). Every email has its own unsubscribe link.</p>' +
+    (o.note ? '<p class="nlnote" role="status">' + esc(o.note) + '</p>' : '') +
+    '<form method="post" action="/admin/newsletter"><label>Send to<select name="audience"><option value="">Everyone who opted in (' + mk + ')</option>' + ['P5', 'P6', 'P7', 'S1', 'S2', 'S3'].map(y => '<option value="' + y + '"' + (o.audience === y ? ' selected' : '') + '>' + y + ' only (' + mkBy[y] + ')</option>').join('') + '</select></label>' +
+    '<label>Subject<input name="subject" maxlength="150" required value="' + esc(o.subject || '') + '"></label>' +
+    '<label>Message<textarea name="body" rows="9" required placeholder="Write in plain text. Leave a blank line between paragraphs. Web links turn into clickable links.">' + esc(o.body || '') + '</textarea></label>' +
+    '<div class="nltest"><input name="test_to" type="email" placeholder="your email, for a test"><button class="btn alt" type="submit" name="action" value="test">Send test to me</button></div>' +
+    '<label class="chk"><input type="checkbox" name="confirm" value="1"> I have checked the test email and want to send this to the people above</label>' +
+    '<button class="btn" type="submit" name="action" value="send">Send to subscribers</button></form>' +
+    (o.log && o.log.length ? '<h3>Recently sent</h3><ul class="nllog">' + o.log.map(x => '<li><b>' + esc(x.subject) + '</b> · ' + esc(x.audience) + ' · ' + x.sent + ' sent' + (x.failed ? ', ' + x.failed + ' failed' : '') + ' · ' + esc((x.created_at || '').slice(0, 10)) + '</li>').join('') + '</ul>' : '') + '</section>' +
     '<p><a class="btn" href="/admin/export.csv">Download as spreadsheet (CSV)</a></p>' +
     '<p class="note">Only email people with "OK to email with news" = Yes. Every email you send must include an unsubscribe link.</p>' +
     '<div class="tablewrap"><table><thead><tr><th>Email</th><th>Role</th><th>Year</th><th>Verified</th><th>OK to email</th><th>Signed up</th><th>Last sign-in</th></tr></thead><tbody>' + (tr || '<tr><td colspan="7">Nobody yet.</td></tr>') + '</tbody></table></div></main></body></html>';

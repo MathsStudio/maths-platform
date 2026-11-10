@@ -147,4 +147,18 @@ ok(sqlite.prepare("SELECT until FROM purchases WHERE user_id=? AND year='S1'").g
 sess.metadata.user_id = '99999'; sess.id = 'cs_test_other1234567'; r = await call('/api/confirm', { method: 'POST', json: { session_id: 'cs_test_other1234567' } }); ok(JSON.parse(r.text).ok === false, 'confirm refuses a session that belongs to someone else');
 sess.metadata.user_id = String(uid); sess.id = 'cs_test_unpaid123456'; sess.payment_status = 'unpaid'; r = await call('/api/confirm', { method: 'POST', json: { session_id: 'cs_test_unpaid123456' } }); ok(JSON.parse(r.text).ok === false, 'confirm refuses an unpaid session');
 globalThis.fetch = realFetch; delete env.STRIPE_SECRET_KEY; delete env.STRIPE_WEBHOOK_SECRET;
+// newsletter from the admin page
+const sentB = []; const rf = globalThis.fetch;
+globalThis.fetch = async (u, o) => { if (String(u).includes('api.resend.com/emails/batch')) { sentB.push(...JSON.parse(o.body)); return new Response('{}', { status: 200 }); } return rf(u, o); };
+sqlite.prepare("UPDATE users SET marketing=1, unsub_at=NULL, verified_at='2026-01-01' WHERE email='parent@example.com'").run();
+sqlite.prepare("UPDATE users SET marketing=0 WHERE email<>'parent@example.com'").run();
+sqlite.prepare('DELETE FROM rate').run();
+async function adminPost(body, authPw = 'pw') { return worker.fetch(new Request(B + '/admin/newsletter', { method: 'POST', headers: { Authorization: 'Basic ' + btoa('a:' + authPw), Origin: B, 'Content-Type': 'application/x-www-form-urlencoded', 'CF-Connecting-IP': '8.8.8.8' }, body: new URLSearchParams(body).toString() }), env); }
+r = await adminPost({ action: 'send', subject: 'Hi', body: 'x', confirm: '1' }, 'wrong'); ok(r.status === 401, 'newsletter needs the admin password');
+r = await adminPost({ action: 'send', subject: 'Hi', body: 'Hello\n\nSee https://x.test', audience: '' }); ok(/Tick the box/.test(await r.text()) && sentB.length === 0, 'newsletter will not send without the confirm tick');
+r = await adminPost({ action: 'send', subject: 'News', body: 'Hello\n\nSee https://x.test', confirm: '1' }); ok(/Sent to 1 people/.test(await r.text()) && sentB.length === 1, 'newsletter goes only to opted-in people');
+ok(/unsubscribe\?t=/.test(sentB[0].text) && /List-Unsubscribe/.test(JSON.stringify(sentB[0].headers)) && /<a href="https:\/\/x.test"/.test(sentB[0].html), 'each copy has its own unsubscribe link and clickable links');
+ok(sqlite.prepare('SELECT COUNT(*) c FROM newsletters').get().c === 1, 'send is logged');
+r = await adminPost({ action: 'send', subject: 'P5 news', body: 'x', confirm: '1', audience: 'P5' }); ok(/nothing was sent|Nobody/.test(await r.text()), 'year filter only reaches that year');
+globalThis.fetch = rf;
 console.log(fails ? fails + ' FAILED' : 'ALL PASSED');

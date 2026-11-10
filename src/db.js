@@ -20,6 +20,7 @@ const SCHEMA = [
   )`,
   `CREATE TABLE IF NOT EXISTS rate (k TEXT NOT NULL, ts INTEGER NOT NULL)`,
   `CREATE INDEX IF NOT EXISTS rate_k ON rate (k, ts)`,
+  `CREATE TABLE IF NOT EXISTS newsletters (id INTEGER PRIMARY KEY AUTOINCREMENT, subject TEXT NOT NULL, audience TEXT NOT NULL, sent INTEGER NOT NULL, failed INTEGER NOT NULL, created_at TEXT NOT NULL)`,
   `CREATE TABLE IF NOT EXISTS purchases (
     user_id INTEGER NOT NULL, year TEXT NOT NULL, until INTEGER NOT NULL, created_at TEXT NOT NULL, PRIMARY KEY (user_id, year)
   )`
@@ -120,4 +121,18 @@ export async function seenEvent(env, id) {
 export async function userYears(env, userId) {
   const r = await env.DB.prepare('SELECT year FROM purchases WHERE user_id = ? AND until > ?').bind(userId, Math.floor(Date.now() / 1000)).all();
   return (r.results || []).map(x => x.year);
+}
+
+/* people who verified their email, said yes to news and have not unsubscribed; year = '' for everyone */
+export async function marketingList(env, year) {
+  const q = "SELECT email, unsub_token FROM users WHERE verified_at IS NOT NULL AND marketing = 1 AND unsub_at IS NULL" + (year ? " AND year = ?" : "") + " ORDER BY id";
+  const r = year ? await env.DB.prepare(q).bind(year).all() : await env.DB.prepare(q).all();
+  return r.results || [];
+}
+export async function logNewsletter(env, subject, audience, sent, failed) {
+  await env.DB.prepare('INSERT INTO newsletters (subject, audience, sent, failed, created_at) VALUES (?, ?, ?, ?, ?)').bind(subject, audience, sent, failed, new Date().toISOString()).run();
+}
+export async function recentNewsletters(env) {
+  const r = await env.DB.prepare('SELECT subject, audience, sent, failed, created_at FROM newsletters ORDER BY id DESC LIMIT 5').all();
+  return r.results || [];
 }

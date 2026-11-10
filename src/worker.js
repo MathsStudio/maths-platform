@@ -1,6 +1,6 @@
 import { page, json, redirect, withHeaders, sameOrigin, validEmail, randomToken, sha256, safeEqual, parseCookies, cookie, hashPassword, checkPassword } from './util.js';
 import * as db from './db.js';
-import { sendMail, verifyMail, loginMail, resetMail } from './mail.js';
+import { sendMail, sendBatch, newsletterMail, verifyMail, loginMail, resetMail } from './mail.js';
 import * as pg from './pages.js';
 
 const SESSION_SEC = 30 * 86400, VERIFY_SEC = 86400, LOGIN_SEC = 1800;
@@ -116,12 +116,44 @@ async function admin(request, env, url) {
   if (!(await db.rateOkPeek(env, 'adminfail:' + ip(request), 10, 900))) return new Response('Too many wrong tries. Wait 15 minutes.', { status: 429, headers: { 'Cache-Control': 'no-store' } });
   if (!ok && h) await db.rateOk(env, 'adminfail:' + ip(request), 1000, 900);   // only wrong passwords count, not the browser's first empty request
   if (!ok) return new Response('Password required.', { status: 401, headers: { 'WWW-Authenticate': 'Basic realm="MathsStudio admin", charset="UTF-8"', 'Cache-Control': 'no-store' } });
+  if (url.pathname === '/admin/newsletter' && request.method === 'POST') return await newsletter(request, env);
   const rows = await db.adminList(env);
   if (url.pathname === '/admin/export.csv')
     return withHeaders(new Response(pg.csv(rows), { headers: { 'Content-Type': 'text/csv; charset=utf-8', 'Content-Disposition': 'attachment; filename="mathsstudio-signups.csv"', 'Cache-Control': 'no-store', 'X-Robots-Tag': 'noindex' } }));
-  return page(pg.admin(rows));
+  return page(pg.admin(rows, { log: await db.recentNewsletters(env) }));
 }
 
+
+async function newsletter(request, env) {
+  if (!sameOrigin(request)) return json({ error: 'Not allowed' }, 403);
+  const b = await readForm(request), origin = new URL(request.url).origin;
+  const subject = String(b.subject || '').trim().slice(0, 150), body = String(b.body || '').trim().slice(0, 20000);
+  const audience = pg.YEARS.includes(b.audience) ? b.audience : '';
+  const rows = await db.adminList(env), done = async note => page(pg.admin(rows, { note, subject, body, audience, log: await db.recentNewsletters(env) }));
+  if (!subject || !body) return done('Please write a subject and a message first.');
+  if (b.action === 'test') {
+    const to = String(b.test_to || '').trim().toLowerCase();
+    if (!validEmail(to)) return done('Please type the email address to send the test to.');
+    const m = newsletterMail('[Test] ' + subject, body, origin + '/unsubscribe');
+    try { await sendMail(env, to, m.subject, m.text, m.html); } catch (e) { return done('The test email could not be sent. Check that email sending is set up.'); }
+    return done('Test sent to ' + to + '. Check your inbox, then send to everyone.');
+  }
+  if (b.action !== 'send' || b.confirm !== '1') return done('Tick the box to confirm before sending to everyone.');
+  if (!(await db.rateOk(env, 'newsletter', 4, 3600))) return done('Too many sends in the last hour. Please wait a little.');
+  const list = (await db.marketingList(env, audience)).slice(0, 4000);
+  if (!list.length) return done('Nobody has opted in for that group yet, so nothing was sent.');
+  let sent = 0, failed = 0;
+  for (let i = 0; i < list.length; i += 100) {
+    const chunk = list.slice(i, i + 100), items = chunk.map(u => {
+      const link = origin + '/unsubscribe?t=' + encodeURIComponent(u.unsub_token), m = newsletterMail(subject, body, link);
+      return { to: u.email, subject: m.subject, text: m.text, html: m.html, headers: { 'List-Unsubscribe': '<' + link + '>' } };
+    });
+    let ok = false; try { ok = await sendBatch(env, items); } catch (e) {}
+    if (ok) sent += chunk.length; else failed += chunk.length;
+  }
+  await db.logNewsletter(env, subject, audience || 'everyone', sent, failed);
+  return page(pg.admin(rows, { note: 'Sent to ' + sent + ' people' + (failed ? ', ' + failed + ' could not be sent (try again later for them).' : '.'), log: await db.recentNewsletters(env) }));
+}
 
 /* ---- Payments: Stripe Checkout (card, plus PayPal/Apple Pay/Google Pay if switched on in the Stripe dashboard) ---- */
 const PRICE_PENCE = 1500, PAY_YEARS = ['P5', 'P6', 'P7', 'S1', 'S2', 'S3'];
@@ -177,7 +209,7 @@ export default {
   async fetch(request, env) {
     const url = new URL(request.url), p = url.pathname, m = request.method;
     try {
-      if (p === '/admin' || p === '/admin/' || p === '/admin/export.csv') { await db.init(env); return await admin(request, env, url); }
+      if (p === '/admin' || p === '/admin/' || p === '/admin/export.csv' || p === '/admin/newsletter') { await db.init(env); return await admin(request, env, url); }
       const dynamic = p.startsWith('/api/') || p.startsWith('/auth/') || p === '/logout' || p === '/unsubscribe' || p === '/account' || p.startsWith('/account/') || p === '/app' || p.startsWith('/app/') || p === '/learn' || p.startsWith('/learn/');
       if (!dynamic) return withHeaders(await env.ASSETS.fetch(request));
       await db.init(env);

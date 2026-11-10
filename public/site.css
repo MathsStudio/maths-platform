@@ -71,3 +71,9 @@ body.plain{background:var(--tint);min-height:100vh}
 .acct .two{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:18px}.acct .two form{margin:0}.acct .two .btn{width:100%;margin:0;min-height:48px;font-size:15px}
 .danger summary{font-size:15px;color:var(--soft);font-weight:700}
 @media(max-width:560px){.acct .two{grid-template-columns:1fr}.acct .kv{grid-template-columns:1fr}.acct .kv dt{border-bottom:0;padding-bottom:2px}.acct .kv dd{padding-top:2px}}
+
+/* admin newsletter */
+.nl{margin:0 0 24px;max-width:720px}.nl h2{margin:0 0 6px}.nl form{display:grid;gap:14px;margin-top:14px}.nl label{display:grid;gap:6px;font-weight:800}
+.nl input,.nl select,.nl textarea{font:600 16px 'Nunito',system-ui,sans-serif;padding:12px 14px;border:2px solid var(--field);border-radius:12px;background:#fff;color:var(--ink);width:100%;box-sizing:border-box}.nl textarea{resize:vertical;line-height:1.5}
+.nltest{display:flex;gap:10px;flex-wrap:wrap}.nltest input{flex:1;min-width:200px}.nl .btn{margin:0}.nl .chk{display:flex;font-weight:600}.nl .chk input{width:22px}
+.nlnote{background:#dff5e6;color:#14602e;border-radius:12px;padding:12px 14px;font-weight:700;margin:12px 0 0}.nllog{margin:6px 0 0;padding-left:20px;color:var(--soft)}

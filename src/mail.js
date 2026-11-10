@@ -35,3 +35,26 @@ export function resetMail(link) {
     html: wrap('<p>Press the button to choose a new password. The link works once and lasts 30 minutes.</p><p><a href="' + esc(link) + '" style="display:inline-block;background:#2b5fd9;color:#ffffff;padding:12px 22px;border-radius:10px;text-decoration:none;font-weight:700">Choose a new password</a></p><p style="color:#5b6788;font-size:14px">If the button does not work, copy this link into your browser:<br>' + esc(link) + '</p>')
   };
 }
+
+/* newsletter: plain text in, paragraphs and links out; every copy carries its own unsubscribe link */
+function paras(body) { return String(body || '').replace(/\r\n/g, '\n').split(/\n{2,}/).map(x => x.trim()).filter(Boolean); }
+function linkify(t) { return esc(t).replace(/(https?:\/\/[^\s<]+)/g, '<a href="$1" style="color:#2b5fd9">$1</a>').replace(/\n/g, '<br>'); }
+export function newsletterMail(subject, body, unsubUrl) {
+  const ps = paras(body);
+  return {
+    subject,
+    text: ps.join('\n\n') + '\n\n--\nMathsStudio\nYou get this because you chose to receive news from MathsStudio. Unsubscribe: ' + unsubUrl,
+    html: '<div style="font-family:Arial,Helvetica,sans-serif;font-size:16px;color:#14213d;line-height:1.55;max-width:560px"><div style="font-weight:700;font-size:20px;margin-bottom:14px">MathsStudio</div>' +
+      ps.map(x => '<p style="margin:0 0 14px">' + linkify(x) + '</p>').join('') +
+      '<p style="color:#5b6788;font-size:13px;margin-top:28px;border-top:1px solid #e3e8f4;padding-top:14px">You get this because you chose to receive news from MathsStudio. <a href="' + esc(unsubUrl) + '" style="color:#5b6788">Unsubscribe</a></p></div>'
+  };
+}
+/* up to 100 emails per call */
+export async function sendBatch(env, items) {
+  if (!env.RESEND_API_KEY || !env.FROM_EMAIL) throw new Error('mail-not-configured');
+  const r = await fetch('https://api.resend.com/emails/batch', {
+    method: 'POST', headers: { Authorization: 'Bearer ' + env.RESEND_API_KEY, 'Content-Type': 'application/json' },
+    body: JSON.stringify(items.map(i => ({ from: env.FROM_EMAIL, to: [i.to], subject: i.subject, text: i.text, html: i.html, headers: i.headers })))
+  });
+  return r.ok;
+}
