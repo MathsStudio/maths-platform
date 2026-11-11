@@ -26,11 +26,11 @@ export function account(u, passes, canManage) {
     '<div class="who"><div class="avatar" aria-hidden="true">' + ini + '</div><div><h1>Your account</h1><div class="mail">' + esc(u.email) + '</div></div></div>' +
     '<dl class="kv"><dt>Year group</dt><dd>' + esc(u.year || 'Not chosen') + '</dd><dt>Plan</dt><dd class="plans">' + plan + '</dd><dt>News and offers</dt><dd>' + mk + '</dd></dl>' +
     '<a class="btn big" href="/learn/' + (u.year ? '?year=' + encodeURIComponent(u.year) : '') + '">Open MathsStudio</a>' +
-    (owner ? '' : '<p class="hint">' + (years.length ? 'Need another year group? Open it and tap a locked topic.' : 'Tap any locked topic inside MathsStudio to unlock a whole year for £15.') + '</p>') +
+    (owner ? '' : '<p class="hint">' + (years.length ? 'Need another year group? Open it and tap a locked topic.' : 'Tap any locked topic inside MathsStudio to unlock a whole year, from £2.99 a month or £15 for 12 months.') + '</p>') +
     (canManage ? '<form method="post" action="/account/portal" class="manage"><button class="btn alt" type="submit">Manage subscription and receipts</button></form>' : '') +
     '<div class="two"><form method="post" action="/account/marketing"><input type="hidden" name="on" value="' + (u.marketing ? '0' : '1') + '"><button class="btn alt" type="submit">' + (u.marketing ? 'Stop news and offers' : 'Send me news and offers') + '</button></form>' +
     '<form method="post" action="/logout"><button class="btn alt" type="submit">Sign out</button></form></div>' +
-    '<details class="danger"><summary>Delete my account</summary><p>This removes your email and account from MathsStudio for good.</p>' +
+    '<details class="danger"><summary>Delete my account</summary><p>This removes your email and account from MathsStudio for good. Paid access ends with it, so cancel a monthly plan first.</p>' +
     '<form method="post" action="/account/delete"><label class="chk"><input type="checkbox" name="sure" value="1" required> I want to delete my account</label><button class="btn danger-btn" type="submit">Delete my account</button></form></details></div>');
 }
 export function unsubPage(token) {

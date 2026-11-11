@@ -3,7 +3,7 @@ var S = Studio, H = S.h, K = S.kit, Q = K.Q, rnd = H.rnd, pick = H.pick, shuffle
 var NM = ['Maya', 'Ben', 'Ali', 'Priya', 'Sam', 'Kira', 'Leo', 'Zara', 'Omar', 'Isla'];
 function pm(x) { x = Math.round(x * 100) / 100; return '£' + (Math.abs(x % 1) < 1e-9 ? String(Math.round(x)) : x.toFixed(2)); }
 function r2(x) { return Math.round(x * 100) / 100; }
-function QS(o) { o.tag = o.tag || 'Real-time problem'; return Q(o); }
+function QS(o) { o.tag = o.tag || 'Real-life problem'; return Q(o); }
 function ft(m) { m = ((m % 1440) + 1440) % 1440; var h = Math.floor(m / 60), mm = m % 60; return (h % 12 || 12) + ':' + (mm < 10 ? '0' : '') + mm + (h >= 12 ? ' pm' : ' am'); }
 function fr(n, d) { var g = gcd(n, d); n /= g; d /= g; return d === 1 ? String(n) : n + '/' + d; }
 function uniq(a) { return a.filter(function (x, i) { return a.indexOf(x) === i; }); }
@@ -189,12 +189,12 @@ M[10] = [['rowsOfChairs', 'packBoxes', 'squareTiles'], ['groupStory', 'primeHous
 M[11] = [['ratioStory', 'shareRatio', 'unitPrice'], ['bestBuy', 'profitStory', 'interestStory', 'exchangeStory']];
 M[12] = [['mapStory', 'cuboidBox', 'compassTurn'], ['speedStory', 'volumeStory', 'scaleModel', 'bearingStory']];
 
-/* add the Real-time problem step to each topic */
+/* add the Real-life problem step to each topic */
 var LEAD = { 1: 'rounding, estimating and place value in crowds, money and races', 2: 'shopping, change, sharing and baking', 3: 'fractions of amounts, adding and comparing fractions', 4: 'sales, test scores, percentages and decimal prices', 5: 'timetables, durations, recipes and units', 6: 'taxi fares, patterns, number puzzles and savings plans', 7: 'angles, symmetry, clocks, fencing, carpets and maps', 8: 'surveys, charts, averages and chance', 9: 'multi-step puzzles, bar models and clues', 10: 'rows, boxes, timing, tiles and prime numbers', 11: 'sharing, best buys, profit, interest and exchange rates', 12: 'volume, bearings, scale models, maps and journeys' };
 Object.keys(S.topics).forEach(function (k) {
   var t = S.topics[k]; if (!S.storyFor(Number(k)) || t.steps.some(function (s) { return s.id === 'practical'; })) return;
   var base = t.base || t.replaces || t.n;
-  t.steps.push({ id: 'practical', label: 'Real-time problem', type: 'quiz', tag: 'Step ' + (t.steps.length + 1) + ' · Real-time problems', title: 'Real-time problems', lead: '30 situation questions on ' + (LEAD[base] || 'this topic') + '. Think about which skill from this topic the problem needs. Low, Medium and High change how many steps each problem has.',
+  t.steps.push({ id: 'practical', label: 'Real-life problem', type: 'quiz', tag: 'Step ' + (t.steps.length + 1) + ' · Real-life problems', title: 'Real-life problems', lead: '30 situation questions on ' + (LEAD[base] || 'this topic') + '. Think about which skill from this topic the problem needs. Low, Medium and High change how many steps each problem has.',
     make: function () { var m = []; m.storyMode = true; return H.buildPracticeSet(m, 30); } });
   if (S.arrange) S.arrange(t);
 });

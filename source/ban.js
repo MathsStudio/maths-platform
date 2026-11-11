@@ -1,5 +1,5 @@
 /* ban.js: keeps every question inside the topic it belongs to (P5 first).
-   Practice, warm-ups, Real-time problems, the games (which reuse practice questions) and the
+   Practice, warm-ups, Real-life problems, the games (which reuse practice questions) and the
    lesson worked examples all draw from the same makers, and some makers add general reasoning
    puzzles (verbal, cubes, mirror images...). Those only belong to the Reasoning and Spatial topics. */
 (function () {

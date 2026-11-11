@@ -4,7 +4,7 @@ var NM = ['Maya', 'Ben', 'Ali', 'Priya', 'Sam', 'Kira', 'Leo', 'Zara', 'Omar', '
 function pm(x) { x = Math.round(x * 100) / 100; return '£' + (Math.abs(x % 1) < 1e-9 ? String(Math.round(x)) : x.toFixed(2)); }
 function r2(x) { return Math.round(x * 100) / 100; }
 function F(name, fn) { Object.defineProperty(fn, 'name', { value: name }); return fn; }
-function QS(o) { o.tag = o.tag || 'Real-time problem'; return Q(o); }
+function QS(o) { o.tag = o.tag || 'Real-life problem'; return Q(o); }
 function ft(m) { var h = Math.floor(m / 60), mm = m % 60; return (h % 12 || 12) + ':' + (mm < 10 ? '0' : '') + mm + (h >= 12 ? ' pm' : ' am'); }
 var Qr = [0, 0.25, 0.5, 0.75], Hf = [0, 0.5];
 var FAM = {};
