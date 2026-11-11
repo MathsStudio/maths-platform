@@ -57,6 +57,7 @@
 
   function open() {
     if (!S.yearTopics) return;
+    if (S.testLocked && S.testLocked()) { S.askUnlock('The 10-minute test'); return; }
     var qs = build(); if (!qs.length) return;
     T = { qs: qs, ans: qs.map(function () { return null; }), i: 0, left: SECS, start: Date.now(), done: false };
     var host = document.getElementById('tenOverlay'); if (host) host.remove();
@@ -104,6 +105,7 @@
         return '<div style="border:2px solid var(--line,#b9cfc6);border-radius:14px;padding:12px;margin:10px 0"><b>Question ' + (r.k + 1) + '</b> <span class="note">' + esc(r.q.__topic) + '</span><div style="margin:6px 0">' + r.q.text + '</div>' + (r.q.pic ? r.q.pic : '') +
           '<p style="margin:6px 0">Your answer: <b>' + (r.v == null ? 'no answer' : esc(r.v)) + '</b><br>Correct answer: <b>' + esc(r.q.answer) + '</b></p>' + (r.q.explain ? '<p class="note" style="margin:0">' + r.q.explain + '</p>' : '') + '</div>';
       }).join('') : '<p><b>Every answer was correct.</b></p>') +
+      '<p class="note" style="margin:14px 0 0">Questions on topics you have not done yet will show up in this review. Learn those topics, then try another test.</p>' +
       '<div style="display:flex;gap:10px;flex-wrap:wrap;margin:14px 0 30px"><button class="btn" type="button" id="tenAgain">Try another test</button><button class="btn ghost" type="button" id="tenClose">Back to topics</button></div></div>';
     document.getElementById('tenAgain').addEventListener('click', open); document.getElementById('tenClose').addEventListener('click', close);
     host.scrollTop = 0;
@@ -113,7 +115,11 @@
     var v = document.getElementById('view'); if (!v || document.getElementById('tenCard')) return;
     var anchor = document.getElementById('myprog'); if (!anchor) return;
     var c = document.createElement('section'); c.className = 'card'; c.id = 'tenCard'; c.setAttribute('aria-labelledby', 'tenH');
-    c.innerHTML = '<h2 id="tenH" style="margin:0 0 6px">⏱ 10-minute mental maths test</h2><p class="note" style="margin:0 0 10px">18 mixed questions from this year\'s topics, no calculator. A timer counts down from 10:00. At the end you get a score out of 18 and a review of every mistake.</p><button class="btn" type="button" id="tenStart">Start the test</button>';
+    var lk = S.testLocked && S.testLocked();
+    c.innerHTML = '<h2 id="tenH" style="margin:0 0 6px">⏱ 10-minute mental maths test' + (lk ? ' <span class="tag" style="vertical-align:middle;margin-left:6px">Full year pass</span>' : '') + '</h2>' +
+      '<p class="note" style="margin:0 0 10px">18 mixed questions from this year\'s topics, no calculator. A timer counts down from 10:00. At the end you get a score out of 18 and a review of every mistake.</p>' +
+      '<div style="background:var(--soft,#f1f5ff);border-left:5px solid #ffd166;border-radius:12px;padding:10px 14px;margin:0 0 12px;line-height:1.5"><b>Try this after you have finished all of this year\'s topics.</b> The questions come from every topic, so if you meet one you have not learned yet, skip it and come back to the test later.</div>' +
+      '<button class="btn' + (lk ? ' ghost' : '') + '" type="button" id="tenStart">' + (lk ? '🔒 Unlock the test' : 'Start the test') + '</button>' + (lk ? '<span class="note" style="margin-left:10px">Included when you unlock the year</span>' : '');
     anchor.parentNode.insertBefore(c, anchor.nextSibling);
     document.getElementById('tenStart').addEventListener('click', open);
   }
