@@ -214,5 +214,6 @@ r = await call('/api/progress', { method: 'POST', json: { progress: { t7: { step
 pj = JSON.parse(r.text).progress; ok(pj.t7.steps.ok_1 === true && !pj.t7.steps['bad id'] && !pj.t7.steps.nope && !pj.evil, 'odd progress data is cleaned');
 r = await call('/api/progress', { method: 'POST', json: { replace: true, progress: { t6: { steps: { learn1: true } } } } }); pj = JSON.parse(r.text).progress; ok(!pj.t5 && pj.t6.steps.learn1, 'a reset replaces saved progress');
 r = await call('/api/progress', { method: 'POST', body: 'x=1', headers: { 'Content-Type': 'application/x-www-form-urlencoded' } }); ok(r.status === 400, 'progress only accepts JSON');
+r = await call('/api/me'); ok(/font-src 'self'/.test(r.r.headers.get('Content-Security-Policy') || ''), 'pages may load fonts from our own site (maths fractions)');
 globalThis.fetch = realFetch; delete env.STRIPE_SECRET_KEY;
 console.log(fails ? fails + ' FAILED' : 'ALL PASSED');
