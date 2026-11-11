@@ -130,7 +130,11 @@ const evt = { id: 'evt_1', type: 'checkout.session.completed', data: { object: {
 async function hook(e, secret = 'whsec_x', t = Math.floor(Date.now() / 1000)) { const raw = JSON.stringify(e); const sig = createHmac('sha256', secret).update(t + '.' + raw).digest('hex'); return worker.fetch(new Request(B + '/api/stripe-webhook', { method: 'POST', headers: { 'Stripe-Signature': 't=' + t + ',v1=' + sig }, body: raw }), env); }
 r = await hook(evt, 'wrong'); ok(r.status === 400, 'webhook with a bad signature is refused');
 r = await call('/api/me'); ok(JSON.parse(r.text).years.length === 0 && JSON.parse(r.text).pay === true, 'before paying: no years, payments on');
+evt.data.object.id = 'cs_test_mailyear1234'; sent.length = 0;
 r = await hook(evt); ok(r.status === 200, 'webhook accepted');
+const mailY = sent.filter(m => /Payment received/.test(m.subject));
+ok(mailY.length === 1 && mailY[0].to[0] === 'parent@example.com' && /full access to every topic in P6/.test(mailY[0].html) && /\/learn\/\?year=P6/.test(mailY[0].text) && /Your access lasts until/.test(mailY[0].text), 'yearly payment sends one confirmation email with the year and link');
+await hook(evt); ok(sent.filter(m => /Payment received/.test(m.subject)).length === 1, 'repeat webhook does not send a second email');
 r = await call('/api/me'); ok(JSON.stringify(JSON.parse(r.text).years) === '["P6"]', 'after paying: P6 unlocked');
 const u1 = sqlite.prepare('SELECT until FROM purchases WHERE user_id=?').get(uid).until; await hook(evt);
 ok(sqlite.prepare('SELECT until FROM purchases WHERE user_id=?').get(uid).until === u1, 'repeated webhook is not counted twice');
@@ -178,6 +182,7 @@ r = await call('/api/checkout', { method: 'POST', json: { year: 'S2' } }); ok(/m
 Object.assign(sess, { id: 'cs_test_sub1234567890', mode: 'subscription', subscription: 'sub_test_1', customer: 'cus_test_1', payment_status: 'paid', metadata: { user_id: String(uid), year: 'S2' } });
 r = await call('/api/confirm', { method: 'POST', json: { session_id: 'cs_test_sub1234567890' } }); ok(JSON.parse(r.text).ok === true, 'confirm grants the monthly plan');
 let row = sqlite.prepare("SELECT until, sub_id, cust_id FROM purchases WHERE user_id=? AND year='S2'").get(uid);
+{ const mm = sent.filter(m => /Payment received/.test(m.subject) && /S2/.test(m.subject)); ok(mm.length === 1 && /renews each month/.test(mm[0].text) && /year=S2/.test(mm[0].text), 'monthly payment sends a confirmation email that mentions renewal'); }
 ok(row.sub_id === 'sub_test_1' && row.cust_id === 'cus_test_1' && Math.abs(row.until - (subState.current_period_end + 2 * 86400)) < 5, 'monthly access runs to period end plus 2 days grace');
 r = await call('/account/'); ok(/S2 unlocked · until/.test(r.text) && /Manage subscription/.test(r.text), 'account shows the end date and the manage button');
 r = await call('/account/portal', { method: 'POST', body: {} }); ok(r.status === 303 && r.loc === 'https://billing.stripe.test/p1' && /customer=cus_test_1/.test(portalBody), 'manage button opens the Stripe billing portal');

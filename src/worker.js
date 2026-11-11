@@ -1,6 +1,6 @@
 import { page, json, redirect, withHeaders, sameOrigin, validEmail, randomToken, sha256, safeEqual, parseCookies, cookie, hashPassword, checkPassword } from './util.js';
 import * as db from './db.js';
-import { sendMail, sendBatch, newsletterMail, verifyMail, loginMail, resetMail } from './mail.js';
+import { sendMail, sendBatch, newsletterMail, purchaseMail, verifyMail, loginMail, resetMail } from './mail.js';
 import * as pg from './pages.js';
 
 const SESSION_SEC = 30 * 86400, VERIFY_SEC = 86400, LOGIN_SEC = 1800;
@@ -195,6 +195,22 @@ async function stripeGet(env, path) {
 }
 /* gives the year to the user a paid Checkout Session belongs to (one-off year pass or monthly plan) */
 async function grantFromSession(env, o, uid, year) {
+  const ok = await grantCore(env, o, uid, year);
+  if (ok) await receipt(env, o, uid, year);
+  return ok;
+}
+/* one confirmation email per payment, even if the return page and the webhook both arrive */
+async function receipt(env, o, uid, year) {
+  const key = 'mail:' + o.id;
+  try {
+    if (!env.RESEND_API_KEY || !o.id || await db.seenEvent(env, key)) return;
+    const u = await db.userById(env, uid), pass = (await db.userPasses(env, uid)).find(x => x.year === year);
+    if (!u || !pass) { await db.forgetEvent(env, key); return; }
+    const monthly = o.mode === 'subscription', m = purchaseMail({ site: env.SITE_URL || 'https://mathsstudio.co.uk', year, monthly, until: pass.until });
+    try { await sendMail(env, u.email, m.subject, m.text, m.html); } catch (e) { await db.forgetEvent(env, key); }
+  } catch (e) { /* never let an email problem undo a payment */ }
+}
+async function grantCore(env, o, uid, year) {
   if (o.mode === 'subscription' && o.subscription) {
     const sub = await stripeGet(env, '/v1/subscriptions/' + encodeURIComponent(typeof o.subscription === 'string' ? o.subscription : o.subscription.id));
     const end = periodEnd(sub); if (!sub || !end) return false;

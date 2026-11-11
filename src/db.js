@@ -166,3 +166,5 @@ export async function revokePass(env, userId, year) {
   const r = await env.DB.prepare('DELETE FROM purchases WHERE user_id = ? AND year = ?').bind(userId, year).run();
   return (r.meta && r.meta.changes) || 0;
 }
+
+export async function forgetEvent(env, id) { await env.DB.prepare('DELETE FROM pay_events WHERE id = ?').bind(id).run(); }
