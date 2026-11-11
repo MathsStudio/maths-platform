@@ -1,0 +1,13 @@
+User-agent: *
+Allow: /
+Disallow: /app/
+Disallow: /learn
+Disallow: /account
+Disallow: /api/
+Disallow: /login/
+Disallow: /signup/
+Disallow: /forgot/
+Disallow: /reset/
+Disallow: /welcome/
+
+Sitemap: https://mathsstudio.co.uk/sitemap.xml
