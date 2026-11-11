@@ -190,5 +190,13 @@ ok(row.until > nowS() + 29 * 86400, 'a paid renewal extends access');
 sqlite.prepare("UPDATE purchases SET until=?, synced_at=NULL WHERE user_id=? AND year='S2'").run(nowS() + 86400, uid);
 subState.status = 'canceled'; r = await call('/api/me'); row = sqlite.prepare("SELECT until FROM purchases WHERE user_id=? AND year='S2'").get(uid);
 ok(row.until < nowS() + 2 * 86400, 'a cancelled plan is not extended');
+// checkout shows the consent wording; admin can remove a paid year after a refund
+ok(/custom_text%5Bsubmit%5D%5Bmessage%5D=/.test(stripeBody || '') && /14-day/.test(decodeURIComponent(stripeBody || '')) && /terms/.test(decodeURIComponent(stripeBody || '')), 'checkout shows terms and 14-day wording');
+const revPost = (body, pw = 'pw') => worker.fetch(new Request(B + '/admin/revoke', { method: 'POST', headers: { Authorization: 'Basic ' + btoa('a:' + pw), Origin: B, 'Content-Type': 'application/x-www-form-urlencoded', 'CF-Connecting-IP': '8.8.8.8' }, body: new URLSearchParams(body).toString() }), env);
+r = await revPost({ email: 'parent@example.com', year: 'S2' }, 'wrong'); ok(r.status === 401, 'revoke needs the admin password');
+const had = sqlite.prepare("SELECT COUNT(*) c FROM purchases WHERE user_id=? AND year='S2'").get(uid).c;
+r = await revPost({ email: 'parent@example.com', year: 'S2' }); const revTxt = await r.text();
+ok(had === 1 && /Removed S2 access/.test(revTxt) && sqlite.prepare("SELECT COUNT(*) c FROM purchases WHERE user_id=? AND year='S2'").get(uid).c === 0, 'admin can remove a paid year');
+r = await revPost({ email: 'nobody@example.com', year: 'S2' }); ok(/No account found/.test(await r.text()), 'revoke reports unknown email');
 globalThis.fetch = realFetch; delete env.STRIPE_SECRET_KEY;
 console.log(fails ? fails + ' FAILED' : 'ALL PASSED');

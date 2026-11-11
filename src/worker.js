@@ -117,6 +117,7 @@ async function admin(request, env, url) {
   if (!ok && h) await db.rateOk(env, 'adminfail:' + ip(request), 1000, 900);   // only wrong passwords count, not the browser's first empty request
   if (!ok) return new Response('Password required.', { status: 401, headers: { 'WWW-Authenticate': 'Basic realm="MathsStudio admin", charset="UTF-8"', 'Cache-Control': 'no-store' } });
   if (url.pathname === '/admin/newsletter' && request.method === 'POST') return await newsletter(request, env);
+  if (url.pathname === '/admin/revoke' && request.method === 'POST') return await revoke(request, env);
   const rows = await db.adminList(env);
   if (url.pathname === '/admin/export.csv')
     return withHeaders(new Response(pg.csv(rows), { headers: { 'Content-Type': 'text/csv; charset=utf-8', 'Content-Disposition': 'attachment; filename="mathsstudio-signups.csv"', 'Cache-Control': 'no-store', 'X-Robots-Tag': 'noindex' } }));
@@ -155,6 +156,18 @@ async function newsletter(request, env) {
   return page(pg.admin(rows, { note: 'Sent to ' + sent + ' people' + (failed ? ', ' + failed + ' could not be sent (try again later for them).' : '.'), log: await db.recentNewsletters(env) }));
 }
 
+/* removes a paid year from someone (after a refund). Cancelling a monthly plan itself is done in the Stripe dashboard. */
+async function revoke(request, env) {
+  if (!sameOrigin(request)) return new Response('Bad request', { status: 400 });
+  const b = await readForm(request), email = String(b.email || '').trim().toLowerCase(), year = String(b.year || '');
+  const rows = await db.adminList(env), done = async note => page(pg.admin(rows, { note, log: await db.recentNewsletters(env) }));
+  if (!PAY_YEARS.includes(year) || !email) return await done('Enter an email and choose a year.');
+  const u = rows.find(r => String(r.email).toLowerCase() === email);
+  if (!u) return await done('No account found for ' + email + '.');
+  const n = await db.revokePass(env, u.id, year);
+  return await done(n ? 'Removed ' + year + ' access for ' + email + '. If it was a monthly plan, also cancel it in the Stripe dashboard.' : email + ' had no paid ' + year + ' access.');
+}
+
 /* ---- Payments: Stripe Checkout (card, plus PayPal/Apple Pay/Google Pay if switched on in the Stripe dashboard) ---- */
 const PRICE_PENCE = 1500, MONTH_PENCE = 299, GRACE = 2 * 86400, PAY_YEARS = ['P5', 'P6', 'P7', 'S1', 'S2', 'S3'];
 async function checkout(request, env, user) {
@@ -168,6 +181,7 @@ async function checkout(request, env, user) {
   f.set('line_items[0][quantity]', '1'); f.set('line_items[0][price_data][currency]', 'gbp'); f.set('line_items[0][price_data][unit_amount]', String(monthly ? MONTH_PENCE : PRICE_PENCE));
   if (monthly) { f.set('line_items[0][price_data][recurring][interval]', 'month'); f.set('subscription_data[metadata][user_id]', String(user.id)); f.set('subscription_data[metadata][year]', year); }
   f.set('line_items[0][price_data][product_data][name]', 'MathsStudio ' + year + (monthly ? ' – all topics, monthly (cancel any time)' : ' – all topics, 12 months'));
+  f.set('custom_text[submit][message]', 'Access to MathsStudio starts straight away. By paying you agree to our [Terms](' + origin + '/terms/) and [Refund policy](' + origin + '/refunds/), and that you lose your legal 14-day right to cancel once you start using it. Our own 14-day money-back promise still applies.');
   f.set('success_url', origin + '/learn/?year=' + year + '&paid=1&sid={CHECKOUT_SESSION_ID}'); f.set('cancel_url', origin + '/learn/?year=' + year);
   const r = await fetch('https://api.stripe.com/v1/checkout/sessions', { method: 'POST', headers: { Authorization: 'Bearer ' + env.STRIPE_SECRET_KEY, 'Content-Type': 'application/x-www-form-urlencoded' }, body: f });
   const j = await r.json().catch(() => ({}));
@@ -247,7 +261,7 @@ export default {
   async fetch(request, env) {
     const url = new URL(request.url), p = url.pathname, m = request.method;
     try {
-      if (p === '/admin' || p === '/admin/' || p === '/admin/export.csv' || p === '/admin/newsletter') { await db.init(env); return await admin(request, env, url); }
+      if (p === '/admin' || p === '/admin/' || p === '/admin/export.csv' || p === '/admin/newsletter' || p === '/admin/revoke') { await db.init(env); return await admin(request, env, url); }
       const dynamic = p.startsWith('/api/') || p.startsWith('/auth/') || p === '/logout' || p === '/unsubscribe' || p === '/account' || p.startsWith('/account/') || p === '/app' || p.startsWith('/app/') || p === '/learn' || p.startsWith('/learn/');
       if (!dynamic) return withHeaders(await env.ASSETS.fetch(request));
       await db.init(env);

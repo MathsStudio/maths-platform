@@ -161,3 +161,8 @@ export async function recentNewsletters(env) {
   const r = await env.DB.prepare('SELECT subject, audience, sent, failed, created_at FROM newsletters ORDER BY id DESC LIMIT 5').all();
   return r.results || [];
 }
+
+export async function revokePass(env, userId, year) {
+  const r = await env.DB.prepare('DELETE FROM purchases WHERE user_id = ? AND year = ?').bind(userId, year).run();
+  return (r.meta && r.meta.changes) || 0;
+}
