@@ -28,7 +28,10 @@ const SCHEMA = [
 let ready = null;
 export function init(env) {
   if (!ready) ready = env.DB.batch(SCHEMA.map(s => env.DB.prepare(s)))
-    .then(() => env.DB.prepare('ALTER TABLE users ADD COLUMN pw TEXT').run().catch(() => {}))   // adds the password column once; harmless if it already exists
+    .then(() => env.DB.prepare('ALTER TABLE users ADD COLUMN pw TEXT').run().catch(() => {}))
+    .then(() => env.DB.prepare('ALTER TABLE purchases ADD COLUMN sub_id TEXT').run().catch(() => {}))
+    .then(() => env.DB.prepare('ALTER TABLE purchases ADD COLUMN cust_id TEXT').run().catch(() => {}))
+    .then(() => env.DB.prepare('ALTER TABLE purchases ADD COLUMN synced_at INTEGER').run().catch(() => {}))   // adds the password column once; harmless if it already exists
     .catch(e => { ready = null; throw e; });
   return ready;
 }
@@ -110,6 +113,28 @@ export async function addPurchase(env, userId, year) {
   const start = cur && cur.until > now ? cur.until : now, until = start + 365 * 86400;
   await env.DB.prepare('INSERT INTO purchases (user_id, year, until, created_at) VALUES (?, ?, ?, ?) ON CONFLICT(user_id, year) DO UPDATE SET until = excluded.until').bind(userId, year, until, new Date().toISOString()).run();
   return until;
+}
+/* monthly plan: access runs to the end of the paid period (plus a short grace); renewals move it on */
+export async function addSub(env, userId, year, until, subId, custId) {
+  const now = Math.floor(Date.now() / 1000);
+  await env.DB.prepare('INSERT INTO purchases (user_id, year, until, created_at, sub_id, cust_id, synced_at) VALUES (?, ?, ?, ?, ?, ?, ?) ON CONFLICT(user_id, year) DO UPDATE SET until = MAX(until, excluded.until), sub_id = excluded.sub_id, cust_id = excluded.cust_id, synced_at = excluded.synced_at')
+    .bind(userId, year, until, new Date().toISOString(), subId || null, custId || null, now).run();
+}
+export async function subsDue(env, userId) {
+  const now = Math.floor(Date.now() / 1000);
+  const r = await env.DB.prepare('SELECT year, until, sub_id FROM purchases WHERE user_id = ? AND sub_id IS NOT NULL AND until < ? AND (synced_at IS NULL OR synced_at < ?)').bind(userId, now + 3 * 86400, now - 3600).all();
+  return r.results || [];
+}
+export async function setSynced(env, userId, year, until) {
+  await env.DB.prepare('UPDATE purchases SET synced_at = ?, until = MAX(until, ?) WHERE user_id = ? AND year = ?').bind(Math.floor(Date.now() / 1000), until || 0, userId, year).run();
+}
+export async function userPasses(env, userId) {
+  const r = await env.DB.prepare('SELECT year, until, sub_id FROM purchases WHERE user_id = ? AND until > ? ORDER BY year').bind(userId, Math.floor(Date.now() / 1000)).all();
+  return r.results || [];
+}
+export async function customerId(env, userId) {
+  const r = await env.DB.prepare('SELECT cust_id FROM purchases WHERE user_id = ? AND cust_id IS NOT NULL ORDER BY until DESC LIMIT 1').bind(userId).first();
+  return r && r.cust_id;
 }
 export async function seenEvent(env, id) {
   await env.DB.prepare('CREATE TABLE IF NOT EXISTS pay_events (id TEXT PRIMARY KEY, created_at TEXT NOT NULL)').run();

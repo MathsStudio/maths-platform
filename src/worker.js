@@ -156,22 +156,60 @@ async function newsletter(request, env) {
 }
 
 /* ---- Payments: Stripe Checkout (card, plus PayPal/Apple Pay/Google Pay if switched on in the Stripe dashboard) ---- */
-const PRICE_PENCE = 1500, PAY_YEARS = ['P5', 'P6', 'P7', 'S1', 'S2', 'S3'];
+const PRICE_PENCE = 1500, MONTH_PENCE = 299, GRACE = 2 * 86400, PAY_YEARS = ['P5', 'P6', 'P7', 'S1', 'S2', 'S3'];
 async function checkout(request, env, user) {
   if (!env.STRIPE_SECRET_KEY) return json({ error: 'Payments are not open yet.' }, 503);
   if (!user) return json({ error: 'Please sign in first.' }, 401);
-  const b = await readForm(request), year = String(b.year || '');
+  const b = await readForm(request), year = String(b.year || ''), monthly = b.plan === 'month';
   if (!PAY_YEARS.includes(year)) return json({ error: 'Unknown year group.' }, 400);
   const origin = new URL(request.url).origin, f = new URLSearchParams();
-  f.set('mode', 'payment'); f.set('client_reference_id', String(user.id)); f.set('customer_email', user.email);
+  f.set('mode', monthly ? 'subscription' : 'payment'); f.set('client_reference_id', String(user.id)); f.set('customer_email', user.email);
   f.set('metadata[user_id]', String(user.id)); f.set('metadata[year]', year);
-  f.set('line_items[0][quantity]', '1'); f.set('line_items[0][price_data][currency]', 'gbp'); f.set('line_items[0][price_data][unit_amount]', String(PRICE_PENCE));
-  f.set('line_items[0][price_data][product_data][name]', 'MathsStudio ' + year + ' – all topics, 12 months');
+  f.set('line_items[0][quantity]', '1'); f.set('line_items[0][price_data][currency]', 'gbp'); f.set('line_items[0][price_data][unit_amount]', String(monthly ? MONTH_PENCE : PRICE_PENCE));
+  if (monthly) { f.set('line_items[0][price_data][recurring][interval]', 'month'); f.set('subscription_data[metadata][user_id]', String(user.id)); f.set('subscription_data[metadata][year]', year); }
+  f.set('line_items[0][price_data][product_data][name]', 'MathsStudio ' + year + (monthly ? ' – all topics, monthly (cancel any time)' : ' – all topics, 12 months'));
   f.set('success_url', origin + '/learn/?year=' + year + '&paid=1&sid={CHECKOUT_SESSION_ID}'); f.set('cancel_url', origin + '/learn/?year=' + year);
   const r = await fetch('https://api.stripe.com/v1/checkout/sessions', { method: 'POST', headers: { Authorization: 'Bearer ' + env.STRIPE_SECRET_KEY, 'Content-Type': 'application/x-www-form-urlencoded' }, body: f });
   const j = await r.json().catch(() => ({}));
   if (!r.ok || !j.url) return json({ error: 'We could not start the payment. Please try again.' }, 502);
   return json({ url: j.url });
+}
+const periodEnd = sub => Number(sub && (sub.current_period_end || (sub.items && sub.items.data && sub.items.data[0] && sub.items.data[0].current_period_end))) || 0;
+async function stripeGet(env, path) {
+  const r = await fetch('https://api.stripe.com' + path, { headers: { Authorization: 'Bearer ' + env.STRIPE_SECRET_KEY } });
+  const j = await r.json().catch(() => ({})); return r.ok ? j : null;
+}
+/* gives the year to the user a paid Checkout Session belongs to (one-off year pass or monthly plan) */
+async function grantFromSession(env, o, uid, year) {
+  if (o.mode === 'subscription' && o.subscription) {
+    const sub = await stripeGet(env, '/v1/subscriptions/' + encodeURIComponent(typeof o.subscription === 'string' ? o.subscription : o.subscription.id));
+    const end = periodEnd(sub); if (!sub || !end) return false;
+    await db.addSub(env, uid, year, end + GRACE, sub.id, typeof o.customer === 'string' ? o.customer : (sub.customer || null)); return true;
+  }
+  if (!(await db.seenEvent(env, 'cs:' + o.id))) await db.addPurchase(env, uid, year);
+  return true;
+}
+/* renews monthly access when the next payment has gone through (checked when the person opens the site near the end of their period) */
+async function syncSubs(env, userId) {
+  if (!env.STRIPE_SECRET_KEY) return;
+  for (const row of await db.subsDue(env, userId)) {
+    const sub = await stripeGet(env, '/v1/subscriptions/' + encodeURIComponent(row.sub_id)), end = periodEnd(sub);
+    await db.setSynced(env, userId, row.year, sub && (sub.status === 'active' || sub.status === 'trialing') && end ? end + GRACE : 0);
+  }
+}
+async function passesOf(env, user) {
+  if (user.plan === 'owner') return [];
+  await syncSubs(env, user.id).catch(() => {});
+  return await db.userPasses(env, user.id);
+}
+async function portal(request, env, user) {
+  if (!env.STRIPE_SECRET_KEY || !user) return redirect('/account/');
+  const cust = await db.customerId(env, user.id); if (!cust) return redirect('/account/');
+  const f = new URLSearchParams(); f.set('customer', cust); f.set('return_url', new URL(request.url).origin + '/account/');
+  const r = await fetch('https://api.stripe.com/v1/billing_portal/sessions', { method: 'POST', headers: { Authorization: 'Bearer ' + env.STRIPE_SECRET_KEY, 'Content-Type': 'application/x-www-form-urlencoded' }, body: f });
+  const j = await r.json().catch(() => ({}));
+  if (!r.ok || !j.url) return page(pg.message('Could not open billing', 'We could not open the billing page just now. Please try again in a minute, or email us.'), 502);
+  return redirect(j.url);
 }
 async function confirmPay(request, env, user) {
   if (!env.STRIPE_SECRET_KEY) return json({ error: 'Payments are not open yet.' }, 503);
@@ -181,7 +219,7 @@ async function confirmPay(request, env, user) {
   const r = await fetch('https://api.stripe.com/v1/checkout/sessions/' + sid, { headers: { Authorization: 'Bearer ' + env.STRIPE_SECRET_KEY } });
   const o = await r.json().catch(() => ({})), md = o.metadata || {}, year = String(md.year || '');
   if (!r.ok || o.payment_status !== 'paid' || String(md.user_id) !== String(user.id) || !PAY_YEARS.includes(year)) return json({ ok: false }, 200);
-  if (!(await db.seenEvent(env, 'cs:' + o.id))) await db.addPurchase(env, user.id, year);
+  if (!(await grantFromSession(env, o, user.id, year))) return json({ ok: false }, 200);
   return json({ ok: true, year });
 }
 async function hmacHex(key, msg) {
@@ -199,7 +237,7 @@ async function stripeWebhook(request, env) {
   let ev; try { ev = JSON.parse(raw); } catch (e) { return json({ error: 'Bad body' }, 400); }
   if (ev.type === 'checkout.session.completed' || ev.type === 'checkout.session.async_payment_succeeded') {
     const o = ev.data && ev.data.object || {}, md = o.metadata || {}, uid = Number(md.user_id), year = String(md.year || '');
-    if (o.payment_status === 'paid' && uid && PAY_YEARS.includes(year) && !(await db.seenEvent(env, 'cs:' + (o.id || ev.id)))) await db.addPurchase(env, uid, year);
+    if (o.payment_status === 'paid' && uid && PAY_YEARS.includes(year)) await grantFromSession(env, o, uid, year);
   }
   return json({ received: true });
 }
@@ -227,7 +265,7 @@ export default {
         return row ? page(pg.unsubPage(t)) : page(pg.message('Link not valid', 'This unsubscribe link is not valid.'), 400);
       }
       const user = await currentUser(env, request);
-      if (p === '/api/me' && m === 'GET') return json(user ? { signedIn: true, email: user.email, year: user.year || '', owner: user.plan === 'owner', years: user.plan === 'owner' ? [] : await db.userYears(env, user.id), pay: !!env.STRIPE_SECRET_KEY } : { signedIn: false, owner: false, years: [], pay: !!env.STRIPE_SECRET_KEY }, 200, { 'Cache-Control': 'private, no-store' });
+      if (p === '/api/me' && m === 'GET') return json(user ? { signedIn: true, email: user.email, year: user.year || '', owner: user.plan === 'owner', years: (await passesOf(env, user)).map(x => x.year), pay: !!env.STRIPE_SECRET_KEY } : { signedIn: false, owner: false, years: [], pay: !!env.STRIPE_SECRET_KEY }, 200, { 'Cache-Control': 'private, no-store' });
       if (p === '/api/confirm' && m === 'POST') return await confirmPay(request, env, user);
       if (p === '/api/checkout' && m === 'POST') return await checkout(request, env, user);
       if (p === '/logout' && m === 'POST') {
@@ -240,7 +278,8 @@ export default {
         const res = await env.ASSETS.fetch(isLearn ? new Request(new URL('/app/' + url.search, url), request) : request);
         return withHeaders(res, { 'Cache-Control': 'private, no-store', 'X-Robots-Tag': 'noindex' });
       }
-      if (p === '/account' || p === '/account/') return user ? page(pg.account(user, user.plan === 'owner' ? [] : await db.userYears(env, user.id))) : redirect('/login/');
+      if (p === '/account' || p === '/account/') return user ? page(pg.account(user, await passesOf(env, user), !!(await db.customerId(env, user.id)))) : redirect('/login/');
+      if (p === '/account/portal' && m === 'POST') return await portal(request, env, user);
       if (p === '/account/marketing' && m === 'POST') {
         if (!user) return redirect('/login/'); const b = await readForm(request), on = b.on === '1';
         if (on) await env.DB.prepare('UPDATE users SET marketing = 1, marketing_at = ?, marketing_text = ?, unsub_at = NULL WHERE id = ?').bind(new Date().toISOString(), db.MARKETING_TEXT, user.id).run();

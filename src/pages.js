@@ -16,16 +16,18 @@ export function confirmLink(token) {
   return shell('Continue to MathsStudio', '<div class="card"><h1>Almost there</h1><p>Press the button to confirm and sign in.</p>' +
     '<form method="post" action="/auth/verify"><input type="hidden" name="t" value="' + esc(token) + '"><button class="btn" type="submit">Confirm and sign in</button></form></div>');
 }
-export function account(u, years) {
-  years = years || [];
+export function account(u, passes, canManage) {
+  passes = (passes || []).map(x => typeof x === 'string' ? { year: x } : x);
+  const years = passes.map(x => x.year), dt = x => x.until ? ' · until ' + new Date(x.until * 1000).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric', timeZone: 'UTC' }) : '';
   const owner = u.plan === 'owner', ini = esc((u.email || '?').charAt(0).toUpperCase());
-  const plan = owner ? '<span class="pill ok">Owner · full access</span>' : years.length ? years.map(y => '<span class="pill ok">' + esc(y) + ' unlocked</span>').join(' ') : '<span class="pill">Free · Topic 1 of each year</span>';
+  const plan = owner ? '<span class="pill ok">Owner · full access</span>' : years.length ? passes.map(x => '<span class="pill ok">' + esc(x.year) + ' unlocked' + dt(x) + '</span>').join(' ') : '<span class="pill">Free · Topic 1 of each year</span>';
   const mk = u.marketing ? 'On' : 'Off';
   return shell('Your account', '<div class="card acct">' +
     '<div class="who"><div class="avatar" aria-hidden="true">' + ini + '</div><div><h1>Your account</h1><div class="mail">' + esc(u.email) + '</div></div></div>' +
     '<dl class="kv"><dt>Year group</dt><dd>' + esc(u.year || 'Not chosen') + '</dd><dt>Plan</dt><dd class="plans">' + plan + '</dd><dt>News and offers</dt><dd>' + mk + '</dd></dl>' +
     '<a class="btn big" href="/learn/' + (u.year ? '?year=' + encodeURIComponent(u.year) : '') + '">Open MathsStudio</a>' +
     (owner ? '' : '<p class="hint">' + (years.length ? 'Need another year group? Open it and tap a locked topic.' : 'Tap any locked topic inside MathsStudio to unlock a whole year for £15.') + '</p>') +
+    (canManage ? '<form method="post" action="/account/portal" class="manage"><button class="btn alt" type="submit">Manage subscription and receipts</button></form>' : '') +
     '<div class="two"><form method="post" action="/account/marketing"><input type="hidden" name="on" value="' + (u.marketing ? '0' : '1') + '"><button class="btn alt" type="submit">' + (u.marketing ? 'Stop news and offers' : 'Send me news and offers') + '</button></form>' +
     '<form method="post" action="/logout"><button class="btn alt" type="submit">Sign out</button></form></div>' +
     '<details class="danger"><summary>Delete my account</summary><p>This removes your email and account from MathsStudio for good.</p>' +

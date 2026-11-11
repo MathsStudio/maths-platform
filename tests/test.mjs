@@ -161,4 +161,34 @@ ok(/unsubscribe\?t=/.test(sentB[0].text) && /List-Unsubscribe/.test(JSON.stringi
 ok(sqlite.prepare('SELECT COUNT(*) c FROM newsletters').get().c === 1, 'send is logged');
 r = await adminPost({ action: 'send', subject: 'P5 news', body: 'x', confirm: '1', audience: 'P5' }); ok(/nothing was sent|Nobody/.test(await r.text()), 'year filter only reaches that year');
 globalThis.fetch = rf;
+// monthly subscription
+const nowS = () => Math.floor(Date.now() / 1000); let subState = { id: 'sub_test_1', status: 'active', customer: 'cus_test_1', current_period_end: nowS() + 30 * 86400 }; let portalBody = null;
+globalThis.fetch = async (u, o) => {
+  u = String(u);
+  if (u.includes('api.stripe.com/v1/checkout/sessions/cs_')) return new Response(JSON.stringify(sess), { status: 200 });
+  if (u.includes('api.stripe.com/v1/checkout/sessions')) { stripeBody = String(o.body); return new Response(JSON.stringify({ url: 'https://checkout.stripe.test/s2' }), { status: 200 }); }
+  if (u.includes('api.stripe.com/v1/subscriptions/')) return new Response(JSON.stringify(subState), { status: 200 });
+  if (u.includes('api.stripe.com/v1/billing_portal/sessions')) { portalBody = String(o.body); return new Response(JSON.stringify({ url: 'https://billing.stripe.test/p1' }), { status: 200 }); }
+  return realFetch(u, o);
+};
+env.STRIPE_SECRET_KEY = 'sk_test_x';
+r = await call('/api/checkout', { method: 'POST', json: { year: 'S2', plan: 'month' } });
+ok(r.status === 200 && /mode=subscription/.test(stripeBody) && /unit_amount%5D=299/.test(stripeBody) && /recurring%5D%5Binterval%5D=month/.test(stripeBody) && /subscription_data%5Bmetadata%5D%5Byear%5D=S2/.test(stripeBody), 'monthly checkout is a 2.99 GBP monthly subscription');
+r = await call('/api/checkout', { method: 'POST', json: { year: 'S2' } }); ok(/mode=payment/.test(stripeBody) && /unit_amount%5D=1500/.test(stripeBody), 'yearly checkout is still the 15 GBP one-off');
+Object.assign(sess, { id: 'cs_test_sub1234567890', mode: 'subscription', subscription: 'sub_test_1', customer: 'cus_test_1', payment_status: 'paid', metadata: { user_id: String(uid), year: 'S2' } });
+r = await call('/api/confirm', { method: 'POST', json: { session_id: 'cs_test_sub1234567890' } }); ok(JSON.parse(r.text).ok === true, 'confirm grants the monthly plan');
+let row = sqlite.prepare("SELECT until, sub_id, cust_id FROM purchases WHERE user_id=? AND year='S2'").get(uid);
+ok(row.sub_id === 'sub_test_1' && row.cust_id === 'cus_test_1' && Math.abs(row.until - (subState.current_period_end + 2 * 86400)) < 5, 'monthly access runs to period end plus 2 days grace');
+r = await call('/account/'); ok(/S2 unlocked · until/.test(r.text) && /Manage subscription/.test(r.text), 'account shows the end date and the manage button');
+r = await call('/account/portal', { method: 'POST', body: {} }); ok(r.status === 303 && r.loc === 'https://billing.stripe.test/p1' && /customer=cus_test_1/.test(portalBody), 'manage button opens the Stripe billing portal');
+// renewal is picked up near the end of the period
+sqlite.prepare("UPDATE purchases SET until=?, synced_at=NULL WHERE user_id=? AND year='S2'").run(nowS() + 86400, uid);
+subState.current_period_end = nowS() + 30 * 86400;
+r = await call('/api/me'); row = sqlite.prepare("SELECT until FROM purchases WHERE user_id=? AND year='S2'").get(uid);
+ok(row.until > nowS() + 29 * 86400, 'a paid renewal extends access');
+// cancelled plan is not extended
+sqlite.prepare("UPDATE purchases SET until=?, synced_at=NULL WHERE user_id=? AND year='S2'").run(nowS() + 86400, uid);
+subState.status = 'canceled'; r = await call('/api/me'); row = sqlite.prepare("SELECT until FROM purchases WHERE user_id=? AND year='S2'").get(uid);
+ok(row.until < nowS() + 2 * 86400, 'a cancelled plan is not extended');
+globalThis.fetch = realFetch; delete env.STRIPE_SECRET_KEY;
 console.log(fails ? fails + ' FAILED' : 'ALL PASSED');

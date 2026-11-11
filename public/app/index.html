@@ -1017,28 +1017,37 @@ var SLIDE_MORE = {"1.learn1": [{"more": ["Our number system uses only ten digits
   var LOCK_TOPICS = true;   /* set to false to unlock every topic for everyone again */
   var access = { owner: location.protocol === 'file:', years: [] };
   function isLocked(base) { if (!LOCK_TOPICS) return false; var y = yearOf(); if (y === 'all') y = 'P6'; return !access.owner && access.years.indexOf(y) < 0 && visibleOrder()[0] !== base; }
-  var PRICE = '£15';
+  var PRICE = '£15', PRICE_M = '£2.99';
   function renderLocked(v) {
-    var t = topic(), y = yearOf() === 'all' ? 'P6' : yearOf();
+    var t = topic(), y = yearOf() === 'all' ? 'P6' : yearOf(), plan = 'year';
     v.innerHTML = '';
     var o = document.createElement('div'); o.id = 'lockPop'; o.setAttribute('role', 'dialog'); o.setAttribute('aria-modal', 'true');
     o.style.cssText = 'position:fixed;inset:0;z-index:9999;background:rgba(20,30,60,.5);display:flex;align-items:center;justify-content:center;padding:16px;overflow:auto';
+    var opt = 'display:block;width:100%;text-align:left;border:2px solid #dbe3f7;border-radius:14px;padding:12px 14px;background:#fff;color:inherit;font:inherit;cursor:pointer;margin:0 0 10px';
+    var plans = '<div id="lockPlans" role="radiogroup" aria-label="Choose a plan">' +
+      '<button type="button" role="radio" data-plan="year" style="' + opt + '"><b>Yearly · ' + PRICE + '</b> <span class="tag" style="margin-left:6px">Best value</span><br><span class="note" style="margin:0">One payment for 12 months. Save £20.88 a year.</span></button>' +
+      '<button type="button" role="radio" data-plan="month" style="' + opt + '"><b>Monthly · ' + PRICE_M + ' a month</b><br><span class="note" style="margin:0">Cancel any time from your account.</span></button></div>';
     var step = access.signedIn
-      ? '<p class="lead" style="margin:0 0 12px">You are signed in as <b>' + (access.email || 'your account') + '</b>.</p>' + (access.pay ? '<button class="btn" type="button" id="lockPay" style="width:100%">Unlock ' + y + ' · ' + PRICE + ' for 12 months</button><p class="note" id="lockMsg" style="margin:8px 0 0">' + (/[?&]paid=1/.test(location.search) ? 'Thank you! Confirming your payment…' : 'Secure payment by Stripe. Cards and wallets accepted.') + '</p>' : '<button class="btn" type="button" disabled aria-disabled="true" style="width:100%">Unlock ' + y + ' · ' + PRICE + ' for 12 months · coming soon</button>')
-      : '<div style="background:var(--soft,#f1f5ff);border-radius:14px;padding:12px 14px;margin-bottom:14px;line-height:1.8"><b>Step 1</b> &nbsp;Sign in or create an account<br><b>Step 2</b> &nbsp;Pay ' + PRICE + ' once for ' + y + ' · 12 months</div><div class="row" style="gap:10px;flex-wrap:wrap"><a class="btn" style="flex:1;text-align:center" href="/login/">Sign in</a><a class="btn ghost" style="flex:1;text-align:center" href="/signup/">Create an account</a></div><p class="note" style="margin:10px 0 0">After signing in, the “Unlock ' + y + ' · ' + PRICE + '” button appears here.</p>';
+      ? '<p class="lead" style="margin:0 0 10px">You are signed in as <b>' + (access.email || 'your account') + '</b>.</p>' + plans + (access.pay
+        ? '<button class="btn" type="button" id="lockPay" style="width:100%">Continue to payment</button><p class="note" id="lockMsg" style="margin:8px 0 0">' + (/[?&]paid=1/.test(location.search) ? 'Thank you! Confirming your payment…' : 'Secure payment by Stripe. Cards and wallets accepted.') + '</p>'
+        : '<button class="btn" type="button" disabled aria-disabled="true" style="width:100%">Payments · coming soon</button>')
+      : plans + '<div style="background:var(--soft,#f1f5ff);border-radius:14px;padding:12px 14px;margin:4px 0 14px;line-height:1.8"><b>Step 1</b> &nbsp;Sign in or create an account<br><b>Step 2</b> &nbsp;Choose a plan and pay</div><div class="row" style="gap:10px;flex-wrap:wrap"><a class="btn" style="flex:1;text-align:center" href="/login/">Sign in</a><a class="btn ghost" style="flex:1;text-align:center" href="/signup/">Create an account</a></div><p class="note" style="margin:10px 0 0">After signing in, the payment button appears here.</p>';
     o.innerHTML = '<section class="card" style="max-width:520px;width:100%;margin:0;background:var(--card,#fff)"><button class="btn ghost" type="button" id="lockBack" aria-label="Close" style="float:right;padding:4px 10px">✕</button>' +
       '<span class="tag">🔒 ' + t.title + ' is locked</span><h2 style="margin:10px 0 6px">Unlock all of ' + y + '</h2>' +
-      '<p class="lead">One yearly payment of <b>' + PRICE + '</b> opens <b>every topic</b> in ' + y + ': all lessons, games and 150 practice questions each. Topic 1 stays free to try.</p>' + step + '</section>';
+      '<p class="lead">Every topic in ' + y + ': all lessons, games and 150 practice questions each. Topic 1 stays free to try.</p>' + step + '</section>';
     document.body.appendChild(o);
+    function pick(pl) { plan = pl; [].forEach.call(o.querySelectorAll('#lockPlans button'), function (b) { var on = b.getAttribute('data-plan') === pl; b.setAttribute('aria-checked', on ? 'true' : 'false'); b.style.borderColor = on ? '#2b5fd9' : '#dbe3f7'; b.style.background = on ? '#f3f6ff' : '#fff'; }); }
+    pick('year');
+    [].forEach.call(o.querySelectorAll('#lockPlans button'), function (b) { b.addEventListener('click', function () { pick(b.getAttribute('data-plan')); }); });
     function close() { var e = $('lockPop'); if (e) e.remove(); go('home'); }
     $('lockBack').addEventListener('click', close);
+    o.addEventListener('click', function (e) { if (e.target === o) close(); });
     var pb = $('lockPay'); if (pb) pb.addEventListener('click', function () {
       pb.disabled = true; $('lockMsg').textContent = 'Opening secure payment…';
-      fetch('/api/checkout', { method: 'POST', credentials: 'same-origin', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ year: y }) })
+      fetch('/api/checkout', { method: 'POST', credentials: 'same-origin', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ year: y, plan: plan }) })
         .then(function (r) { return r.json(); }).then(function (j) { if (j.url) location.href = j.url; else { pb.disabled = false; $('lockMsg').textContent = j.error || 'Could not start the payment.'; } })
         .catch(function () { pb.disabled = false; $('lockMsg').textContent = 'Could not start the payment. Check your connection.'; });
     });
-    o.addEventListener('click', function (e) { if (e.target === o) close(); });
   }
   var paidSid = (location.search.match(/[?&]sid=(cs_[A-Za-z0-9_]+)/) || [])[1];
   function confirmThenMe() {
