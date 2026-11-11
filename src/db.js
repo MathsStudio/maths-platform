@@ -21,6 +21,7 @@ const SCHEMA = [
   `CREATE TABLE IF NOT EXISTS rate (k TEXT NOT NULL, ts INTEGER NOT NULL)`,
   `CREATE INDEX IF NOT EXISTS rate_k ON rate (k, ts)`,
   `CREATE TABLE IF NOT EXISTS newsletters (id INTEGER PRIMARY KEY AUTOINCREMENT, subject TEXT NOT NULL, audience TEXT NOT NULL, sent INTEGER NOT NULL, failed INTEGER NOT NULL, created_at TEXT NOT NULL)`,
+  `CREATE TABLE IF NOT EXISTS progress (user_id INTEGER PRIMARY KEY, data TEXT NOT NULL, updated_at TEXT NOT NULL)`,
   `CREATE TABLE IF NOT EXISTS purchases (
     user_id INTEGER NOT NULL, year TEXT NOT NULL, until INTEGER NOT NULL, created_at TEXT NOT NULL, PRIMARY KEY (user_id, year)
   )`
@@ -82,6 +83,7 @@ export async function deleteUser(env, id) {
   await env.DB.batch([
     env.DB.prepare('DELETE FROM sessions WHERE user_id = ?').bind(id),
     env.DB.prepare('DELETE FROM tokens WHERE user_id = ?').bind(id),
+    env.DB.prepare('DELETE FROM progress WHERE user_id = ?').bind(id),
     env.DB.prepare('DELETE FROM users WHERE id = ?').bind(id)
   ]);
 }
@@ -168,3 +170,12 @@ export async function revokePass(env, userId, year) {
 }
 
 export async function forgetEvent(env, id) { await env.DB.prepare('DELETE FROM pay_events WHERE id = ?').bind(id).run(); }
+
+/* Learning progress saved to the account (so it follows the email to any device) */
+export async function getProgress(env, userId) {
+  const r = await env.DB.prepare('SELECT data FROM progress WHERE user_id = ?').bind(userId).first();
+  try { return r ? JSON.parse(r.data) : {}; } catch (e) { return {}; }
+}
+export const putProgress = (env, userId, obj) =>
+  env.DB.prepare('INSERT INTO progress (user_id, data, updated_at) VALUES (?, ?, ?) ON CONFLICT(user_id) DO UPDATE SET data = excluded.data, updated_at = excluded.updated_at')
+    .bind(userId, JSON.stringify(obj), now()).run();

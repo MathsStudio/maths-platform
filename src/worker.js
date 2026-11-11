@@ -12,6 +12,37 @@ async function readForm(request) {
   const o = {}; try { new URLSearchParams(await request.text()).forEach((v, k) => { o[k] = v; }); } catch (e) {}
   return o;
 }
+/* Progress from the browser is checked and merged: finished steps only ever add up, and best scores keep the higher value. */
+function cleanProgress(p) {
+  const out = {}; if (!p || typeof p !== 'object') return out; let n = 0;
+  for (const k of Object.keys(p)) {
+    if (!/^t\d{1,4}$/.test(k) || ++n > 400) continue;
+    const v = p[k]; if (!v || typeof v !== 'object') continue;
+    const steps = {}; let c = 0;
+    if (v.steps && typeof v.steps === 'object') for (const s of Object.keys(v.steps)) { if (++c > 80) break; if (v.steps[s] === true && /^[\w:.\-]{1,40}$/.test(s)) steps[s] = true; }
+    const o = { steps }; if (typeof v.best === 'number' && isFinite(v.best)) o.best = Math.max(0, Math.min(100000, v.best));
+    out[k] = o;
+  }
+  return out;
+}
+function mergeProgress(a, b) {
+  const out = cleanProgress(a);
+  for (const [k, v] of Object.entries(cleanProgress(b))) {
+    const o = out[k] = out[k] || { steps: {} }; Object.assign(o.steps, v.steps);
+    if (typeof v.best === 'number' && !(o.best >= v.best)) o.best = v.best;
+  }
+  return out;
+}
+async function progressApi(request, env, user) {
+  if (!user) return json({ error: 'Sign in first.' }, 401);
+  if (request.method === 'GET') return json({ progress: await db.getProgress(env, user.id) });
+  if (!(request.headers.get('Content-Type') || '').includes('application/json')) return json({ error: 'Bad request.' }, 400);
+  const text = await request.text(); if (text.length > 200000) return json({ error: 'Too large.' }, 413);
+  let b; try { b = JSON.parse(text); } catch (e) { return json({ error: 'Bad request.' }, 400); }
+  const next = b && b.replace === true ? cleanProgress(b.progress) : mergeProgress(await db.getProgress(env, user.id), b && b.progress);
+  await db.putProgress(env, user.id, next);
+  return json({ progress: next });
+}
 function ip(request) { return request.headers.get('CF-Connecting-IP') || 'local'; }
 async function currentUser(env, request) {
   const t = parseCookies(request).ms_session; if (!t) return null;
@@ -296,6 +327,7 @@ export default {
       }
       const user = await currentUser(env, request);
       if (p === '/api/me' && m === 'GET') return json(user ? { signedIn: true, email: user.email, year: user.year || '', owner: user.plan === 'owner', years: (await passesOf(env, user)).map(x => x.year), pay: !!env.STRIPE_SECRET_KEY } : { signedIn: false, owner: false, years: [], pay: !!env.STRIPE_SECRET_KEY }, 200, { 'Cache-Control': 'private, no-store' });
+      if (p === '/api/progress' && (m === 'GET' || m === 'POST')) return await progressApi(request, env, user);
       if (p === '/api/confirm' && m === 'POST') return await confirmPay(request, env, user);
       if (p === '/api/checkout' && m === 'POST') return await checkout(request, env, user);
       if (p === '/logout' && m === 'POST') {

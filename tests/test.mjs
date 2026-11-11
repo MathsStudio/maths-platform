@@ -203,5 +203,16 @@ const had = sqlite.prepare("SELECT COUNT(*) c FROM purchases WHERE user_id=? AND
 r = await revPost({ email: 'parent@example.com', year: 'S2' }); const revTxt = await r.text();
 ok(had === 1 && /Removed S2 access/.test(revTxt) && sqlite.prepare("SELECT COUNT(*) c FROM purchases WHERE user_id=? AND year='S2'").get(uid).c === 0, 'admin can remove a paid year');
 r = await revPost({ email: 'nobody@example.com', year: 'S2' }); ok(/No account found/.test(await r.text()), 'revoke reports unknown email');
+// progress is saved to the account and follows the email
+r = await call('/api/me'); ok(JSON.parse(r.text).signedIn === true, 'still signed in for progress tests');
+const jarP = cookieJar; cookieJar = ''; r = await call('/api/progress'); ok(r.status === 401, 'progress needs sign-in'); cookieJar = jarP;
+r = await call('/api/progress', { method: 'POST', json: { progress: { t5: { steps: { learn1: true }, best: 3 } } } }); ok(r.status === 200 && JSON.parse(r.text).progress.t5.steps.learn1 === true, 'progress is saved');
+r = await call('/api/progress', { method: 'POST', json: { progress: { t5: { steps: { warm: true }, best: 2 }, t6: { steps: { learn1: true } } } } });
+let pj = JSON.parse(r.text).progress; ok(pj.t5.steps.learn1 && pj.t5.steps.warm && pj.t5.best === 3 && pj.t6.steps.learn1, 'progress from two devices is added together, best score kept');
+r = await call('/api/progress'); pj = JSON.parse(r.text).progress; ok(pj.t5.steps.warm === true && pj.t6.steps.learn1 === true, 'progress loads back on another device');
+r = await call('/api/progress', { method: 'POST', json: { progress: { t7: { steps: { 'bad id': true, ok_1: true, nope: 'x' } }, __proto__: { x: 1 }, evil: { steps: { a: true } } } } });
+pj = JSON.parse(r.text).progress; ok(pj.t7.steps.ok_1 === true && !pj.t7.steps['bad id'] && !pj.t7.steps.nope && !pj.evil, 'odd progress data is cleaned');
+r = await call('/api/progress', { method: 'POST', json: { replace: true, progress: { t6: { steps: { learn1: true } } } } }); pj = JSON.parse(r.text).progress; ok(!pj.t5 && pj.t6.steps.learn1, 'a reset replaces saved progress');
+r = await call('/api/progress', { method: 'POST', body: 'x=1', headers: { 'Content-Type': 'application/x-www-form-urlencoded' } }); ok(r.status === 400, 'progress only accepts JSON');
 globalThis.fetch = realFetch; delete env.STRIPE_SECRET_KEY;
 console.log(fails ? fails + ' FAILED' : 'ALL PASSED');

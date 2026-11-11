@@ -301,6 +301,10 @@ table.plan th, table.plan td { text-align: left; padding: 8px 10px; border-botto
 .big { font-family: var(--font-display); font-size: 2.2rem; font-weight: 700; }
 .sumlist { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 6px; text-align: left; width: 100%; max-width: 420px; }
 .sumlist li { display: flex; gap: 10px; align-items: center; padding: 8px 12px; border-radius: 10px; background: var(--surface-2); font-weight: 700; }
+.sumlist li > span:first-child { width: 22px; height: 22px; flex: none; display: grid; place-items: center; border-radius: 50%; }
+.sumlist li.ok { background: var(--good-bg); }
+.sumlist li.ok > span:first-child { background: var(--good); color: var(--accent-fg); font-size: .8rem; }
+.vh { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
 
 
 /* Continuous reader dock: stays in view so reading can be switched on once for a whole session. */
@@ -531,7 +535,35 @@ var SLIDE_MORE = {"1.learn1": [{"more": ["Our number system uses only ten digits
     if (raw) { var o = JSON.parse(raw); if (o && o.progress) store.progress = o.progress; if (o && o.warmHistory) store.warmHistory = o.warmHistory; if (o && o.settings) Object.assign(store.settings, o.settings); }
   } catch (e) { /* storage unavailable: progress lasts this visit only */ }
   store.settings.readMode = false; store.settings.auto = false; /* voice always starts off each visit */
-  function save() { try { localStorage.setItem('pm-studio', JSON.stringify(store)); } catch (e) { /* ignore */ } }
+  function save() { try { localStorage.setItem('pm-studio', JSON.stringify(store)); } catch (e) { /* ignore */ } scheduleSync(); }
+  /* Progress follows the signed-in email: it is sent to the server a moment after every change and loaded back on any device. */
+  var syncOn = false, syncTimer = null, replaceNext = false;
+  function scheduleSync() { if (!syncOn) return; clearTimeout(syncTimer); syncTimer = setTimeout(pushProgress, 1200); }
+  function pushProgress() {
+    clearTimeout(syncTimer); var body = JSON.stringify({ progress: store.progress, replace: replaceNext }); replaceNext = false;
+    try { fetch('/api/progress', { method: 'POST', credentials: 'same-origin', headers: { 'Content-Type': 'application/json' }, body: body, keepalive: body.length < 60000 }).catch(function () { }); } catch (e) { }
+  }
+  function mergeProgress(into, from) {
+    var changed = false;
+    Object.keys(from || {}).forEach(function (k) {
+      var f = from[k]; if (!f || typeof f !== 'object') return; var t = into[k] = into[k] || { steps: {} }; if (!t.steps) t.steps = {};
+      Object.keys(f.steps || {}).forEach(function (id) { if (f.steps[id] && !t.steps[id]) { t.steps[id] = true; changed = true; } });
+      if (typeof f.best === 'number' && !(t.best >= f.best)) { t.best = f.best; changed = true; }
+    });
+    return changed;
+  }
+  function progressInit(email) {
+    var mine = String(email || '').toLowerCase(), prev = null; try { prev = localStorage.getItem('pm-owner'); } catch (e) { }
+    fetch('/api/progress', { credentials: 'same-origin' }).then(function (r) { return r.ok ? r.json() : null; }).then(function (j) {
+      if (!j) return;
+      var changed;
+      if (prev && prev !== mine) { store.progress = j.progress || {}; changed = true; }   /* another person used this browser: show only this account */
+      else changed = mergeProgress(store.progress, j.progress);
+      try { localStorage.setItem('pm-owner', mine); } catch (e) { }
+      syncOn = true; save();
+      if (changed && started && (state.tab === 'home' || !state.part)) render();
+    }).catch(function () { });
+  }
   function pkey(n) { return 't' + n; }
   function markDone(n, step) { var p = store.progress[pkey(n)] = store.progress[pkey(n)] || { steps: {} }; if (!p.steps) p.steps = {}; if (!p.steps[step]) { p.steps[step] = true; save(); } }
   function isDone(n, step) { var p = store.progress[pkey(n)]; return !!(p && p.steps && p.steps[step]); }
@@ -1062,7 +1094,7 @@ var SLIDE_MORE = {"1.learn1": [{"more": ["Our number system uses only ten digits
   }
   try {
     if (location.protocol !== 'file:') confirmThenMe().then(function () { return fetch('/api/me', { credentials: 'same-origin' }).then(function (r) { return r.json(); }).then(function (j) {
-      access.owner = !!j.owner; access.years = j.years || []; access.signedIn = !!j.signedIn; access.email = j.email || ''; access.pay = !!j.pay; if (started) render();
+      access.owner = !!j.owner; access.years = j.years || []; access.signedIn = !!j.signedIn; access.email = j.email || ''; access.pay = !!j.pay; if (started) render(); if (j.signedIn) progressInit(j.email);
       if (/[?&]paid=1/.test(location.search) && !access.owner && access.years.indexOf(yearOf()) < 0 && (window.__payTry = (window.__payTry || 0) + 1) < 8) setTimeout(function () { fetch('/api/me', { credentials: 'same-origin' }).then(function (r) { return r.json(); }).then(function (k) { access.years = k.years || []; render(); }); }, 2500);
     }); }).catch(function () { access.owner = true; });
   } catch (e) { access.owner = true; }
@@ -1207,8 +1239,8 @@ var SLIDE_MORE = {"1.learn1": [{"more": ["Our number system uses only ten digits
       '<div class="row" style="margin-top:10px"><button class="btn ghost" id="resetProg" type="button">Reset progress</button></div></details>';
         v.querySelectorAll('[data-open]').forEach(function (b) { b.addEventListener('click', function () { var t = S.topics[Number(b.dataset.open)]; enter(t); }); });
     $('chgYear').addEventListener('click', function () { state.yearSel = false; render(); });
-    $('resetProg').addEventListener('click', function () { store.progress = {}; save(); render(); });
-    confirmBtn($('resetAll'), 'Reset my progress', function () { order.forEach(function (n) { delete store.progress[pkey(openTopicFor(n).n)]; delete store.progress[pkey(n)]; }); save(); render(); });
+    $('resetProg').addEventListener('click', function () { store.progress = {}; replaceNext = true; save(); render(); });
+    confirmBtn($('resetAll'), 'Reset my progress', function () { order.forEach(function (n) { delete store.progress[pkey(openTopicFor(n).n)]; delete store.progress[pkey(n)]; }); replaceNext = true; save(); render(); });
   }
 
   function renderLanding(v, t) {
@@ -1217,7 +1249,7 @@ var SLIDE_MORE = {"1.learn1": [{"more": ["Our number system uses only ten digits
       var mine = steps.filter(function (x) { return x.group === part && x.type !== 'finish'; }), done = mine.filter(function (x) { return isDone(t.n, x.id); }).length;
       var label = done === 0 ? 'Start' : (done >= mine.length ? 'Go again' : 'Continue');
       return '<div class="card partcard"><div class="partico" aria-hidden="true">' + icon + '</div><h2 class="say">' + title + '</h2><p class="lead say">' + text + '</p>' +
-        '<ul class="sumlist">' + mine.map(function (x) { var d = isDone(t.n, x.id); return '<li><span aria-hidden="true">' + (d ? '\u2713' : '\u25cb') + '</span>' + x.label + '</li>'; }).join('') + '</ul>' +
+        '<ul class="sumlist">' + mine.map(function (x) { var d = isDone(t.n, x.id); return '<li' + (d ? ' class="ok"' : '') + '><span aria-hidden="true">' + (d ? '\u2713' : '\u25cb') + '</span>' + x.label + (d ? '<em class="vh"> (done)</em>' : '') + '</li>'; }).join('') + '</ul>' +
         '<p class="note" style="min-height:0">' + done + ' of ' + mine.length + ' done</p><button class="btn" data-part="' + part + '" type="button">' + label + '</button></div>';
     }
     var lp = progOf(t), lpct = lp.total ? Math.round(lp.done / lp.total * 100) : 0;
@@ -1228,7 +1260,7 @@ var SLIDE_MORE = {"1.learn1": [{"more": ["Our number system uses only ten digits
       card('practice', 'Let\u2019s Practice', 'A warm-up, the practice questions, then real-life problems.', '\u270f\ufe0f') + '</div>' +
       '<div class="navrow"><button class="btn ghost" id="resetTopic" type="button">Reset this topic</button>' + (nextT ? '<button class="btn ghost" id="nextTopic" type="button">Next topic</button>' : '<button class="btn ghost" id="toHome" type="button">Back to home</button>') + '</div>';
     v.querySelectorAll('[data-part]').forEach(function (b) { b.addEventListener('click', function () { openPart(t, b.dataset.part); }); });
-    confirmBtn($('resetTopic'), 'Reset this topic', function () { delete store.progress[pkey(t.n)]; save(); render(); });
+    confirmBtn($('resetTopic'), 'Reset this topic', function () { delete store.progress[pkey(t.n)]; replaceNext = true; save(); render(); });
     if ($('nextTopic')) $('nextTopic').addEventListener('click', function () { enter(nextT); });
     if ($('toHome')) $('toHome').addEventListener('click', function () { go('home'); });
   }
@@ -1378,7 +1410,7 @@ var SLIDE_MORE = {"1.learn1": [{"more": ["Our number system uses only ten digits
   function mountFinish(pane, t) {
     var b = best(t.n), c = doneCount(t), nextT = nextVisible(t.n);
     pane.innerHTML = '<div class="score"><span class="step-tag">Topic ' + dnum(t) + ' · ' + (c >= t.steps.length ? 'complete' : 'in progress') + '</span><h2 class="say">' + (c >= t.steps.length ? 'Well done, topic complete!' : 'Nearly there') + '</h2>' +
-      '<ul class="sumlist">' + t.steps.map(function (s) { var d = isDone(t.n, s.id); return '<li><span aria-hidden="true">' + (d ? '✓' : '○') + '</span>' + s.label + (d ? '' : ' (not done yet)') + '</li>'; }).join('') + '</ul>' +
+      '<ul class="sumlist">' + t.steps.map(function (s) { var d = isDone(t.n, s.id); return '<li' + (d ? ' class="ok"' : '') + '><span aria-hidden="true">' + (d ? '✓' : '○') + '</span>' + s.label + (d ? '' : ' (not done yet)') + '</li>'; }).join('') + '</ul>' +
       (b ? '<p>Best practice score: <b>' + b + ' out of ' + (t.practiceCount || 10) + '</b></p>' : '') +
       '<p class="lead say">' + (nextT ? 'Next up is Topic ' + dnum(nextT) + ': ' + nextT.title + '.' : 'That is every topic. You can revisit any tab to practise again.') + '</p></div>';
   }
