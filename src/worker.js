@@ -276,7 +276,7 @@ export default {
         if (!user && env.REQUIRE_LOGIN === '1') return redirect('/login/');
         const isLearn = p === '/learn' || p.startsWith('/learn/');
         const res = await env.ASSETS.fetch(isLearn ? new Request(new URL('/app/' + url.search, url), request) : request);
-        return withHeaders(res, { 'Cache-Control': 'private, no-store', 'X-Robots-Tag': 'noindex' });
+        return withHeaders(res, { 'Cache-Control': 'private, no-store, no-transform', 'X-Robots-Tag': 'noindex' });
       }
       if (p === '/account' || p === '/account/') return user ? page(pg.account(user, await passesOf(env, user), !!(await db.customerId(env, user.id)))) : redirect('/login/');
       if (p === '/account/portal' && m === 'POST') return await portal(request, env, user);
