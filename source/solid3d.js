@@ -8,6 +8,7 @@
 
   var css = document.createElement('style');
   css.textContent = '.s3-cv{width:100%;height:320px;display:block;border-radius:14px;background:#f3f7ff;touch-action:pan-y;margin:8px 0}' +
+    '@media (min-width:760px){.s3-cv{height:500px}}' +
     '.s3-shapes{display:flex;flex-wrap:wrap;gap:8px;margin:6px 0}.s3-shapes .btn{width:auto;flex:0 0 auto;min-height:44px;padding:8px 14px}.s3-shapes .btn.on{background:#14213d;color:#fff}' +
     '.s3-sl{width:100%;height:44px;accent-color:#2b5fd9}.s3-facts{background:var(--surface-2);border-radius:12px;padding:10px 12px;margin:8px 0;font-weight:700}' +
     '.s3-q{background:#fff7e0;border-radius:12px;padding:10px 12px;margin:8px 0}.s3-q .row{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}';
