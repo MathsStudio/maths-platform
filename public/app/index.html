@@ -481,7 +481,7 @@ input[type=range].slider { width: 100%; }
     <p class="note" id="voiceNote"></p>
   </section>
   <nav class="tabs" id="tabs" role="tablist" aria-label="Topics"></nav>
-  <main id="view"></main>
+  <main id="view"><p class="note" style="padding:28px 20px;font-size:18px">Loading your maths…</p></main>
 </div>
 
 <aside class="player hide" id="player" aria-label="Listening bar">
@@ -1052,6 +1052,7 @@ var SLIDE_MORE = {"1.learn1": [{"more": ["Our number system uses only ten digits
   /* the 10-minute test is part of the paid year pass (no free topic for it) */
   S.testLocked = function () { if (!LOCK_TOPICS) return false; var y = yearOf(); if (y === 'all') y = 'P6'; return !access.owner && access.years.indexOf(y) < 0; };
   S.askUnlock = function (what) { var v = $('view'); if (v && !$('lockPop')) renderLocked(v, what, true); };
+  var started = false;   /* the page draws itself only after S.start has read ?year= from the link */
   var paidSid = (location.search.match(/[?&]sid=(cs_[A-Za-z0-9_]+)/) || [])[1];
   function confirmThenMe() {
     if (!paidSid) return Promise.resolve();
@@ -1061,7 +1062,7 @@ var SLIDE_MORE = {"1.learn1": [{"more": ["Our number system uses only ten digits
   }
   try {
     if (location.protocol !== 'file:') confirmThenMe().then(function () { return fetch('/api/me', { credentials: 'same-origin' }).then(function (r) { return r.json(); }).then(function (j) {
-      access.owner = !!j.owner; access.years = j.years || []; access.signedIn = !!j.signedIn; access.email = j.email || ''; access.pay = !!j.pay; render();
+      access.owner = !!j.owner; access.years = j.years || []; access.signedIn = !!j.signedIn; access.email = j.email || ''; access.pay = !!j.pay; if (started) render();
       if (/[?&]paid=1/.test(location.search) && !access.owner && access.years.indexOf(yearOf()) < 0 && (window.__payTry = (window.__payTry || 0) + 1) < 8) setTimeout(function () { fetch('/api/me', { credentials: 'same-origin' }).then(function (r) { return r.json(); }).then(function (k) { access.years = k.years || []; render(); }); }, 2500);
     }); }).catch(function () { access.owner = true; });
   } catch (e) { access.owner = true; }
@@ -1403,6 +1404,7 @@ var SLIDE_MORE = {"1.learn1": [{"more": ["Our number system uses only ten digits
     S.topics[t.n] = t; if (S.order.indexOf(t.n) === -1) S.order.push(t.n); S.order.sort(function (a, b) { return a - b; }); S.gens[t.n] = t.gens || {};
   };
   S.start = function () {
+    started = true;
     $('tbHome').addEventListener('click', function () { go('home'); });
     $('tbSettings').addEventListener('click', function () {
       var box = $('settings'), open = box.classList.contains('hide');
