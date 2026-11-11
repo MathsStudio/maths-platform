@@ -303,6 +303,10 @@ table.plan th, table.plan td { text-align: left; padding: 8px 10px; border-botto
 .sumlist li { display: flex; gap: 10px; align-items: center; padding: 8px 12px; border-radius: 10px; background: var(--surface-2); font-weight: 700; }
 .sumlist li > span:first-child { width: 22px; height: 22px; flex: none; display: grid; place-items: center; border-radius: 50%; }
 .sumlist li.ok { background: var(--good-bg); }
+.sumlist.pick li { padding: 0; }
+.sumbtn { display: flex; gap: 10px; align-items: center; width: 100%; min-height: 44px; padding: 8px 12px; background: none; border: 0; border-radius: 10px; font: inherit; color: inherit; text-align: left; cursor: pointer; }
+.sumbtn:hover { background: rgba(43, 95, 217, .1); }
+.sumbtn:focus-visible { outline: 3px solid #2b5fd9; outline-offset: -2px; }
 .sumlist li.ok > span:first-child { background: var(--good); color: var(--accent-fg); font-size: .8rem; }
 .vh { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
 
@@ -1249,7 +1253,7 @@ var SLIDE_MORE = {"1.learn1": [{"more": ["Our number system uses only ten digits
       var mine = steps.filter(function (x) { return x.group === part && x.type !== 'finish'; }), done = mine.filter(function (x) { return isDone(t.n, x.id); }).length;
       var label = done === 0 ? 'Start' : (done >= mine.length ? 'Go again' : 'Continue');
       return '<div class="card partcard"><div class="partico" aria-hidden="true">' + icon + '</div><h2 class="say">' + title + '</h2><p class="lead say">' + text + '</p>' +
-        '<ul class="sumlist">' + mine.map(function (x) { var d = isDone(t.n, x.id); return '<li' + (d ? ' class="ok"' : '') + '><span aria-hidden="true">' + (d ? '\u2713' : '\u25cb') + '</span>' + x.label + (d ? '<em class="vh"> (done)</em>' : '') + '</li>'; }).join('') + '</ul>' +
+        '<ul class="sumlist pick">' + mine.map(function (x) { var d = isDone(t.n, x.id); return '<li' + (d ? ' class="ok"' : '') + '><button class="sumbtn" type="button" data-step="' + steps.indexOf(x) + '" aria-label="Open ' + x.label.replace(/"/g, '') + (d ? ' (done)' : '') + '"><span aria-hidden="true">' + (d ? '\u2713' : '\u25cb') + '</span>' + x.label + '</button></li>'; }).join('') + '</ul>' +
         '<p class="note" style="min-height:0">' + done + ' of ' + mine.length + ' done</p><button class="btn" data-part="' + part + '" type="button">' + label + '</button></div>';
     }
     var lp = progOf(t), lpct = lp.total ? Math.round(lp.done / lp.total * 100) : 0;
@@ -1260,6 +1264,7 @@ var SLIDE_MORE = {"1.learn1": [{"more": ["Our number system uses only ten digits
       card('practice', 'Let\u2019s Practice', 'A warm-up, the practice questions, then real-life problems.', '\u270f\ufe0f') + '</div>' +
       '<div class="navrow"><button class="btn ghost" id="resetTopic" type="button">Reset this topic</button>' + (nextT ? '<button class="btn ghost" id="nextTopic" type="button">Next topic</button>' : '<button class="btn ghost" id="toHome" type="button">Back to home</button>') + '</div>';
     v.querySelectorAll('[data-part]').forEach(function (b) { b.addEventListener('click', function () { openPart(t, b.dataset.part); }); });
+    v.querySelectorAll('[data-step]').forEach(function (b) { b.addEventListener('click', function () { var i = Number(b.dataset.step), st = steps[i]; if (!st) return; state.tab = t.n; state.part = st.group; state.step = i; state.slide = 0; render(); }); });
     confirmBtn($('resetTopic'), 'Reset this topic', function () { delete store.progress[pkey(t.n)]; replaceNext = true; save(); render(); });
     if ($('nextTopic')) $('nextTopic').addEventListener('click', function () { enter(nextT); });
     if ($('toHome')) $('toHome').addEventListener('click', function () { go('home'); });
