@@ -16584,7 +16584,10 @@ S.extraMakers = function (n, level) {
     '.who-av{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;max-width:380px;margin:10px auto 16px}.who-av button{border:3px solid var(--line);border-radius:18px;background:var(--surface);padding:4px;cursor:pointer;line-height:0}' +
     '.who-av button[aria-pressed="true"]{border-color:var(--accent);box-shadow:0 0 0 3px #ffd166}.who-av svg{width:100%;height:auto}' +
     '.who-in{margin-top:8px;border:3px solid var(--line);border-radius:14px;padding:12px 14px;font:inherit;font-size:1.2rem;background:var(--surface);color:var(--fg);width:100%;max-width:340px;box-sizing:border-box;text-align:center}' +
-    '.who-msg{min-height:1.3em;color:var(--bad);font-weight:700;margin:6px 0}#tbWho{display:inline-flex;align-items:center;gap:6px;padding:3px 12px 3px 4px}';
+    '.who-msg{min-height:1.3em;color:var(--bad);font-weight:700;margin:6px 0}' +
+    '#whoBar{display:flex;flex-wrap:wrap;align-items:center;gap:12px;background:var(--surface);border:2px solid var(--line);border-radius:20px;padding:12px 16px;margin:10px 0}#whoBar[hidden]{display:none}' +
+    '.wb-av{line-height:0}.wb-t{flex:1 1 140px;min-width:0}.wb-s{color:var(--muted);font-weight:700;font-size:.85rem}.wb-n{font-weight:800;font-size:1.3rem;overflow-wrap:anywhere}.wb-b{display:flex;flex-wrap:wrap;gap:10px}' +
+    '.wb-btn{display:inline-flex;align-items:center;border:0;border-radius:16px;font:inherit;font-weight:800;font-size:1.05rem;padding:12px 18px;min-height:48px;cursor:pointer}.wb-soft{background:var(--surface-2);color:var(--fg)}.wb-blue{background:#2b62d9;color:#fff;box-shadow:0 4px 0 #1b3f9a}';
   document.head.appendChild(css);
 
   var LOGO = '<div class="who-top"><svg width="34" height="34" viewBox="0 0 64 64" aria-hidden="true"><rect width="64" height="64" rx="16" fill="#2b5fd9"/><path d="M16 47V21L32 39L48 21V47" fill="none" stroke="#fff" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/><circle cx="32" cy="15" r="4.5" fill="#ffd166"/></svg><span>Maths<span class="st">Studio</span></span></div>';
@@ -16594,21 +16597,27 @@ S.extraMakers = function (n, level) {
       .then(function (r) { return r.json().then(function (j) { j.ok = r.ok; return j; }); });
   }
   function remember(l) { try { sessionStorage.setItem('pm-learner', l ? String(l.id) : ''); } catch (e) { } }
+  /* A bar of its own under the top buttons: who is learning, switch child, and a big Add a child button. */
   function chip() {
-    var b = document.getElementById('tbWho');
+    var b = document.getElementById('whoBar');
     if (!b) {
-      b = document.createElement('button'); b.type = 'button'; b.id = 'tbWho'; b.className = 'tb';
-      var home = document.getElementById('tbHome'); if (home && home.parentNode) home.parentNode.insertBefore(b, home); else return;
-      b.addEventListener('click', function () { open(false); });
+      var head = document.querySelector('header.top'); if (!head) return;
+      b = document.createElement('section'); b.id = 'whoBar'; b.setAttribute('aria-label', 'Child profile'); head.after(b);
     }
-    if (cur) { b.hidden = false; b.innerHTML = av(cur.avatar, 28) + '<span>' + esc(cur.name) + '</span>'; b.setAttribute('aria-label', 'Learning as ' + cur.name + '. Switch child'); }
-    else if (signed) { b.hidden = false; b.textContent = '+ Add a child'; b.setAttribute('aria-label', 'Add a child profile'); }
-    else b.hidden = true;
+    if (!signed) { b.hidden = true; return; }
+    b.hidden = false;
+    var canAdd = list.length < 4;
+    b.innerHTML = (cur ? '<span class="wb-av">' + av(cur.avatar, 56) + '</span><div class="wb-t"><div class="wb-s">Learning as</div><div class="wb-n">' + esc(cur.name) + '</div></div>'
+        : '<span class="wb-av">' + av('star', 56) + '</span><div class="wb-t"><div class="wb-n">Add your child</div><div class="wb-s">Each child keeps their own progress and badges.</div></div>') +
+      '<div class="wb-b">' + (list.length > 1 ? '<button class="wb-btn wb-soft" type="button" id="whoSwitch">Switch child</button>' : '') +
+      (canAdd ? '<button class="wb-btn wb-blue" type="button" id="whoAddBtn">+ Add a child</button>' : '') + '</div>';
+    var sw = b.querySelector('#whoSwitch'); if (sw) sw.onclick = function () { open(false); };
+    var ad = b.querySelector('#whoAddBtn'); if (ad) ad.onclick = function () { open(false, false, true); };
   }
   function close() { var o = document.getElementById('whoPop'); if (o) o.remove(); }
   function choose(l) { cur = l; remember(l); close(); chip(); if (onPick) onPick(l); }
 
-  function open(force, first) {
+  function open(force, first, direct) {
     close();
     var o = document.createElement('div'); o.id = 'whoPop'; o.setAttribute('role', 'dialog'); o.setAttribute('aria-modal', 'true'); o.setAttribute('aria-labelledby', 'whoH');
     document.body.appendChild(o);
@@ -16665,6 +16674,7 @@ S.extraMakers = function (n, level) {
     }
     o.addEventListener('keydown', function (e) { if (e.key === 'Escape' && !force && (cur || !list.length)) close(); });
     draw();
+    if (direct && list.length) form(null);
   }
 
   /* Called once the visitor is known to be signed in. cb(learner or null) says whose progress to load. */
