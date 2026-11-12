@@ -16606,7 +16606,7 @@ S.extraMakers = function (n, level) {
   function close() { var o = document.getElementById('whoPop'); if (o) o.remove(); }
   function choose(l) { cur = l; remember(l); close(); chip(); if (onPick) onPick(l); }
 
-  function open(force) {
+  function open(force, first) {
     close();
     var o = document.createElement('div'); o.id = 'whoPop'; o.setAttribute('role', 'dialog'); o.setAttribute('aria-modal', 'true'); o.setAttribute('aria-labelledby', 'whoH');
     document.body.appendChild(o);
@@ -16628,15 +16628,16 @@ S.extraMakers = function (n, level) {
     }
     function form(l) {
       var sel = l ? l.avatar : KEYS[0], card = o.querySelector('.card');
-      card.innerHTML = '<h2 id="whoH" style="margin:0 0 8px">' + (l ? 'Edit profile' : 'Add a child') + '</h2>' +
+      var welcome = first && !l && !list.length;
+      card.innerHTML = '<h2 id="whoH" style="margin:0 0 8px">' + (l ? 'Edit profile' : welcome ? 'Who will be learning?' : 'Add a child') + '</h2>' + (welcome ? '<p class="note" style="margin:0 0 14px">Add a child so each child keeps their own progress, badges and certificates. You can skip this and add a child later.</p>' : '') +
         '<label for="whoName" style="font-weight:800">First name or nickname</label><br><input id="whoName" class="who-in" maxlength="20" autocomplete="off" value="' + (l ? esc(l.name) : '') + '">' +
         '<p style="font-weight:800;margin:14px 0 0">Choose an avatar</p><div class="who-av" role="group" aria-label="Avatars">' + KEYS.map(function (k) { return '<button type="button" data-av="' + k + '" aria-pressed="' + (k === sel) + '" aria-label="' + NAMES[k] + '">' + av(k, 64) + '</button>'; }).join('') + '</div>' +
         '<div class="who-msg" id="whoMsg" role="alert"></div>' +
-        '<div class="row" style="gap:10px;flex-wrap:wrap;justify-content:center"><button class="btn" type="button" id="whoSave">Save profile</button><button class="btn ghost" type="button" id="whoCancel">Cancel</button>' + (l ? '<button class="btn ghost" type="button" id="whoDel">Delete profile</button>' : '') + '</div>' +
+        '<div class="row" style="gap:10px;flex-wrap:wrap;justify-content:center"><button class="btn" type="button" id="whoSave">Save profile</button><button class="btn ghost" type="button" id="whoCancel">' + (welcome ? 'Skip for now' : 'Cancel') + '</button>' + (l ? '<button class="btn ghost" type="button" id="whoDel">Delete profile</button>' : '') + '</div>' +
         '<p class="note" style="margin:10px 0 0">You can change the name or avatar, or delete a profile, at any time. Deleting a profile also deletes that child\'s progress.</p>';
       var msg = card.querySelector('#whoMsg');
       [].forEach.call(card.querySelectorAll('[data-av]'), function (b) { b.onclick = function () { sel = b.dataset.av; [].forEach.call(card.querySelectorAll('[data-av]'), function (c) { c.setAttribute('aria-pressed', String(c === b)); }); }; });
-      card.querySelector('#whoCancel').onclick = function () { if (!list.length) close(); else draw(); };
+      card.querySelector('#whoCancel').onclick = function () { if (welcome) { try { sessionStorage.setItem('pm-skip', '1'); } catch (e) { } close(); chip(); if (onPick) onPick(null); } else if (!list.length) close(); else draw(); };
       card.querySelector('#whoName').focus();
       card.querySelector('#whoSave').onclick = function () {
         var name = card.querySelector('#whoName').value; msg.textContent = '';
@@ -16674,7 +16675,8 @@ S.extraMakers = function (n, level) {
         var m = list.filter(function (l) { return String(l.id) === saved; })[0];
         if (m) { cur = m; chip(); cb(m); return; }
         cur = null; chip();
-        if (list.length) open(true); else cb(null);
+        var skipped = ''; try { skipped = sessionStorage.getItem('pm-skip') || ''; } catch (e) { }
+        if (list.length) open(true); else if (!skipped) open(true, true); else cb(null);
       }).catch(function () { cb(null); });
     },
     open: function () { open(false); }

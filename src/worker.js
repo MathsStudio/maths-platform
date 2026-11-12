@@ -135,7 +135,7 @@ async function login(request, env) {
     return json({ error: 'Please confirm your email first. We have sent you a new confirmation link.' }, 403);
   }
   await db.markLogin(env, u.id);
-  return json({ ok: true, next: '/account/' }, 200, { 'Set-Cookie': await startSession(env, request, u.id) });
+  return json({ ok: true, next: '/app/' }, 200, { 'Set-Cookie': await startSession(env, request, u.id) });
 }
 async function forgot(request, env) {
   const b = await readForm(request), email = String(b.email || '').trim().toLowerCase();
@@ -161,14 +161,14 @@ async function reset(request, env) {
   if (!row || (row.purpose !== 'reset' && row.purpose !== 'verify')) return json({ error: 'This link has already been used or has run out. Please ask for a new one.' }, 400);
   await db.setPassword(env, row.user_id, await hashPassword(pw));
   await db.confirmUser(env, row.user_id, !!row.marketing);        // the link went to their inbox, so the email is confirmed too
-  return json({ ok: true, next: '/account/' }, 200, { 'Set-Cookie': await startSession(env, request, row.user_id) });
+  return json({ ok: true, next: '/app/' }, 200, { 'Set-Cookie': await startSession(env, request, row.user_id) });
 }
 async function verifyPost(request, env) {
   const b = await readForm(request), tok = String(b.t || '');
   const row = tok ? await db.useToken(env, await sha256(tok)) : null;
   if (!row) return page(pg.message('Link not valid', 'This link has already been used or has run out. <a href="/login/">Sign in</a> and we will send you a new confirmation link if you still need one.'), 400);
   await db.confirmUser(env, row.user_id, !!row.marketing);
-  return redirect('/account/', { 'Set-Cookie': await startSession(env, request, row.user_id) });
+  return redirect('/app/', { 'Set-Cookie': await startSession(env, request, row.user_id) });
 }
 
 async function admin(request, env, url) {
