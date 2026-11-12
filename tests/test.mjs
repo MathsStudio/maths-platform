@@ -211,6 +211,14 @@ const had = sqlite.prepare("SELECT COUNT(*) c FROM purchases WHERE user_id=? AND
 r = await revPost({ email: 'parent@example.com', year: 'S2' }); const revTxt = await r.text();
 ok(had === 1 && /Removed S2 access/.test(revTxt) && sqlite.prepare("SELECT COUNT(*) c FROM purchases WHERE user_id=? AND year='S2'").get(uid).c === 0, 'admin can remove a paid year');
 r = await revPost({ email: 'nobody@example.com', year: 'S2' }); ok(/No account found/.test(await r.text()), 'revoke reports unknown email');
+// admin can give access
+const grantPost = (body, pw = 'pw') => worker.fetch(new Request(B + '/admin/grant', { method: 'POST', headers: { Authorization: 'Basic ' + btoa('a:' + pw), Origin: B, 'Content-Type': 'application/x-www-form-urlencoded', 'CF-Connecting-IP': '8.8.8.8' }, body: new URLSearchParams(body).toString() }), env);
+r = await grantPost({ email: 'parent@example.com', year: 'ALL', months: '12' }, 'wrong'); ok(r.status === 401, 'give access needs the admin password');
+r = await grantPost({ email: 'nobody@example.com', year: 'ALL', months: '12' }); ok(/No account found/.test(await r.text()), 'give access reports unknown email');
+r = await grantPost({ email: 'parent@example.com', year: 'ALL', months: '12' }); ok(/all years access for 12 months/.test(await r.text()), 'give access to all years works');
+ok(sqlite.prepare("SELECT COUNT(*) c FROM purchases WHERE user_id=? AND until>?").get(uid, nowS()).c === 6, 'all six years are open after giving all years');
+await grantPost({ email: 'parent@example.com', year: 'P5', months: '60' });
+ok(sqlite.prepare("SELECT until FROM purchases WHERE user_id=? AND year='P5'").get(uid).until > nowS() + 365 * 86400 * 5, 'a further grant extends the time');
 // progress is saved to the account and follows the email
 r = await call('/api/me'); ok(JSON.parse(r.text).signedIn === true, 'still signed in for progress tests');
 const jarP = cookieJar; cookieJar = ''; r = await call('/api/progress'); ok(r.status === 401, 'progress needs sign-in'); cookieJar = jarP;
@@ -250,3 +258,4 @@ ok(!lj.learners.some(x => x.id === zayn) && sqlite.prepare('SELECT COUNT(*) c FR
 r = await call('/api/me'); ok(/font-src 'self'/.test(r.r.headers.get('Content-Security-Policy') || ''), 'pages may load fonts from our own site (maths fractions)');
 globalThis.fetch = realFetch; delete env.STRIPE_SECRET_KEY;
 console.log(fails ? fails + ' FAILED' : 'ALL PASSED');
+

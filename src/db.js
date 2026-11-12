@@ -169,6 +169,13 @@ export async function recentNewsletters(env) {
   return r.results || [];
 }
 
+/* admin gift: adds days of access for a year group (extends from the current end if still running); no payment or Stripe plan attached */
+export async function grantPass(env, userId, year, days) {
+  const now = Math.floor(Date.now() / 1000), cur = await env.DB.prepare('SELECT until FROM purchases WHERE user_id = ? AND year = ?').bind(userId, year).first();
+  const until = (cur && cur.until > now ? cur.until : now) + days * 86400;
+  await env.DB.prepare('INSERT INTO purchases (user_id, year, until, created_at) VALUES (?, ?, ?, ?) ON CONFLICT(user_id, year) DO UPDATE SET until = excluded.until').bind(userId, year, until, new Date().toISOString()).run();
+  return until;
+}
 export async function revokePass(env, userId, year) {
   const r = await env.DB.prepare('DELETE FROM purchases WHERE user_id = ? AND year = ?').bind(userId, year).run();
   return (r.meta && r.meta.changes) || 0;
