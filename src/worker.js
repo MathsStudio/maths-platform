@@ -171,6 +171,9 @@ async function verifyPost(request, env) {
   return redirect('/app/', { 'Set-Cookie': await startSession(env, request, row.user_id) });
 }
 
+/* sign-ups plus the paid or gifted years each person can open right now (owners get everything) */
+async function adminRows(env) { return (await db.adminList(env)).map(r => Object.assign(r, { owner: isOwner(env, r.email) })); }
+
 async function admin(request, env, url) {
   if (!env.ADMIN_PASSWORD) return page(pg.message('Admin locked', 'The admin password has not been set yet.'), 503);
   const h = request.headers.get('Authorization') || '', ok = h.startsWith('Basic ') && (() => { try { const s = atob(h.slice(6)), i = s.indexOf(':'); return safeEqual(s.slice(i + 1), env.ADMIN_PASSWORD); } catch (e) { return false; } })();
@@ -180,7 +183,7 @@ async function admin(request, env, url) {
   if (url.pathname === '/admin/newsletter' && request.method === 'POST') return await newsletter(request, env);
   if (url.pathname === '/admin/revoke' && request.method === 'POST') return await revoke(request, env);
   if (url.pathname === '/admin/grant' && request.method === 'POST') return await grant(request, env);
-  const rows = await db.adminList(env);
+  const rows = await adminRows(env);
   if (url.pathname === '/admin/export.csv')
     return withHeaders(new Response(pg.csv(rows), { headers: { 'Content-Type': 'text/csv; charset=utf-8', 'Content-Disposition': 'attachment; filename="mathsstudio-signups.csv"', 'Cache-Control': 'no-store', 'X-Robots-Tag': 'noindex' } }));
   return page(pg.admin(rows, { log: await db.recentNewsletters(env) }));
@@ -192,7 +195,7 @@ async function newsletter(request, env) {
   const b = await readForm(request), origin = new URL(request.url).origin;
   const subject = String(b.subject || '').trim().slice(0, 150), body = String(b.body || '').trim().slice(0, 20000);
   const audience = pg.YEARS.includes(b.audience) ? b.audience : '';
-  const rows = await db.adminList(env), done = async note => page(pg.admin(rows, { note, subject, body, audience, log: await db.recentNewsletters(env) }));
+  const rows = await adminRows(env), done = async note => page(pg.admin(rows, { note, subject, body, audience, log: await db.recentNewsletters(env) }));
   if (!subject || !body) return done('Please write a subject and a message first.');
   if (b.action === 'test') {
     const to = String(b.test_to || '').trim().toLowerCase();
@@ -222,7 +225,7 @@ async function newsletter(request, env) {
 async function grant(request, env) {
   if (!sameOrigin(request)) return new Response('Bad request', { status: 400 });
   const b = await readForm(request), email = String(b.email || '').trim().toLowerCase(), year = String(b.year || ''), months = { '1': 31, '3': 92, '12': 365, '60': 1826 }[String(b.months || '12')];
-  const rows = await db.adminList(env), done = async note => page(pg.admin(rows, { note, log: await db.recentNewsletters(env) }));
+  const rows = await adminRows(env), done = async note => page(pg.admin(await adminRows(env), { note, log: await db.recentNewsletters(env) }));
   const list = year === 'ALL' ? PAY_YEARS : PAY_YEARS.includes(year) ? [year] : [];
   if (!list.length || !email || !months) return await done('Enter an email, choose a year (or All years) and a length of time.');
   const u = rows.find(r => String(r.email).toLowerCase() === email);
@@ -235,7 +238,7 @@ async function grant(request, env) {
 async function revoke(request, env) {
   if (!sameOrigin(request)) return new Response('Bad request', { status: 400 });
   const b = await readForm(request), email = String(b.email || '').trim().toLowerCase(), year = String(b.year || '');
-  const rows = await db.adminList(env), done = async note => page(pg.admin(rows, { note, log: await db.recentNewsletters(env) }));
+  const rows = await adminRows(env), done = async note => page(pg.admin(await adminRows(env), { note, log: await db.recentNewsletters(env) }));
   if (!PAY_YEARS.includes(year) || !email) return await done('Enter an email and choose a year.');
   const u = rows.find(r => String(r.email).toLowerCase() === email);
   if (!u) return await done('No account found for ' + email + '.');

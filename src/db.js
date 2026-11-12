@@ -94,7 +94,9 @@ export async function deleteUser(env, id) {
 }
 export async function adminList(env) {
   const all = await env.DB.prepare('SELECT id, email, role, year, plan, marketing, marketing_at, unsub_at, verified_at, last_login, created_at FROM users ORDER BY id DESC LIMIT 5000').all();
-  return all.results || [];
+  const acc = await env.DB.prepare('SELECT user_id, year FROM purchases WHERE until > ? ORDER BY year').bind(Math.floor(Date.now() / 1000)).all(), by = {};
+  (acc.results || []).forEach(a => { (by[a.user_id] = by[a.user_id] || []).push(a.year); });
+  return (all.results || []).map(u => Object.assign(u, { access: by[u.id] || [] }));
 }
 export async function cleanup(env) {
   const t = Math.floor(Date.now() / 1000);
