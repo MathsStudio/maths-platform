@@ -348,6 +348,21 @@ export default {
         else await env.DB.prepare('UPDATE users SET marketing = 0, unsub_at = ? WHERE id = ?').bind(new Date().toISOString(), user.id).run();
         return redirect('/account/');
       }
+      if (p === '/account/refund' && m === 'POST') {
+        if (!user) return redirect('/login/');
+        const b = await readForm(request), year = String(b.year || '').slice(0, 3), reason = String(b.reason || '').replace(/[\u0000-\u0008\u000b\u000c\u000e-\u001f]/g, '').slice(0, 500);
+        const passes = await passesOf(env, user), pass = passes.find(x => x.year === year);
+        if (!pass) return page(pg.message('Refund request', 'We could not find a paid pass for that year group on this account. Please email us and we will help. <a href="/account/">Back to your account</a>.'), 400);
+        if (!(await db.rateOk(env, 'refund:' + user.id, 2, 86400))) return page(pg.message('Refund request', 'We already have your request. We usually reply within two working days. <a href="/account/">Back to your account</a>.'), 429);
+        const paid = pass.created_at ? new Date(pass.created_at) : null, days = paid && !isNaN(paid) ? Math.floor((Date.now() - paid.getTime()) / 86400000) : null;
+        const to = env.SUPPORT_EMAIL || 'info@mathsstudio.co.uk', until = pass.until ? new Date(pass.until * 1000).toISOString().slice(0, 10) : '';
+        const body = 'Refund request from the Account page.\n\nAccount email: ' + user.email + '\nYear group: ' + year + '\nPass runs until: ' + until + '\nPayment recorded: ' + (paid && !isNaN(paid) ? paid.toISOString().slice(0, 10) + ' (' + days + ' days ago)' : 'unknown') + '\nWithin 14 days: ' + (days === null ? 'check in Stripe' : days <= 14 ? 'yes' : 'NO, ' + days + ' days') + '\n\nTheir note: ' + (reason || '(none)') + '\n\nTo refund: Stripe, Payments, find this email, Refund. Cancel a monthly plan in Stripe, then use Remove a paid year in the admin page. Reply to this email to write to them.';
+        try {
+          await sendMail(env, to, 'Refund request: ' + year + ' · ' + user.email, body, undefined, user.email);
+          await sendMail(env, user.email, 'We have your MathsStudio refund request', 'Hello,\n\nWe have your refund request for ' + year + '. We usually reply within two working days, and if you are inside our 14-day promise we will refund the payment to the card you paid with.\n\nYou do not need to do anything else. You can reply to this email if you want to add anything.\n\nMathsStudio\n' + new URL(request.url).origin + '/refunds/').catch(() => {});
+        } catch (e) { return page(pg.message('Refund request', 'We could not send your request just now. Please email info@mathsstudio.co.uk instead and we will sort it out. <a href="/account/">Back to your account</a>.'), 502); }
+        return page(pg.message('Request sent', 'Thank you. We have your refund request for ' + year + ' and sent a confirmation to your email. We usually reply within two working days. <a href="/account/">Back to your account</a>.'));
+      }
       if (p === '/account/delete' && m === 'POST') {
         if (!user) return redirect('/login/'); const b = await readForm(request);
         if (b.sure !== '1') return redirect('/account/');

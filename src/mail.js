@@ -1,11 +1,11 @@
 /* Sends email through Resend (https://resend.com). Needs RESEND_API_KEY and FROM_EMAIL. */
 import { esc } from './util.js';
-export async function sendMail(env, to, subject, text, html) {
+export async function sendMail(env, to, subject, text, html, replyTo) {
   if (!env.RESEND_API_KEY || !env.FROM_EMAIL) throw new Error('mail-not-configured');
   const r = await fetch('https://api.resend.com/emails', {
     method: 'POST',
     headers: { Authorization: 'Bearer ' + env.RESEND_API_KEY, 'Content-Type': 'application/json' },
-    body: JSON.stringify({ from: env.FROM_EMAIL, to: [to], subject, text, html })
+    body: JSON.stringify({ from: env.FROM_EMAIL, to: [to], subject, text, html, reply_to: replyTo || undefined })
   });
   if (!r.ok) throw new Error('mail-failed-' + r.status);
 }

@@ -30,6 +30,10 @@ export function account(u, passes, canManage) {
     (canManage ? '<form method="post" action="/account/portal" class="manage"><button class="btn alt" type="submit">Manage subscription and receipts</button></form>' : '') +
     '<div class="two"><form method="post" action="/account/marketing"><input type="hidden" name="on" value="' + (u.marketing ? '0' : '1') + '"><button class="btn alt" type="submit">' + (u.marketing ? 'Stop news and offers' : 'Send me news and offers') + '</button></form>' +
     '<form method="post" action="/logout"><button class="btn alt" type="submit">Sign out</button></form></div>' +
+    (!owner && years.length ? '<details class="refund"><summary>Request a refund</summary><p>Our 14-day money-back promise: if MathsStudio is not right for you, ask within 14 days of your first payment for a year group and we will refund it in full. We usually reply within two working days, and the money goes back to the card you paid with.</p>' +
+    '<form method="post" action="/account/refund"><label>Which year group?<select name="year" required>' + years.map(y => '<option>' + esc(y) + '</option>').join('') + '</select></label>' +
+    '<label>Anything you would like us to know? (optional)<textarea name="reason" rows="3" maxlength="500"></textarea></label>' +
+    '<button class="btn alt" type="submit">Send refund request</button></form></details>' : '') +
     '<details class="danger"><summary>Delete my account</summary><p>This removes your email and account from MathsStudio for good. Paid access ends with it, so cancel a monthly plan first.</p>' +
     '<form method="post" action="/account/delete"><label class="chk"><input type="checkbox" name="sure" value="1" required> I want to delete my account</label><button class="btn danger-btn" type="submit">Delete my account</button></form></details></div>');
 }

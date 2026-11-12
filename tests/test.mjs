@@ -186,6 +186,14 @@ let row = sqlite.prepare("SELECT until, sub_id, cust_id FROM purchases WHERE use
 ok(row.sub_id === 'sub_test_1' && row.cust_id === 'cus_test_1' && Math.abs(row.until - (subState.current_period_end + 2 * 86400)) < 5, 'monthly access runs to period end plus 2 days grace');
 r = await call('/account/'); ok(/S2 unlocked · until/.test(r.text) && /Manage subscription/.test(r.text), 'account shows the end date and the manage button');
 r = await call('/account/portal', { method: 'POST', body: {} }); ok(r.status === 303 && r.loc === 'https://billing.stripe.test/p1' && /customer=cus_test_1/.test(portalBody), 'manage button opens the Stripe billing portal');
+// refund request button
+{ const em = sqlite.prepare('SELECT email FROM users WHERE id=?').get(uid).email;
+  r = await call('/account/'); ok(/Request a refund/.test(r.text) && /<option>S2<\/option>/.test(r.text), 'account shows the refund request button for a paid year');
+  sent.length = 0; r = await call('/account/refund', { method: 'POST', body: { year: 'P5', reason: 'x' } }); ok(r.status === 400 && sent.length === 0, 'refund request for a year they have not paid for is refused');
+  r = await call('/account/refund', { method: 'POST', body: { year: 'S2', reason: 'Not right for us <b>' } });
+  ok(r.status === 200 && sent.length === 2 && sent[0].to[0] === 'info@mathsstudio.co.uk' && sent[0].reply_to === em && /Within 14 days: yes/.test(sent[0].text) && /Not right for us/.test(sent[0].text) && sent[1].to[0] === em, 'refund request emails the owner (reply goes to the customer) and confirms to the customer');
+  await call('/account/refund', { method: 'POST', body: { year: 'S2' } }); r = await call('/account/refund', { method: 'POST', body: { year: 'S2' } }); ok(r.status === 429, 'refund requests are limited to two a day');
+  const keep = cookieJar; cookieJar = ''; r = await call('/account/refund', { method: 'POST', body: { year: 'S2' } }); ok(r.status === 303 && r.loc === '/login/', 'refund request needs sign-in'); cookieJar = keep; }
 // renewal is picked up near the end of the period
 sqlite.prepare("UPDATE purchases SET until=?, synced_at=NULL WHERE user_id=? AND year='S2'").run(nowS() + 86400, uid);
 subState.current_period_end = nowS() + 30 * 86400;

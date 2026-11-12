@@ -131,7 +131,7 @@ export async function setSynced(env, userId, year, until) {
   await env.DB.prepare('UPDATE purchases SET synced_at = ?, until = MAX(until, ?) WHERE user_id = ? AND year = ?').bind(Math.floor(Date.now() / 1000), until || 0, userId, year).run();
 }
 export async function userPasses(env, userId) {
-  const r = await env.DB.prepare('SELECT year, until, sub_id FROM purchases WHERE user_id = ? AND until > ? ORDER BY year').bind(userId, Math.floor(Date.now() / 1000)).all();
+  const r = await env.DB.prepare('SELECT year, until, sub_id, created_at FROM purchases WHERE user_id = ? AND until > ? ORDER BY year').bind(userId, Math.floor(Date.now() / 1000)).all();
   return r.results || [];
 }
 export async function customerId(env, userId) {
