@@ -2,7 +2,8 @@
    Each child's progress is saved separately on the server. Avatars are drawn here, so no photos are ever used. */
 (function () {
   'use strict';
-  var S = Studio, esc = S.h.esc;
+  var S = Studio;
+  function esc(t) { return String(t).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;'); }
   var AV = {
     fox: ['#ffe3b8', '<path d="M14 38L18 10 36 24zM66 38L62 10 44 24z" fill="#f59e0b"/><circle cx="40" cy="44" r="26" fill="#f59e0b"/><path d="M18 50q22 30 44 0q-6 10-22 10t-22-10z" fill="#fff"/><circle cx="31" cy="42" r="4" fill="#14213d"/><circle cx="49" cy="42" r="4" fill="#14213d"/><circle cx="40" cy="52" r="4" fill="#14213d"/>'],
     owl: ['#f0dcc8', '<path d="M18 18l10 8M62 18l-10 8" stroke="#8b5e3c" stroke-width="7" stroke-linecap="round"/><ellipse cx="40" cy="46" rx="26" ry="28" fill="#8b5e3c"/><circle cx="30" cy="40" r="11" fill="#fff"/><circle cx="50" cy="40" r="11" fill="#fff"/><circle cx="30" cy="41" r="5" fill="#14213d"/><circle cx="50" cy="41" r="5" fill="#14213d"/><path d="M36 50l4 8 4-8z" fill="#ffd166"/>'],

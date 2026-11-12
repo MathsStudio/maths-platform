@@ -122,6 +122,11 @@ button:focus-visible, input:focus-visible, select:focus-visible, summary:focus-v
 .top { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px; }
 .brand { font-family: var(--font-display); font-weight: 700; font-size: 1.3rem; display: flex; align-items: center; gap: 10px; }
 .brand { text-decoration: none; color: var(--fg); } .brand .st { color: #2b5fd9; }
+.sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+.pcard-h { display: flex; align-items: center; gap: 12px; } .pcard-h svg { flex: 0 0 auto; }
+.badges { display: grid; grid-template-columns: repeat(auto-fit, minmax(104px, 1fr)); gap: 12px; margin: 14px 0 12px; }
+.bdg { text-align: center; font-weight: 800; font-size: .85rem; line-height: 1.25; } .bdg .c { width: 62px; height: 62px; border-radius: 50%; margin: 0 auto 6px; display: grid; place-items: center; font-size: 1.9rem; border: 3px solid var(--fg); background: var(--surface-2); }
+.bdg small { display: block; font-weight: 700; color: var(--muted); font-size: .75rem; margin-top: 2px; } .bdg.off { opacity: .55; } .bdg.off .c { filter: grayscale(1); border-color: var(--line); }
 .mark { min-width: 34px; height: 28px; padding: 0 8px; border-radius: 999px; background: #ffd166; color: #14213d; display: grid; place-items: center; font-size: .85rem; }
 .tb { background: var(--surface); border: 1px solid var(--line); border-radius: 999px; padding: 8px 14px; font-weight: 800; font-size: .9rem; min-height: 40px; }
 .tb[aria-pressed="true"] { border-color: var(--accent); }
@@ -575,6 +580,7 @@ var SLIDE_MORE = {"1.learn1": [{"more": ["Our number system uses only ten digits
       if (learner && l && learner.id !== l.id) { clearTimeout(syncTimer); if (syncOn) pushProgress(); }   /* save the last child's progress before switching */
       var was = learner; learner = l || null; syncOn = false;
       if (was && (!l || was.id !== l.id)) { store.progress = {}; store.warmHistory = {}; if (started) { state.tab = 'home'; state.part = null; render(); } }
+      else if (started && (state.tab === 'home' || !state.part)) render();   /* show the chosen child's name on the progress card */
       loadProgress(email);
     });
   }
@@ -1220,6 +1226,31 @@ var SLIDE_MORE = {"1.learn1": [{"more": ["Our number system uses only ten digits
       '<h2 class="say" style="margin:18px 0 8px">Primary (Second level)</h2>' + cardsFor(['P5', 'P6', 'P7']) + '<h2 class="say" style="margin:22px 0 8px">Secondary (Third and Fourth level)</h2>' + cardsFor(['S1', 'S2', 'S3']);
     v.querySelectorAll('[data-pickyear]').forEach(function (b) { b.addEventListener('click', function () { store.settings.year = b.dataset.pickyear; state.yearSel = true; save(); render(); }); });
   }
+  /* Badges are worked out from the saved progress, so they follow the child to any device. */
+  var BADGES = [
+    ['🌱', 'First step', 'Finish any part', function (x) { return x.steps >= 1; }],
+    ['⭐', 'Topic finished', 'Finish every part of a topic', function (x) { return x.topics >= 1; }],
+    ['🚀', 'Five topics', 'Finish 5 topics', function (x) { return x.topics >= 5; }],
+    ['🎮', 'Game on', 'Complete 5 activities', function (x) { return x.acts >= 5; }],
+    ['🏆', 'Boss beaten', 'Complete a Boss challenge', function (x) { return x.boss >= 1; }],
+    ['🧮', 'Real-life solver', 'Do 3 real-life problems', function (x) { return x.real >= 3; }],
+    ['🎓', 'Year complete', 'Finish every topic in the year', function (x) { return x.year; }]
+  ];
+  function badgeStats(yearDone) {
+    var o = { steps: 0, topics: 0, acts: 0, boss: 0, real: 0, year: !!yearDone };
+    Object.keys(store.progress).forEach(function (k) {
+      var t = S.topics[Number(k.slice(1))], p = store.progress[k]; if (!t || !p || !p.steps) return;
+      var ids = Object.keys(p.steps).filter(function (id) { return p.steps[id]; }); o.steps += ids.length;
+      if (t.steps.length && t.steps.every(function (st) { return p.steps[st.id]; })) o.topics++;
+      ids.forEach(function (id) { var st = t.steps.filter(function (z) { return z.id === id; })[0]; if (!st) return; if (st.group === 'activity') o.acts++; if (id === 'a_boss') o.boss++; if (id === 'practical') o.real++; });
+    });
+    return o;
+  }
+  function badgesHtml(yearDone) {
+    var x = badgeStats(yearDone), got = 0;
+    var cells = BADGES.map(function (b) { var on = b[3](x); if (on) got++; return '<li class="bdg' + (on ? '' : ' off') + '"><div class="c" aria-hidden="true">' + b[0] + '</div>' + b[1] + (on ? '<span class="sr-only"> (earned)</span>' : '<small>' + b[2] + '</small>') + '</li>'; }).join('');
+    return '<h3 style="margin:14px 0 0">Badges <span class="tag">' + got + ' of ' + BADGES.length + '</span></h3><ul class="badges" style="list-style:none;padding:0">' + cells + '</ul>';
+  }
   function renderHome(v) {
     if (!state.yearSel) { renderYearGate(v); return; }
     var yr = yearOf(), rank = { core: 0, start: 1, extend: 2 };
@@ -1233,7 +1264,8 @@ var SLIDE_MORE = {"1.learn1": [{"more": ["Our number system uses only ten digits
     }).join('');
     var tot = 0, dn = 0, full = 0; order.forEach(function (n) { var p = progOf(openTopicFor(n)); tot += p.total; dn += p.done; if (p.total && p.done >= p.total) full++; });
     var opct = tot ? Math.round(dn / tot * 100) : 0;
-    var progPanel = '<section class="card" id="myprog"><div class="row" style="align-items:center;justify-content:space-between"><h2 style="margin:0">Your progress</h2><span class="tag">' + opct + '%</span></div><div class="bar" style="margin:10px 0" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="' + opct + '" aria-label="Overall progress"><i style="width:' + opct + '%"></i></div><p class="note" style="margin:0 0 10px;min-height:0">' + full + ' of ' + order.length + ' topics finished · ' + dn + ' of ' + tot + ' parts done' + (yr === 'all' ? '' : ' in ' + yr) + '.</p><button class="btn ghost" id="resetAll" type="button">Reset my progress</button></section>';
+    var who = learner && S.avatarSvg ? '<div class="pcard-h">' + S.avatarSvg(learner.avatar, 56) + '<h2 style="margin:0">' + String(learner.name).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;') + '\u2019s progress</h2></div>' : '<h2 style="margin:0">Your progress</h2>';
+    var progPanel = '<section class="card" id="myprog"><div class="row" style="align-items:center;justify-content:space-between">' + who + '<span class="tag">' + opct + '%</span></div><div class="bar" style="margin:10px 0" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="' + opct + '" aria-label="Overall progress"><i style="width:' + opct + '%"></i></div><p class="note" style="margin:0 0 10px;min-height:0">' + full + ' of ' + order.length + ' topics finished · ' + dn + ' of ' + tot + ' parts done' + (yr === 'all' ? '' : ' in ' + yr) + '.</p>' + badgesHtml(order.length > 0 && full >= order.length) + '<button class="btn ghost" id="resetAll" type="button">Reset my progress</button></section>';
     var soon = [].map(function (c) {
       return '<div class="card topic soon"><span class="tn">Topic ' + c.n + ' · coming next</span><h3>' + c.title + '</h3><p class="note" style="margin:0;min-height:0">' + c.blurb + '</p></div>';
     }).join('');
@@ -16515,7 +16547,8 @@ S.extraMakers = function (n, level) {
    Each child's progress is saved separately on the server. Avatars are drawn here, so no photos are ever used. */
 (function () {
   'use strict';
-  var S = Studio, esc = S.h.esc;
+  var S = Studio;
+  function esc(t) { return String(t).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;'); }
   var AV = {
     fox: ['#ffe3b8', '<path d="M14 38L18 10 36 24zM66 38L62 10 44 24z" fill="#f59e0b"/><circle cx="40" cy="44" r="26" fill="#f59e0b"/><path d="M18 50q22 30 44 0q-6 10-22 10t-22-10z" fill="#fff"/><circle cx="31" cy="42" r="4" fill="#14213d"/><circle cx="49" cy="42" r="4" fill="#14213d"/><circle cx="40" cy="52" r="4" fill="#14213d"/>'],
     owl: ['#f0dcc8', '<path d="M18 18l10 8M62 18l-10 8" stroke="#8b5e3c" stroke-width="7" stroke-linecap="round"/><ellipse cx="40" cy="46" rx="26" ry="28" fill="#8b5e3c"/><circle cx="30" cy="40" r="11" fill="#fff"/><circle cx="50" cy="40" r="11" fill="#fff"/><circle cx="30" cy="41" r="5" fill="#14213d"/><circle cx="50" cy="41" r="5" fill="#14213d"/><path d="M36 50l4 8 4-8z" fill="#ffd166"/>'],
