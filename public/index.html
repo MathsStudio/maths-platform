@@ -274,6 +274,18 @@ div[style*='minmax(320px,1fr)'] h3{font-size:16px!important}
 <p style="margin:16px 0 0;font-size:14px;color:#4a587a">Need more than one year group? Unlock each one separately. Payments are handled securely by Stripe, and we never see your card details.</p>
 </div>
 
+<dialog id="devDlg" style="border:0;border-radius:18px;padding:0;width:min(640px,calc(100vw - 24px));max-height:calc(100vh - 32px);box-shadow:0 20px 60px rgba(20,33,61,.35)"><div style="padding:24px 22px 22px;overflow:auto;max-height:calc(100vh - 32px)">
+<div style="display:flex;justify-content:flex-end"><button type="button" id="devX" aria-label="Close" style="font-size:26px;line-height:1;background:#eaf0ff;border:0;border-radius:50%;width:40px;height:40px;cursor:pointer;color:#14213d">×</button></div>
+<div style="display:flex;flex-wrap:wrap;align-items:center;gap:20px 28px;margin-top:-8px">
+<img src="/yaseen.jpg" width="120" height="120" alt="Dr Yaseen Adnan Ahmed" style="flex:none;width:120px;height:120px;border-radius:50%;object-fit:cover;border:4px solid #eaf0ff">
+<div style="flex:1 1 280px;min-width:0">
+<h3 style="font-family:'Fredoka',sans-serif;font-weight:600;font-size:24px;margin:0 0 8px">A note from developer</h3>
+<p style="margin:0 0 10px;color:#3b4a6b;line-height:1.6;font-size:16px">Hello, I'm Dr Yaseen Adnan Ahmed, a Chartered Engineer with a PhD who enjoys turning complicated ideas into clear steps. I built MathsStudio so that children could learn maths one small step at a time, with short lessons, hands-on games and plenty of practice. It is based on the Scottish curriculum, but the core maths is the same all over the world, so any child of a matching age can follow the lessons, wherever they live.</p>
+<p style="margin:0;color:#3b4a6b;line-height:1.6;font-size:16px">I add new lessons, games and questions on a regular basis. If you have a question or an idea, email me at <a href="mailto:info@mathsstudio.co.uk" style="color:#2b5fd9">info@mathsstudio.co.uk</a>.</p>
+</div>
+</div>
+</div></dialog>
+<script>document.addEventListener("DOMContentLoaded",function(){var d=document.getElementById("devDlg"),b=document.getElementById("devHelp");if(!d||!b)return;b.onclick=function(){d.showModal?d.showModal():d.setAttribute("open","")};document.getElementById("devX").onclick=function(){d.close()};d.addEventListener("click",function(e){if(e.target===d)d.close()})});</script>
 <!-- FAQ -->
 <div style="max-width:1200px;margin:0 auto;padding:56px 24px 24px">
 <h2 style="font-family:'Fredoka',sans-serif;font-weight:600;font-size:40px;margin:0 0 20px">Questions</h2>
@@ -291,7 +303,7 @@ div[style*='minmax(320px,1fr)'] h3{font-size:16px!important}
 <div style="max-width:1200px;margin:0 auto;padding:24px;display:flex;flex-wrap:wrap;align-items:center;gap:16px 28px;font-size:15px">
 <a href="/" style="display:flex;align-items:center;gap:10px;font-family:'Fredoka',sans-serif;font-weight:600;font-size:22px;color:#ffffff;text-decoration:none"><svg width="36" height="36" viewBox="0 0 64 64" role="img" aria-label="MathsStudio logo"><rect width="64" height="64" rx="16" fill="#2b5fd9"/><path d="M16 47V21L32 39L48 21V47" fill="none" stroke="#ffffff" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/><circle cx="32" cy="15" r="4.5" fill="#ffd166"/></svg>MathsStudio</a>
 <div style="flex:1 1 260px;min-width:0;font-size:13px;color:#b9c4e4;line-height:1.5">© 2026 MathsStudio was started and is maintained by <a href="mailto:info@mathsstudio.co.uk" style="color:#ffffff;font-weight:600;text-decoration:underline">Dr Yaseen Adnan Ahmed</a>. All rights reserved. The lessons, questions, activities and games on this site are protected by copyright. Please do not copy or republish them.</div>
-<div style="display:flex;flex-wrap:wrap;gap:4px 20px"><a href="/terms/" style="color:#dbe3f7;min-height:44px;display:inline-flex;align-items:center">Terms</a><a href="/refunds/" style="color:#dbe3f7;min-height:44px;display:inline-flex;align-items:center">Refunds</a><a href="/privacy/" style="color:#dbe3f7;min-height:44px;display:inline-flex;align-items:center">Privacy</a><a href="mailto:info@mathsstudio.co.uk" style="color:#dbe3f7;min-height:44px;display:inline-flex;align-items:center">Contact</a><a href="/login/" style="color:#dbe3f7;min-height:44px;display:inline-flex;align-items:center">Sign in</a></div>
+<div style="display:flex;flex-wrap:wrap;gap:4px 20px"><a href="/terms/" style="color:#dbe3f7;min-height:44px;display:inline-flex;align-items:center">Terms</a><a href="/refunds/" style="color:#dbe3f7;min-height:44px;display:inline-flex;align-items:center">Refunds</a><a href="/privacy/" style="color:#dbe3f7;min-height:44px;display:inline-flex;align-items:center">Privacy</a><button type="button" id="devHelp" style="color:#dbe3f7;min-height:44px;display:inline-flex;align-items:center;background:none;border:0;font:inherit;cursor:pointer;padding:0;text-decoration:underline;text-underline-offset:3px">About the developer</button><a href="mailto:info@mathsstudio.co.uk" style="color:#dbe3f7;min-height:44px;display:inline-flex;align-items:center">Contact</a><a href="/login/" style="color:#dbe3f7;min-height:44px;display:inline-flex;align-items:center">Sign in</a></div>
 </div>
 </div>
 
