@@ -543,9 +543,11 @@ var SLIDE_MORE = {"1.learn1": [{"more": ["Our number system uses only ten digits
   /* Progress follows the signed-in email: it is sent to the server a moment after every change and loaded back on any device. */
   var syncOn = false, syncTimer = null, replaceNext = false;
   function scheduleSync() { if (!syncOn) return; clearTimeout(syncTimer); syncTimer = setTimeout(pushProgress, 1200); }
+  var learner = null;   /* the child using the app right now (null when the account has no child profiles) */
+  function progUrl() { return '/api/progress' + (learner ? '?learner=' + learner.id : ''); }
   function pushProgress() {
     clearTimeout(syncTimer); var body = JSON.stringify({ progress: store.progress, replace: replaceNext }); replaceNext = false;
-    try { fetch('/api/progress', { method: 'POST', credentials: 'same-origin', headers: { 'Content-Type': 'application/json' }, body: body, keepalive: body.length < 60000 }).catch(function () { }); } catch (e) { }
+    try { fetch(progUrl(), { method: 'POST', credentials: 'same-origin', headers: { 'Content-Type': 'application/json' }, body: body, keepalive: body.length < 60000 }).catch(function () { }); } catch (e) { }
   }
   function mergeProgress(into, from) {
     var changed = false;
@@ -556,17 +558,27 @@ var SLIDE_MORE = {"1.learn1": [{"more": ["Our number system uses only ten digits
     });
     return changed;
   }
-  function progressInit(email) {
-    var mine = String(email || '').toLowerCase(), prev = null; try { prev = localStorage.getItem('pm-owner'); } catch (e) { }
-    fetch('/api/progress', { credentials: 'same-origin' }).then(function (r) { return r.ok ? r.json() : null; }).then(function (j) {
+  function loadProgress(email) {
+    var mine = String(email || '').toLowerCase() + (learner ? '#' + learner.id : ''), prev = null; try { prev = localStorage.getItem('pm-owner'); } catch (e) { }
+    fetch(progUrl(), { credentials: 'same-origin' }).then(function (r) { return r.ok ? r.json() : null; }).then(function (j) {
       if (!j) return;
       var changed;
-      if (prev && prev !== mine) { store.progress = j.progress || {}; changed = true; }   /* another person used this browser: show only this account */
+      if (prev && prev !== mine) { store.progress = j.progress || {}; changed = true; }   /* another person or child used this browser: show only this one's progress */
       else changed = mergeProgress(store.progress, j.progress);
       try { localStorage.setItem('pm-owner', mine); } catch (e) { }
       syncOn = true; save();
       if (changed && started && (state.tab === 'home' || !state.part)) render();
     }).catch(function () { });
+  }
+  function progressInit(email) {
+    if (document.readyState !== 'complete') { window.addEventListener('load', function () { progressInit(email); }, { once: true }); return; }   /* wait until every script, including profiles, has loaded */
+    if (!S.profiles) { loadProgress(email); return; }
+    S.profiles.init(function (l) {
+      if (learner && l && learner.id !== l.id) { clearTimeout(syncTimer); if (syncOn) pushProgress(); }   /* save the last child's progress before switching */
+      var was = learner; learner = l || null; syncOn = false;
+      if (was && (!l || was.id !== l.id)) { store.progress = {}; store.warmHistory = {}; if (started) { state.tab = 'home'; state.part = null; render(); } }
+      loadProgress(email);
+    });
   }
   function pkey(n) { return 't' + n; }
   function markDone(n, step) { var p = store.progress[pkey(n)] = store.progress[pkey(n)] || { steps: {} }; if (!p.steps) p.steps = {}; if (!p.steps[step]) { p.steps[step] = true; save(); } }
