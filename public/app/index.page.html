@@ -7779,20 +7779,28 @@ Object.keys(S.topics).forEach(function (k) {
         '<div class="visual" id="mxVis"></div><div class="bigeq" id="mxTxt"></div><div class="explain say" id="mxWork"></div>' +
         '<label class="eyebrow" for="mxD">Size of each part (the bottom number)</label><input class="slider" id="mxD" type="range" min="2" max="' + cfg.dmax + '" value="4">' +
         '<div id="mxIm"><label class="eyebrow" for="mxN">Number of parts (the top number)</label><input class="slider" id="mxN" type="range" min="5" max="12" value="11"></div>' +
-        '<div id="mxMi" style="display:none"><label class="eyebrow" for="mxW">Whole numbers</label><input class="slider" id="mxW" type="range" min="1" max="' + cfg.wmax + '" value="2"><label class="eyebrow" for="mxR">Parts left over</label><input class="slider" id="mxR" type="range" min="1" max="3" value="3"></div>';
+        '<div id="mxMi" style="display:none"><div id="mxWb"><label class="eyebrow" for="mxW">Whole numbers</label><input class="slider" id="mxW" type="range" min="1" max="' + cfg.wmax + '" value="2"></div><div id="mxRb"><label class="eyebrow" for="mxR">Parts left over</label><input class="slider" id="mxR" type="range" min="1" max="3" value="3"></div><div class="explain say" id="mxRn" style="display:none"></div></div>';
       function draw() {
         $('mxA').setAttribute('aria-pressed', mode === 'im'); $('mxB').setAttribute('aria-pressed', mode === 'mi');
         $('mxIm').style.display = mode === 'im' ? '' : 'none'; $('mxMi').style.display = mode === 'mi' ? '' : 'none';
         var nn;
         if (mode === 'im') { $('mxN').min = d + 1; $('mxN').max = d * cfg.wmax + d - 1; if (n < d + 1) n = d + 1; if (n > d * cfg.wmax + d - 1) n = d * cfg.wmax + d - 1; $('mxN').value = n; nn = n; w = Math.floor(n / d); r = n % d; }
-        else { $('mxR').max = d - 1; if (r > d - 1) r = d - 1; $('mxR').value = r; nn = w * d + r; }
+        else {
+          /* only show a slider when it has something to choose: with halves the only leftover is 1 part, so it is shown as a fact instead */
+          if (r > d - 1) r = d - 1; if (r < 1) r = 1;
+          var fixedR = d - 1 <= 1;
+          $('mxR').max = Math.max(d - 1, 1); $('mxR').value = r;
+          $('mxRb').style.display = fixedR ? 'none' : ''; $('mxRn').style.display = fixedR ? '' : 'none';
+          if (fixedR) { r = 1; $('mxRn').innerHTML = 'The parts are halves, so there is only <b>1 part</b> that can be left over (1/2). Use the first slider to cut each whole into more parts, then you can choose.'; }
+          nn = w * d + r;
+        }
         $('mxVis').innerHTML = wholeBars(nn, d);
         if (mode === 'im') {
           $('mxTxt').innerHTML = fr(nn, d) + ' = ' + (r ? mx(w, r, d) : w);
           $('mxWork').innerHTML = nn + ' ÷ ' + d + ' = ' + w + ' remainder ' + r + '. ' + (r ? 'The ' + w + ' is the whole number. The remainder ' + r + ' goes on top of the ' + d + '.' : 'It divides exactly, so it is just ' + w + ' wholes.');
         } else {
           $('mxTxt').innerHTML = mx(w, r, d) + ' = ' + fr(nn, d);
-          $('mxWork').innerHTML = w + ' × ' + d + ' = ' + w * d + ' parts in the whole numbers. Add the ' + r + ' extra parts: ' + w * d + ' + ' + r + ' = ' + nn + '. So the top number is ' + nn + '.';
+          $('mxWork').innerHTML = w + ' × ' + d + ' = ' + w * d + ' parts in the whole numbers. Add the ' + r + ' extra part' + (r > 1 ? 's' : '') + ': ' + w * d + ' + ' + r + ' = ' + nn + '. So the top number is ' + nn + '.';
         }
         moves++; if (moves >= 8) ctx.complete();
       }
