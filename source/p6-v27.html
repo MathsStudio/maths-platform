@@ -495,6 +495,7 @@ input[type=range].slider { width: 100%; }
   </section>
   <nav class="tabs" id="tabs" role="tablist" aria-label="Topics"></nav>
   <main id="view"><p class="note" style="padding:28px 20px;font-size:18px">Loading your maths…</p></main>
+  <script>try{window.__lp=fetch("/api/learners",{credentials:"same-origin"})}catch(e){}</script>
 </div>
 
 <aside class="player hide" id="player" aria-label="Listening bar">
@@ -576,7 +577,7 @@ var SLIDE_MORE = {"1.learn1": [{"more": ["Our number system uses only ten digits
     }).catch(function () { });
   }
   function progressInit(email) {
-    if (document.readyState !== 'complete') { window.addEventListener('load', function () { progressInit(email); }, { once: true }); return; }   /* wait until every script, including profiles, has loaded */
+    if (document.readyState === 'loading') { document.addEventListener('DOMContentLoaded', function () { progressInit(email); }, { once: true }); return; }   /* wait until every script, including profiles, has run (not for images and fonts, which made the picker appear late) */
     if (!S.profiles) { loadProgress(email); return; }
     S.profiles.init(function (l) {
       if (learner && l && learner.id !== l.id) { clearTimeout(syncTimer); if (syncOn) pushProgress(); }   /* save the last child's progress before switching */

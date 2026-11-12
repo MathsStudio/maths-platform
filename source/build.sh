@@ -6,8 +6,11 @@ import sys
 out=sys.argv[1]; files=sys.argv[2:]
 h=open('p6-v27.html').read()
 k=h.rindex('<script>Studio.start();</script>')
+files=[f for f in files if f!='profiles.js']
 add=''.join('<script>\n'+open(f).read()+'</script>\n' for f in ['stagekit.js']+files)
 h=h[:k]+add+h[k:]
+c=h.index('</script>',h.index('var S = window.Studio'))+len('</script>')
+h=h[:c]+'\n<script>\n'+open('profiles.js').read()+'</script>'+h[c:]
 open(out,'w').write(h)
 i=h.index('<title>'); p=h[i:].rstrip()
 if p.endswith('</html>'): p=p[:-7].rstrip()+'\n'

@@ -44,9 +44,10 @@
   document.head.appendChild(css);
 
   var LOGO = '<div class="who-top"><svg width="34" height="34" viewBox="0 0 64 64" aria-hidden="true"><rect width="64" height="64" rx="16" fill="#2b5fd9"/><path d="M16 47V21L32 39L48 21V47" fill="none" stroke="#fff" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/><circle cx="32" cy="15" r="4.5" fill="#ffd166"/></svg><span>Maths<span class="st">Studio</span></span></div>';
-  var list = [], cur = null, onPick = null, signed = false;
+  var list = [], cur = null, onPick = null, signed = false, started = false, decided = false;   /* started: the picker began before the page finished loading */
   function api(body) {
-    return fetch('/api/learners', body ? { method: 'POST', credentials: 'same-origin', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) } : { credentials: 'same-origin' })
+    var early = !body && window.__lp; if (early) window.__lp = null;   /* the page starts this request while it is still loading, so the picker appears sooner */
+    return (early || fetch('/api/learners', body ? { method: 'POST', credentials: 'same-origin', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) } : { credentials: 'same-origin' }))
       .then(function (r) { return r.json().then(function (j) { j.ok = r.ok; return j; }); });
   }
   function remember(l) { try { sessionStorage.setItem('pm-learner', l ? String(l.id) : ''); } catch (e) { } }
@@ -68,7 +69,7 @@
     var ad = b.querySelector('#whoAddBtn'); if (ad) ad.onclick = function () { open(false, false, true); };
   }
   function close() { var o = document.getElementById('whoPop'); if (o) o.remove(); }
-  function choose(l) { cur = l; remember(l); close(); chip(); if (onPick) onPick(l); }
+  function choose(l) { cur = l; decided = true; remember(l); close(); chip(); if (onPick) onPick(l); }
 
   function open(force, first, direct) {
     close();
@@ -101,7 +102,7 @@
         '<p class="note" style="margin:10px 0 0">You can change the name or avatar, or delete a profile, at any time. Deleting a profile also deletes that child\'s progress.</p>';
       var msg = card.querySelector('#whoMsg');
       [].forEach.call(card.querySelectorAll('[data-av]'), function (b) { b.onclick = function () { sel = b.dataset.av; [].forEach.call(card.querySelectorAll('[data-av]'), function (c) { c.setAttribute('aria-pressed', String(c === b)); }); }; });
-      card.querySelector('#whoCancel').onclick = function () { if (welcome) { try { sessionStorage.setItem('pm-skip', '1'); } catch (e) { } close(); chip(); if (onPick) onPick(null); } else if (!list.length) close(); else draw(); };
+      card.querySelector('#whoCancel').onclick = function () { if (welcome) { try { sessionStorage.setItem('pm-skip', '1'); } catch (e) { } decided = true; close(); chip(); if (onPick) onPick(null); } else if (!list.length) close(); else draw(); };
       card.querySelector('#whoName').focus();
       card.querySelector('#whoSave').onclick = function () {
         var name = card.querySelector('#whoName').value; msg.textContent = '';
@@ -132,8 +133,23 @@
 
   /* Called once the visitor is known to be signed in. cb(learner or null) says whose progress to load. */
   S.profiles = {
+    /* Runs as soon as the page's core script has loaded, so the picker shows straight away instead of after every lesson script has run. */
+    early: function () {
+      if (started) return; started = true;
+      api().then(function (j) {
+        if (!j || !j.ok) { started = false; return; }   /* not signed in */
+        signed = true; list = j.learners || [];
+        var saved = ''; try { saved = sessionStorage.getItem('pm-learner') || ''; } catch (e) { }
+        var m = list.filter(function (l) { return String(l.id) === saved; })[0];
+        if (m) { cur = m; decided = true; chip(); if (onPick) onPick(m); return; }
+        cur = null; chip();
+        var skipped = ''; try { skipped = sessionStorage.getItem('pm-skip') || ''; } catch (e) { }
+        if (list.length) open(true); else if (!skipped) open(true, true); else { decided = true; if (onPick) onPick(null); }
+      }).catch(function () { started = false; });
+    },
     init: function (cb) {
       onPick = cb; signed = true;
+      if (started) { chip(); if (decided) cb(cur); return; }   /* the picker already began; answer when the child is chosen */
       api().then(function (j) {
         list = (j && j.learners) || [];
         var saved = ''; try { saved = sessionStorage.getItem('pm-learner') || ''; } catch (e) { }
@@ -146,4 +162,5 @@
     },
     open: function () { open(false); }
   };
+  S.profiles.early();
 })();
