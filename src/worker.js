@@ -33,15 +33,45 @@ function mergeProgress(a, b) {
   }
   return out;
 }
-async function progressApi(request, env, user) {
+async function progressApi(request, env, user, url) {
   if (!user) return json({ error: 'Sign in first.' }, 401);
-  if (request.method === 'GET') return json({ progress: await db.getProgress(env, user.id) });
+  /* With ?learner=ID the progress belongs to that child's profile; without it, to the account (older behaviour). */
+  const lid = url && url.searchParams.get('learner');
+  let learner = 0;
+  if (lid) {
+    learner = /^\d{1,9}$/.test(lid) ? Number(lid) : 0;
+    if (!learner || !(await db.ownsLearner(env, user.id, learner))) return json({ error: 'Profile not found.' }, 404);
+  }
+  const read = () => learner ? db.getLearnerProgress(env, learner) : db.getProgress(env, user.id);
+  const write = (o) => learner ? db.putLearnerProgress(env, user.id, learner, o) : db.putProgress(env, user.id, o);
+  if (request.method === 'GET') return json({ progress: await read() });
   if (!(request.headers.get('Content-Type') || '').includes('application/json')) return json({ error: 'Bad request.' }, 400);
   const text = await request.text(); if (text.length > 200000) return json({ error: 'Too large.' }, 413);
   let b; try { b = JSON.parse(text); } catch (e) { return json({ error: 'Bad request.' }, 400); }
-  const next = b && b.replace === true ? cleanProgress(b.progress) : mergeProgress(await db.getProgress(env, user.id), b && b.progress);
-  await db.putProgress(env, user.id, next);
+  const next = b && b.replace === true ? cleanProgress(b.progress) : mergeProgress(await read(), b && b.progress);
+  await write(next);
   return json({ progress: next });
+}
+/* Child profiles: first name or nickname plus an avatar, up to four per account. Every change is a POST, so it is origin-checked. */
+const LEARNER_NAME = /^[\p{L}\p{N}][\p{L}\p{N} .'\-]{0,19}$/u;
+async function learnersApi(request, env, user) {
+  if (!user) return json({ error: 'Sign in first.' }, 401);
+  if (request.method === 'GET') return json({ learners: await db.listLearners(env, user.id), avatars: db.AVATARS, max: db.MAX_LEARNERS });
+  const b = await readForm(request), action = String(b.action || '');
+  const name = String(b.name || '').trim().replace(/\s+/g, ' '), avatar = String(b.avatar || '');
+  const id = /^\d{1,9}$/.test(String(b.id || '')) ? Number(b.id) : 0;
+  if (action === 'add' || action === 'update') {
+    if (!LEARNER_NAME.test(name)) return json({ error: 'Use a first name or nickname, up to 20 letters or numbers.' }, 400);
+    if (!db.AVATARS.includes(avatar)) return json({ error: 'Choose one of the avatars.' }, 400);
+  }
+  if (action === 'add') {
+    if ((await db.listLearners(env, user.id)).length >= db.MAX_LEARNERS) return json({ error: 'You can add up to ' + db.MAX_LEARNERS + ' children on one account.' }, 400);
+    await db.addLearner(env, user.id, name, avatar);
+  } else if (action === 'update' || action === 'delete') {
+    if (!id || !(await db.ownsLearner(env, user.id, id))) return json({ error: 'Profile not found.' }, 404);
+    if (action === 'update') await db.updateLearner(env, user.id, id, name, avatar); else await db.deleteLearner(env, user.id, id);
+  } else return json({ error: 'Bad request.' }, 400);
+  return json({ learners: await db.listLearners(env, user.id) });
 }
 function ip(request) { return request.headers.get('CF-Connecting-IP') || 'local'; }
 async function currentUser(env, request) {
@@ -327,7 +357,8 @@ export default {
       }
       const user = await currentUser(env, request);
       if (p === '/api/me' && m === 'GET') return json(user ? { signedIn: true, email: user.email, year: user.year || '', owner: user.plan === 'owner', years: (await passesOf(env, user)).map(x => x.year), pay: !!env.STRIPE_SECRET_KEY } : { signedIn: false, owner: false, years: [], pay: !!env.STRIPE_SECRET_KEY }, 200, { 'Cache-Control': 'private, no-store' });
-      if (p === '/api/progress' && (m === 'GET' || m === 'POST')) return await progressApi(request, env, user);
+      if (p === '/api/progress' && (m === 'GET' || m === 'POST')) return await progressApi(request, env, user, url);
+      if (p === '/api/learners' && (m === 'GET' || m === 'POST')) return await learnersApi(request, env, user);
       if (p === '/api/confirm' && m === 'POST') return await confirmPay(request, env, user);
       if (p === '/api/checkout' && m === 'POST') return await checkout(request, env, user);
       if (p === '/logout' && m === 'POST') {

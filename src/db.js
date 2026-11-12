@@ -22,6 +22,9 @@ const SCHEMA = [
   `CREATE INDEX IF NOT EXISTS rate_k ON rate (k, ts)`,
   `CREATE TABLE IF NOT EXISTS newsletters (id INTEGER PRIMARY KEY AUTOINCREMENT, subject TEXT NOT NULL, audience TEXT NOT NULL, sent INTEGER NOT NULL, failed INTEGER NOT NULL, created_at TEXT NOT NULL)`,
   `CREATE TABLE IF NOT EXISTS progress (user_id INTEGER PRIMARY KEY, data TEXT NOT NULL, updated_at TEXT NOT NULL)`,
+  `CREATE TABLE IF NOT EXISTS learners (id INTEGER PRIMARY KEY AUTOINCREMENT, user_id INTEGER NOT NULL, name TEXT NOT NULL, avatar TEXT NOT NULL, created_at TEXT NOT NULL)`,
+  `CREATE INDEX IF NOT EXISTS learners_user ON learners (user_id)`,
+  `CREATE TABLE IF NOT EXISTS learner_progress (learner_id INTEGER PRIMARY KEY, user_id INTEGER NOT NULL, data TEXT NOT NULL, updated_at TEXT NOT NULL)`,
   `CREATE TABLE IF NOT EXISTS purchases (
     user_id INTEGER NOT NULL, year TEXT NOT NULL, until INTEGER NOT NULL, created_at TEXT NOT NULL, PRIMARY KEY (user_id, year)
   )`
@@ -84,6 +87,8 @@ export async function deleteUser(env, id) {
     env.DB.prepare('DELETE FROM sessions WHERE user_id = ?').bind(id),
     env.DB.prepare('DELETE FROM tokens WHERE user_id = ?').bind(id),
     env.DB.prepare('DELETE FROM progress WHERE user_id = ?').bind(id),
+    env.DB.prepare('DELETE FROM learner_progress WHERE user_id = ?').bind(id),
+    env.DB.prepare('DELETE FROM learners WHERE user_id = ?').bind(id),
     env.DB.prepare('DELETE FROM users WHERE id = ?').bind(id)
   ]);
 }
@@ -179,3 +184,40 @@ export async function getProgress(env, userId) {
 export const putProgress = (env, userId, obj) =>
   env.DB.prepare('INSERT INTO progress (user_id, data, updated_at) VALUES (?, ?, ?) ON CONFLICT(user_id) DO UPDATE SET data = excluded.data, updated_at = excluded.updated_at')
     .bind(userId, JSON.stringify(obj), now()).run();
+
+/* Child profiles (learners): a first name or nickname and an avatar. Each learner has their own progress. */
+export const MAX_LEARNERS = 4;
+export const AVATARS = ['fox', 'owl', 'cat', 'robot', 'penguin', 'dino', 'rocket', 'star'];
+export async function listLearners(env, userId) {
+  const r = await env.DB.prepare('SELECT id, name, avatar FROM learners WHERE user_id = ? ORDER BY id').bind(userId).all();
+  return r.results || [];
+}
+export async function ownsLearner(env, userId, id) {
+  const r = await env.DB.prepare('SELECT id FROM learners WHERE id = ? AND user_id = ?').bind(id, userId).first();
+  return !!r;
+}
+/* The first profile on an account takes over the progress already saved to the account, so nothing is lost. */
+export async function addLearner(env, userId, name, avatar) {
+  const existing = await listLearners(env, userId);
+  const r = await env.DB.prepare('INSERT INTO learners (user_id, name, avatar, created_at) VALUES (?, ?, ?, ?) RETURNING id').bind(userId, name, avatar, now()).first();
+  if (!existing.length) {
+    const old = await env.DB.prepare('SELECT data FROM progress WHERE user_id = ?').bind(userId).first();
+    if (old) await env.DB.prepare('INSERT INTO learner_progress (learner_id, user_id, data, updated_at) VALUES (?, ?, ?, ?)').bind(r.id, userId, old.data, now()).run();
+  }
+  return r.id;
+}
+export const updateLearner = (env, userId, id, name, avatar) =>
+  env.DB.prepare('UPDATE learners SET name = ?, avatar = ? WHERE id = ? AND user_id = ?').bind(name, avatar, id, userId).run();
+export async function deleteLearner(env, userId, id) {
+  await env.DB.batch([
+    env.DB.prepare('DELETE FROM learner_progress WHERE learner_id = ? AND user_id = ?').bind(id, userId),
+    env.DB.prepare('DELETE FROM learners WHERE id = ? AND user_id = ?').bind(id, userId)
+  ]);
+}
+export async function getLearnerProgress(env, id) {
+  const r = await env.DB.prepare('SELECT data FROM learner_progress WHERE learner_id = ?').bind(id).first();
+  try { return r ? JSON.parse(r.data) : {}; } catch (e) { return {}; }
+}
+export const putLearnerProgress = (env, userId, id, obj) =>
+  env.DB.prepare('INSERT INTO learner_progress (learner_id, user_id, data, updated_at) VALUES (?, ?, ?, ?) ON CONFLICT(learner_id) DO UPDATE SET data = excluded.data, updated_at = excluded.updated_at')
+    .bind(id, userId, JSON.stringify(obj), now()).run();
