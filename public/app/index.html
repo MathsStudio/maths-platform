@@ -1070,7 +1070,7 @@ var SLIDE_MORE = {"1.learn1": [{"more": ["Our number system uses only ten digits
       : plans + '<div style="background:var(--soft,#f1f5ff);border-radius:14px;padding:12px 14px;margin:4px 0 14px;line-height:1.8"><b>Step 1</b> &nbsp;Sign in or create an account<br><b>Step 2</b> &nbsp;Choose a plan and pay</div><div class="row" style="gap:10px;flex-wrap:wrap"><a class="btn" style="flex:1;text-align:center" href="/login/">Sign in</a><a class="btn ghost" style="flex:1;text-align:center" href="/signup/">Create an account</a></div><p class="note" style="margin:10px 0 0">After signing in, the payment button appears here.</p>';
     o.innerHTML = '<section class="card" style="max-width:520px;width:100%;margin:0;background:var(--card,#fff)"><button class="btn ghost" type="button" id="lockBack" aria-label="Close" style="float:right;padding:4px 10px">✕</button>' +
       '<span class="tag">🔒 ' + (what || t.title) + ' is locked</span><h2 style="margin:10px 0 6px">Unlock all of ' + y + '</h2>' +
-      '<p class="lead">Every topic in ' + y + ': animated explainers, lessons, games and 150 practice questions at each of three difficulty levels, plus the 10-minute mental maths test. Topic 1 stays free to try.</p>' + step + '</section>';
+      '<p class="lead">Every topic in ' + y + ': animated explainers, lessons, games and hundreds of practice questions at three difficulty levels, plus the 10-minute mental maths test. Topic 1 stays free to try.</p>' + step + '</section>';
     document.body.appendChild(o);
     function pick(pl) { plan = pl; [].forEach.call(o.querySelectorAll('#lockPlans button'), function (b) { var on = b.getAttribute('data-plan') === pl; b.setAttribute('aria-checked', on ? 'true' : 'false'); b.style.borderColor = on ? '#2b5fd9' : '#dbe3f7'; b.style.background = on ? '#f3f6ff' : '#fff'; }); }
     pick('year');
@@ -1233,11 +1233,11 @@ var SLIDE_MORE = {"1.learn1": [{"more": ["Our number system uses only ten digits
     v.innerHTML =
       '<section class="yrtop"><div class="yrbar"><span class="tag">' + (yr === 'all' ? 'All years' : yr) + '</span><button class="yr" type="button" id="chgYear">Change year</button></div><p class="note say" style="margin:8px 0 0">' + YEAR_NOTE[yr] + '</p></section>' +
       '<section class="hero"><span class="eyebrow">' + (yr === 'all' ? 'Primary 5 to 7' : (yr.charAt(0) === 'S' ? 'Secondary ' + yr.slice(1) : 'Primary ' + yr.slice(1))) + ' · Curriculum for Excellence, ' + ({ S1: 'Third level', S2: 'Third and Fourth level', S3: 'Fourth level' }[yr] || 'Second level') + '</span><h1 class="say">' + (yr === 'all' ? 'Every topic' : yr + ' topics') + '</h1>' +
-      '<p class="lead say">' + ({ 1: 'One', 10: 'Ten', 12: 'Twelve' }[order.length] || order.length) + ' topics. Each starts with a short animated explainer and lessons with worked examples, then hands-on activities and games, and practice: a warm-up, 150 questions at each of Low, Medium and High, and real-life problems. Switch level at any time. Verbal and non-verbal reasoning appear throughout the course.</p></section>' +
+      '<p class="lead say">' + ({ 1: 'One', 10: 'Ten', 12: 'Twelve' }[order.length] || order.length) + ' topics. Each starts with a short animated explainer and lessons with worked examples, then hands-on activities and games, and practice: a warm-up, plenty of questions at each of Low, Medium and High, and real-life problems. Switch level at any time. Verbal and non-verbal reasoning appear throughout the course.</p></section>' +
       '<section class="pillars"><div class="card"><h3 class="say">Read it</h3><p class="say">Clear steps and pictures, one idea at a time.</p></div><div class="card"><h3 class="say">Hear it</h3><p class="say">Turn the Voice on once and it keeps reading new pages and questions, where your device allows it.</p></div><div class="card"><h3 class="say">Try it</h3><p class="say">Build, slide, spin and plot. Then answer questions. Hints come one step at a time.</p></div></section>' +
       progPanel + '<section><div class="row" style="align-items:center;justify-content:space-between;margin-bottom:12px"><h2>Topics</h2></div><div class="topics">' + cards + soon + '</div></section>' +
       '<details class="card"><summary>For teachers and parents</summary>' +
-      '<p>Each topic has three parts. Let\u2019s Learn starts with a short animated explainer, then lessons that teach each idea three ways, with worked examples. Activity Time has hands-on labs and games. Let\u2019s Practice has a warm-up, 150 questions at each of Low, Medium and High, and 30 real-life problems. Each level draws from its own question selection. Plan about 45 to 60 minutes a topic, split over two sessions if needed.</p>' +
+      '<p>Each topic has three parts. Let\u2019s Learn starts with a short animated explainer, then lessons that teach each idea three ways, with worked examples. Activity Time has hands-on labs and games. Let\u2019s Practice has a warm-up, plenty of questions at each of Low, Medium and High, and 30 real-life problems. Each level draws from its own question selection. Plan about 45 to 60 minutes a topic, split over two sessions if needed.</p>' +
       '<div class="tscroll"><table class="plan"><thead><tr><th>Topic</th><th>Parts</th></tr></thead><tbody>' + rows + '</tbody></table></div>' +
       '<p class="note">Hints come in steps: first a nudge, then the method with the numbers, never the answer. The explanation after each answer shows the full working. Check outcomes against Education Scotland’s Benchmarks for Numeracy and Mathematics at ' + ({ S1: 'Third level', S2: 'Third and Fourth level', S3: 'Fourth level' }[yr] || 'Second level') + ' before you rely on this for planning. This is an independent resource. Progress is saved in this browser only.</p>' +
       '<div class="row" style="margin-top:10px"><button class="btn ghost" id="resetProg" type="button">Reset progress</button></div></details>';
@@ -1915,7 +1915,7 @@ Studio.addTopic({ n: 1, short: 'Place value', title: 'Place value and rounding',
     { id: 'build', label: 'Build it', type: 'lab', tag: 'Step 3 · We do it together', title: 'Build a number', lead: 'Tap plus or minus to add or remove a counter. Each column is worth 10 times the column on its right. Complete all five challenges.', mount: mountBuild },
     { id: 'learn2', label: 'Rounding', type: 'slides', tag: 'Rounding', slides: LEARN2 },
     { id: 'round', label: 'Round it', type: 'lab', tag: 'Step 5 · We do it together', title: 'Round it on the number line', lead: 'Pick what to round to and slide the number. Past the halfway mark it rounds up. Then predict five answers.', mount: mountRound },
-    { id: 'practise', label: 'Practise', type: 'quiz', best: true, tag: 'Step 6 · Your turn', title: 'Practise', lead: '150 questions on place value, rounding, real life and reasoning. No calculator. Use the hints one step at a time.', make: practiceSet }
+    { id: 'practise', label: 'Practise', type: 'quiz', best: true, tag: 'Step 6 · Your turn', title: 'Practise', lead: 'Plenty of questions on place value, rounding, real life and reasoning. No calculator. Use the hints one step at a time.', make: practiceSet }
   ] });
 })();
 
@@ -2172,7 +2172,7 @@ Studio.addTopic({ n: 2, short: 'Four operations', title: 'The four operations', 
     { id: 'columns', label: 'Column lab', type: 'lab', tag: 'Step 3 · We do it together', title: 'Step through a column sum', lead: 'Choose add or subtract, then work out each column yourself, starting with the ones. Type the column total (or the digit you write) and press Check. Finish two sums to complete this step.', mount: mountColumns },
     { id: 'learn2', label: 'Multiply and divide', type: 'slides', tag: 'Multiply and divide', slides: LEARN2 },
     { id: 'array', label: 'Array lab', type: 'lab', tag: 'Step 5 · We do it together', title: 'Split an array', lead: 'Move the sliders to change the rows and columns. Then split the array into two easy parts.', mount: mountArray },
-    { id: 'practise', label: 'Practise', type: 'quiz', best: true, tag: 'Step 6 · Your turn', title: 'Practise', lead: '150 questions, including word problems and reasoning. Use the hints one step at a time.', make: practiceSet }
+    { id: 'practise', label: 'Practise', type: 'quiz', best: true, tag: 'Step 6 · Your turn', title: 'Practise', lead: 'Plenty of questions, including word problems and reasoning. Use the hints one step at a time.', make: practiceSet }
   ] });
 })();
 
@@ -2587,7 +2587,7 @@ Studio.addTopic({ n: 4, short: 'Decimals %', title: 'Decimals and percentages', 
     { id: 'lab1', label: 'Hundred square', type: 'lab', tag: 'Step 3 · We do it together', title: 'Shade the hundred square', lead: 'Tap squares to shade them. See the fraction, decimal and percentage change together. Try three shortcut buttons.', mount: mountGridLab },
     { id: 'learn2', label: 'Calculating', type: 'slides', tag: 'Calculating', slides: LEARN2 },
     { id: 'lab2', label: 'Sale shop', type: 'lab', tag: 'Step 5 · We do it together', title: 'The sale shop', lead: 'Choose a price and a discount. See how to build the discount from easy pieces.', mount: mountShopLab },
-    { id: 'practise', label: 'Practise', type: 'quiz', best: true, tag: 'Step 6 · Your turn', title: 'Practise', lead: '150 questions on conversions, percentages, decimals and reasoning. Use the hints one at a time.', make: practiceSet }
+    { id: 'practise', label: 'Practise', type: 'quiz', best: true, tag: 'Step 6 · Your turn', title: 'Practise', lead: 'Plenty of questions on conversions, percentages, decimals and reasoning. Use the hints one at a time.', make: practiceSet }
   ] });
 })();
 
@@ -2789,7 +2789,7 @@ Studio.addTopic({ n: 5, short: 'Measure', title: 'Money, time and measurement', 
     { id: 'lab1', label: 'Rectangle lab', type: 'lab', tag: 'Step 3 · We do it together', title: 'Perimeter and area', lead: 'Change the width and the height. Watch the area and the perimeter change.', mount: mountRectLab },
     { id: 'learn2', label: 'Time and money', type: 'slides', tag: 'Time and money', slides: LEARN2 },
     { id: 'lab2', label: 'Clock lab', type: 'lab', tag: 'Step 5 · We do it together', title: 'Clocks, 24-hour time and journeys', lead: 'Move the sliders to set a time. See it on the clock in two ways, then add a journey time.', mount: mountClockLab },
-    { id: 'practise', label: 'Practise', type: 'quiz', best: true, tag: 'Step 6 · Your turn', title: 'Practise', lead: '150 questions on measures, time, money and reasoning. For times, type like 14:35 or 3:40.', make: practiceSet }
+    { id: 'practise', label: 'Practise', type: 'quiz', best: true, tag: 'Step 6 · Your turn', title: 'Practise', lead: 'Plenty of questions on measures, time, money and reasoning. For times, type like 14:35 or 3:40.', make: practiceSet }
   ] });
 })();
 
@@ -2961,7 +2961,7 @@ Studio.addTopic({ n: 6, short: 'Algebra', title: 'Patterns and algebra', blurb: 
     { id: 'lab1', label: 'Matchstick lab', type: 'lab', tag: 'Step 3 · We do it together', title: 'Grow a matchstick pattern', lead: 'Slide the pattern number and watch the sticks grow. Look at at least six different patterns.', mount: mountStickLab },
     { id: 'learn2', label: 'Algebra', type: 'slides', tag: 'Algebra', slides: LEARN2 },
     { id: 'lab2', label: 'Balance lab', type: 'lab', tag: 'Step 5 · We do it together', title: 'Balance the equation', lead: 'Do the same to both sides to keep the scales balanced and find x. Solve three equations.', mount: mountBalanceLab },
-    { id: 'practise', label: 'Practise', type: 'quiz', best: true, tag: 'Step 6 · Your turn', title: 'Practise', lead: '150 questions on sequences, rules, equations and reasoning. Use the hints one at a time.', make: practiceSet }
+    { id: 'practise', label: 'Practise', type: 'quiz', best: true, tag: 'Step 6 · Your turn', title: 'Practise', lead: 'Plenty of questions on sequences, rules, equations and reasoning. Use the hints one at a time.', make: practiceSet }
   ] });
 })();
 
@@ -3146,7 +3146,7 @@ Studio.addTopic({ n: 7, short: 'Shape', title: 'Shape, angles and symmetry', blu
     { id: 'lab1', label: 'Angle lab', type: 'lab', tag: 'Step 3 · We do it together', title: 'Turn an angle', lead: 'Slide the angle and see its type. Visit at least four types: acute, right, obtuse, straight and reflex.', mount: mountAngleLab },
     { id: 'learn2', label: 'Solve it', type: 'slides', tag: 'Working with shapes', slides: LEARN2 },
     { id: 'lab2', label: 'Coordinate lab', type: 'lab', tag: 'Step 5 · We do it together', title: 'Plot and reflect', lead: 'Tap the grid to plot points, then show their reflection in the mirror line. Plot five points.', mount: mountCoordLab },
-    { id: 'practise', label: 'Practise', type: 'quiz', best: true, tag: 'Step 6 · Your turn', title: 'Practise', lead: '150 questions on angles, symmetry, coordinates and reasoning. Write coordinates like (3,4).', make: practiceSet }
+    { id: 'practise', label: 'Practise', type: 'quiz', best: true, tag: 'Step 6 · Your turn', title: 'Practise', lead: 'Plenty of questions on angles, symmetry, coordinates and reasoning. Write coordinates like (3,4).', make: practiceSet }
   ] });
 })();
 
@@ -3348,7 +3348,7 @@ Studio.addTopic({ n: 8, short: 'Data', title: 'Data and chance', blurb: 'Collect
     { id: 'lab1', label: 'Chart lab', type: 'lab', tag: 'Step 3 · We do it together', title: 'Build a bar chart', lead: 'Move the four sliders and watch the bar chart, the mode, the range and the mean change.', mount: mountBarLab },
     { id: 'learn2', label: 'Averages and chance', type: 'slides', tag: 'Averages and probability', slides: LEARN2 },
     { id: 'lab2', label: 'Chance lab', type: 'lab', tag: 'Step 5 · We do it together', title: 'Counters in a bag', lead: 'Change the counters in the bag, then take 24 counters and compare what you got with what you expected. Do this three times.', mount: mountSpinLab },
-    { id: 'practise', label: 'Practise', type: 'quiz', best: true, tag: 'Step 6 · Your turn', title: 'Practise', lead: '150 questions on charts, averages, probability and reasoning. Write probabilities as fractions like 3/10.', make: practiceSet }
+    { id: 'practise', label: 'Practise', type: 'quiz', best: true, tag: 'Step 6 · Your turn', title: 'Practise', lead: 'Plenty of questions on charts, averages, probability and reasoning. Write probabilities as fractions like 3/10.', make: practiceSet }
   ] });
 })();
 
@@ -3774,7 +3774,7 @@ Studio.addTopic({ n: 10, short: 'Factors', title: 'Factors, multiples and primes
     { id: 'lab1', label: 'Factor lab', type: 'lab', tag: 'Step 3 · We do it together', title: 'Build every rectangle', lead: 'Slide the number and see every rectangle it can make. Explore at least eight numbers, including a prime.', mount: mountFactorLab },
     { id: 'learn2', label: 'Primes and squares', type: 'slides', tag: 'Primes, squares and triangles', slides: LEARN2 },
     { id: 'lab2', label: 'Prime sieve', type: 'lab', tag: 'Step 5 · We do it together', title: 'Find the primes', lead: 'Cross out multiples of 2, 3, 5 and 7. The numbers left are the primes up to 50.', mount: mountSieveLab },
-    { id: 'practise', label: 'Practise', type: 'quiz', best: true, tag: 'Step 6 · Your turn', title: 'Practise', lead: '150 questions on factors, multiples, primes and square numbers. Use the hints one at a time.', make: practiceSet }
+    { id: 'practise', label: 'Practise', type: 'quiz', best: true, tag: 'Step 6 · Your turn', title: 'Practise', lead: 'Plenty of questions on factors, multiples, primes and square numbers. Use the hints one at a time.', make: practiceSet }
   ] });
 })();
 </script>
@@ -4000,7 +4000,7 @@ Studio.addTopic({ n: 501, year: 'P5', dn: 1, replaces: 1, short: 'Place value', 
     { id: 'lab1', label: 'Number builder', type: 'lab', tag: 'Step 3 · We do it together', title: 'Build the number', lead: 'Tap the arrows to build each target number, one column at a time. Build three numbers.', mount: mountBuildLab },
     { id: 'learn2', label: 'Rounding', type: 'slides', tag: 'Rounding and estimating', slides: LEARN2 },
     { id: 'lab2', label: 'Rounding line', type: 'lab', tag: 'Step 5 · We do it together', title: 'Round on the number line', lead: 'Slide the number and choose 10, 100 or 1,000. See which landmark is nearer.', mount: mountRoundLab },
-    { id: 'practise', label: 'Practise', type: 'quiz', best: true, tag: 'Step 6 · Your turn', title: 'Practise', lead: '150 questions on place value, decimals and rounding. Use the hints one at a time.', make: practiceSet }
+    { id: 'practise', label: 'Practise', type: 'quiz', best: true, tag: 'Step 6 · Your turn', title: 'Practise', lead: 'Plenty of questions on place value, decimals and rounding. Use the hints one at a time.', make: practiceSet }
   ] });
 })();
 </script>
@@ -4062,7 +4062,7 @@ K.stage = function (sp) {
     { id: 'learn1', label: sp.l1label || 'Learn', type: 'slides', tag: sp.l1tag || 'Learn it', slides: sp.learn1 },
     { id: 'lab1', label: 'Explore', type: 'lab', tag: 'Step 3 · We do it together', title: sp.lab.title, lead: sp.lab.lead, mount: K.explore(sp.lab) },
     { id: 'learn2', label: sp.l2label || 'Learn more', type: 'slides', tag: sp.l2tag || 'Learn more', slides: sp.learn2 },
-    { id: 'practise', label: 'Practise', type: 'quiz', best: true, tag: 'Step 5 · Your turn', title: 'Practise', lead: '150 questions for this stage. Use the hints one at a time.', make: practise }
+    { id: 'practise', label: 'Practise', type: 'quiz', best: true, tag: 'Step 5 · Your turn', title: 'Practise', lead: 'Plenty of questions for this stage. Use the hints one at a time.', make: practise }
   ] });
 };
 })();
@@ -8654,7 +8654,7 @@ function register(Y) {
       { id: 'lab1', label: 'Cube builder', type: 'lab', tag: 'Step 3 · We do it together', title: 'Cube builder', lead: 'Build stacks of cubes. See the total, the views and the challenges.', mount: cubeLab(lv) },
       { id: 'lab2', label: 'Turn and flip', type: 'lab', tag: 'Step 3 · We do it together', title: 'Turn and flip', lead: 'Turn ' + (lv >= 2 ? 'and flip ' : '') + 'the shape to match the target.', mount: turnLab(lv) },
       { id: 'learn2', label: 'Patterns and puzzles', type: 'slides', tag: 'Patterns and puzzles', slides: ls.B },
-      { id: 'practise', label: 'Practise', type: 'quiz', best: true, tag: 'Step 5 · Your turn', title: 'Practise', lead: '150 questions for this stage. Use the hints one at a time.', make: practise },
+      { id: 'practise', label: 'Practise', type: 'quiz', best: true, tag: 'Step 5 · Your turn', title: 'Practise', lead: 'Plenty of questions for this stage. Use the hints one at a time.', make: practise },
       { id: 'practical', label: 'Real-life problem', type: 'quiz', tag: 'Step 6 · Real-life problems', title: 'Real-life problems', lead: '30 situation questions about boxes, cubes, maps and directions. Low, Medium and High change how many steps each problem has.', make: practical }
     ] };
   if (Y.year === 'P6') delete topic.year;
