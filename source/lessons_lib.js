@@ -10,7 +10,11 @@
   L.F = function (n, d, col) { return '<span style="display:inline-flex;flex-direction:column;align-items:center;line-height:1;font-weight:700;color:' + (col || 'inherit') + '"><span>' + n + '</span><span style="border-top:3px solid currentColor;padding-top:2px;min-width:1.2em;text-align:center">' + d + '</span></span>'; };
   L.BIG = function (inner) { return '<div style="font-size:40px;display:flex;align-items:center;gap:14px;justify-content:center;flex-wrap:wrap">' + inner + '</div>'; };
   L.rec = function (title, say, points) { return L.SC('Let’s recap', title, [L.st(say, BT.sv.list(points))]); };
-  L.turn = function (q, qhtml, a, ahtml) { return L.SC('Your turn', 'Pause, think, then listen', [L.st(q, qhtml), L.st(a, ahtml)]); };
+  L.turn = function (q, qhtml, a, ahtml) {
+    /* when the picture is only a question mark, show the question itself so it can be read on screen */
+    if (!qhtml || qhtml === BT.sv.eq('?')) qhtml = BT.sv.note(q.replace(/^Your turn!\s*/, '').replace(/\s*Pause[^.]*\.\s*$/, ''));
+    return L.SC('Your turn', 'Pause, think, then listen', [L.st(q, qhtml), L.st(a, ahtml)]);
+  };
   L.ep = function (title, goal, scenes) { var e = { title: title, goal: goal, scenes: scenes }; BT.EP = BT.EP || {}; BT.EP[title] = e; return e; };
   L.get = function (title) { var e = BT.EP && BT.EP[title]; if (!e && window.console) console.warn('lesson not found: ' + title); return e; };
   L.use = function (n, items) { BT.lessons(n, 'Watch lesson', items.map(function (x) { return typeof x === 'string' ? L.get(x) : x; })); };
