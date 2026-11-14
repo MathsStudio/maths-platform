@@ -10,7 +10,10 @@
   var mixed = function (n, d) { var w = Math.floor(n / d), r = n % d; return r ? (w ? w + ' ' : '') + simp(r, d) : String(w); };
   var big = function (t) { return '<div style="font-size:clamp(26px,7vw,40px);font-weight:900">' + t + '</div>'; };
   function R(make, rounds) { return BT.rounds({ make: make, rounds: rounds || 6 }); }
-  function lab(ns, id, label, lead, makeFor) { ns.forEach(function (n, v) { if (n !== null) BT.addLab(n, id, label, lead[v] || lead[0], R(makeFor(v))); }); }
+  var REG = {};
+  function lab(ns, id, label, lead, makeFor) { REG[id] = { label: label, lead: lead, mk: makeFor }; ns.forEach(function (n, v) { if (n !== null) BT.addLab(n, id, label, lead[v] || lead[0], R(makeFor(v))); }); }
+  /* reuse an activity in a secondary topic at a given level */
+  function also(id, pairs) { var r = REG[id]; if (!r) return; pairs.forEach(function (p) { BT.addLab(p[0], id, r.label, r.lead[p[1]] || r.lead[r.lead.length - 1] || r.lead[0], R(r.mk(p[1]))); }); }
 
   /* ---------- 1 Place value: rounding decimals, estimating ---------- */
   lab([null, 1, 701], 'x_rounddec', 'Round the decimal', ['', 'Round each decimal to the nearest whole number or tenth.', 'Round each decimal to the given number of decimal places.'], function (v) { return function () {
@@ -257,5 +260,103 @@
     return { vis: vis, q: 'What is the grid reference of the <b>' + it[1] + '</b>?', answer: ref, wrong: [(r + 1) + String.fromCharCode(65 + c), String.fromCharCode(65 + (c + 1) % 5) + (r + 1), String.fromCharCode(65 + c) + ((r + 1) % 4 + 1)], explain: 'Go along to column ' + String.fromCharCode(65 + c) + ', then up to row ' + (r + 1) + ': ' + ref + '.' };
   }; });
 
+  /* ===================== S1 to S3: new activities ===================== */
+  var NM = ['Maya', 'Ben', 'Ali', 'Priya', 'Sam', 'Zara', 'Leo', 'Isla'];
+  var sg = function (x) { return x < 0 ? '−' + Math.abs(x) : String(x); };
+  lab([null, null, null], 'x_neg', 'Negative number workout', [''], function () { return function () {
+    var a = rnd(-12, 12), b = rnd(-9, 9) || 3, op = pick(['+', '−', '×', '÷']), ans, ex;
+    if (op === '÷') { var q = rnd(-9, 9) || 2; a = q * b; ans = q; ex = 'Same signs give a positive answer, different signs a negative one.'; }
+    else if (op === '×') { ans = a * b; ex = 'Same signs give a positive answer, different signs a negative one.'; }
+    else if (op === '+') { ans = a + b; ex = b < 0 ? 'Adding a negative is the same as subtracting ' + Math.abs(b) + '.' : 'Move ' + b + ' to the right on the number line.'; }
+    else { ans = a - b; ex = b < 0 ? 'Subtracting a negative is the same as adding ' + Math.abs(b) + '.' : 'Move ' + b + ' to the left on the number line.'; }
+    var t = sg(a) + ' ' + op + ' ' + (b < 0 ? '(' + sg(b) + ')' : b);
+    return { vis: big(t), q: 'Work out <b>' + t + '</b>.', answer: sg(ans), wrong: [sg(-ans), sg(ans + 2), sg(op === '+' || op === '−' ? a - (op === '+' ? b : -b) : ans - 1)], explain: ex + ' The answer is ' + sg(ans) + '.' };
+  }; });
+  lab([null, null, null], 'x_decx', 'Decimal multiply and divide', [''], function () { return function () {
+    var k = rnd(0, 1);
+    if (k === 0) { var a = rnd(11, 99) / 10, b = pick([0.2, 0.3, 0.4, 0.5, 3, 4, 6]), ans = Math.round(a * b * 1000) / 1000; return { vis: big(T(a) + ' × ' + T(b)), q: 'Work out <b>' + T(a) + ' × ' + T(b) + '</b>.', answer: T(ans), wrong: [T(ans * 10), T(ans / 10), T(ans + 0.1)], explain: 'Multiply without the points, then count the decimal places in the question: ' + T(ans) + '.' }; }
+    var d = pick([0.2, 0.4, 0.5, 0.25, 4, 8]), q = rnd(3, 40) / (d < 1 ? 1 : 10), n = Math.round(q * d * 1000) / 1000;
+    return { vis: big(T(n) + ' ÷ ' + T(d)), q: 'Work out <b>' + T(n) + ' ÷ ' + T(d) + '</b>.', answer: T(q), wrong: [T(q * 10), T(q / 10), T(n * d)], explain: (d < 1 ? 'Multiply both numbers by ' + (d === 0.25 ? 100 : 10) + ' so you divide by a whole number. ' : 'Keep the point in line. ') + 'The answer is ' + T(q) + '.' };
+  }; });
+  lab([null, null, null], 'x_terms', 'Simplify the terms', [''], function () { return function () {
+    var a = rnd(2, 9), b = rnd(1, 8), c = rnd(1, 9), d = rnd(1, 6), x = pick(['x', 'a', 'n', 'p']), y = pick(['y', 'b', 'm', 'q']);
+    var t = a + x + ' + ' + c + y + ' − ' + b + x + ' + ' + d + y, cx = a - b, cy = c + d;
+    var term = function (k, v) { return k === 0 ? '' : k === 1 ? v : k === -1 ? '−' + v : sg(k) + v; };
+    var ans = (term(cx, x) ? term(cx, x) + ' + ' : '') + term(cy, y);
+    return { vis: big(t), q: 'Simplify <b>' + t + '</b>.', answer: ans, wrong: [term(a + b, x) + ' + ' + term(cy, y), term(cx, x) + ' + ' + term(c - d, y), (cx + cy) + x + y], explain: 'Collect the ' + x + ' terms: ' + a + ' − ' + b + ' = ' + cx + '. Collect the ' + y + ' terms: ' + c + ' + ' + d + ' = ' + cy + '.' };
+  }; });
+  lab([null, null, null], 'x_subst', 'Substitution', [''], function () { return function () {
+    var x = rnd(-4, 6) || 2, a = rnd(2, 6), b = rnd(1, 9), k = rnd(0, 2), e, ans;
+    if (k === 0) { e = a + 'x + ' + b; ans = a * x + b; }
+    else if (k === 1) { e = 'x² + ' + b; ans = x * x + b; }
+    else { e = a + 'x² − ' + b; ans = a * x * x - b; }
+    return { vis: big(e), q: 'Find the value of <b>' + e + '</b> when <b>x = ' + sg(x) + '</b>.', answer: sg(ans), wrong: [sg(k === 0 ? a + x + b : k === 1 ? 2 * x + b : (a * x) * (a * x) - b), sg(ans + 1), sg(-ans)], explain: 'Replace x with ' + (x < 0 ? '(' + sg(x) + ')' : x) + ' and use BODMAS: powers first, then multiply, then add or subtract. ' + sg(ans) + '.' };
+  }; });
+  lab([null, null, null], 'x_nth', 'Find the rule', [''], function () { return function () {
+    var d = pick([2, 3, 4, 5, 6, -2, -3]), c = rnd(-3, 9), seq = [1, 2, 3, 4].map(function (n) { return d * n + c; });
+    var rule = function (dd, cc) { return (dd === 1 ? '' : dd === -1 ? '−' : sg(dd)) + 'n' + (cc > 0 ? ' + ' + cc : cc < 0 ? ' − ' + Math.abs(cc) : ''); };
+    return { vis: big(seq.map(sg).join(', ') + ', …'), q: 'What is the nth term of this sequence?', answer: rule(d, c), wrong: [rule(d, c + d), rule(c + d, d), 'n + ' + d], explain: 'The difference is ' + sg(d) + ', so start with ' + sg(d) + 'n. Then adjust to match the first term, ' + sg(seq[0]) + ': ' + rule(d, c) + '.' };
+  }; });
+  lab([null, null, null], 'x_scale', 'Scale factor', [''], function () { return function () {
+    var k = pick([2, 3, 1.5, 0.5, 2.5, 4]), a = rnd(2, 12) * 2, b = rnd(2, 10) * 2, ask = rnd(0, 2);
+    if (ask === 0) return { vis: V.cards([a + ' cm → ' + T(a * k) + ' cm', b + ' cm → ?'], ['b', 'p']), q: 'Two shapes are similar. A side of ' + a + ' cm becomes ' + T(a * k) + ' cm. What does a side of ' + b + ' cm become?', answer: T(b * k) + ' cm', wrong: [T(b + a * k - a) + ' cm', T(b / k) + ' cm', T(b * k * k) + ' cm'], explain: 'Scale factor: ' + T(a * k) + ' ÷ ' + a + ' = ' + T(k) + '. ' + b + ' × ' + T(k) + ' = ' + T(b * k) + ' cm.' };
+    if (ask === 1) return { vis: big(a + ' → ' + T(a * k)), q: 'A length of ' + a + ' cm becomes ' + T(a * k) + ' cm. What is the scale factor?', answer: T(k), wrong: [T(a * k - a), T(1 / k), T(k * 2)], explain: 'Scale factor = new ÷ original = ' + T(a * k) + ' ÷ ' + a + ' = ' + T(k) + '.' };
+    return { vis: big('k = ' + T(k)), q: 'A shape with area ' + a + ' cm² is enlarged by scale factor ' + T(k) + '. What is the new area?', answer: T(a * k * k) + ' cm²', wrong: [T(a * k) + ' cm²', T(a * k * 3) + ' cm²', T(a + k) + ' cm²'], explain: 'Areas scale by k²: ' + a + ' × ' + T(k * k) + ' = ' + T(a * k * k) + ' cm².' };
+  }; });
+  lab([null, null, null], 'x_speed', 'Speed, distance, time', [''], function () { return function () {
+    var s = pick([4, 5, 12, 15, 30, 40, 48, 60, 80]), t = pick([0.5, 1.5, 2, 2.5, 3, 0.25, 0.75]), d = s * t, k = rnd(0, 2), mins = function (h) { var m = Math.round(h * 60); return Math.floor(m / 60) + ' h ' + m % 60 + ' min'; };
+    if (k === 0) return { vis: big(s + ' km/h for ' + mins(t)), q: 'How far do you travel at ' + s + ' km/h for ' + mins(t) + '?', answer: T(d) + ' km', wrong: [T(s * Math.round(t * 60) / 100) + ' km', T(s / t) + ' km', T(d * 2) + ' km'], explain: 'D = S × T = ' + s + ' × ' + T(t) + ' = ' + T(d) + ' km. (' + mins(t) + ' = ' + T(t) + ' hours.)' };
+    if (k === 1) return { vis: big(T(d) + ' km in ' + mins(t)), q: 'What is the average speed for ' + T(d) + ' km in ' + mins(t) + '?', answer: s + ' km/h', wrong: [T(d * t) + ' km/h', T(s * 2) + ' km/h', T(d) + ' km/h'], explain: 'S = D ÷ T = ' + T(d) + ' ÷ ' + T(t) + ' = ' + s + ' km/h.' };
+    return { vis: big(T(d) + ' km at ' + s + ' km/h'), q: 'How long does it take to travel ' + T(d) + ' km at ' + s + ' km/h?', answer: mins(t), wrong: [mins(t + 0.5), T(t) + ' min', mins(t * 2)], explain: 'T = D ÷ S = ' + T(d) + ' ÷ ' + s + ' = ' + T(t) + ' hours = ' + mins(t) + '.' };
+  }; });
+  lab([null, null, null], 'x_areaunits', 'Area and volume units', [''], function () { return function () {
+    var k = rnd(0, 3), n = rnd(2, 9) + pick([0, 0.5]);
+    var P = [['m²', 'cm²', 10000], ['cm²', 'mm²', 100], ['m³', 'cm³', 1000000], ['litres', 'cm³', 1000]][k];
+    return { vis: big(T(n) + ' ' + P[0]), q: 'How many <b>' + P[1] + '</b> is ' + T(n) + ' ' + P[0] + '?', answer: fmt(n * P[2]), wrong: [fmt(n * Math.sqrt(P[2]) | 0) , fmt(n * P[2] / 10), fmt(n * P[2] * 10)], explain: '1 ' + P[0].replace('litres', 'litre') + ' = ' + fmt(P[2]) + ' ' + P[1] + (k < 3 ? ', because you ' + (k === 2 ? 'cube' : 'square') + ' the length conversion' : '') + '. ' + T(n) + ' × ' + fmt(P[2]) + ' = ' + fmt(n * P[2]) + '.' };
+  }; });
+  var SOL = [['cube', 6, 12, 8], ['cuboid', 6, 12, 8], ['triangular prism', 5, 9, 6], ['square-based pyramid', 5, 8, 5], ['tetrahedron', 4, 6, 4], ['pentagonal prism', 7, 15, 10], ['hexagonal prism', 8, 18, 12]];
+  lab([null, null, null], 'x_faces', 'Faces, edges, vertices', [''], function () { return function () {
+    var s = pick(SOL), what = pick([['faces', 1], ['edges', 2], ['vertices', 3]]);
+    return { vis: big(s[0]), q: 'How many <b>' + what[0] + '</b> does a ' + s[0] + ' have?', answer: String(s[what[1]]), wrong: [String(s[what[1]] + 1), String(s[what[1]] - 2), String(s[(what[1] % 3) + 1])], explain: 'A ' + s[0] + ' has ' + s[1] + ' faces, ' + s[2] + ' edges and ' + s[3] + ' vertices. Check: F + V − E = ' + s[1] + ' + ' + s[3] + ' − ' + s[2] + ' = 2.' };
+  }; });
+  var SYM = [['square', 4, 4], ['rectangle', 2, 2], ['equilateral triangle', 3, 3], ['isosceles triangle', 1, 1], ['rhombus', 2, 2], ['parallelogram', 0, 2], ['kite', 1, 1], ['regular hexagon', 6, 6], ['regular pentagon', 5, 5]];
+  lab([null, null, null], 'x_symm', 'Symmetry spotter', [''], function () { return function () {
+    var s = pick(SYM), lines = rnd(0, 1);
+    return { vis: big(s[0]), q: lines ? 'How many <b>lines of symmetry</b> does a ' + s[0] + ' have?' : 'What is the <b>order of rotational symmetry</b> of a ' + s[0] + '?', answer: String(lines ? s[1] : s[2]), wrong: [String((lines ? s[1] : s[2]) + 1), String((lines ? s[1] : s[2]) * 2), String(lines ? s[2] + 2 : s[1] + 3)], explain: 'A ' + s[0] + ' has ' + s[1] + ' line' + (s[1] === 1 ? '' : 's') + ' of symmetry and rotational symmetry of order ' + s[2] + '.' };
+  }; });
+  lab([null, null, null], 'x_datatype', 'Data detective', [''], function () { return function () {
+    var D = [['favourite colour', 'categorical'], ['number of brothers and sisters', 'discrete'], ['height in cm', 'continuous'], ['shoe size', 'discrete'], ['time to run 100 m', 'continuous'], ['type of pet', 'categorical'], ['number of goals scored', 'discrete'], ['mass of an apple', 'continuous']], d = pick(D);
+    return { vis: big(d[0]), q: 'What type of data is <b>' + d[0] + '</b>?', answer: d[1], wrong: ['categorical', 'discrete', 'continuous'].filter(function (x) { return x !== d[1]; }), keepOrder: true,
+      explain: d[1] === 'categorical' ? 'It is a word or group, not a number.' : d[1] === 'discrete' ? 'It is counted, so it can only take certain values.' : 'It is measured, so it can take any value in a range.' };
+  }; });
+  lab([null, null, null], 'x_pctchange', 'Percentage change', [''], function () { return function () {
+    var o = pick([20, 40, 50, 80, 120, 200, 250, 400]), p = pick([5, 10, 15, 20, 25, 30, 40]), up = rnd(0, 1), n = o * (up ? 1 + p / 100 : 1 - p / 100);
+    return { vis: big('£' + o + ' → £' + T(n)), q: 'A price changes from £' + o + ' to £' + T(n) + '. What is the percentage ' + (up ? 'increase' : 'decrease') + '?', answer: p + '%', wrong: [Math.round(Math.abs(n - o) / n * 100) + '%', Math.abs(n - o) + '%', (p + 5) + '%'], explain: 'Change: £' + T(Math.abs(n - o)) + '. Divide by the original, £' + o + ', and × 100: ' + p + '%.' };
+  }; });
+  lab([null, null, null], 'x_perim', 'Perimeter puzzle', [''], function () { return function () {
+    var a = rnd(6, 15), b = rnd(4, 10), c = rnd(2, a - 2), d = rnd(1, b - 2), k = rnd(0, 1);
+    if (k === 0) return { vis: big(a + ' cm × ' + b + ' cm'), q: 'What is the perimeter of a rectangle ' + a + ' cm by ' + b + ' cm?', answer: 2 * (a + b) + ' cm', wrong: [a * b + ' cm', (a + b) + ' cm', 2 * a + b + ' cm'], explain: '2 × (' + a + ' + ' + b + ') = ' + 2 * (a + b) + ' cm.' };
+    return { vis: big('L-shape ' + a + ' by ' + b), q: 'An L-shape is a ' + a + ' cm by ' + b + ' cm rectangle with a ' + c + ' cm by ' + d + ' cm corner cut out. What is its perimeter?', answer: 2 * (a + b) + ' cm', wrong: [2 * (a + b) - 2 * c + ' cm', 2 * (a + b) - c - d + ' cm', (a * b - c * d) + ' cm'], explain: 'Cutting a corner out of a rectangle doesn’t change the perimeter: the two new sides replace the two missing parts. 2 × (' + a + ' + ' + b + ') = ' + 2 * (a + b) + ' cm.' };
+  }; });
+
+  /* S1 */
+  also('x_rounddec', [[801, 2]]); also('x_estimate', [[801, 2]]); also('x_factors', [[802, 1]]); also('x_neg', [[802, 0]]);
+  also('x_fcompare', [[803, 1]]); also('x_simplify', [[803, 1]]); also('x_fadd', [[803, 2]]); also('x_fmult', [[803, 2]]);
+  also('x_pctof', [[804, 2]]); also('x_fdp', [[804, 2]]); also('x_pctchange', [[804, 0]]); also('x_ratio', [[805, 2]]); also('x_money', [[806, 2]]);
+  also('x_speed', [[807, 0]]); also('x_clock', [[807, 2]]); also('x_units', [[808, 2]]); also('x_perim', [[808, 0]]); also('x_triarea', [[808, 2]]);
+  also('x_nth', [[809, 0]]); also('x_terms', [[809, 0]]); also('x_balance', [[809, 2]]); also('x_lines', [[810, 2]]); also('x_poly', [[810, 2], [811, 1]]);
+  also('x_symm', [[811, 0]]); also('x_coords', [[811, 2]]); also('x_datatype', [[812, 0]]); also('x_avg', [[812, 2]]); also('x_prob', [[812, 2]]); also('x_nets', [[813, 1]]); also('x_faces', [[813, 0]]);
+  /* S2 */
+  also('x_rounddec', [[821, 2]]); also('x_neg', [[821, 0]]); also('x_decx', [[821, 0]]); also('x_prime', [[821, 2]]); also('x_sqcube', [[821, 2]]); also('x_fadd', [[821, 2]]);
+  also('x_pctof', [[822, 2]]); also('x_fdp', [[822, 2]]); also('x_pctchange', [[822, 0]]); also('x_ratio', [[823, 2]]); also('x_money', [[824, 2]]);
+  also('x_speed', [[825, 0]]); also('x_clock', [[825, 2]]); also('x_areaunits', [[826, 0]]); also('x_faces', [[826, 0]]); also('x_volume', [[826, 2]]);
+  also('x_terms', [[827, 0]]); also('x_balance', [[827, 2]]); also('x_subst', [[827, 0]]); also('x_nth', [[828, 0]]); also('x_lines', [[829, 2]]); also('x_poly', [[829, 2]]);
+  also('x_scale', [[831, 0]]); also('x_avg', [[832, 2]]); also('x_prob', [[832, 2]]); also('x_transform', [[833, 2]]); also('x_nets', [[833, 1]]);
+  /* S3 */
+  also('x_sqcube', [[841, 2]]); also('x_factors', [[841, 2]]); also('x_pctchange', [[841, 0]]); also('x_money', [[842, 2]]); also('x_speed', [[843, 0]]);
+  also('x_faces', [[844, 0]]); also('x_volume', [[844, 2]]); also('x_nth', [[845, 0]]); also('x_terms', [[845, 0]]); also('x_subst', [[845, 0]]);
+  also('x_balance', [[846, 2]]); also('x_scale', [[851, 0]]); also('x_poly', [[851, 2]]); also('x_avg', [[852, 2]]); also('x_symm', [[853, 0]]); also('x_transform', [[853, 2]]);
+
+  BT.ACTGEN = REG;
   if (BT.relabelActivities) BT.relabelActivities();
 })();

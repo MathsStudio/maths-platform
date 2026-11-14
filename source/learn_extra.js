@@ -74,4 +74,57 @@
       ['Use the perpendicular height, at a right angle to the base, not a sloping side.', 'Answers are in square units: cm² or m².'],
       ['Example 1: base 10 m, height 4 m → 20 m².', 'Example 2: base 9 cm, height 6 cm → 27 cm².', 'Example 3: base 15 cm, height 8 cm → 60 cm².'])
   ]);
+  /* S2 number: negatives, three decimal places, primes and factors (asked in the S2 question set) */
+  addLearn(821, 'learn9', 'Negatives, decimals, primes and factors', [
+    X('Calculating with negative numbers', 'Work out −7 + 12 and (−4) × (−6).',
+      ['Adding: start at −7 on the number line and move 12 to the right.', '−7 + 12 = 5.', 'Multiplying: two negatives give a positive.', '(−4) × (−6) = 24.'],
+      ['start at −7', 'right 12', '5', '− × − = +'], '5 and 24',
+      'Weather forecasters work out temperature changes below zero.',
+      'how to add, subtract, multiply and divide with negative numbers.',
+      ['Subtracting a negative is the same as adding: 3 − (−5) = 8.', 'Same signs give a positive answer; different signs give a negative answer.'],
+      ['Example 1: −3 − 8 = −11.', 'Example 2: 5 − (−2) = 7.', 'Example 3: (−36) ÷ 4 = −9.']),
+    X('Rounding to three decimal places', 'Round 4.73862 to three decimal places.',
+      ['Count three places after the point: 4.738|62.', 'Look at the next digit: 6.', '6 is 5 or more, so round the 8 up to 9.', 'The answer is 4.739.'],
+      ['4.738|62', 'next digit 6', 'round up', '4.739'], '4.739',
+      'Scientists and engineers give measurements to three decimal places.',
+      'how to round a decimal to three places.',
+      ['Keep any zeros that are needed: 2.1996 → 2.200 to three places.', 'Only the digit straight after the cut decides.'],
+      ['Example 1: 0.12345 → 0.123.', 'Example 2: 7.0806 → 7.081.', 'Example 3: 3.14159 → 3.142.']),
+    X('Primes, factors and multiples', 'Is 51 prime? Find the HCF and LCM of 12 and 18.',
+      ['A prime has exactly two factors: 1 and itself.', '51 = 3 × 17, so 51 is not prime.', 'Factors of 12 and 18 in common: 1, 2, 3, 6. The HCF is 6.', 'Multiples of 12: 12, 24, 36 … 36 is the first also in 18’s list, so the LCM is 36.'],
+      ['two factors', '51 = 3 × 17', 'HCF 6', 'LCM 36'], 'Not prime; HCF 6, LCM 36',
+      'Bus timetables use the LCM to find when two buses leave together again.',
+      'how to spot primes and find the highest common factor and lowest common multiple.',
+      ['1 is not prime: it has only one factor.', 'HCF × LCM = the two numbers multiplied: 6 × 36 = 12 × 18.'],
+      ['Example 1: 29 is prime.', 'Example 2: HCF of 20 and 30 is 10.', 'Example 3: LCM of 4 and 6 is 12.'])
+  ]);
+
+  /* S3 algebra: substitution and the nth term (asked in the S3 question set) */
+  addLearn(845, 'learn9', 'Substitution and the nth term', [
+    X('Substituting into an expression', 'Find 3a² − 2b when a = 4 and b = −5.',
+      ['Swap each letter for its number, in brackets.', '3 × (4)² − 2 × (−5).', 'Powers first: 4² = 16, so 3 × 16 = 48.', '− 2 × (−5) = +10, so 48 + 10 = 58.'],
+      ['3(4)² − 2(−5)', '4² = 16', '48', '58'], '58',
+      'Spreadsheets substitute numbers into formulas every time a value changes.',
+      'how to put numbers in place of letters, following BODMAS.',
+      ['Use brackets for negative numbers so the signs stay right.', '3a² means 3 × a², not (3a)².'],
+      ['Example 1: 2x + 7 when x = 3 → 13.', 'Example 2: p² − q when p = −3, q = 4 → 5.', 'Example 3: 5(m − n) when m = 2, n = −1 → 15.']),
+    X('Finding the nth term', 'Find the nth term of 7, 11, 15, 19, …',
+      ['The difference each time is 4, so start with 4n.', '4n gives 4, 8, 12, 16.', 'Each term is 3 more than that.', 'The nth term is 4n + 3.'],
+      ['+4 each time', '4n', '+3', '4n + 3'], '4n + 3',
+      'Taxi fares follow a rule: a fixed charge plus the same cost per mile.',
+      'how to write a rule for any term of a linear sequence.',
+      ['Check the rule: n = 1 gives 4 + 3 = 7. ✓', 'A falling sequence has a negative difference: 20, 17, 14 … is 23 − 3n.'],
+      ['Example 1: 5, 8, 11 … → 3n + 2.', 'Example 2: 2, 7, 12 … → 5n − 3.', 'Example 3: 10, 8, 6 … → 12 − 2n.'])
+  ]);
+
+  /* S1 data: types of data */
+  addLearn(812, 'learn9', 'Types of data', [
+    X('Types of data', 'Is shoe size discrete or continuous? Is favourite colour numerical?',
+      ['Categorical data is in words or groups: favourite colour.', 'Numerical data is numbers.', 'Discrete numbers are counted and take set values: shoe size, goals.', 'Continuous numbers are measured and can be any value: height, time.'],
+      ['categorical', 'numerical', 'discrete: counted', 'continuous: measured'], 'Discrete; no, it is categorical',
+      'Survey designers choose the right chart for each type of data.',
+      'how to sort data into categorical, discrete and continuous.',
+      ['Bar charts suit categorical and discrete data; continuous data goes in grouped tables or histograms.', 'Ask: could it be 2.37…? If yes, it is continuous.'],
+      ['Example 1: number of pets → discrete.', 'Example 2: time to run 100 m → continuous.', 'Example 3: type of car → categorical.'])
+  ]);
 })();
