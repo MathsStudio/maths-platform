@@ -65,6 +65,17 @@
     '.gp-stage .gp-fit svg{zoom:1.45;max-width:100%;height:auto}',
     '.gp-stage svg text{font-family:inherit}',
     /* controls */
+    '.gp-list{margin:4px auto 12px;max-width:1000px;width:100%;background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:10px 12px}',
+    '.gp-list-h{font-weight:800;font-size:14px;color:var(--muted);margin:0 0 6px 4px;cursor:pointer;min-height:32px;display:flex;align-items:center;gap:6px}',
+    '.gp-list:not([open]) .gp-list-h{margin:0}',
+    '.gp-list-h{list-style:none}.gp-list-h::-webkit-details-marker{display:none}.gp-list-h::after{content:"▾";margin-left:auto;font-size:16px;color:#881cd6}.gp-list[open] .gp-list-h::after{content:"▴"}',
+    '.gp-list ul{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:4px 10px}',
+    '.gp-q{display:flex;align-items:flex-start;gap:8px;width:100%;min-height:44px;text-align:left;border:0;border-radius:10px;background:transparent;color:var(--fg);font:inherit;font-weight:700;font-size:15px;line-height:1.3;padding:8px 10px;cursor:pointer}',
+    '.gp-q:hover{background:var(--surface-2)}',
+    '.gp-q.on{background:#ecdcf8;color:#5a1291}',
+    '.gp-q:focus-visible{outline:3px solid #881cd6;outline-offset:1px}',
+    '.gp-dot{flex:none;width:18px;height:18px;margin-top:1px;border-radius:50%;border:2px solid #b98be6;color:#881cd6;font-size:9px;display:flex;align-items:center;justify-content:center}',
+    '.gp-q.on .gp-dot{border-color:#881cd6}',
     '.gp-cap{min-height:48px;font-size:16px;line-height:1.45;padding:2px 4px}',
     '.gp-ctl{display:flex;align-items:center;gap:8px;flex-wrap:wrap}',
     '.gp-ctl .btn{min-height:44px}',
@@ -96,14 +107,16 @@
 
   H.gifPlayer = function (host, ep, meta) {
     meta = meta || { q: 0, of: 1 };
-    var slides = [{ title: true, steps: [{ say: (meta.of > 1 ? 'Question ' + (meta.q + 1) + '. ' : '') + ep.title + ' In this lesson, we will learn ' + (ep.goal || '') }] }];
+    var slides = [{ title: true, steps: [{ say: ep.title + ' In this lesson, we will learn ' + (ep.goal || '') }] }];
     ep.scenes.forEach(function (sc) { slides.push(sc); });
     var chunks = [];
     slides.forEach(function (sl, si) { sl.steps.forEach(function (st, k) { chunks.push({ si: si, k: k, say: st.say }); }); });
     var dashes = ''; for (var d = 0; d < meta.of; d++) dashes += '<i class="' + (d <= meta.q ? 'on' : '') + '"></i>';
     var short = ep.title.replace(/\?$/, '');
 
-    host.innerHTML = '<div class="gp"><div class="gp-frame"><div class="gp-stage"></div><button class="gp-close" type="button" aria-label="Close full screen">✕</button></div>' +
+    var list = (meta.titles && meta.titles.length > 1) ? '<details class="gp-list"' + (window.innerWidth > 700 ? ' open' : '') + '><summary class="gp-list-h">Questions in this Watch lesson</summary><ul>' +
+      meta.titles.map(function (tt, j) { return '<li><button type="button" class="gp-q' + (j === meta.q ? ' on' : '') + '" data-q="' + j + '"' + (j === meta.q ? ' aria-current="true"' : '') + '><span class="gp-dot" aria-hidden="true">' + (j === meta.q ? '▶' : '') + '</span>' + tt + '</button></li>'; }).join('') + '</ul></details>' : '';
+    host.innerHTML = list + '<div class="gp"><div class="gp-frame"><div class="gp-stage"></div><button class="gp-close" type="button" aria-label="Close full screen">✕</button></div>' +
       '<div class="gp-cap" aria-live="polite"></div>' +
       '<div class="gp-ctl"><button class="btn" type="button" data-p>Play the lesson</button>' +
       '<button class="btn ghost" type="button" data-b aria-label="Back one step">◀ Back</button>' +
@@ -144,7 +157,7 @@
     function build(si) {
       var sl = slides[si], h;
       if (sl.title) {
-        h = chrome({}, true) + '<div class="gp-title">' + ICON + (meta.of > 1 ? '<div class="t1">Question ' + (meta.q + 1) + ' of ' + meta.of + '</div>' : '') + '<div class="t2">' + ep.title + '</div></div>';
+        h = chrome({}, true) + '<div class="gp-title">' + ICON + '<div class="t2">' + ep.title + '</div></div>';
         stage.innerHTML = h; return;
       }
       h = chrome(sl) + '<div class="gp-body"><div class="gp-fit"><h3 class="gp-h">' + sl.h + '</h3>' + (sl.sub ? '<p class="gp-sub">' + sl.sub + '</p>' : '');
@@ -194,13 +207,18 @@
     root.querySelector('[data-b]').addEventListener('click', function () { go(idx - 1); });
     root.querySelector('[data-n]').addEventListener('click', function () { go(idx + 1); });
     root.querySelector('[data-r]').addEventListener('click', function () { stop(); idx = 0; shown = -1; current = { stop: stop }; playing = true; pb.textContent = 'Pause'; say(0); });
+    host.querySelectorAll('[data-q]').forEach(function (bt) { bt.addEventListener('click', function () {
+      var j = Number(bt.getAttribute('data-q')); if (j === meta.q) { if (!playing) pb.click(); return; }
+      stop(); H.__gpAutoplay = true; if (H.slideJump) H.slideJump(j);
+    }); });
     current = { stop: stop }; show(0); host.__storyShow = show; host.__storyN = chunks.length;
+    if (H.__gpAutoplay) { H.__gpAutoplay = false; setTimeout(function () { if (root.isConnected && !playing) pb.click(); }, 350); }
   };
 
   function toSlides(episodes) {
     return episodes.map(function (ep, i) {
       return { title: ep.title, say: ['Press play and your teacher will explain this step by step.'], goal: ep.goal || ep.title.toLowerCase(), noMore: true, kind: 'Watch lesson',
-        live: function (host) { H.gifPlayer(host, ep, { q: i, of: episodes.length }); } };
+        live: function (host) { H.gifPlayer(host, ep, { q: i, of: episodes.length, titles: episodes.map(function (e) { return e.title; }) }); } };
     });
   }
   /* put the episodes in a Watch step at the front of a topic. Older Watch lessons are removed,

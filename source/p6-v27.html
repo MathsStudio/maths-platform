@@ -1401,6 +1401,8 @@ var SLIDE_MORE = {"1.learn1": [{"more": ["Our number system uses only ten digits
 
   function mountSlides(pane, t, step) {
     var slides = step.slides;
+    /* lets a slide's own content jump to another slide in the same step (the Watch lesson question list) */
+    S.h.slideJump = function (i) { if (i >= 0 && i < slides.length) { state.slide = i; draw(); window.scrollTo({ top: 0, behavior: 'smooth' }); } };
     function draw() {
       narStop();
       var s = slides[state.slide], k = state.slide, lastSlide = k === slides.length - 1;

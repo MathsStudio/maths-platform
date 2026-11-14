@@ -42,12 +42,13 @@
 
   /* squared grid c x r; shade: number of squares shaded row by row, or a function(i,j) */
   LK.grid = function (c, r, shade, o) {
-    o = o || {}; var u = o.u || Math.min(34, Math.floor(300 / Math.max(c, r))), s = '', x0 = 22, y0 = 8, k = 0;
+    o = o || {}; var u = o.u || Math.min(34, Math.floor(300 / Math.max(c, r))), s = '', x0 = o.h ? 62 : 22, y0 = 8, k = 0;
     for (var j = 0; j < r; j++) for (var i = 0; i < c; i++) {
       var on = typeof shade === 'function' ? shade(i, j) : k < (shade || 0);
       if (on !== 'skip') s += '<rect x="' + (x0 + i * u) + '" y="' + (y0 + j * u) + '" width="' + u + '" height="' + u + '" style="fill:' + (on ? hs(o.hue || 215, 'band') : 'var(--surface)') + ';stroke:var(--fg);stroke-width:' + (on ? 2 : 1) + '"/>';
       k++;
     }
+    if (o.mirror !== undefined) s += '<line x1="' + (x0 + o.mirror * u) + '" y1="' + (y0 - 6) + '" x2="' + (x0 + o.mirror * u) + '" y2="' + (y0 + r * u + 6) + '" style="stroke:#e2620f;stroke-width:3;stroke-dasharray:7 5"/>';
     if (o.w) s += txt(x0 + c * u / 2, y0 + r * u + 20, o.w, 14);
     if (o.h) s += txt(x0 - 12, y0 + r * u / 2 + 5, o.h, 14, 'end');
     var W = x0 + c * u + 12, Hh = y0 + r * u + (o.w ? 28 : 10);
