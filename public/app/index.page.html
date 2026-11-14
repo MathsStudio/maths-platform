@@ -1400,7 +1400,14 @@ var SLIDE_MORE = {"1.learn1": [{"more": ["Our number system uses only ten digits
   function mountSlides(pane, t, step) {
     var slides = step.slides;
     /* lets a slide's own content jump to another slide in the same step (the Watch lesson question list) */
-    S.h.slideJump = function (i) { if (i >= 0 && i < slides.length) { state.slide = i; draw(); window.scrollTo({ top: 0, behavior: 'smooth' }); } };
+    S.h.slideJump = function (i) {
+      if (i < 0 || i >= slides.length) return;
+      var keep = pane.querySelector('.gp-list'), y0 = keep ? keep.getBoundingClientRect().top : null;
+      state.slide = i; draw();
+      /* keep the question list where it was on screen, so the page does not jump */
+      var now = pane.querySelector('.gp-list');
+      if (y0 !== null && now) window.scrollBy(0, now.getBoundingClientRect().top - y0);
+    };
     function draw() {
       narStop();
       var s = slides[state.slide], k = state.slide, lastSlide = k === slides.length - 1;
