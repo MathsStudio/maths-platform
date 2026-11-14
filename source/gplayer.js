@@ -234,11 +234,14 @@
      except those whose titles are listed in keep: they stay, after the new ones, in the new style. */
   BT.lessons = function (n, label, episodes, keep) {
     var t = S.topics[n]; if (!t) { if (window.console) console.warn('lessons: no topic ' + n); return; }
+    BT.EP = BT.EP || {}; episodes.forEach(function (e) { if (e && e.title) BT.EP[e.title] = e; });
+    episodes = episodes.filter(function (e) { if (!e && window.console) console.warn('lessons: missing episode in topic ' + n); return !!e; });
     var old = t.steps.filter(function (s) { return s.id === 'watch'; })[0], kept = [];
     if (old && keep) (old.slides || []).forEach(function (sl) { if (sl.ep && keep.indexOf(sl.title) >= 0) kept.push(sl.ep); });
     t.steps = t.steps.filter(function (s) { return s.id !== 'watch'; });
     var m = H.slideMeta; if (m) { delete m.goals[n + '.watch']; delete m.more[n + '.watch']; }
     BT.add(n, 'watch', label || 'Watch lesson', toSlides(episodes.concat(kept), n));
+    BT.EP_BY_TOPIC = BT.EP_BY_TOPIC || {}; BT.EP_BY_TOPIC[n] = episodes.concat(kept).map(function (e) { return e.title; });
     var st = t.steps.filter(function (s) { return s.id === 'watch'; })[0], i = t.steps.indexOf(st);
     if (i > 0) { t.steps.splice(i, 1); t.steps.unshift(st); }
     S.arrange(t);

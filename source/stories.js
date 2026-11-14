@@ -122,7 +122,7 @@ var cache = {};
 S.storyFor = function (n) {
   if (cache[n]) return cache[n];
   var base = n >= 700 ? n - 700 : n >= 500 ? n - 500 : n, v = n >= 700 ? 2 : n >= 500 ? 0 : 1, m = MAP[base]; if (!m) return (cache[n] = null);
-  var ve = base >= 11 ? v - 1 : v;
+  var ve = base >= 11 ? Math.max(0, v - 1) : v;
   var mk = function (list, vv) { return list.filter(function (f) { return FAM[f]; }).map(function (f) { return F('story_' + f + '_' + vv, FAM[f](vv)); }); };
   return (cache[n] = { easy: mk(m[0], ve), hard: mk(m[1], v) });
 };

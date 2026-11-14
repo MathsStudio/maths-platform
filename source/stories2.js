@@ -275,22 +275,103 @@ FAM.multPacks = function (v) { return function () {
     hints: ['Partition ' + a + ' into ' + Math.floor(a / 10) * 10 + ' and ' + a % 10 + '.', 'Multiply each part by ' + b + ', then add.'], explain: Math.floor(a / 10) * 10 + ' × ' + b + ' = ' + Math.floor(a / 10) * 10 * b + ' and ' + a % 10 + ' × ' + b + ' = ' + a % 10 * b + ', so ' + a * b + '.' });
 }; };
 
+/* ===== More real-life families for the questions assigned to topics 3 to 13 ===== */
+function frs(n, d) { var g = gcd(n, d); n /= g; d /= g; return d === 1 ? String(n) : n + '/' + d; }
+FAM.mixedPizza = function (v) { return function () {
+  var d = pick(v === 0 ? [2, 4] : [3, 4, 6, 8]), w = rnd(1, v === 0 ? 3 : 5), r = rnd(1, d - 1), n = w * d + r, nm = pick(NM), k = rnd(0, 1);
+  if (k === 0) return MC({ text: 'At a party, ' + nm + ' counts <b>' + n + '</b> slices of pizza left. Each pizza was cut into <b>' + d + '</b> equal slices. How much pizza is left, as a mixed number?', hints: ['How many groups of ' + d + ' slices make whole pizzas?', n + ' ÷ ' + d + ' = ' + w + ' remainder ' + r + '.'], explain: n + '/' + d + ' = ' + w + ' ' + frs(r, d) + ' pizzas.' }, w + ' ' + frs(r, d), [(w + 1) + ' ' + frs(r, d), w + ' ' + frs(Math.max(1, r - 1) === r ? r + 1 : r - 1, d), r + ' ' + frs(w, d)]);
+  return QS({ text: 'A recipe needs <b>' + w + ' ' + frs(r, d) + '</b> cups of flour. The only scoop holds <b>1/' + d + '</b> of a cup. How many scoops are needed?', answer: String(n), hints: ['Each whole cup is ' + d + ' scoops.', w + ' × ' + d + ' + ' + r + '.'], explain: w + ' × ' + d + ' + ' + r + ' = ' + n + ' scoops.' });
+}; };
+FAM.fracDecMoney = function (v) { return function () {
+  var p = pick(v === 0 ? [[1, 2], [1, 4], [3, 4], [1, 10], [7, 10]] : [[1, 5], [2, 5], [3, 5], [1, 8], [3, 8], [3, 20]]), amt = pick([4, 8, 10, 20, 40]), ans = Math.round(amt * p[0] / p[1] * 100) / 100, nm = pick(NM);
+  return QS({ text: nm + ' spends <b>' + p[0] + '/' + p[1] + '</b> of their <b>£' + amt + '</b> birthday money on a book. How much does the book cost? (£)', answer: T(ans), hints: ['Find 1/' + p[1] + ' first: £' + amt + ' ÷ ' + p[1] + '.', 'Then multiply by ' + p[0] + '.'], explain: '£' + amt + ' ÷ ' + p[1] + ' × ' + p[0] + ' = £' + ans.toFixed(2) + '.' });
+}; };
+FAM.fracSimplifyStory = function (v) { return function () {
+  var d0 = pick([3, 4, 5, 6, 8]), n0 = rnd(1, d0 - 1); while (gcd(n0, d0) !== 1) n0 = rnd(1, d0 - 1); var k = rnd(2, 6), n = n0 * k, d = d0 * k, nm = pick(NM);
+  return MC({ text: nm + ' scored <b>' + n + '</b> out of <b>' + d + '</b> in a quiz. Write the score as a fraction in its simplest form.', hints: ['Write it as ' + n + '/' + d + '.', 'Divide the top and the bottom by ' + k + '.'], explain: n + '/' + d + ' = ' + n0 + '/' + d0 + ' (divide both by ' + k + ').' }, n0 + '/' + d0, [n + '/' + d, (n0 + 1) + '/' + d0, n0 + '/' + (d0 + 1)]);
+}; };
+FAM.fracMultStory = function (v) { return function () {
+  var a = rnd(1, 3), b = pick([4, 5, 6, 8]), c = rnd(1, 3), d = pick([2, 3, 4]), nm = pick(NM);
+  return MC({ text: nm + ' has <b>' + a + '/' + b + '</b> of a cake and eats <b>' + c + '/' + d + '</b> of that piece. What fraction of the whole cake is eaten?', hints: ['"Of" means multiply.', 'Multiply the tops and multiply the bottoms.'], explain: a + '/' + b + ' × ' + c + '/' + d + ' = ' + (a * c) + '/' + (b * d) + (frs(a * c, b * d) !== (a * c) + '/' + (b * d) ? ' = ' + frs(a * c, b * d) : '') + '.' }, frs(a * c, b * d), [(a + c) + '/' + (b + d), frs(a * d, b * c), frs(a * c, b + d)]);
+}; };
+FAM.pctClass = function (v) { return function () {
+  var tot = pick(v === 0 ? [20, 25, 50] : [20, 25, 40, 50, 80]), k = rnd(1, tot - 1), pc = k / tot * 100; while (pc % 1) { k = rnd(1, tot - 1); pc = k / tot * 100; }
+  var what = pick(['walk to school', 'have a pet', 'play football', 'can swim 25 m']);
+  return QS({ text: 'In a group of <b>' + tot + '</b> children, <b>' + k + '</b> ' + what + '. What percentage is that? (%)', answer: String(pc), hints: ['Write it as a fraction: ' + k + '/' + tot + '.', 'Make the bottom 100: multiply top and bottom by ' + (100 / tot) + '.'], explain: k + '/' + tot + ' = ' + pc + '/100 = ' + pc + '%.' });
+}; };
+FAM.decimalRace = function (v) { return function () {
+  var names = shuffle(NM.slice()).slice(0, 4), t = []; while (t.length < 4) { var x = (v === 0 ? rnd(100, 199) / 10 : rnd(1000, 1499) / 100); if (t.indexOf(x) < 0) t.push(x); }
+  var i = t.indexOf(Math.min.apply(null, t));
+  return MC({ text: 'Sprint times in seconds: ' + names.map(function (n, j) { return n + ' <b>' + T(t[j]) + '</b>'; }).join(', ') + '. Who was the fastest?', hints: ['The fastest has the smallest time.', 'Compare the whole numbers first, then the tenths' + (v ? ', then the hundredths' : '') + '.'], explain: names[i] + ' with ' + T(t[i]) + ' seconds.' }, names[i], names);
+}; };
+FAM.clock24 = function (v) { return function () {
+  var h = rnd(13, 22), m = pick([0, 15, 30, 45, 10, 20, 40, 50]), dur = pick([25, 40, 45, 50, 75, 90, 105]), e = h * 60 + m + dur, f = function (x) { var hh = Math.floor(x / 60) % 24, mm = x % 60; return (hh < 10 ? '0' : '') + hh + ':' + (mm < 10 ? '0' : '') + mm; };
+  if (v === 0) return MC({ text: 'A film starts at <b>' + ((h - 12) + ':' + (m < 10 ? '0' : '') + m) + ' pm</b>. What is that on a 24-hour clock?', hints: ['After midday, add 12 to the hour.', (h - 12) + ' + 12 = ' + h + '.'], explain: (h - 12) + ':' + (m < 10 ? '0' : '') + m + ' pm = ' + f(h * 60 + m) + '.' }, f(h * 60 + m), [f((h - 12) * 60 + m), f((h - 11) * 60 + m), f((h + 1) * 60 + m)]);
+  return QS({ text: 'A train leaves at <b>' + f(h * 60 + m) + '</b> and the journey takes <b>' + dur + ' minutes</b>. What time does it arrive? (24-hour clock, like 14:05)', answer: f(e), hints: ['Count on to the next hour first.', dur + ' minutes is ' + Math.floor(dur / 60) + ' hour' + (Math.floor(dur / 60) === 1 ? '' : 's') + ' and ' + dur % 60 + ' minutes.'], explain: f(h * 60 + m) + ' + ' + dur + ' minutes = ' + f(e) + '.' });
+}; };
+FAM.recipeUnits = function (v) { return function () {
+  var k = rnd(0, 2), nm = pick(NM);
+  if (k === 0) { var kg = rnd(2, 9) / (v === 0 ? 1 : 4), g = kg * 1000, use = rnd(1, 4) * 100; return QS({ text: nm + ' has a <b>' + T(kg) + ' kg</b> bag of flour and uses <b>' + use + ' g</b>. How many grams are left? (g)', answer: String(g - use), hints: ['1 kg = 1,000 g, so ' + T(kg) + ' kg = ' + fmtN(g) + ' g.', 'Then subtract ' + use + ' g.'], explain: fmtN(g) + ' − ' + use + ' = ' + fmtN(g - use) + ' g.' }); }
+  if (k === 1) { var cm = rnd(150, 450), m2 = cm / 100; return QS({ text: 'A shelf is <b>' + cm + ' cm</b> long. How long is it in metres? (m)', answer: T(m2), hints: ['100 cm = 1 m.', 'Divide by 100.'], explain: cm + ' ÷ 100 = ' + T(m2) + ' m.' }); }
+  if (v === 0) { var ml = rnd(2, 9) * 250, cups = ml / 250; return QS({ text: 'A jug holds <b>' + fmtN(ml) + ' ml</b>. A cup holds <b>250 ml</b>. How many cups can be filled?', answer: String(cups), hints: ['How many 250s in ' + fmtN(ml) + '?', '4 cups make 1 litre.'], explain: fmtN(ml) + ' ÷ 250 = ' + cups + ' cups.' }); }
+  var mi = rnd(2, 20) * 5, km = mi * 1.6; return QS({ text: 'A road sign says <b>' + mi + ' miles</b>. About how many kilometres is that? (1 mile is about 1.6 km)', answer: T(km), hints: ['Multiply by 1.6.', mi + ' × 1.6.'], explain: mi + ' × 1.6 = ' + T(km) + ' km.' });
+}; };
+FAM.boxVolume = function (v) { return function () {
+  var l = rnd(2, v === 0 ? 5 : 12), w = rnd(2, v === 0 ? 4 : 8), h = rnd(2, v === 0 ? 4 : 10), nm = pick(NM);
+  return QS({ text: nm + ' packs sugar cubes into a box <b>' + l + '</b> cubes long, <b>' + w + '</b> cubes wide and <b>' + h + '</b> cubes high. How many cubes fit?', answer: String(l * w * h), hints: ['One layer holds ' + l + ' × ' + w + ' = ' + l * w + ' cubes.', 'There are ' + h + ' layers.'], explain: l + ' × ' + w + ' × ' + h + ' = ' + l * w * h + ' cubes.' });
+}; };
+FAM.triangleGarden = function (v) { return function () {
+  var b = rnd(2, 10) * 2, h = rnd(3, 12);
+  return QS({ text: 'A triangular flower bed has a base of <b>' + b + ' m</b> and a height of <b>' + h + ' m</b>. What is its area? (m²)', answer: String(b * h / 2), hints: ['A triangle is half of a rectangle.', '½ × base × height.'], explain: '½ × ' + b + ' × ' + h + ' = ' + b * h / 2 + ' m².' });
+}; };
+FAM.polygonStory = function (v) { return function () {
+  var P = [[5, 'pentagon'], [6, 'hexagon'], [8, 'octagon'], [3, 'triangle'], [4, 'square']], p = pick(P), side = rnd(2, 15);
+  if (rnd(0, 1)) return MC({ text: 'A garden path is made from tiles. Each tile is a shape with <b>' + p[0] + ' equal sides</b>. What is the shape called?', hints: ['Count the sides.', 'Penta means 5, hexa means 6, octa means 8.'], explain: 'A ' + p[0] + '-sided shape is a ' + p[1] + '.' }, p[1], P.map(function (x) { return x[1]; }));
+  return QS({ text: 'A regular ' + p[1] + ' has sides of <b>' + side + ' cm</b>. What is its perimeter? (cm)', answer: String(p[0] * side), hints: ['A ' + p[1] + ' has ' + p[0] + ' sides.', 'All the sides are the same length.'], explain: p[0] + ' × ' + side + ' = ' + p[0] * side + ' cm.' });
+}; };
+FAM.circleWheel = function (v) { return function () {
+  var r = rnd(5, 40), k = rnd(0, 1);
+  if (k === 0) return QS({ text: 'A bike wheel has a radius of <b>' + r + ' cm</b>. What is its diameter? (cm)', answer: String(2 * r), hints: ['The diameter goes right across through the centre.', 'It is twice the radius.'], explain: '2 × ' + r + ' = ' + 2 * r + ' cm.' });
+  return QS({ text: 'A round table is <b>' + 2 * r + ' cm</b> across, through the centre. What is its radius? (cm)', answer: String(r), hints: ['The distance across through the centre is the diameter.', 'The radius is half of it.'], explain: 2 * r + ' ÷ 2 = ' + r + ' cm.' });
+}; };
+FAM.streetLines = function (v) { return function () {
+  var k = rnd(0, 2), names = ['parallel', 'perpendicular', 'neither'], st = [['Main Street and High Street run side by side and never meet.', 0], ['Mill Road crosses Station Road at a right angle.', 1], ['Park Lane crosses Church Street at a sharp angle, not a right angle.', 2]][k];
+  return MC({ text: st[0] + ' Are the two roads parallel, perpendicular or neither?', hints: ['Parallel lines never meet.', 'Perpendicular lines meet at a right angle.'], explain: 'They are ' + names[st[1]] + '.' }, names[st[1]], names);
+}; };
+FAM.modeRangeStory = function (v) { return function () {
+  var d = []; for (var i = 0; i < 6; i++) d.push(rnd(1, 15)); d[3] = d[1]; var s = d.slice().sort(function (a, b) { return a - b; }), k = rnd(0, 1), nm = pick(NM);
+  if (k === 0) return QS({ text: nm + '’s goals in six matches: <b>' + d.join(', ') + '</b>. What is the range?', answer: String(s[5] - s[0]), hints: ['Find the most and the fewest goals.', 'Range = largest − smallest.'], explain: s[5] + ' − ' + s[0] + ' = ' + (s[5] - s[0]) + '.' });
+  var c = {}, best = s[0]; s.forEach(function (x) { c[x] = (c[x] || 0) + 1; if (c[x] > c[best]) best = x; });
+  return QS({ text: 'Shoe sizes in a group: <b>' + d.join(', ') + '</b>. What is the mode?', answer: String(best), hints: ['The mode is the most common value.', 'Count how often each size appears.'], explain: best + ' appears most often.' });
+}; };
+FAM.squareCubeStory = function (v) { return function () {
+  var n = rnd(3, 9), k = rnd(0, 1);
+  if (k === 0) return QS({ text: 'A square patio is made of <b>' + n + '</b> rows of <b>' + n + '</b> slabs. How many slabs is that?', answer: String(n * n), hints: [n + ' rows of ' + n + '.', n + '² = ' + n + ' × ' + n + '.'], explain: n + '² = ' + n * n + ' slabs.' });
+  n = rnd(2, 6); return QS({ text: 'A big cube is built from small cubes, <b>' + n + '</b> long, <b>' + n + '</b> wide and <b>' + n + '</b> high. How many small cubes?', answer: String(n * n * n), hints: ['Each layer has ' + n + ' × ' + n + ' cubes.', 'There are ' + n + ' layers: ' + n + '³.'], explain: n + '³ = ' + n * n * n + ' cubes.' });
+}; };
+FAM.coordMap = function (v) { return function () {
+  var x = rnd(v === 2 ? -5 : 0, 8), y = rnd(v === 2 ? -5 : 0, 8), dx = rnd(1, 4), dy = rnd(1, 4), right = rnd(0, 1), up = rnd(0, 1), nx = x + (right ? dx : -dx), ny = y + (up ? dy : -dy);
+  if (v !== 2) { nx = Math.max(0, nx); ny = Math.max(0, ny); dx = Math.abs(nx - x); dy = Math.abs(ny - y); right = nx >= x; up = ny >= y; }
+  return MC({ text: 'A treasure hunter starts at <b>(' + x + ', ' + y + ')</b>. She walks ' + dx + ' squares ' + (right ? 'right' : 'left') + ' and ' + dy + ' squares ' + (up ? 'up' : 'down') + '. Where is she now?', hints: ['Change the first number for left and right.', 'Change the second number for up and down.'], explain: '(' + x + (right ? ' + ' : ' − ') + dx + ', ' + y + (up ? ' + ' : ' − ') + dy + ') = (' + nx + ', ' + ny + ').' }, '(' + nx + ', ' + ny + ')', ['(' + ny + ', ' + nx + ')', '(' + (x + (right ? -dx : dx)) + ', ' + ny + ')', '(' + nx + ', ' + (y + (up ? -dy : dy)) + ')']);
+}; };
+
 var M = S.storyMap;
 M[1] = [['noteCount', 'digitValue', 'roundCrowd', 'negTemp', 'negOrder', 'partMoney', 'partFlex', 'placeMore'], ['estimateBill', 'orderRace', 'negTemp', 'negDepth', 'partMoney', 'placeMore']];
 M[2] = [['shopTotal', 'changeFrom', 'shareGroups', 'whichOp', 'colAddStory', 'colSubStory', 'mentalShop', 'countOnChange', 'packPowers', 'remainderStory', 'multPacks'], ['shopMissing', 'cakeLeft', 'savings', 'colAddStory', 'colSubStory', 'packPowers', 'remainderStory', 'multPacks']];
-M[3] = [['fracOfAmount', 'fracStory'], ['fracAdd', 'fracCompare']];
-M[4] = [['pctOfAmount', 'convertFDP'], ['pctStory', 'testScore', 'decimalMoney']];
-M[5] = [['timeStory', 'cakeScale', 'timetable'], ['unitStory', 'cakeLeft']];
+M[3] = [['fracOfAmount', 'fracStory', 'mixedPizza', 'fracDecMoney', 'fracCompare', 'fracSimplifyStory'], ['fracAdd', 'fracCompare', 'mixedPizza', 'fracSimplifyStory', 'fracMultStory']];
+M[4] = [['pctOfAmount', 'convertFDP', 'pctClass', 'decimalRace'], ['pctStory', 'testScore', 'decimalMoney', 'pctClass', 'decimalRace']];
+M[5] = [['timeStory', 'cakeScale', 'timetable', 'clock24', 'recipeUnits', 'boxVolume'], ['unitStory', 'cakeLeft', 'clock24', 'recipeUnits', 'boxVolume', 'triangleGarden', 'exchangeStory']];
 M[6] = [['taxiFare', 'tilePattern'], ['thinkNumber', 'algStory', 'savingsGrow']];
-M[7] = [['perimStory', 'clockAngle', 'symmetryLogo'], ['areaStory', 'angleRamp', 'coordTreasure']];
-M[8] = [['chartRead', 'chanceBag'], ['meanStory', 'medianRange']];
+M[7] = [['perimStory', 'clockAngle', 'symmetryLogo', 'polygonStory', 'circleWheel'], ['areaStory', 'angleRamp', 'coordTreasure', 'polygonStory', 'streetLines', 'circleWheel']];
+M[8] = [['chartRead', 'chanceBag', 'modeRangeStory'], ['meanStory', 'medianRange', 'modeRangeStory', 'chanceBag']];
 M[9] = [['whichOp', 'logicOrder'], ['multiStep', 'barModel', 'shopMissing']];
-M[10] = [['rowsOfChairs', 'packBoxes', 'squareTiles'], ['groupStory', 'primeHouse']];
+M[10] = [['rowsOfChairs', 'packBoxes', 'squareTiles', 'squareCubeStory'], ['groupStory', 'primeHouse', 'squareCubeStory']];
 M[11] = [['ratioStory', 'shareRatio', 'unitPrice'], ['bestBuy', 'profitStory', 'interestStory', 'exchangeStory']];
+M[13] = [['coordMap', 'compassTurn', 'cuboidBox', 'mapStory'], ['coordMap', 'cuboidBox', 'squareCubeStory', 'compassTurn']];
 M[12] = [['mapStory', 'cuboidBox', 'compassTurn'], ['speedStory', 'volumeStory', 'scaleModel', 'bearingStory']];
 
 /* add the Real-life problem step to each topic */
-var LEAD = { 1: 'place value, partitioning, negative numbers, rounding and estimating, in crowds, money, temperatures and races', 2: 'adding and subtracting big numbers, mental strategies, change, packing in tens and hundreds, sharing with remainders and baking', 3: 'fractions of amounts, adding and comparing fractions', 4: 'sales, test scores, percentages and decimal prices', 5: 'timetables, durations, recipes and units', 6: 'taxi fares, patterns, number puzzles and savings plans', 7: 'angles, symmetry, clocks, fencing, carpets and maps', 8: 'surveys, charts, averages and chance', 9: 'multi-step puzzles, bar models and clues', 10: 'rows, boxes, timing, tiles and prime numbers', 11: 'sharing, best buys, profit, interest and exchange rates', 12: 'volume, bearings, scale models, maps and journeys' };
+var LEAD = { 1: 'place value, partitioning, negative numbers, rounding and estimating, in crowds, money, temperatures and races', 2: 'adding and subtracting big numbers, mental strategies, change, packing in tens and hundreds, sharing with remainders and baking', 3: 'fractions of amounts, comparing, mixed numbers, simplifying and adding fractions', 4: 'sales, test scores, class surveys, race times, percentages and decimal prices', 5: 'timetables, 24-hour times, recipes, units, boxes and money', 6: 'taxi fares, patterns, number puzzles and savings plans', 7: 'angles, polygons, circles, roads, symmetry, clocks, fencing and maps', 8: 'surveys, charts, averages and chance', 9: 'multi-step puzzles, bar models and clues', 10: 'rows, boxes, timing, tiles, prime, square and cube numbers', 13: 'maps, coordinates, directions, cubes and boxes', 11: 'sharing, best buys, profit, interest and exchange rates', 12: 'volume, bearings, scale models, maps and journeys' };
 Object.keys(S.topics).forEach(function (k) {
   var t = S.topics[k]; if (!S.storyFor(Number(k)) || t.steps.some(function (s) { return s.id === 'practical'; })) return;
   var base = t.base || t.replaces || t.n;
