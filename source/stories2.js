@@ -291,7 +291,7 @@ FAM.fracSimplifyStory = function (v) { return function () {
   return MC({ text: nm + ' scored <b>' + n + '</b> out of <b>' + d + '</b> in a quiz. Write the score as a fraction in its simplest form.', hints: ['Write it as ' + n + '/' + d + '.', 'Divide the top and the bottom by ' + k + '.'], explain: n + '/' + d + ' = ' + n0 + '/' + d0 + ' (divide both by ' + k + ').' }, n0 + '/' + d0, [n + '/' + d, (n0 + 1) + '/' + d0, n0 + '/' + (d0 + 1)]);
 }; };
 FAM.fracMultStory = function (v) { return function () {
-  var a = rnd(1, 3), b = pick([4, 5, 6, 8]), c = rnd(1, 3), d = pick([2, 3, 4]), nm = pick(NM);
+  var a = rnd(1, 3), b = pick([4, 5, 6, 8]), d = pick([2, 3, 4]), c = rnd(1, d - 1), nm = pick(NM);
   return MC({ text: nm + ' has <b>' + a + '/' + b + '</b> of a cake and eats <b>' + c + '/' + d + '</b> of that piece. What fraction of the whole cake is eaten?', hints: ['"Of" means multiply.', 'Multiply the tops and multiply the bottoms.'], explain: a + '/' + b + ' × ' + c + '/' + d + ' = ' + (a * c) + '/' + (b * d) + (frs(a * c, b * d) !== (a * c) + '/' + (b * d) ? ' = ' + frs(a * c, b * d) : '') + '.' }, frs(a * c, b * d), [(a + c) + '/' + (b + d), frs(a * d, b * c), frs(a * c, b + d)]);
 }; };
 FAM.pctClass = function (v) { return function () {
@@ -307,7 +307,7 @@ FAM.decimalRace = function (v) { return function () {
 FAM.clock24 = function (v) { return function () {
   var h = rnd(13, 22), m = pick([0, 15, 30, 45, 10, 20, 40, 50]), dur = pick([25, 40, 45, 50, 75, 90, 105]), e = h * 60 + m + dur, f = function (x) { var hh = Math.floor(x / 60) % 24, mm = x % 60; return (hh < 10 ? '0' : '') + hh + ':' + (mm < 10 ? '0' : '') + mm; };
   if (v === 0) return MC({ text: 'A film starts at <b>' + ((h - 12) + ':' + (m < 10 ? '0' : '') + m) + ' pm</b>. What is that on a 24-hour clock?', hints: ['After midday, add 12 to the hour.', (h - 12) + ' + 12 = ' + h + '.'], explain: (h - 12) + ':' + (m < 10 ? '0' : '') + m + ' pm = ' + f(h * 60 + m) + '.' }, f(h * 60 + m), [f((h - 12) * 60 + m), f((h - 11) * 60 + m), f((h + 1) * 60 + m)]);
-  return QS({ text: 'A train leaves at <b>' + f(h * 60 + m) + '</b> and the journey takes <b>' + dur + ' minutes</b>. What time does it arrive? (24-hour clock, like 14:05)', answer: f(e), hints: ['Count on to the next hour first.', dur + ' minutes is ' + Math.floor(dur / 60) + ' hour' + (Math.floor(dur / 60) === 1 ? '' : 's') + ' and ' + dur % 60 + ' minutes.'], explain: f(h * 60 + m) + ' + ' + dur + ' minutes = ' + f(e) + '.' });
+  return QS({ text: 'A train leaves at <b>' + f(h * 60 + m) + '</b> and the journey takes <b>' + dur + ' minutes</b>. What time does it arrive? (24-hour clock, like 14:05)', answer: f(e), kind: 'time', hints: ['Count on to the next hour first.', dur + ' minutes is ' + Math.floor(dur / 60) + ' hour' + (Math.floor(dur / 60) === 1 ? '' : 's') + ' and ' + dur % 60 + ' minutes.'], explain: f(h * 60 + m) + ' + ' + dur + ' minutes = ' + f(e) + '.' });
 }; };
 FAM.recipeUnits = function (v) { return function () {
   var k = rnd(0, 2), nm = pick(NM);
