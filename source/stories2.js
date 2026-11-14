@@ -225,9 +225,59 @@ FAM.placeMore = function (v) { return function () {
     hints: ['Last year was ' + (fewer ? 'fewer' : 'more') + ', so ' + (fewer ? 'take away' : 'add') + ' ' + fmtN(s) + '.', 'Only the ' + fmtN(s) + 's column changes, unless it has to go past 9 or below 0.'], explain: 'Last year: ' + fmtN(n) + (fewer ? ' − ' : ' + ') + fmtN(s) + ' = ' + fmtN(ans) + '.' });
 }; };
 
+/* ===== Topic 2, more real-life families: column methods, mental strategies, ×÷ by 10/100/1,000, remainders ===== */
+FAM.colAddStory = function (v) { return function () {
+  var lo = v === 0 ? 1200 : v === 1 ? 12000 : 120000, a = rnd(lo, lo * 6), b = rnd(lo, lo * 3), ev = pick([['A football club sold', 'tickets on Saturday and', 'on Sunday. How many tickets did it sell altogether?'], ['A library lent', 'books in the autumn and', 'in the spring. How many books is that altogether?'], ['A theme park had', 'visitors in July and', 'in August. How many visitors altogether?']]);
+  return QS({ text: ev[0] + ' <b>' + fmtN(a) + '</b> ' + ev[1] + ' <b>' + fmtN(b) + '</b> ' + ev[2], answer: String(a + b),
+    hints: ['Line up the numbers in columns: ones under ones, tens under tens.', 'Add the ones first. If a column makes 10 or more, carry 1 to the next column.'], explain: fmtN(a) + ' + ' + fmtN(b) + ' = ' + fmtN(a + b) + '.' });
+}; };
+FAM.colSubStory = function (v) { return function () {
+  var lo = v === 0 ? 2000 : v === 1 ? 20000 : 200000, a = rnd(lo * 2, lo * 9), b = rnd(lo / 2, a - lo / 4) | 0, k = rnd(0, 2), nm = pick(NM);
+  var t = k === 0 ? 'A stadium holds <b>' + fmtN(a) + '</b> people. <b>' + fmtN(b) + '</b> seats are already sold. How many seats are left?'
+    : k === 1 ? 'The school wants to raise <b>' + fmtN(a) + '</b> points for charity. So far it has <b>' + fmtN(b) + '</b> points. How many more points does it need?'
+    : nm + '’s town had <b>' + fmtN(a) + '</b> people. A nearby village had <b>' + fmtN(b) + '</b>. What is the difference?';
+  return QS({ text: t, answer: String(a - b), hints: ['Subtract in columns, starting with the ones.', 'If the top digit is smaller, exchange one from the next column.'], explain: fmtN(a) + ' − ' + fmtN(b) + ' = ' + fmtN(a - b) + '. Check: ' + fmtN(a - b) + ' + ' + fmtN(b) + ' = ' + fmtN(a) + '.' });
+}; };
+FAM.mentalShop = function (v) { return function () {
+  var nm = pick(NM), a = pick(v === 0 ? [19, 29, 39, 49, 99] : [99, 199, 299, 399, 499]), b = rnd(v === 0 ? 21 : 120, v === 0 ? 68 : 480), k = rnd(0, 1), r = a + 1;
+  if (k === 0) return QS({ text: nm + ' buys a toy for <b>' + a + 'p</b> and a comic for <b>' + b + 'p</b>. Work it out in your head: how much is that altogether? (in pence)', answer: String(a + b),
+    hints: [a + 'p is nearly ' + r + 'p.', 'Add ' + r + ', then take away 1.'], explain: b + ' + ' + r + ' = ' + (b + r) + ', then take away 1: ' + (a + b) + 'p.' });
+  var c = b + a; return QS({ text: nm + ' has <b>' + c + 'p</b> and spends <b>' + a + 'p</b>. Work it out in your head: how much is left? (in pence)', answer: String(b),
+    hints: ['Take away ' + r + ' instead, because it is easier.', 'You took away 1 too many, so add 1 back.'], explain: c + ' − ' + r + ' = ' + (c - r) + ', then add 1: ' + b + 'p.' });
+}; };
+FAM.countOnChange = function (v) { return function () {
+  var nm = pick(NM), pay = v === 0 ? 100 : pick([500, 1000]), cost = rnd(pay * 0.15, pay * 0.9) | 0;
+  if (cost % 10 === 0) cost += rnd(1, 9);
+  var payTxt = pay === 100 ? 'a £1 coin' : pay === 500 ? 'a £5 note' : 'a £10 note', costTxt = pay === 100 ? cost + 'p' : pm(cost / 100);
+  var next10 = Math.ceil(cost / 10) * 10;
+  return QS({ text: nm + ' buys a snack for <b>' + costTxt + '</b> and pays with <b>' + payTxt + '</b>. Count on to find the change. (in pence)', answer: String(pay - cost),
+    hints: ['Count on from ' + cost + 'p to the next ten: ' + next10 + 'p.', 'Then count on in tens and pounds up to ' + pay + 'p, and add up the jumps.'], explain: (next10 - cost) + 'p + ' + (pay - next10) + 'p = ' + (pay - cost) + 'p change.' });
+}; };
+FAM.packPowers = function (v) { return function () {
+  var p = pick(v === 0 ? [10, 100] : [10, 100, 1000]), k = rnd(0, 1), item = pick([['pencils', 'box'], ['stickers', 'sheet'], ['nails', 'bag'], ['cups', 'stack']]);
+  if (k === 0) { var n = rnd(3, v === 0 ? 48 : 95); return QS({ text: 'A school orders <b>' + n + '</b> ' + item[1] + 's of ' + item[0] + '. Each ' + item[1] + ' holds <b>' + fmtN(p) + '</b>. How many ' + item[0] + ' is that?', answer: String(n * p),
+    hints: ['Multiply by ' + fmtN(p) + '.', 'Each digit moves ' + (String(p).length - 1) + ' place' + (p > 10 ? 's' : '') + ' to the left.'], explain: n + ' × ' + fmtN(p) + ' = ' + fmtN(n * p) + '.' }); }
+  var m = rnd(3, v === 0 ? 48 : 95); return QS({ text: 'A factory has <b>' + fmtN(m * p) + '</b> ' + item[0] + '. It packs them <b>' + fmtN(p) + '</b> to a ' + item[1] + '. How many ' + item[1] + 's does it fill?', answer: String(m),
+    hints: ['Divide by ' + fmtN(p) + '.', 'Each digit moves ' + (String(p).length - 1) + ' place' + (p > 10 ? 's' : '') + ' to the right.'], explain: fmtN(m * p) + ' ÷ ' + fmtN(p) + ' = ' + m + '.' });
+}; };
+FAM.remainderStory = function (v) { return function () {
+  var d = rnd(3, 9), q = rnd(4, v === 0 ? 12 : 25), r = rnd(1, d - 1), n = d * q + r, k = rnd(0, 2);
+  if (k === 0) return QS({ text: '<b>' + n + '</b> pupils go on a trip. Each minibus holds <b>' + d + '</b>. How many minibuses are needed so everyone can go?', answer: String(q + 1),
+    hints: [n + ' ÷ ' + d + ' = ' + q + ' remainder ' + r + '.', 'The ' + r + ' pupils left over still need a minibus.'], explain: n + ' ÷ ' + d + ' = ' + q + ' r ' + r + ', so ' + (q + 1) + ' minibuses are needed.' });
+  if (k === 1) return QS({ text: 'A baker has <b>' + n + '</b> cakes. A box holds <b>' + d + '</b>. How many boxes can be <b>filled</b>?', answer: String(q),
+    hints: [n + ' ÷ ' + d + ' = ' + q + ' remainder ' + r + '.', 'Only full boxes count, so ignore the remainder.'], explain: n + ' ÷ ' + d + ' = ' + q + ' r ' + r + ', so ' + q + ' boxes are full.' });
+  return QS({ text: '<b>' + n + '</b> marbles are shared equally between <b>' + d + '</b> friends. How many marbles are left over?', answer: String(r),
+    hints: ['Find the biggest multiple of ' + d + ' that is not more than ' + n + '.', d + ' × ' + q + ' = ' + d * q + '.'], explain: n + ' ÷ ' + d + ' = ' + q + ' r ' + r + ', so ' + r + ' marbles are left over.' });
+}; };
+FAM.multPacks = function (v) { return function () {
+  var a = rnd(v === 0 ? 12 : 24, v === 0 ? 49 : 99), b = rnd(3, 9), nm = pick(NM), it = pick([['packets', 'stickers'], ['boxes', 'crayons'], ['trays', 'eggs'], ['rows', 'seats']]);
+  return QS({ text: nm + ' has <b>' + b + '</b> ' + it[0] + ' with <b>' + a + '</b> ' + it[1] + ' in each. How many ' + it[1] + ' is that?', answer: String(a * b),
+    hints: ['Partition ' + a + ' into ' + Math.floor(a / 10) * 10 + ' and ' + a % 10 + '.', 'Multiply each part by ' + b + ', then add.'], explain: Math.floor(a / 10) * 10 + ' × ' + b + ' = ' + Math.floor(a / 10) * 10 * b + ' and ' + a % 10 + ' × ' + b + ' = ' + a % 10 * b + ', so ' + a * b + '.' });
+}; };
+
 var M = S.storyMap;
 M[1] = [['noteCount', 'digitValue', 'roundCrowd', 'negTemp', 'negOrder', 'partMoney', 'partFlex', 'placeMore'], ['estimateBill', 'orderRace', 'negTemp', 'negDepth', 'partMoney', 'placeMore']];
-M[2] = [['shopTotal', 'changeFrom', 'shareGroups', 'whichOp'], ['shopMissing', 'cakeLeft', 'savings']];
+M[2] = [['shopTotal', 'changeFrom', 'shareGroups', 'whichOp', 'colAddStory', 'colSubStory', 'mentalShop', 'countOnChange', 'packPowers', 'remainderStory', 'multPacks'], ['shopMissing', 'cakeLeft', 'savings', 'colAddStory', 'colSubStory', 'packPowers', 'remainderStory', 'multPacks']];
 M[3] = [['fracOfAmount', 'fracStory'], ['fracAdd', 'fracCompare']];
 M[4] = [['pctOfAmount', 'convertFDP'], ['pctStory', 'testScore', 'decimalMoney']];
 M[5] = [['timeStory', 'cakeScale', 'timetable'], ['unitStory', 'cakeLeft']];
@@ -240,7 +290,7 @@ M[11] = [['ratioStory', 'shareRatio', 'unitPrice'], ['bestBuy', 'profitStory', '
 M[12] = [['mapStory', 'cuboidBox', 'compassTurn'], ['speedStory', 'volumeStory', 'scaleModel', 'bearingStory']];
 
 /* add the Real-life problem step to each topic */
-var LEAD = { 1: 'place value, partitioning, negative numbers, rounding and estimating, in crowds, money, temperatures and races', 2: 'shopping, change, sharing and baking', 3: 'fractions of amounts, adding and comparing fractions', 4: 'sales, test scores, percentages and decimal prices', 5: 'timetables, durations, recipes and units', 6: 'taxi fares, patterns, number puzzles and savings plans', 7: 'angles, symmetry, clocks, fencing, carpets and maps', 8: 'surveys, charts, averages and chance', 9: 'multi-step puzzles, bar models and clues', 10: 'rows, boxes, timing, tiles and prime numbers', 11: 'sharing, best buys, profit, interest and exchange rates', 12: 'volume, bearings, scale models, maps and journeys' };
+var LEAD = { 1: 'place value, partitioning, negative numbers, rounding and estimating, in crowds, money, temperatures and races', 2: 'adding and subtracting big numbers, mental strategies, change, packing in tens and hundreds, sharing with remainders and baking', 3: 'fractions of amounts, adding and comparing fractions', 4: 'sales, test scores, percentages and decimal prices', 5: 'timetables, durations, recipes and units', 6: 'taxi fares, patterns, number puzzles and savings plans', 7: 'angles, symmetry, clocks, fencing, carpets and maps', 8: 'surveys, charts, averages and chance', 9: 'multi-step puzzles, bar models and clues', 10: 'rows, boxes, timing, tiles and prime numbers', 11: 'sharing, best buys, profit, interest and exchange rates', 12: 'volume, bearings, scale models, maps and journeys' };
 Object.keys(S.topics).forEach(function (k) {
   var t = S.topics[k]; if (!S.storyFor(Number(k)) || t.steps.some(function (s) { return s.id === 'practical'; })) return;
   var base = t.base || t.replaces || t.n;

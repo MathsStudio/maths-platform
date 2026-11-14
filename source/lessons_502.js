@@ -275,5 +275,83 @@
     ]
   };
 
-  BT.lessons(502, 'Watch lesson', [colAdd, colSub, mental, countOn, partAdd, times, remainders], ['Use a fact you know', 'Order of operations and word problems']);
+  /* ---------- Order of operations and word problems (rebuilt in full) ---------- */
+  var order = {
+    title: 'Order of operations and word problems', goal: 'which part of a calculation to do first, and how to turn words into number sentences.',
+    scenes: [
+      SC('Which comes first?', 'One calculation, two answers?', [
+        st("Here is a puzzle: two plus three times four. Some people say twenty and some say fourteen. They can't both be right, so mathematicians agreed a rule about the order.", V.eq('2 + 3 × 4 = ?', 'b')),
+        st("The order of operations tells us which part of a calculation to do first, so everybody gets the same answer.", V.rule('Brackets first, then × and ÷, then + and −.'))]),
+      SC('Multiply before you add', '2 + 3 × 4', [
+        st("Multiplication and division come before addition and subtraction. So in two plus three times four, we do three times four first. That is twelve.", V.eq('2 + 3 × 4', 'b') + V.eq('3 × 4 = 12')),
+        st("Then add the two. Twelve plus two is fourteen. So the answer is fourteen, not twenty.", SW + V.eq('2 + 3 × 4', 'b') + V.eq('3 × 4 = 12') + V.eq('2 + 12 = 14', 'g'))]),
+      SC('Divide before you subtract', '20 − 12 ÷ 4', [
+        st("Here is another one: twenty take away twelve divided by four. Division comes before subtraction, so we do twelve divided by four first. That is three.", V.eq('20 − 12 ÷ 4', 'b') + V.eq('12 ÷ 4 = 3')),
+        st("Then twenty take away three is seventeen.", SW + V.eq('20 − 12 ÷ 4', 'b') + V.eq('12 ÷ 4 = 3') + V.eq('20 − 3 = 17', 'g'))]),
+      SC('Brackets are the boss', '(2 + 3) × 4', [
+        st("Brackets change the order. Whatever is inside the brackets is always done first. Two plus three in brackets makes five.", V.eq('(2 + 3) × 4', 'b') + V.eq('2 + 3 = 5')),
+        st("Then five times four is twenty. The same numbers, but the brackets give a different answer.", SW + V.eq('(2 + 3) × 4', 'b') + V.eq('2 + 3 = 5') + V.eq('5 × 4 = 20', 'g')),
+        st("Another example: eighteen divided by, in brackets, four plus two. Four plus two is six, and eighteen divided by six is three.", V.eq('18 ÷ (4 + 2) = 18 ÷ 6 = 3', 'g'))]),
+      SC('Only adding and subtracting?', 'Work from left to right', [
+        st("When a calculation only has adding and subtracting, work from left to right. Fifteen take away six plus four: fifteen take away six is nine, then add four. Thirteen.", V.eq('15 − 6 + 4', 'b') + V.eq('15 − 6 = 9') + V.eq('9 + 4 = 13', 'g')),
+        st("The same goes for only multiplying and dividing. Twenty-four divided by four times two: twenty-four divided by four is six, then six times two is twelve.", V.eq('24 ÷ 4 × 2 = 6 × 2 = 12', 'g'))]),
+      SC('Words into a number sentence', 'Pencils in packs', [
+        st("Now a word problem. A pack has six pencils. Maya buys four packs and gives away five pencils. How many does she have left? Pick out the numbers and decide what to do with each one.", V.list(['4 packs of 6 pencils → multiply', 'gives away 5 → subtract'])),
+        st("Four packs of six is twenty-four pencils. Then take away the five she gave away. Twenty-four take away five is nineteen.", V.eq('4 × 6 − 5', 'b') + V.eq('24 − 5 = 19', 'g')),
+        st("Maya has nineteen pencils left. Does it make sense? She had twenty-four and gave a few away, so a bit less than twenty-four is sensible.", V.note('Check: does the answer make sense?'))]),
+      SC('Key words help', 'Which operation?', [
+        st("Some words give clues. Altogether, total and more mean add. Left, difference and fewer mean subtract. Each, groups of and times mean multiply. Share, split and equal groups mean divide.",
+          V.tbl([['Add', 'altogether, total, more'], ['Subtract', 'left, difference, fewer'], ['Multiply', 'each, groups of, times'], ['Divide', 'share, split, equal groups']], ['Operation', 'Clue words'])),
+        st("But always think about the story too. The clue words help, but the story decides.")]),
+      SC('A two-step problem', 'Tickets and a programme', [
+        st("Cinema tickets cost seven pounds each. Ben buys three tickets and one programme for four pounds. How much does he spend? Three tickets at seven pounds is a multiplication. Then add the programme.", V.eq('3 × £7 + £4', 'b')),
+        st("Multiply first: three times seven is twenty-one. Then add four. Ben spends twenty-five pounds.", SW + V.eq('3 × £7 + £4', 'b') + V.eq('3 × 7 = 21') + V.eq('21 + 4 = £25', 'g'))]),
+      SC('Your turn', 'Pause, think, then listen', [
+        st("Your turn! Work out ten plus six times three. Pause and remember which part comes first.", V.eq('10 + 6 × 3 = ?')),
+        st("Multiply first: six times three is eighteen. Then add ten. The answer is twenty-eight.", V.eq('6 × 3 = 18') + V.eq('10 + 18 = 28', 'g'))]),
+      SC('Let’s recap', 'Order of operations and word problems', [
+        st("Well done! Do brackets first, then multiply and divide, then add and subtract. If there is only adding and subtracting, go from left to right. For a word problem, read it, pick out the numbers, choose the operations, solve it, and check the answer makes sense.",
+          V.list(['Brackets first', 'Then × and ÷', 'Then + and −', 'Same kind only: left to right', 'Words: read, pick numbers, choose operations, check']))])
+    ]
+  };
+
+  /* ---------- Use a fact you know (rebuilt in full) ---------- */
+  var given = {
+    title: 'Use a fact you know', goal: 'how to use one answer you know to find lots of others.',
+    scenes: [
+      SC('One fact, many answers', 'Work smart, not hard', [
+        st("If you know one fact, you can often work out many more without starting again. This is called using a related fact. It saves time and helps you check your work.", V.rule('Look at how the numbers changed. Change the answer in the same way.'))]),
+      SC('Fact families', 'If 7 × 6 = 42', [
+        st("Let's start with a times table fact: seven times six is forty-two.", V.eq('7 × 6 = 42', 'b')),
+        st("We can swap the numbers we multiply: six times seven is also forty-two. And division undoes multiplication: forty-two divided by six is seven, and forty-two divided by seven is six.", V.eq('6 × 7 = 42') + V.eq('42 ÷ 6 = 7') + V.eq('42 ÷ 7 = 6', 'g')),
+        st("These four facts belong to one fact family.", V.note('One fact gives you four'))]),
+      SC('Ten times bigger', 'If 24 × 3 = 72', [
+        st("Suppose you know that twenty-four times three is seventy-two.", V.eq('24 × 3 = 72', 'b')),
+        st("What is two hundred and forty times three? Twenty-four became ten times bigger, so the answer becomes ten times bigger too. Seven hundred and twenty.", V.eq('240 × 3 = 720', 'g')),
+        st("And twenty-four times thirty? This time the three became ten times bigger, so again the answer is ten times bigger. Seven hundred and twenty.", V.eq('24 × 30 = 720', 'g'))]),
+      SC('Both numbers bigger', 'If 24 × 3 = 72', [
+        st("What if both numbers change? Two hundred and forty times thirty. Twenty-four is ten times bigger and three is ten times bigger, so the answer is ten times ten, one hundred times bigger.", V.eq('240 × 30 = ?', 'b')),
+        st("Seventy-two times one hundred is seven thousand two hundred.", V.eq('240 × 30 = 7,200', 'g'))]),
+      SC('Ten times smaller', 'If 24 × 3 = 72', [
+        st("Numbers can get smaller too. Twenty-four times zero point three. Three became ten times smaller, so the answer becomes ten times smaller.", V.eq('24 × 0.3 = ?', 'b')),
+        st("Seventy-two divided by ten is seven point two.", V.eq('24 × 0.3 = 7.2', 'g'))]),
+      SC('Doubling', 'If 15 × 4 = 60', [
+        st("Doubling works the same way. If fifteen times four is sixty, then fifteen times eight is double that, because eight is double four. One hundred and twenty.", V.eq('15 × 4 = 60', 'b') + V.eq('15 × 8 = 120', 'g')),
+        st("And thirty times four is also one hundred and twenty, because thirty is double fifteen.", V.eq('30 × 4 = 120', 'g'))]),
+      SC('Clever shortcut: times 99', '34 × 99', [
+        st("To multiply by ninety-nine, multiply by one hundred, then take away one lot of the number. Thirty-four times one hundred is three thousand four hundred.", V.eq('34 × 100 = 3,400', 'b')),
+        st("Ninety-nine lots is one lot fewer, so take away thirty-four. Three thousand three hundred and sixty-six.", V.eq('34 × 99 = 3,400 − 34 = 3,366', 'g'))]),
+      SC('Clever shortcut: the same number twice', '15 × 66 − 15 × 63', [
+        st("Fifteen times sixty-six, take away fifteen times sixty-three. Both parts have fifteen, so we only need fifteen times the difference between sixty-six and sixty-three.", V.eq('15 × 66 − 15 × 63', 'b') + V.eq('66 − 63 = 3')),
+        st("Fifteen times three is forty-five. Much quicker!", V.eq('15 × 3 = 45', 'g'))]),
+      SC('Your turn', 'Pause, think, then listen', [
+        st("Your turn! You know that thirteen times six is seventy-eight. What is one hundred and thirty times six? Pause and think about how the numbers changed.", V.eq('13 × 6 = 78', 'b') + V.eq('130 × 6 = ?')),
+        st("Thirteen became ten times bigger, so the answer is ten times bigger: seven hundred and eighty.", V.eq('130 × 6 = 780', 'g'))]),
+      SC('Let’s recap', 'Use a fact you know', [
+        st("Well done! Look at how each number changed, then change the answer in the same way. Use fact families to turn one fact into four. Look for shortcuts, like times one hundred take away one, or the same number appearing twice.",
+          V.list(['A fact family gives four facts', 'Ten times bigger → answer ten times bigger', 'Ten times smaller → answer ten times smaller', '× 99 → × 100, then take one lot away', 'Same number twice → group them']))])
+    ]
+  };
+
+  BT.lessons(502, 'Watch lesson', [colAdd, colSub, mental, countOn, partAdd, times, remainders, order, given]);
 })();
