@@ -3,7 +3,7 @@
 (function () {
   'use strict';
   var BT = window.BT; if (!BT) return;
-  BT.DEEP = {
+  BT.DEEP = Object.assign(BT.DEEP || {}, {
     'What is place value?': ['A digit’s value depends on its column: each column is worth ten times the one on its right. That is why we only need ten digits to write any number.', 'Watch out for zeros. They hold empty places: 3,050 and 305 use the same digits but are very different numbers.'],
     'What are negative numbers?': ['Negative numbers are the numbers below zero on the number line. The further left you go, the smaller the number, so −8 is smaller than −3.', 'A common mistake is to think −8 is bigger than −3 because 8 is bigger than 3. Picture the number line: left is always smaller.'],
     'How do you partition a number?': ['Partitioning splits a number by place value, like 4,352 = 4,000 + 300 + 50 + 2. Because one ten is ten ones, you can also split it in other ways, like 46 = 30 + 16.', 'Check by adding the parts back together. A zero gives no part, so 5,036 is 5,000 + 30 + 6.'],
@@ -115,5 +115,5 @@
     'Speed, distance, time and bearings': ['Speed = distance ÷ time. Rearrange it to find distance or time. Bearings are measured clockwise from north.', 'Change minutes to hours first: 30 minutes is 0.5 hours, not 0.30.'],
     'How can you transform a shape?': ['Translations slide, reflections flip and rotations turn. The shape always stays the same size.', 'Describe each fully: a rotation needs a centre, an angle and a direction.'],
     'Surface area and views': ['Surface area adds the area of every face. A cuboid has three pairs of matching faces.', 'Don’t confuse surface area (cm²) with volume (cm³).']
-  };
+  });
 })();
