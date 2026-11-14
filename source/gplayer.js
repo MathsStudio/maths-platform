@@ -79,7 +79,8 @@
     '.gp-q.seen .gp-dot{background:var(--good,#1f9d55);border-color:var(--good,#1f9d55);color:#fff;font-size:11px;font-weight:900}',
     '.gp-cap{min-height:48px;font-size:16px;line-height:1.45;padding:2px 4px}',
     '.gp-ctl{display:flex;align-items:center;gap:8px;flex-wrap:wrap}',
-    '.gp-ctl .btn{min-height:44px}',
+    '.gp-ctl .btn{min-height:44px}.gp-ic,.gp-sh{display:none}',
+    '@media (max-width:600px){.gp-ctl{display:grid;grid-template-columns:2fr 1fr 1fr 1fr 1fr;gap:6px}.gp-ctl .btn{min-height:42px;padding:6px 4px;font-size:16px}.gp-ctl [data-p] .gp-tx{display:none}.gp-ctl [data-p] .gp-ic,.gp-ctl [data-p] .gp-sh{display:inline}.gp-ctl .btn:not([data-p]) .gp-tx{display:none}.gp-ctl .btn:not([data-p]) .gp-ic{display:inline}.gp-ctl [data-p]{white-space:nowrap;display:inline-flex;align-items:center;justify-content:center;gap:6px}.gp-ctl [data-p] .gp-ic{font-size:13px}.gp-prog{grid-column:1/-1;flex:none}.gp-cnt{grid-column:1/-1}.gp [data-note]{font-size:12px}.gp-cap{font-size:15px;min-height:40px}}',
     '.gp-prog{flex:1 1 140px;min-width:0;height:8px;background:var(--line);border-radius:99px;overflow:hidden}.gp-prog i{display:block;height:100%;width:0;background:#881cd6;transition:width .3s}',
     '.gp.full .gp-frame{position:fixed;inset:0;z-index:9999;border-radius:0;aspect-ratio:auto;background:#111}',
     '.gp.full .gp-close{display:flex}.gp-close{display:none;position:absolute;right:max(12px,env(safe-area-inset-right));top:max(12px,env(safe-area-inset-top));z-index:2;width:44px;height:44px;border-radius:50%;border:0;background:#fff;color:#221a3a;font-size:22px;align-items:center;justify-content:center;box-shadow:0 2px 10px rgba(0,0,0,.3)}',
@@ -126,16 +127,18 @@
       meta.titles.map(function (tt, j) { return '<li><button type="button" class="gp-q' + (j === meta.q ? ' on' : '') + (seen(j) ? ' seen' : '') + '" data-q="' + j + '"' + (j === meta.q ? ' aria-current="true"' : '') + '><span class="gp-dot" aria-hidden="true">' + (seen(j) ? '✓' : j === meta.q ? '▶' : '') + '</span>' + (seen(j) ? '<span class="sr-only">Watched: </span>' : '') + tt + '</button></li>'; }).join('') + '</ul></details>' : '';
     host.innerHTML = list + '<div class="gp"><div class="gp-frame"><div class="gp-stage"></div><button class="gp-close" type="button" aria-label="Close full screen">✕</button></div>' +
       '<div class="gp-cap" aria-live="polite"></div>' +
-      '<div class="gp-ctl"><button class="btn" type="button" data-p>Play the lesson</button>' +
-      '<button class="btn ghost" type="button" data-b aria-label="Back one step">◀ Back</button>' +
-      '<button class="btn ghost" type="button" data-n aria-label="Next step">Next ▶</button>' +
-      '<button class="btn ghost" type="button" data-r>Start again</button>' +
-      '<button class="btn ghost" type="button" data-f>Full screen</button>' +
+      '<div class="gp-ctl"><button class="btn" type="button" data-p></button>' +
+      '<button class="btn ghost" type="button" data-b aria-label="Back one step"><span class="gp-ic" aria-hidden="true">◀</span><span class="gp-tx">◀ Back</span></button>' +
+      '<button class="btn ghost" type="button" data-n aria-label="Next step"><span class="gp-ic" aria-hidden="true">▶</span><span class="gp-tx">Next ▶</span></button>' +
+      '<button class="btn ghost" type="button" data-r aria-label="Start again"><span class="gp-ic" aria-hidden="true">↺</span><span class="gp-tx">Start again</span></button>' +
+      '<button class="btn ghost" type="button" data-f aria-label="Full screen"><span class="gp-ic" aria-hidden="true">⛶</span><span class="gp-tx">Full screen</span></button>' +
       '<div class="gp-prog" aria-hidden="true"><i></i></div><span class="gp-cnt"></span></div>' +
       '<p class="note" style="margin:0" data-note></p></div>';
     var root = host.querySelector('.gp'), frame = root.querySelector('.gp-frame'), stage = root.querySelector('.gp-stage'), cap = root.querySelector('.gp-cap');
     var pb = root.querySelector('[data-p]'), bar = root.querySelector('.gp-prog i'), cnt = root.querySelector('.gp-cnt'), note = root.querySelector('[data-note]');
     var idx = 0, playing = false, token = 0, timer = null, shown = -1;
+    function setPb(t) { pb.setAttribute('aria-label', t); pb.innerHTML = '<span class="gp-ic" aria-hidden="true">' + (t === 'Pause' ? '❚❚' : '▶') + '</span><span class="gp-tx">' + t + '</span><span class="gp-sh">' + (t === 'Pause' ? ' Pause' : ' Play') + '</span>'; }
+    setPb('Play the lesson');
     var okVoice = H.voiceOk && H.voiceOk();
     note.textContent = okVoice ? 'Your device reads this aloud. You can change the voice and speed in Settings.' : 'The voice is not available here, so the lesson plays with words only.';
 
@@ -205,17 +208,17 @@
       function next() {
         if (my !== token || !playing || !root.isConnected) return;
         if (i + 1 < chunks.length) { idx = i + 1; timer = setTimeout(function () { if (my === token && playing && root.isConnected) say(idx); }, 600); }
-        else { playing = false; idx = 0; pb.textContent = 'Watch again'; }
+        else { playing = false; idx = 0; setPb('Watch again'); }
       }
       var ok = okVoice && H.speakStory(chunks[i].say, function () { next(); });
       if (!ok) timer = setTimeout(next, chunks[i].say.split(' ').length * 380 + 1200);
     }
-    function stop() { token++; clearTimeout(timer); playing = false; try { if (okVoice) speechSynthesis.cancel(); } catch (e) { /* ignore */ } pb.textContent = idx > 0 ? 'Keep watching' : 'Play the lesson'; }
-    function go(i) { var was = playing; stop(); idx = Math.max(0, Math.min(chunks.length - 1, i)); if (was) { playing = true; pb.textContent = 'Pause'; current = { stop: stop }; say(idx); } else show(idx); }
-    pb.addEventListener('click', function () { if (playing) { stop(); return; } current = { stop: stop }; playing = true; pb.textContent = 'Pause'; say(idx); });
+    function stop() { token++; clearTimeout(timer); playing = false; try { if (okVoice) speechSynthesis.cancel(); } catch (e) { /* ignore */ } setPb(idx > 0 ? 'Keep watching' : 'Play the lesson'); }
+    function go(i) { var was = playing; stop(); idx = Math.max(0, Math.min(chunks.length - 1, i)); if (was) { playing = true; setPb('Pause'); current = { stop: stop }; say(idx); } else show(idx); }
+    pb.addEventListener('click', function () { if (playing) { stop(); return; } current = { stop: stop }; playing = true; setPb('Pause'); say(idx); });
     root.querySelector('[data-b]').addEventListener('click', function () { go(idx - 1); });
     root.querySelector('[data-n]').addEventListener('click', function () { go(idx + 1); });
-    root.querySelector('[data-r]').addEventListener('click', function () { stop(); idx = 0; shown = -1; current = { stop: stop }; playing = true; pb.textContent = 'Pause'; say(0); });
+    root.querySelector('[data-r]').addEventListener('click', function () { stop(); idx = 0; shown = -1; current = { stop: stop }; playing = true; setPb('Pause'); say(0); });
     host.querySelectorAll('[data-q]').forEach(function (bt) { bt.addEventListener('click', function () {
       var j = Number(bt.getAttribute('data-q')); if (j === meta.q) { if (!playing) pb.click(); return; }
       stop(); H.__gpAutoplay = true; if (H.slideJump) H.slideJump(j);

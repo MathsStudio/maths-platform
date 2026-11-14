@@ -1416,6 +1416,11 @@ var SLIDE_MORE = {"1.learn1": [{"more": ["Our number system uses only ten digits
   function moreBlock(t, step, k) {
     var m = (SLIDE_MORE[t.n + '.' + step.id] || [])[k];
     var sl = step.slides && step.slides[k];
+    if (step.id === 'watch' || (sl && sl.kind === 'Watch lesson')) {   /* Watch lessons: a note written for that lesson */
+      var dn = sl && window.BT && BT.DEEP && BT.DEEP[sl.title];
+      if (!dn) return '';
+      return '<section class="more"><span class="step-tag">Let\u2019s go deeper</span>' + dn.map(function (x) { return '<p class="say">' + x + '</p>'; }).join('') + '</section>';
+    }
     var ins = (window.BT && BT.pickInsight && sl) ? BT.pickInsight(t.n, sl.title, '') : [];
     if (!ins.length && m && m.more) ins = m.more;
     if (!ins.length) return '';
@@ -15787,7 +15792,8 @@ S.spatialExtra = S.extraMakers;
     '.gp-q.seen .gp-dot{background:var(--good,#1f9d55);border-color:var(--good,#1f9d55);color:#fff;font-size:11px;font-weight:900}',
     '.gp-cap{min-height:48px;font-size:16px;line-height:1.45;padding:2px 4px}',
     '.gp-ctl{display:flex;align-items:center;gap:8px;flex-wrap:wrap}',
-    '.gp-ctl .btn{min-height:44px}',
+    '.gp-ctl .btn{min-height:44px}.gp-ic,.gp-sh{display:none}',
+    '@media (max-width:600px){.gp-ctl{display:grid;grid-template-columns:2fr 1fr 1fr 1fr 1fr;gap:6px}.gp-ctl .btn{min-height:42px;padding:6px 4px;font-size:16px}.gp-ctl [data-p] .gp-tx{display:none}.gp-ctl [data-p] .gp-ic,.gp-ctl [data-p] .gp-sh{display:inline}.gp-ctl .btn:not([data-p]) .gp-tx{display:none}.gp-ctl .btn:not([data-p]) .gp-ic{display:inline}.gp-ctl [data-p]{white-space:nowrap;display:inline-flex;align-items:center;justify-content:center;gap:6px}.gp-ctl [data-p] .gp-ic{font-size:13px}.gp-prog{grid-column:1/-1;flex:none}.gp-cnt{grid-column:1/-1}.gp [data-note]{font-size:12px}.gp-cap{font-size:15px;min-height:40px}}',
     '.gp-prog{flex:1 1 140px;min-width:0;height:8px;background:var(--line);border-radius:99px;overflow:hidden}.gp-prog i{display:block;height:100%;width:0;background:#881cd6;transition:width .3s}',
     '.gp.full .gp-frame{position:fixed;inset:0;z-index:9999;border-radius:0;aspect-ratio:auto;background:#111}',
     '.gp.full .gp-close{display:flex}.gp-close{display:none;position:absolute;right:max(12px,env(safe-area-inset-right));top:max(12px,env(safe-area-inset-top));z-index:2;width:44px;height:44px;border-radius:50%;border:0;background:#fff;color:#221a3a;font-size:22px;align-items:center;justify-content:center;box-shadow:0 2px 10px rgba(0,0,0,.3)}',
@@ -15834,16 +15840,18 @@ S.spatialExtra = S.extraMakers;
       meta.titles.map(function (tt, j) { return '<li><button type="button" class="gp-q' + (j === meta.q ? ' on' : '') + (seen(j) ? ' seen' : '') + '" data-q="' + j + '"' + (j === meta.q ? ' aria-current="true"' : '') + '><span class="gp-dot" aria-hidden="true">' + (seen(j) ? '✓' : j === meta.q ? '▶' : '') + '</span>' + (seen(j) ? '<span class="sr-only">Watched: </span>' : '') + tt + '</button></li>'; }).join('') + '</ul></details>' : '';
     host.innerHTML = list + '<div class="gp"><div class="gp-frame"><div class="gp-stage"></div><button class="gp-close" type="button" aria-label="Close full screen">✕</button></div>' +
       '<div class="gp-cap" aria-live="polite"></div>' +
-      '<div class="gp-ctl"><button class="btn" type="button" data-p>Play the lesson</button>' +
-      '<button class="btn ghost" type="button" data-b aria-label="Back one step">◀ Back</button>' +
-      '<button class="btn ghost" type="button" data-n aria-label="Next step">Next ▶</button>' +
-      '<button class="btn ghost" type="button" data-r>Start again</button>' +
-      '<button class="btn ghost" type="button" data-f>Full screen</button>' +
+      '<div class="gp-ctl"><button class="btn" type="button" data-p></button>' +
+      '<button class="btn ghost" type="button" data-b aria-label="Back one step"><span class="gp-ic" aria-hidden="true">◀</span><span class="gp-tx">◀ Back</span></button>' +
+      '<button class="btn ghost" type="button" data-n aria-label="Next step"><span class="gp-ic" aria-hidden="true">▶</span><span class="gp-tx">Next ▶</span></button>' +
+      '<button class="btn ghost" type="button" data-r aria-label="Start again"><span class="gp-ic" aria-hidden="true">↺</span><span class="gp-tx">Start again</span></button>' +
+      '<button class="btn ghost" type="button" data-f aria-label="Full screen"><span class="gp-ic" aria-hidden="true">⛶</span><span class="gp-tx">Full screen</span></button>' +
       '<div class="gp-prog" aria-hidden="true"><i></i></div><span class="gp-cnt"></span></div>' +
       '<p class="note" style="margin:0" data-note></p></div>';
     var root = host.querySelector('.gp'), frame = root.querySelector('.gp-frame'), stage = root.querySelector('.gp-stage'), cap = root.querySelector('.gp-cap');
     var pb = root.querySelector('[data-p]'), bar = root.querySelector('.gp-prog i'), cnt = root.querySelector('.gp-cnt'), note = root.querySelector('[data-note]');
     var idx = 0, playing = false, token = 0, timer = null, shown = -1;
+    function setPb(t) { pb.setAttribute('aria-label', t); pb.innerHTML = '<span class="gp-ic" aria-hidden="true">' + (t === 'Pause' ? '❚❚' : '▶') + '</span><span class="gp-tx">' + t + '</span><span class="gp-sh">' + (t === 'Pause' ? ' Pause' : ' Play') + '</span>'; }
+    setPb('Play the lesson');
     var okVoice = H.voiceOk && H.voiceOk();
     note.textContent = okVoice ? 'Your device reads this aloud. You can change the voice and speed in Settings.' : 'The voice is not available here, so the lesson plays with words only.';
 
@@ -15913,17 +15921,17 @@ S.spatialExtra = S.extraMakers;
       function next() {
         if (my !== token || !playing || !root.isConnected) return;
         if (i + 1 < chunks.length) { idx = i + 1; timer = setTimeout(function () { if (my === token && playing && root.isConnected) say(idx); }, 600); }
-        else { playing = false; idx = 0; pb.textContent = 'Watch again'; }
+        else { playing = false; idx = 0; setPb('Watch again'); }
       }
       var ok = okVoice && H.speakStory(chunks[i].say, function () { next(); });
       if (!ok) timer = setTimeout(next, chunks[i].say.split(' ').length * 380 + 1200);
     }
-    function stop() { token++; clearTimeout(timer); playing = false; try { if (okVoice) speechSynthesis.cancel(); } catch (e) { /* ignore */ } pb.textContent = idx > 0 ? 'Keep watching' : 'Play the lesson'; }
-    function go(i) { var was = playing; stop(); idx = Math.max(0, Math.min(chunks.length - 1, i)); if (was) { playing = true; pb.textContent = 'Pause'; current = { stop: stop }; say(idx); } else show(idx); }
-    pb.addEventListener('click', function () { if (playing) { stop(); return; } current = { stop: stop }; playing = true; pb.textContent = 'Pause'; say(idx); });
+    function stop() { token++; clearTimeout(timer); playing = false; try { if (okVoice) speechSynthesis.cancel(); } catch (e) { /* ignore */ } setPb(idx > 0 ? 'Keep watching' : 'Play the lesson'); }
+    function go(i) { var was = playing; stop(); idx = Math.max(0, Math.min(chunks.length - 1, i)); if (was) { playing = true; setPb('Pause'); current = { stop: stop }; say(idx); } else show(idx); }
+    pb.addEventListener('click', function () { if (playing) { stop(); return; } current = { stop: stop }; playing = true; setPb('Pause'); say(idx); });
     root.querySelector('[data-b]').addEventListener('click', function () { go(idx - 1); });
     root.querySelector('[data-n]').addEventListener('click', function () { go(idx + 1); });
-    root.querySelector('[data-r]').addEventListener('click', function () { stop(); idx = 0; shown = -1; current = { stop: stop }; playing = true; pb.textContent = 'Pause'; say(0); });
+    root.querySelector('[data-r]').addEventListener('click', function () { stop(); idx = 0; shown = -1; current = { stop: stop }; playing = true; setPb('Pause'); say(0); });
     host.querySelectorAll('[data-q]').forEach(function (bt) { bt.addEventListener('click', function () {
       var j = Number(bt.getAttribute('data-q')); if (j === meta.q) { if (!playing) pb.click(); return; }
       stop(); H.__gpAutoplay = true; if (H.slideJump) H.slideJump(j);
@@ -19186,6 +19194,127 @@ S.spatialExtra = S.extraMakers;
       ['Use the perpendicular height, at a right angle to the base, not a sloping side.', 'Answers are in square units: cm² or m².'],
       ['Example 1: base 10 m, height 4 m → 20 m².', 'Example 2: base 9 cm, height 6 cm → 27 cm².', 'Example 3: base 15 cm, height 8 cm → 60 cm².'])
   ]);
+})();
+</script>
+<script>
+/* deep_notes.js: "Let's go deeper" notes written for each Watch lesson:
+   why the idea works, then the mistake to watch out for. */
+(function () {
+  'use strict';
+  var BT = window.BT; if (!BT) return;
+  BT.DEEP = {
+    'What is place value?': ['A digit’s value depends on its column: each column is worth ten times the one on its right. That is why we only need ten digits to write any number.', 'Watch out for zeros. They hold empty places: 3,050 and 305 use the same digits but are very different numbers.'],
+    'What are negative numbers?': ['Negative numbers are the numbers below zero on the number line. The further left you go, the smaller the number, so −8 is smaller than −3.', 'A common mistake is to think −8 is bigger than −3 because 8 is bigger than 3. Picture the number line: left is always smaller.'],
+    'How do you partition a number?': ['Partitioning splits a number by place value, like 4,352 = 4,000 + 300 + 50 + 2. Because one ten is ten ones, you can also split it in other ways, like 46 = 30 + 16.', 'Check by adding the parts back together. A zero gives no part, so 5,036 is 5,000 + 30 + 6.'],
+    'How do you round numbers?': ['Rounding finds the nearest easy number. Look only at the digit to the right of the place you are rounding to: 5 or more rounds up, 4 or less stays the same.', 'Don’t round in steps. 1,449 to the nearest 100 is 1,400, not 1,500 from rounding 1,449 → 1,450 → 1,500.'],
+    'How do you round decimal numbers?': ['Rounding decimals works exactly like whole numbers: find the place, look at the next digit, then round up or keep it.', 'Keep a final zero when it shows accuracy: 5.96 to one decimal place is 6.0, not 6.'],
+    'How do you use estimation to check your answers?': ['An estimate tells you roughly how big an answer should be. Round to easy numbers and work it out in your head.', 'If your answer is far from your estimate, check it. Often the decimal point or a carried digit is in the wrong place.'],
+    'Numbers up to millions': ['Big numbers are grouped in threes: millions, thousands and ones. Read each group, then say its name.', 'When writing big numbers, remember zero place holders: three million and seventy is 3,000,070.'],
+    'Sensible estimates and rounding with units': ['Compare a measurement with things you know: a door is about 2 m, a bag of sugar 1 kg. This helps you spot answers that don’t make sense.', 'In real life, decide whether to round up or down. You can’t have part of a bus, so 3.2 buses means 4 buses.'],
+    'Number lines, words and digit values': ['On a number line, first find what one step is worth: divide the gap between labels by the number of steps.', 'Don’t assume each step is 1. A line from 0 to 100 with 10 steps goes up in tens.'],
+    'What is column addition?': ['Column addition works because each digit stays in its own place value column. A total of 10 or more in a column makes one of the next column, so we carry it.', 'Line the digits up from the right. Writing 47 under 356 starting from the left gives the wrong answer.'],
+    'How do you use column subtraction?': ['If a top digit is too small, exchange one from the next column: one ten becomes ten ones. The total stays the same, it’s just split differently.', 'Never take the top digit from the bottom digit to avoid exchanging. Always subtract the bottom number from the top.'],
+    'How do you add and subtract in your head?': ['Mental strategies change a calculation into an easier one: round and adjust, use near doubles, or count on.', 'When you round and adjust, adjust the right way. 63 − 29: take 30, then add 1 back, because you took away one too many.'],
+    'How do you multiply in your head?': ['Partitioning works because multiplying each part and adding gives the same total: 34 × 6 = 30 × 6 + 4 × 6.', 'When rounding and adjusting, take away a whole lot of the number: 7 × 49 = 7 × 50 − 7, not − 1.'],
+    'How do you multiply and divide by 0, 1, 10 and 100?': ['Multiplying by 10 moves every digit one place left; by 100, two places. Dividing moves them right. The digits themselves never change.', 'Anything times 0 is 0, but you can’t divide by 0. Don’t just “add a zero” for decimals: 2.5 × 10 is 25, not 2.50.'],
+    'How do you work out division with remainders?': ['A remainder is what is left over when a number doesn’t share equally. It must always be smaller than the number you divide by.', 'In real life, think about what the remainder means: round up if everyone needs a place, round down if only full groups count.'],
+    'How do you use written methods for short division?': ['Short division divides one digit at a time, carrying each remainder to the next digit, where it is worth ten times as much.', 'Write a 0 on top when the divisor doesn’t go, so the digits stay in the right columns.'],
+    'How can counting on help me add two-digit numbers?': ['Counting on in tens, then ones, breaks a sum into easy jumps on a number line.', 'Keep track of your jumps. Writing each jump down stops you losing count.'],
+    'How can partitioning help me add two-digit numbers?': ['Add the tens, add the ones, then recombine. It works because place value lets us add each column separately.', 'If the ones make 10 or more, remember to add that extra ten when you recombine.'],
+    'Long multiplication': ['Long multiplication multiplies by the ones and by the tens separately, then adds them, because 47 × 23 = 47 × 3 + 47 × 20.', 'Put a zero in the ones column on the second row. Forgetting it multiplies by 2 instead of 20.'],
+    'Order of operations and word problems': ['Everyone agrees to do brackets first, then × and ÷, then + and −, so a calculation has only one answer.', 'In word problems, read twice and decide what each number is for before calculating.'],
+    'Use a fact you know': ['If one number in a calculation changes, the answer changes in the same way: ten times bigger in, ten times bigger out.', 'Check which number changed and how. If both numbers get ten times bigger, the answer is a hundred times bigger.'],
+    'What is a fraction?': ['A fraction shows equal parts of a whole. The bottom number says how many equal parts; the top says how many we have.', 'The parts must be equal. A shape cut into 4 unequal pieces isn’t cut into quarters.'],
+    'How do you write fractions?': ['The numerator (top) counts the parts we have, and the denominator (bottom) names the size of each part.', 'Don’t mix them up: 3 out of 4 parts is 3/4, not 4/3.'],
+    'How do you compare different fractions?': ['With the same denominator, compare the tops. With the same numerator, the smaller bottom means bigger pieces. Otherwise, make the bottoms the same.', 'A bigger denominator does not mean a bigger fraction: 1/8 is smaller than 1/4.'],
+    'How do you add and subtract fractions?': ['You can only add pieces of the same size, so make the denominators the same first. Then add the tops and keep the bottom.', 'Never add the denominators: 1/4 + 1/4 is 2/4, not 2/8.'],
+    'What are unit and mixed fractions?': ['A unit fraction is one equal part, like 1/5. A mixed number shows wholes and a part, like 2 1/3.', 'To change a mixed number to improper, multiply the whole by the denominator and add the top: 2 1/3 = 7/3.'],
+    'How do you simplify fractions?': ['Dividing the top and the bottom by the same number keeps the fraction the same size, just with smaller numbers.', 'You must divide both numbers by the same thing. Simplify fully: keep going until only 1 divides both.'],
+    'Fractions of amounts and multiplying': ['To find 3/4 of an amount, divide by the bottom to find one part, then multiply by the top.', 'Don’t multiply by the bottom number. 1/4 of 20 is 20 ÷ 4 = 5, not 80.'],
+    'Counting parts and fractions as decimals': ['Each whole holds as many parts as the denominator, so 6 3/4 is 6 × 4 + 3 = 27 quarters.', 'For decimals, make the bottom 10 or 100. Don’t just write the digits: 1/4 is 0.25, not 1.4.'],
+    'What are decimals?': ['Decimals continue place value to the right of the point: tenths, then hundredths, each ten times smaller.', 'More digits doesn’t mean bigger: 0.5 is bigger than 0.45. Compare tenths first.'],
+    'How do you compare fractions, decimals and percentages?': ['Fractions, decimals and percentages can describe the same amount, so change them all to one form to compare.', 'Percentages are usually easiest. Remember 0.4 is 40%, not 4%.'],
+    'What is a percentage?': ['Per cent means out of 100. Finding 10% (divide by 10) and 1% (divide by 100) lets you build any percentage.', 'A percentage on its own isn’t an amount: 10% of £50 and 10% of £500 are very different.'],
+    'Percentages of a set and of a measure': ['To find what percentage of a group something is, write a fraction and make the bottom 100.', 'Change units first: 50% of 1.2 kg is easier as 50% of 1,200 g.'],
+    'What is currency?': ['An exchange rate says how much one pound is worth in another currency. Multiply to change pounds, divide to change back.', 'Check your answer makes sense: if £1 buys more than 1 euro, you should get more euros than pounds.'],
+    'How can different coins and notes make the same total?': ['Different coins can make the same total because we can swap equal values, like one 20p for two 10p coins.', 'To use the fewest coins, start with the biggest coin that fits, then work down.'],
+    'How can I use adding and subtracting to work out change?': ['Change is the difference between what you pay and what it costs. Counting on from the cost is often the easiest way.', 'Watch the units: £1 is 100p. Don’t mix pounds and pence in one calculation.'],
+    'What is analogue and digital time?': ['On an analogue clock, the short hand shows the hour and the long hand shows the minutes. Digital clocks show the same time as numbers.', 'There are 60 minutes in an hour, not 100. So 9:45 plus 30 minutes is 10:15, not 9:75.'],
+    'What are imperial measurements?': ['Imperial units like inches, feet and miles are older units still used in the UK. Learn rough links to metric: 1 inch ≈ 2.5 cm, 1 mile ≈ 1.6 km.', 'These are only approximate, so say “about” when you convert.'],
+    'What are metric measurements?': ['Metric units go up in tens, hundreds and thousands: 1 m = 100 cm, 1 kg = 1,000 g, 1 l = 1,000 ml.', 'To change to a smaller unit, multiply. To change to a bigger unit, divide. Check the answer is sensible.'],
+    'How can I work out the length of an object?': ['Line the object up with the zero on the ruler, not the end of the ruler, then read where it ends.', 'Check the units on the ruler: centimetres or millimetres.'],
+    'How can I work out the area of a shape?': ['Area is the space inside a shape, measured in squares. For a rectangle, length × width counts the squares quickly.', 'Area is in square units, like cm². Don’t mix up area (inside) with perimeter (around).'],
+    'What is volume?': ['Volume is the space a solid takes up, counted in cubes. Counting one layer and multiplying by the layers is quickest.', 'Volume is in cubic units, like cm³. Remember the hidden cubes at the back.'],
+    'What is the perimeter?': ['Perimeter is the total distance round the edge of a shape. Add every side.', 'For shapes with missing lengths, work them out from the sides you know before adding.'],
+    'Timetables and durations': ['To find how long something takes, count on to the next hour, then whole hours, then the minutes left.', 'Don’t subtract times like ordinary numbers: 10:15 − 9:45 is 30 minutes, not 70.'],
+    'Calendars and time zones': ['Months have different lengths, so count to the end of the month first. Places ahead in time add hours; places behind subtract.', 'Check which way: if New York is 5 hours behind, it is earlier there.'],
+    'What is a number sequence?': ['A sequence follows a rule. Look at the difference between terms to find how it changes.', 'Check the rule works for every term, not just the first two.'],
+    'What is an equation?': ['An equation is a balance. Doing the same thing to both sides keeps it balanced and gets the letter on its own.', 'Always check by putting your answer back into the equation.'],
+    'How do you solve missing number problems?': ['Use the inverse operation to undo what was done: addition undoes subtraction, division undoes multiplication.', 'Read carefully which number is missing. ? − 5 = 12 means add 5, giving 17.'],
+    'Expressions from words and shapes': ['A letter or shape stands for a number we don’t know yet, so we can write rules that work for any number.', '2n means 2 × n, not 2 followed by n. If n is 5, then 2n is 10, not 25.'],
+    'How do you identify different polygons?': ['Polygons are named by their number of straight sides: 5 is a pentagon, 6 a hexagon, 8 an octagon.', 'A regular polygon has all sides and angles equal. A shape with a curved side isn’t a polygon.'],
+    'What are the types of triangle?': ['Triangles are named by their sides (equilateral, isosceles, scalene) and by their angles (right-angled, acute, obtuse).', 'An isosceles triangle has two equal sides and two equal angles, opposite each other.'],
+    'What are the parts of a circle?': ['Every point on a circle is the same distance from the centre: the radius. The diameter is two radii.', 'Don’t mix them up: the diameter goes right across through the centre; the radius only goes to the edge.'],
+    'What makes a shape symmetrical?': ['A shape is symmetrical if a mirror line splits it into two matching halves that fold exactly onto each other.', 'Diagonals aren’t always lines of symmetry: a rectangle has 2 lines of symmetry, not 4.'],
+    'What is an angle?': ['An angle measures how much something turns, in degrees. A full turn is 360°, a right angle is 90°.', 'When using a protractor, start from the zero on the line you are measuring from, and read the right scale.'],
+    'What are parallel and perpendicular lines?': ['Parallel lines always stay the same distance apart and never meet. Perpendicular lines meet at a right angle.', 'Lines that cross at any other angle are neither. Look for the little square that marks a right angle.'],
+    'Angle facts': ['Angles on a straight line make 180°, round a point make 360°, and in a triangle make 180°.', 'Subtract the angles you know from the total to find the missing one, and check your answer adds up.'],
+    'Solid shapes and reflections': ['A net folds into a solid, so it needs one flat piece for every face. Reflections keep each point the same distance from the mirror.', 'In a reflection, left and right swap but the size never changes.'],
+    'How do I record and display data?': ['Tally marks are grouped in fives so they are quick to count. Charts turn the counts into a picture.', 'Always give a chart a title, label the axes and use an even scale.'],
+    'How can data be displayed?': ['Choose the display for the job: bar charts compare groups, line graphs show change over time, pie charts show parts of a whole.', 'Check the scale before reading a value. Each gridline is not always worth 1.'],
+    'How do I find the mean, median, mode and range?': ['The mean shares the total equally; the median is the middle value in order; the mode is the most common; the range shows the spread.', 'Put the numbers in order before finding the median.'],
+    'What is probability?': ['Probability measures how likely something is, from 0 (impossible) to 1 (certain). For equally likely outcomes, it is ways ÷ total outcomes.', 'Probabilities are never bigger than 1. All the outcomes together add up to 1.'],
+    'Two-way tables, Venn diagrams and pie charts': ['Each of these sorts data into groups. In a Venn diagram, things that belong to both groups go in the overlap.', 'In a two-way table, rows and columns must add up to their totals. Use this to check or find missing numbers.'],
+    'How do you solve maths problems?': ['A plan helps: understand the question, find what you know, choose a strategy, solve, then check.', 'Don’t rush to calculate. Underline the key numbers and what the question actually asks.'],
+    'Multi-step problems': ['Break the problem into steps and solve one at a time, writing each answer down.', 'Check you have answered the final question, not just the first step.'],
+    'Bar models for sums and differences': ['A bar model shows how the parts and the whole fit together, so you can see whether to add or subtract.', 'Draw bars roughly to size: a longer bar for a bigger amount.'],
+    'Always true, factors and multiples': ['To show a statement is not always true, one counterexample is enough. To show it is always true, you need a reason.', 'Test unusual numbers like 0, 1 and 2 as well as easy ones.'],
+    'What are factors?': ['Factors come in pairs that multiply to make the number: 1 × 12, 2 × 6, 3 × 4.', 'Work through in order and stop when the pairs start to repeat, so you don’t miss any.'],
+    'What are prime numbers?': ['A prime has exactly two factors: 1 and itself. Every whole number can be built by multiplying primes.', '1 is not prime, and 2 is the only even prime.'],
+    'Common factors and multiples': ['The highest common factor is the biggest number that divides into both. The lowest common multiple is the smallest number in both times tables.', 'Don’t mix them up: factors divide into a number; multiples are in its times table.'],
+    'Prime factors': ['Every number has exactly one set of prime factors, whichever way you start your factor tree.', 'Stop a branch only when you reach a prime. 4 is not prime, so split it into 2 × 2.'],
+    'What is a ratio?': ['A ratio compares amounts in order. Multiplying or dividing both parts by the same number gives an equal ratio.', 'Order matters: 2 : 3 (boys to girls) is not the same as 3 : 2.'],
+    'How do you calculate ratio in everyday situations?': ['To share in a ratio, add the parts, find the value of one part, then multiply.', 'Check your shares add up to the total.'],
+    'Ratio with different units': ['A ratio only makes sense when both amounts are in the same unit.', 'Change to the smaller unit first: 50 cm : 2 m becomes 50 : 200.'],
+    'What are nets?': ['A net folds into a 3D shape, so it has one flat face for every face of the solid.', 'Picture folding it step by step: if two faces land on the same side, it isn’t a net.'],
+    'How do I use grid references on a map?': ['A grid reference gives the column letter first, then the row number, so everyone reads it the same way.', 'Don’t swap them: always write the letter first, like B3, never 3B.'],
+    'What are coordinates?': ['Coordinates give an exact point: how far across, then how far up, from the origin (0, 0).', 'Across first, then up: (2, 5) and (5, 2) are different points.'],
+    'Reflecting on a grid': ['In a reflection, each point moves to the same distance on the other side of the mirror line.', 'Reflect each corner separately, then join them up. Points on the mirror line stay where they are.'],
+    'Painted cubes and stacks': ['In a painted cube, corners have 3 painted faces, edges 2, face centres 1, and hidden cubes none.', 'Always check your groups add up to the total number of small cubes.'],
+    'Improper fractions and mixed numbers': ['An improper fraction and a mixed number can show the same amount: 7/4 = 1 3/4.', 'When changing improper to mixed, the remainder goes on top of the same denominator.'],
+    'Percentages': ['Per cent means out of 100. Learn the friends: 50% is a half, 25% a quarter, 10% a tenth.', 'Build other percentages from 10%: 30% is three lots of 10%.'],
+    '3D shapes': ['3D shapes are described by faces, edges and vertices. Cubes and cuboids both have 6 faces, 12 edges and 8 vertices.', 'Count hidden faces and edges too. Turn the shape in your mind.'],
+    'Mode, range and chance': ['The mode is the most common value and the range is largest minus smallest. Chance goes from impossible to certain.', 'The mode is a value from the data, not how many times it appears.'],
+    'Prime numbers and square numbers': ['Primes have exactly two factors. Square numbers are a number times itself and make a square of dots.', 'Square numbers have an odd number of factors, because one factor pairs with itself.'],
+    'Turns and mirror images': ['A quarter turn is 90°, a half turn 180° and a full turn 360°. In a mirror, left and right swap.', 'Always say clockwise or anticlockwise, unless it is a half turn.'],
+    'Building with cubes and nets': ['Count cubes layer by layer so hidden cubes are not missed.', 'Not every pattern of six squares folds into a cube. There are exactly 11 that do.'],
+    'Decimal places and significant figures': ['Significant figures count from the first non-zero digit, so they work for any size of number.', 'Keep the size of the number: 36,400 to 1 s.f. is 40,000, not 4.'],
+    'Negative numbers and powers of ten': ['Subtracting a negative is the same as adding. Same signs multiply to a positive; different signs to a negative.', 'Two minus signs together only make plus when they are next to each other: 5 − (−3) = 8.'],
+    'What is the order of operations?': ['BIDMAS gives one agreed order: brackets, indices, then × and ÷, then + and −.', 'Multiplication doesn’t always come before division. They are equal, so work left to right.'],
+    'Decimal calculations': ['When multiplying, the number of decimal places in the answer matches the total in the question.', 'Line up decimal points to add or subtract, filling gaps with zeros.'],
+    'How do you multiply fractions?': ['To multiply fractions, multiply the tops and the bottoms. “Of” means multiply.', 'Multiplying by a fraction less than 1 makes a number smaller, so check your answer gets smaller.'],
+    'Dividing fractions': ['Dividing by a fraction asks how many of it fit. Keep, change, flip turns it into a multiplication.', 'Only flip the second fraction, never the first.'],
+    'How do you calculate a percentage?': ['To write one amount as a percentage of another, divide the part by the whole and multiply by 100.', 'Divide by the whole, not the part: 18 out of 24 is 18 ÷ 24.'],
+    'Percentage change': ['Percentage change compares the change with the original amount: change ÷ original × 100.', 'Always divide by the original, not the new amount.'],
+    'Percentages as fractions and reverse percentages': ['In reverse percentages, the amount you know is a percentage of the original. Find 1%, then 100%.', 'Don’t add the percentage back onto the sale price: it was taken off the original price.'],
+    'What is financial decision making?': ['Good money decisions compare options: needs before wants, a budget, and the price for one item.', 'A bigger pack isn’t always the best buy. Work out the price for one.'],
+    'How do you work out the area of triangles?': ['A triangle is half of a rectangle, so its area is ½ × base × height.', 'Use the perpendicular height, at a right angle to the base, not the sloping side.'],
+    'The nth term': ['The difference between terms is the number in front of n. Then adjust to match the first term.', 'Check the rule gives the right first two terms before using it.'],
+    'Equations with brackets and letters on both sides': ['Expand brackets first, then move the letters to one side by subtracting the smaller amount.', 'When expanding, multiply every term inside the bracket: 3(x + 2) = 3x + 6, not 3x + 2.'],
+    'Angles in polygons': ['A polygon with n sides splits into n − 2 triangles, so its angles add to (n − 2) × 180°.', 'Only regular polygons have all angles equal. Divide by n only for regular shapes.'],
+    'Angles in parallel lines': ['A line crossing parallel lines makes equal corresponding angles (F) and alternate angles (Z). Co-interior angles (C) add to 180°.', 'These rules only work when the lines really are parallel. Look for the arrows.'],
+    'Mean from a frequency table': ['Multiply each value by its frequency to find the total, then divide by the total frequency.', 'Divide by the number of people or items, not the number of rows.'],
+    'Pie charts and combined probability': ['A pie chart shares 360° between the data. For two events, list every outcome in a table so none are missed.', 'For two events, the number of outcomes multiplies: a coin and a dice give 2 × 6 = 12.'],
+    'Algebra in problems': ['Using a letter for the unknown lets you write the story as an equation and solve it.', 'Say clearly what your letter stands for, and answer the question in words at the end.'],
+    'Reasoning and counterexamples': ['One counterexample proves a claim false. A general reason is needed to prove it is always true.', 'A few examples that work don’t prove something is always true.'],
+    'What are square and cube numbers?': ['Squaring multiplies a number by itself; cubing multiplies it by itself three times. Roots undo them.', '5² means 5 × 5 = 25, not 5 × 2 = 10.'],
+    'How do you convert between ratios, fractions and percentages?': ['Add the parts of a ratio to find the whole. Each part over the whole is a fraction of the total.', 'In 2 : 3, the fraction is 2/5, not 2/3. Divide by the total parts.'],
+    'Proportion, exchange and interest': ['In direct proportion, find the value of one, then multiply. Simple interest adds the same amount every year.', 'Check whether it is direct or inverse proportion: more workers means less time.'],
+    'How do you calculate volume using an equation?': ['Length × breadth counts the cubes in one layer; × height counts the layers. So V = l × b × h.', 'All three lengths must be in the same unit before you multiply.'],
+    'Speed, distance, time and bearings': ['Speed = distance ÷ time. Rearrange it to find distance or time. Bearings are measured clockwise from north.', 'Change minutes to hours first: 30 minutes is 0.5 hours, not 0.30.'],
+    'How can you transform a shape?': ['Translations slide, reflections flip and rotations turn. The shape always stays the same size.', 'Describe each fully: a rotation needs a centre, an angle and a direction.'],
+    'Surface area and views': ['Surface area adds the area of every face. A cuboid has three pairs of matching faces.', 'Don’t confuse surface area (cm²) with volume (cm³).']
+  };
 })();
 </script>
 <script>

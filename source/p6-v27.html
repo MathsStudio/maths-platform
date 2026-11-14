@@ -1418,6 +1418,11 @@ var SLIDE_MORE = {"1.learn1": [{"more": ["Our number system uses only ten digits
   function moreBlock(t, step, k) {
     var m = (SLIDE_MORE[t.n + '.' + step.id] || [])[k];
     var sl = step.slides && step.slides[k];
+    if (step.id === 'watch' || (sl && sl.kind === 'Watch lesson')) {   /* Watch lessons: a note written for that lesson */
+      var dn = sl && window.BT && BT.DEEP && BT.DEEP[sl.title];
+      if (!dn) return '';
+      return '<section class="more"><span class="step-tag">Let\u2019s go deeper</span>' + dn.map(function (x) { return '<p class="say">' + x + '</p>'; }).join('') + '</section>';
+    }
     var ins = (window.BT && BT.pickInsight && sl) ? BT.pickInsight(t.n, sl.title, '') : [];
     if (!ins.length && m && m.more) ins = m.more;
     if (!ins.length) return '';
