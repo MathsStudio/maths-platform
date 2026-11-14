@@ -76,6 +76,7 @@
     '.gp-q:focus-visible{outline:3px solid #881cd6;outline-offset:1px}',
     '.gp-dot{flex:none;width:18px;height:18px;margin-top:1px;border-radius:50%;border:2px solid #b98be6;color:#881cd6;font-size:9px;display:flex;align-items:center;justify-content:center}',
     '.gp-q.on .gp-dot{border-color:#881cd6}',
+    '.gp-q.seen .gp-dot{background:var(--good,#1f9d55);border-color:var(--good,#1f9d55);color:#fff;font-size:11px;font-weight:900}',
     '.gp-cap{min-height:48px;font-size:16px;line-height:1.45;padding:2px 4px}',
     '.gp-ctl{display:flex;align-items:center;gap:8px;flex-wrap:wrap}',
     '.gp-ctl .btn{min-height:44px}',
@@ -113,9 +114,16 @@
     slides.forEach(function (sl, si) { sl.steps.forEach(function (st, k) { chunks.push({ si: si, k: k, say: st.say }); }); });
     var dashes = ''; for (var d = 0; d < meta.of; d++) dashes += '<i class="' + (d <= meta.q ? 'on' : '') + '"></i>';
     var short = ep.title.replace(/\?$/, '');
+    /* a lesson counts as watched once its last step has been shown; the tick is saved with the child's progress */
+    function seen(j) { return meta.n && H.isDone ? H.isDone(meta.n, 'w' + j) : false; }
+    function markSeen() {
+      if (!meta.n || !H.markDone || seen(meta.q)) return;
+      H.markDone(meta.n, 'w' + meta.q);
+      var b = host.querySelector('.gp-q[data-q="' + meta.q + '"]'); if (b) { b.classList.add('seen'); var d = b.querySelector('.gp-dot'); if (d) d.textContent = '✓'; }
+    }
 
     var list = (meta.titles && meta.titles.length > 1) ? '<details class="gp-list"' + (window.innerWidth > 700 ? ' open' : '') + '><summary class="gp-list-h">Questions in this Watch lesson</summary><ul>' +
-      meta.titles.map(function (tt, j) { return '<li><button type="button" class="gp-q' + (j === meta.q ? ' on' : '') + '" data-q="' + j + '"' + (j === meta.q ? ' aria-current="true"' : '') + '><span class="gp-dot" aria-hidden="true">' + (j === meta.q ? '▶' : '') + '</span>' + tt + '</button></li>'; }).join('') + '</ul></details>' : '';
+      meta.titles.map(function (tt, j) { return '<li><button type="button" class="gp-q' + (j === meta.q ? ' on' : '') + (seen(j) ? ' seen' : '') + '" data-q="' + j + '"' + (j === meta.q ? ' aria-current="true"' : '') + '><span class="gp-dot" aria-hidden="true">' + (seen(j) ? '✓' : j === meta.q ? '▶' : '') + '</span>' + (seen(j) ? '<span class="sr-only">Watched: </span>' : '') + tt + '</button></li>'; }).join('') + '</ul></details>' : '';
     host.innerHTML = list + '<div class="gp"><div class="gp-frame"><div class="gp-stage"></div><button class="gp-close" type="button" aria-label="Close full screen">✕</button></div>' +
       '<div class="gp-cap" aria-live="polite"></div>' +
       '<div class="gp-ctl"><button class="btn" type="button" data-p>Play the lesson</button>' +
@@ -190,6 +198,7 @@
       });
       cap.textContent = c.say; bar.style.width = ((i + 1) / chunks.length * 100) + '%';
       cnt.textContent = 'Slide ' + (c.si + 1) + ' of ' + slides.length;
+      if (i === chunks.length - 1) markSeen();
     }
     function say(i) {
       show(i); var my = ++token; clearTimeout(timer);
@@ -215,10 +224,10 @@
     if (H.__gpAutoplay) { H.__gpAutoplay = false; setTimeout(function () { if (root.isConnected && !playing) pb.click(); }, 350); }
   };
 
-  function toSlides(episodes) {
+  function toSlides(episodes, n) {
     return episodes.map(function (ep, i) {
       return { title: ep.title, say: ['Press play and your teacher will explain this step by step.'], goal: ep.goal || ep.title.toLowerCase(), noMore: true, kind: 'Watch lesson',
-        live: function (host) { H.gifPlayer(host, ep, { q: i, of: episodes.length, titles: episodes.map(function (e) { return e.title; }) }); } };
+        live: function (host) { H.gifPlayer(host, ep, { n: n, q: i, of: episodes.length, titles: episodes.map(function (e) { return e.title; }) }); } };
     });
   }
   /* put the episodes in a Watch step at the front of a topic. Older Watch lessons are removed,
@@ -229,7 +238,7 @@
     if (old && keep) (old.slides || []).forEach(function (sl) { if (sl.ep && keep.indexOf(sl.title) >= 0) kept.push(sl.ep); });
     t.steps = t.steps.filter(function (s) { return s.id !== 'watch'; });
     var m = H.slideMeta; if (m) { delete m.goals[n + '.watch']; delete m.more[n + '.watch']; }
-    BT.add(n, 'watch', label || 'Watch lesson', toSlides(episodes.concat(kept)));
+    BT.add(n, 'watch', label || 'Watch lesson', toSlides(episodes.concat(kept), n));
     var st = t.steps.filter(function (s) { return s.id === 'watch'; })[0], i = t.steps.indexOf(st);
     if (i > 0) { t.steps.splice(i, 1); t.steps.unshift(st); }
     S.arrange(t);

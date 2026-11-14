@@ -317,7 +317,8 @@ table.plan th, table.plan td { text-align: left; padding: 8px 10px; border-botto
 .sumbtn { display: flex; gap: 10px; align-items: center; width: 100%; min-height: 44px; padding: 8px 12px; background: none; border: 0; border-radius: 10px; font: inherit; color: inherit; text-align: left; cursor: pointer; }
 .sumbtn:hover { background: rgba(43, 95, 217, .1); }
 .sumbtn:focus-visible { outline: 3px solid #2b5fd9; outline-offset: -2px; }
-.sumlist li.ok > span:first-child { background: var(--good); color: var(--accent-fg); font-size: .8rem; }
+.sumlist li.ok > span:first-child, .sumlist li.ok .sumbtn > span:first-child { background: var(--good); color: #fff; font-size: .8rem; }
+.sumlist.pick .sumbtn > span:first-child { width: 22px; height: 22px; flex: none; display: grid; place-items: center; border-radius: 50%; }
 .vh { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
 
 
@@ -597,7 +598,7 @@ var SLIDE_MORE = {"1.learn1": [{"more": ["Our number system uses only ten digits
   function isDone(n, step) { var p = store.progress[pkey(n)]; return !!(p && p.steps && p.steps[step]); }
   function best(n) { var p = store.progress[pkey(n)]; return (p && p.best) || 0; }
   function setBest(n, sc) { var p = store.progress[pkey(n)] = store.progress[pkey(n)] || { steps: {} }; if (!p.best || sc > p.best) { p.best = sc; save(); } }
-  S.h.markDone = markDone;
+  S.h.markDone = markDone; S.h.isDone = isDone;
   S.h.slideMeta = { goals: SLIDE_GOALS, more: SLIDE_MORE };
 
   /* ================= narrator ================= */
@@ -822,7 +823,17 @@ var SLIDE_MORE = {"1.learn1": [{"more": ["Our number system uses only ten digits
   function numOnly(q) { return q.type !== 'mc' && q.kind !== 'text' && !/[A-Za-z]/.test(String(q.answer)); }
   function mountQuiz(host, qs, cfg) {
     var qi = 0, score = 0, results = [], answered = false, hintIdx = 0, drawnOnce = false;
+    /* redraw in place: the page keeps its scroll position, padding the quiz if the new content is shorter */
     function draw() {
+      var y = window.pageYOffset, was = drawnOnce;
+      draw0();
+      if (!was) return;
+      host.style.minHeight = '';
+      var need = y + window.innerHeight - document.documentElement.scrollHeight;
+      if (need > 0) host.style.minHeight = (host.offsetHeight + need) + 'px';
+      if (window.pageYOffset !== y) window.scrollTo(0, y);
+    }
+    function draw0() {
       narStop();
       var readRoot = drawnOnce ? host : null; drawnOnce = true;
       var prog = '<div class="progress" aria-label="Question ' + Math.min(qi + 1, qs.length) + ' of ' + qs.length + '">' + qs.map(function (_, i) {
@@ -872,7 +883,7 @@ var SLIDE_MORE = {"1.learn1": [{"more": ["Our number system uses only ten digits
       var shown = q.show || (q.type === 'mc' ? q.answer : (isNaN(Number(q.answer)) ? q.answer : fmtInt(Number(q.answer))));
       $('fb').innerHTML = '<div class="fb ' + (ok ? 'ok' : 'no') + ' say"><strong>' + (ok ? 'Brilliant!' : 'Missed it. The answer is ' + shown + '.') + '</strong>' + q.explain + '</div><button class="btn qnext" id="next" type="button">' + (last ? 'See my score' : 'Next question') + '</button>';
       speakAnswerFeedback(ok, shown, q.explain);
-      $('next').focus();
+      try { $('next').focus({ preventScroll: true }); } catch (e) { /* ignore */ }
       $('next').addEventListener('click', function () { qi++; draw(); });
       var pds = host.querySelectorAll('.pd'); if (pds[qi]) pds[qi].className = 'pd ' + (ok ? 'ok' : 'no');
     }
@@ -1192,8 +1203,32 @@ var SLIDE_MORE = {"1.learn1": [{"more": ["Our number system uses only ten digits
     if (!changed) return;
     if (state.tab === 'home') { render(); return; }
     var t = topic(), current = t && allSteps(t)[state.step];
-    if (current && current.type === 'quiz') render();
+    if (current && current.type === 'quiz') keepPlace('.level-switch.in-quiz', render);
   }
+  /* Activities redraw themselves on every tap. If the new content is shorter, the browser
+     would pull the page up. holdScroll pads the activity just enough to keep the page still. */
+  var lastY = 0;
+  window.addEventListener('scroll', function () { lastY = window.pageYOffset; }, { passive: true });
+  function holdScroll(el) {
+    if (!el || el.__hold || !window.MutationObserver) return; el.__hold = true;
+    new MutationObserver(function () {
+      if (!el.isConnected) return;
+      var y = lastY; el.style.minHeight = '';
+      var need = y + window.innerHeight - document.documentElement.scrollHeight;
+      if (need > 0) el.style.minHeight = (el.offsetHeight + need) + 'px';
+      if (Math.abs(window.pageYOffset - y) > 1) window.scrollTo(0, y);
+    }).observe(el, { childList: true, subtree: true });
+  }
+  S.h.holdScroll = holdScroll;
+  /* redraw without the page jumping: keep the given element at the same place on screen */
+  function keepPlace(sel, redraw) {
+    var el = document.querySelector(sel), y0 = el ? el.getBoundingClientRect().top : null;
+    redraw();
+    if (y0 === null) return;
+    var fix = function () { var e2 = document.querySelector(sel); if (e2) window.scrollBy(0, e2.getBoundingClientRect().top - y0); };
+    fix(); if (window.requestAnimationFrame) requestAnimationFrame(fix);
+  }
+  S.h.keepPlace = keepPlace;
 
   function renderDifficultyGate(v) {
     v.innerHTML = '<section class="hero"><span class="eyebrow">Maths Studio</span><h1 class="say">Choose your challenge</h1><p class="lead say">Pick a level before you begin. The Low, Medium and High buttons stay at the top so you can switch levels at any time. Every topic has a 150-question practice set at each level, with hints and explanations.</p></section>' +
@@ -1480,7 +1515,7 @@ var SLIDE_MORE = {"1.learn1": [{"more": ["Our number system uses only ten digits
     function drawBar() {
       bar.innerHTML = '<span class="setbar-l">Set ' + (cur + 1) + ' of ' + b.sets + ' \u00b7 20 ' + (step.id === 'practise' ? 'questions' : 'problems') + '</span>' +
         Array.apply(null, Array(b.sets)).map(function (_, i) { return '<button type="button" class="setchip' + (i === cur ? ' on' : '') + (done.indexOf(i) > -1 ? ' ok' : '') + '" data-set="' + i + '" aria-pressed="' + (i === cur) + '" aria-label="Set ' + (i + 1) + (done.indexOf(i) > -1 ? ', done' : '') + '">' + (done.indexOf(i) > -1 ? '\u2713' : i + 1) + '</button>'; }).join('');
-      bar.querySelectorAll('[data-set]').forEach(function (x) { x.addEventListener('click', function () { open(Number(x.getAttribute('data-set'))); }); });
+      bar.querySelectorAll('[data-set]').forEach(function (x) { x.addEventListener('click', function () { keepPlace('.setbar', function () { open(Number(x.getAttribute('data-set'))); }); }); });
     }
     function qsFor(i) { return b.upto(i).slice(i * SET_SIZE, i * SET_SIZE + SET_SIZE); }
     function open(i) {
@@ -1518,7 +1553,7 @@ var SLIDE_MORE = {"1.learn1": [{"more": ["Our number system uses only ten digits
   }
   function mountLab(pane, t, step) {
     pane.innerHTML = head(step.tag, step.title, step.lead) + '<div id="labHost"></div><div class="row" style="margin-top:14px"><button class="btn ghost" id="labNew" type="button">Try a different set-up</button></div>';
-    function boot() { step.mount($('labHost'), { complete: function () { markDone(t.n, step.id); renderStepper(); }, done: function () { return isDone(t.n, step.id); } }); }
+    function boot() { holdScroll($('labHost')); step.mount($('labHost'), { complete: function () { markDone(t.n, step.id); renderStepper(); }, done: function () { return isDone(t.n, step.id); } }); }
     boot();
     $('labNew').addEventListener('click', function () {
       narStop();
@@ -15670,6 +15705,7 @@ S.spatialExtra = S.extraMakers;
     '.gp-q:focus-visible{outline:3px solid #881cd6;outline-offset:1px}',
     '.gp-dot{flex:none;width:18px;height:18px;margin-top:1px;border-radius:50%;border:2px solid #b98be6;color:#881cd6;font-size:9px;display:flex;align-items:center;justify-content:center}',
     '.gp-q.on .gp-dot{border-color:#881cd6}',
+    '.gp-q.seen .gp-dot{background:var(--good,#1f9d55);border-color:var(--good,#1f9d55);color:#fff;font-size:11px;font-weight:900}',
     '.gp-cap{min-height:48px;font-size:16px;line-height:1.45;padding:2px 4px}',
     '.gp-ctl{display:flex;align-items:center;gap:8px;flex-wrap:wrap}',
     '.gp-ctl .btn{min-height:44px}',
@@ -15707,9 +15743,16 @@ S.spatialExtra = S.extraMakers;
     slides.forEach(function (sl, si) { sl.steps.forEach(function (st, k) { chunks.push({ si: si, k: k, say: st.say }); }); });
     var dashes = ''; for (var d = 0; d < meta.of; d++) dashes += '<i class="' + (d <= meta.q ? 'on' : '') + '"></i>';
     var short = ep.title.replace(/\?$/, '');
+    /* a lesson counts as watched once its last step has been shown; the tick is saved with the child's progress */
+    function seen(j) { return meta.n && H.isDone ? H.isDone(meta.n, 'w' + j) : false; }
+    function markSeen() {
+      if (!meta.n || !H.markDone || seen(meta.q)) return;
+      H.markDone(meta.n, 'w' + meta.q);
+      var b = host.querySelector('.gp-q[data-q="' + meta.q + '"]'); if (b) { b.classList.add('seen'); var d = b.querySelector('.gp-dot'); if (d) d.textContent = '✓'; }
+    }
 
     var list = (meta.titles && meta.titles.length > 1) ? '<details class="gp-list"' + (window.innerWidth > 700 ? ' open' : '') + '><summary class="gp-list-h">Questions in this Watch lesson</summary><ul>' +
-      meta.titles.map(function (tt, j) { return '<li><button type="button" class="gp-q' + (j === meta.q ? ' on' : '') + '" data-q="' + j + '"' + (j === meta.q ? ' aria-current="true"' : '') + '><span class="gp-dot" aria-hidden="true">' + (j === meta.q ? '▶' : '') + '</span>' + tt + '</button></li>'; }).join('') + '</ul></details>' : '';
+      meta.titles.map(function (tt, j) { return '<li><button type="button" class="gp-q' + (j === meta.q ? ' on' : '') + (seen(j) ? ' seen' : '') + '" data-q="' + j + '"' + (j === meta.q ? ' aria-current="true"' : '') + '><span class="gp-dot" aria-hidden="true">' + (seen(j) ? '✓' : j === meta.q ? '▶' : '') + '</span>' + (seen(j) ? '<span class="sr-only">Watched: </span>' : '') + tt + '</button></li>'; }).join('') + '</ul></details>' : '';
     host.innerHTML = list + '<div class="gp"><div class="gp-frame"><div class="gp-stage"></div><button class="gp-close" type="button" aria-label="Close full screen">✕</button></div>' +
       '<div class="gp-cap" aria-live="polite"></div>' +
       '<div class="gp-ctl"><button class="btn" type="button" data-p>Play the lesson</button>' +
@@ -15784,6 +15827,7 @@ S.spatialExtra = S.extraMakers;
       });
       cap.textContent = c.say; bar.style.width = ((i + 1) / chunks.length * 100) + '%';
       cnt.textContent = 'Slide ' + (c.si + 1) + ' of ' + slides.length;
+      if (i === chunks.length - 1) markSeen();
     }
     function say(i) {
       show(i); var my = ++token; clearTimeout(timer);
@@ -15809,10 +15853,10 @@ S.spatialExtra = S.extraMakers;
     if (H.__gpAutoplay) { H.__gpAutoplay = false; setTimeout(function () { if (root.isConnected && !playing) pb.click(); }, 350); }
   };
 
-  function toSlides(episodes) {
+  function toSlides(episodes, n) {
     return episodes.map(function (ep, i) {
       return { title: ep.title, say: ['Press play and your teacher will explain this step by step.'], goal: ep.goal || ep.title.toLowerCase(), noMore: true, kind: 'Watch lesson',
-        live: function (host) { H.gifPlayer(host, ep, { q: i, of: episodes.length, titles: episodes.map(function (e) { return e.title; }) }); } };
+        live: function (host) { H.gifPlayer(host, ep, { n: n, q: i, of: episodes.length, titles: episodes.map(function (e) { return e.title; }) }); } };
     });
   }
   /* put the episodes in a Watch step at the front of a topic. Older Watch lessons are removed,
@@ -15823,7 +15867,7 @@ S.spatialExtra = S.extraMakers;
     if (old && keep) (old.slides || []).forEach(function (sl) { if (sl.ep && keep.indexOf(sl.title) >= 0) kept.push(sl.ep); });
     t.steps = t.steps.filter(function (s) { return s.id !== 'watch'; });
     var m = H.slideMeta; if (m) { delete m.goals[n + '.watch']; delete m.more[n + '.watch']; }
-    BT.add(n, 'watch', label || 'Watch lesson', toSlides(episodes.concat(kept)));
+    BT.add(n, 'watch', label || 'Watch lesson', toSlides(episodes.concat(kept), n));
     var st = t.steps.filter(function (s) { return s.id === 'watch'; })[0], i = t.steps.indexOf(st);
     if (i > 0) { t.steps.splice(i, 1); t.steps.unshift(st); }
     S.arrange(t);
