@@ -166,9 +166,9 @@
     var t = S.topics[n]; if (!t) { if (window.console) console.warn('story: no topic ' + n); return; }
     if (t.steps.some(function (s) { return s.id === 'watch'; })) return;
     var slides = episodes.map(function (ep) {
-      return { title: ep.title, say: [ep.intro || 'Press play and your teacher will explain this step by step.'], goal: ep.goal || ep.title.toLowerCase() + '.', noMore: true, kind: 'Watch', live: function (host) { H.storyPlayer(host, ep); } };
+      return { title: ep.title, say: [ep.intro || 'Press play and your teacher will explain this step by step.'], goal: ep.goal || ep.title.toLowerCase() + '.', noMore: true, kind: 'Watch lesson', ep: ep, live: function (host) { H.storyPlayer(host, ep); } };
     });
-    BT.add(n, 'watch', label || 'Watch', slides);
+    BT.add(n, 'watch', label || 'Watch lesson', slides);
     var st = t.steps.filter(function (s) { return s.id === 'watch'; })[0], i = t.steps.indexOf(st);
     if (i > 0) { t.steps.splice(i, 1); t.steps.unshift(st); }
     S.arrange(t);
@@ -177,10 +177,10 @@
   BT.storyMore = function (n, episodes) {
     var t = S.topics[n]; if (!t) return;
     var st = t.steps.filter(function (s) { return s.id === 'watch'; })[0];
-    if (!st) { BT.story(n, 'Watch', episodes); return; }
+    if (!st) { BT.story(n, 'Watch lesson', episodes); return; }
     var have = {}; (st.slides || []).forEach(function (sl) { have[sl.title] = 1; });
     var add = episodes.filter(function (ep) { return !have[ep.title]; }).map(function (ep) {
-      return { title: ep.title, say: [ep.intro || 'Press play and your teacher will explain this step by step.'], goal: ep.goal || ep.title.toLowerCase() + '.', noMore: true, kind: 'Watch', live: function (host) { H.storyPlayer(host, ep); } };
+      return { title: ep.title, say: [ep.intro || 'Press play and your teacher will explain this step by step.'], goal: ep.goal || ep.title.toLowerCase() + '.', noMore: true, kind: 'Watch lesson', ep: ep, live: function (host) { H.storyPlayer(host, ep); } };
     });
     if (!add.length) return;
     var key = n + '.watch', m = H.slideMeta;

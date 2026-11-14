@@ -57,7 +57,7 @@
         st("Always read it, pick out the numbers, decide the operations, solve it, and ask yourself: does my answer make sense?", V.list(['Read the story', 'Pick out the numbers', 'Choose the operations', 'Check it makes sense']))])
     ]
   };
-  BT.story(502, 'Watch', [addsub, muldiv, order]);
+  BT.story(502, 'Watch lesson', [addsub, muldiv, order]);
 
   /* ======================= 503 FRACTIONS ======================= */
   var fwhat = {
@@ -102,7 +102,7 @@
         st("Remember the two steps. Divide by the bottom, then multiply by the top.", V.rule('÷ the bottom, × the top.'))])
     ]
   };
-  BT.story(503, 'Watch', [fwhat, fmixed, fops]);
+  BT.story(503, 'Watch lesson', [fwhat, fmixed, fops]);
 
   /* ======================= 504 DECIMALS AND PERCENTAGES ======================= */
   var ddec = {
@@ -131,7 +131,7 @@
         st("For fifty per cent, halve it. You can use these to build lots of others. Twenty per cent is double ten per cent, so sixteen.", V.eq('20% of 80 = 8 × 2 = 16', 'g'))])
     ]
   };
-  BT.story(504, 'Watch', [ddec, pct]);
+  BT.story(504, 'Watch lesson', [ddec, pct]);
 
   /* ======================= 505 MONEY, TIME AND MEASUREMENT ======================= */
   var units = {
@@ -169,7 +169,7 @@
         st("Six times four is twenty-four. The area is twenty-four square metres. Perimeter adds the sides, area multiplies length by width.", V.eq('6 × 4 = 24 m²', 'g') + V.rule('Perimeter: add the sides. Area: length × width.'))])
     ]
   };
-  BT.story(505, 'Watch', [units, timem, perim]);
+  BT.story(505, 'Watch lesson', [units, timem, perim]);
 
   /* ======================= 506 PATTERNS AND ALGEBRA ======================= */
   var seq = {
@@ -194,5 +194,5 @@
         st("Another one: three times n equals eighteen. The opposite of multiplying is dividing. Eighteen divided by three is six, so n is six.", V.eq('3 × n = 18', 'b') + V.eq('n = 18 ÷ 3 = 6', 'g') + V.rule('Use the opposite operation.'))])
     ]
   };
-  BT.story(506, 'Watch', [seq, func]);
+  BT.story(506, 'Watch lesson', [seq, func]);
 })();

@@ -8,7 +8,7 @@
   var REC = function (say, items) { return SC('Let’s recap', '', [st(say, V.list(items))]); };
 
   /* 801 WHOLE NUMBERS AND DECIMALS */
-  BT.story(801, 'Watch', [
+  BT.story(801, 'Watch lesson', [
     { title: 'Calculating with decimals', goal: 'how to multiply and divide decimals accurately.', scenes: [
       SC('Multiplying decimals', '3.6 × 0.4', [
         st("Welcome to secondary maths! Let's multiply three point six by zero point four. First ignore the decimal points and multiply the whole numbers: thirty-six times four is one hundred and forty-four.", V.eq('36 × 4 = 144', 'b')),
@@ -28,7 +28,7 @@
   ]);
 
   /* 802 INTEGERS, BODMAS, FACTORS, POWERS */
-  BT.story(802, 'Watch', [
+  BT.story(802, 'Watch lesson', [
     { title: 'Negative numbers', goal: 'the rules for adding, subtracting, multiplying and dividing negatives.', scenes: [
       SC('Adding and subtracting', 'On the number line', [
         st("Subtracting a positive moves left. Minus five minus three: start at minus five and move three left, to minus eight.", NL(-10, 2, { lab: 2, tick: 1, jumps: [[-5, -8, '−3']] }) + V.eq('−5 − 3 = −8', 'g')),
@@ -46,7 +46,7 @@
   ]);
 
   /* 803 FRACTIONS */
-  BT.story(803, 'Watch', [
+  BT.story(803, 'Watch lesson', [
     { title: 'Adding and subtracting mixed numbers', goal: 'how to add mixed numbers by using a common denominator.', scenes: [
       SC('Whole numbers first', '2 1/3 + 1 3/4', [
         st("Two and a third plus one and three quarters. Add the whole numbers: two plus one is three. Now the fractions. The common denominator of three and four is twelve.", V.eq('2 + 1 = 3') + V.eq('1/3 = 4/12    3/4 = 9/12')),
@@ -61,7 +61,7 @@
   ]);
 
   /* 804 PERCENTAGES */
-  BT.story(804, 'Watch', [
+  BT.story(804, 'Watch lesson', [
     { title: 'Percentages of amounts', goal: 'how to find a percentage of an amount and write one amount as a percentage.', scenes: [
       SC('Finding a percentage', '35% of 240', [
         st("Find thirty-five per cent of two hundred and forty. Ten per cent is twenty-four. Thirty per cent is three times that, seventy-two. Five per cent is half of ten per cent, twelve. Add them: eighty-four.", V.eq('30% = 72') + V.eq('5% = 12') + V.eq('35% = 84', 'g')),
@@ -78,7 +78,7 @@
   ]);
 
   /* 805 RATIO */
-  BT.story(805, 'Watch', [
+  BT.story(805, 'Watch lesson', [
     { title: 'Simplifying and sharing in a ratio', goal: 'how to simplify a ratio and share an amount in a given ratio.', scenes: [
       SC('Simplifying', '24 : 36', [
         st("To simplify a ratio, divide both parts by their highest common factor. The highest common factor of twenty-four and thirty-six is twelve. So twenty-four to thirty-six is two to three.", V.eq('24 : 36 = 2 : 3', 'g')),
@@ -95,7 +95,7 @@
   ]);
 
   /* 806 MONEY AND FINANCE */
-  BT.story(806, 'Watch', [
+  BT.story(806, 'Watch lesson', [
     { title: 'Wages and overtime', goal: 'how to calculate pay including overtime.', scenes: [
       SC('Basic pay', '35 hours at £9.50', [
         st("Maya works thirty-five hours at nine pounds fifty an hour. Her basic pay is thirty-five times nine fifty, three hundred and thirty-two pounds fifty.", V.eq('35 × £9.50 = £332.50', 'b')),
@@ -113,7 +113,7 @@
   ]);
 
   /* 807 TIME, DISTANCE, SPEED */
-  BT.story(807, 'Watch', [
+  BT.story(807, 'Watch lesson', [
     { title: 'Speed, distance and time', goal: 'how to use the speed formula and convert times.', scenes: [
       SC('The formula', 'Speed = distance ÷ time', [
         st("Speed tells us how far we go in one hour. A car travels a hundred and eighty kilometres in two and a half hours. Divide the distance by the time: seventy-two kilometres per hour.", V.eq('180 ÷ 2.5 = 72 km/h', 'g')),
@@ -130,7 +130,7 @@
   ]);
 
   /* 808 MEASURE, AREA, VOLUME */
-  BT.story(808, 'Watch', [
+  BT.story(808, 'Watch lesson', [
     { title: 'Area of triangles, parallelograms and trapeziums', goal: 'the area formulas for common 2D shapes.', scenes: [
       SC('Parallelogram', 'Base times perpendicular height', [
         st("A parallelogram can be cut and moved to make a rectangle. Its area is the base times the perpendicular height, not the slanted side. With base eight and height five, the area is forty.", V.eq('8 × 5 = 40 cm²', 'g') + V.rule('Use the perpendicular height.')),
@@ -146,7 +146,7 @@
   ]);
 
   /* 809 SEQUENCES, FORMULAE, ALGEBRA */
-  BT.story(809, 'Watch', [
+  BT.story(809, 'Watch lesson', [
     { title: 'Simplifying and expanding', goal: 'how to collect like terms and expand brackets.', scenes: [
       SC('Like terms', '3a + 2b + 4a − b', [
         st("Like terms have the same letter. Three a and four a make seven a. Two b take away b leaves one b. So three a plus two b plus four a minus b simplifies to seven a plus b.", V.eq('3a + 2b + 4a − b = 7a + b', 'g')),
@@ -164,7 +164,7 @@
   ]);
 
   /* 810 ANGLES */
-  BT.story(810, 'Watch', [
+  BT.story(810, 'Watch lesson', [
     { title: 'Angle rules', goal: 'the basic angle facts and how to use them.', scenes: [
       SC('Facts to know', 'Lines and points', [
         st("Angles on a straight line add up to one eighty. Angles around a point add up to three sixty. Where two straight lines cross, the opposite angles, called vertically opposite, are equal.", V.tbl([['Straight line', '180°'], ['Around a point', '360°'], ['Vertically opposite', 'equal']], ['Fact', 'Rule']))]),
@@ -180,7 +180,7 @@
   ]);
 
   /* 811 SHAPE, SYMMETRY, COORDINATES, SCALE */
-  BT.story(811, 'Watch', [
+  BT.story(811, 'Watch lesson', [
     { title: 'Four-quadrant coordinates and reflection', goal: 'how to plot points in all four quadrants and reflect shapes.', scenes: [
       SC('The four quadrants', 'x first, then y', [
         st("Coordinates tell us where a point is. The first number is along, the x direction. The second is up or down, the y direction. Negative numbers go left and down.", V.plot(-4, 4, -4, 4, [{ p: [3, 2, '(3, 2)', 'var(--accent)'] }, { p: [-3, 2, '(−3, 2)'] }, { p: [-3, -2, '(−3, −2)', 'var(--good)'] }], { tx: 1, ty: 1 })),
@@ -195,7 +195,7 @@
   ]);
 
   /* 812 INFORMATION HANDLING AND PROBABILITY */
-  BT.story(812, 'Watch', [
+  BT.story(812, 'Watch lesson', [
     { title: 'Averages and the spread of data', goal: 'mean, median, mode and range for a data set.', scenes: [
       SC('Even number of values', '2, 4, 4, 5, 7, 8', [
         st("We have six values: two, four, four, five, seven, eight. The mean is the total, thirty, divided by six, which is five.", V.cards(['2', '4', '4', '5', '7', '8'], ['b'], true) + V.eq('30 ÷ 6 = 5', 'g')),
@@ -211,7 +211,7 @@
   ]);
 
   /* 813 SPATIAL */
-  BT.story(813, 'Watch', [
+  BT.story(813, 'Watch lesson', [
     { title: 'Nets and surface area', goal: 'how to find the surface area of a cuboid from its net.', scenes: [
       SC('Unfold the cuboid', 'Six rectangles', [
         st("A cuboid six centimetres long, three wide and two high has six faces. They come in three matching pairs. Six by three is eighteen. Six by two is twelve. Three by two is six.", V.tbl([['6 × 3', '18'], ['6 × 2', '12'], ['3 × 2', '6']], ['Pair of faces', 'Area'])),

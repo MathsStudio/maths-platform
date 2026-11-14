@@ -95,5 +95,5 @@
     ]
   };
 
-  BT.story(501, 'Watch', [pv, dec, rnd, neg]);
+  BT.story(501, 'Watch lesson', [pv, dec, rnd, neg]);
 })();

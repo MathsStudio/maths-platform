@@ -9,7 +9,7 @@
   var PV = ['Millions', 'Hundred thousands', 'Ten thousands', 'Thousands', 'Hundreds', 'Tens', 'Ones'];
 
   /* 1 PLACE VALUE */
-  BT.story(1, 'Watch', [
+  BT.story(1, 'Watch lesson', [
     { title: 'Numbers up to millions', goal: 'how to read, write and scale big numbers.', scenes: [
       SC('Reading a big number', '3,406,215', [
         st("Welcome back! This year our numbers get much bigger. Look at three million, four hundred and six thousand, two hundred and fifteen. Let's put each digit in its own column.", V.tbl([['3', '4', '0', '6', '2', '1', '5']], PV)),
@@ -29,7 +29,7 @@
   ]);
 
   /* 2 OPERATIONS */
-  BT.story(2, 'Watch', [
+  BT.story(2, 'Watch lesson', [
     { title: 'Long multiplication', goal: 'how to multiply two-digit numbers by splitting them up.', scenes: [
       SC('Splitting the numbers', '36 × 24', [
         st("Let's work out thirty-six times twenty-four. A good way is to split twenty-four into twenty and four, and multiply thirty-six by each part.", V.eq('36 × 24', 'b') + V.cards(['36 × 20', '36 × 4'], ['g', 'r'], true)),
@@ -49,7 +49,7 @@
   ]);
 
   /* 3 FRACTIONS */
-  BT.story(3, 'Watch', [
+  BT.story(3, 'Watch lesson', [
     { title: 'Adding and subtracting fractions', goal: 'how to add and subtract fractions with different denominators.', scenes: [
       SC('Same-size pieces first', '1/2 + 1/3', [
         st("What is one half plus one third? The pieces are different sizes, so we cannot just add. First we need to cut them into pieces of the same size.", BT.bar(1, 2, 'One half') + BT.bar(1, 3, 'One third')),
@@ -71,7 +71,7 @@
   ]);
 
   /* 4 DECIMALS AND PERCENTAGES */
-  BT.story(4, 'Watch', [
+  BT.story(4, 'Watch lesson', [
     { title: 'Fractions, decimals and percentages', goal: 'how to change between fractions, decimals and percentages.', scenes: [
       SC('Three names for one amount', '3/5', [
         st("A fraction, a decimal and a percentage can all describe the same amount. Take three fifths. To make a percentage, we need a denominator of one hundred. Multiply top and bottom by twenty.", V.eq('3/5 = 60/100', 'b')),
@@ -91,7 +91,7 @@
   ]);
 
   /* 5 MONEY, TIME AND MEASUREMENT */
-  BT.story(5, 'Watch', [
+  BT.story(5, 'Watch lesson', [
     { title: 'Converting units', goal: 'how to change between units, including decimals.', scenes: [
       SC('Smaller or bigger?', '3.4 m to centimetres', [
         st("Changing to a smaller unit means multiplying. There are one hundred centimetres in a metre. So three point four metres is three point four times one hundred: three hundred and forty centimetres.", V.eq('3.4 × 100 = 340 cm', 'g')),
@@ -109,7 +109,7 @@
   ]);
 
   /* 6 PATTERNS AND ALGEBRA */
-  BT.story(6, 'Watch', [
+  BT.story(6, 'Watch lesson', [
     { title: 'Finding the rule', goal: 'how to describe a sequence with a rule using n.', scenes: [
       SC('The term-to-term rule', '3, 7, 11, 15', [
         st("Look at this sequence: three, seven, eleven, fifteen. Each term is four more than the one before. That is the term-to-term rule: add four.", V.cards(['3', '7', '11', '15'], ['b'], true) + V.eq('+4 each time', 'g')),
@@ -129,7 +129,7 @@
   ]);
 
   /* 7 SHAPE, ANGLES */
-  BT.story(7, 'Watch', [
+  BT.story(7, 'Watch lesson', [
     { title: 'Angle facts', goal: 'the angle facts for straight lines, points, triangles and quadrilaterals.', scenes: [
       SC('Straight line and full turn', 'Angles on a line add to 180', [
         st("Angles on a straight line add up to one hundred and eighty degrees. If one angle is one hundred and thirty, the other is one hundred and eighty take away one hundred and thirty, which is fifty.", V.angle(130, '130°') + V.eq('180 − 130 = 50°', 'g')),
@@ -147,7 +147,7 @@
   ]);
 
   /* 8 DATA AND CHANCE */
-  BT.story(8, 'Watch', [
+  BT.story(8, 'Watch lesson', [
     { title: 'Averages', goal: 'mean, median, mode and range.', scenes: [
       SC('Four ways to summarise', '3, 5, 5, 7, 10', [
         st("We have five numbers: three, five, five, seven, ten. The mean is the fair share. Add them up to get thirty, then divide by how many there are, five. The mean is six.", V.cards(['3', '5', '5', '7', '10'], ['b'], true) + V.eq('30 ÷ 5 = 6', 'g')),
@@ -163,7 +163,7 @@
   ]);
 
   /* 9 MIXED REASONING */
-  BT.story(9, 'Watch', [
+  BT.story(9, 'Watch lesson', [
     { title: 'Multi-step problems', goal: 'how to plan and solve problems that need several steps.', scenes: [
       SC('Plan before you calculate', 'Theatre tickets', [
         st("Adult tickets cost twelve pounds and child tickets seven pounds. A family buys three adult and two child tickets and pays with a sixty pound note. How much change? Break it into steps.", V.list(['Cost of adult tickets', 'Cost of child tickets', 'Total cost', 'Change from £60'])),
@@ -185,7 +185,7 @@
     [60, 120, 180, 240].forEach(function (x, i) { s += '<circle cx="' + x + '" cy="165" r="17" style="fill:var(--good);stroke:var(--fg);stroke-width:3"/>' + V.t(x, 172, [2, 3, 2, 3][i], 'middle', '#fff'); });
     return V.svg(300, 190, s, 'A factor tree for 36');
   }
-  BT.story(10, 'Watch', [
+  BT.story(10, 'Watch lesson', [
     { title: 'Common factors and multiples', goal: 'how to find the highest common factor and lowest common multiple.', scenes: [
       SC('Common factors', '12 and 18', [
         st("Factors are numbers that divide exactly. The factors of twelve are one, two, three, four, six and twelve. The factors of eighteen are one, two, three, six, nine and eighteen.", V.tbl([['1, 2, 3, 4, 6, 12'], ['1, 2, 3, 6, 9, 18']], ['Factors of 12 and 18'])),
@@ -204,7 +204,7 @@
   ]);
 
   /* 11 RATIO AND PROPORTION */
-  BT.story(11, 'Watch', [
+  BT.story(11, 'Watch lesson', [
     { title: 'What a ratio says', goal: 'what a ratio means and how to simplify it.', scenes: [
       SC('Comparing parts', '2 red to 3 blue', [
         st("A ratio compares parts. In a bag, there are two red beads for every three blue beads. We write two to three.", V.dots(1, 2, 'var(--bad)') + V.dots(1, 3, 'var(--accent)') + V.eq('red : blue = 2 : 3', 'b')),
@@ -221,7 +221,7 @@
   ]);
 
   /* 13 SPATIAL */
-  BT.story(13, 'Watch', [
+  BT.story(13, 'Watch lesson', [
     { title: 'Nets and views', goal: 'how to picture a 3D shape from its net.', scenes: [
       SC('Nets of a cuboid', 'Flat pattern, six faces', [
         st("A cuboid has six rectangular faces. Opposite faces are exactly the same size. A net shows all six faces folded out flat.", V.svg(300, 200, '<g style="fill:var(--surface-2);' + 'stroke:var(--fg);stroke-width:3.5;stroke-linejoin:round"><rect x="100" y="10" width="60" height="50"/><rect x="40" y="60" width="60" height="80"/><rect x="100" y="60" width="60" height="80"/><rect x="160" y="60" width="60" height="80"/><rect x="100" y="140" width="60" height="50"/><rect x="220" y="60" width="60" height="80" style="fill:var(--hl)"/></g>', 'A net of a cuboid')),

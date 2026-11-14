@@ -8,7 +8,7 @@
   var REC = function (say, items) { return SC('Let’s recap', '', [st(say, V.list(items))]); };
 
   /* 821 NUMBER: POWERS, ROOTS, STANDARD FORM */
-  BT.story(821, 'Watch', [
+  BT.story(821, 'Watch lesson', [
     { title: 'Standard form', goal: 'how to write very big and very small numbers in standard form.', scenes: [
       SC('Big numbers', '45,000', [
         st("Scientists need a short way to write very large and very small numbers. It is called standard form. A number in standard form is a number between one and ten, multiplied by a power of ten.", V.eq('a × 10ⁿ', 'b') + V.note('1 ≤ a < 10')),
@@ -28,7 +28,7 @@
   ]);
 
   /* 822 PERCENTAGES */
-  BT.story(822, 'Watch', [
+  BT.story(822, 'Watch lesson', [
     { title: 'Compound percentage change', goal: 'how to apply a percentage change repeatedly.', scenes: [
       SC('Compound interest', '£2000 at 5% for 3 years', [
         st("With compound interest, each year's interest is added, so next year you earn interest on interest. Five per cent growth has the multiplier one point oh five.", V.eq('multiplier = 1.05', 'b')),
@@ -45,7 +45,7 @@
   ]);
 
   /* 823 RATIO AND PROPORTION */
-  BT.story(823, 'Watch', [
+  BT.story(823, 'Watch lesson', [
     { title: 'Combining ratios', goal: 'how to link two ratios into one.', scenes: [
       SC('A shared quantity', 'a : b = 2 : 3 and b : c = 4 : 5', [
         st("Suppose a to b is two to three, and b to c is four to five. The b in both ratios is different: three in the first, four in the second. Make them match using the lowest common multiple, twelve.", V.eq('a : b = 2 : 3', 'b') + V.eq('b : c = 4 : 5', 'b')),
@@ -61,7 +61,7 @@
   ]);
 
   /* 824 FINANCE */
-  BT.story(824, 'Watch', [
+  BT.story(824, 'Watch lesson', [
     { title: 'Income tax', goal: 'how income tax is worked out using an allowance and a rate.', scenes: [
       SC('Taxable income', 'A worked example', [
         st("Income tax is only paid on the part of your income above a tax-free personal allowance. In this example, take an allowance of twelve thousand five hundred pounds, and a rate of twenty per cent. The real rates change, so always use the figures in the question.", V.eq('Example: allowance £12,500, rate 20%', 'b')),
@@ -77,7 +77,7 @@
   ]);
 
   /* 825 TIME, DISTANCE, SPEED */
-  BT.story(825, 'Watch', [
+  BT.story(825, 'Watch lesson', [
     { title: 'Average speed', goal: 'why average speed is total distance over total time.', scenes: [
       SC('A common mistake', '30 km/h then 60 km/h', [
         st("A car drives sixty kilometres at thirty kilometres an hour, then sixty kilometres at sixty an hour. Is the average forty-five? Let's check carefully.", V.eq('average = 45?', 'r')),
@@ -92,7 +92,7 @@
   ]);
 
   /* 826 AREA, VOLUME, SURFACE AREA */
-  BT.story(826, 'Watch', [
+  BT.story(826, 'Watch lesson', [
     { title: 'Circles', goal: 'how to find the area and circumference of a circle.', scenes: [
       SC('Two formulas', 'Radius 5 cm', [
         st("The circumference is the distance around. It is two pi r. The area is pi r squared. Pi is about three point one four. With radius five centimetres, the circumference is ten pi, about thirty-one point four.", V.circle() + V.eq('C = 2πr = 10π ≈ 31.4 cm', 'g')),
@@ -107,7 +107,7 @@
   ]);
 
   /* 827 ALGEBRA */
-  BT.story(827, 'Watch', [
+  BT.story(827, 'Watch lesson', [
     { title: 'Expanding two brackets', goal: 'how to multiply two brackets.', scenes: [
       SC('Every term times every term', '(x + 3)(x + 2)', [
         st("To expand two brackets, multiply every term in the first by every term in the second. x times x is x squared. x times two is two x. Three times x is three x. Three times two is six.", V.eq('x·x = x²   x·2 = 2x   3·x = 3x   3·2 = 6')),
@@ -124,7 +124,7 @@
   ]);
 
   /* 828 STRAIGHT LINES AND SEQUENCES */
-  BT.story(828, 'Watch', [
+  BT.story(828, 'Watch lesson', [
     { title: 'The equation y = mx + c', goal: 'what the gradient and intercept tell you about a line.', scenes: [
       SC('Gradient and intercept', 'y = 2x + 1', [
         st("A straight line has the equation y equals m x plus c. The m is the gradient, how steep the line is. The c is the y-intercept, where it crosses the y axis. For y equals two x plus one, the gradient is two and the intercept is one.", V.plot(-2, 4, -3, 9, [{ l: [[-2, -3], [4, 9]] }, { p: [0, 1, '(0, 1)'] }], { tx: 1, ty: 1, xl: 'x', yl: 'y' })),
@@ -138,7 +138,7 @@
   ]);
 
   /* 829 ANGLES, POLYGONS, BEARINGS */
-  BT.story(829, 'Watch', [
+  BT.story(829, 'Watch lesson', [
     { title: 'Interior and exterior angles', goal: 'how to use exterior angles to find the shape of a regular polygon.', scenes: [
       SC('Exterior angles', 'They always add to 360', [
         st("Walk round the edge of any polygon and turn at each corner. By the time you are back at the start you have made a full turn. So the exterior angles always add up to three hundred and sixty.", V.eq('exterior angles sum = 360°', 'b')),
@@ -153,7 +153,7 @@
   ]);
 
   /* 830 PYTHAGORAS AND THE CIRCLE */
-  BT.story(830, 'Watch', [
+  BT.story(830, 'Watch lesson', [
     { title: 'Pythagoras’ theorem', goal: 'how to find a missing side in a right-angled triangle.', scenes: [
       SC('The theorem', 'a² + b² = c²', [
         st("In a right-angled triangle, the longest side, opposite the right angle, is the hypotenuse. Pythagoras found that the squares on the two shorter sides add up to the square on the hypotenuse.", V.rt({ a: 'a', b: 'b', c: 'c' }) + V.eq('a² + b² = c²', 'b')),
@@ -170,7 +170,7 @@
   ]);
 
   /* 831 SIMILARITY AND ENLARGEMENT */
-  BT.story(831, 'Watch', [
+  BT.story(831, 'Watch lesson', [
     { title: 'Similar shapes and scale factors', goal: 'how lengths, areas and volumes scale in similar shapes.', scenes: [
       SC('Scale factor', 'A 3-4-5 triangle becomes 6-8-10', [
         st("Similar shapes have the same shape but different size. Every length is multiplied by the same scale factor. Three, four, five becomes six, eight, ten. The scale factor is two.", V.tbl([['3', '6'], ['4', '8'], ['5', '10']], ['Small', 'Large']) + V.eq('scale factor = 6 ÷ 3 = 2', 'g'))]),
@@ -185,7 +185,7 @@
   ]);
 
   /* 832 DATA HANDLING AND PROBABILITY */
-  BT.story(832, 'Watch', [
+  BT.story(832, 'Watch lesson', [
     { title: 'Scatter graphs', goal: 'how to describe correlation and use a line of best fit.', scenes: [
       SC('Correlation', 'Revision time and test score', [
         st("A scatter graph shows two sets of data at once. Here, students who revised longer scored higher. The points trend upwards: positive correlation.", V.plot(0, 6, 0, 100, [{ p: [1, 25, '', 'var(--accent)'] }, { p: [2, 40, '', 'var(--accent)'] }, { p: [2.5, 50, '', 'var(--accent)'] }, { p: [3, 55, '', 'var(--accent)'] }, { p: [4, 70, '', 'var(--accent)'] }, { p: [5, 85, '', 'var(--accent)'] }], { tx: 1, ty: 20, xl: 'hours', yl: 'score' })),
@@ -200,7 +200,7 @@
   ]);
 
   /* 833 SPATIAL */
-  BT.story(833, 'Watch', [
+  BT.story(833, 'Watch lesson', [
     { title: 'Rotation on a grid', goal: 'how to rotate a shape about the origin.', scenes: [
       SC('A quarter turn anticlockwise', 'About the origin', [
         st("To rotate you need three things: a centre, an angle and a direction. Here we turn a triangle ninety degrees anticlockwise about the origin. The point x, y goes to minus y, x.", V.eq('(x, y) → (−y, x)', 'b')),

@@ -153,6 +153,11 @@ button:focus-visible, input:focus-visible, select:focus-visible, summary:focus-v
 .pillars { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 10px; }
 .pillars .card { display: flex; flex-direction: column; gap: 4px; }
 .topics { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
+.setbar { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; margin: 0 0 12px; }
+.setbar-l { font-weight: 800; margin-right: 6px; }
+.setchip { min-width: 40px; min-height: 40px; border-radius: 10px; border: 2px solid var(--line); background: var(--surface); color: var(--fg); font: inherit; font-weight: 800; cursor: pointer; }
+.setchip.on { border-color: var(--accent); background: var(--accent); color: var(--accent-fg); }
+.setchip.ok:not(.on) { border-color: var(--good); color: var(--good); }
 .topic { display: flex; flex-direction: column; gap: 8px; min-height: 150px; }
 .topic.soon { opacity: .65; }
 .tn { font-family: var(--font-display); font-weight: 700; color: var(--accent); font-size: 1.1rem; }
@@ -911,6 +916,7 @@ var SLIDE_MORE = {"1.learn1": [{"more": ["Our number system uses only ten digits
       (q.options || []).map(plainQuestionText).sort(), String(q.answer), q.type || 'input', picHash(q.pic)]);
   }
   S.h.buildPracticeSet = function (makers, count) {
+    if (S.__wantCount) count = S.__wantCount;
     var level = store.settings.difficulty || 'medium';
     var topicNumber = Number(state.tab);
     var allowed = level === 'low' ? EASY_POOL[topicNumber] : (level === 'high' ? HARD_POOL[topicNumber] : null);
@@ -924,6 +930,7 @@ var SLIDE_MORE = {"1.learn1": [{"more": ["Our number system uses only ten digits
     var st = makers.storyMode && S.storyFor && S.storyFor(topicNumber);
     if (st) pool = level === 'low' ? st.easy.slice() : level === 'high' ? st.hard.slice() : st.easy.concat(st.hard);
     var out = [], seen = Object.create(null), attempts = 0, maxAttempts = count * 45;
+    if (!pool.length) return out;   /* nothing to build from: never loop forever */
     // Each level/topic set contains 150 distinct prompts wherever the generators allow it.
     while (out.length < count && attempts < maxAttempts) {
       shuffle(pool.slice()).forEach(function (make) {
@@ -1087,7 +1094,7 @@ var SLIDE_MORE = {"1.learn1": [{"more": ["Our number system uses only ten digits
       : plans + '<div style="background:var(--soft,#f1f5ff);border-radius:14px;padding:12px 14px;margin:4px 0 14px;line-height:1.8"><b>Step 1</b> &nbsp;Sign in or create an account<br><b>Step 2</b> &nbsp;Choose a plan and pay</div><div class="row" style="gap:10px;flex-wrap:wrap"><a class="btn" style="flex:1;text-align:center" href="/login/">Sign in</a><a class="btn ghost" style="flex:1;text-align:center" href="/signup/">Create an account</a></div><p class="note" style="margin:10px 0 0">After signing in, the payment button appears here.</p>';
     o.innerHTML = '<section class="card" style="max-width:520px;width:100%;margin:0;background:var(--card,#fff)"><button class="btn ghost" type="button" id="lockBack" aria-label="Close" style="float:right;padding:4px 10px">✕</button>' +
       '<span class="tag">🔒 ' + (what || t.title) + ' is locked</span><h2 style="margin:10px 0 6px">Unlock all of ' + y + '</h2>' +
-      '<p class="lead">Every topic in ' + y + ': animated explainers, lessons, games and hundreds of practice questions at three difficulty levels, plus the 10-minute mental maths test. Topic 1 stays free to try.</p>' + step + '</section>';
+      '<p class="lead">Every topic in ' + y + ': animated explainers, lessons, hands-on activities and hundreds of practice questions at three difficulty levels, plus the 10-minute mental maths test. Topic 1 stays free to try.</p>' + step + '</section>';
     document.body.appendChild(o);
     function pick(pl) { plan = pl; [].forEach.call(o.querySelectorAll('#lockPlans button'), function (b) { var on = b.getAttribute('data-plan') === pl; b.setAttribute('aria-checked', on ? 'true' : 'false'); b.style.borderColor = on ? '#2b5fd9' : '#dbe3f7'; b.style.background = on ? '#f3f6ff' : '#fff'; }); }
     pick('year');
@@ -1232,16 +1239,18 @@ var SLIDE_MORE = {"1.learn1": [{"more": ["Our number system uses only ten digits
     ['🌱', 'First step', 'Finish any part', function (x) { return x.steps >= 1; }],
     ['⭐', 'Topic finished', 'Finish every part of a topic', function (x) { return x.topics >= 1; }],
     ['🚀', 'Five topics', 'Finish 5 topics', function (x) { return x.topics >= 5; }],
-    ['🎮', 'Game on', 'Complete 5 activities', function (x) { return x.acts >= 5; }],
+    ['🧪', 'Hands-on', 'Complete 5 activities', function (x) { return x.acts >= 5; }],
     ['🏆', 'Boss beaten', 'Complete a Boss challenge', function (x) { return x.boss >= 1; }],
     ['🧮', 'Real-life solver', 'Do 3 real-life problems', function (x) { return x.real >= 3; }],
     ['🎓', 'Year complete', 'Finish every topic in the year', function (x) { return x.year; }]
   ];
   function badgeStats(yearDone) {
     var o = { steps: 0, topics: 0, acts: 0, boss: 0, real: 0, year: !!yearDone };
+    /* count only the topics of the year on screen, so the badges match the progress bar above them */
+    var mine = {}; visibleOrder().forEach(function (n) { var tt = openTopicFor(n); if (tt) mine[tt.n] = 1; });
     Object.keys(store.progress).forEach(function (k) {
-      var t = S.topics[Number(k.slice(1))], p = store.progress[k]; if (!t || !p || !p.steps) return;
-      var ids = Object.keys(p.steps).filter(function (id) { return p.steps[id]; }); o.steps += ids.length;
+      var t = S.topics[Number(k.slice(1))], p = store.progress[k]; if (!t || !p || !p.steps || !mine[t.n]) return;
+      var ids = Object.keys(p.steps).filter(function (id) { return p.steps[id] && t.steps.some(function (z) { return z.id === id && z.type !== 'finish'; }); }); o.steps += ids.length;
       if (t.steps.length && t.steps.every(function (st) { return p.steps[st.id]; })) o.topics++;
       ids.forEach(function (id) { var st = t.steps.filter(function (z) { return z.id === id; })[0]; if (!st) return; if (st.group === 'activity') o.acts++; if (id === 'a_boss') o.boss++; if (id === 'practical') o.real++; });
     });
@@ -1276,11 +1285,11 @@ var SLIDE_MORE = {"1.learn1": [{"more": ["Our number system uses only ten digits
     v.innerHTML =
       '<section class="yrtop"><div class="yrbar"><span class="tag">' + (yr === 'all' ? 'All years' : yr) + '</span><button class="yr" type="button" id="chgYear">Change year</button></div><p class="note say" style="margin:8px 0 0">' + YEAR_NOTE[yr] + '</p></section>' +
       '<section class="hero"><span class="eyebrow">' + (yr === 'all' ? 'Primary 5 to 7' : (yr.charAt(0) === 'S' ? 'Secondary ' + yr.slice(1) : 'Primary ' + yr.slice(1))) + ' · Curriculum for Excellence, ' + ({ S1: 'Third level', S2: 'Third and Fourth level', S3: 'Fourth level' }[yr] || 'Second level') + '</span><h1 class="say">' + (yr === 'all' ? 'Every topic' : yr + ' topics') + '</h1>' +
-      '<p class="lead say">' + ({ 1: 'One', 10: 'Ten', 12: 'Twelve' }[order.length] || order.length) + ' topics. Each starts with a short animated explainer and lessons with worked examples, then hands-on activities and games, and practice: a warm-up, plenty of questions at each of Low, Medium and High, and real-life problems. Switch level at any time. Verbal and non-verbal reasoning appear throughout the course.</p></section>' +
+      '<p class="lead say">' + ({ 1: 'One', 10: 'Ten', 12: 'Twelve' }[order.length] || order.length) + ' topics. Each starts with a short animated explainer and lessons with worked examples, then hands-on activities, and practice: a warm-up, plenty of questions at each of Low, Medium and High, and real-life problems. Switch level at any time. Verbal and non-verbal reasoning appear throughout the course.</p></section>' +
       '<section class="pillars"><div class="card"><h3 class="say">Read it</h3><p class="say">Clear steps and pictures, one idea at a time.</p></div><div class="card"><h3 class="say">Hear it</h3><p class="say">Turn the Voice on once and it keeps reading new pages and questions, where your device allows it.</p></div><div class="card"><h3 class="say">Try it</h3><p class="say">Build, slide, spin and plot. Then answer questions. Hints come one step at a time.</p></div></section>' +
       progPanel + '<section><div class="row" style="align-items:center;justify-content:space-between;margin-bottom:12px"><h2>Topics</h2></div><div class="topics">' + cards + soon + '</div></section>' +
       '<details class="card"><summary>For teachers and parents</summary>' +
-      '<p>Each topic has three parts. Let\u2019s Learn starts with a short animated explainer, then lessons that teach each idea three ways, with worked examples. Activity Time has hands-on labs and games. Let\u2019s Practice has a warm-up, plenty of questions at each of Low, Medium and High, and 30 real-life problems. Each level draws from its own question selection. Plan about 45 to 60 minutes a topic, split over two sessions if needed.</p>' +
+      '<p>Each topic has three parts. Let\u2019s Learn starts with a short animated explainer, then lessons that teach each idea three ways, with worked examples. Activity Time has hands-on labs and activities. Let\u2019s Practice has a warm-up, plenty of questions at each of Low, Medium and High, and 30 real-life problems. Each level draws from its own question selection. Plan about 45 to 60 minutes a topic, split over two sessions if needed.</p>' +
       '<div class="tscroll"><table class="plan"><thead><tr><th>Topic</th><th>Parts</th></tr></thead><tbody>' + rows + '</tbody></table></div>' +
       '<p class="note">Hints come in steps: first a nudge, then the method with the numbers, never the answer. The explanation after each answer shows the full working. Check outcomes against Education Scotland’s Benchmarks for Numeracy and Mathematics at ' + ({ S1: 'Third level', S2: 'Third and Fourth level', S3: 'Fourth level' }[yr] || 'Second level') + ' before you rely on this for planning. This is an independent resource. Progress is saved in this browser only.</p>' +
       '<div class="row" style="margin-top:10px"><button class="btn ghost" id="resetProg" type="button">Reset progress</button></div></details>';
@@ -1422,12 +1431,64 @@ var SLIDE_MORE = {"1.learn1": [{"more": ["Our number system uses only ten digits
       '</div><p class="note" style="min-height:0;margin:6px 0 10px">The level changes the questions, not the explanations.</p><div id="quizHost"></div>';
     pane.querySelectorAll('[data-qlevel]').forEach(function (b) { b.addEventListener('click', function () { changeDifficulty(b.getAttribute('data-qlevel')); }); });
     var isLast = t.steps[t.steps.length - 1].id === step.id;
+    if (step.id === 'practise' || step.id === 'practical') { mountSetQuiz(pane, t, step, lv, isLast); return; }
     var makeSet = step.id === 'warm' ? function () { return freshWarmupSet(step.make, t.n); } : step.make;
     mountQuiz($('quizHost'), makeSet(), {
       make: makeSet, doneLabel: step.doneLabel || (isLast ? 'Finish topic' : 'Next step'),
       onFinish: function (sc) { markDone(t.n, step.id); if (step.best) setBest(t.n, sc); renderStepper(); },
       onDone: function () { go(t.n, state.step + 1); }
     });
+  }
+  /* Practise and Real-life problems come in sets of 20. Each topic and level has a fixed bank
+     (10 practice sets = 200 questions, 5 real-life sets = 100 problems), built the same way every time,
+     so a set always holds the same questions and a child can finish one set and try a new one. */
+  var SET_SIZE = 20, bankCache = {};
+  function seeded(seed) { return function () { seed |= 0; seed = seed + 0x6D2B79F5 | 0; var r = Math.imul(seed ^ seed >>> 15, 1 | seed); r = r + Math.imul(r ^ r >>> 7, 61 | r) ^ r; return ((r ^ r >>> 14) >>> 0) / 4294967296; }; }
+  function hashStr(s) { var h = 2166136261; for (var i = 0; i < s.length; i++) { h ^= s.charCodeAt(i); h = Math.imul(h, 16777619); } return h | 0; }
+  /* The bank is built with a fixed seed, so building more sets later gives the same earlier sets:
+     only the sets up to the one opened are built, which keeps it quick on phones. */
+  function setBank(t, step, lv) {
+    var sets = step.id === 'practise' ? 10 : 5, key = t.n + '|' + lv + '|' + step.id;
+    return { key: key, sets: sets, upto: function (i) {
+      var need = Math.min(sets, i + 1) * SET_SIZE, have = bankCache[key];
+      if (!have || have.length < need) {
+        var keepRand = Math.random; Math.random = seeded(hashStr(key));
+        S.__wantCount = need;
+        try { bankCache[key] = step.make(); } finally { S.__wantCount = 0; Math.random = keepRand; }
+      }
+      return bankCache[key];
+    } };
+  }
+  function mountSetQuiz(pane, t, step, lv, isLast) {
+    var b = setBank(t, step, lv);
+    store.settings.setPos = store.settings.setPos || {}; store.settings.setDone = store.settings.setDone || {};
+    var done = store.settings.setDone[b.key] || [], cur = Math.min(store.settings.setPos[b.key] || 0, b.sets - 1);
+    var lead = pane.querySelector('.lead'); if (lead) lead.textContent = String(step.lead).replace(/\b\d{2,3} (\w+ )?(questions|problems)/, '20 $1$2 in each set');
+    var bar = document.createElement('div'); bar.className = 'setbar';
+    $('quizHost').parentNode.insertBefore(bar, $('quizHost'));
+    function drawBar() {
+      bar.innerHTML = '<span class="setbar-l">Set ' + (cur + 1) + ' of ' + b.sets + ' \u00b7 20 ' + (step.id === 'practise' ? 'questions' : 'problems') + '</span>' +
+        Array.apply(null, Array(b.sets)).map(function (_, i) { return '<button type="button" class="setchip' + (i === cur ? ' on' : '') + (done.indexOf(i) > -1 ? ' ok' : '') + '" data-set="' + i + '" aria-pressed="' + (i === cur) + '" aria-label="Set ' + (i + 1) + (done.indexOf(i) > -1 ? ', done' : '') + '">' + (done.indexOf(i) > -1 ? '\u2713' : i + 1) + '</button>'; }).join('');
+      bar.querySelectorAll('[data-set]').forEach(function (x) { x.addEventListener('click', function () { open(Number(x.getAttribute('data-set'))); }); });
+    }
+    function qsFor(i) { return b.upto(i).slice(i * SET_SIZE, i * SET_SIZE + SET_SIZE); }
+    function open(i) {
+      cur = i; store.settings.setPos[b.key] = i; save(); drawBar(); narStop();
+      mountQuiz($('quizHost'), qsFor(i), {
+        make: function () { return qsFor(cur); }, doneLabel: step.doneLabel || (isLast ? 'Finish topic' : 'Next step'),
+        onFinish: function (sc) {
+          if (done.indexOf(cur) < 0) { done.push(cur); store.settings.setDone[b.key] = done; save(); }
+          markDone(t.n, step.id); if (step.best) setBest(t.n, sc); renderStepper(); drawBar();
+          var again = $('qAgain'); if (again) again.textContent = 'Do this set again';
+          var nx = (cur + 1) % b.sets, nb = document.createElement('button');
+          nb.className = 'btn'; nb.type = 'button'; nb.textContent = 'Try a new set (Set ' + (nx + 1) + ')';
+          nb.addEventListener('click', function () { open(nx); });
+          if (again && again.parentNode) again.parentNode.insertBefore(nb, again);
+        },
+        onDone: function () { go(t.n, state.step + 1); }
+      });
+    }
+    open(cur);
   }
   /* Give an activity a different starting arrangement: new numbers, other choices, other positions. */
   function randomSetup(host) {
@@ -8111,7 +8172,7 @@ Object.keys(S.topics).forEach(function (k) {
         var ai = $('tyIn'); if (!solved) { ai.focus(); ai.addEventListener('input', function () { ai.value = ai.value.replace(/[^0-9\/ ]/g, ''); }); }
         $('tyF').addEventListener('submit', function (e) {
           e.preventDefault(); if (ai.value.trim() === '') return;
-          if (H.matches(q, ai.value)) { solved = true; count++; var done = need && count >= need; draw('<b>Yes!</b> ' + q.explain + (done ? ' <b>You have finished the game!</b>' : ''), 'ok'); if (done && onGoal) onGoal(); }
+          if (H.matches(q, ai.value)) { solved = true; count++; var done = need && count >= need; draw('<b>Yes!</b> ' + q.explain + (done ? ' <b>You have finished the activity!</b>' : ''), 'ok'); if (done && onGoal) onGoal(); }
           else draw('<b>Missed it.</b> ' + (q.form === 'mixed' ? 'Write it as a mixed number, for example 2 3/4.' : q.form === 'improper' ? 'Write it as one fraction, for example 11/4.' : '') + ' Look at the bars or press Need a hint.', 'no');
         });
       }
@@ -8282,7 +8343,7 @@ Object.keys(S.topics).forEach(function (k) {
     });
     if (!replaced) return;
     t.steps.push({ id: 'mixmaker', label: 'Mixed number maker', type: 'lab', tag: 'Activity', title: 'Mixed number maker', lead: 'Change between improper fractions and mixed numbers. Move the sliders and watch the bars and the working.', mount: maker(c) });
-    t.steps.push({ id: 'convert', label: 'Convert it', type: 'lab', tag: 'Game', title: 'Convert it', lead: 'Convert six fractions, in both directions, to finish the game.', mount: function (host, ctx) { tryit(c, 6, function () { ctx.complete(); })(host); } });
+    t.steps.push({ id: 'convert', label: 'Convert it', type: 'lab', tag: 'Activity', title: 'Convert it', lead: 'Convert six fractions, in both directions, to finish the activity.', mount: function (host, ctx) { tryit(c, 6, function () { ctx.complete(); })(host); } });
     var wm = t.steps.filter(function (s) { return s.id === 'warm'; })[0];
     if (wm) { var orig = wm.make; wm.make = function () { var b = orig(); if (!Array.isArray(b)) b = [b]; b = b.slice(); b.splice(1, 0, warmQ(c)); return b; }; }
     S.arrange(t);
@@ -10550,7 +10611,7 @@ S.spatialExtra = S.extraMakers;
   /* ---------- install ---------- */
   function lab(n, id, label, title, lead, mount) {
     var t = S.topics[n]; if (!t || t.steps.some(function (s) { return s.id === id; })) return;
-    t.steps.push({ id: id, label: label, type: 'lab', tag: 'Activity time · Game', title: title, lead: lead, mount: mount }); S.arrange(t);
+    t.steps.push({ id: id, label: label, type: 'lab', tag: 'Activity time · Hands-on activity', title: title, lead: lead, mount: mount }); S.arrange(t);
   }
   lab(501, 'g_numline', 'Number line jumper', 'Number line jumper', 'Start on the number line, make the move and find where you land.', numLine(1));
   lab(1, 'g_numline', 'Number line jumper', 'Number line jumper', 'Start on the number line, make the move and find where you land.', numLine(2));
@@ -13494,9 +13555,9 @@ S.spatialExtra = S.extraMakers;
     var t = S.topics[n]; if (!t) { if (window.console) console.warn('story: no topic ' + n); return; }
     if (t.steps.some(function (s) { return s.id === 'watch'; })) return;
     var slides = episodes.map(function (ep) {
-      return { title: ep.title, say: [ep.intro || 'Press play and your teacher will explain this step by step.'], goal: ep.goal || ep.title.toLowerCase() + '.', noMore: true, kind: 'Watch', live: function (host) { H.storyPlayer(host, ep); } };
+      return { title: ep.title, say: [ep.intro || 'Press play and your teacher will explain this step by step.'], goal: ep.goal || ep.title.toLowerCase() + '.', noMore: true, kind: 'Watch lesson', ep: ep, live: function (host) { H.storyPlayer(host, ep); } };
     });
-    BT.add(n, 'watch', label || 'Watch', slides);
+    BT.add(n, 'watch', label || 'Watch lesson', slides);
     var st = t.steps.filter(function (s) { return s.id === 'watch'; })[0], i = t.steps.indexOf(st);
     if (i > 0) { t.steps.splice(i, 1); t.steps.unshift(st); }
     S.arrange(t);
@@ -13505,10 +13566,10 @@ S.spatialExtra = S.extraMakers;
   BT.storyMore = function (n, episodes) {
     var t = S.topics[n]; if (!t) return;
     var st = t.steps.filter(function (s) { return s.id === 'watch'; })[0];
-    if (!st) { BT.story(n, 'Watch', episodes); return; }
+    if (!st) { BT.story(n, 'Watch lesson', episodes); return; }
     var have = {}; (st.slides || []).forEach(function (sl) { have[sl.title] = 1; });
     var add = episodes.filter(function (ep) { return !have[ep.title]; }).map(function (ep) {
-      return { title: ep.title, say: [ep.intro || 'Press play and your teacher will explain this step by step.'], goal: ep.goal || ep.title.toLowerCase() + '.', noMore: true, kind: 'Watch', live: function (host) { H.storyPlayer(host, ep); } };
+      return { title: ep.title, say: [ep.intro || 'Press play and your teacher will explain this step by step.'], goal: ep.goal || ep.title.toLowerCase() + '.', noMore: true, kind: 'Watch lesson', ep: ep, live: function (host) { H.storyPlayer(host, ep); } };
     });
     if (!add.length) return;
     var key = n + '.watch', m = H.slideMeta;
@@ -13617,7 +13678,7 @@ S.spatialExtra = S.extraMakers;
     ]
   };
 
-  BT.story(501, 'Watch', [pv, dec, rnd, neg]);
+  BT.story(501, 'Watch lesson', [pv, dec, rnd, neg]);
 })();
 </script>
 <script>
@@ -13680,7 +13741,7 @@ S.spatialExtra = S.extraMakers;
         st("Always read it, pick out the numbers, decide the operations, solve it, and ask yourself: does my answer make sense?", V.list(['Read the story', 'Pick out the numbers', 'Choose the operations', 'Check it makes sense']))])
     ]
   };
-  BT.story(502, 'Watch', [addsub, muldiv, order]);
+  BT.story(502, 'Watch lesson', [addsub, muldiv, order]);
 
   /* ======================= 503 FRACTIONS ======================= */
   var fwhat = {
@@ -13725,7 +13786,7 @@ S.spatialExtra = S.extraMakers;
         st("Remember the two steps. Divide by the bottom, then multiply by the top.", V.rule('÷ the bottom, × the top.'))])
     ]
   };
-  BT.story(503, 'Watch', [fwhat, fmixed, fops]);
+  BT.story(503, 'Watch lesson', [fwhat, fmixed, fops]);
 
   /* ======================= 504 DECIMALS AND PERCENTAGES ======================= */
   var ddec = {
@@ -13754,7 +13815,7 @@ S.spatialExtra = S.extraMakers;
         st("For fifty per cent, halve it. You can use these to build lots of others. Twenty per cent is double ten per cent, so sixteen.", V.eq('20% of 80 = 8 × 2 = 16', 'g'))])
     ]
   };
-  BT.story(504, 'Watch', [ddec, pct]);
+  BT.story(504, 'Watch lesson', [ddec, pct]);
 
   /* ======================= 505 MONEY, TIME AND MEASUREMENT ======================= */
   var units = {
@@ -13792,7 +13853,7 @@ S.spatialExtra = S.extraMakers;
         st("Six times four is twenty-four. The area is twenty-four square metres. Perimeter adds the sides, area multiplies length by width.", V.eq('6 × 4 = 24 m²', 'g') + V.rule('Perimeter: add the sides. Area: length × width.'))])
     ]
   };
-  BT.story(505, 'Watch', [units, timem, perim]);
+  BT.story(505, 'Watch lesson', [units, timem, perim]);
 
   /* ======================= 506 PATTERNS AND ALGEBRA ======================= */
   var seq = {
@@ -13817,7 +13878,7 @@ S.spatialExtra = S.extraMakers;
         st("Another one: three times n equals eighteen. The opposite of multiplying is dividing. Eighteen divided by three is six, so n is six.", V.eq('3 × n = 18', 'b') + V.eq('n = 18 ÷ 3 = 6', 'g') + V.rule('Use the opposite operation.'))])
     ]
   };
-  BT.story(506, 'Watch', [seq, func]);
+  BT.story(506, 'Watch lesson', [seq, func]);
 })();
 </script>
 <script>
@@ -13871,7 +13932,7 @@ S.spatialExtra = S.extraMakers;
         st("A cube has six faces, twelve edges and eight vertices. A cuboid, like a cereal box, has exactly the same numbers.", V.tbl([['Cube', '6', '12', '8'], ['Square-based pyramid', '5', '8', '5'], ['Triangular prism', '5', '9', '6']], ['Shape', 'Faces', 'Edges', 'Vertices']))])
     ]
   };
-  BT.story(507, 'Watch', [shapes, sym, solids]);
+  BT.story(507, 'Watch lesson', [shapes, sym, solids]);
 
   /* ======================= 508 DATA AND CHANCE ======================= */
   var data = {
@@ -13894,7 +13955,7 @@ S.spatialExtra = S.extraMakers;
         st("When a coin is flipped, heads and tails are equally likely. That is called even chance, or one in two.", V.eq('P(heads) = 1/2', 'b'))])
     ]
   };
-  BT.story(508, 'Watch', [data, avg]);
+  BT.story(508, 'Watch lesson', [data, avg]);
 
   /* ======================= 509 MIXED REASONING ======================= */
   var plan = {
@@ -13920,7 +13981,7 @@ S.spatialExtra = S.extraMakers;
         st("Try three and seven. They add to ten, and three times seven is twenty-one. We found them!", V.eq('3 + 7 = 10, 3 × 7 = 21 ✓', 'g'))])
     ]
   };
-  BT.story(509, 'Watch', [plan, back]);
+  BT.story(509, 'Watch lesson', [plan, back]);
 
   /* ======================= 510 FACTORS, MULTIPLES AND PRIMES ======================= */
   var fm = {
@@ -13945,7 +14006,7 @@ S.spatialExtra = S.extraMakers;
         st("The first square numbers are one, four, nine, sixteen, twenty-five. We write four squared as four with a little two.", V.cards(['1', '4', '9', '16', '25'], ['g'], true))])
     ]
   };
-  BT.story(510, 'Watch', [fm, prime]);
+  BT.story(510, 'Watch lesson', [fm, prime]);
 
   /* ======================= 513 SPATIAL AWARENESS ======================= */
   var turns = {
@@ -13969,7 +14030,7 @@ S.spatialExtra = S.extraMakers;
         st("Not every pattern of six squares works. The net must fold without overlapping. Always picture folding it step by step.", V.list(['Six squares', 'No overlapping', 'Picture the folds']))])
     ]
   };
-  BT.story(513, 'Watch', [turns, cubes]);
+  BT.story(513, 'Watch lesson', [turns, cubes]);
 })();
 </script>
 <script>
@@ -14057,7 +14118,7 @@ S.spatialExtra = S.extraMakers;
   var PV = ['Millions', 'Hundred thousands', 'Ten thousands', 'Thousands', 'Hundreds', 'Tens', 'Ones'];
 
   /* 1 PLACE VALUE */
-  BT.story(1, 'Watch', [
+  BT.story(1, 'Watch lesson', [
     { title: 'Numbers up to millions', goal: 'how to read, write and scale big numbers.', scenes: [
       SC('Reading a big number', '3,406,215', [
         st("Welcome back! This year our numbers get much bigger. Look at three million, four hundred and six thousand, two hundred and fifteen. Let's put each digit in its own column.", V.tbl([['3', '4', '0', '6', '2', '1', '5']], PV)),
@@ -14077,7 +14138,7 @@ S.spatialExtra = S.extraMakers;
   ]);
 
   /* 2 OPERATIONS */
-  BT.story(2, 'Watch', [
+  BT.story(2, 'Watch lesson', [
     { title: 'Long multiplication', goal: 'how to multiply two-digit numbers by splitting them up.', scenes: [
       SC('Splitting the numbers', '36 × 24', [
         st("Let's work out thirty-six times twenty-four. A good way is to split twenty-four into twenty and four, and multiply thirty-six by each part.", V.eq('36 × 24', 'b') + V.cards(['36 × 20', '36 × 4'], ['g', 'r'], true)),
@@ -14097,7 +14158,7 @@ S.spatialExtra = S.extraMakers;
   ]);
 
   /* 3 FRACTIONS */
-  BT.story(3, 'Watch', [
+  BT.story(3, 'Watch lesson', [
     { title: 'Adding and subtracting fractions', goal: 'how to add and subtract fractions with different denominators.', scenes: [
       SC('Same-size pieces first', '1/2 + 1/3', [
         st("What is one half plus one third? The pieces are different sizes, so we cannot just add. First we need to cut them into pieces of the same size.", BT.bar(1, 2, 'One half') + BT.bar(1, 3, 'One third')),
@@ -14119,7 +14180,7 @@ S.spatialExtra = S.extraMakers;
   ]);
 
   /* 4 DECIMALS AND PERCENTAGES */
-  BT.story(4, 'Watch', [
+  BT.story(4, 'Watch lesson', [
     { title: 'Fractions, decimals and percentages', goal: 'how to change between fractions, decimals and percentages.', scenes: [
       SC('Three names for one amount', '3/5', [
         st("A fraction, a decimal and a percentage can all describe the same amount. Take three fifths. To make a percentage, we need a denominator of one hundred. Multiply top and bottom by twenty.", V.eq('3/5 = 60/100', 'b')),
@@ -14139,7 +14200,7 @@ S.spatialExtra = S.extraMakers;
   ]);
 
   /* 5 MONEY, TIME AND MEASUREMENT */
-  BT.story(5, 'Watch', [
+  BT.story(5, 'Watch lesson', [
     { title: 'Converting units', goal: 'how to change between units, including decimals.', scenes: [
       SC('Smaller or bigger?', '3.4 m to centimetres', [
         st("Changing to a smaller unit means multiplying. There are one hundred centimetres in a metre. So three point four metres is three point four times one hundred: three hundred and forty centimetres.", V.eq('3.4 × 100 = 340 cm', 'g')),
@@ -14157,7 +14218,7 @@ S.spatialExtra = S.extraMakers;
   ]);
 
   /* 6 PATTERNS AND ALGEBRA */
-  BT.story(6, 'Watch', [
+  BT.story(6, 'Watch lesson', [
     { title: 'Finding the rule', goal: 'how to describe a sequence with a rule using n.', scenes: [
       SC('The term-to-term rule', '3, 7, 11, 15', [
         st("Look at this sequence: three, seven, eleven, fifteen. Each term is four more than the one before. That is the term-to-term rule: add four.", V.cards(['3', '7', '11', '15'], ['b'], true) + V.eq('+4 each time', 'g')),
@@ -14177,7 +14238,7 @@ S.spatialExtra = S.extraMakers;
   ]);
 
   /* 7 SHAPE, ANGLES */
-  BT.story(7, 'Watch', [
+  BT.story(7, 'Watch lesson', [
     { title: 'Angle facts', goal: 'the angle facts for straight lines, points, triangles and quadrilaterals.', scenes: [
       SC('Straight line and full turn', 'Angles on a line add to 180', [
         st("Angles on a straight line add up to one hundred and eighty degrees. If one angle is one hundred and thirty, the other is one hundred and eighty take away one hundred and thirty, which is fifty.", V.angle(130, '130°') + V.eq('180 − 130 = 50°', 'g')),
@@ -14195,7 +14256,7 @@ S.spatialExtra = S.extraMakers;
   ]);
 
   /* 8 DATA AND CHANCE */
-  BT.story(8, 'Watch', [
+  BT.story(8, 'Watch lesson', [
     { title: 'Averages', goal: 'mean, median, mode and range.', scenes: [
       SC('Four ways to summarise', '3, 5, 5, 7, 10', [
         st("We have five numbers: three, five, five, seven, ten. The mean is the fair share. Add them up to get thirty, then divide by how many there are, five. The mean is six.", V.cards(['3', '5', '5', '7', '10'], ['b'], true) + V.eq('30 ÷ 5 = 6', 'g')),
@@ -14211,7 +14272,7 @@ S.spatialExtra = S.extraMakers;
   ]);
 
   /* 9 MIXED REASONING */
-  BT.story(9, 'Watch', [
+  BT.story(9, 'Watch lesson', [
     { title: 'Multi-step problems', goal: 'how to plan and solve problems that need several steps.', scenes: [
       SC('Plan before you calculate', 'Theatre tickets', [
         st("Adult tickets cost twelve pounds and child tickets seven pounds. A family buys three adult and two child tickets and pays with a sixty pound note. How much change? Break it into steps.", V.list(['Cost of adult tickets', 'Cost of child tickets', 'Total cost', 'Change from £60'])),
@@ -14233,7 +14294,7 @@ S.spatialExtra = S.extraMakers;
     [60, 120, 180, 240].forEach(function (x, i) { s += '<circle cx="' + x + '" cy="165" r="17" style="fill:var(--good);stroke:var(--fg);stroke-width:3"/>' + V.t(x, 172, [2, 3, 2, 3][i], 'middle', '#fff'); });
     return V.svg(300, 190, s, 'A factor tree for 36');
   }
-  BT.story(10, 'Watch', [
+  BT.story(10, 'Watch lesson', [
     { title: 'Common factors and multiples', goal: 'how to find the highest common factor and lowest common multiple.', scenes: [
       SC('Common factors', '12 and 18', [
         st("Factors are numbers that divide exactly. The factors of twelve are one, two, three, four, six and twelve. The factors of eighteen are one, two, three, six, nine and eighteen.", V.tbl([['1, 2, 3, 4, 6, 12'], ['1, 2, 3, 6, 9, 18']], ['Factors of 12 and 18'])),
@@ -14252,7 +14313,7 @@ S.spatialExtra = S.extraMakers;
   ]);
 
   /* 11 RATIO AND PROPORTION */
-  BT.story(11, 'Watch', [
+  BT.story(11, 'Watch lesson', [
     { title: 'What a ratio says', goal: 'what a ratio means and how to simplify it.', scenes: [
       SC('Comparing parts', '2 red to 3 blue', [
         st("A ratio compares parts. In a bag, there are two red beads for every three blue beads. We write two to three.", V.dots(1, 2, 'var(--bad)') + V.dots(1, 3, 'var(--accent)') + V.eq('red : blue = 2 : 3', 'b')),
@@ -14269,7 +14330,7 @@ S.spatialExtra = S.extraMakers;
   ]);
 
   /* 13 SPATIAL */
-  BT.story(13, 'Watch', [
+  BT.story(13, 'Watch lesson', [
     { title: 'Nets and views', goal: 'how to picture a 3D shape from its net.', scenes: [
       SC('Nets of a cuboid', 'Flat pattern, six faces', [
         st("A cuboid has six rectangular faces. Opposite faces are exactly the same size. A net shows all six faces folded out flat.", V.svg(300, 200, '<g style="fill:var(--surface-2);' + 'stroke:var(--fg);stroke-width:3.5;stroke-linejoin:round"><rect x="100" y="10" width="60" height="50"/><rect x="40" y="60" width="60" height="80"/><rect x="100" y="60" width="60" height="80"/><rect x="160" y="60" width="60" height="80"/><rect x="100" y="140" width="60" height="50"/><rect x="220" y="60" width="60" height="80" style="fill:var(--hl)"/></g>', 'A net of a cuboid')),
@@ -14301,7 +14362,7 @@ S.spatialExtra = S.extraMakers;
   }
 
   /* 701 PLACE VALUE */
-  BT.story(701, 'Watch', [
+  BT.story(701, 'Watch lesson', [
     { title: 'Decimal places and significant figures', goal: 'how to round to a number of decimal places or significant figures.', scenes: [
       SC('Decimal places', 'Round 3.4785 to 2 d.p.', [
         st("Decimal places count the digits after the decimal point. To round three point four seven eight five to two decimal places, keep two digits after the point, and look at the third.", V.eq('3.4785', 'b') + V.note('2 d.p. means two digits after the point')),
@@ -14322,7 +14383,7 @@ S.spatialExtra = S.extraMakers;
   ]);
 
   /* 702 OPERATIONS */
-  BT.story(702, 'Watch', [
+  BT.story(702, 'Watch lesson', [
     { title: 'Order of operations with indices', goal: 'how to use BIDMAS with powers and brackets.', scenes: [
       SC('BIDMAS', 'Brackets, indices, then × ÷, then + −', [
         st("Let's work out three plus four squared times two. The order is brackets, then indices, then multiplying and dividing, then adding and subtracting. We call it BIDMAS.", V.eq('3 + 4² × 2', 'b') + V.list(['Brackets', 'Indices', 'Divide / Multiply', 'Add / Subtract'])),
@@ -14339,7 +14400,7 @@ S.spatialExtra = S.extraMakers;
   ]);
 
   /* 703 FRACTIONS */
-  BT.story(703, 'Watch', [
+  BT.story(703, 'Watch lesson', [
     { title: 'Multiplying fractions', goal: 'how to multiply fractions and mixed numbers.', scenes: [
       SC('Top times top', '2/3 × 3/4', [
         st("To multiply fractions, multiply the tops and multiply the bottoms. Two thirds times three quarters is six twelfths.", V.eq('2/3 × 3/4 = 6/12', 'b')),
@@ -14357,7 +14418,7 @@ S.spatialExtra = S.extraMakers;
   ]);
 
   /* 704 DECIMALS AND PERCENTAGES */
-  BT.story(704, 'Watch', [
+  BT.story(704, 'Watch lesson', [
     { title: 'Percentage change', goal: 'how to increase and decrease an amount by a percentage.', scenes: [
       SC('Increasing', '£40 plus 15%', [
         st("A price of forty pounds goes up by fifteen per cent. Find ten per cent, four pounds, and five per cent, two pounds. Fifteen per cent is six pounds. The new price is forty-six pounds.", V.eq('10% = £4   5% = £2') + V.eq('£40 + £6 = £46', 'g')),
@@ -14374,7 +14435,7 @@ S.spatialExtra = S.extraMakers;
   ]);
 
   /* 705 MONEY, TIME, MEASUREMENT */
-  BT.story(705, 'Watch', [
+  BT.story(705, 'Watch lesson', [
     { title: 'Area of triangles and compound shapes', goal: 'how to find the area of triangles and shapes made from rectangles.', scenes: [
       SC('Triangles', 'Half a rectangle', [
         st("A triangle is half of a rectangle. With base ten centimetres and height six centimetres, the rectangle has area sixty, so the triangle has area thirty square centimetres.", V.poly([[20, 100], [200, 100], [110, 20]], 'var(--surface-2)', 230, 130, 'A triangle', [[110, 120, 'base 10 cm'], [112, 78, 'h 6 cm']]) + V.eq('½ × 10 × 6 = 30 cm²', 'g'))]),
@@ -14391,7 +14452,7 @@ S.spatialExtra = S.extraMakers;
   ]);
 
   /* 706 PATTERNS AND ALGEBRA */
-  BT.story(706, 'Watch', [
+  BT.story(706, 'Watch lesson', [
     { title: 'The nth term', goal: 'how to find the nth term of a linear sequence.', scenes: [
       SC('Finding the nth term', '5, 8, 11, 14', [
         st("The sequence is five, eight, eleven, fourteen. It goes up by three each time, so the rule starts three n. Three n gives three, six, nine, twelve.", V.tbl([['n', '1', '2', '3', '4'], ['3n', '3', '6', '9', '12'], ['term', '5', '8', '11', '14']], [])),
@@ -14408,7 +14469,7 @@ S.spatialExtra = S.extraMakers;
   ]);
 
   /* 707 SHAPE AND ANGLES */
-  BT.story(707, 'Watch', [
+  BT.story(707, 'Watch lesson', [
     { title: 'Angles in polygons', goal: 'how to find interior angle sums of polygons.', scenes: [
       SC('Splitting into triangles', 'The sum of interior angles', [
         st("Split any polygon into triangles from one corner. Each triangle has angles adding to one hundred and eighty. A pentagon makes three triangles, so its angles add to five hundred and forty degrees.", V.tbl([['Triangle', '1', '180°'], ['Quadrilateral', '2', '360°'], ['Pentagon', '3', '540°'], ['Hexagon', '4', '720°']], ['Shape', 'Triangles', 'Angle sum'])),
@@ -14427,7 +14488,7 @@ S.spatialExtra = S.extraMakers;
   ]);
 
   /* 708 DATA AND CHANCE */
-  BT.story(708, 'Watch', [
+  BT.story(708, 'Watch lesson', [
     { title: 'Mean from a frequency table', goal: 'how to find the mean when data is in a frequency table.', scenes: [
       SC('Frequency table', 'Scores out of 3', [
         st("Ten pupils scored one, two or three. The frequency table shows how many got each score. Two pupils scored one, five scored two, and three scored three.", V.tbl([['1', '2'], ['2', '5'], ['3', '3']], ['Score', 'Frequency'])),
@@ -14443,7 +14504,7 @@ S.spatialExtra = S.extraMakers;
   ]);
 
   /* 709 MIXED REASONING */
-  BT.story(709, 'Watch', [
+  BT.story(709, 'Watch lesson', [
     { title: 'Algebra in problems', goal: 'how to turn a story into an equation.', scenes: [
       SC('Think of a number', 'Write it as an equation', [
         st("I think of a number, multiply by three, take away four, and get twenty. Call my number n. Write what happens as an equation.", V.eq('3n − 4 = 20', 'b')),
@@ -14460,7 +14521,7 @@ S.spatialExtra = S.extraMakers;
   ]);
 
   /* 710 FACTORS */
-  BT.story(710, 'Watch', [
+  BT.story(710, 'Watch lesson', [
     { title: 'Prime factors, HCF and LCM', goal: 'how to use prime factors to find the HCF and LCM.', scenes: [
       SC('Prime factorisation', '24 and 36', [
         st("Write twenty-four as primes: two times two times two times three, or two cubed times three. Write thirty-six as two squared times three squared.", V.eq('24 = 2³ × 3') + V.eq('36 = 2² × 3²')),
@@ -14475,7 +14536,7 @@ S.spatialExtra = S.extraMakers;
   ]);
 
   /* 711 RATIO, PROPORTION, MONEY */
-  BT.story(711, 'Watch', [
+  BT.story(711, 'Watch lesson', [
     { title: 'Ratio problems', goal: 'how to share in a ratio with three parts and use a known share.', scenes: [
       SC('Three-way sharing', '£120 in the ratio 2 : 3 : 7', [
         st("Share a hundred and twenty pounds in the ratio two to three to seven. Add the parts: two plus three plus seven is twelve. A hundred and twenty divided by twelve is ten pounds a part.", V.bm([['A', [[40, '2']]], ['B', [[60, '3']]], ['C', [[140, '7']]]]) + V.eq('120 ÷ 12 = £10')),
@@ -14494,7 +14555,7 @@ S.spatialExtra = S.extraMakers;
   ]);
 
   /* 712 VOLUME, DIRECTION, SCALE, SPEED */
-  BT.story(712, 'Watch', [
+  BT.story(712, 'Watch lesson', [
     { title: 'Volume and scale', goal: 'how to find the volume of a cuboid and use map scales.', scenes: [
       SC('Volume of a cuboid', 'Length × width × height', [
         st("Volume is the space inside a solid. For a cuboid five centimetres by four by three, multiply the three lengths. Five times four is twenty, times three is sixty cubic centimetres.", V.dots(2, 3, 'var(--good)') + V.eq('5 × 4 × 3 = 60 cm³', 'g'))]),
@@ -14512,7 +14573,7 @@ S.spatialExtra = S.extraMakers;
   ]);
 
   /* 713 SPATIAL */
-  BT.story(713, 'Watch', [
+  BT.story(713, 'Watch lesson', [
     { title: 'Surface area and views', goal: 'how to find the surface area of a cuboid.', scenes: [
       SC('Surface area', 'Add all the faces', [
         st("Surface area is the total area of all the faces. A cuboid five by four by three has three pairs of matching faces. The pairs are twenty, fifteen and twelve.", V.tbl([['5 × 4', '20'], ['5 × 3', '15'], ['4 × 3', '12']], ['Pair of faces', 'Area'])),
@@ -14539,7 +14600,7 @@ S.spatialExtra = S.extraMakers;
   var REC = function (say, items) { return SC('Let’s recap', '', [st(say, V.list(items))]); };
 
   /* 801 WHOLE NUMBERS AND DECIMALS */
-  BT.story(801, 'Watch', [
+  BT.story(801, 'Watch lesson', [
     { title: 'Calculating with decimals', goal: 'how to multiply and divide decimals accurately.', scenes: [
       SC('Multiplying decimals', '3.6 × 0.4', [
         st("Welcome to secondary maths! Let's multiply three point six by zero point four. First ignore the decimal points and multiply the whole numbers: thirty-six times four is one hundred and forty-four.", V.eq('36 × 4 = 144', 'b')),
@@ -14559,7 +14620,7 @@ S.spatialExtra = S.extraMakers;
   ]);
 
   /* 802 INTEGERS, BODMAS, FACTORS, POWERS */
-  BT.story(802, 'Watch', [
+  BT.story(802, 'Watch lesson', [
     { title: 'Negative numbers', goal: 'the rules for adding, subtracting, multiplying and dividing negatives.', scenes: [
       SC('Adding and subtracting', 'On the number line', [
         st("Subtracting a positive moves left. Minus five minus three: start at minus five and move three left, to minus eight.", NL(-10, 2, { lab: 2, tick: 1, jumps: [[-5, -8, '−3']] }) + V.eq('−5 − 3 = −8', 'g')),
@@ -14577,7 +14638,7 @@ S.spatialExtra = S.extraMakers;
   ]);
 
   /* 803 FRACTIONS */
-  BT.story(803, 'Watch', [
+  BT.story(803, 'Watch lesson', [
     { title: 'Adding and subtracting mixed numbers', goal: 'how to add mixed numbers by using a common denominator.', scenes: [
       SC('Whole numbers first', '2 1/3 + 1 3/4', [
         st("Two and a third plus one and three quarters. Add the whole numbers: two plus one is three. Now the fractions. The common denominator of three and four is twelve.", V.eq('2 + 1 = 3') + V.eq('1/3 = 4/12    3/4 = 9/12')),
@@ -14592,7 +14653,7 @@ S.spatialExtra = S.extraMakers;
   ]);
 
   /* 804 PERCENTAGES */
-  BT.story(804, 'Watch', [
+  BT.story(804, 'Watch lesson', [
     { title: 'Percentages of amounts', goal: 'how to find a percentage of an amount and write one amount as a percentage.', scenes: [
       SC('Finding a percentage', '35% of 240', [
         st("Find thirty-five per cent of two hundred and forty. Ten per cent is twenty-four. Thirty per cent is three times that, seventy-two. Five per cent is half of ten per cent, twelve. Add them: eighty-four.", V.eq('30% = 72') + V.eq('5% = 12') + V.eq('35% = 84', 'g')),
@@ -14609,7 +14670,7 @@ S.spatialExtra = S.extraMakers;
   ]);
 
   /* 805 RATIO */
-  BT.story(805, 'Watch', [
+  BT.story(805, 'Watch lesson', [
     { title: 'Simplifying and sharing in a ratio', goal: 'how to simplify a ratio and share an amount in a given ratio.', scenes: [
       SC('Simplifying', '24 : 36', [
         st("To simplify a ratio, divide both parts by their highest common factor. The highest common factor of twenty-four and thirty-six is twelve. So twenty-four to thirty-six is two to three.", V.eq('24 : 36 = 2 : 3', 'g')),
@@ -14626,7 +14687,7 @@ S.spatialExtra = S.extraMakers;
   ]);
 
   /* 806 MONEY AND FINANCE */
-  BT.story(806, 'Watch', [
+  BT.story(806, 'Watch lesson', [
     { title: 'Wages and overtime', goal: 'how to calculate pay including overtime.', scenes: [
       SC('Basic pay', '35 hours at £9.50', [
         st("Maya works thirty-five hours at nine pounds fifty an hour. Her basic pay is thirty-five times nine fifty, three hundred and thirty-two pounds fifty.", V.eq('35 × £9.50 = £332.50', 'b')),
@@ -14644,7 +14705,7 @@ S.spatialExtra = S.extraMakers;
   ]);
 
   /* 807 TIME, DISTANCE, SPEED */
-  BT.story(807, 'Watch', [
+  BT.story(807, 'Watch lesson', [
     { title: 'Speed, distance and time', goal: 'how to use the speed formula and convert times.', scenes: [
       SC('The formula', 'Speed = distance ÷ time', [
         st("Speed tells us how far we go in one hour. A car travels a hundred and eighty kilometres in two and a half hours. Divide the distance by the time: seventy-two kilometres per hour.", V.eq('180 ÷ 2.5 = 72 km/h', 'g')),
@@ -14661,7 +14722,7 @@ S.spatialExtra = S.extraMakers;
   ]);
 
   /* 808 MEASURE, AREA, VOLUME */
-  BT.story(808, 'Watch', [
+  BT.story(808, 'Watch lesson', [
     { title: 'Area of triangles, parallelograms and trapeziums', goal: 'the area formulas for common 2D shapes.', scenes: [
       SC('Parallelogram', 'Base times perpendicular height', [
         st("A parallelogram can be cut and moved to make a rectangle. Its area is the base times the perpendicular height, not the slanted side. With base eight and height five, the area is forty.", V.eq('8 × 5 = 40 cm²', 'g') + V.rule('Use the perpendicular height.')),
@@ -14677,7 +14738,7 @@ S.spatialExtra = S.extraMakers;
   ]);
 
   /* 809 SEQUENCES, FORMULAE, ALGEBRA */
-  BT.story(809, 'Watch', [
+  BT.story(809, 'Watch lesson', [
     { title: 'Simplifying and expanding', goal: 'how to collect like terms and expand brackets.', scenes: [
       SC('Like terms', '3a + 2b + 4a − b', [
         st("Like terms have the same letter. Three a and four a make seven a. Two b take away b leaves one b. So three a plus two b plus four a minus b simplifies to seven a plus b.", V.eq('3a + 2b + 4a − b = 7a + b', 'g')),
@@ -14695,7 +14756,7 @@ S.spatialExtra = S.extraMakers;
   ]);
 
   /* 810 ANGLES */
-  BT.story(810, 'Watch', [
+  BT.story(810, 'Watch lesson', [
     { title: 'Angle rules', goal: 'the basic angle facts and how to use them.', scenes: [
       SC('Facts to know', 'Lines and points', [
         st("Angles on a straight line add up to one eighty. Angles around a point add up to three sixty. Where two straight lines cross, the opposite angles, called vertically opposite, are equal.", V.tbl([['Straight line', '180°'], ['Around a point', '360°'], ['Vertically opposite', 'equal']], ['Fact', 'Rule']))]),
@@ -14711,7 +14772,7 @@ S.spatialExtra = S.extraMakers;
   ]);
 
   /* 811 SHAPE, SYMMETRY, COORDINATES, SCALE */
-  BT.story(811, 'Watch', [
+  BT.story(811, 'Watch lesson', [
     { title: 'Four-quadrant coordinates and reflection', goal: 'how to plot points in all four quadrants and reflect shapes.', scenes: [
       SC('The four quadrants', 'x first, then y', [
         st("Coordinates tell us where a point is. The first number is along, the x direction. The second is up or down, the y direction. Negative numbers go left and down.", V.plot(-4, 4, -4, 4, [{ p: [3, 2, '(3, 2)', 'var(--accent)'] }, { p: [-3, 2, '(−3, 2)'] }, { p: [-3, -2, '(−3, −2)', 'var(--good)'] }], { tx: 1, ty: 1 })),
@@ -14726,7 +14787,7 @@ S.spatialExtra = S.extraMakers;
   ]);
 
   /* 812 INFORMATION HANDLING AND PROBABILITY */
-  BT.story(812, 'Watch', [
+  BT.story(812, 'Watch lesson', [
     { title: 'Averages and the spread of data', goal: 'mean, median, mode and range for a data set.', scenes: [
       SC('Even number of values', '2, 4, 4, 5, 7, 8', [
         st("We have six values: two, four, four, five, seven, eight. The mean is the total, thirty, divided by six, which is five.", V.cards(['2', '4', '4', '5', '7', '8'], ['b'], true) + V.eq('30 ÷ 6 = 5', 'g')),
@@ -14742,7 +14803,7 @@ S.spatialExtra = S.extraMakers;
   ]);
 
   /* 813 SPATIAL */
-  BT.story(813, 'Watch', [
+  BT.story(813, 'Watch lesson', [
     { title: 'Nets and surface area', goal: 'how to find the surface area of a cuboid from its net.', scenes: [
       SC('Unfold the cuboid', 'Six rectangles', [
         st("A cuboid six centimetres long, three wide and two high has six faces. They come in three matching pairs. Six by three is eighteen. Six by two is twelve. Three by two is six.", V.tbl([['6 × 3', '18'], ['6 × 2', '12'], ['3 × 2', '6']], ['Pair of faces', 'Area'])),
@@ -14768,7 +14829,7 @@ S.spatialExtra = S.extraMakers;
   var REC = function (say, items) { return SC('Let’s recap', '', [st(say, V.list(items))]); };
 
   /* 821 NUMBER: POWERS, ROOTS, STANDARD FORM */
-  BT.story(821, 'Watch', [
+  BT.story(821, 'Watch lesson', [
     { title: 'Standard form', goal: 'how to write very big and very small numbers in standard form.', scenes: [
       SC('Big numbers', '45,000', [
         st("Scientists need a short way to write very large and very small numbers. It is called standard form. A number in standard form is a number between one and ten, multiplied by a power of ten.", V.eq('a × 10ⁿ', 'b') + V.note('1 ≤ a < 10')),
@@ -14788,7 +14849,7 @@ S.spatialExtra = S.extraMakers;
   ]);
 
   /* 822 PERCENTAGES */
-  BT.story(822, 'Watch', [
+  BT.story(822, 'Watch lesson', [
     { title: 'Compound percentage change', goal: 'how to apply a percentage change repeatedly.', scenes: [
       SC('Compound interest', '£2000 at 5% for 3 years', [
         st("With compound interest, each year's interest is added, so next year you earn interest on interest. Five per cent growth has the multiplier one point oh five.", V.eq('multiplier = 1.05', 'b')),
@@ -14805,7 +14866,7 @@ S.spatialExtra = S.extraMakers;
   ]);
 
   /* 823 RATIO AND PROPORTION */
-  BT.story(823, 'Watch', [
+  BT.story(823, 'Watch lesson', [
     { title: 'Combining ratios', goal: 'how to link two ratios into one.', scenes: [
       SC('A shared quantity', 'a : b = 2 : 3 and b : c = 4 : 5', [
         st("Suppose a to b is two to three, and b to c is four to five. The b in both ratios is different: three in the first, four in the second. Make them match using the lowest common multiple, twelve.", V.eq('a : b = 2 : 3', 'b') + V.eq('b : c = 4 : 5', 'b')),
@@ -14821,7 +14882,7 @@ S.spatialExtra = S.extraMakers;
   ]);
 
   /* 824 FINANCE */
-  BT.story(824, 'Watch', [
+  BT.story(824, 'Watch lesson', [
     { title: 'Income tax', goal: 'how income tax is worked out using an allowance and a rate.', scenes: [
       SC('Taxable income', 'A worked example', [
         st("Income tax is only paid on the part of your income above a tax-free personal allowance. In this example, take an allowance of twelve thousand five hundred pounds, and a rate of twenty per cent. The real rates change, so always use the figures in the question.", V.eq('Example: allowance £12,500, rate 20%', 'b')),
@@ -14837,7 +14898,7 @@ S.spatialExtra = S.extraMakers;
   ]);
 
   /* 825 TIME, DISTANCE, SPEED */
-  BT.story(825, 'Watch', [
+  BT.story(825, 'Watch lesson', [
     { title: 'Average speed', goal: 'why average speed is total distance over total time.', scenes: [
       SC('A common mistake', '30 km/h then 60 km/h', [
         st("A car drives sixty kilometres at thirty kilometres an hour, then sixty kilometres at sixty an hour. Is the average forty-five? Let's check carefully.", V.eq('average = 45?', 'r')),
@@ -14852,7 +14913,7 @@ S.spatialExtra = S.extraMakers;
   ]);
 
   /* 826 AREA, VOLUME, SURFACE AREA */
-  BT.story(826, 'Watch', [
+  BT.story(826, 'Watch lesson', [
     { title: 'Circles', goal: 'how to find the area and circumference of a circle.', scenes: [
       SC('Two formulas', 'Radius 5 cm', [
         st("The circumference is the distance around. It is two pi r. The area is pi r squared. Pi is about three point one four. With radius five centimetres, the circumference is ten pi, about thirty-one point four.", V.circle() + V.eq('C = 2πr = 10π ≈ 31.4 cm', 'g')),
@@ -14867,7 +14928,7 @@ S.spatialExtra = S.extraMakers;
   ]);
 
   /* 827 ALGEBRA */
-  BT.story(827, 'Watch', [
+  BT.story(827, 'Watch lesson', [
     { title: 'Expanding two brackets', goal: 'how to multiply two brackets.', scenes: [
       SC('Every term times every term', '(x + 3)(x + 2)', [
         st("To expand two brackets, multiply every term in the first by every term in the second. x times x is x squared. x times two is two x. Three times x is three x. Three times two is six.", V.eq('x·x = x²   x·2 = 2x   3·x = 3x   3·2 = 6')),
@@ -14884,7 +14945,7 @@ S.spatialExtra = S.extraMakers;
   ]);
 
   /* 828 STRAIGHT LINES AND SEQUENCES */
-  BT.story(828, 'Watch', [
+  BT.story(828, 'Watch lesson', [
     { title: 'The equation y = mx + c', goal: 'what the gradient and intercept tell you about a line.', scenes: [
       SC('Gradient and intercept', 'y = 2x + 1', [
         st("A straight line has the equation y equals m x plus c. The m is the gradient, how steep the line is. The c is the y-intercept, where it crosses the y axis. For y equals two x plus one, the gradient is two and the intercept is one.", V.plot(-2, 4, -3, 9, [{ l: [[-2, -3], [4, 9]] }, { p: [0, 1, '(0, 1)'] }], { tx: 1, ty: 1, xl: 'x', yl: 'y' })),
@@ -14898,7 +14959,7 @@ S.spatialExtra = S.extraMakers;
   ]);
 
   /* 829 ANGLES, POLYGONS, BEARINGS */
-  BT.story(829, 'Watch', [
+  BT.story(829, 'Watch lesson', [
     { title: 'Interior and exterior angles', goal: 'how to use exterior angles to find the shape of a regular polygon.', scenes: [
       SC('Exterior angles', 'They always add to 360', [
         st("Walk round the edge of any polygon and turn at each corner. By the time you are back at the start you have made a full turn. So the exterior angles always add up to three hundred and sixty.", V.eq('exterior angles sum = 360°', 'b')),
@@ -14913,7 +14974,7 @@ S.spatialExtra = S.extraMakers;
   ]);
 
   /* 830 PYTHAGORAS AND THE CIRCLE */
-  BT.story(830, 'Watch', [
+  BT.story(830, 'Watch lesson', [
     { title: 'Pythagoras’ theorem', goal: 'how to find a missing side in a right-angled triangle.', scenes: [
       SC('The theorem', 'a² + b² = c²', [
         st("In a right-angled triangle, the longest side, opposite the right angle, is the hypotenuse. Pythagoras found that the squares on the two shorter sides add up to the square on the hypotenuse.", V.rt({ a: 'a', b: 'b', c: 'c' }) + V.eq('a² + b² = c²', 'b')),
@@ -14930,7 +14991,7 @@ S.spatialExtra = S.extraMakers;
   ]);
 
   /* 831 SIMILARITY AND ENLARGEMENT */
-  BT.story(831, 'Watch', [
+  BT.story(831, 'Watch lesson', [
     { title: 'Similar shapes and scale factors', goal: 'how lengths, areas and volumes scale in similar shapes.', scenes: [
       SC('Scale factor', 'A 3-4-5 triangle becomes 6-8-10', [
         st("Similar shapes have the same shape but different size. Every length is multiplied by the same scale factor. Three, four, five becomes six, eight, ten. The scale factor is two.", V.tbl([['3', '6'], ['4', '8'], ['5', '10']], ['Small', 'Large']) + V.eq('scale factor = 6 ÷ 3 = 2', 'g'))]),
@@ -14945,7 +15006,7 @@ S.spatialExtra = S.extraMakers;
   ]);
 
   /* 832 DATA HANDLING AND PROBABILITY */
-  BT.story(832, 'Watch', [
+  BT.story(832, 'Watch lesson', [
     { title: 'Scatter graphs', goal: 'how to describe correlation and use a line of best fit.', scenes: [
       SC('Correlation', 'Revision time and test score', [
         st("A scatter graph shows two sets of data at once. Here, students who revised longer scored higher. The points trend upwards: positive correlation.", V.plot(0, 6, 0, 100, [{ p: [1, 25, '', 'var(--accent)'] }, { p: [2, 40, '', 'var(--accent)'] }, { p: [2.5, 50, '', 'var(--accent)'] }, { p: [3, 55, '', 'var(--accent)'] }, { p: [4, 70, '', 'var(--accent)'] }, { p: [5, 85, '', 'var(--accent)'] }], { tx: 1, ty: 20, xl: 'hours', yl: 'score' })),
@@ -14960,7 +15021,7 @@ S.spatialExtra = S.extraMakers;
   ]);
 
   /* 833 SPATIAL */
-  BT.story(833, 'Watch', [
+  BT.story(833, 'Watch lesson', [
     { title: 'Rotation on a grid', goal: 'how to rotate a shape about the origin.', scenes: [
       SC('A quarter turn anticlockwise', 'About the origin', [
         st("To rotate you need three things: a centre, an angle and a direction. Here we turn a triangle ninety degrees anticlockwise about the origin. The point x, y goes to minus y, x.", V.eq('(x, y) → (−y, x)', 'b')),
@@ -14993,7 +15054,7 @@ S.spatialExtra = S.extraMakers;
   }
 
   /* 841 NUMBER AND PERCENTAGES */
-  BT.story(841, 'Watch', [
+  BT.story(841, 'Watch lesson', [
     { title: 'Surds', goal: 'how to simplify and multiply surds.', scenes: [
       SC('What is a surd?', 'A root that does not simplify', [
         st("A surd is a square root that is not a whole number, like root two or root twelve. Its decimal goes on forever, so we leave it as a root to be exact. We can still simplify them.", V.eq('√2 = 1.41421…', 'b')),
@@ -15009,7 +15070,7 @@ S.spatialExtra = S.extraMakers;
   ]);
 
   /* 842 FINANCE */
-  BT.story(842, 'Watch', [
+  BT.story(842, 'Watch lesson', [
     { title: 'Compound interest', goal: 'how savings grow with compound interest.', scenes: [
       SC('Interest on interest', '£5,000 at 3% for 4 years', [
         st("With compound interest, the interest is added to the savings each year, and then earns interest too. Three per cent growth has the multiplier one point oh three. Four years: one point oh three to the power four.", V.eq('5000 × 1.03⁴', 'b')),
@@ -15024,7 +15085,7 @@ S.spatialExtra = S.extraMakers;
   ]);
 
   /* 843 RATIO, PROPORTION, RATES AND SPEED */
-  BT.story(843, 'Watch', [
+  BT.story(843, 'Watch lesson', [
     { title: 'Density and other rates', goal: 'how to use rates such as density.', scenes: [
       SC('Density', 'Mass ÷ volume', [
         st("Density is a rate: how much mass fits in each cubic centimetre. A block has a mass of five hundred and forty grams and a volume of two hundred cubic centimetres. Density is mass divided by volume.", V.eq('ρ = m ÷ V') + V.eq('540 ÷ 200 = 2.7 g/cm³', 'g')),
@@ -15038,7 +15099,7 @@ S.spatialExtra = S.extraMakers;
   ]);
 
   /* 844 SOLIDS */
-  BT.story(844, 'Watch', [
+  BT.story(844, 'Watch lesson', [
     { title: 'Volume of cones and spheres', goal: 'how to use the volume formulae for a cone and sphere.', scenes: [
       SC('Cone', 'Radius 3 cm, height 4 cm', [
         st("A cone is a third of the cylinder that fits around it. Its volume is one third pi r squared h. With radius three and height four: a third of pi times nine times four is twelve pi, about thirty-seven point seven cubic centimetres.", V.eq('V = ⅓πr²h = ⅓ × π × 9 × 4 = 12π ≈ 37.7 cm³', 'g'))]),
@@ -15055,7 +15116,7 @@ S.spatialExtra = S.extraMakers;
   ]);
 
   /* 845 ALGEBRA: BRACKETS AND FACTORISING */
-  BT.story(845, 'Watch', [
+  BT.story(845, 'Watch lesson', [
     { title: 'Common factors and difference of two squares', goal: 'how to factorise by taking out a common factor and spotting a difference of squares.', scenes: [
       SC('Common factor', '6x + 9', [
         st("Factorising is expanding backwards. Look for the highest number that divides both terms. Six x and nine are both divisible by three. Take out the three: three brackets two x plus three.", V.eq('6x + 9 = 3(2x + 3)', 'g') + V.rule('Check by expanding.'))]),
@@ -15071,7 +15132,7 @@ S.spatialExtra = S.extraMakers;
   ]);
 
   /* 846 EQUATIONS, INEQUATIONS, SUBJECT */
-  BT.story(846, 'Watch', [
+  BT.story(846, 'Watch lesson', [
     { title: 'Equations with fractions', goal: 'how to solve equations with a fraction on each side.', scenes: [
       SC('Cross-multiplying', '(x + 1)/2 = (x − 2)/3', [
         st("To get rid of fractions, multiply both sides by the common denominator, six. Six times x plus one over two is three times x plus one. Six times x minus two over three is two times x minus two.", V.eq('3(x + 1) = 2(x − 2)', 'b')),
@@ -15088,7 +15149,7 @@ S.spatialExtra = S.extraMakers;
   ]);
 
   /* 847 STRAIGHT LINES */
-  BT.story(847, 'Watch', [
+  BT.story(847, 'Watch lesson', [
     { title: 'Parallel and perpendicular lines', goal: 'how gradients show whether lines are parallel or perpendicular.', scenes: [
       SC('Parallel', 'The same gradient', [
         st("Parallel lines never meet. They have exactly the same gradient. The lines y equals two x plus one, and y equals two x minus three are parallel, because both have gradient two.", V.plot(-2, 4, -5, 7, [{ l: [[-2, -3], [3, 7]] }, { l: [[-1, -5], [4, 5]], c: 'var(--good)' }], { tx: 1, ty: 2 }) + V.eq('y = 2x + 1   y = 2x − 3', 'g'))]),
@@ -15103,7 +15164,7 @@ S.spatialExtra = S.extraMakers;
   ]);
 
   /* 848 SIMULTANEOUS EQUATIONS */
-  BT.story(848, 'Watch', [
+  BT.story(848, 'Watch lesson', [
     { title: 'Solving by graph', goal: 'how the intersection of two lines solves two equations at once.', scenes: [
       SC('Where the lines cross', 'y = x + 1 and y = −x + 5', [
         st("Simultaneous equations ask for values of x and y that satisfy two equations at once. If we draw both lines, the solution is the point where they cross.", V.plot(0, 6, 0, 6, [{ l: [[0, 1], [5, 6]] }, { l: [[0, 5], [5, 0]], c: 'var(--good)' }, { p: [2, 3, '(2, 3)'] }], { tx: 1, ty: 1, xl: 'x', yl: 'y' })),
@@ -15117,7 +15178,7 @@ S.spatialExtra = S.extraMakers;
   ]);
 
   /* 849 PYTHAGORAS AND TRIGONOMETRY */
-  BT.story(849, 'Watch', [
+  BT.story(849, 'Watch lesson', [
     { title: 'SOH CAH TOA', goal: 'how to use sine, cosine and tangent to find a missing side.', scenes: [
       SC('Naming the sides', 'Hypotenuse, opposite, adjacent', [
         st("In a right-angled triangle, the hypotenuse is opposite the right angle. The opposite is across from the angle you are using, and the adjacent is next to it. Three ratios link them: sine is opposite over hypotenuse, cosine is adjacent over hypotenuse, tangent is opposite over adjacent.", V.tbl([['sin θ', 'O ÷ H'], ['cos θ', 'A ÷ H'], ['tan θ', 'O ÷ A']], ['Ratio', 'Sides']) + V.rule('SOH CAH TOA'))]),
@@ -15132,7 +15193,7 @@ S.spatialExtra = S.extraMakers;
   ]);
 
   /* 850 THE CIRCLE */
-  BT.story(850, 'Watch', [
+  BT.story(850, 'Watch lesson', [
     { title: 'Circle theorems', goal: 'the angle in a semicircle, the angle at the centre and tangents.', scenes: [
       SC('Angle in a semicircle', 'Always 90°', [
         st("Draw a diameter and join its ends to any point on the circle. The angle at that point is always a right angle. This is the angle in a semicircle theorem.", V.circle() + V.eq('angle in a semicircle = 90°', 'g')),
@@ -15149,7 +15210,7 @@ S.spatialExtra = S.extraMakers;
   ]);
 
   /* 851 SIMILARITY, SCALE, BEARINGS, ELEVATION */
-  BT.story(851, 'Watch', [
+  BT.story(851, 'Watch lesson', [
     { title: 'Similar triangles', goal: 'how to use similar triangles to find an unknown length.', scenes: [
       SC('Shadows', 'A pole and a tree', [
         st("A two metre pole casts a three metre shadow. At the same moment, a tree casts a twelve metre shadow. The sun makes the two triangles similar, so the sides are in the same ratio.", V.eq('pole : shadow = 2 : 3', 'b')),
@@ -15163,7 +15224,7 @@ S.spatialExtra = S.extraMakers;
   ]);
 
   /* 852 STATISTICS AND PROBABILITY */
-  BT.story(852, 'Watch', [
+  BT.story(852, 'Watch lesson', [
     { title: 'Standard deviation', goal: 'how to calculate the standard deviation to measure spread.', scenes: [
       SC('Measuring spread', '2, 4, 6, 8', [
         st("The standard deviation tells us how spread out the data is. Take the data two, four, six, eight. The mean is five.", V.cards(['2', '4', '6', '8'], ['b'], true) + V.eq('mean = 20 ÷ 4 = 5')),
@@ -15178,7 +15239,7 @@ S.spatialExtra = S.extraMakers;
   ]);
 
   /* 853 SPATIAL */
-  BT.story(853, 'Watch', [
+  BT.story(853, 'Watch lesson', [
     { title: 'Vectors as journeys', goal: 'how to describe a movement with a vector.', scenes: [
       SC('Column vectors', 'Right and up', [
         st("A vector describes a journey. The top number is how far right, and the bottom number is how far up. Negative means left or down. The vector three, two is three right and two up.", V.plot(0, 5, 0, 4, [{ l: [[1, 1], [4, 3]] }, { p: [1, 1, 'A', 'var(--accent)'] }, { p: [4, 3, 'B', 'var(--good)'] }], { tx: 1, ty: 1 }) + V.eq('AB = (3, 2)', 'g')),
@@ -15417,6 +15478,1175 @@ S.spatialExtra = S.extraMakers;
   };
   var MAP = { numline: [501, 1, 701, 801], coins: [505, 5, 705, 807, 808, 825], numS: [802], speedL: [807, 825, 843], angS: [810, 811, 829, 851], buy: [806, 842] };
   Object.keys(MAP).forEach(function (k) { MAP[k].forEach(function (id) { BT.storyMore(id, [EP[k]]); }); });
+})();
+</script>
+<script>
+/* gplayer.js: the animated lesson player for the Watch step.
+   Looks like the MathsStudio lesson films: a 16:9 stage, a title card for each question, progress dashes,
+   and pictures that animate in as the teacher speaks. Uses the same episode format as story.js:
+   { title, goal, scenes: [ { h, sub, steps: [ { say, html } ] } ] }.
+   BT.lessons(n, label, episodes) puts the episodes in a first step called "Watch" at the front of a topic. */
+(function () {
+  'use strict';
+  var S = Studio, H = S.h, BT = window.BT;
+  if (!BT || !BT.sv) return;
+  var W = 800, HH = 450;
+
+  var css = document.createElement('style');
+  css.textContent = [
+    '.gp{display:flex;flex-direction:column;gap:10px;margin:6px auto 14px;max-width:1000px;width:100%}',
+    '.gp-frame{position:relative;width:100%;aspect-ratio:16/9;border-radius:16px;overflow:hidden;background:#f4f4f4;box-shadow:0 6px 24px rgba(34,26,58,.16)}',
+    '.gp-stage{position:absolute;left:0;top:0;width:' + W + 'px;height:' + HH + 'px;transform-origin:0 0;overflow:hidden;background:#f4f4f4;color:#221a3a;',
+    '  font-family:"DejaVu Sans",Verdana,"Segoe UI",system-ui,sans-serif;font-weight:700;',
+    '  --accent:#881cd6;--accent-fg:#fff;--good:#1e9e60;--bad:#e2620f;--fg:#221a3a;--muted:#6b6480;--surface:#ffffff;--surface-2:#efe4f8;--line:#ddd0ea;--hl:#ecdcf8;--font-display:"DejaVu Sans",Verdana,"Segoe UI",system-ui,sans-serif}',
+    '.gp-bar{position:absolute;left:0;top:0;width:100%;height:11px;background:#d8aaf0}',
+    '.gp-bar:before{content:"";position:absolute;left:0;top:0;width:13px;height:11px;background:#881cd6}',
+    '.gp-lab{position:absolute;left:20px;top:22px;right:20px;font-size:13px;display:flex;align-items:center;gap:9px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}',
+    '.gp-lab:before{content:"";flex:none;width:10px;height:10px;border-radius:2px;background:#881cd6}',
+    '.gp-dash{position:absolute;left:0;right:0;bottom:15px;display:flex;justify-content:center;gap:4px}',
+    '.gp-dash i{display:block;width:32px;height:3px;border-radius:2px;background:#e3cdf3}.gp-dash i.on{background:#881cd6}',
+    '.gp-body{position:absolute;left:24px;right:24px;top:44px;bottom:30px;display:flex;align-items:center;justify-content:center}',
+    '.gp-fit{width:100%;display:flex;flex-direction:column;align-items:center;gap:10px;transform-origin:50% 50%}',
+    '.gp-h{font-size:21px;text-align:center;margin:0;line-height:1.25;text-wrap:balance}',
+    '.gp-sub{font-size:13px;color:#6b6480;text-align:center;margin:-4px 0 2px}',
+    '.gp-title{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;text-align:center;padding:0 50px}',
+    '.gp-title .t1{font-size:15px;color:#6b6480}.gp-title .t2{font-size:30px;line-height:1.25;text-wrap:balance}.gp-title .t3{font-size:44px;color:#881cd6;line-height:1.1}',
+    '.gp-ico{width:56px;height:56px}',
+    /* blocks build in */
+    '.gp-stage [data-sb]{width:100%;display:flex;flex-direction:column;align-items:center;gap:8px;opacity:0;transform:translateY(14px);transition:opacity .5s ease,transform .5s ease}',
+    '.gp-stage [data-sb].on{opacity:1;transform:none}',
+    '.gp-swap{display:grid;width:100%;justify-items:center}.gp-swap>[data-sb]{grid-area:1/1}',
+    '.gp-stage [data-sb].on .sv-card,.gp-stage [data-sb].on .sv-chip,.gp-stage [data-sb].on .lk-tag{animation:gppop .45s cubic-bezier(.3,1.5,.6,1) both}',
+    '.gp-stage [data-sb].on svg rect,.gp-stage [data-sb].on svg polygon{animation:gpgrow .6s ease both;transform-box:fill-box;transform-origin:left center}',
+    '.gp-stage [data-sb].on svg circle{animation:gppop .5s cubic-bezier(.3,1.5,.6,1) both;transform-box:fill-box;transform-origin:center}',
+    '.gp-stage [data-sb].on .sv-list>div{animation:gpin .45s ease both}',
+    '@keyframes gppop{from{opacity:0;transform:scale(.6)}to{opacity:1;transform:none}}',
+    '@keyframes gpgrow{from{opacity:0;transform:scaleX(.2)}to{opacity:1;transform:none}}',
+    '@keyframes gpin{from{opacity:0;transform:translateX(-16px)}to{opacity:1;transform:none}}',
+    /* fixed sizes for the picture helpers inside the stage */
+    '.gp-stage .sv-row{display:flex;flex-wrap:wrap;gap:8px 12px;justify-content:center;align-items:center;width:100%}',
+    '.gp-stage .sv-card{border:4px solid;border-radius:14px;min-width:58px;padding:2px 10px;text-align:center;font-weight:700;font-size:38px;line-height:1.25;background:#fff}',
+    '.gp-stage .sv-card.sm{font-size:22px;min-width:0;padding:3px 10px;border-width:3px}',
+    '.gp-stage .b{color:var(--accent);border-color:var(--accent)}.gp-stage .g{color:var(--good);border-color:var(--good)}.gp-stage .r{color:var(--bad);border-color:var(--bad)}.gp-stage .y{color:#2a7fb0;border-color:#2a7fb0}',
+    '.gp-stage .sv-big{font-weight:700;font-size:60px;line-height:1.05;text-align:center}',
+    '.gp-stage .sv-eq{font-weight:700;font-size:26px;text-align:center;line-height:1.3}',
+    '.gp-stage .sv-eq.g{color:var(--good)}.gp-stage .sv-eq.r{color:var(--bad)}.gp-stage .sv-eq.b{color:var(--accent)}',
+    '.gp-stage .sv-rule{background:var(--hl);color:#221a3a;border:0;border-radius:10px;padding:8px 18px;font-size:16px;text-align:center;max-width:620px}',
+    '.gp-stage .sv-note{color:#6b6480;font-size:13px;text-align:center}',
+    '.gp-stage .sv-cols{display:grid;grid-template-columns:repeat(var(--n,4),minmax(0,1fr));gap:10px;width:100%;max-width:640px}',
+    '.gp-stage .sv-cols>div{display:flex;flex-direction:column;align-items:center;gap:6px;min-width:0;text-align:center}',
+    '.gp-stage .sv-chip{width:100%;text-align:center;border-radius:8px;padding:4px 3px;font-weight:700;color:#fff;font-size:14px}',
+    '.gp-stage .sv-chip.b{background:var(--accent)}.gp-stage .sv-chip.g{background:var(--good)}.gp-stage .sv-chip.r{background:var(--bad)}.gp-stage .sv-chip.y{background:#2a7fb0}',
+    '.gp-stage .sv-stick{display:inline-block;width:11px;height:50px;border-radius:6px;border:2px solid var(--fg)}',
+    '.gp-stage .sv-list{display:flex;flex-direction:column;gap:9px;width:100%;max-width:640px}',
+    '.gp-stage .sv-list div{display:flex;gap:12px;align-items:center;font-size:17px}',
+    '.gp-stage .sv-list b{flex:0 0 12px;height:12px;border-radius:50%;background:var(--accent);color:transparent;overflow:hidden;font-size:0}',
+    '.gp-stage .tbl{border-collapse:collapse;font-size:16px;background:#fff;width:auto;margin:0 auto}.gp-stage .tbl th{background:#881cd6;color:#fff;padding:5px 12px}.gp-stage .tbl td{padding:5px 12px;border:1px solid #e3cdf3;text-align:center}',
+    '.gp-stage .lk-col{grid-template-columns:repeat(var(--n),46px);font-size:34px;font-family:inherit}',
+    '.gp-stage .lk-col .hd{font-size:14px}.gp-stage .lk-col .cy{font-size:16px}',
+    '.gp-stage .lk-tag{font-size:14px;border-radius:8px}.gp-stage .lk-step{font-size:18px}',
+    '.gp-stage .gp-fit svg{zoom:1.45;max-width:100%;height:auto}',
+    '.gp-stage svg text{font-family:inherit}',
+    /* controls */
+    '.gp-cap{min-height:48px;font-size:16px;line-height:1.45;padding:2px 4px}',
+    '.gp-ctl{display:flex;align-items:center;gap:8px;flex-wrap:wrap}',
+    '.gp-ctl .btn{min-height:44px}',
+    '.gp-prog{flex:1 1 140px;min-width:0;height:8px;background:var(--line);border-radius:99px;overflow:hidden}.gp-prog i{display:block;height:100%;width:0;background:#881cd6;transition:width .3s}',
+    '.gp.full .gp-frame{position:fixed;inset:0;z-index:9999;border-radius:0;aspect-ratio:auto;background:#111}',
+    '.gp.full .gp-close{display:flex}.gp-close{display:none;position:absolute;right:max(12px,env(safe-area-inset-right));top:max(12px,env(safe-area-inset-top));z-index:2;width:44px;height:44px;border-radius:50%;border:0;background:#fff;color:#221a3a;font-size:22px;align-items:center;justify-content:center;box-shadow:0 2px 10px rgba(0,0,0,.3)}',
+    '.gp-cnt{font-size:13px;color:var(--muted);font-variant-numeric:tabular-nums}',
+    '@media(prefers-reduced-motion:reduce){.gp-stage *{animation:none!important;transition:none!important}.gp-stage [data-sb]{opacity:1;transform:none}}'
+  ].join('\n');
+  document.head.appendChild(css);
+
+  var current = null, oldStop = H.storyStop;
+  H.storyStop = function () { if (oldStop) oldStop(); if (current) current.stop(); };
+
+  var ICON = '<svg class="gp-ico" viewBox="0 0 56 56" aria-hidden="true"><circle cx="28" cy="28" r="25" fill="#ead6f8"/><path d="M28 28 L28 3 A25 25 0 0 1 53 28 Z" fill="#881cd6"/><path d="M3 28 H53 M28 3 V53" stroke="#fff" stroke-width="2"/></svg>';
+
+  /* draw-on animation for lines and arcs when a block appears */
+  function drawIn(block) {
+    if (window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    block.querySelectorAll('svg path, svg line, svg polyline').forEach(function (p, i) {
+      var len = 0; try { len = p.getTotalLength(); } catch (e) { return; }
+      if (!len || len > 3000) return;
+      p.style.strokeDasharray = len; p.style.strokeDashoffset = len;
+      p.getBoundingClientRect();
+      p.style.transition = 'stroke-dashoffset .9s ease ' + Math.min(i * 0.04, 0.6) + 's';
+      p.style.strokeDashoffset = 0;
+    });
+  }
+
+  H.gifPlayer = function (host, ep, meta) {
+    meta = meta || { q: 0, of: 1 };
+    var slides = [{ title: true, steps: [{ say: (meta.of > 1 ? 'Question ' + (meta.q + 1) + '. ' : '') + ep.title + ' In this lesson, we will learn ' + (ep.goal || '') }] }];
+    ep.scenes.forEach(function (sc) { slides.push(sc); });
+    var chunks = [];
+    slides.forEach(function (sl, si) { sl.steps.forEach(function (st, k) { chunks.push({ si: si, k: k, say: st.say }); }); });
+    var dashes = ''; for (var d = 0; d < meta.of; d++) dashes += '<i class="' + (d <= meta.q ? 'on' : '') + '"></i>';
+    var short = ep.title.replace(/\?$/, '');
+
+    host.innerHTML = '<div class="gp"><div class="gp-frame"><div class="gp-stage"></div><button class="gp-close" type="button" aria-label="Close full screen">✕</button></div>' +
+      '<div class="gp-cap" aria-live="polite"></div>' +
+      '<div class="gp-ctl"><button class="btn" type="button" data-p>Play the lesson</button>' +
+      '<button class="btn ghost" type="button" data-b aria-label="Back one step">◀ Back</button>' +
+      '<button class="btn ghost" type="button" data-n aria-label="Next step">Next ▶</button>' +
+      '<button class="btn ghost" type="button" data-r>Start again</button>' +
+      '<button class="btn ghost" type="button" data-f>Full screen</button>' +
+      '<div class="gp-prog" aria-hidden="true"><i></i></div><span class="gp-cnt"></span></div>' +
+      '<p class="note" style="margin:0" data-note></p></div>';
+    var root = host.querySelector('.gp'), frame = root.querySelector('.gp-frame'), stage = root.querySelector('.gp-stage'), cap = root.querySelector('.gp-cap');
+    var pb = root.querySelector('[data-p]'), bar = root.querySelector('.gp-prog i'), cnt = root.querySelector('.gp-cnt'), note = root.querySelector('[data-note]');
+    var idx = 0, playing = false, token = 0, timer = null, shown = -1;
+    var okVoice = H.voiceOk && H.voiceOk();
+    note.textContent = okVoice ? 'Your device reads this aloud. You can change the voice and speed in Settings.' : 'The voice is not available here, so the lesson plays with words only.';
+
+    function fit() {
+      var full = root.classList.contains('full'), fw = frame.clientWidth, fh = frame.clientHeight;
+      var s = full ? Math.min(fw / W, fh / HH) : fw / W;
+      stage.style.transform = 'translate(' + (full ? (fw - W * s) / 2 : 0) + 'px,' + (full ? (fh - HH * s) / 2 : 0) + 'px) scale(' + s + ')';
+    }
+    function setFull(on) {
+      root.classList.toggle('full', on);
+      try {
+        if (on && frame.requestFullscreen) frame.requestFullscreen().then(function () { if (screen.orientation && screen.orientation.lock) screen.orientation.lock('landscape').catch(function () {}); }).catch(function () {});
+        if (!on && document.fullscreenElement) document.exitFullscreen().catch(function () {});
+      } catch (e) { /* not supported: the fixed overlay still works */ }
+      setTimeout(fit, 60); setTimeout(fit, 400);
+    }
+    root.querySelector('[data-f]').addEventListener('click', function () { setFull(true); });
+    root.querySelector('.gp-close').addEventListener('click', function () { setFull(false); });
+    document.addEventListener('fullscreenchange', function () { if (!document.fullscreenElement && root.classList.contains('full')) { root.classList.remove('full'); setTimeout(fit, 60); } });
+    window.addEventListener('resize', fit);
+    if (window.ResizeObserver) new ResizeObserver(fit).observe(frame); fit();
+
+    function chrome(inner, isTitle) {
+      return '<div class="gp-bar"></div>' + (isTitle ? '' : '<div class="gp-lab">' + (/^Let’s recap/.test(inner.h || '') ? 'Remember!' : short) + '</div>') +
+        '<div class="gp-dash">' + dashes + '</div>';
+    }
+    function build(si) {
+      var sl = slides[si], h;
+      if (sl.title) {
+        h = chrome({}, true) + '<div class="gp-title">' + ICON + (meta.of > 1 ? '<div class="t1">Question ' + (meta.q + 1) + ' of ' + meta.of + '</div>' : '') + '<div class="t2">' + ep.title + '</div></div>';
+        stage.innerHTML = h; return;
+      }
+      h = chrome(sl) + '<div class="gp-body"><div class="gp-fit"><h3 class="gp-h">' + sl.h + '</h3>' + (sl.sub ? '<p class="gp-sub">' + sl.sub + '</p>' : '');
+      /* a step whose html starts with <!--swap--> replaces the block before it, in the same place */
+      var groups = [];
+      sl.steps.forEach(function (st, k) {
+        if (!st.html) return;
+        var blk = '<div data-sb="' + k + '">' + st.html + '</div>';
+        if (st.html.indexOf('<!--swap-->') === 0 && groups.length) groups[groups.length - 1].push(blk); else groups.push([blk]);
+      });
+      groups.forEach(function (g) { h += g.length > 1 ? '<div class="gp-swap">' + g.join('') + '</div>' : g[0]; });
+      stage.innerHTML = h + '</div></div>';
+      /* shrink to fit if the finished slide is taller than the stage */
+      var body = stage.querySelector('.gp-body'), f = stage.querySelector('.gp-fit');
+      var need = f.scrollHeight, room = body.clientHeight, needW = f.scrollWidth, roomW = body.clientWidth;
+      var k2 = Math.min(1, room / need, roomW / needW);
+      if (k2 < 1) f.style.transform = 'scale(' + k2.toFixed(3) + ')';
+    }
+    function show(i) {
+      var c = chunks[i];
+      if (shown !== c.si) { shown = c.si; build(c.si); }
+      stage.querySelectorAll('[data-sb]').forEach(function (e) {
+        var k = Number(e.getAttribute('data-sb')), on = k <= c.k;
+        if (on && e.parentNode.classList.contains('gp-swap')) {
+          var later = [].some.call(e.parentNode.children, function (o) { var j = Number(o.getAttribute('data-sb')); return j > k && j <= c.k; });
+          if (later) on = false;
+        }
+        if (on && !e.classList.contains('on')) { e.classList.add('on'); drawIn(e); }
+        else if (!on) e.classList.remove('on');
+      });
+      cap.textContent = c.say; bar.style.width = ((i + 1) / chunks.length * 100) + '%';
+      cnt.textContent = 'Slide ' + (c.si + 1) + ' of ' + slides.length;
+    }
+    function say(i) {
+      show(i); var my = ++token; clearTimeout(timer);
+      function next() {
+        if (my !== token || !playing || !root.isConnected) return;
+        if (i + 1 < chunks.length) { idx = i + 1; timer = setTimeout(function () { if (my === token && playing && root.isConnected) say(idx); }, 600); }
+        else { playing = false; idx = 0; pb.textContent = 'Watch again'; }
+      }
+      var ok = okVoice && H.speakStory(chunks[i].say, function () { next(); });
+      if (!ok) timer = setTimeout(next, chunks[i].say.split(' ').length * 380 + 1200);
+    }
+    function stop() { token++; clearTimeout(timer); playing = false; try { if (okVoice) speechSynthesis.cancel(); } catch (e) { /* ignore */ } pb.textContent = idx > 0 ? 'Keep watching' : 'Play the lesson'; }
+    function go(i) { var was = playing; stop(); idx = Math.max(0, Math.min(chunks.length - 1, i)); if (was) { playing = true; pb.textContent = 'Pause'; current = { stop: stop }; say(idx); } else show(idx); }
+    pb.addEventListener('click', function () { if (playing) { stop(); return; } current = { stop: stop }; playing = true; pb.textContent = 'Pause'; say(idx); });
+    root.querySelector('[data-b]').addEventListener('click', function () { go(idx - 1); });
+    root.querySelector('[data-n]').addEventListener('click', function () { go(idx + 1); });
+    root.querySelector('[data-r]').addEventListener('click', function () { stop(); idx = 0; shown = -1; current = { stop: stop }; playing = true; pb.textContent = 'Pause'; say(0); });
+    current = { stop: stop }; show(0); host.__storyShow = show; host.__storyN = chunks.length;
+  };
+
+  function toSlides(episodes) {
+    return episodes.map(function (ep, i) {
+      return { title: ep.title, say: ['Press play and your teacher will explain this step by step.'], goal: ep.goal || ep.title.toLowerCase(), noMore: true, kind: 'Watch lesson',
+        live: function (host) { H.gifPlayer(host, ep, { q: i, of: episodes.length }); } };
+    });
+  }
+  /* put the episodes in a Watch step at the front of a topic. Older Watch lessons are removed,
+     except those whose titles are listed in keep: they stay, after the new ones, in the new style. */
+  BT.lessons = function (n, label, episodes, keep) {
+    var t = S.topics[n]; if (!t) { if (window.console) console.warn('lessons: no topic ' + n); return; }
+    var old = t.steps.filter(function (s) { return s.id === 'watch'; })[0], kept = [];
+    if (old && keep) (old.slides || []).forEach(function (sl) { if (sl.ep && keep.indexOf(sl.title) >= 0) kept.push(sl.ep); });
+    t.steps = t.steps.filter(function (s) { return s.id !== 'watch'; });
+    var m = H.slideMeta; if (m) { delete m.goals[n + '.watch']; delete m.more[n + '.watch']; }
+    BT.add(n, 'watch', label || 'Watch lesson', toSlides(episodes.concat(kept)));
+    var st = t.steps.filter(function (s) { return s.id === 'watch'; })[0], i = t.steps.indexOf(st);
+    if (i > 0) { t.steps.splice(i, 1); t.steps.unshift(st); }
+    S.arrange(t);
+  };
+})();
+</script>
+<script>
+/* lessons_kit.js: shared picture helpers for the question-by-question Watch lessons (BT.lk). */
+(function () {
+  'use strict';
+  var BT = window.BT; if (!BT || !BT.sv) return;
+  var svg = BT.svg, txt = BT.txt, hs = BT.hs;
+  var css = document.createElement('style');
+  css.textContent = [
+    '.lk-col{display:inline-grid;grid-template-columns:repeat(var(--n),clamp(30px,8vw,52px));gap:2px 4px;font-family:var(--font-display);font-weight:700;font-size:clamp(22px,5.4vw,38px);line-height:1.15;text-align:center}',
+    '.lk-col .hd{font-family:inherit;font-size:clamp(11px,2.6vw,15px);color:var(--muted);font-weight:800}',
+    '.lk-col .cy{font-size:clamp(12px,3vw,18px);color:var(--bad);height:1.1em}',
+    '.lk-col .ln{grid-column:1/-1;border-top:3px solid var(--fg);margin:2px 0}',
+    '.lk-col .hi{color:var(--accent)}.lk-col .ok{color:var(--good)}.lk-col .x{text-decoration:line-through;color:var(--muted)}',
+    '.lk-pair{display:flex;flex-wrap:wrap;gap:12px 28px;justify-content:center;align-items:flex-start;width:100%}',
+    '.lk-pair>div{display:flex;flex-direction:column;align-items:center;gap:6px;min-width:0}',
+    '.lk-tag{display:inline-block;border-radius:10px;padding:3px 10px;font-weight:800;font-size:clamp(13px,3vw,16px)}',
+    '.lk-tag.g{background:var(--good);color:#fff}.lk-tag.r{background:var(--bad);color:#fff}.lk-tag.b{background:var(--accent);color:var(--accent-fg)}',
+    '.lk-step{font-weight:700;font-size:clamp(15px,3.4vw,20px);text-align:center}'
+  ].join('');
+  document.head.appendChild(css);
+
+  var LK = BT.lk = {};
+  /* column sum: heads e.g. ['','H','T','O']; rows: arrays of cells; a row {line:true} draws the rule; a row {carry:[...]} small red carries.
+     a cell may be 'x:7' (crossed out), 'h:7' (highlight), 'k:7' (good colour) */
+  LK.col = function (heads, rows) {
+    var n = heads.length, s = '<div class="lk-col" style="--n:' + n + '">';
+    heads.forEach(function (h) { s += '<div class="hd">' + h + '</div>'; });
+    rows.forEach(function (r) {
+      if (r.line) { s += '<div class="ln"></div>'; return; }
+      if (r.carry) { r.carry.forEach(function (c) { s += '<div class="cy">' + (c || '') + '</div>'; }); return; }
+      r.forEach(function (c) {
+        c = c === undefined || c === null ? '' : String(c);
+        var cls = '';
+        if (/^[xhk]:/.test(c)) { cls = { x: 'x', h: 'hi', k: 'ok' }[c[0]]; c = c.slice(2); }
+        s += '<div class="' + cls + '">' + c + '</div>';
+      });
+    });
+    return s + '</div>';
+  };
+  LK.pair = function (a, b, c) { return '<div class="lk-pair"><div>' + a + '</div><div>' + b + '</div>' + (c ? '<div>' + c + '</div>' : '') + '</div>'; };
+  LK.tag = function (t, col) { return '<span class="lk-tag ' + (col || 'b') + '">' + t + '</span>'; };
+  LK.step = function (t) { return '<div class="lk-step">' + t + '</div>'; };
+
+  /* squared grid c x r; shade: number of squares shaded row by row, or a function(i,j) */
+  LK.grid = function (c, r, shade, o) {
+    o = o || {}; var u = o.u || Math.min(34, Math.floor(300 / Math.max(c, r))), s = '', x0 = 22, y0 = 8, k = 0;
+    for (var j = 0; j < r; j++) for (var i = 0; i < c; i++) {
+      var on = typeof shade === 'function' ? shade(i, j) : k < (shade || 0);
+      if (on !== 'skip') s += '<rect x="' + (x0 + i * u) + '" y="' + (y0 + j * u) + '" width="' + u + '" height="' + u + '" style="fill:' + (on ? hs(o.hue || 215, 'band') : 'var(--surface)') + ';stroke:var(--fg);stroke-width:' + (on ? 2 : 1) + '"/>';
+      k++;
+    }
+    if (o.w) s += txt(x0 + c * u / 2, y0 + r * u + 20, o.w, 14);
+    if (o.h) s += txt(x0 - 12, y0 + r * u / 2 + 5, o.h, 14, 'end');
+    var W = x0 + c * u + 12, Hh = y0 + r * u + (o.w ? 28 : 10);
+    return svg(W, Hh, o.alt || 'A squared grid', s, Math.min(W, 340));
+  };
+  /* tally marks for n */
+  LK.tally = function (n) {
+    var s = '', x = 6, g = Math.floor(n / 5), rem = n % 5;
+    for (var a = 0; a < g; a++) { for (var b = 0; b < 4; b++) s += '<line x1="' + (x + b * 9) + '" y1="6" x2="' + (x + b * 9) + '" y2="36" style="stroke:var(--fg);stroke-width:3;stroke-linecap:round"/>'; s += '<line x1="' + (x - 4) + '" y1="32" x2="' + (x + 31) + '" y2="10" style="stroke:var(--bad);stroke-width:3;stroke-linecap:round"/>'; x += 48; }
+    for (var c = 0; c < rem; c++) s += '<line x1="' + (x + c * 9) + '" y1="6" x2="' + (x + c * 9) + '" y2="36" style="stroke:var(--fg);stroke-width:3;stroke-linecap:round"/>';
+    var W = Math.max(30, x + rem * 9 + 6);
+    return svg(W, 42, 'Tally marks for ' + n, s, W);
+  };
+  /* map grid with letters along the bottom and numbers up the side; items [[col(0-based), row(0-based from bottom), label, hue]] */
+  LK.map = function (cols, rows, items, o) {
+    o = o || {}; var u = 52, x0 = 34, y0 = 10, s = '';
+    for (var j = 0; j < rows; j++) for (var i = 0; i < cols; i++) {
+      var hit = o.hl && o.hl[0] === i && o.hl[1] === j;
+      s += '<rect x="' + (x0 + i * u) + '" y="' + (y0 + (rows - 1 - j) * u) + '" width="' + u + '" height="' + u + '" style="fill:' + (hit ? hs(50, 'band') : 'var(--surface)') + ';stroke:var(--fg);stroke-width:1.5"/>';
+    }
+    for (var a = 0; a < cols; a++) s += txt(x0 + a * u + u / 2, y0 + rows * u + 20, String.fromCharCode(65 + a), 16);
+    for (var b = 0; b < rows; b++) s += txt(x0 - 14, y0 + (rows - 1 - b) * u + u / 2 + 6, b + 1, 16);
+    (items || []).forEach(function (it) {
+      var cx = x0 + it[0] * u + u / 2, cy = y0 + (rows - 1 - it[1]) * u + u / 2;
+      s += '<circle cx="' + cx + '" cy="' + (cy - 6) + '" r="11" style="fill:' + hs(it[3] || 215) + ';stroke:var(--fg);stroke-width:2"/>' + txt(cx, cy + 20, it[2], 11);
+    });
+    var W = x0 + cols * u + 8, Hh = y0 + rows * u + 30;
+    return svg(W, Hh, o.alt || 'A map grid', s, Math.min(W, 340));
+  };
+  /* circle cut into d equal parts, n shaded */
+  LK.pie = function (n, d, o) {
+    o = o || {}; var r = o.r || 54, cx = r + 6, cy = r + 6, s = '';
+    if (d === 1) s = '<circle cx="' + cx + '" cy="' + cy + '" r="' + r + '" style="fill:' + (n ? hs(o.hue || 280) : 'var(--surface)') + ';stroke:var(--fg);stroke-width:3"/>';
+    else for (var i = 0; i < d; i++) {
+      var a0 = (i / d) * 2 * Math.PI - Math.PI / 2, a1 = ((i + 1) / d) * 2 * Math.PI - Math.PI / 2;
+      var x0 = cx + r * Math.cos(a0), y0 = cy + r * Math.sin(a0), x1 = cx + r * Math.cos(a1), y1 = cy + r * Math.sin(a1);
+      s += '<path d="M' + cx + ' ' + cy + ' L' + x0.toFixed(1) + ' ' + y0.toFixed(1) + ' A' + r + ' ' + r + ' 0 ' + (1 / d > 0.5 ? 1 : 0) + ' 1 ' + x1.toFixed(1) + ' ' + y1.toFixed(1) + ' Z" style="fill:' + (i < n ? hs(o.hue || 280) : 'var(--surface)') + ';stroke:var(--fg);stroke-width:2.5"/>';
+    }
+    return svg(2 * r + 12, 2 * r + 12, o.alt || n + ' of ' + d + ' equal parts shaded', s, 2 * r + 12);
+  };
+  /* a fraction bar of d parts, n shaded, at a given pixel width so bars can be compared */
+  LK.fbar = function (n, d, w, hue, label) {
+    w = w || 300; var u = w / d, s = '';
+    for (var i = 0; i < d; i++) s += '<rect x="' + (i * u + 2) + '" y="4" width="' + u + '" height="34" style="fill:' + (i < n ? hs(hue || 280) : 'var(--surface)') + ';stroke:var(--fg);stroke-width:2"/>';
+    var W = w + 4 + (label ? 24 + String(label).length * 11 : 0);
+    if (label) s += txt(w + 14, 28, label, 17, 'start', ';font-weight:700');
+    return svg(W, 42, n + ' of ' + d + ' equal parts shaded', s, W);
+  };
+  /* hundred square with n shaded */
+  LK.hsq = function (n, hue) { return LK.grid(10, 10, n, { u: 18, hue: hue || 215, alt: n + ' out of 100 squares shaded' }); };
+  /* a simple pictogram row helper: [label, count of symbols (halves allowed)] */
+  LK.picto = function (rows, key) {
+    var s = '', y = 6;
+    rows.forEach(function (r) {
+      s += txt(70, y + 22, r[0], 14, 'end');
+      for (var i = 0; i < Math.ceil(r[1]); i++) {
+        var half = r[1] - i < 1;
+        s += half ? '<path d="M' + (96 + i * 34) + ' ' + (y + 2) + ' A15 15 0 0 0 ' + (96 + i * 34) + ' ' + (y + 32) + ' Z" style="fill:' + hs(40) + ';stroke:var(--fg);stroke-width:2"/>'
+          : '<circle cx="' + (96 + i * 34) + '" cy="' + (y + 17) + '" r="15" style="fill:' + hs(40) + ';stroke:var(--fg);stroke-width:2"/>';
+      }
+      y += 40;
+    });
+    if (key) s += txt(80, y + 18, key, 13, 'start');
+    return svg(340, y + (key ? 28 : 6), 'A pictogram', s, 340);
+  };
+})();
+</script>
+<script>
+/* lessons_501.js: new Watch lessons for P5 Topic 1, Place value and rounding.
+   One detailed lesson per question from the second level question list. Replaces the older short Watch lessons. */
+(function () {
+  'use strict';
+  var BT = window.BT; if (!BT || !BT.story) return;
+  var V = BT.sv;
+  var SC = function (h, sub, steps) { return { h: h, sub: sub, steps: steps }; };
+  var st = function (say, html) { return { say: say, html: html || '' }; };
+  var H4 = ['Th', 'H', 'T', 'O'];
+  var H5 = ['TTh', 'Th', 'H', 'T', 'O'];
+  var val = function (t, col) { return '<div class="sv-eq ' + (col || '') + '" style="font-size:clamp(15px,3.8vw,30px)">' + t + '</div>'; };
+  var hot = function (t) { return '<span style="color:var(--bad)">' + t + '</span>'; };
+  var chart = function (digits, heads, cols) {
+    return V.cols(digits.map(function (d, i) { return V.chip(heads[i], cols[i]) + V.card(d, cols[i]); }), digits.length);
+  };
+
+  var placeValue = {
+    title: 'What is place value?', goal: 'how the place of a digit decides what it is worth.',
+    scenes: [
+      SC('What is place value?', 'Meet the ten digits', [
+        st("Hello! Today we are answering a big question: what is place value? Let's start with the digits. Every number you will ever write is made from just these ten digits.",
+          V.cards(['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'], ['b', 'g', 'r', 'y'], true)),
+        st("So how can ten little digits make huge numbers, like seventy-two thousand? The secret is where each digit sits in the number. We call that its place.", V.big('72,000'))]),
+
+      SC('The big idea', 'Place value', [
+        st("Here is the big idea. Place value means that the value of a digit depends on its place in the number.", V.rule('The value of a digit depends on its place in the number.')),
+        st("Look at the digit 3. On its own, it is worth three. Move it one place to the left, and it is worth thirty.", V.cards(['3', '30'], ['b', 'g'])),
+        st("Move it again and it is worth three hundred. Once more, and it is worth three thousand. Same digit, different place, different value.",
+          V.cards(['300', '3,000'], ['r', 'y']) + V.note('Same digit. Different place. Different value.'))]),
+
+      SC('Why do places go up in tens?', 'Bundling in groups of ten', [
+        st("Why are the places worth ten, a hundred, a thousand? Imagine counting sticks. When you have ten single sticks, you tie them into one bundle. Ten ones make one ten.",
+          V.sticks(10, 'var(--accent)', true) + V.eq('10 ones = 1 ten', 'b')),
+        st("When you have ten bundles of ten, you tie them into a bigger bundle. Ten tens make one hundred.", V.eq('10 tens = 1 hundred', 'g')),
+        st("And ten hundreds make one thousand. Every time we collect ten of something, we move up to the next place. So each place is worth ten times the place on its right.",
+          V.eq('10 hundreds = 1 thousand', 'r') + V.cols([V.card('1,000', 'y', true), V.card('100', 'r', true), V.card('10', 'g', true), V.card('1', 'b', true)]))]),
+
+      SC('The place value chart', '4,372 people watch a football match', [
+        st("Here is the crowd at a football match: four thousand, three hundred and seventy-two people. A place value chart puts each digit in its own column.",
+          chart(['4', '3', '7', '2'], H4, ['y', 'r', 'g', 'b']) + V.note('Th = thousands · H = hundreds · T = tens · O = ones')),
+        st("The 4 is in the thousands column, so it is worth four thousand. The 3 is in the hundreds column, so it is worth three hundred.",
+          V.cols([V.eq('4,000', 'b'), V.eq('300', 'g'), '', ''])),
+        st("The 7 is in the tens column, so it is worth seventy. The 2 is in the ones column, so it is worth just two.",
+          V.cols(['', '', V.eq('70', 'r'), V.eq('2', 'b')])),
+        st("Add the values together and you get the whole number back. Four thousand, plus three hundred, plus seventy, plus two.", V.eq('4,000 + 300 + 70 + 2 = 4,372', 'g'))]),
+
+      SC('Reading and writing numbers', 'Use the comma to help you', [
+        st("To read a big number, look for the comma. Everything before the comma is thousands.", V.big('4' + hot(',') + '372')),
+        st("So we read the thousands first, then the rest: four thousand, three hundred and seventy-two.", V.eq('four thousand, three hundred and seventy-two', 'b')),
+        st("It works the other way too. To write twenty-six thousand and eighty, write the thousands, a comma, then the hundreds, tens and ones. There are no hundreds and no ones, so we write zeros.",
+          V.eq('twenty-six thousand and eighty', 'g') + V.big('26,080'))]),
+
+      SC('Even bigger numbers', 'A stadium holds 25,604 people', [
+        st("Numbers can be even bigger. This stadium holds twenty-five thousand, six hundred and four people. We need a new column on the left: ten thousands.",
+          chart(['2', '5', '6', '0', '4'], H5, ['b', 'y', 'r', 'g', 'b']) + V.note('TTh = ten thousands')),
+        st("The 2 is in the ten thousands column, so it is worth twenty thousand. The 5 is in the thousands column, so it is worth five thousand.",
+          V.cols([val('20,000', 'b'), val('5,000', 'g'), '', '', ''], 5)),
+        st("The 6 is worth six hundred. There is a zero in the tens column, so there are no tens at all. And the 4 is worth four.",
+          V.cols(['', '', val('600', 'r'), val('0', 'r'), val('4', 'b')], 5)),
+        st("Altogether: twenty thousand, plus five thousand, plus six hundred, plus four.", V.eq('20,000 + 5,000 + 600 + 4 = 25,604', 'g'))]),
+
+      SC('Zero holds the place', 'Is 4,050 the same as 45?', [
+        st("Zero is very important. In four thousand and fifty, the zeros tell us there are no hundreds and no ones. They keep the 4 and the 5 in the right columns.",
+          V.tbl([['4', '0', '5', '0']], H4) + V.eq('4,050', 'b')),
+        st("Take the zeros away and the digits slide to the right. Now we have forty-five, a much smaller number!",
+          V.tbl([['', '', '4', '5']], H4) + V.eq('45', 'r')),
+        st("Put one zero in the middle and we get four hundred and five. Where the zero goes changes the number.",
+          V.tbl([['', '4', '0', '5']], H4) + V.eq('405', 'g') + V.rule('Zero holds an empty place.'))]),
+
+      SC('Multiplying and dividing by 10', 'Every digit moves one place', [
+        st("Place value also explains what happens when we multiply by ten. Every digit moves one place to the left, and a zero fills the empty ones column.",
+          V.tbl([['', '', '3', '6'], ['', '3', '6', '0']], H4) + V.eq('36 × 10 = 360', 'b')),
+        st("Multiply by ten again, and the digits move one more place to the left. Three hundred and sixty becomes three thousand, six hundred.", V.eq('360 × 10 = 3,600', 'g')),
+        st("Dividing by ten does the opposite. Every digit moves one place to the right.", V.eq('3,600 ÷ 10 = 360', 'r') + V.note('× 10 moves digits left. ÷ 10 moves digits right.'))]),
+
+      SC('Which number is bigger?', '4,372 or 4,327?', [
+        st("Place value helps us compare numbers. Line them up in a place value chart, then compare digit by digit, starting from the left.",
+          V.tbl([['4', '3', '7', '2'], ['4', '3', '2', '7']], H4)),
+        st("Thousands: both have 4. Hundreds: both have 3. Tens: one has 7 and the other has 2. Seven tens is more than two tens, so we can stop here.", V.eq('7 tens is more than 2 tens', 'g')),
+        st("So four thousand, three hundred and seventy-two is the bigger number. We use this sign to show it.", V.eq('4,372 > 4,327', 'b') + V.note('The wide end of > faces the bigger number.'))]),
+
+      SC('Putting numbers in order', 'Smallest to biggest', [
+        st("Let's put these four numbers in order, from smallest to biggest. They all have 3 thousands, so we look at the hundreds next.",
+          V.cards(['3,509', '3,095', '3,950', '3,590'], ['b', 'g', 'r', 'y'], true)),
+        st("3,095 has no hundreds, so it is the smallest. 3,509 and 3,590 both have 5 hundreds, so we compare their tens. Zero tens is less than nine tens.",
+          V.eq('3,095 → 3,509 → 3,590', 'g')),
+        st("3,950 has 9 hundreds, so it is the biggest of all.", V.eq('3,095 < 3,509 < 3,590 < 3,950', 'b'))]),
+
+      SC('Your turn', 'Pause, think, then listen', [
+        st("Your turn! What is the 6 worth in sixteen thousand, four hundred and fifty-two? Pause the lesson and think.", V.big('1' + hot('6') + ',452')),
+        st("The 6 is in the thousands column, so it is worth six thousand.", V.eq('The 6 is worth 6,000', 'g')),
+        st("One more. Write thirty thousand, plus four hundred, plus five, as one number. Think about the empty places.", V.eq('30,000 + 400 + 5 = ?')),
+        st("There are no thousands and no tens, so we put zeros there to hold the places. The answer is thirty thousand, four hundred and five.",
+          V.tbl([['3', '0', '4', '0', '5']], H5) + V.eq('30,405', 'g'))]),
+
+      SC('Let’s recap', 'What is place value?', [
+        st("Brilliant work! Let's remember what we learned. The place of a digit decides its value. Each place is worth ten times the place on its right. Zero holds an empty place. To compare numbers, start from the biggest place on the left. And when you multiply by ten, the digits move one place to the left.",
+          V.list(['The place of a digit decides its value', 'Each place is 10 times the place on its right', 'Zero holds an empty place', 'Compare numbers from the left', '× 10 moves digits left, ÷ 10 moves them right']))])
+    ]
+  };
+
+  var LK = BT.lk, NL = BT.NL;
+
+  /* ---------- What are negative numbers? ---------- */
+  var negative = {
+    title: 'What are negative numbers?', goal: 'what negative numbers are, where we use them, and how to order them.',
+    scenes: [
+      SC('What are negative numbers?', 'Numbers below zero', [
+        st("Can a number be smaller than zero? Yes! Numbers smaller than zero are called negative numbers.", V.rule('A negative number is a number less than zero.')),
+        st("We write a negative number with a minus sign in front of it. This is negative five. We say it as negative five, or minus five.", V.big('−5') + V.note('We say: negative five')),
+        st("Numbers bigger than zero, like 3 or 10, are called positive numbers. Zero itself is neither positive nor negative.", V.cards(['−3', '0', '+3'], ['r', 'y', 'g']))]),
+
+      SC('Where do we see them?', 'Negative numbers in real life', [
+        st("We see negative numbers on a thermometer. On a freezing winter night in Scotland, the temperature can drop below zero degrees, to negative three degrees.", V.cards(['5°C', '0°C', '−3°C'], ['g', 'y', 'r']) + V.note('Below zero means very cold')),
+        st("Lifts use them too. The ground floor is zero. The car park under the building is floor negative one, and the floor under that is negative two.", V.cards(['2', '1', '0', '−1', '−2'], ['g', 'g', 'y', 'r', 'r'], true)),
+        st("And in a bank account, if you spend more money than you have, your balance can go below zero.")]),
+
+      SC('The number line', 'Zero is in the middle', [
+        st("A number line helps us see negative numbers. Zero sits in the middle.", NL(-6, 6, { lab: 1, marks: [[0, 50]] })),
+        st("Positive numbers go to the right of zero. Negative numbers go to the left of zero.", V.row(LK.tag('← negative', 'r') + LK.tag('positive →', 'g'))),
+        st("The further left you go, the smaller the number. So negative five is smaller than negative one, even though five looks like a bigger digit.", NL(-6, 6, { lab: 1, marks: [[-5, 0], [-1, 215]] }) + V.eq('−5 < −1', 'b'))]),
+
+      SC('Which is colder?', '−2°C or −6°C?', [
+        st("One town is negative two degrees. Another town is negative six degrees. Which town is colder?", V.cards(['−2°C', '−6°C'], ['b', 'r'])),
+        st("Put them on the number line. Negative six is further to the left, so it is smaller. Negative six degrees is colder.", NL(-8, 2, { lab: 1, marks: [[-6, 0], [-2, 215]] }) + V.eq('−6 < −2', 'r')),
+        st("Be careful! With negative numbers, the bigger the digit after the minus sign, the smaller the number.", V.rule('−10 is smaller than −1'))]),
+
+      SC('Putting numbers in order', 'Smallest to biggest', [
+        st("Let's put these numbers in order, from smallest to biggest: four, negative three, zero, negative seven and two.", V.cards(['4', '−3', '0', '−7', '2'], ['g', 'r', 'y', 'r', 'g'], true)),
+        st("Mark them on a number line. Then read them from left to right.", NL(-8, 5, { lab: 1, marks: [[-7, 0], [-3, 20], [0, 50], [2, 140], [4, 215]] })),
+        st("So the order is negative seven, negative three, zero, two, four.", V.eq('−7, −3, 0, 2, 4', 'g'))]),
+
+      SC('Counting across zero', 'When the temperature falls', [
+        st("In the afternoon it is three degrees. By night, the temperature falls by five degrees. What is the temperature at night?", V.eq('3°C, then 5 degrees colder')),
+        st("Count back five steps on the number line: two, one, zero, negative one, negative two.", NL(-4, 4, { lab: 1, jumps: [[3, -2, '− 5']], marks: [[3, 215], [-2, 0]] })),
+        st("So the night-time temperature is negative two degrees.", V.eq('3 − 5 = −2', 'b')),
+        st("It works going up too. It is negative four degrees in the morning, and it warms up by six degrees. Count on six steps: negative three, negative two, negative one, zero, one, two. It is now two degrees.",
+          NL(-5, 3, { lab: 1, jumps: [[-4, 2, '+ 6']], marks: [[-4, 0], [2, 140]] }) + V.eq('−4 + 6 = 2', 'g'))]),
+
+      SC('The difference across zero', 'From −3°C to 4°C', [
+        st("How many degrees warmer is four degrees than negative three degrees? Count the steps between them.", NL(-4, 5, { lab: 1, marks: [[-3, 0], [4, 215]] })),
+        st("From negative three up to zero is three steps. From zero up to four is four more steps.", NL(-4, 5, { lab: 1, jumps: [[-3, 0, '3'], [0, 4, '4']] })),
+        st("Three plus four is seven. So it is seven degrees warmer.", V.eq('3 + 4 = 7 degrees', 'g'))]),
+
+      SC('Your turn', 'Pause, think, then listen', [
+        st("Your turn! Which is warmer: negative eight degrees, or negative five degrees? Pause and think.", V.cards(['−8°C', '−5°C'], ['b', 'r'])),
+        st("Negative five is further right on the number line, so it is bigger. Negative five degrees is warmer.", V.eq('−5 > −8', 'g')),
+        st("One more. The temperature is negative one degree, and it falls by three more degrees. What is it now?", V.eq('−1, then 3 degrees colder')),
+        st("Count back three: negative two, negative three, negative four. It is now negative four degrees.", NL(-6, 2, { lab: 1, jumps: [[-1, -4, '− 3']] }) + V.eq('−1 − 3 = −4', 'g'))]),
+
+      SC('Let’s recap', 'What are negative numbers?', [
+        st("Great work! Negative numbers are less than zero, and we write them with a minus sign. We use them for cold temperatures, floors below ground, and money owed. On a number line, negatives are to the left of zero, and the further left, the smaller the number. When you count across zero, count every step.",
+          V.list(['Negative numbers are less than zero', 'They have a minus sign: −5', 'Further left on the number line = smaller', '−6 is colder than −2', 'Count every step across zero']))])
+    ]
+  };
+
+  /* ---------- How do you partition a number? ---------- */
+  var partition = {
+    title: 'How do you partition a number?', goal: 'how to split a number into parts, by place value and in other useful ways.',
+    scenes: [
+      SC('How do you partition a number?', 'Splitting numbers into parts', [
+        st("To partition a number means to split it into smaller parts. When you put the parts back together, you get the same number.", V.rule('Partition = split a number into parts that add up to the number.')),
+        st("Think of a pizza cut into slices. The slices are the parts, and together they make the whole pizza. Numbers can be split in the same way.")]),
+
+      SC('Partitioning by place value', '365', [
+        st("The most common way is to partition by place value. Here is three hundred and sixty-five in a place value chart.", chart(['3', '6', '5'], ['H', 'T', 'O'], ['r', 'g', 'b'])),
+        st("The 3 is worth three hundred. The 6 is worth sixty. The 5 is worth five.", V.cards(['300', '60', '5'], ['r', 'g', 'b'])),
+        st("So three hundred and sixty-five partitions into three hundred, plus sixty, plus five.", V.eq('365 = 300 + 60 + 5', 'g'))]),
+
+      SC('Bigger numbers', '7,284', [
+        st("It works for bigger numbers too. Seven thousand, two hundred and eighty-four.", chart(['7', '2', '8', '4'], H4, ['y', 'r', 'g', 'b'])),
+        st("Seven thousand, plus two hundred, plus eighty, plus four.", V.eq('7,284 = 7,000 + 200 + 80 + 4', 'g')),
+        st("We call this writing the number in expanded form, because we stretch it out into its parts.", V.note('Expanded form shows the value of every digit.'))]),
+
+      SC('When there is a zero', '5,036', [
+        st("What about five thousand and thirty-six? There is a zero in the hundreds column.", chart(['5', '0', '3', '6'], H4, ['y', 'r', 'g', 'b'])),
+        st("A zero means there are no hundreds, so we leave that part out.", V.eq('5,036 = 5,000 + 30 + 6', 'g')),
+        st("Be careful not to write the zero as a part. Five thousand, plus zero, plus thirty, plus six is still right, but we usually skip the zero.", V.note('No hundreds, so no hundreds part'))]),
+
+      SC('Other ways to partition', 'The same number, split differently', [
+        st("Partitioning by place value is not the only way. Here is forty-six as four tens and six ones.", V.eq('46 = 40 + 6', 'b')),
+        st("We could swap one ten for ten ones. Then forty-six is three tens and sixteen ones.", V.eq('46 = 30 + 16', 'g')),
+        st("Or twenty plus twenty-six. All of these are correct, because each pair adds up to forty-six.", V.eq('46 = 20 + 26', 'r') + V.note('Every way is right if the parts add up to the number.')),
+        st("This is called flexible partitioning. It is very useful when you subtract, because sometimes you need more ones.", V.rule('Flexible partitioning: move a ten into the ones.'))]),
+
+      SC('Why partition?', 'It makes adding easier', [
+        st("Partitioning makes adding in your head easier. Let's add forty-six and thirty-eight.", V.eq('46 + 38 = ?')),
+        st("Partition both numbers. Add the tens: forty plus thirty is seventy. Add the ones: six plus eight is fourteen.", V.eq('40 + 30 = 70', 'b') + V.eq('6 + 8 = 14', 'g')),
+        st("Then put the parts back together. Seventy plus fourteen is eighty-four.", V.eq('70 + 14 = 84', 'r'))]),
+
+      SC('Your turn', 'Pause, think, then listen', [
+        st("Your turn! Partition four thousand, seven hundred and nine. Pause and think about the zero.", V.big('4,709')),
+        st("Four thousand, plus seven hundred, plus nine. There are no tens.", V.eq('4,709 = 4,000 + 700 + 9', 'g')),
+        st("One more. What is the missing part? Six thousand, plus something, plus fifty, plus two, equals six thousand, three hundred and fifty-two.", V.eq('6,000 + ? + 50 + 2 = 6,352')),
+        st("The 3 is in the hundreds column, so the missing part is three hundred.", V.eq('? = 300', 'g'))]),
+
+      SC('Let’s recap', 'How do you partition a number?', [
+        st("Well done! Partitioning means splitting a number into parts that add up to the number. The usual way is by place value, like seven thousand, plus two hundred, plus eighty, plus four. Leave out parts for zeros. You can also partition flexibly, like thirty plus sixteen. And partitioning helps you add in your head.",
+          V.list(['Partition = split into parts', 'By place value: 365 = 300 + 60 + 5', 'A zero means that part is missing', 'Flexible: 46 = 30 + 16', 'It helps with adding in your head']))])
+    ]
+  };
+
+  /* ---------- How do you round numbers? ---------- */
+  var rounding = {
+    title: 'How do you round numbers?', goal: 'how to round to the nearest 10, 100 and 1,000.',
+    scenes: [
+      SC('How do you round numbers?', 'Why we round', [
+        st("Rounding means changing a number to a nearby number that is easier to use. Rounded numbers usually end in zeros.", V.rule('Rounding: change a number to a nearby, simpler number.')),
+        st("A newspaper says that about four thousand people watched a football match. The real number was four thousand, three hundred and seventy-two. The newspaper rounded it.", V.eq('4,372 ≈ 4,000', 'b') + V.note('≈ means approximately equal to')),
+        st("We round when we don't need the exact number: to estimate, to check an answer, or to make a number easier to remember.")]),
+
+      SC('Rounding to the nearest 10', 'Round 47', [
+        st("Let's round forty-seven to the nearest ten. Forty-seven is between two tens: forty and fifty.", NL(40, 50, { lab: 10, marks: [[47, 0]] })),
+        st("Which ten is it closer to? Forty-seven is three steps from fifty, but seven steps from forty.", NL(40, 50, { lab: 5, jumps: [[47, 50, '3']], marks: [[47, 0]] })),
+        st("It is closer to fifty, so forty-seven rounded to the nearest ten is fifty.", V.eq('47 → 50', 'g'))]),
+
+      SC('The halfway rule', 'Look at the digit next door', [
+        st("What if a number is exactly halfway, like forty-five? The rule is: if it is halfway or more, we round up.", NL(40, 50, { lab: 5, marks: [[45, 0]] }) + V.eq('45 → 50', 'g')),
+        st("Here is a quick way. To round to the nearest ten, look at the ones digit. If it is 5, 6, 7, 8 or 9, round up. If it is 0, 1, 2, 3 or 4, round down.",
+          V.row(LK.tag('5, 6, 7, 8, 9 → round up', 'g') + LK.tag('0, 1, 2, 3, 4 → round down', 'r'))),
+        st("So eighty-three rounds down to eighty, because the ones digit is three.", V.eq('83 → 80', 'r'))]),
+
+      SC('More rounding to the nearest 10', 'Bigger numbers', [
+        st("For bigger numbers, we still look at the ones digit. Two thousand, three hundred and sixty-four. The ones digit is four, so we round down.", V.eq('2,364 → 2,360', 'r')),
+        st("One hundred and ninety-six. The ones digit is six, so we round up. Ninety goes up to one hundred, so the answer is two hundred.", NL(190, 200, { lab: 10, marks: [[196, 0]] }) + V.eq('196 → 200', 'g'))]),
+
+      SC('Rounding to the nearest 100', 'Round 4,372', [
+        st("Now let's round four thousand, three hundred and seventy-two to the nearest hundred. It is between four thousand three hundred, and four thousand four hundred.", NL(4300, 4400, { lab: 100, tick: 10, marks: [[4372, 0]] })),
+        st("To round to the nearest hundred, look at the tens digit. The tens digit is seven, which is five or more, so we round up.", V.big('4,3' + hot('7') + '2')),
+        st("So four thousand, three hundred and seventy-two rounds up to four thousand, four hundred.", V.eq('4,372 → 4,400', 'g'))]),
+
+      SC('Rounding to the nearest 1,000', 'Round 4,372 again', [
+        st("To round to the nearest thousand, look at the hundreds digit. In four thousand, three hundred and seventy-two, the hundreds digit is three.", V.big('4,' + hot('3') + '72')),
+        st("Three is less than five, so we round down to four thousand.", NL(4000, 5000, { lab: 1000, tick: 100, marks: [[4372, 0]] }) + V.eq('4,372 → 4,000', 'r'))]),
+
+      SC('One number, three answers', 'It depends what you round to', [
+        st("So the same number can round in different ways. It depends whether you round to the nearest ten, hundred or thousand.",
+          V.tbl([['nearest 10', '4,370'], ['nearest 100', '4,400'], ['nearest 1,000', '4,000']], ['Round 4,372 to the…', 'Answer'])),
+        st("Always look at the digit just to the right of the place you are rounding to. That digit decides up or down.", V.rule('Look at the digit to the right. 5 or more: round up.'))]),
+
+      SC('Your turn', 'Pause, think, then listen', [
+        st("Your turn! Round six thousand, eight hundred and fifty to the nearest hundred. Pause and think.", V.big('6,850')),
+        st("Look at the tens digit. It is five, so we round up. Six thousand, eight hundred, goes up to six thousand, nine hundred.", V.eq('6,850 → 6,900', 'g')),
+        st("Now round it to the nearest thousand.", V.big('6,850')),
+        st("Look at the hundreds digit. It is eight, so we round up to seven thousand.", V.eq('6,850 → 7,000', 'g'))]),
+
+      SC('Let’s recap', 'How do you round numbers?', [
+        st("Fantastic! Rounding changes a number to a nearby, simpler number. To round, find the two numbers it sits between, then look at the digit to the right of the place you are rounding to. Five or more, round up. Four or less, round down.",
+          V.list(['Rounding makes numbers simpler', 'Nearest 10: look at the ones digit', 'Nearest 100: look at the tens digit', 'Nearest 1,000: look at the hundreds digit', '5 or more rounds up, 4 or less rounds down']))])
+    ]
+  };
+
+  BT.lessons(501, 'Watch lesson', [placeValue, negative, partition, rounding]);
+})();
+</script>
+<script>
+/* lessons_502.js: new Watch lessons for P5 Topic 2, The four operations. One detailed lesson per question. */
+(function () {
+  'use strict';
+  var BT = window.BT; if (!BT || !BT.story || !BT.lk) return;
+  var V = BT.sv, LK = BT.lk, NL = BT.NL;
+  var SC = function (h, sub, steps) { return { h: h, sub: sub, steps: steps }; };
+  var st = function (say, html) { return { say: say, html: html || '' }; };
+  var HTO = ['', 'H', 'T', 'O'], THTO = ['', 'Th', 'H', 'T', 'O'];
+  var L = { line: true };
+  var C = function (a) { return { carry: a }; };
+  var SW = '<!--swap-->';
+
+  /* ---------- What is column addition? ---------- */
+  var colAdd = {
+    title: 'What is column addition?', goal: 'how to add big numbers by lining up the digits in columns.',
+    scenes: [
+      SC('What is column addition?', 'A written way to add big numbers', [
+        st("Column addition is a written way to add bigger numbers. We line up the digits in place value columns, then add one column at a time.", V.rule('Line up the digits. Add one column at a time, starting with the ones.')),
+        st("It is very useful when the numbers are too big to add in your head.")]),
+      SC('Line up the digits', 'A school collects 346 cans, then 275 more', [
+        st("A school collects three hundred and forty-six cans, then two hundred and seventy-five more. How many altogether? Write the numbers one under the other, ones under ones, tens under tens and hundreds under hundreds.",
+          LK.col(HTO, [['', 3, 4, 6], ['+', 2, 7, 5], L])),
+        st("We always start with the ones column, on the right.", V.note('Start on the right, with the ones'))]),
+      SC('Step 1: the ones', '6 + 5', [
+        st("Six plus five is eleven. Eleven is one ten and one one. We write the 1 in the ones column, and carry the ten over to the tens column.",
+          LK.col(HTO, [['', 3, 4, 6], ['+', 2, 7, 5], L, ['', '', '', 'h:1'], C(['', '', '1', ''])]) + LK.step('6 + 5 = 11: write 1, carry 1 ten'))]),
+      SC('Step 2: the tens', '4 + 7 + the carried 1', [
+        st("Now the tens. Four tens plus seven tens is eleven tens. Add the one we carried, and we have twelve tens. Twelve tens is one hundred and two tens. Write the 2 and carry the 1 to the hundreds.",
+          LK.col(HTO, [['', 3, 4, 6], ['+', 2, 7, 5], L, ['', '', 'h:2', 1], C(['', '1', '1', ''])]) + LK.step('4 + 7 + 1 = 12: write 2, carry 1 hundred'))]),
+      SC('Step 3: the hundreds', '3 + 2 + the carried 1', [
+        st("Last, the hundreds. Three plus two is five, plus the one we carried makes six.",
+          LK.col(HTO, [['', 3, 4, 6], ['+', 2, 7, 5], L, ['', 'h:6', 2, 1], C(['', '1', '1', ''])]) + LK.step('3 + 2 + 1 = 6')),
+        st("So the school collected six hundred and twenty-one cans.", V.eq('346 + 275 = 621', 'g'))]),
+      SC('Check with an estimate', 'Is 621 sensible?', [
+        st("Always check that your answer makes sense. Round the numbers: three hundred and fifty plus two hundred and eighty is about six hundred and thirty.", V.eq('350 + 280 = 630', 'b')),
+        st("Six hundred and twenty-one is close to six hundred and thirty, so our answer is sensible.", V.eq('621 ≈ 630 ✓', 'g'))]),
+      SC('Bigger numbers', '4,687 + 2,546', [
+        st("Column addition works for thousands too. Let's add four thousand, six hundred and eighty-seven and two thousand, five hundred and forty-six.", LK.col(THTO, [['', 4, 6, 8, 7], ['+', 2, 5, 4, 6], L])),
+        st("Ones: seven plus six is thirteen. Write 3, carry 1. Tens: eight plus four plus one is thirteen. Write 3, carry 1. Hundreds: six plus five plus one is twelve. Write 2, carry 1. Thousands: four plus two plus one is seven.",
+          SW + LK.col(THTO, [['', 4, 6, 8, 7], ['+', 2, 5, 4, 6], L, ['', 'h:7', 'h:2', 'h:3', 'h:3'], C(['', '1', '1', '1', ''])])),
+        st("So the answer is seven thousand, two hundred and thirty-three.", V.eq('4,687 + 2,546 = 7,233', 'g'))]),
+      SC('Watch out!', 'Line up the ones', [
+        st("A common mistake is lining up the numbers on the left. Three hundred and fifty-two plus forty-one written like this gives the wrong answer.",
+          LK.col(HTO, [['', 3, 5, 2], ['+', 'x:4', 'x:1', ''], L]) + V.eq('✗ wrong', 'r')),
+        st("Always line up the ones on the right. Then the answer is three hundred and ninety-three.", LK.col(HTO, [['', 3, 5, 2], ['+', '', 4, 1], L, ['', 3, 9, 3]]) + V.eq('352 + 41 = 393 ✓', 'g'))]),
+      SC('Your turn', 'Pause, think, then listen', [
+        st("Your turn! Work out five hundred and sixty-eight plus two hundred and fifty-seven. Pause and try it.", LK.col(HTO, [['', 5, 6, 8], ['+', 2, 5, 7], L])),
+        st("Ones: eight plus seven is fifteen. Write 5, carry 1. Tens: six plus five plus one is twelve. Write 2, carry 1. Hundreds: five plus two plus one is eight. The answer is eight hundred and twenty-five.",
+          SW + LK.col(HTO, [['', 5, 6, 8], ['+', 2, 5, 7], L, ['', 'k:8', 'k:2', 'k:5'], C(['', '1', '1', ''])]) + V.eq('568 + 257 = 825', 'g'))]),
+      SC('Let’s recap', 'What is column addition?', [
+        st("Great work! In column addition, line up the digits by place value, ones under ones. Start with the ones and work left. If a column adds up to ten or more, write the ones digit and carry the ten to the next column. Check with an estimate.",
+          V.list(['Line up ones under ones', 'Start with the ones column', '10 or more? Write the ones, carry the ten', 'Add the carried digit in the next column', 'Check with an estimate']))])
+    ]
+  };
+
+  /* ---------- How do you use column subtraction? ---------- */
+  var colSub = {
+    title: 'How do you use column subtraction?', goal: 'how to subtract in columns, and how to exchange when the top digit is too small.',
+    scenes: [
+      SC('What is column subtraction?', 'Taking away in columns', [
+        st("Column subtraction is a written way to take away. Like column addition, we line up the digits and start with the ones. We always put the bigger number on top.", V.rule('Bigger number on top. Line up the digits. Start with the ones.'))]),
+      SC('An easy one first', '586 − 243', [
+        st("Five hundred and eighty-six take away two hundred and forty-three. Ones: six take away three is three. Tens: eight take away four is four. Hundreds: five take away two is three.",
+          LK.col(HTO, [['', 5, 8, 6], ['−', 2, 4, 3], L, ['', 'k:3', 'k:4', 'k:3']])),
+        st("So the answer is three hundred and forty-three.", V.eq('586 − 243 = 343', 'g'))]),
+      SC('When the top digit is too small', '63 − 28', [
+        st("Now sixty-three take away twenty-eight. In the ones, we need three take away eight. We can't take eight from three!", LK.col(['', 'T', 'O'], [['', 6, 3], ['−', 2, 8], L]) + V.eq('3 − 8 ✗', 'r')),
+        st("So we exchange. We take one ten from the tens column and change it into ten ones. Now there are five tens, and the three ones become thirteen ones.",
+          SW + LK.col(['', 'T', 'O'], [C(['', '5', '13']), ['', 'x:6', 'x:3'], ['−', 2, 8], L]) + V.note('1 ten = 10 ones')),
+        st("Thirteen take away eight is five. Five tens take away two tens is three tens. The answer is thirty-five.",
+          SW + LK.col(['', 'T', 'O'], [C(['', '5', '13']), ['', 'x:6', 'x:3'], ['−', 2, 8], L, ['', 'k:3', 'k:5']]) + V.eq('63 − 28 = 35', 'g'))]),
+      SC('Exchanging twice', '524 − 168', [
+        st("Five hundred and twenty-four take away one hundred and sixty-eight.", LK.col(HTO, [['', 5, 2, 4], ['−', 1, 6, 8], L])),
+        st("Ones: four take away eight won't work, so exchange a ten. Two tens become one ten, and four ones become fourteen. Fourteen take away eight is six.",
+          SW + LK.col(HTO, [C(['', '', '1', '14']), ['', 5, 'x:2', 'x:4'], ['−', 1, 6, 8], L, ['', '', '', 'h:6']])),
+        st("Tens: one take away six won't work, so exchange a hundred. Five hundreds become four, and one ten becomes eleven tens. Eleven take away six is five.",
+          SW + LK.col(HTO, [C(['', '4', '11', '14']), ['', 'x:5', 'x:2', 'x:4'], ['−', 1, 6, 8], L, ['', '', 'h:5', 6]])),
+        st("Hundreds: four take away one is three. The answer is three hundred and fifty-six.",
+          SW + LK.col(HTO, [C(['', '4', '11', '14']), ['', 'x:5', 'x:2', 'x:4'], ['−', 1, 6, 8], L, ['', 'k:3', 'k:5', 'k:6']]) + V.eq('524 − 168 = 356', 'g'))]),
+      SC('Exchanging across a zero', '503 − 147', [
+        st("What if there is a zero? Five hundred and three take away one hundred and forty-seven. We need more ones, but there are no tens to exchange.", LK.col(HTO, [['', 5, 0, 3], ['−', 1, 4, 7], L])),
+        st("So first we exchange a hundred into ten tens. Five hundreds become four, and zero tens become ten tens.",
+          SW + LK.col(HTO, [C(['', '4', '10', '']), ['', 'x:5', 'x:0', 3], ['−', 1, 4, 7], L])),
+        st("Now exchange one of those tens into ten ones. Ten tens become nine tens, and three ones become thirteen ones.",
+          SW + LK.col(HTO, [C(['', '4', '9', '13']), ['', 'x:5', 'x:0', 'x:3'], ['−', 1, 4, 7], L])),
+        st("Thirteen take away seven is six. Nine take away four is five. Four take away one is three. The answer is three hundred and fifty-six.",
+          SW + LK.col(HTO, [C(['', '4', '9', '13']), ['', 'x:5', 'x:0', 'x:3'], ['−', 1, 4, 7], L, ['', 'k:3', 'k:5', 'k:6']]) + V.eq('503 − 147 = 356', 'g'))]),
+      SC('Check by adding', 'Adding undoes subtracting', [
+        st("We can check a subtraction by adding. Add the answer to the number we took away. We should get back to the number we started with.", V.eq('356 + 147 = 503 ✓', 'g')),
+        st("It matches, so our subtraction is right.", V.rule('Check: answer + number taken away = starting number'))]),
+      SC('Your turn', 'Pause, think, then listen', [
+        st("Your turn! Work out seven hundred and thirty-one take away two hundred and eighty-five. Pause and try it.", LK.col(HTO, [['', 7, 3, 1], ['−', 2, 8, 5], L])),
+        st("Ones: one take away five, so exchange. Eleven take away five is six. Tens: two take away eight, so exchange. Twelve take away eight is four. Hundreds: six take away two is four. The answer is four hundred and forty-six.",
+          SW + LK.col(HTO, [C(['', '6', '12', '11']), ['', 'x:7', 'x:3', 'x:1'], ['−', 2, 8, 5], L, ['', 'k:4', 'k:4', 'k:6']]) + V.eq('731 − 285 = 446', 'g'))]),
+      SC('Let’s recap', 'How do you use column subtraction?', [
+        st("Well done! Put the bigger number on top and line up the digits. Start with the ones. If the top digit is too small, exchange one from the next column. If that column is zero, exchange from further along. Check by adding.",
+          V.list(['Bigger number on top', 'Start with the ones', 'Top digit too small? Exchange', 'Zero next door? Exchange from further left', 'Check by adding back']))])
+    ]
+  };
+
+  /* ---------- How do you add and subtract in your head? ---------- */
+  var mental = {
+    title: 'How do you add and subtract in your head?', goal: 'clever ways to add and subtract without writing a sum.',
+    scenes: [
+      SC('Adding and subtracting in your head', 'Mental maths tricks', [
+        st("You don't always need paper. Mental maths means working it out in your head, using clever tricks. Let's learn five of them.", V.cards(['bonds', 'tens', 'adjust', 'doubles', 'count on'], ['b', 'g', 'r', 'y', 'b'], true))]),
+      SC('Trick 1: number bonds', 'Pairs that make 10 and 100', [
+        st("Number bonds are pairs of numbers that make ten. Seven and three. Six and four. Knowing them makes adding fast.", V.cards(['7 + 3', '6 + 4', '8 + 2'], ['b', 'g', 'r'], true) + V.eq('= 10', 'g')),
+        st("They help with a hundred too. Sixty-four and thirty-six make one hundred, because four plus six makes ten, and sixty plus thirty plus that ten makes one hundred.", V.eq('64 + 36 = 100', 'b'))]),
+      SC('Trick 2: add the tens and hundreds', 'Only one column changes', [
+        st("Adding a whole number of hundreds only changes the hundreds digit. Three hundred and forty plus two hundred is five hundred and forty.", V.eq('340 + 200 = 540', 'b')),
+        st("Adding tens only changes the tens digit. Three hundred and forty plus fifty is three hundred and ninety.", V.eq('340 + 50 = 390', 'g'))]),
+      SC('Trick 3: round and adjust', 'Use a friendly number, then fix it', [
+        st("Adding nine is tricky, but adding ten is easy. So to add nine, add ten, then take one away. Forty-six plus nine: forty-six plus ten is fifty-six, take away one is fifty-five.", V.eq('46 + 9 = 46 + 10 − 1 = 55', 'b')),
+        st("It works for subtracting too. Seventy-three take away nineteen: take away twenty to get fifty-three, then add one back, because we took away one too many.", V.eq('73 − 19 = 73 − 20 + 1 = 54', 'g')),
+        st("This is called compensating: round to a friendly number, then adjust.", V.rule('Round, then adjust.'))]),
+      SC('Trick 4: near doubles', 'Use doubles you know', [
+        st("If two numbers are next to each other, use a double. Twenty-five plus twenty-six is double twenty-five, which is fifty, plus one more.", V.eq('25 + 26 = 25 + 25 + 1 = 51', 'b')),
+        st("Forty plus thirty-nine is double forty, which is eighty, take away one.", V.eq('40 + 39 = 80 − 1 = 79', 'g'))]),
+      SC('Trick 5: count on to subtract', 'Find the difference', [
+        st("When two numbers are close together, count up from the smaller one. One hundred and two take away ninety-seven.", V.eq('102 − 97 = ?')),
+        st("Count up from ninety-seven to one hundred: that is three. Then from one hundred to one hundred and two: that is two more. Three plus two is five.", NL(96, 103, { lab: 1, jumps: [[97, 100, '3'], [100, 102, '2']] }) + V.eq('102 − 97 = 5', 'g'))]),
+      SC('Pick the best trick', 'Look at the numbers first', [
+        st("Before you start, look at the numbers. Ends in nine? Round and adjust. Numbers close together? Near doubles, or count on. Makes ten? Use bonds.",
+          V.tbl([['58 + 29', 'round and adjust'], ['35 + 36', 'near doubles'], ['301 − 296', 'count on'], ['73 + 27', 'number bonds']], ['Sum', 'Best trick']))]),
+      SC('Your turn', 'Pause, think, then listen', [
+        st("Your turn! Fifty-eight plus twenty-nine. Pause and choose a trick.", V.eq('58 + 29 = ?')),
+        st("Twenty-nine is nearly thirty. Fifty-eight plus thirty is eighty-eight, take away one is eighty-seven.", V.eq('58 + 30 − 1 = 87', 'g')),
+        st("One more. Four hundred take away one hundred and sixty-five.", V.eq('400 − 165 = ?')),
+        st("Count on from one hundred and sixty-five: five gets to one seventy, thirty more gets to two hundred, and two hundred more gets to four hundred. Five plus thirty plus two hundred is two hundred and thirty-five.",
+          V.eq('5 + 30 + 200 = 235', 'g'))]),
+      SC('Let’s recap', 'How do you add and subtract in your head?', [
+        st("Brilliant! You now have five mental tricks: number bonds, adding whole tens and hundreds, rounding and adjusting, near doubles, and counting on to find a difference. Always look at the numbers first and pick the easiest trick.",
+          V.list(['Number bonds to 10 and 100', 'Add whole tens and hundreds', 'Round and adjust: +9 is +10 − 1', 'Near doubles: 25 + 26', 'Count on to subtract close numbers']))])
+    ]
+  };
+
+  /* ---------- How can counting on help me add two-digit numbers? ---------- */
+  var countOn = {
+    title: 'How can counting on help me add two-digit numbers?', goal: 'how to add by jumping along a number line in tens and ones.',
+    scenes: [
+      SC('Counting on', 'Adding with jumps', [
+        st("Counting on means starting at one number and jumping forward to add the other number. We jump in tens first, then in ones.", V.rule('Start at the bigger number. Jump the tens, then the ones.'))]),
+      SC('Jump in tens and ones', '34 + 25', [
+        st("Let's add thirty-four and twenty-five. Start at thirty-four. Twenty-five is two tens and five ones.", V.eq('25 = 20 + 5', 'b')),
+        st("Jump ten: forty-four. Jump ten again: fifty-four.", NL(30, 62, { lab: 10, tick: 2, jumps: [[34, 44, '+10'], [44, 54, '+10']], marks: [[34, 215]] })),
+        st("Now jump five ones: fifty-five, fifty-six, fifty-seven, fifty-eight, fifty-nine.", NL(30, 62, { lab: 10, tick: 2, jumps: [[34, 44, '+10'], [44, 54, '+10'], [54, 59, '+5']], marks: [[34, 215], [59, 140]] }) + V.eq('34 + 25 = 59', 'g'))]),
+      SC('Bigger jumps', 'Jump all the tens at once', [
+        st("When you are confident, jump all the tens in one go. Thirty-four plus twenty is fifty-four. Then plus five is fifty-nine.", NL(30, 62, { lab: 10, tick: 2, jumps: [[34, 54, '+20'], [54, 59, '+5']] }) + V.eq('34 + 20 + 5 = 59', 'g'))]),
+      SC('Crossing a ten', '47 + 36', [
+        st("Forty-seven plus thirty-six. Start at forty-seven and jump thirty: seventy-seven.", NL(45, 85, { lab: 10, tick: 5, jumps: [[47, 77, '+30']] })),
+        st("Now we need six more. Jump three to reach eighty, a friendly ten. Then jump three more to eighty-three. This is called bridging through ten.",
+          NL(45, 85, { lab: 10, tick: 5, jumps: [[47, 77, '+30'], [77, 80, '+3'], [80, 83, '+3']] }) + V.eq('47 + 36 = 83', 'g'))]),
+      SC('Start with the bigger number', '8 + 57', [
+        st("Eight plus fifty-seven. Counting on eight from fifty-seven is much quicker than counting on fifty-seven from eight. Adding works in any order, so start with the bigger number.", V.eq('8 + 57 = 57 + 8 = 65', 'g'))]),
+      SC('Counting on to subtract', '72 − 45', [
+        st("Counting on can help with subtraction too. Seventy-two take away forty-five: count on from forty-five up to seventy-two.", V.eq('72 − 45 = ?')),
+        st("Forty-five to fifty is five. Fifty to seventy is twenty. Seventy to seventy-two is two.", NL(40, 75, { lab: 10, tick: 5, jumps: [[45, 50, '5'], [50, 70, '20'], [70, 72, '2']] })),
+        st("Add up the jumps: five plus twenty plus two is twenty-seven.", V.eq('72 − 45 = 27', 'g'))]),
+      SC('Your turn', 'Pause, think, then listen', [
+        st("Your turn! Thirty-eight plus forty-five. Pause and count on.", V.eq('38 + 45 = ?')),
+        st("Start at forty-five, the bigger number. Jump thirty to seventy-five. Then jump eight: five takes us to eighty, three more is eighty-three.",
+          NL(40, 90, { lab: 10, tick: 5, jumps: [[45, 75, '+30'], [75, 80, '+5'], [80, 83, '+3']] }) + V.eq('38 + 45 = 83', 'g'))]),
+      SC('Let’s recap', 'How can counting on help me add?', [
+        st("Great job! To count on, start at the bigger number. Jump the tens, then the ones. Use a friendly ten to bridge. And you can count on to subtract, by finding the jumps between the two numbers.",
+          V.list(['Start at the bigger number', 'Jump the tens, then the ones', 'Bridge through a friendly ten', 'Count on to find a difference']))])
+    ]
+  };
+
+  /* ---------- How can partitioning help me add two-digit numbers? ---------- */
+  var partAdd = {
+    title: 'How can partitioning help me add two-digit numbers?', goal: 'how to add by splitting numbers into tens and ones.',
+    scenes: [
+      SC('Partitioning to add', 'Split, add, recombine', [
+        st("Partitioning means splitting numbers into tens and ones. Then we add the tens, add the ones, and put them back together.", V.rule('Split into tens and ones. Add tens. Add ones. Recombine.'))]),
+      SC('Split both numbers', '43 + 25', [
+        st("Forty-three plus twenty-five. Split forty-three into forty and three. Split twenty-five into twenty and five.", V.eq('43 = 40 + 3', 'b') + V.eq('25 = 20 + 5', 'g')),
+        st("Add the tens: forty plus twenty is sixty. Add the ones: three plus five is eight.", V.eq('40 + 20 = 60', 'b') + V.eq('3 + 5 = 8', 'g')),
+        st("Recombine: sixty plus eight is sixty-eight.", V.eq('43 + 25 = 68', 'r'))]),
+      SC('When the ones make a new ten', '47 + 36', [
+        st("Forty-seven plus thirty-six. Tens: forty plus thirty is seventy. Ones: seven plus six is thirteen.", V.eq('40 + 30 = 70', 'b') + V.eq('7 + 6 = 13', 'g')),
+        st("Thirteen is more than ten, so recombining gives seventy plus thirteen, which is eighty-three.", V.eq('70 + 13 = 83', 'r'))]),
+      SC('Split just one number', 'Another way', [
+        st("Sometimes it is quicker to keep the first number whole and only split the second. Forty-seven plus thirty, then plus six.", V.eq('47 + 30 = 77', 'b') + V.eq('77 + 6 = 83', 'g'))]),
+      SC('Partitioning to subtract', '68 − 25', [
+        st("For subtraction, keep the first number whole and partition the second. Sixty-eight take away twenty is forty-eight. Then take away five more: forty-three.", V.eq('68 − 20 = 48', 'b') + V.eq('48 − 5 = 43', 'g')),
+        st("Don't split both numbers when subtracting. It can go wrong when the ones need exchanging.", V.rule('Subtracting: split only the number you take away.'))]),
+      SC('Three-digit numbers', '245 + 132', [
+        st("It works for hundreds too. Two hundred and forty-five plus one hundred and thirty-two. Hundreds: two hundred plus one hundred is three hundred. Tens: forty plus thirty is seventy. Ones: five plus two is seven.",
+          V.eq('200 + 100 = 300', 'b') + V.eq('40 + 30 = 70', 'g') + V.eq('5 + 2 = 7', 'r')),
+        st("Recombine: three hundred and seventy-seven.", V.eq('245 + 132 = 377', 'g'))]),
+      SC('Your turn', 'Pause, think, then listen', [
+        st("Your turn! Fifty-six plus thirty-seven. Pause and partition.", V.eq('56 + 37 = ?')),
+        st("Tens: fifty plus thirty is eighty. Ones: six plus seven is thirteen. Eighty plus thirteen is ninety-three.", V.eq('80 + 13 = 93', 'g'))]),
+      SC('Let’s recap', 'How can partitioning help me add?', [
+        st("Excellent! Partition the numbers into tens and ones, add the tens, add the ones, then recombine. If the ones make more than ten, remember to add that extra ten. For subtraction, only split the number you take away.",
+          V.list(['Split into tens and ones', 'Add the tens, then the ones', 'Recombine the parts', 'Ones over 10? It adds a ten', 'Subtracting: split the second number only']))])
+    ]
+  };
+
+  /* ---------- How do you multiply and divide by 0, 1, 10 and 100? ---------- */
+  var times = {
+    title: 'How do you multiply and divide by 0, 1, 10 and 100?', goal: 'the special rules for multiplying and dividing by 0, 1, 10 and 100.',
+    scenes: [
+      SC('Multiplying and dividing', 'What do they mean?', [
+        st("Multiplying means adding equal groups. Three times four means three groups of four. Twelve altogether.", V.dots(3, 4, 'var(--accent)') + V.eq('3 × 4 = 12', 'b')),
+        st("Dividing means sharing into equal groups. Twelve shared into three groups gives four in each group.", V.eq('12 ÷ 3 = 4', 'g')),
+        st("Some numbers have special rules that make multiplying and dividing very quick. Let's learn them.", V.cards(['× 0', '× 1', '× 10', '× 100'], ['r', 'b', 'g', 'y'], true))]),
+      SC('Multiplying by 1', 'One group', [
+        st("Multiplying by one means one group. One group of seven is just seven. Any number times one stays the same.", V.eq('7 × 1 = 7', 'b') + V.eq('1 × 250 = 250', 'b')),
+        st("Dividing by one also keeps the number the same. Nine shared into one group is nine.", V.eq('9 ÷ 1 = 9', 'g') + V.rule('× 1 or ÷ 1: the number stays the same.'))]),
+      SC('Multiplying by 0', 'Zero groups', [
+        st("Multiplying by zero means zero groups. If you have zero bags with eight sweets in each, you have no sweets at all.", V.eq('8 × 0 = 0', 'r')),
+        st("And zero groups of anything, however big, is still zero.", V.eq('0 × 25 = 0', 'r') + V.rule('Anything × 0 = 0')),
+        st("Zero shared between five people is zero each. But we never divide by zero. It doesn't make sense to share into zero groups.", V.eq('0 ÷ 5 = 0', 'g') + V.note('We never divide by 0.'))]),
+      SC('Multiplying by 10', 'Digits move one place left', [
+        st("When we multiply by ten, every digit moves one place to the left, because each place is ten times bigger. A zero fills the empty ones place.",
+          V.tbl([['', '', '3', '6'], ['', '3', '6', '0']], ['Th', 'H', 'T', 'O']) + V.eq('36 × 10 = 360', 'b')),
+        st("Two hundred and forty-five times ten is two thousand, four hundred and fifty.", V.eq('245 × 10 = 2,450', 'b')),
+        st("Careful! We don't just add a zero to the end. The digits move. That matters later, when you meet decimals.", V.note('The digits move left. The zero holds the empty place.'))]),
+      SC('Multiplying by 100', 'Digits move two places left', [
+        st("One hundred is ten times ten. So multiplying by one hundred moves every digit two places to the left.",
+          V.tbl([['', '', '3', '6'], ['3', '6', '0', '0']], ['Th', 'H', 'T', 'O']) + V.eq('36 × 100 = 3,600', 'g')),
+        st("Seventy-two times one hundred is seven thousand, two hundred.", V.eq('72 × 100 = 7,200', 'g'))]),
+      SC('Dividing by 10 and 100', 'Digits move right', [
+        st("Dividing does the opposite. Dividing by ten moves every digit one place to the right. Five hundred and eighty divided by ten is fifty-eight.",
+          V.tbl([['5', '8', '0'], ['', '5', '8']], ['H', 'T', 'O']) + V.eq('580 ÷ 10 = 58', 'b')),
+        st("Dividing by one hundred moves every digit two places to the right. Four thousand, seven hundred divided by one hundred is forty-seven.", V.eq('4,700 ÷ 100 = 47', 'g'))]),
+      SC('In real life', 'Money and measures', [
+        st("You use these rules all the time. Twenty-three ten pence coins: twenty-three times ten is two hundred and thirty pence, which is two pounds thirty.", V.eq('23 × 10p = 230p = £2.30', 'b')),
+        st("There are one hundred centimetres in a metre. So six metres is six times one hundred, which is six hundred centimetres.", V.eq('6 m = 6 × 100 = 600 cm', 'g'))]),
+      SC('Your turn', 'Pause, think, then listen', [
+        st("Your turn! What is fifteen times zero? Pause and think.", V.eq('15 × 0 = ?')),
+        st("Zero groups of fifteen is zero.", V.eq('15 × 0 = 0', 'g')),
+        st("And three thousand, four hundred divided by ten?", V.eq('3,400 ÷ 10 = ?')),
+        st("Every digit moves one place to the right. The answer is three hundred and forty.", V.eq('3,400 ÷ 10 = 340', 'g'))]),
+      SC('Let’s recap', 'Multiplying and dividing by 0, 1, 10 and 100', [
+        st("Super! Times one or divided by one, the number stays the same. Times zero, the answer is always zero, and we never divide by zero. Times ten, digits move one place left. Times one hundred, two places left. Dividing moves the digits right.",
+          V.list(['× 1 and ÷ 1: no change', '× 0 = 0, and never ÷ 0', '× 10: digits move 1 place left', '× 100: digits move 2 places left', '÷ 10 and ÷ 100: digits move right']))])
+    ]
+  };
+
+  /* ---------- How do you work out division with remainders? ---------- */
+  var remainders = {
+    title: 'How do you work out division with remainders?', goal: 'what a remainder is, how to find one, and what to do with it in real life.',
+    scenes: [
+      SC('Division with remainders', 'When things don’t share equally', [
+        st("Dividing means sharing equally. Twelve sweets shared between three friends: each friend gets four. Nothing is left over.", V.dots(3, 4, 'var(--accent)') + V.eq('12 ÷ 3 = 4', 'b')),
+        st("But sometimes things don't share out equally. What is left over is called the remainder.", V.rule('The remainder is what is left over after sharing equally.'))]),
+      SC('A remainder', '17 sweets, 5 friends', [
+        st("Seventeen sweets shared between five friends. Each friend gets three sweets. That uses fifteen sweets.", V.dots(5, 3, 'var(--accent)') + V.eq('5 × 3 = 15', 'b')),
+        st("Two sweets are left over. There are not enough to give everyone another one. So the remainder is two.", V.dots(1, 2, 'var(--bad)') + V.eq('17 − 15 = 2 left over', 'r')),
+        st("We write this as seventeen divided by five equals three, remainder two. The little r means remainder.", V.eq('17 ÷ 5 = 3 r 2', 'g'))]),
+      SC('Use your times tables', '29 ÷ 4', [
+        st("Times tables make this quicker. Twenty-nine divided by four. Which number in the four times table is closest to twenty-nine, without going over?", V.cards(['24', '28', '32'], ['b', 'g', 'r'], true)),
+        st("Four times seven is twenty-eight. Four times eight is thirty-two, which is too big. So four goes into twenty-nine seven times.", V.eq('4 × 7 = 28', 'g')),
+        st("Twenty-nine take away twenty-eight leaves one. The answer is seven, remainder one.", V.eq('29 ÷ 4 = 7 r 1', 'g') + V.rule('The remainder must be smaller than the number you divide by.'))]),
+      SC('Bigger numbers', '86 ÷ 4', [
+        st("Eighty-six divided by four. Split eighty-six into eighty and six. Eighty divided by four is twenty.", V.eq('80 ÷ 4 = 20', 'b')),
+        st("Six divided by four is one, remainder two.", V.eq('6 ÷ 4 = 1 r 2', 'g')),
+        st("Put them together: twenty plus one is twenty-one, remainder two.", V.eq('86 ÷ 4 = 21 r 2', 'r'))]),
+      SC('Check your answer', 'Multiply back and add the remainder', [
+        st("To check, multiply the answer by the number you divided by, then add the remainder. You should get back to the start.", V.eq('4 × 21 = 84', 'b') + V.eq('84 + 2 = 86 ✓', 'g'))]),
+      SC('Remainders in real life', 'Round up or round down?', [
+        st("In real life, we have to think about what the remainder means. Thirty children are going on a trip. Each minibus holds eight. Thirty divided by eight is three, remainder six.", V.eq('30 ÷ 8 = 3 r 6', 'b')),
+        st("Six children can't be left behind! We need one more minibus. So we round up: four minibuses.", V.eq('We need 4 minibuses', 'g')),
+        st("Now, twenty eggs go into boxes of six. Twenty divided by six is three, remainder two. Only full boxes can be sold, so we round down: three full boxes, with two eggs spare.", V.eq('20 ÷ 6 = 3 r 2 → 3 full boxes', 'r'))]),
+      SC('Your turn', 'Pause, think, then listen', [
+        st("Your turn! Thirty-eight divided by five. Pause and use your five times table.", V.eq('38 ÷ 5 = ?')),
+        st("Five times seven is thirty-five. Thirty-eight take away thirty-five is three. The answer is seven, remainder three.", V.eq('38 ÷ 5 = 7 r 3', 'g')),
+        st("Check: five times seven is thirty-five, plus three is thirty-eight.", V.eq('5 × 7 + 3 = 38 ✓', 'g'))]),
+      SC('Let’s recap', 'How do you work out division with remainders?', [
+        st("Well done! When a number doesn't share equally, the amount left over is the remainder. Use your times tables to find the closest multiple without going over. The remainder must be smaller than the number you divide by. In real life, decide whether to round up or down.",
+          V.list(['Remainder = what is left over', 'Find the closest times-table fact', 'Remainder < the number you divide by', 'Check: multiply back, add the remainder', 'Real life: round up or round down']))])
+    ]
+  };
+
+  BT.lessons(502, 'Watch lesson', [colAdd, colSub, mental, countOn, partAdd, times, remainders], ['Use a fact you know', 'Order of operations and word problems']);
+})();
+</script>
+<script>
+/* lessons_503.js: new Watch lessons for P5 Topic 3, Fractions. One detailed lesson per question. */
+(function () {
+  'use strict';
+  var BT = window.BT; if (!BT || !BT.lessons || !BT.lk) return;
+  var V = BT.sv, LK = BT.lk;
+  var SC = function (h, sub, steps) { return { h: h, sub: sub, steps: steps }; };
+  var st = function (say, html) { return { say: say, html: html || '' }; };
+  var SW = '<!--swap-->';
+  var F = function (n, d, col) { return '<span style="display:inline-flex;flex-direction:column;align-items:center;line-height:1;font-weight:700;color:' + (col || 'inherit') + '"><span>' + n + '</span><span style="border-top:3px solid currentColor;padding-top:2px;min-width:1.2em;text-align:center">' + d + '</span></span>'; };
+  var BIG = function (inner) { return '<div style="font-size:40px;display:flex;align-items:center;gap:14px;justify-content:center;flex-wrap:wrap">' + inner + '</div>'; };
+  var P = 'var(--accent)', O = 'var(--bad)', G = 'var(--good)';
+
+  /* ---------- What is a fraction? ---------- */
+  var what = {
+    title: 'What is a fraction?', goal: 'what a fraction is, and why the parts must be equal.',
+    scenes: [
+      SC('What is a fraction?', 'A part of a whole', [
+        st("Here is a whole pizza. In maths, one complete thing is called a whole.", LK.pie(1, 1) + V.note('1 whole')),
+        st("A fraction is a part of a whole. To make fractions, we cut the whole into equal parts.", V.rule('A fraction is part of a whole, cut into equal parts.'))]),
+      SC('Cutting into equal parts', 'Quarters', [
+        st("Let's cut the pizza into four equal parts. Equal means every part is exactly the same size.", LK.pie(0, 4) + V.note('4 equal parts')),
+        st("Now take one of the four parts. We have one part out of four. We write this as one quarter.", SW + LK.pair(LK.pie(1, 4), BIG(F(1, 4, P) + '<span style="font-size:22px;color:var(--accent)">= one quarter</span>')))]),
+      SC('A chocolate bar', 'Eighths', [
+        st("Here is a chocolate bar with eight equal squares.", LK.fbar(0, 8, 400)),
+        st("Sam eats three squares. Sam has eaten three out of eight equal parts: three eighths.", SW + LK.fbar(3, 8, 400) + BIG(F(3, 8, P) + '<span style="font-size:22px;color:var(--accent)">= three eighths</span>')),
+        st("What is left? Five squares. That is five eighths.", LK.fbar(3, 8, 400, 30) + BIG(F(5, 8, O) + '<span style="font-size:22px;color:var(--bad)">left</span>')),
+        st("Three eighths plus five eighths makes eight eighths. Eight eighths is the whole bar.", BIG(F(3, 8, P) + '+' + F(5, 8, O) + '=' + F(8, 8) + '= 1 whole'))]),
+      SC('The parts must be equal', 'Is it a fraction?', [
+        st("Fractions need equal parts. This bar is cut into four equal parts, so one part is one quarter.", LK.fbar(1, 4, 300) + V.eq('✓ equal parts: one part is ¼', 'g')),
+        st("This bar is cut into four parts too, but they are not equal. The shaded part is not one quarter, because the parts are different sizes.",
+          '<svg viewBox="0 0 304 42" width="304" role="img" aria-label="A bar cut into 4 unequal parts"><rect x="2" y="4" width="34" height="34" style="fill:var(--accent);stroke:var(--fg);stroke-width:2"/><rect x="36" y="4" width="120" height="34" style="fill:#fff;stroke:var(--fg);stroke-width:2"/><rect x="156" y="4" width="70" height="34" style="fill:#fff;stroke:var(--fg);stroke-width:2"/><rect x="226" y="4" width="76" height="34" style="fill:#fff;stroke:var(--fg);stroke-width:2"/></svg>' + V.eq('✗ unequal parts: not ¼', 'r'))]),
+      SC('Fractions of a group', 'Not just shapes', [
+        st("Fractions can also be part of a group. Here are five balloons. Three of them are red.", V.dots(1, 5, 'var(--bad)', 3)),
+        st("So three out of five balloons are red. Three fifths of the balloons are red.", BIG(F(3, 5, O) + '<span style="font-size:22px;color:var(--bad)">are red</span>'))]),
+      SC('Fractions are everywhere', 'In real life', [
+        st("We use fractions every day. Half a sandwich. A quarter of an hour. Three quarters of a cake.", V.row(LK.pie(1, 2, { r: 40 }) + LK.pie(1, 4, { r: 40, hue: 140 }) + LK.pie(3, 4, { r: 40, hue: 40 }))),
+        st("Whenever something is shared or cut into equal parts, there are fractions.")]),
+      SC('Your turn', 'Pause, think, then listen', [
+        st("Your turn! This shape is cut into six equal parts. Two are shaded. What fraction is shaded? Pause and think.", LK.fbar(2, 6, 360)),
+        st("Two out of six equal parts are shaded. That is two sixths.", BIG(F(2, 6, P) + '<span style="font-size:22px;color:var(--accent)">= two sixths</span>'))]),
+      SC('Let’s recap', 'What is a fraction?', [
+        st("Great work! A fraction is part of a whole. The whole must be cut into equal parts. A fraction can be part of a shape, or part of a group.",
+          V.list(['A fraction is part of a whole', 'The parts must be equal', 'Part of a shape: 3 out of 8 squares', 'Part of a group: 3 out of 5 balloons', 'All the parts together make 1 whole']))])
+    ]
+  };
+
+  /* ---------- How do you write fractions? ---------- */
+  var write = {
+    title: 'How do you write fractions?', goal: 'what the top and bottom numbers of a fraction mean, and how to say fractions.',
+    scenes: [
+      SC('How do you write fractions?', 'Two numbers and a line', [
+        st("A fraction is written with two numbers, one on top of the other, with a line in between.", BIG(F(3, 5))),
+        st("The line is called the fraction bar. It means out of. So this fraction means three out of five.", V.rule('The fraction bar means "out of".'))]),
+      SC('The numerator', 'The top number', [
+        st("The top number is called the numerator. It tells us how many parts we have.", LK.pair(BIG(F('<span style="color:var(--accent)">3</span>', 5)), V.eq('numerator', 'b') + V.note('how many parts we have'))),
+        st("Here, three parts are shaded, so the numerator is three.", LK.fbar(3, 5, 300))]),
+      SC('The denominator', 'The bottom number', [
+        st("The bottom number is called the denominator. It tells us how many equal parts the whole is cut into.", LK.pair(BIG(F(3, '<span style="color:var(--bad)">5</span>')), V.eq('denominator', 'r') + V.note('equal parts in the whole'))),
+        st("Here the bar has five equal parts, so the denominator is five. A trick to remember: D for denominator, D for down.", LK.fbar(3, 5, 300) + V.rule('D for Denominator, D for Down'))]),
+      SC('Special names', 'How we say fractions', [
+        st("Some fractions have special names. Two parts: halves. Three parts: thirds. Four parts: quarters.",
+          V.row(V.card('½ half', 'b', true) + V.card('⅓ third', 'g', true) + V.card('¼ quarter', 'r', true))),
+        st("After that, we usually add t h: fifths, sixths, eighths, tenths.", V.row(V.card('⅕ fifth', 'y', true) + V.card('⅛ eighth', 'b', true) + V.card('1/10 tenth', 'g', true))),
+        st("To say a fraction, say the top number, then the name of the bottom number. Three fifths. Two thirds. Seven tenths.",
+          V.row(BIG(F(3, 5)) + V.note('three fifths') + BIG(F(2, 3)) + V.note('two thirds') + BIG(F(7, 10)) + V.note('seven tenths')))]),
+      SC('What fraction is shaded?', 'Count, then write', [
+        st("What fraction of this bar is shaded? First count the shaded parts. There are four. That is the numerator.", LK.fbar(4, 7, 420) + V.eq('shaded parts: 4 → numerator', 'b')),
+        st("Then count all the equal parts. There are seven. That is the denominator. So four sevenths are shaded.", V.eq('all parts: 7 → denominator', 'r') + BIG(F(4, 7, P) + '<span style="font-size:22px">= four sevenths</span>'))]),
+      SC('Unit fractions', 'One part', [
+        st("A fraction with one on top is called a unit fraction. It means just one part.", V.row(BIG(F(1, 2) + F(1, 3) + F(1, 4) + F(1, 10)))),
+        st("Watch out: a bigger denominator means the whole is cut into more parts, so each part is smaller. One tenth is smaller than one half.", LK.fbar(1, 2, 300, 280, '½') + LK.fbar(1, 10, 300, 140, '1/10'))]),
+      SC('Writing words as fractions', 'From words to numbers', [
+        st("Five eighths: five on top, eight on the bottom.", BIG(F(5, 8))),
+        st("When the top and bottom are the same, like four quarters, we have every part. That is one whole.", LK.fbar(4, 4, 300) + V.eq('4/4 = 1 whole', 'g'))]),
+      SC('Your turn', 'Pause, think, then listen', [
+        st("Your turn! Three parts out of ten are shaded. Write the fraction and say it. Pause and think.", LK.fbar(3, 10, 420)),
+        st("Three on top, ten on the bottom. Three tenths.", BIG(F(3, 10, P) + '<span style="font-size:22px">= three tenths</span>'))]),
+      SC('Let’s recap', 'How do you write fractions?', [
+        st("Well done! The numerator, on top, is how many parts we have. The denominator, on the bottom, is how many equal parts are in the whole. The line means out of. To say a fraction, say the top number, then the name of the bottom number.",
+          V.list(['Numerator (top) = parts we have', 'Denominator (bottom) = equal parts in the whole', 'The line means "out of"', 'Say it: three fifths, seven tenths', 'Same top and bottom = 1 whole']))])
+    ]
+  };
+
+  /* ---------- How do you compare different fractions? ---------- */
+  var compare = {
+    title: 'How do you compare different fractions?', goal: 'how to tell which fraction is bigger.',
+    scenes: [
+      SC('How do you compare fractions?', 'Bigger, smaller or equal?', [
+        st("Comparing fractions means finding out which one is bigger. We use three signs.", V.row(V.card('>', 'b') + V.card('<', 'g') + V.card('=', 'r'))),
+        st("Greater than, less than, and equal to. The wide, open end of the sign always faces the bigger number.", V.row(V.note('> greater than') + V.note('< less than') + V.note('= equal to')) + BIG(F(1, 2) + '<span style="color:var(--accent)">&gt;</span>' + F(1, 4)))]),
+      SC('Same denominator', 'Compare the numerators', [
+        st("Which is bigger, three eighths or five eighths? Both are cut into eighths, so every piece is the same size.", LK.fbar(3, 8, 400, 280, '3/8') + LK.fbar(5, 8, 400, 280, '5/8')),
+        st("When the denominators are the same, just compare the numerators. Five pieces is more than three pieces. So five eighths is bigger.", V.eq('5 > 3, so 5/8 > 3/8', 'g') + V.rule('Same denominator: bigger numerator = bigger fraction'))]),
+      SC('Same numerator', 'Compare the denominators', [
+        st("Which is bigger, one third or one fifth? Both have one piece. But how big is each piece?", LK.fbar(1, 3, 400, 280, '1/3') + LK.fbar(1, 5, 400, 280, '1/5')),
+        st("A third is cut into three pieces. A fifth is cut into five pieces, so each piece is smaller. One third is bigger.", V.eq('1/3 > 1/5', 'g') + V.rule('Bigger denominator = smaller pieces'))]),
+      SC('Compare with a half', 'A useful landmark', [
+        st("Another trick is to compare with one half. Half of eight is four, so four eighths is one half.", LK.fbar(4, 8, 400, 140, '4/8 = ½')),
+        st("Three eighths is less than a half. Five eighths is more than a half.", LK.fbar(3, 8, 400, 280, '3/8') + LK.fbar(5, 8, 400, 30, '5/8') + V.eq('3/8 < ½ < 5/8', 'b'))]),
+      SC('Different denominators', 'Use bars of the same length', [
+        st("Which is bigger, two thirds or three quarters? Draw two bars of the same length. Cut one into thirds and the other into quarters.", LK.fbar(2, 3, 420, 280, '2/3') + LK.fbar(3, 4, 420, 30, '3/4')),
+        st("Line them up. The shaded part of three quarters goes further. So three quarters is bigger.", V.eq('3/4 > 2/3', 'g') + V.note('The bars must be the same length to compare fairly.'))]),
+      SC('Equal fractions', 'Different numbers, same amount', [
+        st("Sometimes two fractions are the same size. One half, two quarters and four eighths all cover exactly the same amount.", LK.fbar(1, 2, 400, 280, '1/2') + LK.fbar(2, 4, 400, 140, '2/4') + LK.fbar(4, 8, 400, 30, '4/8')),
+        st("Fractions that are the same size are called equivalent fractions.", V.eq('1/2 = 2/4 = 4/8', 'b'))]),
+      SC('Your turn', 'Pause, think, then listen', [
+        st("Your turn! Which is bigger, two fifths or four fifths? Pause and think.", BIG(F(2, 5) + '<span>?</span>' + F(4, 5))),
+        st("The denominators are the same, so compare the numerators. Four is more than two. Four fifths is bigger.", V.eq('4/5 > 2/5', 'g')),
+        st("One more. Which is bigger, one quarter or one sixth?", BIG(F(1, 4) + '<span>?</span>' + F(1, 6))),
+        st("The numerators are the same. Sixths are smaller pieces than quarters, so one quarter is bigger.", V.eq('1/4 > 1/6', 'g'))]),
+      SC('Let’s recap', 'How do you compare different fractions?', [
+        st("Brilliant! If the denominators are the same, compare the numerators. If the numerators are the same, the bigger denominator means smaller pieces. Use one half as a landmark, or draw bars of the same length.",
+          V.list(['> greater than, < less than, = equal to', 'Same denominator: compare the numerators', 'Same numerator: bigger denominator = smaller', 'Compare with one half', 'Equal amounts are equivalent fractions']))])
+    ]
+  };
+
+  BT.lessons(503, 'Watch lesson', [what, write, compare], ['Improper fractions and mixed numbers', 'Counting parts and fractions as decimals']);
+})();
+</script>
+<script>
+/* lessons_504_506_509.js: new Watch lessons for P5 Topic 4 (Decimals), Topic 6 (Algebra) and Topic 9 (Reasoning).
+   One detailed lesson per question. */
+(function () {
+  'use strict';
+  var BT = window.BT; if (!BT || !BT.lessons || !BT.lk) return;
+  var V = BT.sv, LK = BT.lk, NL = BT.NL;
+  var SC = function (h, sub, steps) { return { h: h, sub: sub, steps: steps }; };
+  var st = function (say, html) { return { say: say, html: html || '' }; };
+  var hot = function (t) { return '<span style="color:var(--bad)">' + t + '</span>'; };
+  var box = '<span style="display:inline-block;width:1.1em;height:1.1em;border:3px solid var(--accent);border-radius:6px;vertical-align:-0.15em"></span>';
+
+  /* ---------- What are decimals? ---------- */
+  var decimals = {
+    title: 'What are decimals?', goal: 'how decimals show tenths and hundredths, and how to compare them.',
+    scenes: [
+      SC('What are decimals?', 'Numbers with a decimal point', [
+        st("Sometimes we need numbers between whole numbers. A pencil might be between six and seven centimetres long. Decimals let us show these in-between amounts.", V.big('6.4 cm')),
+        st("A decimal number has a decimal point. Digits to the left of the point are whole numbers. Digits to the right are parts of a whole.", V.big('6' + hot('.') + '4') + V.rule('The decimal point separates whole numbers from parts of a whole.'))]),
+      SC('Tenths', 'One whole cut into 10 equal parts', [
+        st("Take one whole bar and cut it into ten equal parts. Each part is one tenth of the whole.", LK.fbar(1, 10, 460) + V.eq('1 tenth = 1/10 = 0.1', 'b')),
+        st("Three of the ten parts is three tenths. As a decimal, we write nought point three.", LK.fbar(3, 10, 460) + V.eq('3/10 = 0.3', 'g')),
+        st("Ten tenths make one whole. So after nought point nine comes one.", V.eq('10 tenths = 1 whole', 'r'))]),
+      SC('Hundredths', 'Even smaller parts', [
+        st("Now cut one whole into one hundred equal parts. Each tiny part is one hundredth.", LK.hsq(1) + V.eq('1 hundredth = 1/100 = 0.01', 'b')),
+        st("Forty-seven of the hundred parts is forty-seven hundredths, written nought point four seven.", LK.hsq(47) + V.eq('47/100 = 0.47', 'g')),
+        st("Look: forty-seven hundredths is the same as four tenths and seven hundredths. Four full columns and seven more squares.", V.eq('0.47 = 4 tenths + 7 hundredths', 'r'))]),
+      SC('The decimal place value chart', 'Meet 3.47', [
+        st("Place value continues after the decimal point. To the right of the ones come tenths, then hundredths.", V.tbl([['3', '.', '4', '7']], ['Ones', '', 'Tenths', 'Hundredths'])),
+        st("In three point four seven, the 3 is three ones. The 4 is four tenths. The 7 is seven hundredths.", V.eq('3 + 0.4 + 0.07 = 3.47', 'g')),
+        st("Each place is still ten times bigger than the place on its right. Ten hundredths make one tenth, and ten tenths make one.", V.rule('10 hundredths = 1 tenth. 10 tenths = 1 one.'))]),
+      SC('Decimals in real life', 'Money and measuring', [
+        st("You already use decimals with money. Three pounds forty-seven is three whole pounds and forty-seven hundredths of a pound, because there are a hundred pence in a pound.", V.eq('£3.47 = 3 pounds and 47 pence', 'b')),
+        st("And with measuring. One point five metres is one metre and five tenths of a metre: one and a half metres.", V.eq('1.5 m = 1 m and a half', 'g'))]),
+      SC('Decimals on a number line', 'Between 2 and 3', [
+        st("Between two and three there are ten tenths: two point one, two point two, and so on, up to two point nine.", NL(2, 3, { lab: 0.5, tick: 0.1 })),
+        st("Two point three is three small steps after two.", NL(2, 3, { lab: 0.5, tick: 0.1, marks: [[2.3, 0]] }) + V.eq('2.3', 'r'))]),
+      SC('Which is bigger?', '0.5 or 0.45?', [
+        st("Which is bigger: nought point five or nought point four five? Many people think the longer number is bigger. Let's check!", V.cards(['0.5', '0.45'], ['b', 'r'])),
+        st("Line them up by the decimal point and compare from the left. Ones: both zero. Tenths: five and four. Five tenths is more than four tenths, so we can stop.",
+          V.tbl([['0', '.', '5', ''], ['0', '.', '4', '5']], ['Ones', '', 'Tenths', 'Hundredths'])),
+        st("So nought point five is bigger. More digits does not mean bigger!", V.eq('0.5 > 0.45', 'g') + LK.fbar(5, 10, 400, 280, '0.5') + LK.fbar(45, 100, 400, 30, ''))]),
+      SC('Fractions and decimals', 'Same amount, different way of writing', [
+        st("Some decimals are fractions you already know. Nought point five is one half.", V.eq('0.5 = 1/2', 'b')),
+        st("Nought point two five is one quarter. Nought point seven five is three quarters.", V.eq('0.25 = 1/4', 'g') + V.eq('0.75 = 3/4', 'r'))]),
+      SC('Your turn', 'Pause, think, then listen', [
+        st("Your turn! What is the 7 worth in two point four seven? Pause and think.", V.big('2.4' + hot('7'))),
+        st("The 7 is in the hundredths place. It is worth seven hundredths.", V.eq('7 hundredths = 0.07', 'g')),
+        st("One more. Which is bigger, one point three or one point two five?", V.cards(['1.3', '1.25'], ['b', 'r'])),
+        st("Ones are the same. Tenths: three and two. Three tenths is more, so one point three is bigger.", V.eq('1.3 > 1.25', 'g'))]),
+      SC('Let’s recap', 'What are decimals?', [
+        st("Excellent! Decimals show parts of a whole. The decimal point separates whole numbers from parts. The first place after the point is tenths, and the next is hundredths. To compare decimals, line up the points and compare from the left. More digits does not mean bigger.",
+          V.list(['The decimal point separates wholes from parts', '0.1 is one tenth, 0.01 is one hundredth', '3.47 = 3 + 0.4 + 0.07', 'Compare from the left, digit by digit', 'Longer does not mean bigger: 0.5 > 0.45']))])
+    ]
+  };
+
+  /* ---------- What is a number sequence? ---------- */
+  var sequence = {
+    title: 'What is a number sequence?', goal: 'how to find the rule of a sequence and continue it.',
+    scenes: [
+      SC('What is a number sequence?', 'Numbers that follow a rule', [
+        st("A number sequence is a list of numbers that follows a rule. Each number in the list is called a term.", V.cards(['3', '7', '11', '15'], ['b', 'g', 'r', 'y']) + V.rule('A sequence is a list of numbers that follows a rule.')),
+        st("If we can find the rule, we can work out what comes next.")]),
+      SC('Finding the rule', '3, 7, 11, 15, …', [
+        st("Look at the gaps between the terms. From three to seven is plus four. From seven to eleven is plus four. From eleven to fifteen is plus four.",
+          NL(0, 24, { lab: 4, tick: 1, jumps: [[3, 7, '+4'], [7, 11, '+4'], [11, 15, '+4']], marks: [[3, 215], [7, 215], [11, 215], [15, 215]] })),
+        st("The rule is add four each time. So the next terms are nineteen and twenty-three.", V.eq('Rule: + 4', 'b') + V.eq('3, 7, 11, 15, 19, 23', 'g'))]),
+      SC('Going down', '50, 44, 38, 32, …', [
+        st("Some sequences get smaller. Fifty, forty-four, thirty-eight, thirty-two. Each time we take away six.", V.cards(['50', '44', '38', '32'], ['b', 'g', 'r', 'y'], true) + V.eq('Rule: − 6', 'r')),
+        st("So the next term is thirty-two take away six, which is twenty-six.", V.eq('32 − 6 = 26', 'g'))]),
+      SC('Sequences across zero', '10, 7, 4, 1, …', [
+        st("Ten, seven, four, one. The rule is take away three. What comes after one?", V.eq('Rule: − 3', 'r')),
+        st("One take away three goes past zero, to negative two.", NL(-3, 11, { lab: 1, jumps: [[10, 7, '−3'], [7, 4, '−3'], [4, 1, '−3'], [1, -2, '−3']] }) + V.eq('10, 7, 4, 1, −2', 'g'))]),
+      SC('Other kinds of rules', 'Not always adding', [
+        st("Some sequences double each time. Two, four, eight, sixteen. The next term is thirty-two.", V.cards(['2', '4', '8', '16', '32'], ['b', 'g', 'r', 'y', 'b'], true) + V.eq('Rule: × 2', 'b')),
+        st("So always check the gaps carefully. If the gaps are not the same, try multiplying.", V.note('Same gaps? Add or take away. Growing faster? Try multiplying.'))]),
+      SC('Patterns with shapes', 'Matchstick squares', [
+        st("Sequences can come from patterns. One square uses four matchsticks. Two squares in a row use seven. Three squares use ten.",
+          V.tbl([['1', '4'], ['2', '7'], ['3', '10']], ['Squares', 'Matchsticks'])),
+        st("Each new square adds three matchsticks, because it shares one side. So four squares use thirteen matchsticks.", V.eq('4, 7, 10, 13 … Rule: + 3', 'g'))]),
+      SC('Finding a missing term', '12, ?, 24, 30', [
+        st("Twelve, something, twenty-four, thirty. Find the rule from the terms we know. From twenty-four to thirty is plus six.", V.cards(['12', '?', '24', '30'], ['b', 'r', 'g', 'y'])),
+        st("So twelve plus six is eighteen. Check: eighteen plus six is twenty-four. The missing term is eighteen.", V.eq('12, 18, 24, 30', 'g'))]),
+      SC('Your turn', 'Pause, think, then listen', [
+        st("Your turn! Five, nine, thirteen, seventeen. What is the rule, and what comes next? Pause and think.", V.cards(['5', '9', '13', '17', '?'], ['b', 'g', 'r', 'y', 'b'], true)),
+        st("The rule is add four. So the next term is twenty-one.", V.eq('Rule: + 4 → 21', 'g'))]),
+      SC('Let’s recap', 'What is a number sequence?', [
+        st("Great work! A sequence is a list of numbers that follows a rule. Find the rule by looking at the gaps between the terms. Sequences can go up, go down, cross zero, or even double. Use the rule to find the next term or a missing term.",
+          V.list(['A sequence follows a rule', 'Each number is a term', 'Look at the gaps to find the rule', 'Sequences can go up, down or cross zero', 'Use the rule to find missing terms']))])
+    ]
+  };
+
+  /* ---------- How do you solve missing number problems? ---------- */
+  var missing = {
+    title: 'How do you solve missing number problems?', goal: 'how to find a missing number using inverse operations.',
+    scenes: [
+      SC('Missing number problems', 'Find the hidden number', [
+        st("In a missing number problem, one number is hidden by a box. Our job is to find the number that makes the number sentence true.", V.big(box + ' + 7 = 15')),
+        st("The secret weapon is the inverse, or opposite, operation. Adding and subtracting undo each other. Multiplying and dividing undo each other.",
+          V.row(LK.tag('+ undoes −', 'b') + LK.tag('× undoes ÷', 'g')))]),
+      SC('Missing number in an addition', '□ + 7 = 15', [
+        st("Something plus seven equals fifteen. To find the something, undo the plus seven by taking away seven.", V.eq(box + ' + 7 = 15')),
+        st("Fifteen take away seven is eight. So the missing number is eight.", V.eq('15 − 7 = 8', 'g')),
+        st("Always check by putting it back in. Eight plus seven is fifteen. It works!", V.eq('8 + 7 = 15 ✓', 'b'))]),
+      SC('Missing number in a subtraction', 'Two kinds', [
+        st("Something take away nine equals fourteen. Undo the take away by adding nine. Fourteen plus nine is twenty-three.", V.eq(box + ' − 9 = 14', 'b') + V.eq('14 + 9 = 23', 'g')),
+        st("Twenty take away something equals twelve. Here, think: how far is it from twelve up to twenty? Eight.", V.eq('20 − ' + box + ' = 12', 'b') + V.eq('20 − 12 = 8', 'g'))]),
+      SC('Multiplying and dividing', 'Use your times tables', [
+        st("Something times six equals forty-two. Undo times six by dividing by six. Forty-two divided by six is seven.", V.eq(box + ' × 6 = 42', 'b') + V.eq('42 ÷ 6 = 7', 'g')),
+        st("Thirty-six divided by something equals four. Think: four times what makes thirty-six? Nine.", V.eq('36 ÷ ' + box + ' = 4', 'b') + V.eq('4 × 9 = 36, so ' + box + ' = 9', 'g'))]),
+      SC('Balancing both sides', 'The equals sign means "the same as"', [
+        st("The equals sign means both sides are worth the same, like a balanced scale. Eight plus five equals something plus six.", V.eq('8 + 5 = ' + box + ' + 6')),
+        st("The left side is thirteen. So the right side must also be thirteen. Thirteen take away six is seven.", V.eq('13 = ' + box + ' + 6', 'b') + V.eq(box + ' = 7', 'g'))]),
+      SC('Using a bar model', 'A picture of the problem', [
+        st("Forty-five children are in the hall. Eighteen are sitting down. How many are standing? Draw a bar for the whole: forty-five.",
+          '<svg viewBox="0 0 420 110" width="420" role="img" aria-label="A bar model: 45 split into 18 and an unknown part"><rect x="10" y="10" width="400" height="36" rx="4" style="fill:#ecdcf8;stroke:var(--fg);stroke-width:2"/><text x="210" y="34" text-anchor="middle" font-size="18" font-weight="700" fill="#221a3a">45</text><rect x="10" y="60" width="160" height="36" rx="4" style="fill:#b98be6;stroke:var(--fg);stroke-width:2"/><text x="90" y="84" text-anchor="middle" font-size="18" font-weight="700" fill="#221a3a">18</text><rect x="170" y="60" width="240" height="36" rx="4" style="fill:#fff;stroke:var(--fg);stroke-width:2"/><text x="290" y="84" text-anchor="middle" font-size="18" font-weight="700" fill="#e2620f">?</text></svg>'),
+        st("The whole is split into two parts. One part is eighteen. The missing part is forty-five take away eighteen, which is twenty-seven.", V.eq('45 − 18 = 27', 'g'))]),
+      SC('Your turn', 'Pause, think, then listen', [
+        st("Your turn! Something times four equals thirty-two. Pause and think.", V.eq(box + ' × 4 = 32')),
+        st("Thirty-two divided by four is eight.", V.eq(box + ' = 8', 'g')),
+        st("One more. Fifty take away something equals twenty-three.", V.eq('50 − ' + box + ' = 23')),
+        st("Count on from twenty-three to fifty: seven to thirty, then twenty to fifty. Seven plus twenty is twenty-seven. Check: fifty take away twenty-seven is twenty-three.", V.eq(box + ' = 27', 'g'))]),
+      SC('Let’s recap', 'How do you solve missing number problems?', [
+        st("Brilliant! To find a missing number, use the inverse operation: take away to undo adding, add to undo taking away, divide to undo multiplying, and multiply to undo dividing. The equals sign means both sides are the same. Always check your answer by putting it back in.",
+          V.list(['Find the number that makes it true', 'Use the inverse to undo', '= means both sides are the same', 'A bar model helps you see it', 'Check by putting it back in']))])
+    ]
+  };
+
+  /* ---------- How do you solve maths problems? ---------- */
+  var solve = {
+    title: 'How do you solve maths problems?', goal: 'a step-by-step plan for word problems, and some clever strategies.',
+    scenes: [
+      SC('How do you solve maths problems?', 'Use a plan', [
+        st("Word problems can look tricky, but a plan makes them easier. Here are four steps.",
+          V.cols([V.chip('1 Read', 'b'), V.chip('2 Plan', 'g'), V.chip('3 Solve', 'r'), V.chip('4 Check', 'y')])),
+        st("Read the problem carefully. Plan which operation to use. Solve it. Then check the answer makes sense.", V.rule('Read. Plan. Solve. Check.'))]),
+      SC('Step 1: Read', 'What is the question asking?', [
+        st("Read the problem twice. Find the numbers, and find exactly what the question is asking.", V.note('A class has 28 children. 9 are away. How many are in school?')),
+        st("Here, the numbers are twenty-eight and nine. The question asks how many children are in school.", V.row(LK.tag('28', 'b') + LK.tag('9', 'b') + LK.tag('How many are in school?', 'g')))]),
+      SC('Step 2: Plan', 'Clue words', [
+        st("Clue words help you choose the operation. Altogether, total and in all usually mean add. Left, fewer, difference and how many more usually mean take away.",
+          V.tbl([['altogether, total, sum', '+'], ['left, fewer, difference', '−'], ['each, groups of, times', '×'], ['share, split, each get', '÷']], ['Clue words', 'Operation'])),
+        st("Nine children are away, so fewer are in school. We take away.", V.eq('28 − 9 = 19 children', 'g'))]),
+      SC('Draw a bar model', 'Two children share 52 stickers', [
+        st("Drawing a picture helps. Amy and Ben share fifty-two stickers. Ben has ten more than Amy. How many does each have?",
+          '<svg viewBox="0 0 420 110" width="420" role="img" aria-label="Bar model: Amy one bar, Ben the same bar plus 10"><text x="8" y="34" font-size="15" font-weight="700" fill="#221a3a">Amy</text><rect x="60" y="12" width="150" height="34" rx="4" style="fill:#b98be6;stroke:var(--fg);stroke-width:2"/><text x="8" y="84" font-size="15" font-weight="700" fill="#221a3a">Ben</text><rect x="60" y="62" width="150" height="34" rx="4" style="fill:#b98be6;stroke:var(--fg);stroke-width:2"/><rect x="210" y="62" width="60" height="34" rx="4" style="fill:#f8c99c;stroke:var(--fg);stroke-width:2"/><text x="240" y="85" text-anchor="middle" font-size="15" font-weight="700" fill="#221a3a">10</text><text x="330" y="60" font-size="16" font-weight="700" fill="#221a3a">total 52</text></svg>'),
+        st("Take away the extra ten: fifty-two take away ten is forty-two. Now the two bars are equal. Forty-two shared by two is twenty-one.", V.eq('52 − 10 = 42', 'b') + V.eq('42 ÷ 2 = 21', 'g')),
+        st("So Amy has twenty-one, and Ben has twenty-one plus ten, which is thirty-one. Check: twenty-one plus thirty-one is fifty-two.", V.eq('Amy 21, Ben 31', 'r'))]),
+      SC('Two-step problems', 'Do one step at a time', [
+        st("Some problems need two steps. A teacher buys three packs of twenty-four pencils and gives fifteen away. How many are left?", V.note('3 packs of 24 pencils. 15 given away.')),
+        st("Step one: three times twenty-four is seventy-two pencils. Step two: seventy-two take away fifteen is fifty-seven.", V.eq('3 × 24 = 72', 'b') + V.eq('72 − 15 = 57 pencils', 'g'))]),
+      SC('Working backwards', 'Undo each step', [
+        st("I think of a number. I add seven, then double it. The answer is thirty. What was my number? Work backwards, undoing each step.", V.eq('? → + 7 → × 2 → 30')),
+        st("Undo double by halving: thirty halved is fifteen. Undo add seven by taking away seven: eight. My number was eight.", V.eq('30 ÷ 2 = 15', 'b') + V.eq('15 − 7 = 8', 'g'))]),
+      SC('Guess and check', 'Try, then improve', [
+        st("Two numbers add up to twenty. Their difference is four. Make a guess: ten and ten? The difference is zero. Too small.", V.eq('10 + 10 = 20, difference 0 ✗', 'r')),
+        st("Try twelve and eight. They add up to twenty, and the difference is four. Got it!", V.eq('12 + 8 = 20, difference 4 ✓', 'g'))]),
+      SC('Step 4: Check', 'Does the answer make sense?', [
+        st("Always check. Does the answer make sense? Use an estimate, or the inverse operation. Nineteen children in school, plus nine away, makes twenty-eight. Correct!", V.eq('19 + 9 = 28 ✓', 'g'))]),
+      SC('Your turn', 'Pause, think, then listen', [
+        st("Your turn! A bus has thirty-four people. Twelve get off and nine get on. How many are on the bus now? Pause and plan.", V.note('34 people. 12 get off. 9 get on.')),
+        st("Step one: thirty-four take away twelve is twenty-two. Step two: twenty-two plus nine is thirty-one people.", V.eq('34 − 12 = 22', 'b') + V.eq('22 + 9 = 31 people', 'g'))]),
+      SC('Let’s recap', 'How do you solve maths problems?', [
+        st("Fantastic! Read the problem carefully, plan using clue words, solve it, and check. Draw a bar model to see the problem. Break two-step problems into steps. And try working backwards, or guess and check, for puzzles.",
+          V.list(['Read, Plan, Solve, Check', 'Clue words tell you the operation', 'Draw a bar model', 'Two-step problems: one step at a time', 'Work backwards, or guess and check']))])
+    ]
+  };
+
+  BT.lessons(504, 'Watch lesson', [decimals], ['Percentages', 'Percentages of a set and of a measure']);
+  BT.lessons(506, 'Watch lesson', [sequence, missing], ['Expressions from words and shapes']);
+  BT.lessons(509, 'Watch lesson', [solve], ['Always true, factors and multiples']);
 })();
 </script>
 <script>
@@ -16084,7 +17314,7 @@ S.spatialExtra = S.extraMakers;
     (LINE[yearKey(t)] || LINE.P6).forEach(function (e) {
       var g = GAMES[e[0]];
       if ((e[0] === 'order' || e[0] === 'spot') && !hasEx) return;
-      t.steps.push({ id: 'a_' + e[0], label: g.label, type: 'lab', tag: 'Game', title: g.title, lead: g.lead, mount: voiced(g.mk(t, e[1])) });
+      t.steps.push({ id: 'a_' + e[0], label: g.label, type: 'lab', tag: 'Activity', title: g.title, lead: g.lead, mount: voiced(g.mk(t, e[1])) });
     });
     S.arrange(t);
   });

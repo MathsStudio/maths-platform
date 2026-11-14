@@ -532,7 +532,7 @@
     (LINE[yearKey(t)] || LINE.P6).forEach(function (e) {
       var g = GAMES[e[0]];
       if ((e[0] === 'order' || e[0] === 'spot') && !hasEx) return;
-      t.steps.push({ id: 'a_' + e[0], label: g.label, type: 'lab', tag: 'Game', title: g.title, lead: g.lead, mount: voiced(g.mk(t, e[1])) });
+      t.steps.push({ id: 'a_' + e[0], label: g.label, type: 'lab', tag: 'Activity', title: g.title, lead: g.lead, mount: voiced(g.mk(t, e[1])) });
     });
     S.arrange(t);
   });

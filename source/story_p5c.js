@@ -48,7 +48,7 @@
         st("A cube has six faces, twelve edges and eight vertices. A cuboid, like a cereal box, has exactly the same numbers.", V.tbl([['Cube', '6', '12', '8'], ['Square-based pyramid', '5', '8', '5'], ['Triangular prism', '5', '9', '6']], ['Shape', 'Faces', 'Edges', 'Vertices']))])
     ]
   };
-  BT.story(507, 'Watch', [shapes, sym, solids]);
+  BT.story(507, 'Watch lesson', [shapes, sym, solids]);
 
   /* ======================= 508 DATA AND CHANCE ======================= */
   var data = {
@@ -71,7 +71,7 @@
         st("When a coin is flipped, heads and tails are equally likely. That is called even chance, or one in two.", V.eq('P(heads) = 1/2', 'b'))])
     ]
   };
-  BT.story(508, 'Watch', [data, avg]);
+  BT.story(508, 'Watch lesson', [data, avg]);
 
   /* ======================= 509 MIXED REASONING ======================= */
   var plan = {
@@ -97,7 +97,7 @@
         st("Try three and seven. They add to ten, and three times seven is twenty-one. We found them!", V.eq('3 + 7 = 10, 3 × 7 = 21 ✓', 'g'))])
     ]
   };
-  BT.story(509, 'Watch', [plan, back]);
+  BT.story(509, 'Watch lesson', [plan, back]);
 
   /* ======================= 510 FACTORS, MULTIPLES AND PRIMES ======================= */
   var fm = {
@@ -122,7 +122,7 @@
         st("The first square numbers are one, four, nine, sixteen, twenty-five. We write four squared as four with a little two.", V.cards(['1', '4', '9', '16', '25'], ['g'], true))])
     ]
   };
-  BT.story(510, 'Watch', [fm, prime]);
+  BT.story(510, 'Watch lesson', [fm, prime]);
 
   /* ======================= 513 SPATIAL AWARENESS ======================= */
   var turns = {
@@ -146,5 +146,5 @@
         st("Not every pattern of six squares works. The net must fold without overlapping. Always picture folding it step by step.", V.list(['Six squares', 'No overlapping', 'Picture the folds']))])
     ]
   };
-  BT.story(513, 'Watch', [turns, cubes]);
+  BT.story(513, 'Watch lesson', [turns, cubes]);
 })();

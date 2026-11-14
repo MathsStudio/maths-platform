@@ -174,7 +174,7 @@
   /* ---------- install ---------- */
   function lab(n, id, label, title, lead, mount) {
     var t = S.topics[n]; if (!t || t.steps.some(function (s) { return s.id === id; })) return;
-    t.steps.push({ id: id, label: label, type: 'lab', tag: 'Activity time · Game', title: title, lead: lead, mount: mount }); S.arrange(t);
+    t.steps.push({ id: id, label: label, type: 'lab', tag: 'Activity time · Hands-on activity', title: title, lead: lead, mount: mount }); S.arrange(t);
   }
   lab(501, 'g_numline', 'Number line jumper', 'Number line jumper', 'Start on the number line, make the move and find where you land.', numLine(1));
   lab(1, 'g_numline', 'Number line jumper', 'Number line jumper', 'Start on the number line, make the move and find where you land.', numLine(2));

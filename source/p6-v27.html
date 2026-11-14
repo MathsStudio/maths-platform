@@ -155,6 +155,11 @@ button:focus-visible, input:focus-visible, select:focus-visible, summary:focus-v
 .pillars { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 10px; }
 .pillars .card { display: flex; flex-direction: column; gap: 4px; }
 .topics { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
+.setbar { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; margin: 0 0 12px; }
+.setbar-l { font-weight: 800; margin-right: 6px; }
+.setchip { min-width: 40px; min-height: 40px; border-radius: 10px; border: 2px solid var(--line); background: var(--surface); color: var(--fg); font: inherit; font-weight: 800; cursor: pointer; }
+.setchip.on { border-color: var(--accent); background: var(--accent); color: var(--accent-fg); }
+.setchip.ok:not(.on) { border-color: var(--good); color: var(--good); }
 .topic { display: flex; flex-direction: column; gap: 8px; min-height: 150px; }
 .topic.soon { opacity: .65; }
 .tn { font-family: var(--font-display); font-weight: 700; color: var(--accent); font-size: 1.1rem; }
@@ -913,6 +918,7 @@ var SLIDE_MORE = {"1.learn1": [{"more": ["Our number system uses only ten digits
       (q.options || []).map(plainQuestionText).sort(), String(q.answer), q.type || 'input', picHash(q.pic)]);
   }
   S.h.buildPracticeSet = function (makers, count) {
+    if (S.__wantCount) count = S.__wantCount;
     var level = store.settings.difficulty || 'medium';
     var topicNumber = Number(state.tab);
     var allowed = level === 'low' ? EASY_POOL[topicNumber] : (level === 'high' ? HARD_POOL[topicNumber] : null);
@@ -926,6 +932,7 @@ var SLIDE_MORE = {"1.learn1": [{"more": ["Our number system uses only ten digits
     var st = makers.storyMode && S.storyFor && S.storyFor(topicNumber);
     if (st) pool = level === 'low' ? st.easy.slice() : level === 'high' ? st.hard.slice() : st.easy.concat(st.hard);
     var out = [], seen = Object.create(null), attempts = 0, maxAttempts = count * 45;
+    if (!pool.length) return out;   /* nothing to build from: never loop forever */
     // Each level/topic set contains 150 distinct prompts wherever the generators allow it.
     while (out.length < count && attempts < maxAttempts) {
       shuffle(pool.slice()).forEach(function (make) {
@@ -1089,7 +1096,7 @@ var SLIDE_MORE = {"1.learn1": [{"more": ["Our number system uses only ten digits
       : plans + '<div style="background:var(--soft,#f1f5ff);border-radius:14px;padding:12px 14px;margin:4px 0 14px;line-height:1.8"><b>Step 1</b> &nbsp;Sign in or create an account<br><b>Step 2</b> &nbsp;Choose a plan and pay</div><div class="row" style="gap:10px;flex-wrap:wrap"><a class="btn" style="flex:1;text-align:center" href="/login/">Sign in</a><a class="btn ghost" style="flex:1;text-align:center" href="/signup/">Create an account</a></div><p class="note" style="margin:10px 0 0">After signing in, the payment button appears here.</p>';
     o.innerHTML = '<section class="card" style="max-width:520px;width:100%;margin:0;background:var(--card,#fff)"><button class="btn ghost" type="button" id="lockBack" aria-label="Close" style="float:right;padding:4px 10px">✕</button>' +
       '<span class="tag">🔒 ' + (what || t.title) + ' is locked</span><h2 style="margin:10px 0 6px">Unlock all of ' + y + '</h2>' +
-      '<p class="lead">Every topic in ' + y + ': animated explainers, lessons, games and hundreds of practice questions at three difficulty levels, plus the 10-minute mental maths test. Topic 1 stays free to try.</p>' + step + '</section>';
+      '<p class="lead">Every topic in ' + y + ': animated explainers, lessons, hands-on activities and hundreds of practice questions at three difficulty levels, plus the 10-minute mental maths test. Topic 1 stays free to try.</p>' + step + '</section>';
     document.body.appendChild(o);
     function pick(pl) { plan = pl; [].forEach.call(o.querySelectorAll('#lockPlans button'), function (b) { var on = b.getAttribute('data-plan') === pl; b.setAttribute('aria-checked', on ? 'true' : 'false'); b.style.borderColor = on ? '#2b5fd9' : '#dbe3f7'; b.style.background = on ? '#f3f6ff' : '#fff'; }); }
     pick('year');
@@ -1234,16 +1241,18 @@ var SLIDE_MORE = {"1.learn1": [{"more": ["Our number system uses only ten digits
     ['🌱', 'First step', 'Finish any part', function (x) { return x.steps >= 1; }],
     ['⭐', 'Topic finished', 'Finish every part of a topic', function (x) { return x.topics >= 1; }],
     ['🚀', 'Five topics', 'Finish 5 topics', function (x) { return x.topics >= 5; }],
-    ['🎮', 'Game on', 'Complete 5 activities', function (x) { return x.acts >= 5; }],
+    ['🧪', 'Hands-on', 'Complete 5 activities', function (x) { return x.acts >= 5; }],
     ['🏆', 'Boss beaten', 'Complete a Boss challenge', function (x) { return x.boss >= 1; }],
     ['🧮', 'Real-life solver', 'Do 3 real-life problems', function (x) { return x.real >= 3; }],
     ['🎓', 'Year complete', 'Finish every topic in the year', function (x) { return x.year; }]
   ];
   function badgeStats(yearDone) {
     var o = { steps: 0, topics: 0, acts: 0, boss: 0, real: 0, year: !!yearDone };
+    /* count only the topics of the year on screen, so the badges match the progress bar above them */
+    var mine = {}; visibleOrder().forEach(function (n) { var tt = openTopicFor(n); if (tt) mine[tt.n] = 1; });
     Object.keys(store.progress).forEach(function (k) {
-      var t = S.topics[Number(k.slice(1))], p = store.progress[k]; if (!t || !p || !p.steps) return;
-      var ids = Object.keys(p.steps).filter(function (id) { return p.steps[id]; }); o.steps += ids.length;
+      var t = S.topics[Number(k.slice(1))], p = store.progress[k]; if (!t || !p || !p.steps || !mine[t.n]) return;
+      var ids = Object.keys(p.steps).filter(function (id) { return p.steps[id] && t.steps.some(function (z) { return z.id === id && z.type !== 'finish'; }); }); o.steps += ids.length;
       if (t.steps.length && t.steps.every(function (st) { return p.steps[st.id]; })) o.topics++;
       ids.forEach(function (id) { var st = t.steps.filter(function (z) { return z.id === id; })[0]; if (!st) return; if (st.group === 'activity') o.acts++; if (id === 'a_boss') o.boss++; if (id === 'practical') o.real++; });
     });
@@ -1278,11 +1287,11 @@ var SLIDE_MORE = {"1.learn1": [{"more": ["Our number system uses only ten digits
     v.innerHTML =
       '<section class="yrtop"><div class="yrbar"><span class="tag">' + (yr === 'all' ? 'All years' : yr) + '</span><button class="yr" type="button" id="chgYear">Change year</button></div><p class="note say" style="margin:8px 0 0">' + YEAR_NOTE[yr] + '</p></section>' +
       '<section class="hero"><span class="eyebrow">' + (yr === 'all' ? 'Primary 5 to 7' : (yr.charAt(0) === 'S' ? 'Secondary ' + yr.slice(1) : 'Primary ' + yr.slice(1))) + ' · Curriculum for Excellence, ' + ({ S1: 'Third level', S2: 'Third and Fourth level', S3: 'Fourth level' }[yr] || 'Second level') + '</span><h1 class="say">' + (yr === 'all' ? 'Every topic' : yr + ' topics') + '</h1>' +
-      '<p class="lead say">' + ({ 1: 'One', 10: 'Ten', 12: 'Twelve' }[order.length] || order.length) + ' topics. Each starts with a short animated explainer and lessons with worked examples, then hands-on activities and games, and practice: a warm-up, plenty of questions at each of Low, Medium and High, and real-life problems. Switch level at any time. Verbal and non-verbal reasoning appear throughout the course.</p></section>' +
+      '<p class="lead say">' + ({ 1: 'One', 10: 'Ten', 12: 'Twelve' }[order.length] || order.length) + ' topics. Each starts with a short animated explainer and lessons with worked examples, then hands-on activities, and practice: a warm-up, plenty of questions at each of Low, Medium and High, and real-life problems. Switch level at any time. Verbal and non-verbal reasoning appear throughout the course.</p></section>' +
       '<section class="pillars"><div class="card"><h3 class="say">Read it</h3><p class="say">Clear steps and pictures, one idea at a time.</p></div><div class="card"><h3 class="say">Hear it</h3><p class="say">Turn the Voice on once and it keeps reading new pages and questions, where your device allows it.</p></div><div class="card"><h3 class="say">Try it</h3><p class="say">Build, slide, spin and plot. Then answer questions. Hints come one step at a time.</p></div></section>' +
       progPanel + '<section><div class="row" style="align-items:center;justify-content:space-between;margin-bottom:12px"><h2>Topics</h2></div><div class="topics">' + cards + soon + '</div></section>' +
       '<details class="card"><summary>For teachers and parents</summary>' +
-      '<p>Each topic has three parts. Let\u2019s Learn starts with a short animated explainer, then lessons that teach each idea three ways, with worked examples. Activity Time has hands-on labs and games. Let\u2019s Practice has a warm-up, plenty of questions at each of Low, Medium and High, and 30 real-life problems. Each level draws from its own question selection. Plan about 45 to 60 minutes a topic, split over two sessions if needed.</p>' +
+      '<p>Each topic has three parts. Let\u2019s Learn starts with a short animated explainer, then lessons that teach each idea three ways, with worked examples. Activity Time has hands-on labs and activities. Let\u2019s Practice has a warm-up, plenty of questions at each of Low, Medium and High, and 30 real-life problems. Each level draws from its own question selection. Plan about 45 to 60 minutes a topic, split over two sessions if needed.</p>' +
       '<div class="tscroll"><table class="plan"><thead><tr><th>Topic</th><th>Parts</th></tr></thead><tbody>' + rows + '</tbody></table></div>' +
       '<p class="note">Hints come in steps: first a nudge, then the method with the numbers, never the answer. The explanation after each answer shows the full working. Check outcomes against Education Scotland’s Benchmarks for Numeracy and Mathematics at ' + ({ S1: 'Third level', S2: 'Third and Fourth level', S3: 'Fourth level' }[yr] || 'Second level') + ' before you rely on this for planning. This is an independent resource. Progress is saved in this browser only.</p>' +
       '<div class="row" style="margin-top:10px"><button class="btn ghost" id="resetProg" type="button">Reset progress</button></div></details>';
@@ -1424,12 +1433,64 @@ var SLIDE_MORE = {"1.learn1": [{"more": ["Our number system uses only ten digits
       '</div><p class="note" style="min-height:0;margin:6px 0 10px">The level changes the questions, not the explanations.</p><div id="quizHost"></div>';
     pane.querySelectorAll('[data-qlevel]').forEach(function (b) { b.addEventListener('click', function () { changeDifficulty(b.getAttribute('data-qlevel')); }); });
     var isLast = t.steps[t.steps.length - 1].id === step.id;
+    if (step.id === 'practise' || step.id === 'practical') { mountSetQuiz(pane, t, step, lv, isLast); return; }
     var makeSet = step.id === 'warm' ? function () { return freshWarmupSet(step.make, t.n); } : step.make;
     mountQuiz($('quizHost'), makeSet(), {
       make: makeSet, doneLabel: step.doneLabel || (isLast ? 'Finish topic' : 'Next step'),
       onFinish: function (sc) { markDone(t.n, step.id); if (step.best) setBest(t.n, sc); renderStepper(); },
       onDone: function () { go(t.n, state.step + 1); }
     });
+  }
+  /* Practise and Real-life problems come in sets of 20. Each topic and level has a fixed bank
+     (10 practice sets = 200 questions, 5 real-life sets = 100 problems), built the same way every time,
+     so a set always holds the same questions and a child can finish one set and try a new one. */
+  var SET_SIZE = 20, bankCache = {};
+  function seeded(seed) { return function () { seed |= 0; seed = seed + 0x6D2B79F5 | 0; var r = Math.imul(seed ^ seed >>> 15, 1 | seed); r = r + Math.imul(r ^ r >>> 7, 61 | r) ^ r; return ((r ^ r >>> 14) >>> 0) / 4294967296; }; }
+  function hashStr(s) { var h = 2166136261; for (var i = 0; i < s.length; i++) { h ^= s.charCodeAt(i); h = Math.imul(h, 16777619); } return h | 0; }
+  /* The bank is built with a fixed seed, so building more sets later gives the same earlier sets:
+     only the sets up to the one opened are built, which keeps it quick on phones. */
+  function setBank(t, step, lv) {
+    var sets = step.id === 'practise' ? 10 : 5, key = t.n + '|' + lv + '|' + step.id;
+    return { key: key, sets: sets, upto: function (i) {
+      var need = Math.min(sets, i + 1) * SET_SIZE, have = bankCache[key];
+      if (!have || have.length < need) {
+        var keepRand = Math.random; Math.random = seeded(hashStr(key));
+        S.__wantCount = need;
+        try { bankCache[key] = step.make(); } finally { S.__wantCount = 0; Math.random = keepRand; }
+      }
+      return bankCache[key];
+    } };
+  }
+  function mountSetQuiz(pane, t, step, lv, isLast) {
+    var b = setBank(t, step, lv);
+    store.settings.setPos = store.settings.setPos || {}; store.settings.setDone = store.settings.setDone || {};
+    var done = store.settings.setDone[b.key] || [], cur = Math.min(store.settings.setPos[b.key] || 0, b.sets - 1);
+    var lead = pane.querySelector('.lead'); if (lead) lead.textContent = String(step.lead).replace(/\b\d{2,3} (\w+ )?(questions|problems)/, '20 $1$2 in each set');
+    var bar = document.createElement('div'); bar.className = 'setbar';
+    $('quizHost').parentNode.insertBefore(bar, $('quizHost'));
+    function drawBar() {
+      bar.innerHTML = '<span class="setbar-l">Set ' + (cur + 1) + ' of ' + b.sets + ' \u00b7 20 ' + (step.id === 'practise' ? 'questions' : 'problems') + '</span>' +
+        Array.apply(null, Array(b.sets)).map(function (_, i) { return '<button type="button" class="setchip' + (i === cur ? ' on' : '') + (done.indexOf(i) > -1 ? ' ok' : '') + '" data-set="' + i + '" aria-pressed="' + (i === cur) + '" aria-label="Set ' + (i + 1) + (done.indexOf(i) > -1 ? ', done' : '') + '">' + (done.indexOf(i) > -1 ? '\u2713' : i + 1) + '</button>'; }).join('');
+      bar.querySelectorAll('[data-set]').forEach(function (x) { x.addEventListener('click', function () { open(Number(x.getAttribute('data-set'))); }); });
+    }
+    function qsFor(i) { return b.upto(i).slice(i * SET_SIZE, i * SET_SIZE + SET_SIZE); }
+    function open(i) {
+      cur = i; store.settings.setPos[b.key] = i; save(); drawBar(); narStop();
+      mountQuiz($('quizHost'), qsFor(i), {
+        make: function () { return qsFor(cur); }, doneLabel: step.doneLabel || (isLast ? 'Finish topic' : 'Next step'),
+        onFinish: function (sc) {
+          if (done.indexOf(cur) < 0) { done.push(cur); store.settings.setDone[b.key] = done; save(); }
+          markDone(t.n, step.id); if (step.best) setBest(t.n, sc); renderStepper(); drawBar();
+          var again = $('qAgain'); if (again) again.textContent = 'Do this set again';
+          var nx = (cur + 1) % b.sets, nb = document.createElement('button');
+          nb.className = 'btn'; nb.type = 'button'; nb.textContent = 'Try a new set (Set ' + (nx + 1) + ')';
+          nb.addEventListener('click', function () { open(nx); });
+          if (again && again.parentNode) again.parentNode.insertBefore(nb, again);
+        },
+        onDone: function () { go(t.n, state.step + 1); }
+      });
+    }
+    open(cur);
   }
   /* Give an activity a different starting arrangement: new numbers, other choices, other positions. */
   function randomSetup(host) {

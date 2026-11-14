@@ -15,7 +15,7 @@
   }
 
   /* 701 PLACE VALUE */
-  BT.story(701, 'Watch', [
+  BT.story(701, 'Watch lesson', [
     { title: 'Decimal places and significant figures', goal: 'how to round to a number of decimal places or significant figures.', scenes: [
       SC('Decimal places', 'Round 3.4785 to 2 d.p.', [
         st("Decimal places count the digits after the decimal point. To round three point four seven eight five to two decimal places, keep two digits after the point, and look at the third.", V.eq('3.4785', 'b') + V.note('2 d.p. means two digits after the point')),
@@ -36,7 +36,7 @@
   ]);
 
   /* 702 OPERATIONS */
-  BT.story(702, 'Watch', [
+  BT.story(702, 'Watch lesson', [
     { title: 'Order of operations with indices', goal: 'how to use BIDMAS with powers and brackets.', scenes: [
       SC('BIDMAS', 'Brackets, indices, then × ÷, then + −', [
         st("Let's work out three plus four squared times two. The order is brackets, then indices, then multiplying and dividing, then adding and subtracting. We call it BIDMAS.", V.eq('3 + 4² × 2', 'b') + V.list(['Brackets', 'Indices', 'Divide / Multiply', 'Add / Subtract'])),
@@ -53,7 +53,7 @@
   ]);
 
   /* 703 FRACTIONS */
-  BT.story(703, 'Watch', [
+  BT.story(703, 'Watch lesson', [
     { title: 'Multiplying fractions', goal: 'how to multiply fractions and mixed numbers.', scenes: [
       SC('Top times top', '2/3 × 3/4', [
         st("To multiply fractions, multiply the tops and multiply the bottoms. Two thirds times three quarters is six twelfths.", V.eq('2/3 × 3/4 = 6/12', 'b')),
@@ -71,7 +71,7 @@
   ]);
 
   /* 704 DECIMALS AND PERCENTAGES */
-  BT.story(704, 'Watch', [
+  BT.story(704, 'Watch lesson', [
     { title: 'Percentage change', goal: 'how to increase and decrease an amount by a percentage.', scenes: [
       SC('Increasing', '£40 plus 15%', [
         st("A price of forty pounds goes up by fifteen per cent. Find ten per cent, four pounds, and five per cent, two pounds. Fifteen per cent is six pounds. The new price is forty-six pounds.", V.eq('10% = £4   5% = £2') + V.eq('£40 + £6 = £46', 'g')),
@@ -88,7 +88,7 @@
   ]);
 
   /* 705 MONEY, TIME, MEASUREMENT */
-  BT.story(705, 'Watch', [
+  BT.story(705, 'Watch lesson', [
     { title: 'Area of triangles and compound shapes', goal: 'how to find the area of triangles and shapes made from rectangles.', scenes: [
       SC('Triangles', 'Half a rectangle', [
         st("A triangle is half of a rectangle. With base ten centimetres and height six centimetres, the rectangle has area sixty, so the triangle has area thirty square centimetres.", V.poly([[20, 100], [200, 100], [110, 20]], 'var(--surface-2)', 230, 130, 'A triangle', [[110, 120, 'base 10 cm'], [112, 78, 'h 6 cm']]) + V.eq('½ × 10 × 6 = 30 cm²', 'g'))]),
@@ -105,7 +105,7 @@
   ]);
 
   /* 706 PATTERNS AND ALGEBRA */
-  BT.story(706, 'Watch', [
+  BT.story(706, 'Watch lesson', [
     { title: 'The nth term', goal: 'how to find the nth term of a linear sequence.', scenes: [
       SC('Finding the nth term', '5, 8, 11, 14', [
         st("The sequence is five, eight, eleven, fourteen. It goes up by three each time, so the rule starts three n. Three n gives three, six, nine, twelve.", V.tbl([['n', '1', '2', '3', '4'], ['3n', '3', '6', '9', '12'], ['term', '5', '8', '11', '14']], [])),
@@ -122,7 +122,7 @@
   ]);
 
   /* 707 SHAPE AND ANGLES */
-  BT.story(707, 'Watch', [
+  BT.story(707, 'Watch lesson', [
     { title: 'Angles in polygons', goal: 'how to find interior angle sums of polygons.', scenes: [
       SC('Splitting into triangles', 'The sum of interior angles', [
         st("Split any polygon into triangles from one corner. Each triangle has angles adding to one hundred and eighty. A pentagon makes three triangles, so its angles add to five hundred and forty degrees.", V.tbl([['Triangle', '1', '180°'], ['Quadrilateral', '2', '360°'], ['Pentagon', '3', '540°'], ['Hexagon', '4', '720°']], ['Shape', 'Triangles', 'Angle sum'])),
@@ -141,7 +141,7 @@
   ]);
 
   /* 708 DATA AND CHANCE */
-  BT.story(708, 'Watch', [
+  BT.story(708, 'Watch lesson', [
     { title: 'Mean from a frequency table', goal: 'how to find the mean when data is in a frequency table.', scenes: [
       SC('Frequency table', 'Scores out of 3', [
         st("Ten pupils scored one, two or three. The frequency table shows how many got each score. Two pupils scored one, five scored two, and three scored three.", V.tbl([['1', '2'], ['2', '5'], ['3', '3']], ['Score', 'Frequency'])),
@@ -157,7 +157,7 @@
   ]);
 
   /* 709 MIXED REASONING */
-  BT.story(709, 'Watch', [
+  BT.story(709, 'Watch lesson', [
     { title: 'Algebra in problems', goal: 'how to turn a story into an equation.', scenes: [
       SC('Think of a number', 'Write it as an equation', [
         st("I think of a number, multiply by three, take away four, and get twenty. Call my number n. Write what happens as an equation.", V.eq('3n − 4 = 20', 'b')),
@@ -174,7 +174,7 @@
   ]);
 
   /* 710 FACTORS */
-  BT.story(710, 'Watch', [
+  BT.story(710, 'Watch lesson', [
     { title: 'Prime factors, HCF and LCM', goal: 'how to use prime factors to find the HCF and LCM.', scenes: [
       SC('Prime factorisation', '24 and 36', [
         st("Write twenty-four as primes: two times two times two times three, or two cubed times three. Write thirty-six as two squared times three squared.", V.eq('24 = 2³ × 3') + V.eq('36 = 2² × 3²')),
@@ -189,7 +189,7 @@
   ]);
 
   /* 711 RATIO, PROPORTION, MONEY */
-  BT.story(711, 'Watch', [
+  BT.story(711, 'Watch lesson', [
     { title: 'Ratio problems', goal: 'how to share in a ratio with three parts and use a known share.', scenes: [
       SC('Three-way sharing', '£120 in the ratio 2 : 3 : 7', [
         st("Share a hundred and twenty pounds in the ratio two to three to seven. Add the parts: two plus three plus seven is twelve. A hundred and twenty divided by twelve is ten pounds a part.", V.bm([['A', [[40, '2']]], ['B', [[60, '3']]], ['C', [[140, '7']]]]) + V.eq('120 ÷ 12 = £10')),
@@ -208,7 +208,7 @@
   ]);
 
   /* 712 VOLUME, DIRECTION, SCALE, SPEED */
-  BT.story(712, 'Watch', [
+  BT.story(712, 'Watch lesson', [
     { title: 'Volume and scale', goal: 'how to find the volume of a cuboid and use map scales.', scenes: [
       SC('Volume of a cuboid', 'Length × width × height', [
         st("Volume is the space inside a solid. For a cuboid five centimetres by four by three, multiply the three lengths. Five times four is twenty, times three is sixty cubic centimetres.", V.dots(2, 3, 'var(--good)') + V.eq('5 × 4 × 3 = 60 cm³', 'g'))]),
@@ -226,7 +226,7 @@
   ]);
 
   /* 713 SPATIAL */
-  BT.story(713, 'Watch', [
+  BT.story(713, 'Watch lesson', [
     { title: 'Surface area and views', goal: 'how to find the surface area of a cuboid.', scenes: [
       SC('Surface area', 'Add all the faces', [
         st("Surface area is the total area of all the faces. A cuboid five by four by three has three pairs of matching faces. The pairs are twenty, fifteen and twelve.", V.tbl([['5 × 4', '20'], ['5 × 3', '15'], ['4 × 3', '12']], ['Pair of faces', 'Area'])),

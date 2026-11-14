@@ -56,7 +56,7 @@
         var ai = $('tyIn'); if (!solved) { ai.focus(); ai.addEventListener('input', function () { ai.value = ai.value.replace(/[^0-9\/ ]/g, ''); }); }
         $('tyF').addEventListener('submit', function (e) {
           e.preventDefault(); if (ai.value.trim() === '') return;
-          if (H.matches(q, ai.value)) { solved = true; count++; var done = need && count >= need; draw('<b>Yes!</b> ' + q.explain + (done ? ' <b>You have finished the game!</b>' : ''), 'ok'); if (done && onGoal) onGoal(); }
+          if (H.matches(q, ai.value)) { solved = true; count++; var done = need && count >= need; draw('<b>Yes!</b> ' + q.explain + (done ? ' <b>You have finished the activity!</b>' : ''), 'ok'); if (done && onGoal) onGoal(); }
           else draw('<b>Missed it.</b> ' + (q.form === 'mixed' ? 'Write it as a mixed number, for example 2 3/4.' : q.form === 'improper' ? 'Write it as one fraction, for example 11/4.' : '') + ' Look at the bars or press Need a hint.', 'no');
         });
       }
@@ -227,7 +227,7 @@
     });
     if (!replaced) return;
     t.steps.push({ id: 'mixmaker', label: 'Mixed number maker', type: 'lab', tag: 'Activity', title: 'Mixed number maker', lead: 'Change between improper fractions and mixed numbers. Move the sliders and watch the bars and the working.', mount: maker(c) });
-    t.steps.push({ id: 'convert', label: 'Convert it', type: 'lab', tag: 'Game', title: 'Convert it', lead: 'Convert six fractions, in both directions, to finish the game.', mount: function (host, ctx) { tryit(c, 6, function () { ctx.complete(); })(host); } });
+    t.steps.push({ id: 'convert', label: 'Convert it', type: 'lab', tag: 'Activity', title: 'Convert it', lead: 'Convert six fractions, in both directions, to finish the activity.', mount: function (host, ctx) { tryit(c, 6, function () { ctx.complete(); })(host); } });
     var wm = t.steps.filter(function (s) { return s.id === 'warm'; })[0];
     if (wm) { var orig = wm.make; wm.make = function () { var b = orig(); if (!Array.isArray(b)) b = [b]; b = b.slice(); b.splice(1, 0, warmQ(c)); return b; }; }
     S.arrange(t);

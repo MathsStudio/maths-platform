@@ -17,7 +17,7 @@
   }
 
   /* 841 NUMBER AND PERCENTAGES */
-  BT.story(841, 'Watch', [
+  BT.story(841, 'Watch lesson', [
     { title: 'Surds', goal: 'how to simplify and multiply surds.', scenes: [
       SC('What is a surd?', 'A root that does not simplify', [
         st("A surd is a square root that is not a whole number, like root two or root twelve. Its decimal goes on forever, so we leave it as a root to be exact. We can still simplify them.", V.eq('√2 = 1.41421…', 'b')),
@@ -33,7 +33,7 @@
   ]);
 
   /* 842 FINANCE */
-  BT.story(842, 'Watch', [
+  BT.story(842, 'Watch lesson', [
     { title: 'Compound interest', goal: 'how savings grow with compound interest.', scenes: [
       SC('Interest on interest', '£5,000 at 3% for 4 years', [
         st("With compound interest, the interest is added to the savings each year, and then earns interest too. Three per cent growth has the multiplier one point oh three. Four years: one point oh three to the power four.", V.eq('5000 × 1.03⁴', 'b')),
@@ -48,7 +48,7 @@
   ]);
 
   /* 843 RATIO, PROPORTION, RATES AND SPEED */
-  BT.story(843, 'Watch', [
+  BT.story(843, 'Watch lesson', [
     { title: 'Density and other rates', goal: 'how to use rates such as density.', scenes: [
       SC('Density', 'Mass ÷ volume', [
         st("Density is a rate: how much mass fits in each cubic centimetre. A block has a mass of five hundred and forty grams and a volume of two hundred cubic centimetres. Density is mass divided by volume.", V.eq('ρ = m ÷ V') + V.eq('540 ÷ 200 = 2.7 g/cm³', 'g')),
@@ -62,7 +62,7 @@
   ]);
 
   /* 844 SOLIDS */
-  BT.story(844, 'Watch', [
+  BT.story(844, 'Watch lesson', [
     { title: 'Volume of cones and spheres', goal: 'how to use the volume formulae for a cone and sphere.', scenes: [
       SC('Cone', 'Radius 3 cm, height 4 cm', [
         st("A cone is a third of the cylinder that fits around it. Its volume is one third pi r squared h. With radius three and height four: a third of pi times nine times four is twelve pi, about thirty-seven point seven cubic centimetres.", V.eq('V = ⅓πr²h = ⅓ × π × 9 × 4 = 12π ≈ 37.7 cm³', 'g'))]),
@@ -79,7 +79,7 @@
   ]);
 
   /* 845 ALGEBRA: BRACKETS AND FACTORISING */
-  BT.story(845, 'Watch', [
+  BT.story(845, 'Watch lesson', [
     { title: 'Common factors and difference of two squares', goal: 'how to factorise by taking out a common factor and spotting a difference of squares.', scenes: [
       SC('Common factor', '6x + 9', [
         st("Factorising is expanding backwards. Look for the highest number that divides both terms. Six x and nine are both divisible by three. Take out the three: three brackets two x plus three.", V.eq('6x + 9 = 3(2x + 3)', 'g') + V.rule('Check by expanding.'))]),
@@ -95,7 +95,7 @@
   ]);
 
   /* 846 EQUATIONS, INEQUATIONS, SUBJECT */
-  BT.story(846, 'Watch', [
+  BT.story(846, 'Watch lesson', [
     { title: 'Equations with fractions', goal: 'how to solve equations with a fraction on each side.', scenes: [
       SC('Cross-multiplying', '(x + 1)/2 = (x − 2)/3', [
         st("To get rid of fractions, multiply both sides by the common denominator, six. Six times x plus one over two is three times x plus one. Six times x minus two over three is two times x minus two.", V.eq('3(x + 1) = 2(x − 2)', 'b')),
@@ -112,7 +112,7 @@
   ]);
 
   /* 847 STRAIGHT LINES */
-  BT.story(847, 'Watch', [
+  BT.story(847, 'Watch lesson', [
     { title: 'Parallel and perpendicular lines', goal: 'how gradients show whether lines are parallel or perpendicular.', scenes: [
       SC('Parallel', 'The same gradient', [
         st("Parallel lines never meet. They have exactly the same gradient. The lines y equals two x plus one, and y equals two x minus three are parallel, because both have gradient two.", V.plot(-2, 4, -5, 7, [{ l: [[-2, -3], [3, 7]] }, { l: [[-1, -5], [4, 5]], c: 'var(--good)' }], { tx: 1, ty: 2 }) + V.eq('y = 2x + 1   y = 2x − 3', 'g'))]),
@@ -127,7 +127,7 @@
   ]);
 
   /* 848 SIMULTANEOUS EQUATIONS */
-  BT.story(848, 'Watch', [
+  BT.story(848, 'Watch lesson', [
     { title: 'Solving by graph', goal: 'how the intersection of two lines solves two equations at once.', scenes: [
       SC('Where the lines cross', 'y = x + 1 and y = −x + 5', [
         st("Simultaneous equations ask for values of x and y that satisfy two equations at once. If we draw both lines, the solution is the point where they cross.", V.plot(0, 6, 0, 6, [{ l: [[0, 1], [5, 6]] }, { l: [[0, 5], [5, 0]], c: 'var(--good)' }, { p: [2, 3, '(2, 3)'] }], { tx: 1, ty: 1, xl: 'x', yl: 'y' })),
@@ -141,7 +141,7 @@
   ]);
 
   /* 849 PYTHAGORAS AND TRIGONOMETRY */
-  BT.story(849, 'Watch', [
+  BT.story(849, 'Watch lesson', [
     { title: 'SOH CAH TOA', goal: 'how to use sine, cosine and tangent to find a missing side.', scenes: [
       SC('Naming the sides', 'Hypotenuse, opposite, adjacent', [
         st("In a right-angled triangle, the hypotenuse is opposite the right angle. The opposite is across from the angle you are using, and the adjacent is next to it. Three ratios link them: sine is opposite over hypotenuse, cosine is adjacent over hypotenuse, tangent is opposite over adjacent.", V.tbl([['sin θ', 'O ÷ H'], ['cos θ', 'A ÷ H'], ['tan θ', 'O ÷ A']], ['Ratio', 'Sides']) + V.rule('SOH CAH TOA'))]),
@@ -156,7 +156,7 @@
   ]);
 
   /* 850 THE CIRCLE */
-  BT.story(850, 'Watch', [
+  BT.story(850, 'Watch lesson', [
     { title: 'Circle theorems', goal: 'the angle in a semicircle, the angle at the centre and tangents.', scenes: [
       SC('Angle in a semicircle', 'Always 90°', [
         st("Draw a diameter and join its ends to any point on the circle. The angle at that point is always a right angle. This is the angle in a semicircle theorem.", V.circle() + V.eq('angle in a semicircle = 90°', 'g')),
@@ -173,7 +173,7 @@
   ]);
 
   /* 851 SIMILARITY, SCALE, BEARINGS, ELEVATION */
-  BT.story(851, 'Watch', [
+  BT.story(851, 'Watch lesson', [
     { title: 'Similar triangles', goal: 'how to use similar triangles to find an unknown length.', scenes: [
       SC('Shadows', 'A pole and a tree', [
         st("A two metre pole casts a three metre shadow. At the same moment, a tree casts a twelve metre shadow. The sun makes the two triangles similar, so the sides are in the same ratio.", V.eq('pole : shadow = 2 : 3', 'b')),
@@ -187,7 +187,7 @@
   ]);
 
   /* 852 STATISTICS AND PROBABILITY */
-  BT.story(852, 'Watch', [
+  BT.story(852, 'Watch lesson', [
     { title: 'Standard deviation', goal: 'how to calculate the standard deviation to measure spread.', scenes: [
       SC('Measuring spread', '2, 4, 6, 8', [
         st("The standard deviation tells us how spread out the data is. Take the data two, four, six, eight. The mean is five.", V.cards(['2', '4', '6', '8'], ['b'], true) + V.eq('mean = 20 ÷ 4 = 5')),
@@ -202,7 +202,7 @@
   ]);
 
   /* 853 SPATIAL */
-  BT.story(853, 'Watch', [
+  BT.story(853, 'Watch lesson', [
     { title: 'Vectors as journeys', goal: 'how to describe a movement with a vector.', scenes: [
       SC('Column vectors', 'Right and up', [
         st("A vector describes a journey. The top number is how far right, and the bottom number is how far up. Negative means left or down. The vector three, two is three right and two up.", V.plot(0, 5, 0, 4, [{ l: [[1, 1], [4, 3]] }, { p: [1, 1, 'A', 'var(--accent)'] }, { p: [4, 3, 'B', 'var(--good)'] }], { tx: 1, ty: 1 }) + V.eq('AB = (3, 2)', 'g')),
