@@ -5898,8 +5898,58 @@ FAM.compassTurn = function (v) { return function () { var n = pick(NM), i = rnd(
   return MC({ text: 'A robot faces <b>' + D8[i] + '</b>. It turns <b>' + t + '°' + (cw ? ' clockwise' : ' anticlockwise') + '</b>. Which way does it face now?', hints: ['Each 45° moves one compass point.', cw ? 'Clockwise goes N, NE, E, SE, S...' : 'Anticlockwise goes N, NW, W, SW, S...'], explain: t / 45 + ' points ' + (cw ? 'clockwise' : 'anticlockwise') + ' from ' + D8[i] + ' is ' + D8[j] + '.' }, D8[j], D8); }; };
 
 /* topic -> families (easy, hard). Every topic gets problems tied to its own skills. */
+/* ===== Topic 1, more real-life families: negative numbers, partitioning and place value ===== */
+function sgn(x) { return x < 0 ? '−' + Math.abs(x) : String(x); }
+FAM.negTemp = function (v) { return function () {
+  var lo = v === 0 ? -8 : v === 1 ? -15 : -25, hi = v === 0 ? 8 : v === 1 ? 15 : 20, k = rnd(0, 2), place = pick(['Aviemore', 'Braemar', 'Glasgow', 'Inverness', 'Fort William', 'Dundee']);
+  if (k === 0) { var a = rnd(lo, 2), up = rnd(3, v === 0 ? 9 : 14), b = a + up; return QS({ text: 'At 6 am in ' + place + ' it was <b>' + sgn(a) + '°C</b>. By midday it was <b>' + up + ' degrees warmer</b>. What was the temperature at midday? (°C)', answer: String(b),
+    hints: ['Start at ' + sgn(a) + ' on a number line and count on ' + up + ' steps.', 'Count to zero first, then carry on past zero.'], explain: sgn(a) + ' + ' + up + ' = ' + sgn(b) + '°C.' }); }
+  if (k === 1) { var c = rnd(-2, hi), down = rnd(3, v === 0 ? 9 : 16), d = c - down; return QS({ text: 'In the afternoon it was <b>' + sgn(c) + '°C</b> in ' + place + '. Overnight the temperature fell by <b>' + down + ' degrees</b>. What was it overnight? (°C)', answer: String(d),
+    hints: ['Start at ' + sgn(c) + ' and count back ' + down + ' steps.', 'Count back to zero first, then carry on below zero.'], explain: sgn(c) + ' − ' + down + ' = ' + sgn(d) + '°C.' }); }
+  var x = rnd(lo, -1), y = rnd(1, hi); return QS({ text: 'One night it was <b>' + sgn(x) + '°C</b> in ' + place + ' and <b>' + y + '°C</b> in London. How many degrees warmer was London?', answer: String(y - x),
+    hints: ['Count up from ' + sgn(x) + ' to zero, then from zero to ' + y + '.', Math.abs(x) + ' steps to zero, then ' + y + ' more.'], explain: Math.abs(x) + ' + ' + y + ' = ' + (y - x) + ' degrees warmer.' });
+}; };
+FAM.negDepth = function (v) { return function () {
+  var k = rnd(0, 1);
+  if (k === 0) { var start = rnd(1, 4), go = rnd(start + 1, start + (v === 0 ? 4 : 7)), end = start - go; return QS({ text: 'A lift is on floor <b>' + start + '</b>. Floor 0 is the ground floor, and car parks below it are negative floors. The lift goes down <b>' + go + ' floors</b>. Which floor is it on now?', answer: String(end),
+    hints: ['Count down ' + go + ' floors from ' + start + '.', 'Below floor 0 come floors −1, −2, −3 …'], explain: start + ' − ' + go + ' = ' + sgn(end) + '.' }); }
+  var deep = rnd(v === 0 ? 5 : 12, v === 0 ? 15 : 40), up = rnd(2, deep - 1), at = -deep + up; return QS({ text: 'A diver is <b>' + deep + ' m</b> below the surface of the sea, at <b>' + sgn(-deep) + ' m</b>. She swims up <b>' + up + ' m</b>. Where is she now? (m)', answer: String(at),
+    hints: ['Swimming up makes the number bigger: count up from ' + sgn(-deep) + '.', sgn(-deep) + ' + ' + up + '.'], explain: sgn(-deep) + ' + ' + up + ' = ' + sgn(at) + ' m, still below the surface.' });
+}; };
+FAM.negOrder = function (v) { return function () {
+  var places = shuffle(['Aviemore', 'Braemar', 'Lerwick', 'Oban', 'Perth', 'Stirling']).slice(0, 4), lo = v === 0 ? -9 : -20, t = [];
+  while (t.length < 4) { var x = rnd(lo, 6); if (t.indexOf(x) < 0) t.push(x); }
+  var cold = Math.random() < 0.6, idx = t.indexOf(cold ? Math.min.apply(null, t) : Math.max.apply(null, t));
+  return MC({ text: 'Night temperatures: ' + places.map(function (p, i) { return p + ' <b>' + sgn(t[i]) + '°C</b>'; }).join(', ') + '. Which place was the <b>' + (cold ? 'coldest' : 'warmest') + '</b>?',
+    hints: ['Put the temperatures on a number line.', cold ? 'The coldest is the one furthest left: the most negative.' : 'The warmest is the one furthest right.'], explain: places[idx] + ' at ' + sgn(t[idx]) + '°C is the ' + (cold ? 'coldest' : 'warmest') + '.' }, places[idx], places);
+}; };
+FAM.partMoney = function (v) { return function () {
+  var big = v === 0 ? 1000 : v === 1 ? 10000 : 100000, n = rnd(big * 1.2, big * 9.8) | 0, units = v === 0 ? [1000, 100, 10, 1] : v === 1 ? [10000, 1000, 100, 10, 1] : [100000, 10000, 1000, 100, 10, 1];
+  var u = pick(units.slice(0, -1)), cnt = Math.floor(n % (u * 10) / u), nm = pick(NM);
+  if (rnd(0, 1) === 0) return QS({ text: nm + '\u2019s school raised <b>£' + fmtN(n) + '</b>. The bank pays it out in bundles of ' + units.map(function (x) { return '£' + fmtN(x); }).join(', ') + ', using as few bundles as possible. How many <b>£' + fmtN(u) + '</b> bundles are there?', answer: String(cnt),
+    hints: ['Partition ' + fmtN(n) + ' by place value.', 'Look at the digit in the ' + fmtN(u) + 's column.'], explain: 'The digit in the ' + fmtN(u) + 's column is ' + cnt + ', so there are ' + cnt + ' bundles of £' + fmtN(u) + '.' });
+  var parts = []; var r = n; units.forEach(function (x) { var d = Math.floor(r / x); r -= d * x; if (d) parts.push(fmtN(d * x)); });
+  return QS({ text: 'A charity counts its money: <b>£' + parts.join(' + £') + '</b>. How much is that altogether? (£)', answer: String(n),
+    hints: ['Put each part in its place value column.', 'Read the digits together as one number.'], explain: parts.join(' + ') + ' = ' + fmtN(n) + '.' });
+}; };
+FAM.partFlex = function (v) { return function () {
+  var k = rnd(0, 1), nm = pick(NM);
+  if (k === 0) { var n = rnd(v === 0 ? 31 : 120, v === 0 ? 98 : 980), tens = Math.floor(n / 10) - rnd(1, 2), ones = n - tens * 10; return QS({ text: nm + ' has <b>' + n + '</b> stickers. They put them in packs of ten and keep some loose. If there are <b>' + tens + '</b> full packs, how many loose stickers are there?', answer: String(ones),
+    hints: [tens + ' packs of ten is ' + tens * 10 + ' stickers.', 'Take ' + tens * 10 + ' away from ' + n + '.'], explain: n + ' = ' + tens * 10 + ' + ' + ones + ', so there are ' + ones + ' loose stickers.' }); }
+  var h = rnd(2, 9), tt = rnd(0, 4), o = rnd(1, 9), tot = h * 100 + tt * 10 + o, h2 = h - 1, t2 = tt + 10; return QS({ text: 'A shop has <b>' + tot + '</b> pencils. They are packed as <b>' + h2 + '</b> boxes of 100, some bags of 10 and <b>' + o + '</b> single pencils. How many bags of 10 are there?', answer: String(t2),
+    hints: [h2 + ' boxes of 100 is ' + h2 * 100 + '.', tot + ' − ' + h2 * 100 + ' − ' + o + ' = ' + t2 * 10 + '. How many tens is that?'], explain: tot + ' = ' + h2 * 100 + ' + ' + t2 * 10 + ' + ' + o + ', so there are ' + t2 + ' bags of 10.' });
+}; };
+FAM.placeMore = function (v) { return function () {
+  var steps = v === 0 ? [10, 100, 1000] : v === 1 ? [100, 1000, 10000] : [1000, 10000, 100000], s = pick(steps), k = rnd(0, 2);
+  if (k === 0) { var m = rnd(10, 99) * s - rnd(1, 3) * (s / 10 >= 1 ? s / 10 : 1); m = Math.max(m, s); return QS({ text: 'A car’s milometer shows <b>' + fmtN(m) + '</b> miles. After a trip of <b>' + fmtN(s) + '</b> miles, what will it show?', answer: String(m + s),
+    hints: ['Adding ' + fmtN(s) + ' changes the ' + fmtN(s) + 's digit.', 'If that digit is 9, it becomes 0 and the next column goes up by one.'], explain: fmtN(m) + ' + ' + fmtN(s) + ' = ' + fmtN(m + s) + '.' }); }
+  var n = rnd(v === 0 ? 2000 : 20000, v === 0 ? 9800 : v === 1 ? 98000 : 980000), fewer = k === 1, ans = fewer ? n - s : n + s;
+  return QS({ text: 'A cinema sold <b>' + fmtN(n) + '</b> tickets this year. Last year it sold <b>' + fmtN(s) + ' ' + (fewer ? 'fewer' : 'more') + '</b>. How many tickets did it sell last year?', answer: String(ans),
+    hints: ['Last year was ' + (fewer ? 'fewer' : 'more') + ', so ' + (fewer ? 'take away' : 'add') + ' ' + fmtN(s) + '.', 'Only the ' + fmtN(s) + 's column changes, unless it has to go past 9 or below 0.'], explain: 'Last year: ' + fmtN(n) + (fewer ? ' − ' : ' + ') + fmtN(s) + ' = ' + fmtN(ans) + '.' });
+}; };
+
 var M = S.storyMap;
-M[1] = [['noteCount', 'digitValue', 'roundCrowd'], ['estimateBill', 'orderRace']];
+M[1] = [['noteCount', 'digitValue', 'roundCrowd', 'negTemp', 'negOrder', 'partMoney', 'partFlex', 'placeMore'], ['estimateBill', 'orderRace', 'negTemp', 'negDepth', 'partMoney', 'placeMore']];
 M[2] = [['shopTotal', 'changeFrom', 'shareGroups', 'whichOp'], ['shopMissing', 'cakeLeft', 'savings']];
 M[3] = [['fracOfAmount', 'fracStory'], ['fracAdd', 'fracCompare']];
 M[4] = [['pctOfAmount', 'convertFDP'], ['pctStory', 'testScore', 'decimalMoney']];
@@ -5913,7 +5963,7 @@ M[11] = [['ratioStory', 'shareRatio', 'unitPrice'], ['bestBuy', 'profitStory', '
 M[12] = [['mapStory', 'cuboidBox', 'compassTurn'], ['speedStory', 'volumeStory', 'scaleModel', 'bearingStory']];
 
 /* add the Real-life problem step to each topic */
-var LEAD = { 1: 'rounding, estimating and place value in crowds, money and races', 2: 'shopping, change, sharing and baking', 3: 'fractions of amounts, adding and comparing fractions', 4: 'sales, test scores, percentages and decimal prices', 5: 'timetables, durations, recipes and units', 6: 'taxi fares, patterns, number puzzles and savings plans', 7: 'angles, symmetry, clocks, fencing, carpets and maps', 8: 'surveys, charts, averages and chance', 9: 'multi-step puzzles, bar models and clues', 10: 'rows, boxes, timing, tiles and prime numbers', 11: 'sharing, best buys, profit, interest and exchange rates', 12: 'volume, bearings, scale models, maps and journeys' };
+var LEAD = { 1: 'place value, partitioning, negative numbers, rounding and estimating, in crowds, money, temperatures and races', 2: 'shopping, change, sharing and baking', 3: 'fractions of amounts, adding and comparing fractions', 4: 'sales, test scores, percentages and decimal prices', 5: 'timetables, durations, recipes and units', 6: 'taxi fares, patterns, number puzzles and savings plans', 7: 'angles, symmetry, clocks, fencing, carpets and maps', 8: 'surveys, charts, averages and chance', 9: 'multi-step puzzles, bar models and clues', 10: 'rows, boxes, timing, tiles and prime numbers', 11: 'sharing, best buys, profit, interest and exchange rates', 12: 'volume, bearings, scale models, maps and journeys' };
 Object.keys(S.topics).forEach(function (k) {
   var t = S.topics[k]; if (!S.storyFor(Number(k)) || t.steps.some(function (s) { return s.id === 'practical'; })) return;
   var base = t.base || t.replaces || t.n;
@@ -17146,6 +17196,125 @@ S.spatialExtra = S.extraMakers;
   BT.lessons(508, 'Watch lesson', [data], ['Mode, range and chance', 'Two-way tables, Venn diagrams and pie charts']);
   BT.lessons(510, 'Watch lesson', [factors], ['Prime numbers and square numbers', 'Always true, factors and multiples']);
   BT.lessons(513, 'Watch lesson', [gridRef], ['Turns and mirror images', 'Building with cubes and nets', 'Painted cubes and stacks']);
+})();
+</script>
+<script>
+/* topic501.js: P5 Place value and rounding, brought in line with its questions
+   (place value, negative numbers, partitioning, rounding).
+   - Let's Learn: a Partitioning lesson of its own (the partitioning slide moves here from Negative numbers)
+   - Activity Time: a Partition puzzle */
+(function () {
+  'use strict';
+  var S = Studio, H = S.h, K = S.kit, BT = window.BT; if (!BT || !BT.add) return;
+  var t = S.topics[501]; if (!t) return;
+  var X = BT.X, sl = BT.sl, rnd = H.rnd, pick = H.pick, shuffle = H.shuffle, fmtInt = H.fmtInt;
+
+  /* ---- Let's Learn: Partitioning ---- */
+  var neg = t.steps.filter(function (s) { return s.id === 'learn3'; })[0], moved = [];
+  if (neg) {
+    moved = neg.slides.filter(function (s) { return s.title === 'Partitioning a number'; });
+    neg.slides = neg.slides.filter(function (s) { return s.title !== 'Partitioning a number'; });
+    var m = H.slideMeta;
+    m.goals['501.learn3'] = neg.slides.map(function (s) { return s.goal; });
+    m.more['501.learn3'] = neg.slides.map(function (s) { return s.noMore ? null : { more: s.more || [], eg: s.eg || [] }; });
+  }
+  var part = moved.concat([
+    X('Partitioning with a zero', 'Partition 5,036 by place value.',
+      ['Put each digit in its column: 5 thousands, 0 hundreds, 3 tens, 6 ones.', 'Write the value of each digit: 5,000, 0, 30 and 6.', 'There are no hundreds, so that part is 0. We can leave it out.', 'So 5,036 = 5,000 + 30 + 6.'],
+      ['5,036', '5,000 · 0 · 30 · 6', 'no hundreds', '5,000 + 30 + 6'], '5,036 = 5,000 + 30 + 6',
+      'A cheque for £5,036 is five thousand pounds and thirty-six pounds.',
+      'how to partition a number that has a zero in it.',
+      ['A zero holds an empty place, so that place gives no part.', 'Check by adding the parts back together.'],
+      ['Example 1: 708 = 700 + 8.', 'Example 2: 4,090 = 4,000 + 90.', 'Example 3: 30,405 = 30,000 + 400 + 5.']),
+    X('Flexible partitioning', 'Show 46 split in three different ways.',
+      ['By place value: 46 = 40 + 6.', 'Swap one ten for ten ones: 46 = 30 + 16.', 'Swap another ten: 46 = 20 + 26.', 'Every way is right, because the parts always add up to 46.'],
+      ['40 + 6', '30 + 16', '20 + 26', 'all make 46'], '46 = 40 + 6 = 30 + 16 = 20 + 26',
+      'Paying 46p with three 10p coins and sixteen 1p coins still makes 46p.',
+      'how to split a number in more than one way.',
+      ['Flexible partitioning is very useful in subtraction when you need more ones.', 'You can swap a hundred for ten tens in the same way.'],
+      ['Example 1: 73 = 60 + 13.', 'Example 2: 352 = 300 + 40 + 12.', 'Example 3: 520 = 400 + 120.']),
+    X('Partitioning to add in your head', 'Work out 245 + 132 by partitioning.',
+      ['Partition both numbers: 200 + 40 + 5 and 100 + 30 + 2.', 'Add the hundreds: 200 + 100 = 300.', 'Add the tens and the ones: 40 + 30 = 70 and 5 + 2 = 7.', 'Recombine: 300 + 70 + 7 = 377.'],
+      ['245 + 132', '200 + 100 = 300', '70 and 7', '377'], '245 + 132 = 377',
+      'Adding two shopping bills in your head, like £245 and £132.',
+      'how partitioning makes adding easier.',
+      ['Add each place value separately, then put the answers back together.', 'If a column adds to 10 or more, it makes one of the next place.'],
+      ['Example 1: 36 + 41 = 70 + 7 = 77.', 'Example 2: 128 + 51 = 100 + 70 + 9 = 179.', 'Example 3: 57 + 26 = 70 + 13 = 83.'])
+  ]);
+  if (!t.steps.some(function (s) { return s.id === 'learn4'; })) {
+    BT.add(501, 'learn4', 'Partitioning', part);
+    var st4 = t.steps.filter(function (s) { return s.id === 'learn4'; })[0], i4 = t.steps.indexOf(st4), i3 = t.steps.indexOf(neg);
+    if (st4 && i3 > -1) { t.steps.splice(i4, 1); t.steps.splice(i3 + 1, 0, st4); S.arrange(t); }
+  }
+
+  /* "Let's go deeper" for the partitioning slides */
+  var PART_INS = ['Partitioning means splitting a number into parts that are easier to work with. Splitting by place value gives one part for each digit, such as 4,352 = 4,000 + 300 + 50 + 2. The parts can also be split in other ways, because one ten is the same as ten ones and one hundred is the same as ten tens.', 'Check by adding the parts back together: they must make the number you started with. A zero gives no part, so 5,036 is 5,000 + 30 + 6, with no hundreds.'];
+  var pickIns = BT.pickInsight;
+  if (pickIns) BT.pickInsight = function (n, title, goal) { return /partition/i.test(String(title || '')) ? PART_INS : pickIns(n, title, goal); };
+
+  /* ---- Activity Time: Partition puzzle ---- */
+  var css = document.createElement('style');
+  css.textContent = '.pp-big{font-family:var(--font-display,inherit);font-size:clamp(32px,8vw,48px);font-weight:900;text-align:center;margin:6px 0}' +
+    '.pp-tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(96px,1fr));gap:10px;margin:12px 0}.pp-tile{min-height:56px;font-size:1.15rem;font-weight:800;background:var(--surface-2);border:2px solid var(--line);border-radius:12px;color:inherit}' +
+    '.pp-tile[aria-pressed="true"]{border-color:var(--accent);box-shadow:inset 0 0 0 2px var(--accent)}.pp-tile.ok{border-color:var(--good);background:var(--good-bg)}.pp-tile.no{border-color:var(--bad);background:var(--bad-bg)}' +
+    '.pp-sum{font-size:1.2rem;font-weight:800;text-align:center;margin:4px 0 10px}';
+  document.head.appendChild(css);
+  var CHEER = ['Brilliant!', 'Nice one!', 'You got it!', 'Spot on!'], TRY = ['Not this time.', 'Good try!', 'Nearly. Next one!'];
+  function mountPartition(host, ctx) {
+    var ROUNDS = 6, i, score, cur;
+    function makeBuild(r) {
+      var len = r < 2 ? 4 : 5, n = rnd(Math.pow(10, len - 1), Math.pow(10, len) - 1), d = String(n).split('').map(Number);
+      if (r % 4 === 2) { d[rnd(1, len - 2)] = 0; n = Number(d.join('')); }
+      var parts = [], wrong = [];
+      d.forEach(function (x, k) { var p = len - 1 - k; if (!x) return; parts.push(x * Math.pow(10, p)); var alt = x * Math.pow(10, p ? p - 1 : 1); if (wrong.indexOf(alt) < 0) wrong.push(alt); });
+      wrong = wrong.filter(function (w) { return parts.indexOf(w) < 0; }).slice(0, 3);
+      return { kind: 'build', n: n, parts: parts, tiles: shuffle(parts.concat(wrong)), chosen: [] };
+    }
+    function makeFlex(r) {
+      var n = r < 4 ? rnd(31, 98) : rnd(121, 489), take = Math.floor(n / 10) * 10 - 10 * rnd(1, 2), rest = n - take, seen = {};
+      var opts = shuffle([rest, rest - 10, rest + 10, n % 10 || rest + 1]).filter(function (x) { if (x <= 0 || seen[x]) return false; seen[x] = 1; return true; });
+      return { kind: 'flex', n: n, take: take, rest: rest, tiles: opts };
+    }
+    function make(r) { return r % 2 ? makeFlex(r) : makeBuild(r); }
+    function draw(fb, cls, locked) {
+      var c = cur, head = '<div class="gm-top"><span class="gm-pill">Round ' + (i + 1) + ' of ' + ROUNDS + '</span><span class="gm-pill">Score ' + score + '</span></div>';
+      var q = c.kind === 'build' ? '<div class="gm-say say">Tap the parts that make this number. Use one part for each digit that is not zero.</div><div class="pp-big">' + fmtInt(c.n) + '</div>'
+        : '<div class="gm-say say">Split the number a different way. Which part is missing?</div><div class="pp-big">' + fmtInt(c.n) + ' = ' + fmtInt(c.take) + ' + ?</div>';
+      var tiles = '<div class="pp-tiles">' + c.tiles.map(function (v) {
+        var on = c.kind === 'build' && c.chosen.indexOf(v) > -1, mark = '';
+        if (locked) { var right = c.kind === 'build' ? c.parts.indexOf(v) > -1 : v === c.rest; if (right) mark = ' ok'; else if (on || v === locked) mark = ' no'; }
+        return '<button class="pp-tile' + mark + '" type="button" data-v="' + v + '" aria-pressed="' + on + '"' + (locked ? ' disabled' : '') + '>' + fmtInt(v) + '</button>';
+      }).join('') + '</div>';
+      var sum = c.kind === 'build' ? '<div class="pp-sum" aria-live="polite">Your parts make ' + fmtInt(c.chosen.reduce(function (a, x) { return a + x; }, 0)) + '</div>' : '';
+      var btns = locked ? '<button class="btn" type="button" data-act="next">' + (i + 1 >= ROUNDS ? 'See my score' : 'Next') + '</button>' : (c.kind === 'build' ? '<button class="btn" type="button" data-act="check">Check</button>' : '');
+      host.innerHTML = head + q + tiles + sum + '<div class="fbk ' + (cls || '') + '" aria-live="polite" style="min-height:2.4em">' + (fb || '') + '</div><div class="row">' + btns + '</div>';
+      host.querySelectorAll('.pp-tile:not([disabled])').forEach(function (b) { b.addEventListener('click', function () {
+        var v = Number(b.dataset.v);
+        if (c.kind === 'build') { var k = c.chosen.indexOf(v); if (k > -1) c.chosen.splice(k, 1); else c.chosen.push(v); draw(); }
+        else answer(v === c.rest, fmtInt(c.n) + ' − ' + fmtInt(c.take) + ' = ' + fmtInt(c.rest) + ', so ' + fmtInt(c.n) + ' = ' + fmtInt(c.take) + ' + ' + fmtInt(c.rest) + '.', v);
+      }); });
+      var chk = host.querySelector('[data-act="check"]');
+      if (chk) chk.addEventListener('click', function () {
+        var ok = c.chosen.length === c.parts.length && c.parts.every(function (p) { return c.chosen.indexOf(p) > -1; });
+        answer(ok, fmtInt(c.n) + ' = ' + c.parts.map(fmtInt).join(' + ') + '.', -1);
+      });
+      var nx = host.querySelector('[data-act="next"]');
+      if (nx) nx.addEventListener('click', function () { i++; if (i >= ROUNDS) finish(); else { cur = make(i); draw(); } });
+    }
+    function answer(ok, why, v) { if (ok) score++; draw('<b>' + (ok ? pick(CHEER) : pick(TRY)) + '</b> ' + why, ok ? 'ok' : 'no', v); }
+    function finish() {
+      host.innerHTML = '<div class="gm-top"><span class="gm-pill">Finished!</span></div><p class="gm-say say">You got <b>' + score + ' out of ' + ROUNDS + '</b>. ' + (score >= ROUNDS - 1 ? 'Brilliant partitioning!' : 'Remember: each digit gives one part, and a zero gives no part.') + '</p><div class="row"><button class="btn" type="button" data-act="again">Play again</button></div>';
+      host.querySelector('[data-act="again"]').addEventListener('click', start);
+      if (ctx && ctx.complete) ctx.complete();
+    }
+    function start() { i = 0; score = 0; cur = make(0); draw(); }
+    start();
+  }
+  if (!t.steps.some(function (s) { return s.id === 'lab_part'; })) {
+    var labs = t.steps.filter(function (s) { return s.type === 'lab'; }), after = labs[1] || labs[0];
+    var step = { id: 'lab_part', label: 'Partition puzzle', type: 'lab', tag: 'Activity time · Hands-on activity', title: 'Partition puzzle', lead: 'Build each number from its parts, then split numbers in different ways. Six rounds.', mount: mountPartition };
+    t.steps.splice(after ? t.steps.indexOf(after) + 1 : t.steps.length, 0, step); S.arrange(t);
+  }
 })();
 </script>
 <script>

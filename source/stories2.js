@@ -175,8 +175,58 @@ FAM.compassTurn = function (v) { return function () { var n = pick(NM), i = rnd(
   return MC({ text: 'A robot faces <b>' + D8[i] + '</b>. It turns <b>' + t + '°' + (cw ? ' clockwise' : ' anticlockwise') + '</b>. Which way does it face now?', hints: ['Each 45° moves one compass point.', cw ? 'Clockwise goes N, NE, E, SE, S...' : 'Anticlockwise goes N, NW, W, SW, S...'], explain: t / 45 + ' points ' + (cw ? 'clockwise' : 'anticlockwise') + ' from ' + D8[i] + ' is ' + D8[j] + '.' }, D8[j], D8); }; };
 
 /* topic -> families (easy, hard). Every topic gets problems tied to its own skills. */
+/* ===== Topic 1, more real-life families: negative numbers, partitioning and place value ===== */
+function sgn(x) { return x < 0 ? '−' + Math.abs(x) : String(x); }
+FAM.negTemp = function (v) { return function () {
+  var lo = v === 0 ? -8 : v === 1 ? -15 : -25, hi = v === 0 ? 8 : v === 1 ? 15 : 20, k = rnd(0, 2), place = pick(['Aviemore', 'Braemar', 'Glasgow', 'Inverness', 'Fort William', 'Dundee']);
+  if (k === 0) { var a = rnd(lo, 2), up = rnd(3, v === 0 ? 9 : 14), b = a + up; return QS({ text: 'At 6 am in ' + place + ' it was <b>' + sgn(a) + '°C</b>. By midday it was <b>' + up + ' degrees warmer</b>. What was the temperature at midday? (°C)', answer: String(b),
+    hints: ['Start at ' + sgn(a) + ' on a number line and count on ' + up + ' steps.', 'Count to zero first, then carry on past zero.'], explain: sgn(a) + ' + ' + up + ' = ' + sgn(b) + '°C.' }); }
+  if (k === 1) { var c = rnd(-2, hi), down = rnd(3, v === 0 ? 9 : 16), d = c - down; return QS({ text: 'In the afternoon it was <b>' + sgn(c) + '°C</b> in ' + place + '. Overnight the temperature fell by <b>' + down + ' degrees</b>. What was it overnight? (°C)', answer: String(d),
+    hints: ['Start at ' + sgn(c) + ' and count back ' + down + ' steps.', 'Count back to zero first, then carry on below zero.'], explain: sgn(c) + ' − ' + down + ' = ' + sgn(d) + '°C.' }); }
+  var x = rnd(lo, -1), y = rnd(1, hi); return QS({ text: 'One night it was <b>' + sgn(x) + '°C</b> in ' + place + ' and <b>' + y + '°C</b> in London. How many degrees warmer was London?', answer: String(y - x),
+    hints: ['Count up from ' + sgn(x) + ' to zero, then from zero to ' + y + '.', Math.abs(x) + ' steps to zero, then ' + y + ' more.'], explain: Math.abs(x) + ' + ' + y + ' = ' + (y - x) + ' degrees warmer.' });
+}; };
+FAM.negDepth = function (v) { return function () {
+  var k = rnd(0, 1);
+  if (k === 0) { var start = rnd(1, 4), go = rnd(start + 1, start + (v === 0 ? 4 : 7)), end = start - go; return QS({ text: 'A lift is on floor <b>' + start + '</b>. Floor 0 is the ground floor, and car parks below it are negative floors. The lift goes down <b>' + go + ' floors</b>. Which floor is it on now?', answer: String(end),
+    hints: ['Count down ' + go + ' floors from ' + start + '.', 'Below floor 0 come floors −1, −2, −3 …'], explain: start + ' − ' + go + ' = ' + sgn(end) + '.' }); }
+  var deep = rnd(v === 0 ? 5 : 12, v === 0 ? 15 : 40), up = rnd(2, deep - 1), at = -deep + up; return QS({ text: 'A diver is <b>' + deep + ' m</b> below the surface of the sea, at <b>' + sgn(-deep) + ' m</b>. She swims up <b>' + up + ' m</b>. Where is she now? (m)', answer: String(at),
+    hints: ['Swimming up makes the number bigger: count up from ' + sgn(-deep) + '.', sgn(-deep) + ' + ' + up + '.'], explain: sgn(-deep) + ' + ' + up + ' = ' + sgn(at) + ' m, still below the surface.' });
+}; };
+FAM.negOrder = function (v) { return function () {
+  var places = shuffle(['Aviemore', 'Braemar', 'Lerwick', 'Oban', 'Perth', 'Stirling']).slice(0, 4), lo = v === 0 ? -9 : -20, t = [];
+  while (t.length < 4) { var x = rnd(lo, 6); if (t.indexOf(x) < 0) t.push(x); }
+  var cold = Math.random() < 0.6, idx = t.indexOf(cold ? Math.min.apply(null, t) : Math.max.apply(null, t));
+  return MC({ text: 'Night temperatures: ' + places.map(function (p, i) { return p + ' <b>' + sgn(t[i]) + '°C</b>'; }).join(', ') + '. Which place was the <b>' + (cold ? 'coldest' : 'warmest') + '</b>?',
+    hints: ['Put the temperatures on a number line.', cold ? 'The coldest is the one furthest left: the most negative.' : 'The warmest is the one furthest right.'], explain: places[idx] + ' at ' + sgn(t[idx]) + '°C is the ' + (cold ? 'coldest' : 'warmest') + '.' }, places[idx], places);
+}; };
+FAM.partMoney = function (v) { return function () {
+  var big = v === 0 ? 1000 : v === 1 ? 10000 : 100000, n = rnd(big * 1.2, big * 9.8) | 0, units = v === 0 ? [1000, 100, 10, 1] : v === 1 ? [10000, 1000, 100, 10, 1] : [100000, 10000, 1000, 100, 10, 1];
+  var u = pick(units.slice(0, -1)), cnt = Math.floor(n % (u * 10) / u), nm = pick(NM);
+  if (rnd(0, 1) === 0) return QS({ text: nm + '\u2019s school raised <b>£' + fmtN(n) + '</b>. The bank pays it out in bundles of ' + units.map(function (x) { return '£' + fmtN(x); }).join(', ') + ', using as few bundles as possible. How many <b>£' + fmtN(u) + '</b> bundles are there?', answer: String(cnt),
+    hints: ['Partition ' + fmtN(n) + ' by place value.', 'Look at the digit in the ' + fmtN(u) + 's column.'], explain: 'The digit in the ' + fmtN(u) + 's column is ' + cnt + ', so there are ' + cnt + ' bundles of £' + fmtN(u) + '.' });
+  var parts = []; var r = n; units.forEach(function (x) { var d = Math.floor(r / x); r -= d * x; if (d) parts.push(fmtN(d * x)); });
+  return QS({ text: 'A charity counts its money: <b>£' + parts.join(' + £') + '</b>. How much is that altogether? (£)', answer: String(n),
+    hints: ['Put each part in its place value column.', 'Read the digits together as one number.'], explain: parts.join(' + ') + ' = ' + fmtN(n) + '.' });
+}; };
+FAM.partFlex = function (v) { return function () {
+  var k = rnd(0, 1), nm = pick(NM);
+  if (k === 0) { var n = rnd(v === 0 ? 31 : 120, v === 0 ? 98 : 980), tens = Math.floor(n / 10) - rnd(1, 2), ones = n - tens * 10; return QS({ text: nm + ' has <b>' + n + '</b> stickers. They put them in packs of ten and keep some loose. If there are <b>' + tens + '</b> full packs, how many loose stickers are there?', answer: String(ones),
+    hints: [tens + ' packs of ten is ' + tens * 10 + ' stickers.', 'Take ' + tens * 10 + ' away from ' + n + '.'], explain: n + ' = ' + tens * 10 + ' + ' + ones + ', so there are ' + ones + ' loose stickers.' }); }
+  var h = rnd(2, 9), tt = rnd(0, 4), o = rnd(1, 9), tot = h * 100 + tt * 10 + o, h2 = h - 1, t2 = tt + 10; return QS({ text: 'A shop has <b>' + tot + '</b> pencils. They are packed as <b>' + h2 + '</b> boxes of 100, some bags of 10 and <b>' + o + '</b> single pencils. How many bags of 10 are there?', answer: String(t2),
+    hints: [h2 + ' boxes of 100 is ' + h2 * 100 + '.', tot + ' − ' + h2 * 100 + ' − ' + o + ' = ' + t2 * 10 + '. How many tens is that?'], explain: tot + ' = ' + h2 * 100 + ' + ' + t2 * 10 + ' + ' + o + ', so there are ' + t2 + ' bags of 10.' });
+}; };
+FAM.placeMore = function (v) { return function () {
+  var steps = v === 0 ? [10, 100, 1000] : v === 1 ? [100, 1000, 10000] : [1000, 10000, 100000], s = pick(steps), k = rnd(0, 2);
+  if (k === 0) { var m = rnd(10, 99) * s - rnd(1, 3) * (s / 10 >= 1 ? s / 10 : 1); m = Math.max(m, s); return QS({ text: 'A car’s milometer shows <b>' + fmtN(m) + '</b> miles. After a trip of <b>' + fmtN(s) + '</b> miles, what will it show?', answer: String(m + s),
+    hints: ['Adding ' + fmtN(s) + ' changes the ' + fmtN(s) + 's digit.', 'If that digit is 9, it becomes 0 and the next column goes up by one.'], explain: fmtN(m) + ' + ' + fmtN(s) + ' = ' + fmtN(m + s) + '.' }); }
+  var n = rnd(v === 0 ? 2000 : 20000, v === 0 ? 9800 : v === 1 ? 98000 : 980000), fewer = k === 1, ans = fewer ? n - s : n + s;
+  return QS({ text: 'A cinema sold <b>' + fmtN(n) + '</b> tickets this year. Last year it sold <b>' + fmtN(s) + ' ' + (fewer ? 'fewer' : 'more') + '</b>. How many tickets did it sell last year?', answer: String(ans),
+    hints: ['Last year was ' + (fewer ? 'fewer' : 'more') + ', so ' + (fewer ? 'take away' : 'add') + ' ' + fmtN(s) + '.', 'Only the ' + fmtN(s) + 's column changes, unless it has to go past 9 or below 0.'], explain: 'Last year: ' + fmtN(n) + (fewer ? ' − ' : ' + ') + fmtN(s) + ' = ' + fmtN(ans) + '.' });
+}; };
+
 var M = S.storyMap;
-M[1] = [['noteCount', 'digitValue', 'roundCrowd'], ['estimateBill', 'orderRace']];
+M[1] = [['noteCount', 'digitValue', 'roundCrowd', 'negTemp', 'negOrder', 'partMoney', 'partFlex', 'placeMore'], ['estimateBill', 'orderRace', 'negTemp', 'negDepth', 'partMoney', 'placeMore']];
 M[2] = [['shopTotal', 'changeFrom', 'shareGroups', 'whichOp'], ['shopMissing', 'cakeLeft', 'savings']];
 M[3] = [['fracOfAmount', 'fracStory'], ['fracAdd', 'fracCompare']];
 M[4] = [['pctOfAmount', 'convertFDP'], ['pctStory', 'testScore', 'decimalMoney']];
@@ -190,7 +240,7 @@ M[11] = [['ratioStory', 'shareRatio', 'unitPrice'], ['bestBuy', 'profitStory', '
 M[12] = [['mapStory', 'cuboidBox', 'compassTurn'], ['speedStory', 'volumeStory', 'scaleModel', 'bearingStory']];
 
 /* add the Real-life problem step to each topic */
-var LEAD = { 1: 'rounding, estimating and place value in crowds, money and races', 2: 'shopping, change, sharing and baking', 3: 'fractions of amounts, adding and comparing fractions', 4: 'sales, test scores, percentages and decimal prices', 5: 'timetables, durations, recipes and units', 6: 'taxi fares, patterns, number puzzles and savings plans', 7: 'angles, symmetry, clocks, fencing, carpets and maps', 8: 'surveys, charts, averages and chance', 9: 'multi-step puzzles, bar models and clues', 10: 'rows, boxes, timing, tiles and prime numbers', 11: 'sharing, best buys, profit, interest and exchange rates', 12: 'volume, bearings, scale models, maps and journeys' };
+var LEAD = { 1: 'place value, partitioning, negative numbers, rounding and estimating, in crowds, money, temperatures and races', 2: 'shopping, change, sharing and baking', 3: 'fractions of amounts, adding and comparing fractions', 4: 'sales, test scores, percentages and decimal prices', 5: 'timetables, durations, recipes and units', 6: 'taxi fares, patterns, number puzzles and savings plans', 7: 'angles, symmetry, clocks, fencing, carpets and maps', 8: 'surveys, charts, averages and chance', 9: 'multi-step puzzles, bar models and clues', 10: 'rows, boxes, timing, tiles and prime numbers', 11: 'sharing, best buys, profit, interest and exchange rates', 12: 'volume, bearings, scale models, maps and journeys' };
 Object.keys(S.topics).forEach(function (k) {
   var t = S.topics[k]; if (!S.storyFor(Number(k)) || t.steps.some(function (s) { return s.id === 'practical'; })) return;
   var base = t.base || t.replaces || t.n;
