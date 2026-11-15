@@ -15830,7 +15830,7 @@ S.spatialExtra = S.extraMakers;
   'use strict';
   var S = Studio, H = S.h, BT = window.BT;
   if (!BT || !BT.sv) return;
-  var W = 800, HH = 450;
+  var W = 800, HH = 450, NW = 520, NH = 470;
 
   var css = document.createElement('style');
   css.textContent = [
@@ -15841,14 +15841,14 @@ S.spatialExtra = S.extraMakers;
     '  --accent:#881cd6;--accent-fg:#fff;--good:#1e9e60;--bad:#e2620f;--fg:#221a3a;--muted:#6b6480;--surface:#ffffff;--surface-2:#efe4f8;--line:#ddd0ea;--hl:#ecdcf8;--font-display:"DejaVu Sans",Verdana,"Segoe UI",system-ui,sans-serif}',
     '.gp-bar{position:absolute;left:0;top:0;width:100%;height:11px;background:#d8aaf0}',
     '.gp-bar:before{content:"";position:absolute;left:0;top:0;width:13px;height:11px;background:#881cd6}',
-    '.gp-lab{position:absolute;left:20px;top:22px;right:20px;font-size:18px;display:flex;align-items:center;gap:9px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}',
+    '.gp-lab{position:absolute;left:22px;top:20px;right:22px;font-size:23px;font-weight:800;display:flex;align-items:center;gap:9px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}',
     '.gp-lab:before{content:"";flex:none;width:10px;height:10px;border-radius:2px;background:#881cd6}',
     '.gp-dash{position:absolute;left:0;right:0;bottom:15px;display:flex;justify-content:center;gap:4px}',
     '.gp-dash i{display:block;width:32px;height:3px;border-radius:2px;background:#e3cdf3}.gp-dash i.on{background:#881cd6}',
-    '.gp-body{position:absolute;left:24px;right:24px;top:44px;bottom:30px;display:flex;align-items:center;justify-content:center}',
+    '.gp-body{position:absolute;left:24px;right:24px;top:58px;bottom:44px;display:flex;align-items:center;justify-content:center}',
     '.gp-fit{width:100%;display:flex;flex-direction:column;align-items:center;gap:10px;transform-origin:50% 50%}',
-    '.gp-h{font-size:36px;text-align:center;margin:0;line-height:1.25;text-wrap:balance}',
-    '.gp-sub{font-size:22px;color:#6b6480;text-align:center;margin:-4px 0 2px}',
+    '.gp-h{font-size:33px;text-align:center;margin:0;line-height:1.25;text-wrap:balance}',
+    '.gp-sub{font-size:20px;color:#6b6480;text-align:center;margin:-4px 0 2px}',
     '.gp-title{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;text-align:center;padding:0 50px}',
     '.gp-title .t1{font-size:19px;color:#6b6480}.gp-title .t2{font-size:44px;line-height:1.25;text-wrap:balance}.gp-title .t3{font-size:44px;color:#881cd6;line-height:1.1}',
     '.gp-ico{width:56px;height:56px}',
@@ -15869,17 +15869,17 @@ S.spatialExtra = S.extraMakers;
     '.gp-stage .sv-card.sm{font-size:26px;min-width:0;padding:3px 10px;border-width:3px}',
     '.gp-stage .b{color:var(--accent);border-color:var(--accent)}.gp-stage .g{color:var(--good);border-color:var(--good)}.gp-stage .r{color:var(--bad);border-color:var(--bad)}.gp-stage .y{color:#2a7fb0;border-color:#2a7fb0}',
     '.gp-stage .sv-big{font-weight:700;font-size:60px;line-height:1.05;text-align:center}',
-    '.gp-stage .sv-eq{font-weight:700;font-size:42px;text-align:center;line-height:1.3}',
+    '.gp-stage .sv-eq{font-weight:700;font-size:38px;text-align:center;line-height:1.3;text-wrap:balance}',
     '.gp-stage .sv-eq.g{color:var(--good)}.gp-stage .sv-eq.r{color:var(--bad)}.gp-stage .sv-eq.b{color:var(--accent)}',
-    '.gp-stage .sv-rule{background:var(--hl);color:#221a3a;border:0;border-radius:10px;padding:10px 20px;font-size:24px;text-align:center;max-width:680px}',
-    '.gp-stage .sv-note{color:#6b6480;font-size:22px;text-align:center}',
+    '.gp-stage .sv-rule{background:var(--hl);color:#221a3a;border:0;border-radius:10px;padding:10px 20px;font-size:22px;text-align:center;max-width:680px}',
+    '.gp-stage .sv-note{color:#6b6480;font-size:20px;text-align:center}',
     '.gp-stage .sv-cols{display:grid;grid-template-columns:repeat(var(--n,4),minmax(0,1fr));gap:10px;width:100%;max-width:640px}',
     '.gp-stage .sv-cols>div{display:flex;flex-direction:column;align-items:center;gap:6px;min-width:0;text-align:center}',
     '.gp-stage .sv-chip{width:100%;text-align:center;border-radius:8px;padding:4px 3px;font-weight:700;color:#fff;font-size:16px}',
     '.gp-stage .sv-chip.b{background:var(--accent)}.gp-stage .sv-chip.g{background:var(--good)}.gp-stage .sv-chip.r{background:var(--bad)}.gp-stage .sv-chip.y{background:#2a7fb0}',
     '.gp-stage .sv-stick{display:inline-block;width:11px;height:50px;border-radius:6px;border:2px solid var(--fg)}',
     '.gp-stage .sv-list{display:flex;flex-direction:column;gap:9px;width:100%;max-width:640px}',
-    '.gp-stage .sv-list div{display:flex;gap:12px;align-items:center;font-size:26px}',
+    '.gp-stage .sv-list div{display:flex;gap:12px;align-items:center;font-size:24px}',
     '.gp-stage .sv-list b{flex:0 0 12px;height:12px;border-radius:50%;background:var(--accent);color:transparent;overflow:hidden;font-size:0}',
     '.gp-stage .tbl{border-collapse:collapse;font-size:19px;background:#fff;width:auto;margin:0 auto}.gp-stage .tbl th{background:#881cd6;color:#fff;padding:5px 12px}.gp-stage .tbl td{padding:5px 12px;border:1px solid #e3cdf3;text-align:center}',
     '.gp-stage .lk-col{grid-template-columns:repeat(var(--n),46px);font-size:34px;font-family:inherit}',
@@ -15905,6 +15905,9 @@ S.spatialExtra = S.extraMakers;
     '.gp-ctl .btn{min-height:44px}.gp-ic,.gp-sh{display:none}',
     '@media (max-width:600px){.gp-ctl{display:grid;grid-template-columns:2fr 1fr 1fr 1fr 1fr;gap:6px}.gp-ctl .btn{min-height:42px;padding:6px 4px;font-size:16px}.gp-ctl [data-p] .gp-tx{display:none}.gp-ctl [data-p] .gp-ic,.gp-ctl [data-p] .gp-sh{display:inline}.gp-ctl .btn:not([data-p]) .gp-tx{display:none}.gp-ctl .btn:not([data-p]) .gp-ic{display:inline}.gp-ctl [data-p]{white-space:nowrap;display:inline-flex;align-items:center;justify-content:center;gap:6px}.gp-ctl [data-p] .gp-ic{font-size:13px}.gp-prog{grid-column:1/-1;flex:none}.gp-cnt{grid-column:1/-1}.gp [data-note]{font-size:12px}.gp-cap{font-size:17px;min-height:40px}}',
     '.gp-prog{flex:1 1 140px;min-width:0;height:8px;background:var(--line);border-radius:99px;overflow:hidden}.gp-prog i{display:block;height:100%;width:0;background:#881cd6;transition:width .3s}',
+    '.gp-stage .tbl th,.gp-stage .tbl td{font-size:inherit;line-height:1.3;padding:6px 14px;overflow-wrap:normal;hyphens:none}.gp-stage .tbl{max-width:none}.gp-stage .sv-row>svg{flex:1 1 0;min-width:0}.gp.narrow .sv-cols .sv-eq{font-size:24px!important}',
+    '.gp.narrow .gp-frame{aspect-ratio:520/470}.gp.narrow .gp-body{top:64px;bottom:44px;left:20px;right:20px}',
+    '@media (max-width:600px){.card:has(.gp){padding-left:10px;padding-right:10px}.live:has(.gp){padding-left:0;padding-right:0}}',
     '.gp.full .gp-frame{position:fixed;inset:0;z-index:9999;border-radius:0;aspect-ratio:auto;background:#111}',
     '.gp.full .gp-close{display:flex}.gp-close{display:none;position:absolute;right:max(12px,env(safe-area-inset-right));top:max(12px,env(safe-area-inset-top));z-index:2;width:44px;height:44px;border-radius:50%;border:0;background:#fff;color:#221a3a;font-size:22px;align-items:center;justify-content:center;box-shadow:0 2px 10px rgba(0,0,0,.3)}',
     '.gp-cnt{font-size:13px;color:var(--muted);font-variant-numeric:tabular-nums}',
@@ -15965,10 +15968,19 @@ S.spatialExtra = S.extraMakers;
     var okVoice = H.voiceOk && H.voiceOk();
     note.textContent = okVoice ? 'Your device reads this aloud. You can change the voice and speed in Settings.' : 'The voice is not available here, so the lesson plays with words only.';
 
+    var narrow = null, lastI = 0;
     function fit() {
-      var full = root.classList.contains('full'), fw = frame.clientWidth, fh = frame.clientHeight;
-      var s = full ? Math.min(fw / W, fh / HH) : fw / W;
-      stage.style.transform = 'translate(' + (full ? (fw - W * s) / 2 : 0) + 'px,' + (full ? (fh - HH * s) / 2 : 0) + 'px) scale(' + s + ')';
+      var full = root.classList.contains('full');
+      /* phones: a narrower, taller slide, so the words are bigger instead of the whole picture shrinking */
+      var nw = !full && host.clientWidth < 560;
+      if (nw !== narrow) {
+        narrow = nw; root.classList.toggle('narrow', nw);
+        stage.style.width = (nw ? NW : W) + 'px'; stage.style.height = (nw ? NH : HH) + 'px';
+        if (shown >= 0) { shown = -1; show(lastI); }
+      }
+      var w = nw ? NW : W, hh = nw ? NH : HH, fw = frame.clientWidth, fh = frame.clientHeight;
+      var s = full ? Math.min(fw / w, fh / hh) : fw / w;
+      stage.style.transform = 'translate(' + (full ? (fw - w * s) / 2 : 0) + 'px,' + (full ? (fh - hh * s) / 2 : 0) + 'px) scale(' + s + ')';
     }
     function setFull(on) {
       root.classList.toggle('full', on);
@@ -16005,12 +16017,35 @@ S.spatialExtra = S.extraMakers;
       groups.forEach(function (g) { h += g.length > 1 ? '<div class="gp-swap">' + g.join('') + '</div>' : g[0]; });
       stage.innerHTML = h + '</div></div>';
       /* shrink to fit if the finished slide is taller than the stage */
+      /* sizes written against the screen width (vw) would shrink twice inside the scaled slide: use their full size */
+      stage.querySelectorAll('[style*="vw"]').forEach(function (e) { var m = /clamp\([^,]+,[^,]+,\s*([\d.]+px)\)/.exec(e.getAttribute('style')); if (m) e.style.fontSize = m[1]; });
       var body = stage.querySelector('.gp-body'), f = stage.querySelector('.gp-fit');
+      /* keep each line of working on one line: shrink that line a little if it is too wide, wrap only if it would get too small */
+      stage.querySelectorAll('.gp-stage .tbl').forEach(function (e) {
+        var aw = body.clientWidth, w2 = e.offsetWidth;
+        if (w2 > aw) { e.style.fontSize = (parseFloat(getComputedStyle(e).fontSize) * Math.max(0.5, aw / w2 * 0.95)).toFixed(1) + 'px'; [].forEach.call(e.querySelectorAll('th,td'), function (c) { c.style.paddingLeft = c.style.paddingRight = '6px'; }); }
+      });
+      stage.querySelectorAll('.sv-eq, .gp-lab').forEach(function (e) {
+        var lab = e.classList.contains('gp-lab'); if (!lab) e.style.whiteSpace = 'nowrap';
+        var aw = lab ? e.clientWidth : body.clientWidth, nw2 = e.scrollWidth;
+        if (nw2 > aw) { var r = aw / nw2 * 0.97; if (r >= 0.6) e.style.fontSize = (parseFloat(getComputedStyle(e).fontSize) * r).toFixed(1) + 'px'; else if (lab) e.style.fontSize = (parseFloat(getComputedStyle(e).fontSize) * 0.6).toFixed(1) + 'px'; else e.style.whiteSpace = ''; }
+      });
       var need = f.scrollHeight, room = body.clientHeight, needW = f.scrollWidth, roomW = body.clientWidth;
       var k2 = Math.min(1, room / need, roomW / needW);
+      /* a crowded slide: shrink the pictures first (to 40% at most) so the words keep their size */
+      if (k2 < 0.97) {
+        var sc = stage.getBoundingClientRect().width / stage.offsetWidth || 1, pics = [], ph = 0;
+        f.querySelectorAll('svg[viewBox]').forEach(function (g) { if (g.parentNode.closest('svg')) return; var hgt = g.getBoundingClientRect().height / sc; if (hgt > 40) { pics.push([g, hgt]); ph += hgt; } });
+        if (pics.length) {
+          var ks = Math.max(0.4, Math.min(1, (room - (need - ph)) / ph));
+          if (ks < 0.98) pics.forEach(function (q) { var wNow = q[0].getBoundingClientRect().width / sc; q[0].style.maxWidth = (wNow * ks).toFixed(1) + 'px'; });
+          need = f.scrollHeight; needW = f.scrollWidth; k2 = Math.min(1, room / need, roomW / needW);
+        }
+      }
       if (k2 < 1) f.style.transform = 'scale(' + k2.toFixed(3) + ')';
     }
     function show(i) {
+      lastI = i;
       var c = chunks[i];
       if (shown !== c.si) { shown = c.si; build(c.si); }
       stage.querySelectorAll('[data-sb]').forEach(function (e) {
