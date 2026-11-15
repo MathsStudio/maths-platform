@@ -8,6 +8,8 @@
   var S = Studio, H = S.h, BT = window.BT;
   if (!BT || !BT.sv) return;
   var W = 800, HH = 450, NW = 520, NH = 470;
+  /* the question a lesson answers (qtitles.js), shown in place of an older lesson's topic name */
+  function D(t) { return (window.BT && BT.QT && BT.QT[t]) || t; }
 
   var css = document.createElement('style');
   css.textContent = [
@@ -112,12 +114,12 @@
 
   H.gifPlayer = function (host, ep, meta) {
     meta = meta || { q: 0, of: 1 };
-    var slides = [{ title: true, steps: [{ say: ep.title + ' In this lesson, we will learn ' + (ep.goal || '') }] }];
+    var TT = D(ep.title), slides = [{ title: true, steps: [{ say: TT + ' In this lesson, we will learn ' + (ep.goal || '') }] }];
     ep.scenes.forEach(function (sc) { slides.push(sc); });
     var chunks = [];
     slides.forEach(function (sl, si) { sl.steps.forEach(function (st, k) { chunks.push({ si: si, k: k, say: st.say }); }); });
     var dashes = ''; for (var d = 0; d < meta.of; d++) dashes += '<i class="' + (d <= meta.q ? 'on' : '') + '"></i>';
-    var short = ep.title.replace(/\?$/, '');
+    var short = TT.replace(/\?$/, '');
     /* a lesson counts as watched once its last step has been shown; the tick is saved with the child's progress */
     function seen(j) { return meta.n && H.isDone ? H.isDone(meta.n, 'w' + j) : false; }
     function markSeen() {
@@ -180,7 +182,7 @@
     function build(si) {
       var sl = slides[si], h;
       if (sl.title) {
-        h = chrome({}, true) + '<div class="gp-title">' + ICON + '<div class="t2">' + ep.title + '</div></div>';
+        h = chrome({}, true) + '<div class="gp-title">' + ICON + '<div class="t2">' + TT + '</div></div>';
         stage.innerHTML = h; return;
       }
       h = chrome(sl) + '<div class="gp-body"><div class="gp-fit"><h3 class="gp-h">' + sl.h + '</h3>' + (sl.sub ? '<p class="gp-sub">' + sl.sub + '</p>' : '');
@@ -264,8 +266,8 @@
 
   function toSlides(episodes, n) {
     return episodes.map(function (ep, i) {
-      return { title: ep.title, say: ['Press play and your teacher will explain this step by step.'], goal: ep.goal || ep.title.toLowerCase(), noMore: true, kind: 'Watch lesson',
-        live: function (host) { H.gifPlayer(host, ep, { n: n, q: i, of: episodes.length, titles: episodes.map(function (e) { return e.title; }) }); } };
+      return { title: D(ep.title), say: ['Press play and your teacher will explain this step by step.'], goal: ep.goal || ep.title.toLowerCase(), noMore: true, kind: 'Watch lesson',
+        live: function (host) { H.gifPlayer(host, ep, { n: n, q: i, of: episodes.length, titles: episodes.map(function (e) { return D(e.title); }) }); } };
     });
   }
   /* put the episodes in a Watch step at the front of a topic. Older Watch lessons are removed,

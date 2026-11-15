@@ -15831,6 +15831,8 @@ S.spatialExtra = S.extraMakers;
   var S = Studio, H = S.h, BT = window.BT;
   if (!BT || !BT.sv) return;
   var W = 800, HH = 450, NW = 520, NH = 470;
+  /* the question a lesson answers (qtitles.js), shown in place of an older lesson's topic name */
+  function D(t) { return (window.BT && BT.QT && BT.QT[t]) || t; }
 
   var css = document.createElement('style');
   css.textContent = [
@@ -15935,12 +15937,12 @@ S.spatialExtra = S.extraMakers;
 
   H.gifPlayer = function (host, ep, meta) {
     meta = meta || { q: 0, of: 1 };
-    var slides = [{ title: true, steps: [{ say: ep.title + ' In this lesson, we will learn ' + (ep.goal || '') }] }];
+    var TT = D(ep.title), slides = [{ title: true, steps: [{ say: TT + ' In this lesson, we will learn ' + (ep.goal || '') }] }];
     ep.scenes.forEach(function (sc) { slides.push(sc); });
     var chunks = [];
     slides.forEach(function (sl, si) { sl.steps.forEach(function (st, k) { chunks.push({ si: si, k: k, say: st.say }); }); });
     var dashes = ''; for (var d = 0; d < meta.of; d++) dashes += '<i class="' + (d <= meta.q ? 'on' : '') + '"></i>';
-    var short = ep.title.replace(/\?$/, '');
+    var short = TT.replace(/\?$/, '');
     /* a lesson counts as watched once its last step has been shown; the tick is saved with the child's progress */
     function seen(j) { return meta.n && H.isDone ? H.isDone(meta.n, 'w' + j) : false; }
     function markSeen() {
@@ -16003,7 +16005,7 @@ S.spatialExtra = S.extraMakers;
     function build(si) {
       var sl = slides[si], h;
       if (sl.title) {
-        h = chrome({}, true) + '<div class="gp-title">' + ICON + '<div class="t2">' + ep.title + '</div></div>';
+        h = chrome({}, true) + '<div class="gp-title">' + ICON + '<div class="t2">' + TT + '</div></div>';
         stage.innerHTML = h; return;
       }
       h = chrome(sl) + '<div class="gp-body"><div class="gp-fit"><h3 class="gp-h">' + sl.h + '</h3>' + (sl.sub ? '<p class="gp-sub">' + sl.sub + '</p>' : '');
@@ -16087,8 +16089,8 @@ S.spatialExtra = S.extraMakers;
 
   function toSlides(episodes, n) {
     return episodes.map(function (ep, i) {
-      return { title: ep.title, say: ['Press play and your teacher will explain this step by step.'], goal: ep.goal || ep.title.toLowerCase(), noMore: true, kind: 'Watch lesson',
-        live: function (host) { H.gifPlayer(host, ep, { n: n, q: i, of: episodes.length, titles: episodes.map(function (e) { return e.title; }) }); } };
+      return { title: D(ep.title), say: ['Press play and your teacher will explain this step by step.'], goal: ep.goal || ep.title.toLowerCase(), noMore: true, kind: 'Watch lesson',
+        live: function (host) { H.gifPlayer(host, ep, { n: n, q: i, of: episodes.length, titles: episodes.map(function (e) { return D(e.title); }) }); } };
     });
   }
   /* put the episodes in a Watch step at the front of a topic. Older Watch lessons are removed,
@@ -16107,6 +16109,159 @@ S.spatialExtra = S.extraMakers;
     if (i > 0) { t.steps.splice(i, 1); t.steps.unshift(st); }
     S.arrange(t);
   };
+})();
+</script>
+<script>
+/* qtitles.js: every Watch lesson is shown as a question, like the lessons made from the question plans.
+   Older lessons keep their internal names (so links and progress stay the same); this list gives the
+   question each one answers. */
+(function () {
+  'use strict';
+  var BT = window.BT; if (!BT) return;
+  BT.QT = Object.assign(BT.QT || {}, {
+    /* P6 */
+    'Numbers up to millions': 'How do you read and write numbers up to millions?',
+    'Sensible estimates and rounding with units': 'How do you round and estimate sensibly with units?',
+    'Number lines, words and digit values': 'How do you show numbers on number lines, in words and by digit value?',
+    'Long multiplication': 'How do you do long multiplication?',
+    'Order of operations and word problems': 'How do you use the order of operations in word problems?',
+    'Use a fact you know': 'How do you use a fact you know to work out new facts?',
+    'Fractions of amounts and multiplying': 'How do you find fractions of amounts and multiply fractions?',
+    'Counting parts and fractions as decimals': 'How do you count parts and write fractions as decimals?',
+    'Percentages of a set and of a measure': 'How do you find percentages of a set and of a measure?',
+    'Timetables and durations': 'How do you read timetables and work out durations?',
+    'Calendars and time zones': 'How do you use calendars and time zones?',
+    'Expressions from words and shapes': 'How do you write expressions from words and shapes?',
+    'Angle facts': 'What are the angle facts and how do you use them?',
+    'Solid shapes and reflections': 'How do you describe solid shapes and reflections?',
+    'Two-way tables, Venn diagrams and pie charts': 'How do you read two-way tables, Venn diagrams and pie charts?',
+    'Multi-step problems': 'How do you solve multi-step problems?',
+    'Bar models for sums and differences': 'How do you use bar models for sums and differences?',
+    'Always true, factors and multiples': 'How do you decide if a statement about factors and multiples is always true?',
+    'Common factors and multiples': 'How do you find common factors and multiples?',
+    'Prime factors': 'How do you find the prime factors of a number?',
+    'Ratio with different units': 'How do you use a ratio when the units are different?',
+    'Reflecting on a grid': 'How do you reflect a shape on a grid?',
+    'Painted cubes and stacks': 'How do you count painted cubes and cubes in stacks?',
+    /* P5 */
+    'Improper fractions and mixed numbers': 'How do you change between improper fractions and mixed numbers?',
+    'Percentages': 'What are percentages and how do you find them?',
+    '3D shapes': 'How do you describe 3D shapes?',
+    'Mode, range and chance': 'How do you find the mode and range, and describe chance?',
+    'Prime numbers and square numbers': 'What are prime numbers and square numbers?',
+    'Turns and mirror images': 'How do you describe turns and mirror images?',
+    'Building with cubes and nets': 'How do you build shapes with cubes and nets?',
+    /* P7 */
+    'Decimal places and significant figures': 'How do you round to decimal places and significant figures?',
+    'Negative numbers and powers of ten': 'How do you work with negative numbers and powers of ten?',
+    'Decimal calculations': 'How do you calculate with decimals?',
+    'Dividing fractions': 'How do you divide fractions?',
+    'Percentage change': 'How do you work out a percentage change?',
+    'Percentages as fractions and reverse percentages': 'How do you use percentages as fractions and find reverse percentages?',
+    'The nth term': 'How do you find the nth term of a sequence?',
+    'Equations with brackets and letters on both sides': 'How do you solve equations with brackets and letters on both sides?',
+    'Angles in polygons': 'How do you find angles in polygons?',
+    'Angles in parallel lines': 'How do you find angles in parallel lines?',
+    'Mean from a frequency table': 'How do you find the mean from a frequency table?',
+    'Pie charts and combined probability': 'How do you read pie charts and find combined probabilities?',
+    'Algebra in problems': 'How do you use algebra to solve problems?',
+    'Reasoning and counterexamples': 'How do you reason and use counterexamples?',
+    'Proportion, exchange and interest': 'How do you use proportion for exchange rates and interest?',
+    'Speed, distance, time and bearings': 'How do you use speed, distance, time and bearings?',
+    'Surface area and views': 'How do you find surface area and draw views of solids?',
+    /* S1 */
+    'Calculating with decimals': 'How do you calculate with decimals?',
+    'Rounding and estimating': 'How do you round and estimate?',
+    'Negative numbers': 'How do you calculate with negative numbers?',
+    'Powers, roots and prime factors': 'How do you use powers, roots and prime factors?',
+    'Powers, negatives and BODMAS': 'How do you use BODMAS with powers and negative numbers?',
+    'Adding and subtracting mixed numbers': 'How do you add and subtract mixed numbers?',
+    'Multiplying and dividing fractions': 'How do you multiply and divide fractions?',
+    'Percentages of amounts': 'How do you find percentages of amounts?',
+    'Percentage increase and decrease': 'How do you increase or decrease by a percentage?',
+    'Simplifying and sharing in a ratio': 'How do you simplify a ratio and share in a ratio?',
+    'Direct proportion': 'How do you solve direct proportion problems?',
+    'Wages and overtime': 'How do you work out wages and overtime?',
+    'VAT and simple interest': 'How do you work out VAT and simple interest?',
+    'Best buys, interest and exchange': 'How do you compare best buys and work with interest and exchange rates?',
+    'Speed, distance and time': 'How do you use speed, distance and time?',
+    'Distance–time graphs': 'How do you read distance–time graphs?',
+    'Coins and perimeter puzzles': 'How do you solve coin and perimeter puzzles?',
+    'Area of triangles, parallelograms and trapeziums': 'How do you find the area of triangles, parallelograms and trapeziums?',
+    'Volume of a prism': 'How do you find the volume of a prism?',
+    'Simplifying and expanding': 'How do you simplify and expand expressions?',
+    'Formulae and equations': 'How do you use formulae and solve equations?',
+    'Angle rules': 'What are the angle rules and how do you use them?',
+    'Parallel lines': 'How do you find angles in parallel lines?',
+    'Polygon angles, bearings and coordinates': 'How do you use polygon angles, bearings and coordinates?',
+    'Four-quadrant coordinates and reflection': 'How do you use coordinates in four quadrants and reflect shapes?',
+    'Symmetry and scale drawings': 'How do you use symmetry and scale drawings?',
+    'Averages and the spread of data': 'How do you find averages and the spread of data?',
+    'Probability and relative frequency': 'How do you find probability and relative frequency?',
+    'Nets and surface area': 'How do you use nets to find surface area?',
+    'Views and cross-sections': 'How do you draw views and cross-sections of solids?',
+    /* S2 */
+    'Standard form': 'How do you write and use numbers in standard form?',
+    'Index laws and negative indices': 'How do you use the index laws and negative indices?',
+    'Compound percentage change': 'How do you work out compound percentage change?',
+    'Percentage change and reverse percentages': 'How do you find percentage change and reverse percentages?',
+    'Percentage change and wages': 'How do you use percentage change with wages?',
+    'Combining ratios': 'How do you combine ratios?',
+    'Direct and inverse proportion': 'How do you solve direct and inverse proportion problems?',
+    'Income tax': 'How do you calculate income tax?',
+    'Hire purchase and exchange rates': 'How do you work out hire purchase and use exchange rates?',
+    'Average speed': 'How do you find the average speed?',
+    'Distance–time graphs with a return': 'How do you read distance–time graphs with a return journey?',
+    'Circles': 'How do you find the circumference and area of a circle?',
+    'Cylinders': 'How do you find the volume and surface area of a cylinder?',
+    'Circles, similarity and solids': 'How do you solve problems with circles, similar shapes and solids?',
+    'Expanding two brackets': 'How do you expand two brackets?',
+    'Equations, inequalities and formulae': 'How do you solve equations and inequalities and use formulae?',
+    'Brackets, factorising and equations': 'How do you use brackets and factorising to solve equations?',
+    'The equation y = mx + c': 'What does the equation y = mx + c tell you?',
+    'Finding a line from two points': 'How do you find the equation of a line from two points?',
+    'Gradient and straight lines': 'How do you find the gradient of a straight line?',
+    'Interior and exterior angles': 'How do you find interior and exterior angles?',
+    'Bearings': 'How do you use three-figure bearings?',
+    'Pythagoras’ theorem': 'How do you use Pythagoras’ theorem?',
+    'Arcs and sectors': 'How do you find arc lengths and sector areas?',
+    'Pythagoras and trigonometry': 'How do you choose between Pythagoras and trigonometry?',
+    'Similar shapes and scale factors': 'How do you use scale factors with similar shapes?',
+    'Enlargement': 'How do you enlarge a shape?',
+    'Scatter graphs': 'How do you draw and read scatter graphs?',
+    'Tree diagrams': 'How do you use tree diagrams for probability?',
+    'Quartiles and probability': 'How do you find quartiles and use probability?',
+    'Rotation on a grid': 'How do you rotate a shape on a grid?',
+    'Views of solids': 'How do you draw the views of a solid?',
+    /* S3 */
+    'Surds': 'How do you simplify and use surds?',
+    'Compound growth and depreciation': 'How do you calculate compound growth and depreciation?',
+    'Compound interest': 'How do you calculate compound interest?',
+    'Tax bands': 'How do you work out tax using tax bands?',
+    'Density and other rates': 'How do you use density and other rates?',
+    'Changing units of speed': 'How do you change the units of speed?',
+    'Volume of cones and spheres': 'How do you find the volume of cones and spheres?',
+    'Surface area of cones and spheres': 'How do you find the surface area of cones and spheres?',
+    'Common factors and difference of two squares': 'How do you factorise using common factors and the difference of two squares?',
+    'Factorising quadratics': 'How do you factorise quadratics?',
+    'Equations with fractions': 'How do you solve equations with fractions?',
+    'Changing the subject and inequations': 'How do you change the subject of a formula and solve inequations?',
+    'Parallel and perpendicular lines': 'How do you find parallel and perpendicular lines?',
+    'Lines in the form ax + by = c': 'How do you work with lines in the form ax + by = c?',
+    'Solving by graph': 'How do you solve simultaneous equations by drawing graphs?',
+    'Solving by elimination': 'How do you solve simultaneous equations by elimination?',
+    'Simultaneous equations': 'How do you form and solve simultaneous equations?',
+    'SOH CAH TOA': 'How do you use SOH CAH TOA to find a side?',
+    'Finding an angle': 'How do you use trigonometry to find an angle?',
+    'Circle theorems': 'What are the circle theorems and how do you use them?',
+    'Chords and tangent lengths': 'How do you find chord and tangent lengths?',
+    'Similar triangles': 'How do you use similar triangles to find missing lengths?',
+    'Angles of elevation': 'How do you use angles of elevation and depression?',
+    'Standard deviation': 'How do you calculate the standard deviation?',
+    'Quartiles and box plots': 'How do you find quartiles and draw box plots?',
+    'Vectors as journeys': 'How do you describe journeys with vectors?',
+    'The magnitude of a vector': 'How do you find the magnitude of a vector?'
+  });
 })();
 </script>
 <script>
@@ -21239,6 +21394,227 @@ S.spatialExtra = S.extraMakers;
     'Speed, distance, time and bearings': ['Speed = distance ÷ time. Rearrange it to find distance or time. Bearings are measured clockwise from north.', 'Change minutes to hours first: 30 minutes is 0.5 hours, not 0.30.'],
     'How can you transform a shape?': ['Translations slide, reflections flip and rotations turn. The shape always stays the same size.', 'Describe each fully: a rotation needs a centre, an angle and a direction.'],
     'Surface area and views': ['Surface area adds the area of every face. A cuboid has three pairs of matching faces.', 'Don’t confuse surface area (cm²) with volume (cm³).']
+  });
+})();
+</script>
+<script>
+/* lessons_four.js: every topic's Watch lesson has at least four questions. These lessons are added
+   to the topics that had fewer, in the same format as the others: an explanation, worked examples,
+   a real-life example, a question to try, a recap and a "let's go deeper" note. */
+(function () {
+  'use strict';
+  var BT = window.BT; if (!BT || !BT.L || !BT.L.lesson || !BT.EP_BY_TOPIC) return;
+  var L = BT.L, V = BT.sv, E = L.E, LS = L.lesson;
+  var ADD = {};
+  function add(n, ep) { (ADD[n] = ADD[n] || []).push(ep); }
+
+  /* ---------- P5 509: mixed reasoning ---------- */
+  add(509, LS('How do you work backwards to solve a problem?', 'how to start from the answer and undo each step to find the starting number.', {
+    intro: ['Working backwards', 'Undo each step', "Sometimes a problem tells you the end and asks for the start. Work backwards: begin with the answer and do the opposite of each step, in reverse order.", E('+ ↔ −    × ↔ ÷', 'b')],
+    ex: [['A number puzzle', 'I think of a number', [["I think of a number, add five, and get twelve. Undo adding five by taking away five. Twelve take away five is seven.", E('? + 5 = 12 → 12 − 5 = 7', 'g')]]],
+      ['Two steps', 'Undo in reverse order', [["I think of a number, double it, then add three. The answer is seventeen. Undo the last step first: seventeen take away three is fourteen. Then undo doubling: fourteen halved is seven.", E('17 − 3 = 14 → 14 ÷ 2 = 7', 'g')]]],
+      ['Money left', 'Start from the end', [["Ali spends four pounds on lunch and then six pounds on a book. He has five pounds left. Add the spending back on: five plus six plus four is fifteen pounds at the start.", E('£5 + £6 + £4 = £15', 'g')]]]],
+    real: ['Planning a time', "To be at school at eight forty-five, and the walk takes twenty minutes, work backwards: leave at eight twenty-five. Getting ready takes thirty minutes, so get up at seven fifty-five.", E('8:45 − 20 min = 8:25 → 8:25 − 30 min = 7:55', 'g')],
+    turn: ["Your turn! I think of a number, multiply it by three, then take away four. The answer is twenty. What was my number? Pause and try it.", E('? × 3 − 4 = 20'), "Undo the take away: twenty plus four is twenty-four. Undo the times three: twenty-four divided by three is eight.", E('8', 'g')],
+    rec: ["To work backwards, start with the answer, do the opposite operation, and undo the steps in reverse order. Check by going forwards again.", ['Start at the end', 'Use the opposite operation', 'Undo the last step first', 'Check by going forwards']],
+    deep: ['Every step has an opposite: adding and subtracting undo each other, and so do multiplying and dividing.', 'Undoing the steps in the wrong order gives the wrong start: always undo the last step first.']
+  }));
+  add(509, LS('How do you spot and use a pattern to solve a problem?', 'how to find a pattern in a problem, continue it, and use it to answer the question.', {
+    intro: ['Spotting patterns', 'Look for what repeats or grows', "Many problems hide a pattern. Write the first few cases in a table, see how they change, then continue the pattern instead of counting everything.", E('1, 3, 5, 7, … (+2 each time)', 'b')],
+    ex: [['Growing squares', 'Matchsticks', [["One square uses four matchsticks. Two squares in a row use seven. Three squares use ten. Each new square adds three matchsticks.", E('4, 7, 10, 13, …', 'g')]]],
+      ['Continue it', 'How many for 6 squares?', [["Keep adding three: four squares thirteen, five squares sixteen, six squares nineteen matchsticks.", E('13 → 16 → 19', 'g')]]],
+      ['Handshakes', 'Count in a table', [["Two people make one handshake. Three people make three. Four people make six. The extra handshakes go up by one more each time: plus two, plus three, so five people make ten.", E('1, 3, 6, 10, …', 'g')]]]],
+    real: ['Seats at tables', "One square table seats four people. Two tables pushed together seat six. Each extra table adds two seats, so five tables in a row seat twelve.", E('4, 6, 8, 10, 12', 'g')],
+    turn: ["Your turn! A pattern goes three, seven, eleven, fifteen. What is the next number? Pause and try it.", E('3, 7, 11, 15, ?'), "It goes up by four each time, so the next number is nineteen.", E('19', 'g')],
+    rec: ["Write the first cases in a table, find how they change, then continue the pattern to answer the question.", ['Try small cases first', 'Put them in a table', 'Find the change', 'Continue the pattern']],
+    deep: ['A table makes a pattern easier to see than a list of drawings.', 'Check the pattern works for every case you have, not just the first two.']
+  }));
+
+  /* ---------- P5 504: decimals and percentages ---------- */
+  add(504, LS('How do you change between fractions, decimals and percentages?', 'how one amount can be written as a fraction, a decimal and a percentage.', {
+    intro: ['Three ways to write it', 'Out of one hundred', "Fractions, decimals and percentages are three ways to write the same amount. Per cent means out of one hundred, so fifty per cent is fifty hundredths: one half.", E('½ = 0.5 = 50%', 'b')],
+    ex: [['Percentage to decimal', 'Divide by 100', [["Twenty-five per cent is twenty-five hundredths. As a decimal that is zero point two five.", E('25% = 25/100 = 0.25', 'g')]]],
+      ['Fraction to percentage', 'Make it out of 100', [["Three tenths: multiply top and bottom by ten to get thirty hundredths. That is thirty per cent.", E('3/10 = 30/100 = 30%', 'g')]]],
+      ['Decimal to fraction', 'Read the place value', [["Zero point seven five is seventy-five hundredths. That is the same as three quarters.", E('0.75 = 75/100 = ¾', 'g')]]]],
+    real: ['Sale signs', "A sign says a quarter off. That is the same as twenty-five per cent off, or zero point two five of the price.", E('¼ off = 25% off', 'g')],
+    turn: ["Your turn! Write one fifth as a decimal and as a percentage. Pause and try it.", E('1/5 = ? = ?'), "One fifth is two tenths: zero point two, or twenty per cent.", E('1/5 = 0.2 = 20%', 'g')],
+    rec: ["Per cent means out of one hundred. Change a fraction to hundredths to find the percentage, and read a decimal's place value to find the fraction.", ['% means out of 100', '½ = 0.5 = 50%', '¼ = 0.25 = 25%', '1/10 = 0.1 = 10%']],
+    deep: ['Learning the key facts, like a half, a quarter and a tenth, lets you change most amounts quickly.', '0.5 is fifty per cent, not five per cent: the 5 is in the tenths place.']
+  }));
+
+  /* ---------- P5 506: patterns and algebra ---------- */
+  add(506, LS('How do you find and use the rule for a pattern?', 'how to find the rule that makes a pattern and use it to find later numbers.', {
+    intro: ['The rule', 'What happens each time', "A pattern follows a rule. Look at how each number changes to the next. The rule might be add, take away, multiply or something else.", E('5, 10, 15, 20 → add 5', 'b')],
+    ex: [['Adding', 'Find the step', [["Two, six, ten, fourteen. Each number is four more than the one before, so the rule is add four. The next number is eighteen.", E('2, 6, 10, 14, 18', 'g')]]],
+      ['Taking away', 'Going down', [["Fifty, forty-three, thirty-six, twenty-nine. Each time it goes down by seven, so the rule is take away seven. Next is twenty-two.", E('50, 43, 36, 29, 22', 'g')]]],
+      ['Doubling', 'Multiplying each time', [["One, two, four, eight, sixteen. Each number is double the one before. The next number is thirty-two.", E('1, 2, 4, 8, 16, 32', 'g')]]]],
+    real: ['Saving money', "Maya saves three pounds every week. After one week she has three pounds, then six, nine, twelve. The rule is add three, so after ten weeks she has thirty pounds.", E('3 × 10 = £30', 'g')],
+    turn: ["Your turn! What is the rule, and what comes next: nine, fourteen, nineteen, twenty-four? Pause and try it.", E('9, 14, 19, 24, ?'), "The rule is add five, so the next number is twenty-nine.", E('add 5 → 29', 'g')],
+    rec: ["Find the rule by looking at how each number changes. Say the rule, then use it to find the next numbers.", ['Look at the change', 'Say the rule', 'Check it works every time', 'Use it to continue']],
+    deep: ['When you know the rule you can jump ahead: add five ten times is the same as adding fifty.', 'Some patterns are not adding: check whether the gaps change, as in doubling.']
+  }));
+
+  /* ---------- P5 508: data and chance ---------- */
+  add(508, LS('How do you find the mean?', 'how to find the mean average of a set of numbers.', {
+    intro: ['The mean', 'Share it out evenly', "The mean is a kind of average. Add up all the values, then share the total equally by dividing by how many values there are.", E('mean = total ÷ how many', 'b')],
+    ex: [['Four numbers', 'Add, then divide', [["Find the mean of three, five, six and ten. The total is twenty-four. There are four numbers, so twenty-four divided by four is six.", E('24 ÷ 4 = 6', 'g')]]],
+      ['Goals scored', 'Five matches', [["A team scores two, zero, three, one and four goals. The total is ten goals in five matches. The mean is two goals a match.", E('10 ÷ 5 = 2', 'g')]]],
+      ['Check it', 'Evening out', [["Think of towers of cubes four, six and eight tall. Move cubes until they are all the same: each tower is six tall. That is the mean.", E('(4 + 6 + 8) ÷ 3 = 6', 'g')]]]],
+    real: ['Reading time', "Sam reads for twenty, thirty, twenty-five and twenty-five minutes on four days. That is one hundred minutes in total, so on average twenty-five minutes a day.", E('100 ÷ 4 = 25 min', 'g')],
+    turn: ["Your turn! Find the mean of seven, nine and eleven. Pause and try it.", E('7, 9, 11'), "The total is twenty-seven, and there are three numbers, so the mean is nine.", E('27 ÷ 3 = 9', 'g')],
+    rec: ["To find the mean, add all the values and divide by how many values there are.", ['Add all the values', 'Count how many', 'Divide the total', 'Check it is sensible']],
+    deep: ['The mean shares the total out equally, so it is always between the smallest and largest values.', 'Remember to count values of zero: they still count as values.']
+  }));
+
+  /* ---------- P5 510: factors, multiples and primes ---------- */
+  add(510, LS('What are multiples and common multiples?', 'what multiples are and how to find a multiple two numbers share.', {
+    intro: ['Multiples', 'The times table answers', "The multiples of a number are the answers in its times table. They go on for ever. A common multiple is a number in both lists.", E('Multiples of 4: 4, 8, 12, 16, 20, …', 'b')],
+    ex: [['Listing multiples', 'Count in steps', [["The multiples of six are six, twelve, eighteen, twenty-four, thirty, and so on.", E('6, 12, 18, 24, 30', 'g')]]],
+      ['Common multiples', 'In both lists', [["Multiples of three: three, six, nine, twelve. Multiples of four: four, eight, twelve. Twelve is in both, so it is a common multiple.", E('12 is a multiple of 3 and of 4', 'g')]]],
+      ['Lowest common multiple', 'The first match', [["For two and five, the first number in both lists is ten. Ten is the lowest common multiple.", E('LCM of 2 and 5 = 10', 'g')]]]],
+    real: ['Buses', "One bus comes every four minutes and another every six minutes. They both leave at nine o'clock. They leave together again after twelve minutes, the lowest common multiple of four and six.", E('LCM of 4 and 6 = 12 min', 'g')],
+    turn: ["Your turn! What is the lowest common multiple of three and five? Pause and try it.", E('LCM of 3 and 5'), "Multiples of five: five, ten, fifteen. Fifteen is the first one that is also a multiple of three.", E('15', 'g')],
+    rec: ["Multiples are the answers in a times table. A common multiple is in both lists, and the lowest common multiple is the first one.", ['Multiples = times table answers', 'They go on for ever', 'Common: in both lists', 'LCM: the first match']],
+    deep: ['Multiplying two numbers always gives a common multiple, but not always the lowest: 4 × 6 = 24, but the LCM is 12.', 'Do not mix up factors and multiples: factors divide into a number, multiples are in its times table.']
+  }));
+
+  /* ---------- P6 11: ratio and proportion ---------- */
+  add(11, LS('How do you use unit prices to find the best buy?', 'how to compare offers by finding the cost of one item or one unit.', {
+    intro: ['Best buy', 'Compare like with like', "Shops sell the same thing in different sizes. To find the better value, work out the price of one item, or of one gram or one millilitre, for each offer. The lower unit price is the best buy.", E('unit price = price ÷ amount', 'b')],
+    ex: [['Packs of pens', '4 for £2 or 6 for £2.70', [["Four pens for two pounds is fifty pence each. Six pens for two pounds seventy is forty-five pence each. The pack of six is the better buy.", E('£2 ÷ 4 = 50p, £2.70 ÷ 6 = 45p', 'g')]]],
+      ['Bottles of juice', '1 litre or 1.5 litres', [["One litre costs one pound twenty, so one hundred millilitres cost twelve pence. One and a half litres cost one pound sixty-five, so one hundred millilitres cost eleven pence. The big bottle is better value.", E('120p ÷ 10 = 12p, 165p ÷ 15 = 11p', 'g')]]],
+      ['Same amount', 'Scale up instead', [["Three cans for one pound fifty, or nine cans for four pounds. Three lots of the small offer give nine cans for four pounds fifty, so nine for four pounds is better.", E('3 × £1.50 = £4.50 > £4', 'g')]]]],
+    real: ['Shopping for a party', "Crisps come in a pack of six for one pound eighty or a pack of ten for two pounds ninety. Six for one eighty is thirty pence a bag; ten for two ninety is twenty-nine pence a bag. The pack of ten wins, just.", E('30p vs 29p a bag', 'g')],
+    turn: ["Your turn! Which is better value: five apples for one pound or eight apples for one pound sixty? Pause and try it.", E('5 for £1 or 8 for £1.60'), "Five for one pound is twenty pence each. Eight for one sixty is also twenty pence each. They are the same value.", E('both 20p each', 'g')],
+    rec: ["Find the price of one item or one unit for each offer and compare. The lowest unit price is the best buy.", ['Price ÷ amount', 'Use the same units', 'Lowest unit price wins', 'Or scale to the same amount']],
+    deep: ['Comparing unit prices is a ratio: price to amount, made into price for one.', 'The bigger pack is not always cheaper per item: always check the unit price.']
+  }));
+
+  /* ---------- P7 712: volume, direction, scale and speed ---------- */
+  add(712, LS('How do you use a scale on a map or plan?', 'how to use a scale to change between map distances and real distances.', {
+    intro: ['Scale', 'Small on paper, big in real life', "A map or plan is a smaller copy of real life. The scale tells you how much smaller. One centimetre to five kilometres means each centimetre on the map is five kilometres in real life.", E('1 cm : 5 km', 'b')],
+    ex: [['Map to real', 'Multiply', [["On a map with scale one centimetre to five kilometres, two towns are six centimetres apart. Six times five is thirty kilometres.", E('6 × 5 = 30 km', 'g')]]],
+      ['Real to map', 'Divide', [["A road is twenty kilometres long. Twenty divided by five is four, so it is four centimetres on the map.", E('20 ÷ 5 = 4 cm', 'g')]]],
+      ['Ratio scale', '1 : 50', [["A plan has scale one to fifty. A room is eight centimetres long on the plan, so in real life it is eight times fifty, four hundred centimetres: four metres.", E('8 × 50 = 400 cm = 4 m', 'g')]]]],
+    real: ['Planning a walk', "On a walking map, one centimetre is half a kilometre. A route measures nine centimetres, so the walk is four and a half kilometres.", E('9 × 0.5 = 4.5 km', 'g')],
+    turn: ["Your turn! The scale is one centimetre to two kilometres. Two places are seven and a half centimetres apart. How far is that? Pause and try it.", E('7.5 cm, 1 cm : 2 km'), "Seven and a half times two is fifteen kilometres.", E('15 km', 'g')],
+    rec: ["Multiply by the scale to go from the map to real life, and divide to go from real life to the map. Watch the units.", ['Map → real: multiply', 'Real → map: divide', '1 : 50 means 50 times bigger', 'Check the units']],
+    deep: ['A scale works like a ratio: every length is multiplied by the same number.', 'Change units before you finish: 400 cm is 4 m, not 400 m.']
+  }));
+
+  /* ---------- S1 805: ratio ---------- */
+  add(805, LS('How do you scale a recipe using ratio?', 'how to use ratio and proportion to make more or less of a recipe.', {
+    intro: ['Scaling a recipe', 'Keep the ratio the same', "A recipe is a ratio of ingredients. To make more or less, multiply every amount by the same scale factor so the ratio stays the same.", E('new amount = old amount × scale factor', 'b')],
+    ex: [['Doubling', 'Scale factor 2', [["Pancakes for four need two hundred grams of flour and three hundred millilitres of milk. For eight people, double both: four hundred grams and six hundred millilitres.", E('200 g × 2 = 400 g, 300 ml × 2 = 600 ml', 'g')]]],
+      ['Through one', 'Find one portion first', [["A recipe for six uses four hundred and fifty grams of pasta. For one person that is seventy-five grams. For four people, three hundred grams.", E('450 ÷ 6 = 75 → 75 × 4 = 300 g', 'g')]]],
+      ['Scale factor', 'New ÷ old', [["A recipe for four, to be made for ten: the scale factor is ten divided by four, two point five. One hundred and twenty grams of butter becomes three hundred grams.", E('10 ÷ 4 = 2.5 → 120 × 2.5 = 300 g', 'g')]]]],
+    real: ['Cooking for a party', "A smoothie for two uses three bananas. For a party of fourteen, the scale factor is seven, so you need twenty-one bananas.", E('14 ÷ 2 = 7 → 3 × 7 = 21', 'g')],
+    turn: ["Your turn! A recipe for five people uses two hundred and fifty grams of rice. How much for three people? Pause and try it.", E('250 g for 5 → ? for 3'), "One person needs fifty grams, so three people need one hundred and fifty grams.", E('150 g', 'g')],
+    rec: ["Find the scale factor by dividing the new number of people by the old, or find the amount for one first. Multiply every ingredient by the same factor.", ['Scale factor = new ÷ old', 'Or find one portion first', 'Multiply every ingredient', 'The ratio stays the same']],
+    deep: ['Scaling a recipe is direct proportion: twice the people, twice of everything.', 'Do not add the same amount to each ingredient: it changes the ratio and the taste.']
+  }));
+
+  /* ---------- S1 809: sequences, formulae and algebra ---------- */
+  add(809, LS('How do you substitute numbers into a formula?', 'how to replace the letters in a formula with numbers and work out the answer.', {
+    intro: ['Substitution', 'Swap letters for numbers', "A formula uses letters for quantities. To use it, substitute: replace each letter with its number, then work it out using the order of operations.", E('P = 2l + 2w', 'b')],
+    ex: [['A rectangle', 'Perimeter formula', [["P equals two l plus two w. For l equals seven and w equals three: two times seven plus two times three, fourteen plus six, twenty.", E('P = 2(7) + 2(3) = 14 + 6 = 20', 'g')]]],
+      ['With a power', 'Powers first', [["A equals three x squared. For x equals four: four squared is sixteen, times three is forty-eight.", E('A = 3 × 4² = 3 × 16 = 48', 'g')]]],
+      ['With a negative', 'Use brackets', [["y equals five minus two x. For x equals minus three: five minus two times minus three is five plus six, eleven.", E('y = 5 − 2(−3) = 5 + 6 = 11', 'g')]]]],
+    real: ['A taxi fare', "A taxi charges C equals three plus two m pounds, where m is the miles. For eight miles: three plus sixteen is nineteen pounds.", E('C = 3 + 2(8) = £19', 'g')],
+    turn: ["Your turn! Find V equals l w h when l is five, w is four and h is two. Pause and try it.", E('V = lwh, l = 5, w = 4, h = 2'), "Five times four times two is forty.", E('V = 40', 'g')],
+    rec: ["Swap each letter for its number, using brackets, then follow the order of operations.", ['Write the formula', 'Substitute in brackets', 'Powers before × and ÷', '× and ÷ before + and −']],
+    deep: ['Writing each number in brackets keeps the signs right, especially with negatives.', '3x² means 3 × x², not (3x)²: for x = 4 it is 48, not 144.']
+  }));
+
+  /* ---------- S1 813: spatial awareness ---------- */
+  add(813, LS('How do you find lines of symmetry and rotational symmetry?', 'how to find the lines of symmetry of a shape and its order of rotational symmetry.', {
+    intro: ['Symmetry', 'Two kinds', "A line of symmetry splits a shape into two halves that are mirror images. Rotational symmetry is how many times a shape looks the same in one full turn.", E('lines of symmetry · order of rotation', 'b')],
+    ex: [['A rectangle', 'Fold it', [["A rectangle has two lines of symmetry, across and down the middle. The diagonals are not lines of symmetry. It looks the same twice in a full turn: order two.", E('2 lines, order 2', 'g')]]],
+      ['A square', 'More symmetry', [["A square has four lines of symmetry: two through the middles of the sides and two along the diagonals. It has rotational symmetry of order four.", E('4 lines, order 4', 'g')]]],
+      ['Regular shapes', 'A rule', [["A regular polygon with n sides has n lines of symmetry and rotational symmetry of order n. A regular hexagon: six and six.", E('regular hexagon: 6 lines, order 6', 'g')]]]],
+    real: ['Logos and wheels', "Many car wheels have five spokes. They look the same five times in a full turn, so they have rotational symmetry of order five.", E('5 spokes → order 5', 'g')],
+    turn: ["Your turn! How many lines of symmetry does an equilateral triangle have, and what is its order of rotational symmetry? Pause and try it.", E('equilateral triangle'), "It has three lines of symmetry and rotational symmetry of order three.", E('3 lines, order 3', 'g')],
+    rec: ["A line of symmetry gives two mirror halves. The order of rotational symmetry is how many times the shape fits onto itself in one full turn.", ['Mirror halves = line of symmetry', 'Count fits in a full turn', 'Order 1 = no rotational symmetry', 'Regular n-gon: n and n']],
+    deep: ['Tracing paper helps: trace the shape, turn it and count how many times it fits.', 'The diagonal of a rectangle is not a line of symmetry: fold along it and the halves do not match.']
+  }));
+
+  /* ---------- S2 831: similarity and enlargement ---------- */
+  add(831, LS('How do area and volume change when a shape is enlarged?', 'how a scale factor changes lengths, areas and volumes.', {
+    intro: ['Scale factors', 'Length, area, volume', "When a shape is enlarged by a scale factor k, every length is multiplied by k. Areas are multiplied by k squared and volumes by k cubed.", E('lengths × k, areas × k², volumes × k³', 'b')],
+    ex: [['Lengths', 'Scale factor 3', [["A two centimetre side enlarged by scale factor three becomes six centimetres.", E('2 × 3 = 6 cm', 'g')]]],
+      ['Area', 'Multiply by k²', [["A square of area five square centimetres is enlarged by scale factor three. The new area is five times nine, forty-five square centimetres.", E('5 × 3² = 45 cm²', 'g')]]],
+      ['Volume', 'Multiply by k³', [["A box holds eight cubic centimetres. Enlarged by scale factor two, the volume is eight times eight, sixty-four cubic centimetres.", E('8 × 2³ = 64 cm³', 'g')]]]],
+    real: ['Model and real', "A model car is built at a scale of one to twenty. Real paint covers twenty squared, four hundred, times the model's area.", E('area × 20² = × 400', 'g')],
+    turn: ["Your turn! A shape of area twelve square centimetres is enlarged by scale factor two. What is the new area? Pause and try it.", E('12 cm², k = 2'), "Areas are multiplied by two squared, four. The new area is forty-eight square centimetres.", E('48 cm²', 'g')],
+    rec: ["Lengths multiply by the scale factor, areas by its square and volumes by its cube.", ['Length × k', 'Area × k²', 'Volume × k³', 'Find k from matching lengths']],
+    deep: ['Area has two dimensions, so it is scaled twice; volume has three, so it is scaled three times.', 'Doubling the sides does not double the area: it multiplies it by four.']
+  }));
+
+  /* ---------- S2 833: spatial awareness ---------- */
+  add(833, LS('How do you use bearings and back bearings?', 'how to measure a bearing and find the bearing for the return journey.', {
+    intro: ['Bearings', 'From north, clockwise', "A bearing is an angle measured clockwise from north, written with three figures. The back bearing is the direction for the return journey.", E('back bearing = bearing ± 180°', 'b')],
+    ex: [['Reading a bearing', 'Three figures', [["East is a quarter turn clockwise from north, so it is zero nine zero degrees. South-west is two two five degrees.", E('E = 090°, SW = 225°', 'g')]]],
+      ['Back bearing', 'Add 180°', [["A ship sails on a bearing of zero six zero degrees. To come back, add one hundred and eighty: two four zero degrees.", E('060° + 180° = 240°', 'g')]]],
+      ['Back bearing', 'Subtract 180°', [["If the bearing is more than one hundred and eighty, subtract instead. Three hundred degrees take away one hundred and eighty is one hundred and twenty: one two zero degrees.", E('300° − 180° = 120°', 'g')]]]],
+    real: ['Walking home', "A hiker walks from the car park on a bearing of one one five degrees. To get back, she walks on two nine five degrees.", E('115° + 180° = 295°', 'g')],
+    turn: ["Your turn! The bearing of B from A is zero three five degrees. What is the bearing of A from B? Pause and try it.", E('035° → ?'), "Add one hundred and eighty degrees: two one five degrees.", E('215°', 'g')],
+    rec: ["Measure bearings clockwise from north and write three figures. For a back bearing, add one hundred and eighty if the bearing is under one hundred and eighty, otherwise subtract.", ['Start at north', 'Turn clockwise', 'Always three figures', 'Back bearing: ± 180°']],
+    deep: ['Going back means facing the opposite way, which is half a turn: 180°.', 'Write 35° as 035°: bearings always have three figures.']
+  }));
+
+  /* ---------- S3 847: straight lines ---------- */
+  add(847, LS('How do you find the midpoint and length of a line segment?', 'how to find the middle of a line between two points and how long it is.', {
+    intro: ['Midpoint and length', 'Two points', "The midpoint is halfway between two points: average the x-coordinates and average the y-coordinates. The length uses Pythagoras on the horizontal and vertical distances.", E('M = ((x₁ + x₂)/2, (y₁ + y₂)/2)', 'b')],
+    ex: [['Midpoint', '(2, 3) and (8, 7)', [["Add the x-coordinates and halve: two plus eight is ten, half is five. Do the same for y: three plus seven is ten, half is five. The midpoint is five, five.", E('M = (5, 5)', 'g')]]],
+      ['Length', '(1, 2) and (4, 6)', [["Across three, up four. By Pythagoras the length is the square root of nine plus sixteen, root twenty-five: five units.", E('√(3² + 4²) = √25 = 5', 'g')]]],
+      ['With negatives', '(−2, 1) and (4, −7)', [["Midpoint: minus two plus four is two, halved one; one plus minus seven is minus six, halved minus three. Length: across six, down eight, so ten.", E('M = (1, −3), length = √(36 + 64) = 10', 'g')]]]],
+    real: ['Meeting halfway', "On a grid map, two friends live at one, two and nine, eight. They meet at the midpoint, five, five.", E('((1 + 9)/2, (2 + 8)/2) = (5, 5)', 'g')],
+    turn: ["Your turn! Find the midpoint of zero, four and six, ten. Pause and try it.", E('(0, 4) and (6, 10)'), "Zero plus six halved is three. Four plus ten halved is seven. The midpoint is three, seven.", E('(3, 7)', 'g')],
+    rec: ["For the midpoint, average the x-coordinates and the y-coordinates. For the length, find the change in x and in y and use Pythagoras.", ['Midpoint: average x and y', 'Length: change in x and y', 'Square, add, square root', 'Check signs with negatives']],
+    deep: ['The midpoint is just the mean of the two points, coordinate by coordinate.', 'Squaring makes a negative change positive, so the direction does not matter for length.']
+  }));
+
+  /* ---------- S3 848: simultaneous equations ---------- */
+  add(848, LS('How do you solve simultaneous equations by substitution?', 'how to solve a pair of equations by putting one into the other.', {
+    intro: ['Substitution', 'Replace one letter', "If one equation tells you what a letter equals, substitute that into the other equation. This leaves one equation with one letter to solve.", E('y = … → put it into the other', 'b')],
+    ex: [['A simple pair', 'y = 2x', [["y equals two x and x plus y equals twelve. Substitute: x plus two x equals twelve, so three x is twelve and x is four. Then y is eight.", E('x + 2x = 12 → x = 4, y = 8', 'g')]]],
+      ['Rearrange first', 'Make a letter the subject', [["x plus y equals ten and two x plus three y equals twenty-four. From the first, x equals ten minus y. Substitute: twenty minus two y plus three y is twenty-four, so y is four and x is six.", E('2(10 − y) + 3y = 24 → y = 4, x = 6', 'g')]]],
+      ['Check', 'Both equations', [["Check x six, y four: six plus four is ten, and twelve plus twelve is twenty-four. Both work.", E('6 + 4 = 10 ✓, 12 + 12 = 24 ✓', 'g')]]]],
+    real: ['Tickets', "Adult tickets cost twice a child's ticket. One adult and one child cost fifteen pounds. Let a equal two c: two c plus c is fifteen, so a child ticket is five pounds and an adult ticket ten pounds.", E('3c = 15 → c = £5, a = £10', 'g')],
+    turn: ["Your turn! Solve y equals x plus three and two x plus y equals eighteen. Pause and try it.", E('y = x + 3, 2x + y = 18'), "Substitute: two x plus x plus three is eighteen, so three x is fifteen and x is five. Then y is eight.", E('x = 5, y = 8', 'g')],
+    rec: ["Make one letter the subject, substitute it into the other equation, solve, then find the other letter and check both equations.", ['Get one letter on its own', 'Substitute into the other', 'Solve for one letter', 'Find the other and check']],
+    deep: ['Substitution is best when one equation already says y = … or x = ….', 'Use brackets when you substitute: 2(10 − y), not 2 × 10 − y.']
+  }));
+
+  /* ---------- S3 849: Pythagoras and trigonometry ---------- */
+  add(849, LS('How do you use Pythagoras to find the distance between two points?', 'how to find the straight-line distance between two coordinates.', {
+    intro: ['Distance between points', 'Make a right-angled triangle', "Draw the horizontal and vertical distances between two points. They make a right-angled triangle, and the distance is the hypotenuse.", E('d = √((x₂ − x₁)² + (y₂ − y₁)²)', 'b')],
+    ex: [['Simple case', '(1, 1) to (7, 9)', [["Across six, up eight. Six squared plus eight squared is thirty-six plus sixty-four, one hundred. The distance is ten.", E('√(6² + 8²) = √100 = 10', 'g')]]],
+      ['Going down', '(2, 5) to (5, 1)', [["Across three, down four. Nine plus sixteen is twenty-five, so the distance is five.", E('√(3² + 4²) = 5', 'g')]]],
+      ['Round the answer', '(0, 0) to (3, 5)', [["Nine plus twenty-five is thirty-four. The square root of thirty-four is about five point eight three.", E('√34 ≈ 5.83', 'g')]]]],
+    real: ['As the crow flies', "On a map grid in kilometres, a drone flies from two, three to eight, eleven. Across six, up eight: ten kilometres in a straight line.", E('√(36 + 64) = 10 km', 'g')],
+    turn: ["Your turn! Find the distance from one, two to four, six. Pause and try it.", E('(1, 2) to (4, 6)'), "Across three, up four, so the distance is five.", E('5', 'g')],
+    rec: ["Find the change in x and the change in y, square them, add, and take the square root.", ['Change in x', 'Change in y', 'Square and add', 'Square root']],
+    deep: ['The distance formula is Pythagoras written with coordinates.', 'Find the differences before squaring: (7 − 1)² = 36, not 7² − 1² = 48.']
+  }));
+
+  /* ---------- S3 850: the circle ---------- */
+  add(850, LS('How do you find a missing radius or angle from an arc or sector?', 'how to work backwards from an arc length or sector area.', {
+    intro: ['Working backwards', 'Arcs and sectors', "Arc length is the angle over three hundred and sixty times the circumference. Sector area is the angle over three hundred and sixty times the area. If you know the answer, rearrange to find the angle or radius.", E('arc = θ/360 × πd    sector = θ/360 × πr²', 'b')],
+    ex: [['Find the angle', 'From an arc', [["A circle has radius ten centimetres, so the circumference is about sixty-two point eight. An arc is fifteen point seven centimetres, a quarter of the circle, so the angle is ninety degrees.", E('15.7 ÷ 62.8 = ¼ → θ = 90°', 'g')]]],
+      ['Find the radius', 'From a sector area', [["A ninety degree sector has area seventy-eight point five square centimetres. The whole circle is four times that, three hundred and fourteen. So r squared is one hundred and r is ten centimetres.", E('πr² = 314 → r² = 100 → r = 10 cm', 'g')]]],
+      ['Find the angle', 'From a sector area', [["A circle of radius six has area about one hundred and thirteen point one. A sector of thirty-seven point seven is one third, so the angle is one hundred and twenty degrees.", E('37.7 ÷ 113.1 = ⅓ → θ = 120°', 'g')]]]],
+    real: ['Garden sprinkler', "A sprinkler waters a sector of radius five metres with an area of about thirty-nine point three square metres. The full circle is seventy-eight point five, so it turns through one hundred and eighty degrees.", E('39.3 ÷ 78.5 = ½ → 180°', 'g')],
+    turn: ["Your turn! A sector of a circle of radius four centimetres has area about twelve point six square centimetres. What is its angle? Pause and try it.", E('r = 4, sector ≈ 12.6 cm²'), "The full circle is about fifty point three. Twelve point six is a quarter of it, so the angle is ninety degrees.", E('90°', 'g')],
+    rec: ["Find what fraction of the whole circle the arc or sector is. That fraction times three hundred and sixty gives the angle; or work back from the whole area to the radius.", ['Find the whole circle', 'Find the fraction', 'Fraction × 360° = angle', 'Area ÷ π, then √ for r']],
+    deep: ['An arc or sector is always a fraction of the whole circle; the angle tells you which fraction.', 'Use the diameter for circumference and the radius for area.']
+  }));
+
+  /* add each new lesson after the topic's existing questions */
+  Object.keys(ADD).forEach(function (k) {
+    var n = Number(k), had = (BT.EP_BY_TOPIC[n] || []).map(function (t) { return BT.EP && BT.EP[t]; }).filter(Boolean);
+    if (had.length !== (BT.EP_BY_TOPIC[n] || []).length && window.console) console.warn('lessons_four: a lesson in topic ' + n + ' was not found');
+    L.use(n, had.concat(ADD[n]));
   });
 })();
 </script>
