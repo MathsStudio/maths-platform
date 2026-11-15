@@ -4,6 +4,9 @@
   'use strict';
   var S = window.Studio; if (!S) return;
   var H = S.h, NQ = 18, SECS = 600, timer = null, T;
+  /* P4 (age 7 to 8): a shorter, gentler test, 12 questions at Low and Medium only */
+  function young() { return S.app && S.app.yearOf && S.app.yearOf() === 'P4'; }
+  function nq() { return young() ? 12 : 18; }
   function esc(x) { return String(x == null ? '' : x); }
   function plain(h) { return String(h).replace(/<svg[\s\S]*?<\/svg>/g, ' [picture] ').replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim(); }
   function fmtT(s) { s = Math.max(0, s); return (s < 600 ? '0' : '') + Math.floor(s / 60) + ':' + (s % 60 < 10 ? '0' : '') + (s % 60); }
@@ -36,23 +39,25 @@
     var topics = S.yearTopics().filter(function (t) { return t && t.steps; }), saved = S.state.tab, byKind = {}, seen = {}, qs = [];
     topics.forEach(function (t) {
       var st = t.steps.filter(function (x) { return x.id === 'practise' && typeof x.make === 'function'; })[0]; if (!st) return;
+      var set = S.app && S.app.store && S.app.store.settings, keepLv = set && set.difficulty;
       try {
+        if (young() && set) set.difficulty = Math.random() < 0.5 ? 'low' : 'medium';
         S.state.tab = t.n; var arr = st.make();
         (Array.isArray(arr) ? arr : []).forEach(function (q) { if (!q || !q.text) return; q.__topic = t.title; var k = kindOf(q, t.title); (byKind[k] = byKind[k] || []).push(q); });
-      } catch (e) {}
+      } catch (e) {} finally { if (set) set.difficulty = keepLv; }
     });
     S.state.tab = saved;
     Object.keys(byKind).forEach(function (k) { byKind[k] = H.shuffle(byKind[k]); });
     function take(k) { var a = byKind[k]; while (a && a.length) { var q = a.pop(), sig = plain(q.text) + '|' + (q.options || []).join(','); if (!seen[sig]) { seen[sig] = 1; return q; } } return null; }
     var kinds = H.shuffle(Object.keys(byKind)), r;
-    kinds.forEach(function (k) { if (qs.length < NQ) { var q = take(k); if (q) qs.push(q); } });
+    kinds.forEach(function (k) { if (qs.length < nq()) { var q = take(k); if (q) qs.push(q); } });
     var guard = 0;
-    while (qs.length < NQ && guard++ < 200) {
+    while (qs.length < nq() && guard++ < 200) {
       var k2 = EXTRA[guard % EXTRA.length]; if (guard > EXTRA.length * 3) k2 = kinds[guard % kinds.length];
       var q2 = take(k2); if (q2) qs.push(q2);
     }
     S._tenKinds = qs.map(function (q) { return kindOf(q, q.__topic); });
-    return H.shuffle(qs).slice(0, NQ);
+    return H.shuffle(qs).slice(0, nq());
   }
 
   function open() {
@@ -113,11 +118,12 @@
 
   function addCard() {
     var v = document.getElementById('view'); if (!v || document.getElementById('tenCard')) return;
+    if (/^P[23]$/.test(S.app && S.app.yearOf ? S.app.yearOf() : '')) return;   /* no 10-minute test for P2 and P3 */
     var anchor = document.getElementById('myprog'); if (!anchor) return;
     var c = document.createElement('section'); c.className = 'card'; c.id = 'tenCard'; c.setAttribute('aria-labelledby', 'tenH');
     var lk = S.testLocked && S.testLocked();
     c.innerHTML = '<h2 id="tenH" style="margin:0 0 6px">⏱ 10-minute mental maths test' + (lk ? ' <span class="tag" style="vertical-align:middle;margin-left:6px">Full year pass</span>' : '') + '</h2>' +
-      '<p class="note" style="margin:0 0 10px">18 mixed questions from this year\'s topics, no calculator. A timer counts down from 10:00. At the end you get a score out of 18 and a review of every mistake.</p>' +
+      '<p class="note" style="margin:0 0 10px">' + nq() + ' mixed questions from this year\'s topics, no calculator. A timer counts down from 10:00. At the end you get a score out of ' + nq() + ' and a review of every mistake.</p>' +
       '<div style="background:var(--soft,#f1f5ff);border-left:5px solid #ffd166;border-radius:12px;padding:10px 14px;margin:0 0 12px;line-height:1.5"><b>Try this after you have finished all of this year\'s topics.</b> The questions come from every topic, so if you meet one you have not learned yet, skip it and come back to the test later.</div>' +
       '<button class="btn' + (lk ? ' ghost' : '') + '" type="button" id="tenStart">' + (lk ? '🔒 Unlock the test' : 'Start the test') + '</button>' + (lk ? '<span class="note" style="margin-left:10px">Included when you unlock the year</span>' : '');
     anchor.parentNode.insertBefore(c, anchor.nextSibling);

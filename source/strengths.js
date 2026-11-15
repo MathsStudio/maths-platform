@@ -1,4 +1,4 @@
-/* strengths.js: the Strengths Check. Three rounds of 20 questions that mix every topic of the year and
+/* strengths.js: the Strengths Check. Three rounds of questions (20 each, 15 for P4) that mix every topic of the year and
    all three levels, a score and a colour for each topic, a short plan built from the site's own lessons,
    quick re-checks, a progress page and a report to save as PDF or print. Subscribers only: it opens for
    the years an account has paid for. Results are saved with the child's progress (key "sc"); everyday
@@ -8,6 +8,9 @@
   var S = window.Studio, A = S && S.app, H = S && S.h, BT = window.BT;
   if (!A || !H) return;
   var LV = ['low', 'medium', 'high'], LVN = ['Low', 'Medium', 'High'], WT = [1, 1.5, 2], ROUNDS = 3, PER = 20, KEEP = 10;
+  /* younger children get shorter rounds: P4 (age 7 to 8) 15 questions, everyone else 20 */
+  function per() { var y = S.app && S.app.yearOf ? S.app.yearOf() : ''; return y === 'P3' ? 12 : y === 'P4' ? 15 : 20; }
+  function mins() { var p = per(); return p <= 12 ? 10 : p <= 15 ? 12 : 15; }
   var view = null, review = [], roundAns = [];
 
   /* ---------- styles ---------- */
@@ -115,17 +118,17 @@
   function buildRound(r, onlyTopic, count) { return qsFrom(planRound(r, onlyTopic, count)); }
   /* the round's plan: [topic, level] for each question, saved so a round can be continued later */
   function planRound(r, onlyTopic, count) {
-    var ts = onlyTopic ? [onlyTopic] : topics(), slots = [], need = onlyTopic ? [2, 2, 2] : [7, 7, 6];
+    var ts = onlyTopic ? [onlyTopic] : topics(), slots = [], need = onlyTopic ? [2, 2, 2] : (function (p) { var a = Math.ceil(p / 3), b = Math.ceil((p - a) / 2); return [a, b, p - a - b]; })(per());
     if (!onlyTopic) ts.forEach(function (t, i) { var l = (i + r) % 3; slots.push({ t: t, l: l }); need[l]--; });
     var extra = [], used = {}, c = cur();
     if (!onlyTopic && c) c.a.forEach(function (a) { used[a[0]] = (used[a[0]] || 0) + 1; });
-    while (slots.length + extra.length < (count || PER)) {
+    while (slots.length + extra.length < (count || per())) {
       /* the extra questions go to the topics asked least so far, so every topic ends with 4 or 5 */
       var order = H.shuffle(ts.slice()).sort(function (x, y) { return (used[x.n] || 0) - (used[y.n] || 0); });
       order.forEach(function (t) { used[t.n] = (used[t.n] || 0) + 1; });
       extra = extra.concat(order);
     }
-    extra.slice(0, (count || PER) - slots.length).forEach(function (t) {
+    extra.slice(0, (count || per()) - slots.length).forEach(function (t) {
       var l = [0, 1, 2].sort(function (a, b) { return need[b] - need[a]; })[0]; need[l]--; slots.push({ t: t, l: l });
     });
     return H.shuffle(slots).map(function (s) { return [s.t.n, s.l]; });
@@ -230,13 +233,13 @@
 
   /* the card on the home page */
   S.sc.card = function () {
-    if (S.app.yearOf() === 'P2') return '';   /* P2 has no Strengths Check (P3 and P4 do) */
+    if (/^P[23]$/.test(S.app.yearOf())) return '';   /* P2 and P3 have no Strengths Check (P4 does) */
     var y = yr(), name = who(), h = '<section class="card sc-card" id="scCard"><h2>Check my strengths</h2>';
-    if (locked()) return h + '<p class="say">Find out which topics ' + (name ? esc(name) + ' is' : 'you are') + ' strong in, and which to work on next, with a plan made from the lessons on this site. Three rounds of 20 questions that cover every ' + y + ' topic.</p><p class="note" style="min-height:0">Part of a subscription.</p><button class="btn" type="button" data-sc="unlock">🔒 Unlock with a subscription</button></section>';
+    if (locked()) return h + '<p class="say">Find out which topics ' + (name ? esc(name) + ' is' : 'you are') + ' strong in, and which to work on next, with a plan made from the lessons on this site. Three rounds of ' + per() + ' questions that cover every ' + y + ' topic.</p><p class="note" style="min-height:0">Part of a subscription.</p><button class="btn" type="button" data-sc="unlock">🔒 Unlock with a subscription</button></section>';
     var c = cur(), last = lastCheck(), pl = myPlan();
     var mid = c && c.ra && c.ra.length;
-    if (c) return h + '<p class="say">' + (mid ? 'Round ' + (c.r + 1) + ' of 3: ' + c.ra.length + ' of ' + PER + ' answered. Carry on where you left off.' : 'Round ' + (c.r + 1) + ' of 3 is next. Each round has 20 questions and takes about 15 minutes.') + '</p><div class="sc-row"><button class="btn" type="button" data-sc="start">' + (mid ? 'Continue round ' : 'Start round ') + (c.r + 1) + '</button>' + (last ? '<button class="btn ghost" type="button" data-sc="results">Last results</button>' : '') + '</div></section>';
-    if (!last) return h + '<p class="say">Three rounds of 20 questions mix every ' + y + ' topic at every level. At the end you will see your strengths, your focus areas and a plan to work on them.</p><p class="note" style="min-height:0">About 15 minutes a round. You can stop at any time and carry on later.</p><button class="btn" type="button" data-sc="start">Start round 1</button></section>';
+    if (c) return h + '<p class="say">' + (mid ? 'Round ' + (c.r + 1) + ' of 3: ' + c.ra.length + ' of ' + per() + ' answered. Carry on where you left off.' : 'Round ' + (c.r + 1) + ' of 3 is next. Each round has ' + per() + ' questions and takes about ' + mins() + ' minutes.') + '</p><div class="sc-row"><button class="btn" type="button" data-sc="start">' + (mid ? 'Continue round ' : 'Start round ') + (c.r + 1) + '</button>' + (last ? '<button class="btn ghost" type="button" data-sc="results">Last results</button>' : '') + '</div></section>';
+    if (!last) return h + '<p class="say">Three rounds of ' + per() + ' questions mix every ' + y + ' topic at every level. At the end you will see your strengths, your focus areas and a plan to work on them.</p><p class="note" style="min-height:0">About ' + mins() + ' minutes a round. You can stop at any time and carry on later.</p><button class="btn" type="button" data-sc="start">Start round 1</button></section>';
     var eff = effective(last), ns = Object.keys(eff), g = ns.filter(function (n) { return eff[n] >= 80; }).length, r = ns.filter(function (n) { return eff[n] < 50; }).length, pd = planDone(pl);
     return h + '<div class="sc-row" style="margin:6px 0 10px"><span class="sc-big">' + scoreOf(last.a).pct + '%</span><span class="note" style="min-height:0;margin:0">Last check ' + shortDate(last.at) + ' · ' + g + ' strong · ' + r + ' to focus on</span></div>' +
       (pl ? '<p class="say" style="margin:0 0 8px">My plan: ' + pd[0] + ' of ' + pd[1] + ' steps done.</p>' : '') +
@@ -247,7 +250,7 @@
   function drawIntro(root) {
     var c = cur(), r = c ? c.r : 0;
     root.innerHTML = back() + '<section class="card"><h1 class="say" style="margin:0 0 6px">Check my strengths</h1>' +
-      '<p class="lead say">Three rounds of 20 questions. Each round mixes every ' + yr() + ' topic at low, medium and high level.</p>' +
+      '<p class="lead say">Three rounds of ' + per() + ' questions. Each round mixes every ' + yr() + ' topic at low, medium and high level.</p>' +
       '<ul class="say"><li>There are no hints in the check. Do your best on each one.</li><li>Pick an answer, or type it and press Next. The next question comes straight away.</li><li>You can stop at any time. Your answers are saved, and you carry on from the same question.</li><li>You will see every answer, with the working, at the end of the round.</li></ul>' +
       '<button class="btn" type="button" data-sc="start">' + (c && c.ra && c.ra.length ? 'Continue round ' : 'Start round ') + (r + 1) + '</button></section>';
     wire(root);
@@ -320,7 +323,7 @@
     var pl = myPlan();
     if (!pl) { drawResults(root); return; }
     var pd = planDone(pl);
-    root.innerHTML = back() + '<section class="card"><h1 class="say" style="margin:0 0 6px">My plan</h1><p class="lead say">About 20 minutes a day. Work down each topic: watch, learn, practise, then a quick re-check. Pass the re-check and the topic moves up.</p>' +
+    root.innerHTML = back() + '<section class="card"><h1 class="say" style="margin:0 0 6px">My plan</h1><p class="lead say">About ' + (per() < 20 ? '10' : '20') + ' minutes a day. Work down each topic: watch, learn, practise, then a quick re-check. Pass the re-check and the topic moves up.</p>' +
       '<div class="bar" style="margin:6px 0" role="progressbar" aria-valuemin="0" aria-valuemax="' + pd[1] + '" aria-valuenow="' + pd[0] + '"><i style="width:' + Math.round(pd[0] / Math.max(1, pd[1]) * 100) + '%"></i></div><p class="note" style="min-height:0">' + pd[0] + ' of ' + pd[1] + ' steps done</p></section>' +
       pl.it.map(function (it, k) {
         var t = topicN(it.n); if (!t) return '';
