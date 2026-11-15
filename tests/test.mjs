@@ -205,18 +205,20 @@ subState.status = 'canceled'; r = await call('/api/me'); row = sqlite.prepare("S
 ok(row.until < nowS() + 2 * 86400, 'a cancelled plan is not extended');
 // checkout shows the consent wording; admin can remove a paid year after a refund
 ok(/custom_text%5Bsubmit%5D%5Bmessage%5D=/.test(stripeBody || '') && /14-day/.test(decodeURIComponent(stripeBody || '')) && /terms/.test(decodeURIComponent(stripeBody || '')), 'checkout shows terms and 14-day wording');
-const revPost = (body, pw = 'pw') => worker.fetch(new Request(B + '/admin/revoke', { method: 'POST', headers: { Authorization: 'Basic ' + btoa('a:' + pw), Origin: B, 'Content-Type': 'application/x-www-form-urlencoded', 'CF-Connecting-IP': '8.8.8.8' }, body: new URLSearchParams(body).toString() }), env);
+/* the admin forms answer with a redirect back to /admin; follow it the way a browser would */
+const afterPost = async (pw, p) => { const res = await p; if (res.status !== 303) return res; const loc = res.headers.get('Location'); ok(/^\/admin\?note=/.test(loc), 'admin change goes back to a fresh admin page'); return worker.fetch(new Request(B + loc.replace(/#.*$/, ''), { headers: { Authorization: 'Basic ' + btoa('a:' + pw), 'CF-Connecting-IP': '8.8.8.8' } }), env); };
+const revPost = (body, pw = 'pw') => afterPost(pw, worker.fetch(new Request(B + '/admin/revoke', { method: 'POST', headers: { Authorization: 'Basic ' + btoa('a:' + pw), Origin: B, 'Content-Type': 'application/x-www-form-urlencoded', 'CF-Connecting-IP': '8.8.8.8' }, body: new URLSearchParams(body).toString() }), env));
 r = await revPost({ email: 'parent@example.com', year: 'S2' }, 'wrong'); ok(r.status === 401, 'revoke needs the admin password');
 const had = sqlite.prepare("SELECT COUNT(*) c FROM purchases WHERE user_id=? AND year='S2'").get(uid).c;
 r = await revPost({ email: 'parent@example.com', year: 'S2' }); const revTxt = await r.text();
 ok(had === 1 && /Removed S2 access/.test(revTxt) && sqlite.prepare("SELECT COUNT(*) c FROM purchases WHERE user_id=? AND year='S2'").get(uid).c === 0, 'admin can remove a paid year');
 r = await revPost({ email: 'nobody@example.com', year: 'S2' }); ok(/No account found/.test(await r.text()), 'revoke reports unknown email');
 // admin can give access
-const grantPost = (body, pw = 'pw') => worker.fetch(new Request(B + '/admin/grant', { method: 'POST', headers: { Authorization: 'Basic ' + btoa('a:' + pw), Origin: B, 'Content-Type': 'application/x-www-form-urlencoded', 'CF-Connecting-IP': '8.8.8.8' }, body: new URLSearchParams(body).toString() }), env);
+const grantPost = (body, pw = 'pw') => afterPost(pw, worker.fetch(new Request(B + '/admin/grant', { method: 'POST', headers: { Authorization: 'Basic ' + btoa('a:' + pw), Origin: B, 'Content-Type': 'application/x-www-form-urlencoded', 'CF-Connecting-IP': '8.8.8.8' }, body: new URLSearchParams(body).toString() }), env));
 r = await grantPost({ email: 'parent@example.com', year: 'ALL', months: '12' }, 'wrong'); ok(r.status === 401, 'give access needs the admin password');
 r = await grantPost({ email: 'nobody@example.com', year: 'ALL', months: '12' }); ok(/No account found/.test(await r.text()), 'give access reports unknown email');
 r = await grantPost({ email: 'parent@example.com', year: 'ALL', months: '12' }); const gTxt = await r.text(); ok(/all years access for 12 months/.test(gTxt), 'give access to all years works');
-ok(/<td>All years<\/td>/.test(gTxt), 'the sign-ups table shows All years straight away');
+ok(/<td>All years<br><small class="note">until \d{4}-\d\d-\d\d( or later)?<\/small><\/td>/.test(gTxt) && /background:#fff6d6/.test(gTxt), 'the sign-ups table shows All years and the end date straight away, with the row highlighted');
 ok(sqlite.prepare("SELECT COUNT(*) c FROM purchases WHERE user_id=? AND until>?").get(uid, nowS()).c === 9, 'all nine years (P2 to S3) are open after giving all years');
 await grantPost({ email: 'parent@example.com', year: 'P5', months: '60' });
 ok(sqlite.prepare("SELECT until FROM purchases WHERE user_id=? AND year='P5'").get(uid).until > nowS() + 365 * 86400 * 5, 'a further grant extends the time');

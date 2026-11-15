@@ -209,7 +209,7 @@ async function admin(request, env, url) {
   const rows = await adminRows(env);
   if (url.pathname === '/admin/export.csv')
     return withHeaders(new Response(pg.csv(rows), { headers: { 'Content-Type': 'text/csv; charset=utf-8', 'Content-Disposition': 'attachment; filename="mathsstudio-signups.csv"', 'Cache-Control': 'no-store', 'X-Robots-Tag': 'noindex' } }));
-  return page(pg.admin(rows, { log: await db.recentNewsletters(env) }));
+  return page(pg.admin(rows, { note: String(url.searchParams.get('note') || '').slice(0, 300), hl: String(url.searchParams.get('hl') || '').slice(0, 200), log: await db.recentNewsletters(env) }));
 }
 
 
@@ -248,7 +248,7 @@ async function newsletter(request, env) {
 async function grant(request, env) {
   if (!sameOrigin(request)) return new Response('Bad request', { status: 400 });
   const b = await readForm(request), email = String(b.email || '').trim().toLowerCase(), year = String(b.year || ''), months = { '1': 31, '3': 92, '12': 365, '60': 1826 }[String(b.months || '12')];
-  const rows = await adminRows(env), done = async note => page(pg.admin(await adminRows(env), { note, log: await db.recentNewsletters(env) }));
+  const rows = await adminRows(env), done = async note => redirect('/admin?note=' + encodeURIComponent(note) + (email ? '&hl=' + encodeURIComponent(email) : '') + '#people');   /* back to a fresh /admin, so a refresh never repeats the change */
   const list = year === 'ALL' ? PAY_YEARS : PAY_YEARS.includes(year) ? [year] : [];
   if (!list.length || !email || !months) return await done('Enter an email, choose a year (or All years) and a length of time.');
   const u = rows.find(r => String(r.email).toLowerCase() === email);
@@ -261,7 +261,7 @@ async function grant(request, env) {
 async function revoke(request, env) {
   if (!sameOrigin(request)) return new Response('Bad request', { status: 400 });
   const b = await readForm(request), email = String(b.email || '').trim().toLowerCase(), year = String(b.year || '');
-  const rows = await adminRows(env), done = async note => page(pg.admin(await adminRows(env), { note, log: await db.recentNewsletters(env) }));
+  const rows = await adminRows(env), done = async note => redirect('/admin?note=' + encodeURIComponent(note) + (email ? '&hl=' + encodeURIComponent(email) : '') + '#people');   /* back to a fresh /admin, so a refresh never repeats the change */
   if (!PAY_YEARS.includes(year) || !email) return await done('Enter an email and choose a year.');
   const u = rows.find(r => String(r.email).toLowerCase() === email);
   if (!u) return await done('No account found for ' + email + '.');

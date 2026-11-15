@@ -52,16 +52,27 @@ export function csv(rows) {
   rows.forEach(r => lines.push([r.id, r.email, r.role, r.year, r.plan, r.verified_at ? 'yes' : 'no', (r.marketing && r.verified_at) ? 'yes' : 'no', r.marketing_at, r.unsub_at, r.last_login, r.created_at].map(csvCell).join(',')));
   return lines.join('\r\n') + '\r\n';
 }
+/* the Access column: every year the account can use now, in school order, with the date it runs until */
+function accessCell(r) {
+  if (r.owner) return 'Owner (all)';
+  const acc = YEARS.filter(y => (r.access || []).includes(y)), u = r.until || {};
+  if (!acc.length) return 'None';
+  const day = t => new Date(t * 1000).toISOString().slice(0, 10), dates = [...new Set(acc.map(y => day(u[y] || 0)))];
+  const names = acc.length === YEARS.length ? 'All years' : acc.join(', ');
+  if (dates.length === 1) return esc(names) + '<br><small class="note">until ' + dates[0] + '</small>';
+  if (acc.length === YEARS.length) return 'All years<br><small class="note">until ' + dates.sort()[0] + ' or later</small>';
+  return acc.map(y => esc(y) + ' <small class="note">until ' + day(u[y] || 0) + '</small>').join('<br>');
+}
 export function admin(rows, o) {
   o = o || {};
   const verified = rows.filter(r => r.verified_at).length, mk = rows.filter(r => r.verified_at && r.marketing).length;
   const mkBy = { P2: 0, P3: 0, P4: 0, P5: 0, P6: 0, P7: 0, S1: 0, S2: 0, S3: 0 }; rows.forEach(r => { if (r.verified_at && r.marketing && !r.unsub_at && mkBy[r.year] !== undefined) mkBy[r.year]++; });
   const by = {}; rows.forEach(r => { if (r.verified_at) by[r.year || '-'] = (by[r.year || '-'] || 0) + 1; });
-  const tr = rows.map(r => '<tr><td>' + esc(r.email) + '</td><td>' + esc(r.role || '') + '</td><td>' + (r.owner ? 'Owner (all)' : (r.access || []).length >= 6 ? 'All years' : (r.access || []).length ? esc(r.access.join(', ')) : 'None') + '</td><td>' + (r.verified_at ? 'Yes' : 'No') + '</td><td>' + ((r.verified_at && r.marketing) ? 'Yes' : 'No') + '</td><td>' + esc((r.created_at || '').slice(0, 10)) + '</td><td>' + esc((r.last_login || '').slice(0, 10)) + '</td></tr>').join('');
+  const hl = String(o.hl || '').toLowerCase(), tr = rows.map(r => '<tr' + (hl && String(r.email).toLowerCase() === hl ? ' style="background:#fff6d6"' : '') + '><td>' + esc(r.email) + '</td><td>' + esc(r.role || '') + '</td><td>' + accessCell(r) + '</td><td>' + (r.verified_at ? 'Yes' : 'No') + '</td><td>' + ((r.verified_at && r.marketing) ? 'Yes' : 'No') + '</td><td>' + esc((r.created_at || '').slice(0, 10)) + '</td><td>' + esc((r.last_login || '').slice(0, 10)) + '</td></tr>').join('');
   return '<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="robots" content="noindex"><title>Admin · MathsStudio</title><link rel="stylesheet" href="/site.css?v=3"></head><body class="plain"><main class="adm">' +
     '<header class="admbar"><h1>Admin</h1><a class="btn alt" href="/admin/export.csv">Download CSV</a></header><div class="stats"><div><b>' + rows.length + '</b><span>Sign-ups</span></div><div><b>' + verified + '</b><span>Verified</span></div><div><b>' + mk + '</b><span>OK to email with news</span></div>' +
     Object.keys(by).sort().map(k => '<div><b>' + by[k] + '</b><span>' + esc(k) + ' verified</span></div>').join('') + '</div>' +
-    (o.note ? '<p class="nlnote" role="status">' + esc(o.note) + '</p>' : '') +
+    (o.note && !o.hl ? '<p class="nlnote" role="status">' + esc(o.note) + '</p>' : '') +
     '<div class="admgrid"><section class="card nl"><h2>Send a newsletter</h2><p class="note">Goes only to people who verified their email, said yes to news and have not unsubscribed (<b>' + mk + '</b> now). Every email has its own unsubscribe link.</p>' +
     '<form method="post" action="/admin/newsletter"><label>Send to<select name="audience"><option value="">Everyone who opted in (' + mk + ')</option>' + YEARS.map(y => '<option value="' + y + '"' + (o.audience === y ? ' selected' : '') + '>' + y + ' only (' + mkBy[y] + ')</option>').join('') + '</select></label>' +
     '<label>Subject<input name="subject" maxlength="150" required value="' + esc(o.subject || '') + '"></label>' +
@@ -72,6 +83,6 @@ export function admin(rows, o) {
     (o.log && o.log.length ? '<h3>Recently sent</h3><ul class="nllog">' + o.log.map(x => '<li><b>' + esc(x.subject) + '</b> · ' + esc(x.audience) + ' · ' + x.sent + ' sent' + (x.failed ? ', ' + x.failed + ' failed' : '') + ' · ' + esc((x.created_at || '').slice(0, 10)) + '</li>').join('') + '</ul>' : '') + '</section>' +
     '<div style="display:grid;gap:16px;min-width:0"><section class="card nl"><h2>Give access</h2><p class="note">Gives an existing account access to one year group, or all of them, without payment. Extends access if they already have it.</p><form method="post" action="/admin/grant"><label>Account email<input name="email" type="email" required></label><label>Year<select name="year"><option value="ALL">All years</option>' + YEARS.map(y => '<option>' + y + '</option>').join('') + '</select></label><label>For<select name="months"><option value="1">1 month</option><option value="3">3 months</option><option value="12" selected>12 months</option><option value="60">5 years</option></select></label><button class="btn" type="submit">Give access</button></form></section>' +
     '<section class="card nl"><h2>Remove a paid year</h2><p class="note">Takes away paid access for one year group. Refund the payment in Stripe first, and cancel a monthly plan there too.</p><form method="post" action="/admin/revoke"><label>Account email<input name="email" type="email" required></label><label>Year<select name="year">' + YEARS.map(y => '<option>' + y + '</option>').join('') + '</select></label><button class="btn alt" type="submit">Remove access</button></form></section></div></div>' +
-    '<h2 class="admh">People who signed up</h2><p class="note">Only email people with "OK to email with news" = Yes. Every email you send must include an unsubscribe link.</p>' +
+    '<h2 class="admh" id="people">People who signed up</h2>' + (o.note && o.hl ? '<p class="nlnote" role="status">' + esc(o.note) + ' The changed account is highlighted below.</p>' : '') + '<p class="note">Only email people with "OK to email with news" = Yes. Every email you send must include an unsubscribe link.</p>' +
     '<div class="tablewrap"><table><thead><tr><th>Email</th><th>Role</th><th>Access</th><th>Verified</th><th>OK to email</th><th>Signed up</th><th>Last sign-in</th></tr></thead><tbody>' + (tr || '<tr><td colspan="7">Nobody yet.</td></tr>') + '</tbody></table></div></main></body></html>';
 }
