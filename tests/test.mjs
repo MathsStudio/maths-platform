@@ -217,7 +217,7 @@ r = await grantPost({ email: 'parent@example.com', year: 'ALL', months: '12' }, 
 r = await grantPost({ email: 'nobody@example.com', year: 'ALL', months: '12' }); ok(/No account found/.test(await r.text()), 'give access reports unknown email');
 r = await grantPost({ email: 'parent@example.com', year: 'ALL', months: '12' }); const gTxt = await r.text(); ok(/all years access for 12 months/.test(gTxt), 'give access to all years works');
 ok(/<td>All years<\/td>/.test(gTxt), 'the sign-ups table shows All years straight away');
-ok(sqlite.prepare("SELECT COUNT(*) c FROM purchases WHERE user_id=? AND until>?").get(uid, nowS()).c === 6, 'all six years are open after giving all years');
+ok(sqlite.prepare("SELECT COUNT(*) c FROM purchases WHERE user_id=? AND until>?").get(uid, nowS()).c === 9, 'all nine years (P2 to S3) are open after giving all years');
 await grantPost({ email: 'parent@example.com', year: 'P5', months: '60' });
 ok(sqlite.prepare("SELECT until FROM purchases WHERE user_id=? AND year='P5'").get(uid).until > nowS() + 365 * 86400 * 5, 'a further grant extends the time');
 // progress is saved to the account and follows the email

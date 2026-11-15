@@ -14,7 +14,7 @@
   function toQ(id, r) {
     var opts = [r.answer].concat(r.wrong || []).map(String).filter(function (x, i, a) { return a.indexOf(x) === i; }).slice(0, 4);
     var first = String(r.explain).split('. ')[0];
-    return { type: 'mc', tag: TAG[id] || 'Practice', text: r.q, pic: r.vis || '', answer: String(r.answer), options: r.keepOrder ? opts : S.h.shuffle(opts),
+    return { type: 'mc', tag: TAG[id] || 'Practice', text: r.q, pic: r.vis || '', answer: String(r.answer), options: r.keepOrder ? BT.orderOpts(opts, r.keepOrder) : S.h.shuffle(opts),
       hints: [first.length < 120 ? 'Think about this: ' + first.replace(/\.$/, '') + '.' : 'Look back at the Watch lesson for this idea.', 'Work it out step by step, then check your answer makes sense.'], explain: r.explain };
   }
   Object.keys(MAP).forEach(function (k) {

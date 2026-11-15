@@ -230,6 +230,7 @@
 
   /* the card on the home page */
   S.sc.card = function () {
+    if (S.app.yearOf() === 'P2') return '';   /* P2 has no Strengths Check (P3 and P4 do) */
     var y = yr(), name = who(), h = '<section class="card sc-card" id="scCard"><h2>Check my strengths</h2>';
     if (locked()) return h + '<p class="say">Find out which topics ' + (name ? esc(name) + ' is' : 'you are') + ' strong in, and which to work on next, with a plan made from the lessons on this site. Three rounds of 20 questions that cover every ' + y + ' topic.</p><p class="note" style="min-height:0">Part of a subscription.</p><button class="btn" type="button" data-sc="unlock">🔒 Unlock with a subscription</button></section>';
     var c = cur(), last = lastCheck(), pl = myPlan();

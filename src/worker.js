@@ -270,7 +270,7 @@ async function revoke(request, env) {
 }
 
 /* ---- Payments: Stripe Checkout (card, plus PayPal/Apple Pay/Google Pay if switched on in the Stripe dashboard) ---- */
-const PRICE_PENCE = 1500, MONTH_PENCE = 299, GRACE = 2 * 86400, PAY_YEARS = ['P5', 'P6', 'P7', 'S1', 'S2', 'S3'];
+const PRICE_PENCE = 1500, MONTH_PENCE = 299, GRACE = 2 * 86400, PAY_YEARS = ['P2', 'P3', 'P4', 'P5', 'P6', 'P7', 'S1', 'S2', 'S3'];
 async function checkout(request, env, user) {
   if (!env.STRIPE_SECRET_KEY) return json({ error: 'Payments are not open yet.' }, 503);
   if (!user) return json({ error: 'Please sign in first.' }, 401);

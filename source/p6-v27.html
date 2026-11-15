@@ -1080,7 +1080,7 @@ var SLIDE_MORE = {"1.learn1": [{"more": ["Our number system uses only ten digits
   function openTopicFor(base, stage) { return stageTopic(base, stage || wantStage()) || S.topics[base]; }
   function visibleOrder() {
     var y = wantStage(), seen = {}, out = [];
-    S.order.forEach(function (n) { var t = S.topics[n], b = baseOf(t); if (!seen[b] && (y.charAt(0) === 'S' ? t.year === y : (!t.year || t.year === y))) { seen[b] = 1; out.push(b); } });
+    S.order.forEach(function (n) { var t = S.topics[n], b = baseOf(t); if (!seen[b] && (y.charAt(0) === 'S' || firstLevel(y) ? t.year === y : (!t.year || t.year === y) && !firstLevel(t.year))) { seen[b] = 1; out.push(b); } });
     return out.sort(function (a, b) { return a - b; });
   }
   function nextVisible(n) { var t = S.topics[n], o = visibleOrder(), i = o.indexOf(baseOf(t)); return i > -1 && o[i + 1] ? openTopicFor(o[i + 1], stageOf(t)) : null; }
@@ -1264,6 +1264,9 @@ var SLIDE_MORE = {"1.learn1": [{"more": ["Our number system uses only ten digits
     { n: 12, title: 'Volume, direction, scale and speed', blurb: 'Volume of cuboids, compass points, maps and scale, speed, distance and time.', roles: { P6: 'start', P7: 'core' } }
   ];
   var YEAR_NOTE = {
+    P2: 'P2 starts First level. Short story lessons with big pictures, then hands-on activities: counting, adding and taking away, coins, o\u2019clock and half past, and shapes.',
+    P3: 'P3 builds on P2: numbers to 100, adding and subtracting strategies, the 2, 5 and 10 times tables, sharing, halves and quarters, money, time and measuring.',
+    P4: 'P4 completes First level and gets ready for P5: numbers to 1000, multiplying and dividing, fractions, money, time, area, tessellation and grid references.',
     P5: 'P5 builds secure number skills and introduces fractions, percentages, sequences and data. Start with Low or Medium. Topics marked Start here are introduced this year.',
     P6: 'P6 develops fluency across every strand: bigger numbers, fractions and percentages, angles, equations and problem solving. Medium is the usual starting level.',
     P7: 'P7 secures and applies everything and prepares for S1. Expect more multi-step problems, percentages, proportion and algebra. Try High.',
@@ -1273,13 +1276,16 @@ var SLIDE_MORE = {"1.learn1": [{"more": ["Our number system uses only ten digits
     all: 'Every Second level topic in curriculum order. Low is the beginning of Second level, Medium is during, and High is the end.'
   };
   var ROLE_LABEL = { start: 'Start here', core: 'Core', extend: 'Stretch' };
-  function yearOf() { var y = store.settings.year; return ['P5', 'P6', 'P7', 'S1', 'S2', 'S3', 'all'].indexOf(y) > -1 ? y : 'P6'; }
+  function yearOf() { var y = store.settings.year; return ['P2', 'P3', 'P4', 'P5', 'P6', 'P7', 'S1', 'S2', 'S3', 'all'].indexOf(y) > -1 ? y : 'P6'; }
+  function firstLevel(y) { return /^P[234]$/.test(y || yearOf()); }
+  S.firstLevel = firstLevel;
   function renderYearGate(v) {
-    var info = { P5: ['Primary 5', 'Secure the basics', 'Number to 1,000,000, the four operations, fractions, decimals and percentages, sequences, shapes and data. New ideas are introduced step by step.'], P6: ['Primary 6', 'Develop fluency', 'Bigger numbers, fractions and percentages, angles, equations and problem solving across every strand.'], P7: ['Primary 7', 'Secure, apply and stretch', 'Multi-step problems, percentages and proportion, algebra, prime factors and reasoning, plus two extra topics on ratio and money, and on volume, scale and speed, to prepare for S1.'],
+    var info = { P2: ['Primary 2', 'Start the adventure', 'Counting, adding and taking away, coins, telling the time and shapes, with stories, pictures and hands-on activities.'], P3: ['Primary 3', 'Build number sense', 'Numbers to 100, adding and subtracting, times tables, sharing, halves and quarters, money, time, measuring and shapes.'], P4: ['Primary 4', 'Get ready for P5', 'Numbers to 1000, multiplying and dividing, fractions, money, time, area, tessellation and maps.'],
+      P5: ['Primary 5', 'Secure the basics', 'Number to 1,000,000, the four operations, fractions, decimals and percentages, sequences, shapes and data. New ideas are introduced step by step.'], P6: ['Primary 6', 'Develop fluency', 'Bigger numbers, fractions and percentages, angles, equations and problem solving across every strand.'], P7: ['Primary 7', 'Secure, apply and stretch', 'Multi-step problems, percentages and proportion, algebra, prime factors and reasoning, plus two extra topics on ratio and money, and on volume, scale and speed, to prepare for S1.'],
       S1: ['Secondary 1', 'Third level begins', 'Whole numbers and decimals, integers, fractions, percentages, ratio, money, time and speed, measure, algebra, angles, shape and coordinates, data and probability.'], S2: ['Secondary 2', 'Build algebra and geometry', 'Standard form, percentages, ratio and proportion, finance, time graphs, area and volume, algebra, straight lines, bearings, Pythagoras, circles, similarity, data and probability.'], S3: ['Secondary 3', 'Fourth level', 'Number and percentages, finance, proportion, solids, factorising, equations and formulae, straight lines, simultaneous equations, trigonometry, circles, similarity and statistics.'] };
     function cardsFor(list) { return '<section class="yrgrid" aria-label="Choose year group">' + list.map(function (y) { return '<button class="yrcard" type="button" data-pickyear="' + y + '"><span class="big">' + y + '</span><span class="what">' + info[y][1] + '</span><span class="note" style="margin:0;min-height:0">' + info[y][2] + '</span></button>'; }).join('') + '</section>'; }
     v.innerHTML = '<section class="hero"><span class="eyebrow">Curriculum for Excellence · Maths Studio</span><h1 class="say">Which year group are you in?</h1><p class="lead say">Pick your year. You will see the topics for that year, with explanations, questions and activities written for it. You can change year at any time.</p></section>' +
-      '<h2 class="say" style="margin:18px 0 8px">Primary (Second level)</h2>' + cardsFor(['P5', 'P6', 'P7']) + '<h2 class="say" style="margin:22px 0 8px">Secondary (Third and Fourth level)</h2>' + cardsFor(['S1', 'S2', 'S3']);
+      '<h2 class="say" style="margin:18px 0 8px">Primary (First level)</h2>' + cardsFor(['P2', 'P3', 'P4']) + '<h2 class="say" style="margin:22px 0 8px">Primary (Second level)</h2>' + cardsFor(['P5', 'P6', 'P7']) + '<h2 class="say" style="margin:22px 0 8px">Secondary (Third and Fourth level)</h2>' + cardsFor(['S1', 'S2', 'S3']);
     v.querySelectorAll('[data-pickyear]').forEach(function (b) { b.addEventListener('click', function () { store.settings.year = b.dataset.pickyear; state.yearSel = true; save(); render(); }); });
   }
   /* Badges are worked out from the saved progress, so they follow the child to any device. */
@@ -1333,14 +1339,14 @@ var SLIDE_MORE = {"1.learn1": [{"more": ["Our number system uses only ten digits
     var bm = document.getElementById('brandMark'); if (bm) bm.textContent = yr === 'all' ? 'P5-7' : yr;
     v.innerHTML =
       '<section class="yrtop"><div class="yrbar"><span class="tag">' + (yr === 'all' ? 'All years' : yr) + '</span><button class="yr" type="button" id="chgYear">Change year</button></div><p class="note say" style="margin:8px 0 0">' + YEAR_NOTE[yr] + '</p></section>' +
-      '<section class="hero"><span class="eyebrow">' + (yr === 'all' ? 'Primary 5 to 7' : (yr.charAt(0) === 'S' ? 'Secondary ' + yr.slice(1) : 'Primary ' + yr.slice(1))) + ' · Curriculum for Excellence, ' + ({ S1: 'Third level', S2: 'Third and Fourth level', S3: 'Fourth level' }[yr] || 'Second level') + '</span><h1 class="say">' + (yr === 'all' ? 'Every topic' : yr + ' topics') + '</h1>' +
-      '<p class="lead say">' + ({ 1: 'One', 10: 'Ten', 12: 'Twelve' }[order.length] || order.length) + ' topics. Each starts with a short animated explainer and lessons with worked examples, then hands-on activities, and practice: a warm-up, plenty of questions at each of Low, Medium and High, and real-life problems. Switch level at any time. Verbal and non-verbal reasoning appear throughout the course.</p></section>' +
+      '<section class="hero"><span class="eyebrow">' + (yr === 'all' ? 'Primary 5 to 7' : (yr.charAt(0) === 'S' ? 'Secondary ' + yr.slice(1) : 'Primary ' + yr.slice(1))) + ' · Curriculum for Excellence, ' + ({ S1: 'Third level', S2: 'Third and Fourth level', S3: 'Fourth level', P2: 'First level', P3: 'First level', P4: 'First level' }[yr] || 'Second level') + '</span><h1 class="say">' + (yr === 'all' ? 'Every topic' : yr + ' topics') + '</h1>' +
+      '<p class="lead say">' + ({ 1: 'One', 5: 'Five', 8: 'Eight', 9: 'Nine', 10: 'Ten', 12: 'Twelve' }[order.length] || order.length) + ' topics. ' + (firstLevel(yr) ? 'Each topic has short story lessons to watch and listen to, then lots of hands-on activities to try. Turn the Voice on and everything is read aloud.' : 'Each starts with a short animated explainer and lessons with worked examples, then hands-on activities, and practice: a warm-up, plenty of questions at each of Low, Medium and High, and real-life problems. Switch level at any time. Verbal and non-verbal reasoning appear throughout the course.') + '</p></section>' +
       '<section class="pillars"><div class="card"><h3 class="say">Read it</h3><p class="say">Clear steps and pictures, one idea at a time.</p></div><div class="card"><h3 class="say">Hear it</h3><p class="say">Turn the Voice on once and it keeps reading new pages and questions, where your device allows it.</p></div><div class="card"><h3 class="say">Try it</h3><p class="say">Build, slide, spin and plot. Then answer questions. Hints come one step at a time.</p></div></section>' +
       progPanel + (S.sc && S.sc.card ? S.sc.card() : '') + '<section><div class="row" style="align-items:center;justify-content:space-between;margin-bottom:12px"><h2>Topics</h2></div><div class="topics">' + cards + soon + '</div></section>' +
       '<details class="card"><summary>For teachers and parents</summary>' +
       '<p>Each topic has three parts. Let\u2019s Learn starts with a short animated explainer, then lessons that teach each idea three ways, with worked examples. Activity Time has hands-on labs and activities. Let\u2019s Practice has a warm-up, plenty of questions at each of Low, Medium and High, and 30 real-life problems. Each level draws from its own question selection. Plan about 45 to 60 minutes a topic, split over two sessions if needed.</p>' +
       '<div class="tscroll"><table class="plan"><thead><tr><th>Topic</th><th>Parts</th></tr></thead><tbody>' + rows + '</tbody></table></div>' +
-      '<p class="note">Hints come in steps: first a nudge, then the method with the numbers, never the answer. The explanation after each answer shows the full working. Check outcomes against Education Scotland’s Benchmarks for Numeracy and Mathematics at ' + ({ S1: 'Third level', S2: 'Third and Fourth level', S3: 'Fourth level' }[yr] || 'Second level') + ' before you rely on this for planning. This is an independent resource. Progress is saved in this browser only.</p>' +
+      '<p class="note">Hints come in steps: first a nudge, then the method with the numbers, never the answer. The explanation after each answer shows the full working. Check outcomes against Education Scotland’s Benchmarks for Numeracy and Mathematics at ' + ({ S1: 'Third level', S2: 'Third and Fourth level', S3: 'Fourth level', P2: 'First level', P3: 'First level', P4: 'First level' }[yr] || 'Second level') + ' before you rely on this for planning. This is an independent resource. Progress is saved in this browser only.</p>' +
       '<div class="row" style="margin-top:10px"><button class="btn ghost" id="resetProg" type="button">Reset progress</button></div></details>';
         v.querySelectorAll('[data-open]').forEach(function (b) { b.addEventListener('click', function () { var t = S.topics[Number(b.dataset.open)]; enter(t); }); });
     if (S.sc && S.sc.bind) S.sc.bind(v);
@@ -1363,7 +1369,7 @@ var SLIDE_MORE = {"1.learn1": [{"more": ["Our number system uses only ten digits
     v.innerHTML = '<div class="eyebrow">Topic ' + dnum(t) + ' \u00b7 ' + stageOf(t) + ' stage</div><h1 class="say" style="margin:.2em 0 .1em">' + t.title + '</h1><p class="lead say">' + t.blurb + '</p>' + lpanel +
       '<div class="partgrid">' + card('learn', 'Let\u2019s Learn', 'Lessons with worked examples, one idea at a time.', '\ud83d\udcd8') +
       (steps.some(function (x) { return x.group === 'activity'; }) ? card('activity', 'Activity Time', 'Hands-on activities. Build, slide, spin and explore the idea.', '\ud83e\uddea') : '') +
-      card('practice', 'Let\u2019s Practice', 'A warm-up, the practice questions, then real-life problems.', '\u270f\ufe0f') + '</div>' +
+      (steps.some(function (x) { return x.group === 'practice' && x.type !== 'finish'; }) ? card('practice', 'Let\u2019s Practice', 'A warm-up, the practice questions, then real-life problems.', '\u270f\ufe0f') : '') + '</div>' +
       '<div class="navrow"><button class="btn ghost" id="resetTopic" type="button">Reset this topic</button>' + (nextT ? '<button class="btn ghost" id="nextTopic" type="button">Next topic</button>' : '<button class="btn ghost" id="toHome" type="button">Back to home</button>') + '</div>';
     v.querySelectorAll('[data-part]').forEach(function (b) { b.addEventListener('click', function () { openPart(t, b.dataset.part); }); });
     v.querySelectorAll('[data-step]').forEach(function (b) { b.addEventListener('click', function () { var i = Number(b.dataset.step), st = steps[i]; if (!st) return; state.tab = t.n; state.part = st.group; state.step = i; state.slide = 0; render(); }); });
@@ -1636,7 +1642,7 @@ var SLIDE_MORE = {"1.learn1": [{"more": ["Our number system uses only ten digits
     window.addEventListener('pagehide', function () { if (Nar.ok) speechSynthesis.cancel(); });
     S.state = state; S.go = go; S.render = render;
     S.yearTopics = function () { return visibleOrder().map(function (n) { return openTopicFor(n); }); }; S.yearName = function () { return yearOf(); };
-    try { var qy = new URLSearchParams(location.search).get('year'); if (['P5','P6','P7','S1','S2','S3'].indexOf(qy) > -1) { store.settings.year = qy; state.yearSel = true; save(); document.title = qy + ' Maths Studio'; } } catch (e) {}
+    try { var qy = new URLSearchParams(location.search).get('year'); if (['P2','P3','P4','P5','P6','P7','S1','S2','S3'].indexOf(qy) > -1) { store.settings.year = qy; state.yearSel = true; save(); document.title = qy + ' Maths Studio'; } } catch (e) {}
     render();
   };
 })();

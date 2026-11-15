@@ -8,6 +8,13 @@
   var rnd = H.rnd, pick = H.pick, shuffle = H.shuffle;
   var CHEER = ['Brilliant!', 'Nice one!', 'You got it!', 'Spot on!', 'Great thinking!'], TRY = ['Not this time.', 'Good try!', 'Nearly. Next one!'];
 
+  /* keepOrder: options keep a fixed order that does not give the answer away (the answer is not always first).
+     An array gives the order; true means Yes before No, "same/equal" choices last, everything else sorted. */
+  BT.orderOpts = function (opts, how) {
+    if (Array.isArray(how)) return opts.slice().sort(function (a, b) { var i = how.indexOf(a), j = how.indexOf(b); return (i < 0 ? 99 : i) - (j < 0 ? 99 : j); });
+    function rank(o) { return /^yes\b/i.test(o) ? 0 : /^no\b/i.test(o) ? 1 : /same|equal|neither/i.test(o) ? 3 : 2; }
+    return opts.slice().sort(function (a, b) { return rank(a) - rank(b) || String(a).localeCompare(String(b), undefined, { numeric: true }); });
+  };
   BT.rounds = function (cfg) {
     return function (host, ctx) {
       var n = cfg.rounds || 6, i, score, cur, picked;
@@ -15,7 +22,7 @@
         for (var t = 0; t < 20; t++) {
           var q = cfg.make(r), opts = [], seen = {};
           [q.answer].concat(q.wrong || []).forEach(function (o) { o = String(o); if (!seen[o] && opts.length < 4) { seen[o] = 1; opts.push(o); } });
-          if (opts.length >= 2) { q.options = q.keepOrder ? opts : shuffle(opts); q.answer = String(q.answer); return q; }
+          if (opts.length >= 2) { q.options = q.keepOrder ? BT.orderOpts(opts, q.keepOrder) : shuffle(opts); q.answer = String(q.answer); return q; }
         }
         return q;
       }
