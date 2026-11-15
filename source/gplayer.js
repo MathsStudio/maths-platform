@@ -30,7 +30,7 @@
     '.gp-sub{font-size:20px;color:#6b6480;text-align:center;margin:-4px 0 2px}',
     '.gp-title{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;text-align:center;padding:0 50px}',
     '.gp-title .t1{font-size:19px;color:#6b6480}.gp-title .t2{font-size:44px;line-height:1.25;text-wrap:balance}.gp-title .t3{font-size:44px;color:#881cd6;line-height:1.1}',
-    '.gp-ico{width:56px;height:56px}',
+    '.gp-ico{width:60px;height:60px;flex:none}.gp-brand{display:flex;align-items:center;gap:12px;font-family:var(--font-display,"Fredoka",sans-serif);font-weight:700;font-size:34px;color:#14213d}.gp-brand b{color:#2b5fd9;font-weight:700}',
     /* blocks build in */
     '.gp-stage [data-sb]{width:100%;display:flex;flex-direction:column;align-items:center;gap:8px;opacity:0;transform:translateY(14px);transition:opacity .5s ease,transform .5s ease}',
     '.gp-stage [data-sb].on{opacity:1;transform:none}',
@@ -97,7 +97,8 @@
   var current = null, oldStop = H.storyStop;
   H.storyStop = function () { if (oldStop) oldStop(); if (current) current.stop(); };
 
-  var ICON = '<svg class="gp-ico" viewBox="0 0 56 56" aria-hidden="true"><circle cx="28" cy="28" r="25" fill="#ead6f8"/><path d="M28 28 L28 3 A25 25 0 0 1 53 28 Z" fill="#881cd6"/><path d="M3 28 H53 M28 3 V53" stroke="#fff" stroke-width="2"/></svg>';
+  /* the MathsStudio logo, as in the site header, on each lesson's title slide */
+  var ICON = '<div class="gp-brand" aria-label="MathsStudio"><svg class="gp-ico" viewBox="0 0 64 64" aria-hidden="true"><rect width="64" height="64" rx="16" fill="#2b5fd9"/><path d="M16 47V21L32 39L48 21V47" fill="none" stroke="#fff" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/><circle cx="32" cy="15" r="4.5" fill="#ffd166"/></svg><span>Maths<b>Studio</b></span></div>';
 
   /* draw-on animation for lines and arcs when a block appears */
   function drawIn(block) {
@@ -183,7 +184,12 @@
       var sl = slides[si], h;
       if (sl.title) {
         h = chrome({}, true) + '<div class="gp-title">' + ICON + '<div class="t2">' + TT + '</div></div>';
-        stage.innerHTML = h; return;
+        stage.innerHTML = h;
+        /* a very long question: make the title smaller until it fits the slide */
+        var gt = stage.querySelector('.gp-title'), t2 = stage.querySelector('.t2'), fz = 44;
+        function tall() { var h = 16 * (gt.children.length - 1); [].forEach.call(gt.children, function (c) { h += c.offsetHeight; }); return h > stage.offsetHeight - 100 || t2.scrollWidth > t2.clientWidth + 2; }
+        while (fz > 24 && tall()) { fz -= 2; t2.style.fontSize = fz + 'px'; }
+        return;
       }
       h = chrome(sl) + '<div class="gp-body"><div class="gp-fit"><h3 class="gp-h">' + sl.h + '</h3>' + (sl.sub ? '<p class="gp-sub">' + sl.sub + '</p>' : '');
       /* a step whose html starts with <!--swap--> replaces the block before it, in the same place */

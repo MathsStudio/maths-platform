@@ -839,7 +839,8 @@ var SLIDE_MORE = {"1.learn1": [{"more": ["Our number system uses only ten digits
     function draw0() {
       narStop();
       var readRoot = drawnOnce ? host : null; drawnOnce = true;
-      var prog = '<div class="progress" aria-label="Question ' + Math.min(qi + 1, qs.length) + ' of ' + qs.length + '">' + qs.map(function (_, i) {
+      var off = cfg.off || 0, all = off + qs.length;
+      var prog = '<div class="progress" aria-label="Question ' + Math.min(off + qi + 1, all) + ' of ' + all + '">' + (off ? new Array(off + 1).join('<span class="pd dn"></span>') : '') + qs.map(function (_, i) {
         return '<span class="pd ' + (i < results.length ? (cfg.exam ? 'dn' : (results[i] ? 'ok' : 'no')) : (i === qi ? 'cur' : '')) + '"></span>'; }).join('') + '</div>';
       if (qi >= qs.length && cfg.exam) { if (cfg.onFinish) cfg.onFinish(score, qs.length, results); return; }
       if (qi >= qs.length) {
@@ -857,8 +858,8 @@ var SLIDE_MORE = {"1.learn1": [{"more": ["Our number system uses only ten digits
       var q = qs[qi], body;
       hintIdx = 0;
       if (q.type === 'mc') body = '<div class="opts">' + q.options.map(function (o, i) { return '<button class="opt say" type="button" data-o="' + i + '">' + o + '</button>'; }).join('') + '</div>';
-      else body = '<form class="ans" id="ansForm"><label class="eyebrow" for="ansIn" style="width:100%">Your answer' + (q.unit ? ' (' + q.unit + ')' : '') + (numOnly(q) ? ' \u00b7 numbers only' : '') + '</label><input id="ansIn" type="text" inputmode="' + (q.kind === 'text' || q.kind === 'time' || q.kind === 'frac' ? 'text' : 'decimal') + '" autocomplete="off"' + (q.placeholder ? ' placeholder="' + esc(q.placeholder) + '"' : '') + '><button class="btn" id="check" type="submit">Check</button></form>';
-      host.innerHTML = prog + '<div class="qtag">Question ' + (qi + 1) + ' of ' + qs.length + ' · ' + q.tag + '</div>' +
+      else body = '<form class="ans" id="ansForm"><label class="eyebrow" for="ansIn" style="width:100%">Your answer' + (q.unit ? ' (' + q.unit + ')' : '') + (numOnly(q) ? ' \u00b7 numbers only' : '') + '</label><input id="ansIn" type="text" inputmode="' + (q.kind === 'text' || q.kind === 'time' || q.kind === 'frac' ? 'text' : 'decimal') + '" autocomplete="off"' + (q.placeholder ? ' placeholder="' + esc(q.placeholder) + '"' : '') + '><button class="btn" id="check" type="submit">' + (cfg.exam ? 'Next' : 'Check') + '</button></form>';
+      host.innerHTML = prog + '<div class="qtag">Question ' + (off + qi + 1) + ' of ' + all + ' · ' + q.tag + '</div>' +
         (q.ctx ? '<div class="qctx say">' + q.ctx + '</div>' : '') +
         (q.pic ? '<div class="visual" style="margin-top:8px">' + q.pic + '</div>' : '') +
         '<div class="qtext say"' + (q.data ? ' data-say="' + esc(q.data) + '"' : '') + '>' + q.text + '</div>' + body + '<div id="padHost"></div>' +

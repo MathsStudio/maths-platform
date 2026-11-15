@@ -47,6 +47,7 @@
     '.progress .pd.dn{background:var(--sc-pur)}',
     '.sc-rev{display:grid;gap:10px}.sc-rev .fb{margin:0}',
     '.sc-rev .qx{font-weight:700}',
+    '#scQuiz .visual svg{max-height:240px}#scQuiz .visual img{max-height:240px;width:auto;max-width:100%}',
     '#scReport{background:#fff;color:#14213d;border-radius:14px;padding:22px;max-width:820px}',
     '#scReport h1{font-family:var(--font-display);margin:0 0 4px;font-size:1.8rem}',
     '#scReport h2{font-family:var(--font-display);font-size:1.2rem;margin:18px 0 6px}',
@@ -111,8 +112,10 @@
     return null;
   }
   /* one round: every topic once, then extra topics to reach 20; about 7 low, 7 medium and 6 high, shuffled */
-  function buildRound(r, onlyTopic, count) {
-    var ts = onlyTopic ? [onlyTopic] : topics(), slots = [], need = onlyTopic ? [2, 2, 2] : [7, 7, 6], seen = {};
+  function buildRound(r, onlyTopic, count) { return qsFrom(planRound(r, onlyTopic, count)); }
+  /* the round's plan: [topic, level] for each question, saved so a round can be continued later */
+  function planRound(r, onlyTopic, count) {
+    var ts = onlyTopic ? [onlyTopic] : topics(), slots = [], need = onlyTopic ? [2, 2, 2] : [7, 7, 6];
     if (!onlyTopic) ts.forEach(function (t, i) { var l = (i + r) % 3; slots.push({ t: t, l: l }); need[l]--; });
     var extra = [], used = {}, c = cur();
     if (!onlyTopic && c) c.a.forEach(function (a) { used[a[0]] = (used[a[0]] || 0) + 1; });
@@ -125,9 +128,13 @@
     extra.slice(0, (count || PER) - slots.length).forEach(function (t) {
       var l = [0, 1, 2].sort(function (a, b) { return need[b] - need[a]; })[0]; need[l]--; slots.push({ t: t, l: l });
     });
-    return H.shuffle(slots).map(function (s) {
-      var q = take(s.t, s.l, seen); if (!q) return null;
-      q = Object.assign({}, q); q._sc = { n: s.t.n, l: s.l }; return q;
+    return H.shuffle(slots).map(function (s) { return [s.t.n, s.l]; });
+  }
+  function qsFrom(slots) {
+    var seen = {};
+    return slots.map(function (s) {
+      var t = topicN(s[0]), q = t && take(t, s[1], seen); if (!q) return null;
+      q = Object.assign({}, q); q._sc = { n: s[0], l: s[1] }; return q;
     }).filter(Boolean);
   }
 
@@ -135,8 +142,10 @@
   S.sc = S.sc || {};
   S.sc.onAnswer = function (q, ok, val, cfg) {
     if (cfg && cfg.scRound) {
-      roundAns.push([q._sc.n, q._sc.l, ok ? 1 : 0, String(q.tag || '').slice(0, 60)]);
+      var row = [q._sc.n, q._sc.l, ok ? 1 : 0, String(q.tag || '').slice(0, 60)], c = cur();
       review.push({ q: q, val: val, ok: ok });
+      if (view && view.name === 'round' && c) { c.ra = (c.ra || []).concat([row]); touch(); }   /* saved after every answer */
+      else roundAns.push(row);
       return;
     }
     if (cfg && cfg.exam) return;
@@ -224,8 +233,9 @@
     var y = yr(), name = who(), h = '<section class="card sc-card" id="scCard"><h2>Check my strengths</h2>';
     if (locked()) return h + '<p class="say">Find out which topics ' + (name ? esc(name) + ' is' : 'you are') + ' strong in, and which to work on next, with a plan made from the lessons on this site. Three rounds of 20 questions that cover every ' + y + ' topic.</p><p class="note" style="min-height:0">Part of a subscription.</p><button class="btn" type="button" data-sc="unlock">🔒 Unlock with a subscription</button></section>';
     var c = cur(), last = lastCheck(), pl = myPlan();
-    if (c) return h + '<p class="say">Round ' + (c.r + 1) + ' of 3 is next. Each round has 20 questions and takes about 15 minutes.</p><div class="sc-row"><button class="btn" type="button" data-sc="start">Start round ' + (c.r + 1) + '</button>' + (last ? '<button class="btn ghost" type="button" data-sc="results">Last results</button>' : '') + '</div></section>';
-    if (!last) return h + '<p class="say">Three rounds of 20 questions mix every ' + y + ' topic at every level. At the end you will see your strengths, your focus areas and a plan to work on them.</p><p class="note" style="min-height:0">About 15 minutes a round. You can stop between rounds.</p><button class="btn" type="button" data-sc="start">Start round 1</button></section>';
+    var mid = c && c.ra && c.ra.length;
+    if (c) return h + '<p class="say">' + (mid ? 'Round ' + (c.r + 1) + ' of 3: ' + c.ra.length + ' of ' + PER + ' answered. Carry on where you left off.' : 'Round ' + (c.r + 1) + ' of 3 is next. Each round has 20 questions and takes about 15 minutes.') + '</p><div class="sc-row"><button class="btn" type="button" data-sc="start">' + (mid ? 'Continue round ' : 'Start round ') + (c.r + 1) + '</button>' + (last ? '<button class="btn ghost" type="button" data-sc="results">Last results</button>' : '') + '</div></section>';
+    if (!last) return h + '<p class="say">Three rounds of 20 questions mix every ' + y + ' topic at every level. At the end you will see your strengths, your focus areas and a plan to work on them.</p><p class="note" style="min-height:0">About 15 minutes a round. You can stop at any time and carry on later.</p><button class="btn" type="button" data-sc="start">Start round 1</button></section>';
     var eff = effective(last), ns = Object.keys(eff), g = ns.filter(function (n) { return eff[n] >= 80; }).length, r = ns.filter(function (n) { return eff[n] < 50; }).length, pd = planDone(pl);
     return h + '<div class="sc-row" style="margin:6px 0 10px"><span class="sc-big">' + scoreOf(last.a).pct + '%</span><span class="note" style="min-height:0;margin:0">Last check ' + shortDate(last.at) + ' · ' + g + ' strong · ' + r + ' to focus on</span></div>' +
       (pl ? '<p class="say" style="margin:0 0 8px">My plan: ' + pd[0] + ' of ' + pd[1] + ' steps done.</p>' : '') +
@@ -237,29 +247,29 @@
     var c = cur(), r = c ? c.r : 0;
     root.innerHTML = back() + '<section class="card"><h1 class="say" style="margin:0 0 6px">Check my strengths</h1>' +
       '<p class="lead say">Three rounds of 20 questions. Each round mixes every ' + yr() + ' topic at low, medium and high level.</p>' +
-      '<ul class="say"><li>There are no hints in the check. Do your best on each one.</li><li>Pick an answer, or type it and press Check. The next question comes straight away.</li><li>Finish a round in one go. You can stop between rounds and come back another day.</li><li>You will see every answer, with the working, at the end of the round.</li></ul>' +
-      '<button class="btn" type="button" data-sc="start">Start round ' + (r + 1) + '</button></section>';
+      '<ul class="say"><li>There are no hints in the check. Do your best on each one.</li><li>Pick an answer, or type it and press Next. The next question comes straight away.</li><li>You can stop at any time. Your answers are saved, and you carry on from the same question.</li><li>You will see every answer, with the working, at the end of the round.</li></ul>' +
+      '<button class="btn" type="button" data-sc="start">' + (c && c.ra && c.ra.length ? 'Continue round ' : 'Start round ') + (r + 1) + '</button></section>';
     wire(root);
   }
   function startRound() {
     var d = data(), c = cur();
-    if (!c) { c = d.cur = { y: yr(), at: Date.now(), r: 0, a: [] }; touch(); }
+    if (!c) { c = d.cur = { y: yr(), at: Date.now(), r: 0, a: [] }; }
+    if (!c.s || !c.s.length) { c.s = planRound(c.r); c.ra = []; }
+    c.ra = c.ra || []; touch();
     review = []; roundAns = [];
-    show('round', { qs: buildRound(c.r) });
+    show('round', { qs: qsFrom(c.s.slice(c.ra.length)), off: c.ra.length });
   }
   function drawRound(root) {
     var c = cur(); if (!c) { drawIntro(root); return; }
-    root.innerHTML = '<div class="partbar"><button class="btn ghost" type="button" id="scStop">Stop this round</button><b class="sglab">Round ' + (c.r + 1) + ' of 3</b></div>' +
-      '<div class="card" id="scStopAsk" hidden><p class="say" style="margin:0 0 8px">Stop now? The answers in this round will not be kept. Rounds you have finished are kept.</p><div class="sc-row"><button class="btn" type="button" id="scStopYes">Stop the round</button><button class="btn ghost" type="button" id="scStopNo">Keep going</button></div></div>' +
+    root.innerHTML = '<div class="partbar"><button class="btn ghost" type="button" id="scStop">Save and stop</button><b class="sglab">Round ' + (c.r + 1) + ' of 3</b></div>' +
+      '<p class="note" style="min-height:0;margin:0 0 8px">Your answers are saved as you go. Stop at any time and carry on later from the same question.</p>' +
       '<section class="card"><div id="scQuiz"></div></section>';
-    root.querySelector('#scStop').addEventListener('click', function () { root.querySelector('#scStopAsk').hidden = false; });
-    root.querySelector('#scStopNo').addEventListener('click', function () { root.querySelector('#scStopAsk').hidden = true; });
-    root.querySelector('#scStopYes').addEventListener('click', function () { review = []; roundAns = []; home(); });
-    A.mountQuiz(root.querySelector('#scQuiz'), view.qs, { exam: true, scRound: true, make: function () { return view.qs; }, onDone: function () { }, onFinish: function () { finishRound(); } });
+    root.querySelector('#scStop').addEventListener('click', function () { review = []; home(); });
+    A.mountQuiz(root.querySelector('#scQuiz'), view.qs, { exam: true, scRound: true, off: view.off || 0, make: function () { return view.qs; }, onDone: function () { }, onFinish: function () { finishRound(); } });
   }
   function finishRound() {
     var d = data(), c = cur(); if (!c) return;
-    c.a = c.a.concat(roundAns); c.r++; roundAns = [];
+    c.a = c.a.concat(c.ra || []); c.r++; c.ra = []; delete c.s; roundAns = [];
     if (c.r >= ROUNDS) {
       var check = { y: c.y, at: Date.now(), a: c.a };
       d.checks.push(check); while (d.checks.length > KEEP) d.checks.shift();
