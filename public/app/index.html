@@ -1289,31 +1289,62 @@ var SLIDE_MORE = {"1.learn1": [{"more": ["Our number system uses only ten digits
     v.querySelectorAll('[data-pickyear]').forEach(function (b) { b.addEventListener('click', function () { store.settings.year = b.dataset.pickyear; state.yearSel = true; save(); render(); }); });
   }
   /* Badges are worked out from the saved progress, so they follow the child to any device. */
-  var BADGES = [
+  /* Badges are worked out from the saved progress, so they follow the child to any device.
+     Each level has its own set. They only count lessons, activities, practice and topics, never a named activity. */
+  var half = function (x) { return x.all > 0 && x.topics >= Math.ceil(x.all / 2); };
+  var BADGES_P2 = [
     ['🌱', 'First step', 'Finish any part', function (x) { return x.steps >= 1; }],
-    ['⭐', 'Topic finished', 'Finish every part of a topic', function (x) { return x.topics >= 1; }],
-    ['🚀', 'Five topics', 'Finish 5 topics', function (x) { return x.topics >= 5; }],
+    ['📺', 'Story time', 'Watch 3 story lessons', function (x) { return x.watch >= 3; }],
     ['🧪', 'Hands-on', 'Complete 5 activities', function (x) { return x.acts >= 5; }],
-    ['🏆', 'Boss beaten', 'Complete a Boss challenge', function (x) { return x.boss >= 1; }],
-    ['🧮', 'Real-life solver', 'Do 3 real-life problems', function (x) { return x.real >= 3; }],
+    ['⭐', 'Topic finished', 'Finish every part of a topic', function (x) { return x.topics >= 1; }],
+    ['🎨', 'Activity champion', 'Complete 10 activities', function (x) { return x.acts >= 10; }],
+    ['🦊', 'Met the whole gang', 'Do a part in every topic', function (x) { return x.touched >= x.all && x.all > 0; }],
     ['🎓', 'Year complete', 'Finish every topic in the year', function (x) { return x.year; }]
   ];
+  var BADGES_P34 = [
+    ['🌱', 'First step', 'Finish any part', function (x) { return x.steps >= 1; }],
+    ['📺', 'Story time', 'Watch 3 story lessons', function (x) { return x.watch >= 3; }],
+    ['🧪', 'Hands-on', 'Complete 5 activities', function (x) { return x.acts >= 5; }],
+    ['✏️', 'Practice star', 'Finish practice in 3 topics', function (x) { return x.prac >= 3; }],
+    ['⭐', 'Topic finished', 'Finish every part of a topic', function (x) { return x.topics >= 1; }],
+    ['🦊', 'Met the whole gang', 'Do a part in every topic', function (x) { return x.touched >= x.all && x.all > 0; }],
+    ['🎓', 'Year complete', 'Finish every topic in the year', function (x) { return x.year; }]
+  ];
+  var BADGES_L2 = [
+    ['🧭', 'Off you go', 'Finish any part', function (x) { return x.steps >= 1; }],
+    ['📺', 'Lesson watcher', 'Watch 3 lessons', function (x) { return x.watch >= 3; }],
+    ['🧪', 'Hands-on', 'Complete 5 activities', function (x) { return x.acts >= 5; }],
+    ['✏️', 'Practice star', 'Finish practice in 3 topics', function (x) { return x.prac >= 3; }],
+    ['⭐', 'Topic finished', 'Finish every part of a topic', function (x) { return x.topics >= 1; }],
+    ['🌗', 'Halfway there', 'Finish half the topics', half],
+    ['🎓', 'Year complete', 'Finish every topic in the year', function (x) { return x.year; }]
+  ];
+  var BADGES_L3 = [
+    ['🔑', 'Getting started', 'Finish any part', function (x) { return x.steps >= 1; }],
+    ['📚', 'Keen learner', 'Watch 5 lessons', function (x) { return x.watch >= 5; }],
+    ['🔬', 'Experimenter', 'Complete 8 activities', function (x) { return x.acts >= 8; }],
+    ['🎯', 'Sharp shooter', 'Finish practice in 5 topics', function (x) { return x.prac >= 5; }],
+    ['⭐', 'Topic mastered', 'Finish every part of a topic', function (x) { return x.topics >= 1; }],
+    ['🧗', 'Over halfway', 'Finish half the topics', half],
+    ['🏁', 'Year complete', 'Finish every topic in the year', function (x) { return x.year; }]
+  ];
+  function badgeList() { var y = yearOf(); return y === 'P2' ? BADGES_P2 : /^P[34]$/.test(y) ? BADGES_P34 : y.charAt(0) === 'S' ? BADGES_L3 : BADGES_L2; }
   function badgeStats(yearDone) {
-    var o = { steps: 0, topics: 0, acts: 0, boss: 0, real: 0, year: !!yearDone };
+    var o = { steps: 0, topics: 0, acts: 0, boss: 0, real: 0, watch: 0, prac: 0, touched: 0, all: 0, year: !!yearDone };
     /* count only the topics of the year on screen, so the badges match the progress bar above them */
-    var mine = {}; visibleOrder().forEach(function (n) { var tt = openTopicFor(n); if (tt) mine[tt.n] = 1; });
+    var mine = {}; visibleOrder().forEach(function (n) { var tt = openTopicFor(n); if (tt) { mine[tt.n] = 1; o.all++; } });
     Object.keys(store.progress).forEach(function (k) {
       var t = S.topics[Number(k.slice(1))], p = store.progress[k]; if (!t || !p || !p.steps || !mine[t.n]) return;
-      var ids = Object.keys(p.steps).filter(function (id) { return p.steps[id] && t.steps.some(function (z) { return z.id === id && z.type !== 'finish'; }); }); o.steps += ids.length;
+      var ids = Object.keys(p.steps).filter(function (id) { return p.steps[id] && t.steps.some(function (z) { return z.id === id && z.type !== 'finish'; }); }); o.steps += ids.length; if (ids.length) o.touched++;
       if (t.steps.length && t.steps.every(function (st) { return p.steps[st.id]; })) o.topics++;
-      ids.forEach(function (id) { var st = t.steps.filter(function (z) { return z.id === id; })[0]; if (!st) return; if (st.group === 'activity') o.acts++; if (id === 'a_boss') o.boss++; if (id === 'practical') o.real++; });
+      ids.forEach(function (id) { var st = t.steps.filter(function (z) { return z.id === id; })[0]; if (!st) return; if (st.group === 'activity') o.acts++; if (id === 'a_boss') o.boss++; if (st.group === 'learn') o.watch++; if (id === 'practise') o.prac++; if (id === 'practical') o.real++; });
     });
     return o;
   }
   function badgesHtml(yearDone) {
     var x = badgeStats(yearDone), got = 0;
-    var cells = BADGES.map(function (b) { var on = b[3](x); if (on) got++; return '<li class="bdg' + (on ? '' : ' off') + '"><div class="c" aria-hidden="true">' + b[0] + '</div>' + b[1] + (on ? '<span class="sr-only"> (earned)</span>' : '<small>' + b[2] + '</small>') + '</li>'; }).join('');
-    return '<h3 style="margin:14px 0 0">Badges <span class="tag">' + got + ' of ' + BADGES.length + '</span></h3><ul class="badges" style="list-style:none;padding:0">' + cells + '</ul>';
+    var BL = badgeList(), cells = BL.map(function (b) { var on = b[3](x); if (on) got++; return '<li class="bdg' + (on ? '' : ' off') + '"><div class="c" aria-hidden="true">' + b[0] + '</div>' + b[1] + (on ? '<span class="sr-only"> (earned)</span>' : '<small>' + b[2] + '</small>') + '</li>'; }).join('');
+    return '<h3 style="margin:14px 0 0">Badges <span class="tag">' + got + ' of ' + BL.length + '</span></h3><ul class="badges" style="list-style:none;padding:0">' + cells + '</ul>';
   }
   function renderHome(v) {
     if (!state.yearSel) { renderYearGate(v); return; }
