@@ -63,6 +63,13 @@
       ['Build the number', 'How many hundreds, tens and ones?', FL.rounds(function () { var t = r(1, 9), o = r(0, 9), n = t * 10 + o; return { vis: FL.tensOnes(t, o), q: 'What number is shown?', answer: String(n), wrong: nums(n, [o * 10 + t, n + 10, n - 1, n + 1]), explain: t + ' tens and ' + o + ' ones make ' + n + '.' }; }, 6)],
       ['Round it!', 'Round to the nearest 10.', FL.rounds(function () { var n = r(11, 98); if (n % 10 === 0) n++; var a = Math.round(n / 10) * 10, lo = Math.floor(n / 10) * 10; return { vis: FL.track(lo, lo + 10, [n]), q: 'Round ' + n + ' to the nearest 10.', answer: String(a), wrong: nums(a, [a === lo ? lo + 10 : lo, n, a + 10]), explain: n + ' rounds to ' + a + '.' }; }, 6)]
     ],
+    more: [
+      ['Pattern hunt', 'What comes next?', FL.genAct(function () { return g1.seq(false); }, 'pirate')],
+      ['Treasure digits', 'Hundreds, tens and ones.', FL.genAct(function () { return g1.hto(true); }, 'pirate')],
+      ['Bigger chest', 'Which number is bigger?', FL.genAct(function () { return g1.cmp(true); }, 'pirate')],
+      ['Round the steps', 'Round to the nearest 10.', FL.genAct(function () { return g1.rnd10(false); }, 'pirate')],
+      ['Pattern challenge', 'Bigger jumps.', FL.genAct(function () { return g1.seq(true); }, 'pirate')]
+    ],
     gens: { low: [function () { return g1.seq(false); }, function () { return g1.hto(false); }, function () { return g1.cmp(false); }],
       medium: [function () { return g1.seq(false); }, function () { return g1.hto(true); }, function () { return g1.cmp(true); }, function () { return g1.rnd10(false); }],
       high: [function () { return g1.seq(true); }, function () { return g1.hto(true); }, function () { return g1.cmp(true); }, function () { return g1.rnd10(true); }] }
@@ -122,6 +129,13 @@
       ['Lily pad hops', 'Bridge through 10 to add.', FL.rounds(function () { var a = r(5, 9), b = r(3, 9); while (a + b <= 10) b++; return { vis: FL.track(a, a + b, [a, 10, a + b], [[a, 10], [10, a + b]]), q: a + ' + ' + b + ' = ?', answer: String(a + b), wrong: nums(a + b, [a + b - 1, a + b + 1, a + b + 10]), explain: a + ' + ' + (10 - a) + ' = 10, then + ' + (a + b - 10) + ' = ' + (a + b) + '.' }; }, 6)],
       ['Make ten first', 'Find the pair that makes 10.', FL.rounds(function () { var a = r(1, 9), b = 10 - a, c = r(2, 9), list = shuffle([a, b, c]); return { vis: FL.says('frog', list.join(' + ')), q: 'What is ' + list.join(' + ') + '?', answer: String(a + b + c), wrong: nums(a + b + c, [a + b + c + 1, a + b + c - 1, 20]), explain: a + ' + ' + b + ' = 10, then 10 + ' + c + ' = ' + (10 + c) + '.' }; }, 6)],
       ['Tens and ones adding', 'Add two-digit numbers.', FL.rounds(function (k) { var a = r(11, 49), b = r(11, 39); if (k < 3) { while ((a % 10) + (b % 10) > 9) b--; } return { vis: FL.says('frog', a + ' + ' + b + ' = ?'), q: 'What is ' + a + ' + ' + b + '?', answer: String(a + b), wrong: nums(a + b, [a + b + 10, a + b - 10, a + b + 1]), explain: 'Tens: ' + Math.floor(a / 10) * 10 + ' + ' + Math.floor(b / 10) * 10 + ' = ' + (Math.floor(a / 10) + Math.floor(b / 10)) * 10 + '. Ones: ' + a % 10 + ' + ' + b % 10 + ' = ' + (a % 10 + b % 10) + '. Total ' + (a + b) + '.' }; }, 6)]
+    ],
+    more: [
+      ['Fly adding', 'Add two-digit numbers.', FL.genAct(function () { return g2.add(r(11, 40), r(11, 40)); }, 'frog')],
+      ['Flies fly away', 'Take away.', FL.genAct(function () { return g2.sub(r(21, 60), r(3, 9)); }, 'frog')],
+      ['Three lily pads', 'Add three numbers.', FL.genAct(function () { return g2.three(); }, 'frog')],
+      ['Fly stories', 'Adding stories.', FL.genAct(function () { return g2.word(false); }, 'frog')],
+      ['Big fly sums', 'Bigger numbers.', FL.genAct(function () { return g2.add(r(25, 69), r(15, 29)); }, 'frog')]
     ],
     gens: { low: [function () { return g2.add(r(2, 9), r(2, 9)); }, function () { var a = r(11, 18); return g2.sub(a, r(2, a - 10 + 2)); }, g2.three],
       medium: [function () { return g2.add(r(11, 49), r(5, 9)); }, function () { return g2.add(r(11, 40), r(11, 40)); }, function () { var a = r(21, 60); return g2.sub(a, r(3, 9)); }, g2.three, function () { return g2.word(false); }],
@@ -183,6 +197,13 @@
       ['Array maker', 'How many dots in the array?', FL.rounds(function () { var a = r(2, 5), b = pick([2, 3, 4, 5]); return { vis: V.dots(a, b, 'var(--accent)'), q: a + ' rows of ' + b + '. How many?', answer: String(a * b), wrong: nums(a * b, [a * b + b, a + b, a * b - 1]), explain: a + ' × ' + b + ' = ' + a * b + '.' }; }, 6)],
       ['Times table bingo', 'Find the answer.', FL.rounds(function () { var t = pick([2, 5, 10]), n = r(1, 10); return { vis: FL.says('bear', n + ' × ' + t + ' = ?'), q: 'What is ' + n + ' × ' + t + '?', answer: String(n * t), wrong: nums(n * t, [n * t + t, n * t - t, n + t]), explain: 'Count ' + n + ' ' + t + 's: ' + n * t + '.' }; }, 6)]
     ],
+    more: [
+      ['Times table snap', '2, 5 and 10 times tables.', FL.genAct(function () { return g3.fact([2, 5, 10]); }, 'bear')],
+      ['Trays of buns', 'Equal groups.', FL.genAct(function () { return g3.groups([2, 5, 10]); }, 'bear')],
+      ['Cupcake arrays', 'Rows and columns.', FL.genAct(function () { return g3.array(); }, 'bear')],
+      ['Turn it round', 'Turnaround facts.', FL.genAct(function () { return g3.turn(); }, 'bear')],
+      ['Missing number', 'What times what?', FL.genAct(function () { return (function () { var t = pick([2, 5, 10]), n = r(2, 10); return FL.MC('Missing numbers', '<b>? × ' + t + ' = ' + n * t + '</b>. What is the missing number?', n, [n + 1, n - 1, t], null, n + ' × ' + t + ' = ' + n * t + '.'); })(); }, 'bear')]
+    ],
     gens: { low: [function () { return g3.fact([2, 10], 5); }, function () { return g3.groups([2, 10]); }, g3.array],
       medium: [function () { return g3.fact([2, 5, 10]); }, function () { return g3.groups([2, 5, 10]); }, g3.array, g3.turn],
       high: [function () { return g3.fact([2, 5, 10], 12); }, function () { return g3.groups([5, 10]); }, g3.turn, function () { var t = pick([2, 5, 10]), n = r(2, 10); return Q('Missing numbers', '<b>? × ' + t + ' = ' + n * t + '</b>. What is the missing number?', n, ['Count in ' + t + 's until you reach ' + n * t + '.', 'How many jumps?'], n + ' × ' + t + ' = ' + n * t + '.'); }] }
@@ -242,6 +263,13 @@
       ['Fair shares', 'Share the treats equally.', FL.rounds(function () { var t = pick([2, 3, 4, 5]), n = r(2, 5); return { vis: FL.things(n * t, pick(['sweet', 'apple', 'star'])), q: 'Share ' + n * t + ' between ' + t + ' friends. How many each?', answer: String(n), wrong: nums(n, [n + 1, n - 1, t]), explain: n * t + ' ÷ ' + t + ' = ' + n + '.' }; }, 6)],
       ['Halve it!', 'What is half?', FL.rounds(function () { var n = 2 * r(1, 15); return { vis: FL.says('mouse', 'Half of ' + n + '?'), q: 'What is half of ' + n + '?', answer: String(n / 2), wrong: nums(n / 2, [n / 2 + 1, n / 2 - 1, n * 2]), explain: n + ' ÷ 2 = ' + n / 2 + '.' }; }, 6)],
       ['Boat groups', 'How many boats?', FL.rounds(function () { var t = pick([2, 5, 10]), n = r(2, 6); return { vis: FL.things(n * t, 'duck'), q: n * t + ' ducks, ' + t + ' in each boat. How many boats?', answer: String(n), wrong: nums(n, [n + 1, n - 1, t]), explain: n * t + ' ÷ ' + t + ' = ' + n + '.' }; }, 6)]
+    ],
+    more: [
+      ['Share the picnic', 'Share equally.', FL.genAct(function () { return g4.share([2, 5, 10]); }, 'mouse')],
+      ['Bags of five', 'How many groups?', FL.genAct(function () { return g4.groups([2, 5, 10]); }, 'mouse')],
+      ['Half of it', 'Halving.', FL.genAct(function () { return g4.half(true); }, 'mouse')],
+      ['Divide it', 'Division facts.', FL.genAct(function () { return g4.div([2, 5, 10]); }, 'mouse')],
+      ['Share by 3 and 4', 'Fair shares.', FL.genAct(function () { return g4.share([3, 4]); }, 'mouse')]
     ],
     gens: { low: [function () { return g4.share([2]); }, function () { return g4.half(false); }, function () { return g4.groups([10]); }],
       medium: [function () { return g4.share([2, 5, 10]); }, function () { return g4.groups([2, 5, 10]); }, function () { return g4.half(false); }, function () { return g4.div([2, 5, 10]); }],
@@ -307,6 +335,13 @@
       ['Halves and quarters', 'Find a fraction of a number.', FL.rounds(function () { var d = pick([2, 4]), k = r(1, 6), n = d * k; return { vis: FL.things(n, 'apple'), q: 'What is 1/' + d + ' of ' + n + '?', answer: String(k), wrong: nums(k, [k + 1, k * 2, n]), explain: n + ' ÷ ' + d + ' = ' + k + '.' }; }, 6)],
       ['Fair or not?', 'Are the parts equal?', FL.rounds(function () { var eq = r(0, 1), d = pick([2, 3, 4]); return { vis: eq ? pie(d, 0) : FL.svg(120, 120, 'unequal parts', '<rect x="10" y="10" width="100" height="100" fill="#fff3d6" stroke="#2b2340" stroke-width="2.5"/><line x1="' + pick([30, 40, 70]) + '" y1="10" x2="' + pick([30, 40, 70]) + '" y2="110" stroke="#2b2340" stroke-width="2.5"/>', 180), q: 'Is it cut into equal parts?', answer: eq ? 'Yes' : 'No', wrong: [eq ? 'No' : 'Yes'], keepOrder: true, explain: eq ? 'Every part is the same size.' : 'The parts are different sizes, so they are not equal.' }; }, 6)]
     ],
+    more: [
+      ['Name the fraction', 'Halves, thirds and quarters.', FL.genAct(function () { return g5.name(); }, 'fox')],
+      ['Half and quarter of', 'Fraction of a number.', FL.genAct(function () { return g5.of(false); }, 'fox')],
+      ['Write the fraction', 'Top and bottom numbers.', FL.genAct(function () { return g5.write(); }, 'fox')],
+      ['What are the parts called?', 'Halves, thirds, quarters …', FL.genAct(function () { return g5.parts(); }, 'fox')],
+      ['Fraction challenge', 'Bigger numbers.', FL.genAct(function () { return g5.of(true); }, 'fox')]
+    ],
     gens: { low: [g5.name, function () { return g5.of(false); }, g5.equal, g5.parts], medium: [g5.name, function () { return g5.of(false); }, g5.write, g5.equal, g5.parts], high: [function () { return g5.of(true); }, g5.write, g5.name] }
   });
 
@@ -364,6 +399,13 @@
       ['Fill the purse', 'Pay Molly the right amount.', FL.purse([12, 18, 25, 35, 47, 60], [1, 2, 5, 10, 20, 50])],
       ['Quarter clocks', 'Set the clock.', FL.setClock([[2, 15], [4, 45], [6, 30], [9, 15], [11, 45], [3, 0]], 15)],
       ['How much change?', 'Count on to find the change.', FL.rounds(function () { var pay = pick([10, 20, 50]), cost = r(1, pay - 1); return { vis: FL.coins([pay]) + FL.says('owl', 'It costs ' + cost + 'p'), q: 'How much change from ' + pay + 'p?', answer: (pay - cost) + 'p', wrong: [(pay - cost + 1) + 'p', (pay - cost - 1 > 0 ? pay - cost - 1 : pay - cost + 2) + 'p', cost + 'p'], explain: 'Count on from ' + cost + 'p to ' + pay + 'p: ' + (pay - cost) + 'p.' }; }, 6)]
+    ],
+    more: [
+      ['Count the coins', 'How much money?', FL.genAct(function () { return g6.total(true); }, 'owl')],
+      ['Change from 20p', 'Count on.', FL.genAct(function () { return g6.change(false); }, 'owl')],
+      ['Change from 50p and £1', 'Bigger change.', FL.genAct(function () { return g6.change(true); }, 'owl')],
+      ['What time is it?', 'Quarter past and quarter to.', FL.genAct(function () { return g6.time(true); }, 'owl')],
+      ['An hour later', 'How long.', FL.genAct(function () { return g6.later(); }, 'owl')]
     ],
     gens: { low: [function () { return g6.total(false); }, function () { return g6.time(false); }, function () { return g6.change(false); }],
       medium: [function () { return g6.total(true); }, function () { return g6.time(true); }, function () { return g6.change(false); }, g6.later],
@@ -427,6 +469,13 @@
       ['Heavier or lighter?', 'Which is heavier?', FL.rounds(function () { var it = shuffle([['a whale', 'a fish'], ['a bike', 'a pencil'], ['a watermelon', 'a strawberry'], ['a horse', 'a rabbit'], ['a schoolbag', 'a feather'], ['a tractor', 'a football']])[0], s = r(0, 1); return { vis: FL.says('bear', it[s] + ' or ' + it[1 - s] + '?'), q: 'Which is heavier?', answer: it[0], wrong: [it[1]], explain: it[0] + ' is heavier.' }; }, 6)],
       ['Pick the unit', 'Which unit would you use?', FL.rounds(function () { var it = pick([['a pencil', 'cm'], ['a garden', 'm'], ['a bag of potatoes', 'kg'], ['a fish tank', 'litres'], ['a finger', 'cm'], ['a swimming pool', 'litres'], ['a dog', 'kg']]); return { vis: FL.says('bear', 'Measuring ' + it[0]), q: 'Which unit is best?', answer: it[1], wrong: ['cm', 'm', 'kg', 'litres'].filter(function (x) { return x !== it[1]; }), explain: it[1] + ' is best for ' + it[0] + '.' }; }, 6)]
     ],
+    more: [
+      ['Measure it', 'Read the ruler.', FL.genAct(function () { return g7.len(); }, 'bear')],
+      ['Longer or shorter?', 'Compare lengths.', FL.genAct(function () { return g7.longer(); }, 'bear')],
+      ['Cut the rope', 'Length take away.', FL.genAct(function () { return (function () { var a = r(20, 80), b = r(5, 19); return FL.Q('Length', 'A rope is <b>' + a + ' cm</b>. ' + b + ' cm is cut off. How long is it now?', (a - b) + ' cm', null, a + ' − ' + b + ' = ' + (a - b) + ' cm.'); })(); }, 'bear')],
+      ['Full or empty?', 'Capacity.', FL.genAct(function () { return (function () { var k = pick([['full', 100], ['half full', 50], ['empty', 0]]); return FL.MC('Capacity', 'Is the jug full, half full or empty?', k[0], ['full', 'half full', 'empty'].filter(function (x) { return x !== k[0]; }), null, 'It is ' + k[0] + '.', FL.svg(90, 130, 'a jug', '<path d="M15 20h55v95a8 8 0 0 1-8 8H23a8 8 0 0 1-8-8z" fill="#fff" stroke="#2b2340" stroke-width="3"/><rect x="18" y="' + (120 - k[1]) + '" width="49" height="' + k[1] + '" fill="#6cc0e8"/>', 120)); })(); }, 'bear')],
+      ['Heavy things', 'Which is heavier?', FL.genAct(function () { return g7.heavy(); }, 'bear')]
+    ],
     gens: { low: [g7.longer, g7.heavy, g7.len], medium: [g7.len, g7.longer, g7.unit, g7.heavy], high: [g7.len, g7.unit, function () { var a = r(20, 80), b = r(5, 19); return Q('Length', 'A rope is <b>' + a + ' cm</b>. ' + b + ' cm is cut off. How long is it now, in cm?', a - b, ['This is taking away.', 'Count back ' + b + '.'], a + ' − ' + b + ' = ' + (a - b) + ' cm.'); }] }
   });
 
@@ -488,6 +537,13 @@
       ['3D detective', 'Name the 3D shape.', FL.rounds(function () { var k = pick(FL.SOLIDS); return { vis: '<div style="text-align:center">' + FL.shape(k, null, 150) + '</div>', q: 'What is this 3D shape?', answer: k, wrong: shuffle(FL.SOLIDS.filter(function (x) { return x !== k; })).slice(0, 3), explain: 'This is a ' + k + '.' }; }, 6)],
       ['Rocket turns', 'Which way is Ruby facing?', FL.rounds(function () { var D = ['up', 'right', 'down', 'left'], s = r(0, 3), turns = pick([1, 2, 3]), right = r(0, 1), e = right ? (s + turns) % 4 : (s - turns + 8) % 4, nm = turns === 1 ? 'a quarter turn' : turns === 2 ? 'a half turn' : 'three quarter turns'; return { vis: FL.says('rocket', 'Ruby faces <b>' + D[s] + '</b>.'), q: 'Ruby makes ' + nm + ' to the ' + (right ? 'right' : 'left') + '. Which way does she face?', answer: D[e], wrong: D.filter(function (x) { return x !== D[e]; }), explain: 'Turning ' + (right ? 'right' : 'left') + ' ' + turns + ' quarter turn' + (turns > 1 ? 's' : '') + ' from ' + D[s] + ': ' + D[e] + '.' }; }, 6)],
       ['Chart reader', 'Read the bar chart.', FL.rounds(function () { var it = [['Red', r(1, 9)], ['Blue', r(1, 9)], ['Green', r(1, 9)]], k = r(0, 2); return { vis: V.bars(it, 10), q: 'How many chose ' + it[k][0] + '?', answer: String(it[k][1]), wrong: nums(it[k][1], [it[k][1] + 1, it[k][1] - 1, it[(k + 1) % 3][1]]), explain: 'The ' + it[k][0] + ' bar reaches ' + it[k][1] + '.' }; }, 6)]
+    ],
+    more: [
+      ['Faces, edges, corners', '3D shapes.', FL.genAct(function () { return g8.solid(); }, 'rocket')],
+      ['Which can roll?', 'Curved shapes.', FL.genAct(function () { return g8.roll(); }, 'rocket')],
+      ['Symmetry check', 'Fold it.', FL.genAct(function () { return g8.sym(); }, 'rocket')],
+      ['Turn and face', 'Quarter and half turns.', FL.genAct(function () { return g8.turn(); }, 'rocket')],
+      ['Bar chart quiz', 'Read the chart.', FL.genAct(function () { return g8.bar(); }, 'rocket')]
     ],
     gens: { low: [g8.roll, g8.sym, g8.bar], medium: [g8.solid, g8.roll, g8.sym, g8.turn, g8.bar], high: [g8.solid, g8.turn, g8.bar, g8.sym, function () { var a = r(3, 9), b = r(1, a - 1); return Q('Bar charts', 'How many more chose Dogs than Cats?', a - b, ['Read both bars.', 'Take away the smaller number.'], a + ' − ' + b + ' = ' + (a - b) + '.', V.bars([['Dogs', a], ['Cats', b]], 10)); }] }
   });

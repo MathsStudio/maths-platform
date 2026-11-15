@@ -9,52 +9,76 @@
 
   /* ================= 1. Counting and numbers: Ruby the rocket ================= */
   FL.topic({ n: 201, year: 'P2', short: 'Counting', title: 'Counting and numbers', blurb: 'Count with Ruby the rocket: number patterns, tens and ones, number lines, one more and one less.',
-    lessons: [
-      LS('How can I use number patterns to work out a sequence?', 'how a number pattern goes up or down by the same jump each time.', {
-        intro: ['Ruby the rocket', 'Counting in patterns', "Hello! I'm Ruby the rocket. Before I blast off, I count. A number pattern goes up or down by the same jump each time. If you know the jump, you know what comes next!", FL.says('rocket', '1, 2, 3 … what comes next?')],
-        ex: [['Counting in ones', 'Up by one', [["One, two, three, four. Each number is one more than the last. So the next number is five.", FL.track(1, 6, [5], [[1, 2], [2, 3], [3, 4], [4, 5]])]]],
-          ['Counting in twos', 'Socks come in pairs', [["Socks come in pairs. Two, four, six, eight. We jump two each time. The next number is ten.", FL.track(0, 10, [2, 4, 6, 8, 10])]]],
-          ['Counting in tens', 'Ten fingers each', [["Each child has ten fingers. Ten, twenty, thirty, forty. We jump ten each time. Next is fifty.", E('10, 20, 30, 40, 50', 'g')]]]],
-        real: ['Blast off!', "Ruby counts down to blast off. Ten, nine, eight, seven … each number is one less. Three, two, one, blast off!", E('10, 9, 8, 7, 6, 5, 4, 3, 2, 1 … 🚀', 'b')],
-        turn: ["Your turn! What comes next: two, four, six, eight? Pause and try it.", E('2, 4, 6, 8, ?'), "We jump two each time. The next number is ten.", E('10', 'g')],
-        rec: ["Find the jump. Then keep jumping to find the next number.", ['Look at the jump', 'Count on by the jump', 'Up or down?', 'Check with the next one']],
-        deep: ['Counting in twos and tens is quicker than counting in ones.', 'Check the jump between every pair of numbers, not just the first two.']
-      }),
-      LS('How can tens and ones help me read two-digit numbers?', 'how a two-digit number is made of tens and ones.', {
-        intro: ['Tens and ones', 'Bundles of ten', "Ruby collects star sticks. When she has ten, she ties them into a bundle. A two-digit number tells us how many bundles of ten and how many ones.", FL.tensOnes(2, 3)],
-        ex: [['Twenty-three', '2 tens and 3 ones', [["Two bundles of ten make twenty. Three more ones make twenty-three.", E('2 tens + 3 ones = 23', 'g')]]],
-          ['Thirty-five', 'Which digit is which?', [["In thirty-five, the three means three tens, thirty. The five means five ones.", FL.tensOnes(3, 5)]]],
-          ['Forty', 'No ones', [["Four bundles and no ones. That is forty. The zero shows there are no ones.", E('4 tens + 0 ones = 40', 'g')]]]],
-        real: ['Egg boxes', "Eggs come in boxes of ten. One full box and four more eggs is fourteen eggs.", E('1 ten + 4 ones = 14', 'b')],
-        turn: ["Your turn! How many tens and ones are in fifty-two? Pause and try it.", E('52 = ? tens and ? ones'), "Fifty-two is five tens and two ones.", E('5 tens and 2 ones', 'g')],
-        rec: ["The first digit tells the tens. The second digit tells the ones.", ['First digit: tens', 'Second digit: ones', 'Ten ones make a ten', 'Zero holds the place']],
-        deep: ['Bundling in tens makes big numbers easy to count.', '23 and 32 are different: the digits swap places and values.']
-      }),
-      LS('How can a number line help me order numbers?', 'how a number line shows which numbers are bigger and smaller.', {
-        intro: ['The number line', 'Small to big', "A number line puts numbers in order. Small numbers are on the left. Bigger numbers are on the right. Ruby flies along it!", FL.track(0, 10)],
-        ex: [['Which is bigger?', '7 or 4?', [["Find seven and four on the line. Seven is further right, so seven is bigger than four.", FL.track(0, 10, [4, 7])]]],
-          ['Put in order', '9, 2, 6', [["Find each one on the line. From left to right: two, six, nine. That is smallest to biggest.", E('2, 6, 9', 'g')]]],
-          ['Bigger numbers', '15 or 12?', [["Fifteen comes after twelve on the line. So fifteen is bigger.", FL.track(10, 20, [12, 15])]]]],
-        real: ['Race day', "In a race, Finn is in place three and Molly is in place five. Three comes first, so Finn finished before Molly.", E('3rd before 5th', 'b')],
-        turn: ["Your turn! Put these in order, smallest first: eight, three, five. Pause and try it.", E('8, 3, 5'), "Three, five, eight.", E('3, 5, 8', 'g')],
-        rec: ["On a number line, numbers get bigger as you go right.", ['Left is smaller', 'Right is bigger', 'Find each number', 'Read left to right']],
-        deep: ['Every number has its own place on the line.', 'Do not order by the first digit only: 9 is smaller than 12.']
-      }),
-      LS('How can counting on and back help me find one more and one less?', 'how to find one more and one less than a number.', {
-        intro: ['One more, one less', 'Step forward or back', "One more means count on one step. One less means count back one step. Ruby moves one jump along the number line.", FL.track(5, 12, [8], [[8, 9]])],
-        ex: [['One more', 'One more than 8', [["Start at eight. Count on one. Nine! One more than eight is nine.", E('8 → 9', 'g')]]],
-          ['One less', 'One less than 8', [["Start at eight. Count back one. Seven! One less than eight is seven.", E('8 → 7', 'g')]]],
-          ['Ten more', 'Jump a whole ten', [["Ten more than twenty-three: the tens go up by one. Thirty-three!", E('23 → 33', 'g')]]]],
-        real: ['Birthdays', "Molly is six. Next year she will be one more: seven.", E('6 + 1 = 7', 'b')],
-        turn: ["Your turn! What is one less than fifteen? Pause and try it.", E('one less than 15'), "Count back one: fourteen.", E('14', 'g')],
-        rec: ["One more: count on one. One less: count back one.", ['One more: step on', 'One less: step back', 'Ten more: tens go up', 'Use a number line']],
-        deep: ['One more and one less are the numbers next door on the number line.', 'One less than 20 is 19, not 10: count back just one step.']
-      })
+    /* Story time: Ruby needs 10 stars to fly home (counting, a pattern, ten, one more and one less) */
+    story: { title: 'Ruby and the Star Garden',
+      endPic: FL.scene('space', FL.who('rocket', 130, 40, 150, 'up') + FL.label(200, 230, 'Blast off!', 26)),
+      endText: 'Ruby zoomed home with ten shiny stars. Thank you for helping her count!',
+      pages: [
+        { pic: function () { return FL.scene('space', FL.who('rocket', 115, 30, 170, 'bob')); }, text: 'This is Ruby the rocket. Ruby loves to zoom around the sky.' },
+        { pic: function () { return FL.scene('space', FL.who('rocket', 4, 55, 140, 'wig') + FL.tank(150, 80, 0)); }, text: 'Oh no! Ruby is out of fuel. Rockets like Ruby run on star power. She needs ten stars to fly home.' },
+        { pic: function () { return FL.scene('garden', FL.who('rocket', -5, 85, 125, 'bob') + [[160, 70], [225, 135], [285, 55], [335, 140], [385, 80]].map(function (p, k) { return FL.bit('star', p[0] - 20, p[1], 'tw', k * .2, k, 2); }).join('')); },
+          text: 'Ruby lands in the Star Garden. Let’s count the stars with Ruby. Tap each star!', tap: 5 },
+        { pic: function () { return FL.scene('space', FL.who('rocket', 4, 55, 140, 'bob') + FL.tank(150, 80, 5, 0)); }, text: 'Five stars go into Ruby’s fuel tank. One, two, three, four, five.' },
+        { pic: function () { return FL.scene('space', FL.who('rocket', 4, 55, 140) + FL.tank(150, 80, 5)); }, text: 'The tank has ten spaces. Five are full.',
+          ask: { q: 'How many more stars does Ruby need to make <b>10</b>?', options: [4, 5, 6], answer: 5, explain: 'Five and five make ten.' } },
+        { pic: function () { return FL.scene('pond', FL.who('rocket', 10, 10, 120, 'bob') + FL.stones([2, 4, 6, '?'], 190)); }, text: 'To reach more stars, Ruby hops on stepping stones. Two, four, six. The numbers go up in twos.',
+          ask: { q: 'What number is on the next stone?', options: [7, 8, 10], answer: 8, explain: 'Two, four, six, eight. We jump two each time.' } },
+        { pic: function () { return FL.scene('space', FL.who('rocket', 4, 55, 140, 'bob') + FL.tank(150, 80, 10, 5)); }, text: 'Ruby finds five more stars. Now the tank has ten! Ten ones make one ten.' },
+        { pic: function () { return FL.scene('space', FL.who('rocket', 4, 55, 140, 'wig') + FL.tank(150, 80, 10, 10, true)); }, text: 'Whoops! One star rolls away. One less than ten is nine.' },
+        { pic: function () { return FL.scene('space', FL.who('rocket', 4, 55, 140, 'bob') + FL.tank(150, 80, 9) + FL.bit('star', 352, 125, 'fly', 0, null, 1)); }, text: 'Ruby catches it! One more than nine is ten. The tank is full again.',
+          ask: { q: 'What is one more than <b>9</b>?', options: [8, 10, 11], answer: 10, explain: 'Nine, then ten.' } },
+        { pic: function () { return FL.scene('space', FL.who('rocket', 125, 20, 160, 'bob') + FL.label(200, 232, '3 … 2 … 1 …', 32)); }, text: 'Ruby is ready. Let’s count down together. Three, two, one!' }
+      ] },
+    /* Let's learn: short lessons that carry on Ruby's story, one small idea at a time */
+    learn: [
+      { title: 'How can I use number patterns to work out a sequence?', char: 'rocket', screens: [
+        { mode: 'watch', say: 'Back at the pond, I hop on the stepping stones. One, two, three, four. Each stone is one more.', pic: function () { return FL.scene('pond', FL.who('rocket', 290, 25, 95, 'bob') + FL.stones([1, 2, 3, 4], 195)); } },
+        { mode: 'watch', say: 'Now the stones go up in twos. Two, four, six, eight. I jump two each time.', pic: function () { return FL.scene('pond', FL.who('rocket', 290, 25, 95, 'bob') + FL.stones([2, 4, 6, 8], 195)); } },
+        { mode: 'watch', say: 'I pack my stars in boxes of ten. Ten, twenty, thirty, forty stars!', pic: function () { return FL.scene('space', [0, 1, 2, 3].map(function (k) { return '<g class="a-pop" style="animation-delay:' + (k * .5 + .2) + 's"><rect x="' + (22 + k * 92) + '" y="80" width="80" height="80" rx="10" fill="#fff" stroke="#2b2340" stroke-width="3"/>' + FL.tx(62 + k * 92, 132, (k + 1) * 10, 28, '#2b2340') + '</g>'; }).join('')); } },
+        { mode: 'together', say: 'Help me hop! Five, six, seven … what number is on the next stone?', pic: function () { return FL.scene('pond', FL.who('rocket', 290, 25, 95, 'bob') + FL.stones([5, 6, 7, '?'], 195)); }, tip: 'Each stone is one more. Count on one from seven.', options: [6, 8, 9], answer: 8, explain: 'Seven, eight. I can hop on!' },
+        { mode: 'together', say: 'These stones go two, four, six … what comes next?', pic: function () { return FL.scene('pond', FL.who('rocket', 290, 25, 95, 'bob') + FL.stones([2, 4, 6, '?'], 195)); }, tip: 'Jump in twos: whisper seven, say eight out loud!', options: [7, 8, 9], answer: 8, explain: 'Six, then eight.' },
+        { mode: 'turn', say: 'One box of stars has lost its number. Ten, twenty, blank, forty. What is missing?', pic: function () { return FL.scene('space', [10, 20, '?', 40].map(function (v, k) { return '<rect x="' + (22 + k * 92) + '" y="80" width="80" height="80" rx="10" fill="' + (v === '?' ? '#ffd166' : '#fff') + '" stroke="#2b2340" stroke-width="3"/>' + FL.tx(62 + k * 92, 132, v, 28, '#2b2340'); }).join('')); }, tip: 'The boxes go up in tens.', options: [25, 30, 50], answer: 30, explain: 'Ten, twenty, thirty, forty.' },
+        { mode: 'turn', say: 'Blast-off countdown! Nine, eight, seven … what comes next?', pic: function () { return FL.scene('space', FL.who('rocket', 150, 40, 120, 'wig') + FL.label(200, 232, '9 … 8 … 7 … ?', 30)); }, tip: 'Count back one from seven.', options: [6, 8, 10], answer: 6, explain: 'Seven, then six.' }
+      ] },
+      { title: 'What are tens and ones?', char: 'rocket', screens: [
+        { mode: 'watch', say: 'My fuel tank holds ten stars. A full tank is one ten.', pic: function () { return FL.starTens(1, 0); } },
+        { mode: 'watch', say: 'One full tank and three loose stars. Ten and three make thirteen.', pic: function () { return FL.starTens(1, 3); } },
+        { mode: 'watch', say: 'Two full tanks and five loose stars. Twenty and five make twenty-five.', pic: function () { return FL.starTens(2, 5); } },
+        { mode: 'together', say: 'One full tank and six loose stars. How many stars do I have?', pic: function () { return FL.starTens(1, 6); }, tip: 'Say ten for the tank, then count on the loose stars: eleven, twelve …', options: [16, 61, 7], answer: 16, explain: 'Ten and six make sixteen.' },
+        { mode: 'together', say: 'One full tank and four loose stars. How many?', pic: function () { return FL.starTens(1, 4); }, tip: 'A full tank is ten. Count on four.', options: [14, 10, 4], answer: 14, explain: 'Ten and four make fourteen.' },
+        { mode: 'turn', say: 'Three full tanks and no loose stars. How many stars?', pic: function () { return FL.starTens(3, 0); }, tip: 'Count the tanks in tens: ten, twenty, thirty.', options: [3, 30, 13], answer: 30, explain: 'Three tens are thirty.' },
+        { mode: 'turn', say: 'Two full tanks and seven loose stars. How many stars?', pic: function () { return FL.starTens(2, 7); }, tip: 'Twenty, then count on seven.', options: [27, 72, 9], answer: 27, explain: 'Twenty and seven make twenty-seven.' }
+      ] },
+      { title: 'How do I order numbers on a number line?', char: 'rocket', screens: [
+        { mode: 'watch', say: 'My flight path is a number line. The numbers get bigger as I fly along.', pic: function () { return FL.scene('space', FL.who('rocket', 0, 30, 90, 'in') + FL.stones([1, 2, 3, 4, 5, 6], 200, true)); } },
+        { mode: 'watch', say: 'Planet three comes before planet seven, so three is smaller than seven.', pic: function () { return FL.scene('space', FL.stones([3, 4, 5, 6, 7], 200, true) + FL.label(70, 120, '◀ smaller', 18) + FL.label(330, 120, 'bigger ▶', 18)); } },
+        { mode: 'watch', say: 'Planet twelve comes after planet nine, so twelve is bigger than nine.', pic: function () { return FL.scene('space', FL.stones([9, 10, 11, 12], 200, true)); } },
+        { mode: 'together', say: 'Which planet is further along my path, four or nine?', pic: function () { return FL.scene('space', FL.who('rocket', 0, 30, 90, 'bob') + FL.stones([2, 4, 6, 9], 200, true)); }, tip: 'The bigger number is further along the path.', options: [4, 9], answer: 9, explain: 'Nine is further along, so nine is bigger.' },
+        { mode: 'together', say: 'A planet has lost its number. Five, blank, seven. What is it?', pic: function () { return FL.scene('space', FL.stones([5, '?', 7], 200, true)); }, tip: 'What comes just after five?', options: [4, 6, 8], answer: 6, explain: 'Five, six, seven.' },
+        { mode: 'turn', say: 'Put my planets in order, smallest first.', pic: function () { return FL.scene('space', FL.stones([8, 2, 5], 200, true)); }, options: ['2, 5, 8', '8, 5, 2', '5, 2, 8'], answer: '2, 5, 8', tip: 'Start with the number nearest the start of the path.', explain: 'Two, five, eight.' },
+        { mode: 'turn', say: 'Which planet comes first, fifteen or twelve?', pic: function () { return FL.scene('space', FL.stones([15, 12], 200, true)); }, tip: 'The smaller number comes first on the path.', options: [12, 15], answer: 12, explain: 'Twelve comes before fifteen.' }
+      ] },
+      { title: 'What is one more and one less?', char: 'rocket', screens: [
+        { mode: 'watch', say: 'I have four stars. One more star flies in. Now I have five! One more than four is five.', pic: function () { return FL.scene('space', [0, 1, 2, 3].map(function (k) { return FL.bit('star', 70 + k * 60, 130, '', 0, null, 1.6); }).join('') + FL.bit('star', 315, 130, 'fly', .4, null, 1.6)); } },
+        { mode: 'watch', say: 'I have six stars. One star rolls away. Now I have five. One less than six is five.', pic: function () { return FL.scene('space', [0, 1, 2, 3, 4].map(function (k) { return FL.bit('star', 60 + k * 55, 130, '', 0, null, 1.5); }).join('') + FL.bit('star', 335, 130, 'roll', .6, null, 1.5)); } },
+        { mode: 'watch', say: 'On my flight path, one more is one hop forward. One less is one hop back.', pic: FL.track(5, 9, [6, 7, 8], [[7, 8], [7, 6, 1]]) },
+        { mode: 'together', say: 'I have eight stars. One more flies in. How many now?', pic: function () { return FL.scene('space', [0, 1, 2, 3, 4, 5, 6, 7].map(function (k) { return FL.bit('star', 50 + (k % 4) * 60, 80 + Math.floor(k / 4) * 70, '', 0, null, 1.4); }).join('') + FL.bit('star', 330, 115, 'fly', .4, null, 1.4)); }, tip: 'One more than eight: count on one.', options: [7, 9, 10], answer: 9, explain: 'One more than eight is nine.' },
+        { mode: 'together', say: 'My tank has ten stars. One rolls away. How many are left?', pic: function () { return FL.scene('space', FL.tank(85, 75, 10, 10, true)); }, tip: 'One less than ten: count back one.', options: [9, 11, 8], answer: 9, explain: 'One less than ten is nine.' },
+        { mode: 'turn', say: 'I have fourteen stars and find one more. How many now?', pic: function () { return FL.starTens(1, 4); }, options: [13, 15, 16], answer: 15, tip: 'Count on one: fourteen, fifteen.', explain: 'One more than fourteen is fifteen.' },
+        { mode: 'turn', say: 'I have twenty stars and one rolls away. How many are left?', pic: function () { return FL.starTens(2, 0); }, options: [19, 21, 10], answer: 19, tip: 'Count back one from twenty.', explain: 'One less than twenty is nineteen.' }
+      ] }
     ],
     acts: [
       ['Count them!', 'Count the pictures. Tap the right number.', FL.rounds(function (k) { var n = r(3, k > 2 ? 20 : 10), kind = pick(['star', 'apple', 'fish', 'duck', 'balloon', 'car']); return { vis: FL.things(n, kind), q: 'How many ' + kind + 's?', answer: String(n), wrong: nums(n, [n - 1, n + 1, n + 2, n - 2]), explain: 'Count them in fives: there are ' + n + '.' }; }, 6)],
       ['Fill the ten-frame', 'Tap the boxes to show a number.', FL.fillFrame([3, 5, 7, 9, 10, 12, 15])],
       ['What comes next?', 'Find the jump, then the next number.', FL.rounds(function () { var j = pick([1, 2, 5, 10]), s = j === 10 ? 10 * r(0, 4) : j === 5 ? 5 * r(0, 6) : r(0, 12), down = j === 1 && r(0, 1), seq = []; for (var i = 0; i < 4; i++) seq.push(down ? s + 8 - i : s + i * j); var nx = down ? s + 4 : s + 4 * j; return { vis: FL.says('rocket', seq.join(', ') + ', ?'), q: 'What comes next?', answer: String(nx), wrong: nums(nx, [nx + 1, nx - 1, nx + j, nx + 2]), explain: (down ? 'It goes down by one each time.' : 'It goes up by ' + j + ' each time.') + ' Next is ' + nx + '.' }; }, 6)]
+    ],
+    more: [
+      ['Star count', 'How many stars?', FL.rounds(function () { var n = r(6, 20); return { vis: FL.things(n, 'star', 10), q: 'How many stars?', answer: String(n), wrong: nums(n, [n + 1, n - 1, n + 2]), explain: 'Count in fives and then ones: ' + n + '.' }; }, 6)],
+      ['Tens and ones', 'What number is it?', FL.rounds(function () { var t = r(1, 4), o = r(0, 9), n = 10 * t + o; return { vis: FL.tensOnes(t, o), q: t + ' tens and ' + o + ' ones. What number is it?', answer: String(n), wrong: nums(n, [10 * o + t, n + 10, n + 1]), explain: t + ' tens and ' + o + ' ones make ' + n + '.' }; }, 6)],
+      ['One more, one less', 'Step forward or back.', FL.rounds(function () { var n = r(2, 29), up = r(0, 1), a = up ? n + 1 : n - 1; return { vis: FL.says('rocket', 'One ' + (up ? 'more' : 'less') + ' than <b>' + n + '</b>?'), q: 'What is one ' + (up ? 'more' : 'less') + ' than ' + n + '?', answer: String(a), wrong: nums(a, [up ? n - 1 : n + 1, n, a + 10]), explain: 'One ' + (up ? 'more' : 'less') + ' than ' + n + ' is ' + a + '.' }; }, 6)],
+      ['Bigger or smaller?', 'Compare two numbers.', FL.rounds(function () { var a = r(1, 30), b = r(1, 30); if (a === b) b++; var big = r(0, 1); return { vis: FL.says('rocket', a + ' or ' + b + '?'), q: 'Which number is ' + (big ? 'bigger' : 'smaller') + '?', answer: String(big ? Math.max(a, b) : Math.min(a, b)), wrong: [String(big ? Math.min(a, b) : Math.max(a, b))], keepOrder: true, explain: (big ? Math.max(a, b) : Math.min(a, b)) + ' is ' + (big ? 'bigger' : 'smaller') + '.' }; }, 6)],
+      ['Missing number', 'Fill the gap on the track.', FL.rounds(function () { var s = r(1, 15), gap = s + r(1, 4), lst = []; for (var i = s; i < s + 6; i++) lst.push(i); return { vis: FL.track(s, s + 5, lst.filter(function (x) { return x !== gap; })).replace('>' + gap + '<', '>?<'), q: 'Which number is missing?', answer: String(gap), wrong: nums(gap, [gap + 1, gap - 1, gap + 10]), explain: 'The missing number is ' + gap + '.' }; }, 6)]
     ]
   });
 
@@ -106,6 +130,13 @@
       ['Adding baskets', 'How many are there altogether?', FL.rounds(function (k) { var a = r(1, k > 2 ? 9 : 5), b = r(1, k > 2 ? 9 : 5); return { vis: FL.groups(a, b, pick(['apple', 'sweet', 'flower'])), q: a + ' + ' + b + ' = ?', answer: String(a + b), wrong: nums(a + b, [a + b + 1, a + b - 1, a + b + 2]), explain: 'Start with ' + Math.max(a, b) + ' and count on ' + Math.min(a, b) + ': ' + (a + b) + '.' }; }, 6)],
       ['Make ten', 'How many more counters fill the frame?', FL.rounds(function () { var n = r(1, 9); return { vis: FL.frame(n), q: 'How many more make 10?', answer: String(10 - n), wrong: nums(10 - n, [11 - n, 9 - n, n]), explain: n + ' and ' + (10 - n) + ' make 10.' }; }, 6)],
       ['Birds fly away', 'Some birds fly away. How many are left?', FL.rounds(function () { var a = r(4, 12), b = r(1, a - 1); return { vis: FL.things(a, 'duck') + '<p class="fl-big">' + b + ' fly away!</p>', q: a + ' − ' + b + ' = ?', answer: String(a - b), wrong: nums(a - b, [a - b + 1, a - b - 1, a + b]), explain: b + ' + ' + (a - b) + ' = ' + a + ', so ' + (a - b) + ' are left.' }; }, 6)]
+    ],
+    more: [
+      ['Apple adding', 'Add two groups.', FL.rounds(function () { var a = r(1, 6), b = r(1, 4); return { vis: FL.groups(a, b, 'apple'), q: a + ' + ' + b + ' = ?', answer: String(a + b), wrong: nums(a + b, [a + b + 1, a + b - 1, a + b + 2]), explain: a + ' and ' + b + ' make ' + (a + b) + '.' }; }, 6)],
+      ['Double it!', 'Doubles.', FL.rounds(function () { var a = r(1, 10); return { vis: FL.groups(a, a, 'sweet'), q: 'What is double ' + a + '?', answer: String(2 * a), wrong: nums(2 * a, [2 * a + 1, 2 * a - 1, a + 1]), explain: a + ' and ' + a + ' make ' + 2 * a + '.' }; }, 6)],
+      ['Near doubles', 'Double, then one more.', FL.rounds(function () { var a = r(2, 9); return { vis: FL.groups(a, a + 1, 'sweet'), q: a + ' + ' + (a + 1) + ' = ?', answer: String(2 * a + 1), wrong: nums(2 * a + 1, [2 * a, 2 * a + 2, a + 1]), explain: 'Double ' + a + ' is ' + 2 * a + ', and one more is ' + (2 * a + 1) + '.' }; }, 6)],
+      ['Ducks take apples', 'Take away.', FL.rounds(function () { var a = r(4, 10), b = r(1, a - 1); return { vis: FL.things(a, 'apple', 5) + FL.things(b, 'duck', 5), q: a + ' apples. ' + b + ' ducks take one each. How many are left?', answer: String(a - b), wrong: nums(a - b, [a - b + 1, a - b - 1, a + b]), explain: a + ' − ' + b + ' = ' + (a - b) + '.' }; }, 6)],
+      ['Adding to 20', 'Bigger adding.', FL.rounds(function () { var a = r(8, 13), b = r(2, 7); return { vis: FL.says('bear', a + ' + ' + b + ' = ?'), q: 'What is ' + a + ' + ' + b + '?', answer: String(a + b), wrong: nums(a + b, [a + b + 1, a + b - 1, a + b + 10]), explain: 'Start at ' + a + ' and count on ' + b + ': ' + (a + b) + '.' }; }, 6)]
     ]
   });
 
@@ -157,6 +188,13 @@
       ['Coin spotter', 'Which coin is this?', FL.rounds(function () { var c = pick([1, 2, 5, 10, 20, 50, 100, 200]), all = [1, 2, 5, 10, 20, 50, 100, 200].map(FL.money); return { vis: '<div style="max-width:160px;margin:0 auto">' + FL.coins([c], 150) + '</div>', q: 'How much is this coin worth?', answer: FL.money(c), wrong: shuffle(all.filter(function (x) { return x !== FL.money(c); })).slice(0, 3), explain: 'This is ' + FL.money(c) + '.' }; }, 6)],
       ['Fill the purse', 'Put coins in the purse to pay Molly.', FL.purse([3, 6, 8, 11, 15, 20], [1, 2, 5, 10])],
       ['Can I buy it?', 'Count the coins. Do you have enough?', FL.rounds(function () { var cs = shuffle([1, 2, 5, 10]).slice(0, r(2, 3)), t = cs.reduce(function (a, b) { return a + b; }, 0), price = t + pick([-3, -1, 0, 2, 4]); if (price < 1) price = t; var yes = t >= price; return { vis: FL.coins(cs) + FL.says('mouse', 'This toy costs <b>' + price + 'p</b>'), q: 'You have ' + cs.map(FL.money).join(' + ') + '. Can you buy it?', answer: yes ? 'Yes' : 'No', wrong: [yes ? 'No' : 'Yes'], keepOrder: true, explain: 'The coins make ' + t + 'p. ' + (yes ? 'That is enough.' : 'You need ' + (price - t) + 'p more.') }; }, 6)]
+    ],
+    more: [
+      ['How much money?', 'Add the coins.', FL.rounds(function () { var cs = shuffle([1, 2, 5, 10]).slice(0, r(2, 3)), t = cs.reduce(function (x, y) { return x + y; }, 0); return { vis: FL.coins(cs), q: 'How much money is this?', answer: t + 'p', wrong: [t + 1, t - 1, t + 2].filter(function (x) { return x > 0; }).map(function (x) { return x + 'p'; }), explain: 'Start with the biggest coin: ' + t + 'p.' }; }, 6)],
+      ['Which is worth more?', 'Compare two coins.', FL.rounds(function () { var cs = shuffle([1, 2, 5, 10, 20, 50, 100, 200]).slice(0, 2), hi = Math.max(cs[0], cs[1]); return { vis: FL.coins(cs), q: 'Which coin is worth more?', answer: FL.money(hi), wrong: [FL.money(Math.min(cs[0], cs[1]))], explain: FL.money(hi) + ' is worth more.' }; }, 6)],
+      ['Name the coin', 'What is this coin?', FL.rounds(function () { var c = pick([1, 2, 5, 10, 20, 50, 100, 200]), all = [1, 2, 5, 10, 20, 50, 100, 200]; return { vis: FL.coins([c]), q: 'What is this coin?', answer: FL.money(c), wrong: shuffle(all.filter(function (x) { return x !== c; })).slice(0, 2).map(FL.money), explain: 'It is ' + FL.money(c) + '.' }; }, 6)],
+      ['Change from 10p', 'Count on to 10p.', FL.rounds(function () { var c = r(1, 9); return { vis: FL.coins([10]) + FL.says('mouse', 'It costs ' + c + 'p'), q: 'You pay 10p. How much change?', answer: (10 - c) + 'p', wrong: [10 - c + 1, Math.max(1, 10 - c - 1) === 10 - c ? 10 - c + 2 : Math.max(1, 10 - c - 1), c].filter(function (x) { return x !== 10 - c; }).map(function (x) { return x + 'p'; }), explain: 'Count on from ' + c + 'p to 10p: ' + (10 - c) + 'p.' }; }, 6)],
+      ['Which costs more?', 'Compare prices.', FL.rounds(function () { var a = r(1, 19), b = r(1, 19); if (a === b) b++; var k = shuffle([['a ball', a], ['a kite', b]]); return { vis: FL.says('mouse', k[0][0] + ': ' + k[0][1] + 'p<br>' + k[1][0] + ': ' + k[1][1] + 'p'), q: 'Which costs more?', answer: (a > b ? 'a ball' : 'a kite'), wrong: [a > b ? 'a kite' : 'a ball'], keepOrder: true, explain: Math.max(a, b) + 'p is more.' }; }, 6)]
     ]
   });
 
@@ -208,6 +246,13 @@
       ['Set the clock', 'Move the hands to show the time.', FL.setClock([[3, 0], [7, 0], [11, 0], [2, 30], [6, 30], [9, 30]])],
       ['What time is it?', 'Read the clock.', FL.rounds(function () { var h = r(1, 12), half = r(0, 1), nm = half ? 'half past ' + h : h + ' o’clock', w = [half ? h + ' o’clock' : 'half past ' + h, (h % 12 + 1) + ' o’clock', 'half past ' + (h % 12 + 1)]; return { vis: '<div style="max-width:200px;margin:0 auto">' + V.clock(h, half ? 30 : 0) + '</div>', q: 'What time does the clock show?', answer: nm, wrong: w, explain: half ? 'The long hand is on 6: half past ' + h + '.' : 'The long hand is on 12: ' + h + ' o’clock.' }; }, 6)],
       ['Day by day', 'Which day comes before or after?', FL.rounds(function () { var D = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'], i = r(0, 6), after = r(0, 1), ans = after ? D[(i + 1) % 7] : D[(i + 6) % 7]; return { vis: FL.says('owl', 'Today is <b>' + D[i] + '</b>'), q: 'What day comes ' + (after ? 'after' : 'before') + ' ' + D[i] + '?', answer: ans, wrong: shuffle(D.filter(function (x) { return x !== ans && x !== D[i]; })).slice(0, 3), explain: (after ? D[i] + ', then ' + ans : ans + ', then ' + D[i]) + '.' }; }, 6)]
+    ],
+    more: [
+      ['O’clock or half past?', 'Read the clock.', FL.rounds(function () { var h = r(1, 12), m = pick([0, 30]); return { vis: '<div style="max-width:180px;margin:0 auto">' + V.clock(h, m) + '</div>', q: 'What time is it?', answer: m ? 'half past ' + h : h + ' o’clock', wrong: [m ? h + ' o’clock' : 'half past ' + h, (h % 12 + 1) + ' o’clock'], explain: 'The long hand is on ' + (m ? 'six: half past.' : 'twelve: o’clock.') }; }, 6)],
+      ['One hour later', 'Move the short hand on.', FL.rounds(function () { var h = r(1, 11); return { vis: '<div style="max-width:180px;margin:0 auto">' + V.clock(h, 0) + '</div>', q: 'It is ' + h + ' o’clock. What time will it be in one hour?', answer: (h + 1) + ' o’clock', wrong: [(h - 1 || 12) + ' o’clock', (h + 2) + ' o’clock'], explain: 'One hour after ' + h + ' is ' + (h + 1) + ' o’clock.' }; }, 6)],
+      ['Days of the week', 'Before and after.', FL.rounds(function () { var D = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'], i = r(0, 6), af = r(0, 1), a = D[(i + (af ? 1 : 6)) % 7]; return { vis: FL.says('owl', 'Today is <b>' + D[i] + '</b>.'), q: 'What day comes ' + (af ? 'after' : 'before') + ' ' + D[i] + '?', answer: a, wrong: shuffle(D.filter(function (x) { return x !== a && x !== D[i]; })).slice(0, 2), explain: a + '.' }; }, 6)],
+      ['Months of the year', 'What comes next?', FL.rounds(function () { var M = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'], i = r(0, 10); return { vis: FL.says('owl', M[i] + ' …'), q: 'Which month comes after ' + M[i] + '?', answer: M[i + 1], wrong: shuffle(M.filter(function (x, k) { return k !== i + 1 && k !== i; })).slice(0, 2), explain: M[i] + ', then ' + M[i + 1] + '.' }; }, 6)],
+      ['Minutes, hours or days?', 'How long does it take?', FL.rounds(function () { var e = pick([['brush your teeth', 'minutes'], ['eat an apple', 'minutes'], ['sleep at night', 'hours'], ['a school day', 'hours'], ['a holiday', 'days'], ['grow a sunflower', 'days'], ['tie your shoes', 'minutes'], ['watch a film', 'hours']]); return { vis: FL.says('owl', 'How long does it take to <b>' + e[0] + '</b>?'), q: 'Is it about a few minutes, hours or days?', answer: e[1], wrong: ['minutes', 'hours', 'days'].filter(function (x) { return x !== e[1]; }), keepOrder: ['minutes', 'hours', 'days'], explain: 'About a few ' + e[1] + '.' }; }, 6)]
     ]
   });
 
@@ -259,6 +304,13 @@
       ['Shape spotter', 'Name the shape.', FL.rounds(function () { var k = pick(['circle', 'triangle', 'square', 'rectangle', 'pentagon', 'hexagon']), all = ['circle', 'triangle', 'square', 'rectangle', 'pentagon', 'hexagon']; return { vis: '<div style="text-align:center">' + FL.shape(k, null, 150) + '</div>', q: 'What is this shape called?', answer: k, wrong: shuffle(all.filter(function (x) { return x !== k; })).slice(0, 3), explain: { circle: 'Round with no corners: a circle.', triangle: '3 sides: a triangle.', square: '4 equal sides: a square.', rectangle: '4 sides, 2 long and 2 short: a rectangle.', pentagon: '5 sides: a pentagon.', hexagon: '6 sides: a hexagon.' }[k] }; }, 6)],
       ['Flat or solid?', 'Is it a 2D shape or a 3D object?', FL.rounds(function () { var solid = r(0, 1), k = solid ? pick(FL.SOLIDS) : pick(['circle', 'triangle', 'square', 'rectangle', 'hexagon']); return { vis: '<div style="text-align:center">' + FL.shape(k, null, 150) + '</div>', q: 'Is this flat (2D) or solid (3D)?', answer: solid ? '3D solid' : '2D flat', wrong: [solid ? '2D flat' : '3D solid'], keepOrder: true, explain: 'This is a ' + k + '. ' + (solid ? 'It is solid: 3D.' : 'It is flat: 2D.') }; }, 6)],
       ['Tally counter', 'How many does the tally show?', FL.rounds(function () { var n = r(2, 15); return { vis: '<div style="max-width:420px;margin:0 auto">' + FL.tally(n) + '</div>', q: 'How many tally marks?', answer: String(n), wrong: nums(n, [n + 1, n - 1, n + 5, n - 5]), explain: 'Count the fives first, then the ones: ' + n + '.' }; }, 6)]
+    ],
+    more: [
+      ['Name the shape', 'What is it called?', FL.rounds(function () { var k = pick(['circle', 'triangle', 'square', 'rectangle', 'oval']); return { vis: '<div style="text-align:center">' + FL.shape(k, null, 140) + '</div>', q: 'What is this shape?', answer: k, wrong: shuffle(['circle', 'triangle', 'square', 'rectangle', 'oval'].filter(function (x) { return x !== k; })).slice(0, 2), explain: 'It is a ' + k + '.' }; }, 6)],
+      ['Count the sides', 'How many sides?', FL.rounds(function () { var k = pick([['triangle', 3], ['square', 4], ['rectangle', 4], ['pentagon', 5], ['hexagon', 6], ['circle', 0]]); return { vis: '<div style="text-align:center">' + FL.shape(k[0], null, 140) + '</div>', q: 'How many straight sides does it have?', answer: String(k[1]), wrong: nums(k[1], [k[1] + 1, k[1] - 1, k[1] + 2]), explain: 'A ' + k[0] + ' has ' + k[1] + ' straight sides.' }; }, 6)],
+      ['Count the corners', 'How many corners?', FL.rounds(function () { var k = pick([['triangle', 3], ['square', 4], ['rectangle', 4], ['hexagon', 6], ['oval', 0], ['circle', 0]]); return { vis: '<div style="text-align:center">' + FL.shape(k[0], null, 140) + '</div>', q: 'How many corners does it have?', answer: String(k[1]), wrong: nums(k[1], [k[1] + 1, k[1] - 1, k[1] + 2]), explain: 'A ' + k[0] + ' has ' + k[1] + ' corners.' }; }, 6)],
+      ['Read the tally', 'Count the tally marks.', FL.rounds(function () { var n = r(3, 15); return { vis: '<div style="text-align:center">' + FL.tally(n) + '</div>', q: 'How many?', answer: String(n), wrong: nums(n, [n + 1, n - 1, n + 5]), explain: 'Count the fives, then the ones: ' + n + '.' }; }, 6)],
+      ['Picture chart', 'Most or fewest?', FL.rounds(function () { var it = [['apples', 'apple'], ['stars', 'star'], ['fish', 'fish']].map(function (x) { return [x[0], r(1, 7), x[1]]; }); if (it[0][1] === it[1][1]) it[0][1]++; if (it[1][1] === it[2][1]) it[2][1] = it[2][1] > 1 ? it[2][1] - 1 : it[2][1] + 2; if (it[0][1] === it[2][1]) it[0][1] = Math.min(8, it[0][1] + 1); var most = r(0, 1), s = it.slice().sort(function (a, b) { return most ? b[1] - a[1] : a[1] - b[1]; }); return { vis: FL.picto(it), q: 'Which has the ' + (most ? 'most' : 'fewest') + '?', answer: s[0][0], wrong: [s[1][0], s[2][0]], explain: s[0][0] + ' has the ' + (most ? 'longest' : 'shortest') + ' row.' }; }, 6)]
     ]
   });
 })();

@@ -38,7 +38,7 @@
     flower: function (x, y) { var s = ''; for (var i = 0; i < 5; i++) { var a = i * 72 * Math.PI / 180; s += '<circle cx="' + (x + 7 * Math.cos(a)).toFixed(1) + '" cy="' + (y + 7 * Math.sin(a)).toFixed(1) + '" r="6" fill="#f7a8d8" stroke="' + INK + '" stroke-width="1.5"/>'; } return s + '<circle cx="' + x + '" cy="' + y + '" r="5" fill="#ffd166" stroke="' + INK + '" stroke-width="1.5"/>'; },
     sweet: function (x, y) { return '<path d="M' + (x - 18) + ' ' + (y - 7) + 'l8 7-8 7zM' + (x + 18) + ' ' + (y - 7) + 'l-8 7 8 7z" fill="#c48bf2" stroke="' + INK + '" stroke-width="1.5"/><circle cx="' + x + '" cy="' + y + '" r="10" fill="#c48bf2" stroke="' + INK + '" stroke-width="2"/>'; }
   };
-  FL.THINGS = Object.keys(THING);
+  FL.THINGS = Object.keys(THING); FL.THING = THING; FL.CH = CH;
   /* n things in rows of 5 (so they are easy to count), up to 10 a row */
   FL.things = function (n, kind, perRow) {
     kind = THING[kind] ? kind : 'apple'; perRow = perRow || (n > 10 ? 10 : 5);
@@ -263,6 +263,12 @@
   }
   /* the same workbook question can be taught again in a later year: keep its words, but give it its own
      lesson (and its own "Let's go deeper" note) by adding the year to the internal name only */
+  /* P4 follows the P5 format: a 4-question warm-up and 30 real-life problems, all at First level depth */
+  function warmStep(gens) { return { id: 'warm', label: 'Warm-up', type: 'quiz', tag: 'Warm-up', title: 'Mental maths warm-up', lead: 'Four quick questions to wake up your number brain.', doneLabel: 'On to the practice',
+    make: function () { var fs = shuffle((gens.low || []).slice()), out = []; for (var i = 0; out.length < 4 && i < 12; i++) out.push(fs[i % fs.length]()); return out; } }; }
+  function lifeStep(life, lead) { return { id: 'practical', label: 'Real-life problem', type: 'quiz', tag: 'Real-life problems', title: 'Real-life problems', lead: '30 situation questions on ' + lead + '. Think about which skill from this topic the problem needs. Low, Medium and High change how many steps each problem has.',
+    make: function () { var lv = (S.app && S.app.store.settings.difficulty) || 'medium', list = life[lv] || life.medium, out = [], seen = {}, tries = 0;
+      while (out.length < 30 && tries < 900) { tries++; var q = pick(list)(), key = q.text + '|' + q.answer; if (seen[key] && tries < 600) continue; seen[key] = 1; out.push(q); } return out; } }; }
   FL.LS = function (title, year, goal, o) {
     var id = title + ' \u00b7 ' + year; BT.QT = BT.QT || {}; BT.QT[id] = title;
     var ep = BT.L.lesson(id, goal, o);
@@ -273,9 +279,30 @@
   /* ---------- making a topic ---------- */
   FL.topic = function (o) {
     if (S.topics[o.n]) return;
-    S.addTopic({ n: o.n, base: o.n, year: o.year, short: o.short, title: o.title, blurb: o.blurb, gens: {}, steps: o.gens ? [practiseStep(o.gens)] : [] });
-    BT.L.use(o.n, o.lessons);
-    (o.acts || []).forEach(function (a, k) { BT.addLab(o.n, 'fl' + (k + 1), a[0], a[1], a[2]); });
+    S.addTopic({ n: o.n, base: o.n, year: o.year, short: o.short, title: o.title, blurb: o.blurb, gens: {}, steps: o.gens && o.year !== 'P3' ? (o.life ? [warmStep(o.gens), practiseStep(o.gens), lifeStep(o.life, o.lifeLead || 'this topic')] : [practiseStep(o.gens)]) : [] });   /* P3 has no practice, only lessons and activities */
+    if (o.lessons) BT.L.use(o.n, o.lessons);
+    /* First level picture-book story and Let's learn steps (see fl_story.js) */
+    var t = S.topics[o.n], add = [];
+    if (o.story) add.push({ id: 'story', label: '\ud83d\udcd6 Story: ' + o.story.title, type: 'lab', fgroup: 'learn', noReset: true, tag: 'Story time', title: o.story.title, lead: 'A picture-book story. Tap Read to me to hear it.', mount: FL.storyMount(o.story) });
+    (o.learn || []).forEach(function (l, k) { add.push({ id: 'learn' + (k + 1), label: l.title, type: 'lab', fgroup: 'learn', noReset: true, tag: 'Let\u2019s learn', title: l.title, lead: 'Watch me, then try it together, then on your own.', mount: FL.learnMount(l) }); });
+    if (add.length) { add.forEach(function (st) { t.steps.push(st); }); S.arrange(t); }
+    (o.acts || []).concat(o.more || []).forEach(function (a, k) { BT.addLab(o.n, 'fl' + (k + 1), a[0], a[1], a[2]); });
+  };
+  /* turn a question maker (FL.Q or FL.MC) into a hands-on activity of 6 rounds with big answer buttons */
+  function wrongFor(ans) {
+    var n = Number(ans), out = [];
+    if (String(ans).trim() !== '' && !isNaN(n)) { [n + 1, n - 1, n + 10, n - 10, n + 2, n - 2, n * 2].forEach(function (x) { if (x >= 0 && x !== n && out.indexOf(String(x)) < 0) out.push(String(x)); }); return shuffle(out).slice(0, 3); }
+    var m = /^(\d+)\/(\d+)$/.exec(ans); if (m) { var a = +m[1], b = +m[2]; return [b + '/' + a, (a + 1 < b ? a + 1 : a - 1) + '/' + b, a + '/' + (b + 1)].filter(function (x) { return x !== ans; }); }
+    var p = /^(\d+)p$/.exec(ans); if (p) return wrongFor(+p[1]).map(function (x) { return x + 'p'; });
+    var c = /^(\d+) (cm|kg|m|litres|°C)$/.exec(ans); if (c) return wrongFor(+c[1]).map(function (x) { return x + ' ' + c[2]; });
+    return [];
+  }
+  FL.genAct = function (fn, k) {
+    return FL.rounds(function () {
+      var q = fn(), wrong = q.options ? q.options.filter(function (o) { return String(o) !== String(q.answer); }) : wrongFor(String(q.answer));
+      if (!wrong.length) wrong = wrongFor(String(q.answer));
+      return { vis: q.pic ? '<div style="text-align:center">' + q.pic + '</div>' + '<p class="fl-big">' + q.text + '</p>' : FL.says(k || 'owl', q.text), q: q.pic ? 'Choose the answer.' : 'Choose the answer.', answer: String(q.answer), wrong: wrong, explain: q.explain || '', keepOrder: q.options && /^(Yes|No)$/.test(q.options[0]) ? true : undefined };
+    }, 6);
   };
   FL.r = rnd; FL.pick = pick; FL.shuffle = shuffle;
 })();

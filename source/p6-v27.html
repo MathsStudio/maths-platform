@@ -1114,7 +1114,7 @@ var SLIDE_MORE = {"1.learn1": [{"more": ["Our number system uses only ten digits
       : plans + '<div style="background:var(--soft,#f1f5ff);border-radius:14px;padding:12px 14px;margin:4px 0 14px;line-height:1.8"><b>Step 1</b> &nbsp;Sign in or create an account<br><b>Step 2</b> &nbsp;Choose a plan and pay</div><div class="row" style="gap:10px;flex-wrap:wrap"><a class="btn" style="flex:1;text-align:center" href="/login/">Sign in</a><a class="btn ghost" style="flex:1;text-align:center" href="/signup/">Create an account</a></div><p class="note" style="margin:10px 0 0">After signing in, the payment button appears here.</p>';
     o.innerHTML = '<section class="card" style="max-width:520px;width:100%;margin:0;background:var(--card,#fff)"><button class="btn ghost" type="button" id="lockBack" aria-label="Close" style="float:right;padding:4px 10px">✕</button>' +
       '<span class="tag">🔒 ' + (what || t.title) + ' is locked</span><h2 style="margin:10px 0 6px">Unlock all of ' + y + '</h2>' +
-      '<p class="lead">Every topic in ' + y + ': ' + (y === 'P2' ? 'story lessons with cartoon characters and hands-on activities' : /^P[34]$/.test(y) ? 'story lessons, hands-on activities and practice questions at three difficulty levels' + (y === 'P4' ? ', the Strengths Check' : '') : 'animated explainers, lessons, hands-on activities and hundreds of practice questions at three difficulty levels') + (/^P[23]$/.test(y) ? '' : ', plus the 10-minute mental maths test') + '. Topic 1 stays free to try.</p>' + step + '</section>';
+      '<p class="lead">Every topic in ' + y + ': ' + (/^P[23]$/.test(y) ? 'picture-book stories, story lessons and lots of hands-on activities' : y === 'P4' ? 'picture-book stories, story lessons, hands-on activities, a warm-up, practice questions at three levels, real-life problems and the Strengths Check' : 'animated explainers, lessons, hands-on activities and hundreds of practice questions at three difficulty levels') + (/^P[23]$/.test(y) ? '' : ', plus the 10-minute mental maths test') + '. Topic 1 stays free to try.</p>' + step + '</section>';
     document.body.appendChild(o);
     function pick(pl) { plan = pl; [].forEach.call(o.querySelectorAll('#lockPlans button'), function (b) { var on = b.getAttribute('data-plan') === pl; b.setAttribute('aria-checked', on ? 'true' : 'false'); b.style.borderColor = on ? '#2b5fd9' : '#dbe3f7'; b.style.background = on ? '#f3f6ff' : '#fff'; }); }
     pick('year');
@@ -1328,7 +1328,7 @@ var SLIDE_MORE = {"1.learn1": [{"more": ["Our number system uses only ten digits
     ['🧗', 'Over halfway', 'Finish half the topics', half],
     ['🏁', 'Year complete', 'Finish every topic in the year', function (x) { return x.year; }]
   ];
-  function badgeList() { var y = yearOf(); return y === 'P2' ? BADGES_P2 : /^P[34]$/.test(y) ? BADGES_P34 : y.charAt(0) === 'S' ? BADGES_L3 : BADGES_L2; }
+  function badgeList() { var y = yearOf(); return /^P[23]$/.test(y) ? BADGES_P2 : y === 'P4' ? BADGES_P34 : y.charAt(0) === 'S' ? BADGES_L3 : BADGES_L2; }
   function badgeStats(yearDone) {
     var o = { steps: 0, topics: 0, acts: 0, boss: 0, real: 0, watch: 0, prac: 0, touched: 0, all: 0, year: !!yearDone };
     /* count only the topics of the year on screen, so the badges match the progress bar above them */
@@ -1337,7 +1337,7 @@ var SLIDE_MORE = {"1.learn1": [{"more": ["Our number system uses only ten digits
       var t = S.topics[Number(k.slice(1))], p = store.progress[k]; if (!t || !p || !p.steps || !mine[t.n]) return;
       var ids = Object.keys(p.steps).filter(function (id) { return p.steps[id] && t.steps.some(function (z) { return z.id === id && z.type !== 'finish'; }); }); o.steps += ids.length; if (ids.length) o.touched++;
       if (t.steps.length && t.steps.every(function (st) { return p.steps[st.id]; })) o.topics++;
-      ids.forEach(function (id) { var st = t.steps.filter(function (z) { return z.id === id; })[0]; if (!st) return; if (st.group === 'activity') o.acts++; if (id === 'a_boss') o.boss++; if (st.group === 'learn') o.watch++; if (id === 'practise') o.prac++; if (id === 'practical') o.real++; });
+      ids.forEach(function (id) { var st = t.steps.filter(function (z) { return z.id === id; })[0]; if (!st) return; if (st.group === 'activity') o.acts++; if (id === 'a_boss') o.boss++; if (st.group === 'learn' || st.group === 'story') o.watch++; if (id === 'practise') o.prac++; if (id === 'practical') o.real++; });
     });
     return o;
   }
@@ -1371,11 +1371,11 @@ var SLIDE_MORE = {"1.learn1": [{"more": ["Our number system uses only ten digits
     v.innerHTML =
       '<section class="yrtop"><div class="yrbar"><span class="tag">' + (yr === 'all' ? 'All years' : yr) + '</span><button class="yr" type="button" id="chgYear">Change year</button></div><p class="note say" style="margin:8px 0 0">' + YEAR_NOTE[yr] + '</p></section>' +
       '<section class="hero"><span class="eyebrow">' + (yr === 'all' ? 'Primary 5 to 7' : (yr.charAt(0) === 'S' ? 'Secondary ' + yr.slice(1) : 'Primary ' + yr.slice(1))) + ' · Curriculum for Excellence, ' + ({ S1: 'Third level', S2: 'Third and Fourth level', S3: 'Fourth level', P2: 'First level', P3: 'First level', P4: 'First level' }[yr] || 'Second level') + '</span><h1 class="say">' + (yr === 'all' ? 'Every topic' : yr + ' topics') + '</h1>' +
-      '<p class="lead say">' + ({ 1: 'One', 5: 'Five', 8: 'Eight', 9: 'Nine', 10: 'Ten', 12: 'Twelve' }[order.length] || order.length) + ' topics. ' + (firstLevel(yr) ? 'Each topic has short story lessons to watch and listen to, then lots of hands-on activities to try. Turn the Voice on and everything is read aloud.' : 'Each starts with a short animated explainer and lessons with worked examples, then hands-on activities, and practice: a warm-up, plenty of questions at each of Low, Medium and High, and real-life problems. Switch level at any time. Verbal and non-verbal reasoning appear throughout the course.') + '</p></section>' +
+      '<p class="lead say">' + ({ 1: 'One', 5: 'Five', 8: 'Eight', 9: 'Nine', 10: 'Ten', 12: 'Twelve' }[order.length] || order.length) + ' topics. ' + (firstLevel(yr) ? 'Each topic starts with a picture-book story, then short lessons in the same story and lots of hands-on activities' + (yr === 'P4' ? ', then practice questions like P5' : '') + '. Turn the Voice on and everything is read aloud.' : 'Each starts with a short animated explainer and lessons with worked examples, then hands-on activities, and practice: a warm-up, plenty of questions at each of Low, Medium and High, and real-life problems. Switch level at any time. Verbal and non-verbal reasoning appear throughout the course.') + '</p></section>' +
       '<section class="pillars"><div class="card"><h3 class="say">Read it</h3><p class="say">Clear steps and pictures, one idea at a time.</p></div><div class="card"><h3 class="say">Hear it</h3><p class="say">Turn the Voice on once and it keeps reading new pages and questions, where your device allows it.</p></div><div class="card"><h3 class="say">Try it</h3><p class="say">Build, slide, spin and plot. Then answer questions. Hints come one step at a time.</p></div></section>' +
       progPanel + (S.sc && S.sc.card ? S.sc.card() : '') + '<section><div class="row" style="align-items:center;justify-content:space-between;margin-bottom:12px"><h2>Topics</h2></div><div class="topics">' + cards + soon + '</div></section>' +
       '<details class="card"><summary>For teachers and parents</summary>' +
-      '<p>Each topic has three parts. Let\u2019s Learn starts with a short animated explainer, then lessons that teach each idea three ways, with worked examples. Activity Time has hands-on labs and activities. Let\u2019s Practice has a warm-up, plenty of questions at each of Low, Medium and High, and 30 real-life problems. Each level draws from its own question selection. Plan about 45 to 60 minutes a topic, split over two sessions if needed.</p>' +
+      (firstLevel(yr) ? '<p>Each topic starts with Let\u2019s Learn: a picture-book story read aloud, then four short lessons set in the same story (watch me, try it together, then on your own). Activity Time has eight hands-on activities with big buttons and pictures.' + (yr === 'P4' ? ' Let\u2019s Practice works like P5: a warm-up, questions at Low, Medium and High, and 30 real-life problems, all kept to First level.' : ' There are no tests at this age: children learn by playing.') + ' Plan about 20 to 30 minutes a session.</p>' : '') + (firstLevel(yr) ? '' : '<p>Each topic has three parts. Let\u2019s Learn starts with a short animated explainer, then lessons that teach each idea three ways, with worked examples. Activity Time has hands-on labs and activities. Let\u2019s Practice has a warm-up, plenty of questions at each of Low, Medium and High, and 30 real-life problems. Each level draws from its own question selection. Plan about 45 to 60 minutes a topic, split over two sessions if needed.</p>') +
       '<div class="tscroll"><table class="plan"><thead><tr><th>Topic</th><th>Parts</th></tr></thead><tbody>' + rows + '</tbody></table></div>' +
       '<p class="note">Hints come in steps: first a nudge, then the method with the numbers, never the answer. The explanation after each answer shows the full working. Check outcomes against Education Scotland’s Benchmarks for Numeracy and Mathematics at ' + ({ S1: 'Third level', S2: 'Third and Fourth level', S3: 'Fourth level', P2: 'First level', P3: 'First level', P4: 'First level' }[yr] || 'Second level') + ' before you rely on this for planning. This is an independent resource. Progress is saved in this browser only.</p>' +
       '<div class="row" style="margin-top:10px"><button class="btn ghost" id="resetProg" type="button">Reset progress</button></div></details>';
@@ -1398,7 +1398,8 @@ var SLIDE_MORE = {"1.learn1": [{"more": ["Our number system uses only ten digits
     var lp = progOf(t), lpct = lp.total ? Math.round(lp.done / lp.total * 100) : 0;
     var lpanel = '<div class="partbar"><div class="bar" style="flex:1" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="' + lpct + '" aria-label="Topic progress"><i style="width:' + lpct + '%"></i></div><span class="note" style="min-height:0;white-space:nowrap">' + lp.done + ' of ' + lp.total + ' done · ' + lpct + '%</span></div>';
     v.innerHTML = '<div class="eyebrow">Topic ' + dnum(t) + ' \u00b7 ' + stageOf(t) + ' stage</div><h1 class="say" style="margin:.2em 0 .1em">' + t.title + '</h1><p class="lead say">' + t.blurb + '</p>' + lpanel +
-      '<div class="partgrid">' + card('learn', 'Let\u2019s Learn', 'Lessons with worked examples, one idea at a time.', '\ud83d\udcd8') +
+      '<div class="partgrid">' + (steps.some(function (x) { return x.group === 'story'; }) ? card('story', 'Story Time', 'A picture-book story, read aloud. Help the character with the maths.', '\ud83d\udcd6') : '') +
+      card('learn', 'Let\u2019s Learn', firstLevel(t.year) ? 'A picture-book story first, then short lessons in the same story: watch, try it together, then on your own.' : 'Lessons with worked examples, one idea at a time.', '\ud83d\udcd8') +
       (steps.some(function (x) { return x.group === 'activity'; }) ? card('activity', 'Activity Time', 'Hands-on activities. Build, slide, spin and explore the idea.', '\ud83e\uddea') : '') +
       (steps.some(function (x) { return x.group === 'practice' && x.type !== 'finish'; }) ? card('practice', 'Let\u2019s Practice', 'A warm-up, the practice questions, then real-life problems.', '\u270f\ufe0f') : '') + '</div>' +
       '<div class="navrow"><button class="btn ghost" id="resetTopic" type="button">Reset this topic</button>' + (nextT ? '<button class="btn ghost" id="nextTopic" type="button">Next topic</button>' : '<button class="btn ghost" id="toHome" type="button">Back to home</button>') + '</div>';
@@ -1408,7 +1409,7 @@ var SLIDE_MORE = {"1.learn1": [{"more": ["Our number system uses only ten digits
     if ($('nextTopic')) $('nextTopic').addEventListener('click', function () { enter(nextT); });
     if ($('toHome')) $('toHome').addEventListener('click', function () { go('home'); });
   }
-  function gname(g) { return g === 'learn' ? 'Let\u2019s Learn' : g === 'activity' ? 'Activity Time' : 'Let\u2019s Practice'; }
+  function gname(g) { return g === 'story' ? 'Story Time' : g === 'learn' ? 'Let\u2019s Learn' : g === 'activity' ? 'Activity Time' : 'Let\u2019s Practice'; }
   function renderLesson(v) {
     var t = topic(); arrange(t);
     if (!state.part) { renderLanding(v, t); return; }
@@ -1595,7 +1596,7 @@ var SLIDE_MORE = {"1.learn1": [{"more": ["Our number system uses only ten digits
     });
   }
   function mountLab(pane, t, step) {
-    pane.innerHTML = head(step.tag, step.title, step.lead) + '<div id="labHost"></div><div class="row" style="margin-top:14px"><button class="btn ghost" id="labNew" type="button">Try a different set-up</button></div>';
+    pane.innerHTML = head(step.tag, step.title, step.lead) + '<div id="labHost"></div>' + (step.noReset ? '<span id="labNew" hidden></span>' : '<div class="row" style="margin-top:14px"><button class="btn ghost" id="labNew" type="button">Try a different set-up</button></div>');
     function boot() { holdScroll($('labHost')); step.mount($('labHost'), { complete: function () { markDone(t.n, step.id); renderStepper(); }, done: function () { return isDone(t.n, step.id); } }); }
     boot();
     $('labNew').addEventListener('click', function () {
@@ -1616,14 +1617,15 @@ var SLIDE_MORE = {"1.learn1": [{"more": ["Our number system uses only ten digits
   /* ================= wiring ================= */
   /* Every topic has two parts: Let’s learn (lesson slides and the lab) and Let’s practice (warm-up, practice, real-time problems). */
   function arrange(t) {
-    var L = [], A = [], P = [];
+    var St = [], L = [], A = [], P = [];
     function rank(x) { return x.id === 'warm' ? 0 : x.id === 'practise' ? 2 : x.id === 'practical' ? 3 : 4; }
-    t.steps.forEach(function (s) { if (s.type === 'slides') { s.group = 'learn'; L.push(s); } else if (s.type === 'lab') { s.group = 'activity'; A.push(s); } else { s.group = 'practice'; P.push(s); } });
+    /* a step may ask for its section (First level uses fgroup for Story time and its own Let's learn) */
+    t.steps.forEach(function (s) { if (s.fgroup) { s.group = s.fgroup; ({ story: St, learn: L, activity: A }[s.fgroup] || P).push(s); } else if (s.type === 'slides') { s.group = 'learn'; L.push(s); } else if (s.type === 'lab') { s.group = 'activity'; A.push(s); } else { s.group = 'practice'; P.push(s); } });
     P.sort(function (a, b) { return rank(a) - rank(b); });
-    var all = L.concat(A, P); t.steps.length = 0; all.forEach(function (s) { t.steps.push(s); });
+    var all = St.concat(L, A, P); t.steps.length = 0; all.forEach(function (s) { t.steps.push(s); });
     t.steps.forEach(function (s) {
-      var rest = String(s.tag || '').replace(/^(Let\u2019s (learn|practice) \u00b7 |Activity time \u00b7 )?(Step \d+ \u00b7 )?/, '');
-      s.tag = (s.group === 'learn' ? 'Let\u2019s learn' : s.group === 'activity' ? 'Activity time' : 'Let\u2019s practice') + (rest ? ' \u00b7 ' + rest : '');
+      var rest = String(s.tag || '').replace(/^((Let\u2019s (learn|practice)|Activity time|Story time)( \u00b7 |$))?(Step \d+ \u00b7 )?/, '');
+      s.tag = (s.group === 'story' ? 'Story time' : s.group === 'learn' ? 'Let\u2019s learn' : s.group === 'activity' ? 'Activity time' : 'Let\u2019s practice') + (rest ? ' \u00b7 ' + rest : '');
       if (s.id === 'warm') s.doneLabel = 'On to the practice';
       if (s.type === 'lab' && s.label === 'Explore') s.label = 'Activity';
     });
