@@ -13,8 +13,29 @@ async function readForm(request) {
   return o;
 }
 /* Progress from the browser is checked and merged: finished steps only ever add up, and best scores keep the higher value. */
+/* Strengths Check data (key "sc"): plain JSON kept small and simple. Short keys, short strings,
+   finite numbers, at most 5 levels deep and 60 KB; anything else is dropped. */
+function cleanJson(v, d) {
+  if (typeof v === 'number') return isFinite(v) ? v : undefined;
+  if (typeof v === 'boolean') return v;
+  if (typeof v === 'string') return v.slice(0, 80);
+  if (d > 5 || !v || typeof v !== 'object') return undefined;
+  if (Array.isArray(v)) { const a = []; for (const x of v.slice(0, 100)) { const c = cleanJson(x, d + 1); if (c !== undefined) a.push(c); } return a; }
+  const o = {}; let n = 0;
+  for (const k of Object.keys(v)) { if (!/^[A-Za-z0-9_]{1,8}$/.test(k) || ++n > 60) continue; const c = cleanJson(v[k], d + 1); if (c !== undefined) o[k] = c; }
+  return o;
+}
+function cleanSc(v) { const c = cleanJson(v, 0); return c && !Array.isArray(c) && typeof c === 'object' && JSON.stringify(c).length <= 60000 ? c : undefined; }
+/* skill tallies from everyday practice (key "sk"): { "skill name": [right, asked] } */
+function cleanSk(v) {
+  if (!v || typeof v !== 'object' || Array.isArray(v)) return undefined; const o = {}; let n = 0;
+  for (const k of Object.keys(v)) { const x = v[k]; if (k.length > 60 || ++n > 400 || !Array.isArray(x) || x.length !== 2) continue; const a = Math.max(0, Math.min(1e6, Math.floor(+x[0] || 0))), b = Math.max(0, Math.min(1e6, Math.floor(+x[1] || 0))); o[k] = [Math.min(a, b), b]; }
+  return o;
+}
 function cleanProgress(p) {
   const out = {}; if (!p || typeof p !== 'object') return out; let n = 0;
+  if (p.sc !== undefined) { const c = cleanSc(p.sc); if (c) out.sc = c; }
+  if (p.sk !== undefined) { const c = cleanSk(p.sk); if (c) out.sk = c; }
   for (const k of Object.keys(p)) {
     if (!/^t\d{1,4}$/.test(k) || ++n > 400) continue;
     const v = p[k]; if (!v || typeof v !== 'object') continue;
@@ -28,6 +49,8 @@ function cleanProgress(p) {
 function mergeProgress(a, b) {
   const out = cleanProgress(a);
   for (const [k, v] of Object.entries(cleanProgress(b))) {
+    if (k === 'sc') { if (!out.sc || !((out.sc.u || 0) > (v.u || 0))) out.sc = v; continue; }   /* the newer save wins */
+    if (k === 'sk') { out.sk = out.sk || {}; for (const [t, x] of Object.entries(v)) if (!out.sk[t] || out.sk[t][1] <= x[1]) out.sk[t] = x; continue; }
     const o = out[k] = out[k] || { steps: {} }; Object.assign(o.steps, v.steps);
     if (typeof v.best === 'number' && !(o.best >= v.best)) o.best = v.best;
   }

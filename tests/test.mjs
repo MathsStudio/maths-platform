@@ -231,6 +231,13 @@ r = await call('/api/progress', { method: 'POST', json: { progress: { t7: { step
 pj = JSON.parse(r.text).progress; ok(pj.t7.steps.ok_1 === true && !pj.t7.steps['bad id'] && !pj.t7.steps.nope && !pj.evil, 'odd progress data is cleaned');
 r = await call('/api/progress', { method: 'POST', json: { replace: true, progress: { t6: { steps: { learn1: true } } } } }); pj = JSON.parse(r.text).progress; ok(!pj.t5 && pj.t6.steps.learn1, 'a reset replaces saved progress');
 r = await call('/api/progress', { method: 'POST', body: 'x=1', headers: { 'Content-Type': 'application/x-www-form-urlencoded' } }); ok(r.status === 400, 'progress only accepts JSON');
+// Strengths Check results and skill tallies are kept, cleaned, and the newer check wins
+r = await call('/api/progress', { method: 'POST', json: { progress: { sc: { u: 5, checks: [{ y: 'P6', at: 1, a: [[1, 0, 1, 'Place value']] }], bad: 'x'.repeat(500), 'no way': 1, f: () => 1 }, sk: { 'Place value': [3, 4], Fractions: [9, 2], bad: 'x' } } } });
+pj = JSON.parse(r.text).progress; ok(pj.sc && pj.sc.u === 5 && pj.sc.checks[0].a[0][3] === 'Place value' && pj.sc.bad.length === 80 && !pj.sc['no way'] && pj.sk['Place value'][1] === 4 && pj.sk.Fractions[0] === 2 && !pj.sk.bad && pj.t6.steps.learn1, 'strengths check data is saved and cleaned');
+r = await call('/api/progress', { method: 'POST', json: { progress: { sc: { u: 3, checks: [] }, sk: { 'Place value': [1, 2] } } } });
+pj = JSON.parse(r.text).progress; ok(pj.sc.u === 5 && pj.sc.checks.length === 1 && pj.sk['Place value'][1] === 4, 'an older strengths check save does not overwrite a newer one');
+r = await call('/api/progress', { method: 'POST', json: { progress: { sc: { u: 9, big: Array(100).fill('y'.repeat(80)).map(x => [x, x, x, x, x, x, x, x, x, x]) } } } });
+pj = JSON.parse(r.text).progress; ok(pj.sc.u === 5, 'an oversized strengths check save is refused');
 // child profiles: separate progress for each child, saved on the server
 const jarL = cookieJar; cookieJar = ''; r = await call('/api/learners'); ok(r.status === 401, 'profiles need sign-in'); cookieJar = jarL;
 r = await call('/api/learners'); let lj = JSON.parse(r.text); ok(r.status === 200 && lj.learners.length === 0 && lj.avatars.includes('fox') && lj.max === 4, 'a new account has no profiles yet');

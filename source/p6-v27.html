@@ -564,7 +564,10 @@ var SLIDE_MORE = {"1.learn1": [{"more": ["Our number system uses only ten digits
   function mergeProgress(into, from) {
     var changed = false;
     Object.keys(from || {}).forEach(function (k) {
-      var f = from[k]; if (!f || typeof f !== 'object') return; var t = into[k] = into[k] || { steps: {} }; if (!t.steps) t.steps = {};
+      var f = from[k]; if (!f || typeof f !== 'object') return;
+      if (k === 'sc') { if (!into.sc || (f.u || 0) > (into.sc.u || 0)) { into.sc = f; changed = true; } return; }   /* Strengths Check: the newer save wins */
+      if (k === 'sk') { into.sk = into.sk || {}; Object.keys(f).forEach(function (g) { if (!into.sk[g] || into.sk[g][1] < f[g][1]) { into.sk[g] = f[g]; changed = true; } }); return; }
+      var t = into[k] = into[k] || { steps: {} }; if (!t.steps) t.steps = {};
       Object.keys(f.steps || {}).forEach(function (id) { if (f.steps[id] && !t.steps[id]) { t.steps[id] = true; changed = true; } });
       if (typeof f.best === 'number' && !(t.best >= f.best)) { t.best = f.best; changed = true; }
     });
@@ -837,7 +840,8 @@ var SLIDE_MORE = {"1.learn1": [{"more": ["Our number system uses only ten digits
       narStop();
       var readRoot = drawnOnce ? host : null; drawnOnce = true;
       var prog = '<div class="progress" aria-label="Question ' + Math.min(qi + 1, qs.length) + ' of ' + qs.length + '">' + qs.map(function (_, i) {
-        return '<span class="pd ' + (i < results.length ? (results[i] ? 'ok' : 'no') : (i === qi ? 'cur' : '')) + '"></span>'; }).join('') + '</div>';
+        return '<span class="pd ' + (i < results.length ? (cfg.exam ? 'dn' : (results[i] ? 'ok' : 'no')) : (i === qi ? 'cur' : '')) + '"></span>'; }).join('') + '</div>';
+      if (qi >= qs.length && cfg.exam) { if (cfg.onFinish) cfg.onFinish(score, qs.length, results); return; }
       if (qi >= qs.length) {
         var stars = Math.round(score / qs.length * 5), s = '';
         for (var i = 0; i < 5; i++) s += i < stars ? '★' : '☆';
@@ -858,7 +862,7 @@ var SLIDE_MORE = {"1.learn1": [{"more": ["Our number system uses only ten digits
         (q.ctx ? '<div class="qctx say">' + q.ctx + '</div>' : '') +
         (q.pic ? '<div class="visual" style="margin-top:8px">' + q.pic + '</div>' : '') +
         '<div class="qtext say"' + (q.data ? ' data-say="' + esc(q.data) + '"' : '') + '>' + q.text + '</div>' + body + '<div id="padHost"></div>' +
-        '<div class="row" style="margin-top:12px"><button class="btn ghost" id="hintBtn" type="button">Need a hint?</button></div><div id="hints" aria-live="polite"></div><div id="fb" aria-live="polite"></div>';
+        '<div class="row" style="margin-top:12px' + (cfg.exam ? ';display:none' : '') + '"><button class="btn ghost" id="hintBtn" type="button">Need a hint?</button></div><div id="hints" aria-live="polite"></div><div id="fb" aria-live="polite"></div>';
       answered = false;
       if (S.h.scribble && S.h.padWanted(q.text, q.type !== 'mc')) S.h.scribble($('padHost'), q._pad || (q._pad = {}));
       $('hintBtn').addEventListener('click', function () {
@@ -876,6 +880,8 @@ var SLIDE_MORE = {"1.learn1": [{"more": ["Our number system uses only ten digits
     function grade(val, btn) {
       var q = qs[qi], ok = matches(q, val);
       answered = true; results.push(ok); if (ok) score++;
+      if (S.sc && S.sc.onAnswer) { try { S.sc.onAnswer(q, ok, val, cfg); } catch (e) { /* never block the quiz */ } }
+      if (cfg.exam) { narStop(); qi++; draw(); return; }
       if (q.type === 'mc') host.querySelectorAll('.opt').forEach(function (b) { b.disabled = true; if (b.textContent === q.answer) b.classList.add('ok'); else if (b === btn) b.classList.add('no'); });
       else { $('ansIn').disabled = true; $('check').disabled = true; }
       $('hintBtn').disabled = true;
@@ -1124,6 +1130,10 @@ var SLIDE_MORE = {"1.learn1": [{"more": ["Our number system uses only ten digits
   }
   /* the 10-minute test is part of the paid year pass (no free topic for it) */
   S.testLocked = function () { if (!LOCK_TOPICS) return false; var y = yearOf(); if (y === 'all') y = 'P6'; return !access.owner && access.years.indexOf(y) < 0; };
+  /* a small window into the app for add-on modules (strengths.js) */
+  S.app = { get state() { return state; }, get store() { return store; }, get learner() { return learner; }, access: access,
+    save: save, render: render, go: go, enter: enter, openPart: openPart, yearOf: yearOf, visibleOrder: visibleOrder, openTopicFor: openTopicFor,
+    allSteps: allSteps, arrange: arrange, mountQuiz: function (h, q, c) { return mountQuiz(h, q, c); } };
   S.askUnlock = function (what) { var v = $('view'); if (v && !$('lockPop')) renderLocked(v, what, true); };
   var started = false;   /* the page draws itself only after S.start has read ?year= from the link */
   var paidSid = (location.search.match(/[?&]sid=(cs_[A-Za-z0-9_]+)/) || [])[1];
@@ -1300,6 +1310,7 @@ var SLIDE_MORE = {"1.learn1": [{"more": ["Our number system uses only ten digits
   }
   function renderHome(v) {
     if (!state.yearSel) { renderYearGate(v); return; }
+    if (S.sc && S.sc.view && S.sc.view(v)) return;
     var yr = yearOf(), rank = { core: 0, start: 1, extend: 2 };
     var order = visibleOrder(), cs = wantStage();
     var cards = order.map(function (n, ix) {
@@ -1324,13 +1335,14 @@ var SLIDE_MORE = {"1.learn1": [{"more": ["Our number system uses only ten digits
       '<section class="hero"><span class="eyebrow">' + (yr === 'all' ? 'Primary 5 to 7' : (yr.charAt(0) === 'S' ? 'Secondary ' + yr.slice(1) : 'Primary ' + yr.slice(1))) + ' · Curriculum for Excellence, ' + ({ S1: 'Third level', S2: 'Third and Fourth level', S3: 'Fourth level' }[yr] || 'Second level') + '</span><h1 class="say">' + (yr === 'all' ? 'Every topic' : yr + ' topics') + '</h1>' +
       '<p class="lead say">' + ({ 1: 'One', 10: 'Ten', 12: 'Twelve' }[order.length] || order.length) + ' topics. Each starts with a short animated explainer and lessons with worked examples, then hands-on activities, and practice: a warm-up, plenty of questions at each of Low, Medium and High, and real-life problems. Switch level at any time. Verbal and non-verbal reasoning appear throughout the course.</p></section>' +
       '<section class="pillars"><div class="card"><h3 class="say">Read it</h3><p class="say">Clear steps and pictures, one idea at a time.</p></div><div class="card"><h3 class="say">Hear it</h3><p class="say">Turn the Voice on once and it keeps reading new pages and questions, where your device allows it.</p></div><div class="card"><h3 class="say">Try it</h3><p class="say">Build, slide, spin and plot. Then answer questions. Hints come one step at a time.</p></div></section>' +
-      progPanel + '<section><div class="row" style="align-items:center;justify-content:space-between;margin-bottom:12px"><h2>Topics</h2></div><div class="topics">' + cards + soon + '</div></section>' +
+      progPanel + (S.sc && S.sc.card ? S.sc.card() : '') + '<section><div class="row" style="align-items:center;justify-content:space-between;margin-bottom:12px"><h2>Topics</h2></div><div class="topics">' + cards + soon + '</div></section>' +
       '<details class="card"><summary>For teachers and parents</summary>' +
       '<p>Each topic has three parts. Let\u2019s Learn starts with a short animated explainer, then lessons that teach each idea three ways, with worked examples. Activity Time has hands-on labs and activities. Let\u2019s Practice has a warm-up, plenty of questions at each of Low, Medium and High, and 30 real-life problems. Each level draws from its own question selection. Plan about 45 to 60 minutes a topic, split over two sessions if needed.</p>' +
       '<div class="tscroll"><table class="plan"><thead><tr><th>Topic</th><th>Parts</th></tr></thead><tbody>' + rows + '</tbody></table></div>' +
       '<p class="note">Hints come in steps: first a nudge, then the method with the numbers, never the answer. The explanation after each answer shows the full working. Check outcomes against Education Scotland’s Benchmarks for Numeracy and Mathematics at ' + ({ S1: 'Third level', S2: 'Third and Fourth level', S3: 'Fourth level' }[yr] || 'Second level') + ' before you rely on this for planning. This is an independent resource. Progress is saved in this browser only.</p>' +
       '<div class="row" style="margin-top:10px"><button class="btn ghost" id="resetProg" type="button">Reset progress</button></div></details>';
         v.querySelectorAll('[data-open]').forEach(function (b) { b.addEventListener('click', function () { var t = S.topics[Number(b.dataset.open)]; enter(t); }); });
+    if (S.sc && S.sc.bind) S.sc.bind(v);
     $('chgYear').addEventListener('click', function () { state.yearSel = false; render(); });
     $('resetProg').addEventListener('click', function () { store.progress = {}; replaceNext = true; save(); render(); });
     confirmBtn($('resetAll'), 'Reset my progress', function () { order.forEach(function (n) { delete store.progress[pkey(openTopicFor(n).n)]; delete store.progress[pkey(n)]; }); replaceNext = true; save(); render(); });
