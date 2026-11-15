@@ -205,7 +205,7 @@
       stage.querySelectorAll('.sv-eq, .gp-lab').forEach(function (e) {
         var lab = e.classList.contains('gp-lab'); if (!lab) e.style.whiteSpace = 'nowrap';
         var aw = lab ? e.clientWidth : body.clientWidth, nw2 = e.scrollWidth;
-        if (nw2 > aw) { var r = aw / nw2 * 0.97; if (r >= 0.6) e.style.fontSize = (parseFloat(getComputedStyle(e).fontSize) * r).toFixed(1) + 'px'; else if (lab) e.style.fontSize = (parseFloat(getComputedStyle(e).fontSize) * 0.6).toFixed(1) + 'px'; else e.style.whiteSpace = ''; }
+        if (nw2 > aw) { var r = aw / nw2 * 0.97; if (r >= 0.6) e.style.fontSize = (parseFloat(getComputedStyle(e).fontSize) * r).toFixed(1) + 'px'; else if (lab) { e.style.fontSize = (parseFloat(getComputedStyle(e).fontSize) * 0.8).toFixed(1) + 'px'; e.style.whiteSpace = 'normal'; e.style.lineHeight = '1.2'; e.style.alignItems = 'flex-start'; body.style.top = (e.offsetTop + e.offsetHeight + 8) + 'px'; } else e.style.whiteSpace = ''; }
       });
       var need = f.scrollHeight, room = body.clientHeight, needW = f.scrollWidth, roomW = body.clientWidth;
       var k2 = Math.min(1, room / need, roomW / needW);
