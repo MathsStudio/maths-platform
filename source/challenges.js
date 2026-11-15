@@ -67,7 +67,7 @@
       function menu() {
         host.innerHTML = '<p class="say">Pick a challenge. Read it carefully, try it on paper, then choose your answer. Solve 5 to finish the activity.</p>' +
           '<div class="ch-grid">' + list.map(function (c, i) { return '<button type="button" class="ch-tile' + (solved[i] ? ' ok' : '') + '" data-i="' + i + '"><small>Challenge ' + (i + 1) + (solved[i] ? ' ✓' : '') + '</small>' + c[1] + '</button>'; }).join('') + '</div>' +
-          '<p class="ch-link">These puzzles are written by MathsStudio on the themes of the ' + label + '. For the official challenges, visit <a href="https://www.mathsweek.scot/schools/maths-week-challenges" target="_blank" rel="noopener">Maths Week Scotland</a>.</p>';
+          '<p class="ch-link">These puzzles are written by MathsStudio on the themes of the ' + label + '.</p>';
         host.querySelectorAll('.ch-tile').forEach(function (b) { b.addEventListener('click', function () { open(Number(b.getAttribute('data-i'))); }); });
       }
       function open(i) {

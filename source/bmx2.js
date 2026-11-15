@@ -1,4 +1,4 @@
-/* bmx2.js: fills the gaps found when the Bitesize Third and Fourth level maps were checked against S1, S2 and S3.
+/* bmx2.js: fills the gaps found when the Third and Fourth level curriculum maps were checked against S1, S2 and S3.
    New question makers (with pictures where they help) and new lesson parts for the secondary years:
    writing numbers as powers, multiples and factors in context, wages and VAT, bank statements, days and dates, time zones,
    naming and measuring angles, complementary and supplementary angles, constructing triangles, prisms and pyramids,

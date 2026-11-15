@@ -1,4 +1,4 @@
-/* bite2.js: P6 additions from the BBC Bitesize Second level map.
+/* bite2.js: P6 additions from the Second level curriculum map.
    Negatives, decimals, mental and short division, comparing and multiplying fractions,
    imperial/currency/area/volume, triangles, polygons, circles, transformations, cubes. */
 (function () {

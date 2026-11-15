@@ -1,4 +1,4 @@
-/* bite1.js: P5 additions from the BBC Bitesize Second level map.
+/* bite1.js: P5 additions from the Second level curriculum map.
    Negative numbers, partitioning, counting on, short division, unit fractions,
    fraction/decimal/percentage friends, coins and currency, imperial units, a ruler,
    parallel and perpendicular lines, triangles, polygons and grid references. */

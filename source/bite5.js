@@ -1,4 +1,4 @@
-/* bite5.js: new games for the Bitesize Second level upgrade.
+/* bite5.js: new activities for the Second level upgrade.
    Number line jumper (negatives), Coin counter (money), Triangle sorter, Treasure map (grid references),
    Circle labeller, and the Ratio mixer for P7. Each game is a lab step that finishes after a set of rounds. */
 (function () {

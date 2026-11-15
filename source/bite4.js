@@ -1,4 +1,4 @@
-/* bite4.js: new practice-question makers for the Bitesize Second level upgrade.
+/* bite4.js: new practice-question makers for the Second level upgrade.
    They are mixed into the practice sets (and so into the games and warm-ups that reuse them)
    of the P5, P6 and P7 topics, by difficulty level. */
 (function () {

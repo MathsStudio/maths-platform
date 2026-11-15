@@ -1,4 +1,4 @@
-/* bite3.js: P7 additions from the BBC Bitesize Second level map.
+/* bite3.js: P7 additions from the Second level curriculum map.
    Significant figures, negatives in context, long multiplication, decimal division,
    fraction proportion, multipliers, currency and imperial, circles, triangles, transformations. */
 (function () {

@@ -1,4 +1,4 @@
-/* bmx.js: fills the gaps found when the Bitesize Second level map was checked against the questions.
+/* bmx.js: fills the gaps found when the Second level curriculum map was checked against the questions.
    New question makers (with pictures where they help) and new lesson parts for P5, P6 and P7:
    parallel and perpendicular lines, nets of solids, types of triangle, parts of a circle (P5), grid references (P6, P7),
    division with remainders, counting on, mental methods, volume by counting cubes, reading a ruler,

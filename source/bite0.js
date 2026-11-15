@@ -1,4 +1,4 @@
-/* bite0.js: shared helpers for the Bitesize Second level upgrade (P5, P6, P7).
+/* bite0.js: shared helpers for the Second level upgrade (P5, P6, P7).
    Pictures (number lines, coins, triangles, circles, grids), slide builders and a way
    to add extra lesson parts (learn3, learn4) to any topic, so each topic can have as
    many slides as it needs. */

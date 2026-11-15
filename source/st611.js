@@ -1,4 +1,4 @@
-/* st611.js: P6 Topic 11, Ratio and proportion (new). Bitesize Second level: what is a ratio,
+/* st611.js: P6 Topic 11, Ratio and proportion (new). Second level: what is a ratio,
    convert between ratios, fractions and percentages, ratio in everyday situations.
    P7 builds on it in topic 711. */
 (function () {
