@@ -378,6 +378,10 @@ html, body { overflow-x: hidden; max-width: 100vw; }
 .real { background: var(--surface-2); border-left: 5px solid var(--good); border-radius: 12px; padding: 12px 14px; display: flex; flex-direction: column; gap: 4px; }
 .real .step-tag { color: var(--good); }
 .wvis { display: flex; flex-direction: column; align-items: center; gap: 8px; }
+.qtop { display: flex; align-items: center; justify-content: space-between; gap: 8px 12px; flex-wrap: wrap; }
+.qtop .qtag { margin: 0; }
+.qnav { display: flex; gap: 8px; margin-left: auto; }
+.qnav .btn { padding: 8px 14px; min-height: 40px; font-size: .95rem; }
 .wask { margin: 12px 0 4px; display: grid; gap: 8px; }
 .wask-l { margin: 0; font-weight: 800; }
 .wrow { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
@@ -838,7 +842,10 @@ var SLIDE_MORE = {"1.learn1": [{"more": ["Our number system uses only ten digits
   /* ================= quiz engine ================= */
   function numOnly(q) { return q.type !== 'mc' && q.kind !== 'text' && !/[A-Za-z]/.test(String(q.answer)); }
   function mountQuiz(host, qs, cfg) {
-    var qi = 0, score = 0, results = [], answered = false, hintIdx = 0, drawnOnce = false;
+    var qi = 0, score = 0, results = [], given = [], answered = false, hintIdx = 0, drawnOnce = false;
+    /* children can skip a question and come back: results[i] is true/false once question i is answered */
+    function nextOpen(from) { for (var k = 1; k <= qs.length; k++) { var j = (from + k) % qs.length; if (results[j] === undefined) return j; } return qs.length; }
+    function doneCount() { return results.filter(function (r) { return r !== undefined; }).length; }
     /* redraw in place: the page keeps its scroll position, padding the quiz if the new content is shorter */
     function draw() {
       var y = window.pageYOffset, was = drawnOnce;
@@ -854,7 +861,7 @@ var SLIDE_MORE = {"1.learn1": [{"more": ["Our number system uses only ten digits
       var readRoot = drawnOnce ? host : null; drawnOnce = true;
       var off = cfg.off || 0, all = off + qs.length;
       var prog = '<div class="progress" aria-label="Question ' + Math.min(off + qi + 1, all) + ' of ' + all + '">' + (off ? new Array(off + 1).join('<span class="pd dn"></span>') : '') + qs.map(function (_, i) {
-        return '<span class="pd ' + (i < results.length ? (cfg.exam ? 'dn' : (results[i] ? 'ok' : 'no')) : (i === qi ? 'cur' : '')) + '"></span>'; }).join('') + '</div>';
+        return '<span class="pd ' + (results[i] !== undefined ? (cfg.exam ? 'dn' : (results[i] ? 'ok' : 'no')) + (i === qi && !cfg.exam ? ' cur' : '') : (i === qi ? 'cur' : '')) + '"></span>'; }).join('') + '</div>';
       if (qi >= qs.length && cfg.exam) { if (cfg.onFinish) cfg.onFinish(score, qs.length, results); return; }
       if (qi >= qs.length) {
         var stars = Math.round(score / qs.length * 5), s = '';
@@ -863,7 +870,7 @@ var SLIDE_MORE = {"1.learn1": [{"more": ["Our number system uses only ten digits
         var msg = frac >= 0.85 ? 'Brilliant work!' : frac >= 0.6 ? 'Good going. Look again at the slides for the ones you missed.' : 'Keep going. Revisit the slides and the activity, then have another go.';
         host.innerHTML = prog + '<div class="score"><div class="stars" aria-label="' + stars + ' out of 5 stars">' + s + '</div><div class="big">' + score + ' out of ' + qs.length + '</div><p class="say">' + msg + '</p><div class="row"><button class="btn" id="qDone" type="button">' + cfg.doneLabel + '</button><button class="btn ghost" id="qAgain" type="button">Try new questions</button></div></div>';
         $('qDone').addEventListener('click', function () { cfg.onDone(score); });
-        $('qAgain').addEventListener('click', function () { qs = cfg.make(); qi = 0; score = 0; results = []; draw(); });
+        $('qAgain').addEventListener('click', function () { qs = cfg.make(); qi = 0; score = 0; results = []; given = []; draw(); });
         if (cfg.onFinish) cfg.onFinish(score, qs.length);
         if ((store.settings.auto || store.settings.readMode) && Nar.ok) narPlay(true, readRoot);
         return;
@@ -872,7 +879,8 @@ var SLIDE_MORE = {"1.learn1": [{"more": ["Our number system uses only ten digits
       hintIdx = 0;
       if (q.type === 'mc') body = '<div class="opts">' + q.options.map(function (o, i) { return '<button class="opt say" type="button" data-o="' + i + '">' + o + '</button>'; }).join('') + '</div>';
       else body = '<form class="ans" id="ansForm"><label class="eyebrow" for="ansIn" style="width:100%">Your answer' + (q.unit ? ' (' + q.unit + ')' : '') + (numOnly(q) ? ' \u00b7 numbers only' : '') + '</label><input id="ansIn" type="text" inputmode="' + (q.kind === 'text' || q.kind === 'time' || q.kind === 'frac' ? 'text' : 'decimal') + '" autocomplete="off"' + (q.placeholder ? ' placeholder="' + esc(q.placeholder) + '"' : '') + '><button class="btn" id="check" type="submit">' + (cfg.exam ? 'Next' : 'Check') + '</button></form>';
-      host.innerHTML = prog + '<div class="qtag">Question ' + (off + qi + 1) + ' of ' + all + ' · ' + q.tag + '</div>' +
+      var nav = cfg.exam ? '' : '<div class="qnav"><button class="btn ghost" id="qPrev" type="button"' + (qi === 0 ? ' disabled' : '') + ' aria-label="Previous question">← Previous</button><button class="btn ghost" id="qSkip" type="button" aria-label="' + (qi === qs.length - 1 ? 'Back to a question you skipped' : 'Next question') + '"' + (qi === qs.length - 1 && nextOpen(qi) >= qs.length ? ' disabled' : '') + '>Next →</button></div>';
+      host.innerHTML = prog + '<div class="qtop"><div class="qtag">Question ' + (off + qi + 1) + ' of ' + all + ' · ' + q.tag + '</div>' + nav + '</div>' +
         (q.ctx ? '<div class="qctx say">' + q.ctx + '</div>' : '') +
         (q.pic ? '<div class="visual" style="margin-top:8px">' + q.pic + '</div>' : '') +
         '<div class="qtext say"' + (q.data ? ' data-say="' + esc(q.data) + '"' : '') + '>' + q.text + '</div>' + body + '<div id="padHost"></div>' +
@@ -889,23 +897,32 @@ var SLIDE_MORE = {"1.learn1": [{"more": ["Our number system uses only ten digits
       if (q.type === 'mc') host.querySelectorAll('.opt').forEach(function (b) { b.addEventListener('click', function () { if (!answered) grade(b.textContent, b); }); });
       else { var ai = $('ansIn'); if (numOnly(q) && ai) ai.addEventListener('input', function () { var c = ai.value.replace(/[A-Za-z]/g, ''); if (c !== ai.value) ai.value = c; }); }
       if (q.type !== 'mc') $('ansForm').addEventListener('submit', function (e) { e.preventDefault(); if (!answered && $('ansIn').value.trim() !== '') grade($('ansIn').value, null); });
+      if ($('qPrev')) $('qPrev').addEventListener('click', function () { if (qi > 0) { qi--; draw(); } });
+      if ($('qSkip')) $('qSkip').addEventListener('click', function () { qi = qi < qs.length - 1 ? qi + 1 : nextOpen(qi); draw(); });
+      if (results[qi] !== undefined && !cfg.exam) showDone(q);   /* coming back to an answered question shows its answer again */
       if ((store.settings.auto || store.settings.readMode) && Nar.ok) narPlay(true, readRoot);
     }
     function grade(val, btn) {
       var q = qs[qi], ok = matches(q, val);
-      answered = true; results.push(ok); if (ok) score++;
+      answered = true; results[qi] = ok; given[qi] = val; if (ok) score++;
       if (S.sc && S.sc.onAnswer) { try { S.sc.onAnswer(q, ok, val, cfg); } catch (e) { /* never block the quiz */ } }
       if (cfg.exam) { narStop(); qi++; draw(); return; }
-      if (q.type === 'mc') host.querySelectorAll('.opt').forEach(function (b) { b.disabled = true; if (b.textContent === q.answer) b.classList.add('ok'); else if (b === btn) b.classList.add('no'); });
-      else { $('ansIn').disabled = true; $('check').disabled = true; }
-      $('hintBtn').disabled = true;
-      var last = qi === qs.length - 1;
-      var shown = q.show || (q.type === 'mc' ? q.answer : (isNaN(Number(q.answer)) ? q.answer : fmtInt(Number(q.answer))));
-      $('fb').innerHTML = '<div class="fb ' + (ok ? 'ok' : 'no') + ' say"><strong>' + (ok ? 'Brilliant!' : 'Missed it. The answer is ' + shown + '.') + '</strong>' + q.explain + '</div><button class="btn qnext" id="next" type="button">' + (last ? 'See my score' : 'Next question') + '</button>';
+      var shown = showDone(q, btn);
       speakAnswerFeedback(ok, shown, q.explain);
       try { $('next').focus({ preventScroll: true }); } catch (e) { /* ignore */ }
-      $('next').addEventListener('click', function () { qi++; draw(); });
-      var pds = host.querySelectorAll('.pd'); if (pds[qi]) pds[qi].className = 'pd ' + (ok ? 'ok' : 'no');
+      var pds = host.querySelectorAll('.pd'), po = (cfg.off || 0) + qi; if (pds[po]) pds[po].className = 'pd ' + (ok ? 'ok' : 'no') + ' cur';
+      if ($('qSkip')) $('qSkip').disabled = qi === qs.length - 1 && nextOpen(qi) >= qs.length;
+    }
+    /* an answered question: its answer is locked in, with the feedback and a button on to the next question still to do */
+    function showDone(q, btn) {
+      var ok = results[qi], val = given[qi]; answered = true;
+      if (q.type === 'mc') host.querySelectorAll('.opt').forEach(function (b) { b.disabled = true; if (b.textContent === q.answer) b.classList.add('ok'); else if (b === btn || (!btn && b.textContent === val)) b.classList.add('no'); });
+      else { $('ansIn').value = val; $('ansIn').disabled = true; $('check').disabled = true; }
+      $('hintBtn').disabled = true;
+      var to = nextOpen(qi), shown = q.show || (q.type === 'mc' ? q.answer : (isNaN(Number(q.answer)) ? q.answer : fmtInt(Number(q.answer))));
+      $('fb').innerHTML = '<div class="fb ' + (ok ? 'ok' : 'no') + ' say"><strong>' + (ok ? 'Brilliant!' : 'Missed it. The answer is ' + shown + '.') + '</strong>' + q.explain + '</div><button class="btn qnext" id="next" type="button">' + (to >= qs.length ? 'See my score' : to < qi ? 'Go to question ' + ((cfg.off || 0) + to + 1) + ' (skipped)' : 'Next question') + '</button>';
+      $('next').addEventListener('click', function () { qi = nextOpen(qi); draw(); });
+      return shown;
     }
     draw();
   }
@@ -1465,7 +1482,7 @@ var SLIDE_MORE = {"1.learn1": [{"more": ["Our number system uses only ten digits
     var first = state.step === gi[0], groupLast = state.step === gi[gi.length - 1];
     v.innerHTML = '<div class="eyebrow">Topic ' + dnum(t) + ' \u00b7 ' + t.title + ' \u00b7 ' + stageOf(t) + ' stage</div>' +
       '<div class="partbar"><button class="btn ghost" id="backMenu" type="button">\u2190 Back</button><b class="sglab">' + title + '</b></div>' + stepper + '<section class="card" id="pane"></section>' +
-      '<div class="navrow"><button class="btn ghost" id="prevStep" type="button">' + (first ? 'Back to menu' : 'Previous step') + '</button><button class="btn" id="nextStep" type="button">' + (last ? (nextT ? 'Next topic' : 'Back to home') : (groupLast ? 'On to ' + gname(steps[state.step + 1].group) : 'Next step')) + '</button></div>';
+      '<div class="navrow"><button class="btn ghost" id="prevStep" type="button">' + (first ? 'Back to menu' : '← ' + steps[state.step - 1].label) + '</button><button class="btn" id="nextStep" type="button">' + (last ? (nextT ? 'Next topic' : 'Back to home') : (groupLast ? 'On to ' + gname(steps[state.step + 1].group) : 'Next: ' + steps[state.step + 1].label + ' →')) + '</button></div>';
     v.querySelectorAll('[data-go]').forEach(function (b) { b.addEventListener('click', function () { go(t.n, Number(b.dataset.go)); }); });
     $('backMenu').addEventListener('click', function () { state.part = null; render(); });
     $('prevStep').addEventListener('click', function () { if (first) { state.part = null; render(); } else go(t.n, state.step - 1); });
@@ -1543,9 +1560,10 @@ var SLIDE_MORE = {"1.learn1": [{"more": ["Our number system uses only ten digits
       else body = (visualOf(s) ? '<div class="visual">' + visualOf(s) + (s.caption ? '<div class="caption">' + s.caption + '</div>' : '') + '</div>' : '') + '<div class="sentences">' + s.say.map(function (x) { return '<p><span class="say">' + x + '</span></p>'; }).join('') + '</div>' + (s.live ? '<div class="live" id="liveHost"></div>' : '') +
         (s.real ? '<div class="real"><span class="step-tag">Real-life example</span>' + (k === firstReal ? '<p class="say">Let\u2019s connect this idea to something you might see in everyday life. As we go, think about where you have seen something like this before.</p>' : '') + '<p class="say">' + s.real + '</p></div>' : '');
       var gl = (SLIDE_GOALS[t.n + '.' + step.id] || [])[k], goal = gl ? '<p class="goal say"><b>In this slide</b> we will learn ' + gl + '</p>' : '';
-      pane.innerHTML = '<div class="slide"><span class="step-tag">' + step.tag + ' · slide ' + (k + 1) + ' of ' + slides.length + '</span>' + dots + (s.kind ? '<span class="kindtag">' + s.kind + '</span>' : '') + '<h2 class="say">' + s.title + '</h2>' + goal + body + moreBlock(t, step, k) +
-        (lastSlide ? mediaAid(t) : '') +
-        '<div class="navrow"><button class="btn ghost" id="sPrev" type="button"' + (k === 0 ? ' disabled' : '') + '>Back</button><button class="btn" id="sNext" type="button">' + (lastSlide ? ((allSteps(t)[state.step + 1] || {}).group === 'learn' ? 'Next lesson' : 'On to ' + gname((allSteps(t)[state.step + 1] || {}).group)) : 'Next slide') + '</button></div></div>';
+      var nxS = allSteps(t)[state.step + 1] || {}, endLab = nxS.group === 'learn' ? 'Next lesson' : 'On to ' + gname(nxS.group);
+      var snav = '<div class="qnav"><button class="btn ghost" id="sPrev" type="button"' + (k === 0 ? ' disabled' : '') + ' aria-label="Previous slide">← Previous</button><button class="btn' + (lastSlide ? '' : ' ghost') + '" id="sNext" type="button" aria-label="' + (lastSlide ? endLab : 'Next slide') + '">' + (lastSlide ? endLab + ' →' : 'Next →') + '</button></div>';
+      pane.innerHTML = '<div class="slide"><div class="qtop"><span class="step-tag">' + step.tag + ' · slide ' + (k + 1) + ' of ' + slides.length + '</span>' + snav + '</div>' + dots + (s.kind ? '<span class="kindtag">' + s.kind + '</span>' : '') + '<h2 class="say">' + s.title + '</h2>' + goal + body + moreBlock(t, step, k) +
+        (lastSlide ? mediaAid(t) : '') + '</div>';
       $('sPrev').addEventListener('click', function () { state.slide--; draw(); });
       $('sNext').addEventListener('click', function () { if (lastSlide) go(t.n, state.step + 1); else { state.slide++; draw(); } });
       if (s.ex) mountWorked($('workedHost'), s.ex);
