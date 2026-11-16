@@ -16021,6 +16021,10 @@ S.spatialExtra = S.extraMakers;
     '.gp-vs{display:flex;flex-wrap:wrap;gap:8px 16px;align-items:center}.gp-vs label{display:flex;gap:6px;align-items:center;font-weight:700;font-size:15px}.gp-vs select{min-height:40px;max-width:min(260px,60vw);font:inherit;font-weight:600;border:2px solid var(--line);border-radius:10px;padding:4px 8px;background:var(--surface);color:var(--fg)}',
     '.gp-body.gp-turn{animation:gpTurn .7s ease both}@keyframes gpTurn{0%{opacity:0;transform:translateX(40px) rotate(1deg)}100%{opacity:1;transform:none}}',
     '.gp-cap .now{background:#fff2a8;border-radius:6px;box-shadow:0 0 0 3px #fff2a8}.gp-cap .think{display:inline-flex;gap:6px;align-items:center;font-weight:800;color:#881cd6}',
+    '.fl-facts{position:absolute;left:12px;right:12px;top:10px;display:flex;flex-direction:column;align-items:center;gap:8px;pointer-events:none;z-index:3}'+
+    '.fl-fact{background:#fff;color:#221a3a;border:4px solid #ffb703;border-radius:999px;padding:5px 22px;font-weight:900;font-size:26px;line-height:1.2;text-align:center;max-width:100%;box-shadow:0 8px 22px rgba(0,0,0,.25);visibility:hidden}'+
+    '.fl-fact.on{visibility:visible;animation:flFact .5s cubic-bezier(.3,1.6,.6,1) both}@keyframes flFact{0%{opacity:0;transform:scale(.3)}100%{opacity:1;transform:none}}.flx-pic.flx-ask~.fl-facts{display:none}'+
+    '.gp.narrow .fl-facts{top:6px;gap:4px}.gp.narrow .fl-fact{font-size:16px;border-width:2px;padding:2px 10px;box-shadow:0 4px 10px rgba(0,0,0,.25)}' +
     '.flx{position:absolute;inset:0;background:#1b1b4b}.flx-pic{position:absolute;inset:0;display:flex;align-items:center;justify-content:center}',
     '.flx-pic.flx-in{animation:gpTurn .7s ease both}.flx-pic>.flb,.flx-pic .flb-w{width:100%;height:100%;max-width:none;display:flex;align-items:center;justify-content:center;margin:0}',
     '.flx-pic .flb-stage{width:100%;height:100%;display:flex;align-items:center;justify-content:center;border:0;border-radius:0;background:none}.flx-pic .flb-stage>svg{width:100%!important;height:100%!important;max-width:none!important;display:block}',
@@ -16070,7 +16074,7 @@ S.spatialExtra = S.extraMakers;
     var TT = D(ep.title), FLM = !!ep.fl, slides = [{ title: true, steps: [{ say: FLM ? (ep.intro || ('Today we are going to learn: ' + TT)) : TT + ' In this lesson, we will learn ' + (ep.goal || '') }] }];
     ep.scenes.forEach(function (sc) { slides.push(sc); });
     var chunks = [];
-    slides.forEach(function (sl, si) { sl.steps.forEach(function (st, k) { chunks.push({ si: si, k: k, say: st.say, think: !!st.think, answer: st.answer, last: k === sl.steps.length - 1 }); }); });
+    slides.forEach(function (sl, si) { sl.steps.forEach(function (st, k) { chunks.push({ si: si, k: k, say: st.say, think: !!st.think, answer: st.answer, facts: st.facts, last: k === sl.steps.length - 1 }); }); });
     var dashes = ''; for (var d = 0; d < meta.of; d++) dashes += '<i class="' + (d <= meta.q ? 'on' : '') + '"></i>';
     var short = TT;   /* the lesson's question, with its question mark, stays in the purple label at the top */
     function same(a, b) { var n = function (x) { return String(x || '').replace(/<[^>]+>/g, '').toLowerCase().replace(/[^a-z0-9]+/g, ' ').trim(); }; return n(a) === n(b); }
@@ -16288,10 +16292,15 @@ S.spatialExtra = S.extraMakers;
       }
       if (FLM && H.flTell) {
         /* First level: told like a storyteller, sentence by sentence, counting things as they light up */
-        var c0 = chunks[i], blk = stage.querySelector('.flx-pic') || stage;
+        var c0 = chunks[i], blk = stage.querySelector('.flx-pic') || stage, fx = stage.querySelector('.flx');
+        /* the fact for what is being said: written at the top while that sentence is explained, then it goes; the next fact appears in the same place */
+        var board = null, fs = c0.facts || [], shown = [];
+        if (fx) { var old = fx.querySelector('.fl-facts'); if (old) old.remove(); }
+        if (fx && fs.length) { board = document.createElement('div'); board.className = 'fl-facts'; board.innerHTML = '<div class="fl-fact"></div>'; fx.appendChild(board); }
+        function factFor(t) { if (!board) return; var low = String(t).toLowerCase(); fs.some(function (f, j) { if (shown[j] || low.indexOf(String(f[0]).toLowerCase()) < 0) return false; shown[j] = 1; var row = board.firstChild; row.classList.remove('on'); void row.offsetWidth; row.textContent = f[1]; row.classList.add('on'); return true; }) || board.firstChild.classList.remove('on'); }   /* shown while its sentence is said, gone when the next sentence starts */
         root.classList.add('gp-talk');
-        H.flTell(c0.say, { box: blk, keys: stage.querySelector('.flx'), cap: null, voice: okVoice, alive: function () { return my === token && playing && root.isConnected; } }, function () {
-          root.classList.remove('gp-talk');
+        H.flTell(c0.say, { box: blk, keys: fx, fact: factFor, cap: null, voice: okVoice, alive: function () { return my === token && playing && root.isConnected; } }, function () {
+          root.classList.remove('gp-talk'); if (board) board.firstChild.classList.remove('on');
           if (my !== token || !playing || !root.isConnected) return;
           /* a question: give the child time to think before the answer */
           if (c0.think) { waitPick(c0, my); return; }
@@ -25029,9 +25038,6 @@ S.extraMakers = function (n, level) {
     '@keyframes flWig{0%,100%{transform:rotate(0)}25%{transform:rotate(-6deg)}75%{transform:rotate(6deg)}}' +
     '@keyframes flIn{0%{transform:translateX(-60px);opacity:0}100%{transform:translateX(0);opacity:1}}' +
     '.fl-it{transition:transform .3s cubic-bezier(.3,1.6,.6,1),filter .3s;transform-box:fill-box;transform-origin:center}' +
-    '.fl-keys{position:absolute;left:0;right:0;top:10px;display:flex;justify-content:center;gap:10px;flex-wrap:wrap;pointer-events:none;z-index:3}' +
-    '.fl-key{background:#fff;color:#221a3a;border:4px solid #ffb703;border-radius:999px;padding:6px 22px;font-weight:900;font-size:30px;box-shadow:0 8px 22px rgba(0,0,0,.25);animation:flKey .5s cubic-bezier(.3,1.6,.6,1) both;transition:opacity .4s,transform .4s}' +
-    '.fl-key.out{opacity:0;transform:translateY(-14px) scale(.9)}@keyframes flKey{0%{opacity:0;transform:scale(.3)}100%{opacity:1;transform:none}}' +
     '.fl-pulse{animation:flPulse 1.4s ease 1;transform-box:fill-box;transform-origin:center}@keyframes flPulse{0%,100%{transform:scale(1);filter:none}40%{transform:scale(1.12);filter:drop-shadow(0 0 10px #ffd400) drop-shadow(0 0 3px #fff)}}' +
     '.fl-it.fl-glow{animation:flGlow 1.2s ease}@keyframes flGlow{0%,100%{filter:none;transform:scale(1)}45%{filter:drop-shadow(0 0 7px #ffe14d) drop-shadow(0 0 3px #fff);transform:scale(1.25)}}' +
     '.fl-it.fl-hl{transform:scale(1.4);filter:drop-shadow(0 0 5px #ffe14d) drop-shadow(0 0 2px #fff)}.fl-it.fl-done{filter:drop-shadow(0 0 3px #ffe14d)}' +
@@ -25111,7 +25117,7 @@ S.extraMakers = function (n, level) {
       story.pages.forEach(function (pg, i) {
         var p = pic(pg.pic), say = pg.text;
         if (pg.tap) { var c = []; for (var j = 1; j <= pg.tap; j++) c.push(NUMW[j]); say = say.replace(/ Tap each [a-z]+!?/i, '') + ' Count with me: ' + c.join(', ') + '.'; }
-        sc.push(L.SC(story.title, 'Page ' + (i + 1), [L.st(say, p)]));
+        var st0 = L.st(say, p); if (pg.facts) st0.facts = pg.facts; sc.push(L.SC(story.title, 'Page ' + (i + 1), [st0]));
         if (pg.ask) sc.push(L.SC('Your turn', 'Help with the story', sw(askSteps(pg.ask.q, p, pg.ask.options, pg.ask.answer, pg.ask.explain))));
       });
       sc.push(L.SC('The end', story.title, [L.st(story.endText || 'The end.', pic(story.endPic))]));
@@ -25121,7 +25127,7 @@ S.extraMakers = function (n, level) {
       var sc = [], watch = [], tog = [], turn = [], tips = [];
       l.screens.forEach(function (x) {
         var p = pic(x.pic, l.char);
-        if (x.mode === 'watch') watch.push(L.st(x.say, p));
+        if (x.mode === 'watch') { var sw0 = L.st(x.say, p); if (x.facts) sw0.facts = x.facts; watch.push(sw0); }
         else { if (x.tip && tips.length < 4) tips.push(x.tip); (x.mode === 'together' ? tog : turn).push.apply(x.mode === 'together' ? tog : turn, askSteps(x.say, p, x.options, x.answer, x.explain, x.mode === 'together' ? x.tip : '')); }
       });
       if (watch.length) sc.push(L.SC('Watch me', l.title, sw(watch)));
@@ -25178,31 +25184,6 @@ S.extraMakers = function (n, level) {
       var sv = el.ownerSVGElement; if (sv) sv.style.overflow = 'visible';
       var stg = el.closest('.gp-stage, .flb-stage') || sv, sr = stg && stg.getBoundingClientRect(), tr = t.getBoundingClientRect(); if (sr && tr.top < sr.top + 4) { t.setAttribute('y', bb.y + bb.height + Number(t.getAttribute('font-size'))); } } catch (e) { /* ignore */ }
   }
-  /* key words: when the story says one, it pops up on the screen (or glows if it is already in the picture) */
-  var KEYS = [['breakfast', '🥣'], ['lunchtime', '🥪'], ['lunch', '🥪'], ['dinner', '🍝'], ['snack', '🍎'], ['school', '🏫'], ['bedtime', '🛏️'], ['bed', '🛏️'], ['bath', '🛁'], ['sleep', '😴'], ['wakes up', '⏰'], ['wake up', '⏰'],
-    ['morning', '🌅'], ['afternoon', '☀️'], ['evening', '🌆'], ['night', '🌙'], ['minute', '⏱️'], ['hour', '🕐'], ['week', '📅'], ['weekend', '🎉'], ['picnic', '🧺'], ['shop', '🏪'], ['change', '🪙'], ['coins', '🪙'], ['notes', '💷'],
-    ['first', '1️⃣'], ['last', '🏁'], ['double', '👯'], ['half', '🌗'], ['quarter', '◔'], ['total', '🧮'], ['altogether', '🧮'], ['take away', '➖'], ['add', '➕'],
-    ['Monday', ''], ['Tuesday', ''], ['Wednesday', ''], ['Thursday', ''], ['Friday', ''], ['Saturday', ''], ['Sunday', ''], ['January', ''], ['February', ''], ['December', '']];
-  var TNUM = { one: 1, two: 2, three: 3, four: 4, five: 5, six: 6, seven: 7, eight: 8, nine: 9, ten: 10, eleven: 11, twelve: 12 };
-  function keyFind(t) {
-    var out = [], low = ' ' + String(t).toLowerCase().replace(/[’']/g, "'") + ' ';
-    var tm = /\b(half past|quarter past|quarter to)?\s*(one|two|three|four|five|six|seven|eight|nine|ten|eleven|twelve|\d{1,2})( o'clock)?\b/g, m;
-    while ((m = tm.exec(low))) { if (!m[1] && !m[3]) continue; var n = TNUM[m[2]] || m[2]; out.push({ label: (m[1] ? m[1] + ' ' + n : n + ' o’clock'), em: '🕐', clock: true, at: m.index }); }
-    KEYS.forEach(function (k) { var re = new RegExp("\\b" + k[0].toLowerCase() + "(s|es)?\\b"), mm = re.exec(low); if (mm && !out.some(function (o) { return o.label.indexOf(k[0]) >= 0 || k[0].indexOf(o.label) >= 0; })) out.push({ label: k[0], em: k[1], at: mm.index }); });
-    return out.sort(function (a, b) { return a.at - b.at; }).slice(0, 3);
-  }
-  function flashKeys(box, host, t) {
-    if (!host) return; var ks = keyFind(t); if (!ks.length) return;
-    var wrap = host.querySelector('.fl-keys'); if (!wrap) { wrap = document.createElement('div'); wrap.className = 'fl-keys'; host.appendChild(wrap); }
-    ks.forEach(function (k, j) { setTimeout(function () {
-      /* already in the picture as words: make that glow; a clock time: make the clock glow too */
-      var found = null; if (box) [].some.call(box.querySelectorAll('span,b,text,div'), function (e) { if (e.children.length > 1) return false; var tx = (e.textContent || '').toLowerCase(); if (tx && tx.length < 40 && tx.indexOf(k.label.toLowerCase()) >= 0) { found = e; return true; } return false; });
-      if (k.clock && box) { var c = [].filter.call(box.querySelectorAll('svg'), function (g) { return g.querySelectorAll('line').length >= 60; })[0]; if (c) { c.classList.remove('fl-pulse'); void c.getBoundingClientRect(); c.classList.add('fl-pulse'); } }
-      if (found) { found.classList.remove('fl-pulse'); void found.getBoundingClientRect(); found.classList.add('fl-pulse'); }
-      var pill = document.createElement('span'); pill.className = 'fl-key'; pill.textContent = (k.em ? k.em + ' ' : '') + k.label; wrap.appendChild(pill);
-      setTimeout(function () { pill.classList.add('out'); setTimeout(function () { pill.remove(); }, 500); }, 2600);
-    }, j * 700); });
-  }
   function glow(box, t) {
     var ks = {}; [].forEach.call(box.querySelectorAll('.fl-it[data-k]'), function (e) { ks[e.getAttribute('data-k')] = 1; });
     Object.keys(ks).forEach(function (k) { if (!new RegExp('\\b' + k + '(e?s)?\\b', 'i').test(t)) return;
@@ -25215,7 +25196,8 @@ S.extraMakers = function (n, level) {
     function step() {
       if (!o.alive()) return;
       if (k >= ps.length) { if (o.box) o.box.querySelectorAll('.fl-hl').forEach(function (e) { e.classList.remove('fl-hl'); e.classList.add('fl-done'); }); done(); return; }
-      var p = ps[k]; capShow(); if (p.count != null && o.box) light(o.box, p); else if (o.box) { glow(o.box, p.t); flashKeys(o.box, o.keys, p.t); }
+      var p = ps[k]; capShow(); if (p.count != null && o.box) light(o.box, p); else if (o.box) glow(o.box, p.t);
+      if (o.fact) o.fact(p.t);   /* a fact for this sentence is written on the board (no more flashing key words) */
       var fin = function () { if (!o.alive()) return; k++; setTimeout(step, pauseAfter(p)); };
       if (!o.voice) { setTimeout(fin, p.count != null ? 420 : p.t.split(' ').length * 330 + 250); return; }
       var u = new SpeechSynthesisUtterance(S.speakable ? S.speakable(p.t.replace(/[“”]/g, '')) : p.t), v = H.pickVoice && H.pickVoice();
@@ -26907,10 +26889,11 @@ S.extraMakers = function (n, level) {
   function clk(h, m) { return '<div style="width:170px;max-width:100%">' + V.clock(h, m) + '</div>'; }
   function big(t, col) { return '<div style="font-size:2.4rem;font-weight:800;color:' + (col || '#2b2340') + ';background:#fff;border:3px solid #2b2340;border-radius:16px;padding:6px 18px">' + t + '</div>'; }
   function cards(list) { return '<div style="display:flex;flex-wrap:wrap;gap:8px;justify-content:center">' + list.map(function (t) { return '<span style="background:#fff;border:3px solid #2b2340;border-radius:14px;padding:6px 12px;font-weight:800;color:#2b2340">' + t + '</span>'; }).join('') + '</div>'; }
-  function W(say, pic) { return { mode: 'watch', say: say, pic: pic }; }
+  /* facts: [[words in the story, the fact written on the board]], shown when the story says those words */
+  function W(say, pic, facts) { return { mode: 'watch', say: say, pic: pic, facts: facts }; }
   function TG(say, pic, options, answer, tip, explain) { return { mode: 'together', say: say, pic: pic, options: options, answer: answer, tip: tip, explain: explain }; }
   function Y(say, pic, options, answer, tip, explain) { return { mode: 'turn', say: say, pic: pic, options: options, answer: answer, tip: tip, explain: explain }; }
-  function pg(pic, text, ask) { return { pic: pic, text: text, ask: ask }; }
+  function pg(pic, text, ask, facts) { return { pic: pic, text: text, ask: ask, facts: facts }; }
   function Q(q, options, answer, explain) { return { q: q, options: options, answer: answer, explain: explain }; }
 
   /* ================= 202 Adding and taking away: Benny's picnic ================= */
@@ -26972,17 +26955,17 @@ S.extraMakers = function (n, level) {
       pages: [
         pg(P('shop', 'mouse', '', 'Hello!'), 'Molly the mouse has a little toy shop. Let’s help her today!'),
         pg(P('shop', 'mouse', C([1, 2, 5, 10, 20, 50, 100, 200], 8)), 'These are our coins: one penny, two pence, five pence, ten pence, twenty pence, fifty pence, one pound and two pounds.'),
-        pg(P('shop', 'mouse', C([500, 1000])), 'Notes are paper money for bigger amounts. Here is a five pound note and a ten pound note.'),
+        pg(P('shop', 'mouse', C([500, 1000])), 'Notes are paper money for bigger amounts. Here is a five pound note and a ten pound note.', null, [['five pound note', 'Notes: £5 and £10']]),
         pg(P('shop', 'owl', C([2, 2, 1])), 'Ollie the owl wants a ball for five pence. He pays with two pence, two pence and one penny.', Q('Do 2p, 2p and 1p make <b>5p</b>?', ['Yes', 'No'], 'Yes', 'Two, four, five. Yes!')),
         pg(P('shop', 'owl', C([5, 2, 1])), 'Next Ollie wants a toy car. He pays with five pence, two pence and one penny.', Q('How much does Ollie pay?', ['7p', '8p', '9p'], '8p', 'Five, seven, eight. Eight pence.')),
-        pg(P('shop', 'frog', C([20])), 'Frankie the frog wants a kite for fifteen pence. He only has a twenty pence coin.'),
+        pg(P('shop', 'frog', C([20])), 'Frankie the frog wants a kite for fifteen pence. He only has a twenty pence coin.', null, [['fifteen pence', 'Kite: 15p'], ['twenty pence', 'Frankie has 20p']]),
         pg(P('shop', 'mouse', FL.trackP(15, 20, [15, 20], [[15, 16], [16, 17], [17, 18], [18, 19], [19, 20]])), 'Molly counts on from fifteen to twenty: sixteen, seventeen, eighteen, nineteen, twenty.', Q('How much change does Frankie get?', ['4p', '5p', '6p'], '5p', 'Five jumps, so five pence change.'))
       ] },
     learn: [
       { title: 'What coins and notes do we use?', char: 'mouse', screens: [
-        W('These are the small coins: one penny, two pence and five pence.', P('shop', '', C([1, 2, 5]))),
-        W('These are worth more: ten pence, twenty pence and fifty pence. Look at their shapes!', P('shop', '', C([10, 20, 50]))),
-        W('These are pound coins and notes: one pound, two pounds, a five pound note and a ten pound note.', P('shop', '', C([100, 200, 500, 1000]))),
+        W('These are the small coins: one penny, two pence and five pence.', P('shop', '', C([1, 2, 5])), [['small coins', 'Small coins: 1p, 2p, 5p']]),
+        W('These are worth more: ten pence, twenty pence and fifty pence. Look at their shapes!', P('shop', '', C([10, 20, 50])), [['worth more', 'Bigger coins: 10p, 20p, 50p']]),
+        W('These are pound coins and notes: one pound, two pounds, a five pound note and a ten pound note.', P('shop', '', C([100, 200, 500, 1000])), [['pound coins', '£1, £2, £5 and £10']]),
         TG('What is this coin?', P('shop', '', C([10])), ['1p', '10p', '50p'], '10p', 'Read the number on the coin.', 'It is ten pence.'),
         TG('What is this coin? It has seven sides.', P('shop', '', C([50])), ['5p', '20p', '50p'], '50p', 'The big coin with seven sides is fifty pence.', 'It is fifty pence.'),
         Y('What is this coin?', P('shop', '', C([200])), ['£1', '£2', '20p'], '£2', 'It is gold and silver, with a £ sign.', 'It is two pounds.'),
@@ -26990,16 +26973,16 @@ S.extraMakers = function (n, level) {
       ] },
       { title: 'How can different coins and notes make the same total?', char: 'mouse', screens: [
         W('Ten pence can be one ten pence coin …', P('shop', '', C([10]))),
-        W('… or two five pence coins. Five, ten. Still ten pence!', P('shop', '', C([5, 5]))),
-        W('… or five pence, two pence, two pence and one penny. Five, seven, nine, ten!', P('shop', '', C([5, 2, 2, 1]))),
+        W('… or two five pence coins. Five, ten. Still ten pence!', P('shop', '', C([5, 5])), [['still ten', '5p + 5p = 10p']]),
+        W('… or five pence, two pence, two pence and one penny. Five, seven, nine, ten!', P('shop', '', C([5, 2, 2, 1])), [['one penny', '5p + 2p + 2p + 1p = 10p']]),
         TG('Do these coins make ten pence?', P('shop', '', C([5, 5])), ['Yes', 'No'], 'Yes', 'Count them: five, ten.', 'Five and five make ten pence.'),
         TG('How much money is this?', P('shop', '', C([2, 2, 2])), ['4p', '6p', '8p'], '6p', 'Count in twos: two, four, six.', 'Six pence.'),
         Y('How much money is this?', P('shop', '', C([10, 5, 1])), ['15p', '16p', '17p'], '16p', 'Start with the biggest coin: ten, then fifteen, then …', 'Ten, fifteen, sixteen. Sixteen pence.'),
         Y('Which coins make twenty pence?', P('shop', '', C([20])), ['10p + 10p', '10p + 5p', '5p + 2p'], '10p + 10p', 'Add each pair. Which one makes twenty?', 'Ten and ten make twenty pence.')
       ] },
       { title: 'How can adding coins help me pay for something?', char: 'mouse', screens: [
-        W('A lolly costs twelve pence. I pay with ten pence and two pence. Ten, twelve!', P('shop', '', C([10, 2]))),
-        W('Start with the biggest coin, then count on. Twenty, twenty-five, twenty-six. Twenty-six pence.', P('shop', '', C([20, 5, 1]))),
+        W('A lolly costs twelve pence. I pay with ten pence and two pence. Ten, twelve!', P('shop', '', C([10, 2])), [['ten pence and two pence', '10p + 2p = 12p']]),
+        W('Start with the biggest coin, then count on. Twenty, twenty-five, twenty-six. Twenty-six pence.', P('shop', '', C([20, 5, 1])), [['twenty-six pence', '20p + 5p + 1p = 26p']]),
         W('Counting on is quicker than counting in ones!', P('shop', '', big('20 → 25 → 26'))),
         TG('How much money is this?', P('shop', '', C([10, 5])), ['14p', '15p', '16p'], '15p', 'Start at ten and count on five.', 'Ten and five make fifteen pence.'),
         TG('How much money is this?', P('shop', '', C([5, 2, 1])), ['7p', '8p', '9p'], '8p', 'Five, then seven, then …', 'Five, seven, eight. Eight pence.'),
@@ -27007,9 +26990,9 @@ S.extraMakers = function (n, level) {
         Y('How much money is this?', P('shop', '', C([10, 10, 5])), ['20p', '25p', '30p'], '25p', 'Ten, twenty, then five more.', 'Twenty-five pence.')
       ] },
       { title: 'How can counting on help me find change from 20p?', char: 'mouse', screens: [
-        W('A ball costs fifteen pence. I pay with twenty pence. I count on from fifteen to twenty: five jumps. Five pence change!', P('shop', '', FL.trackP(15, 20, [15, 20], [[15, 16], [16, 17], [17, 18], [18, 19], [19, 20]]))),
-        W('A pen costs twelve pence. From twelve to twenty is eight jumps. Eight pence change.', P('shop', '', FL.trackP(12, 20, [12, 20]))),
-        W('Change is the money you get back when you pay too much.', P('shop', 'mouse', C([20]) + C([5]))),
+        W('A ball costs fifteen pence. I pay with twenty pence. I count on from fifteen to twenty: five jumps. Five pence change!', P('shop', '', FL.trackP(15, 20, [15, 20], [[15, 16], [16, 17], [17, 18], [18, 19], [19, 20]])), [['five pence change', 'Change: 20p − 15p = 5p']]),
+        W('A pen costs twelve pence. From twelve to twenty is eight jumps. Eight pence change.', P('shop', '', FL.trackP(12, 20, [12, 20])), [['eight pence change', 'Change: 20p − 12p = 8p']]),
+        W('Change is the money you get back when you pay too much.', P('shop', 'mouse', C([20]) + C([5])), [['change is', 'Change: the money you get back']]),
         TG('A sticker costs seventeen pence. You pay twenty pence. How much change?', P('shop', '', FL.trackP(17, 20, [17, 20])), ['2p', '3p', '4p'], '3p', 'Count on: eighteen, nineteen, twenty.', 'Three jumps, so three pence change.'),
         TG('A cookie costs ten pence. You pay twenty pence. How much change?', P('shop', '', C([20])), ['5p', '10p', '15p'], '10p', 'Ten and what make twenty?', 'Ten pence change.'),
         Y('A toy costs fourteen pence. You pay twenty pence. How much change?', P('shop', '', FL.trackP(14, 20, [14, 20])), ['5p', '6p', '7p'], '6p', 'Count on from fourteen to twenty.', 'Six pence change.'),
@@ -27021,48 +27004,53 @@ S.extraMakers = function (n, level) {
   /* ================= 204 Time: Ollie's busy day ================= */
   var DAYS = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
   FL.addStory(204, {
-    story: { title: 'Ollie’s Busy Day', endPic: P('night', 'owl', clk(8, 0), 'Night night!'), endText: 'At eight o’clock Ollie went to sleep. What a busy day! Thank you for helping Ollie with the time.',
+    story: { title: 'Ollie’s Busy Day', endPic: P('night', 'owl', clk(8, 30), 'Night night!'), endText: 'At half past eight Ollie goes to sleep. What a busy day! Thank you for helping Ollie with the time.',
       pages: [
-        pg(P('room', 'owl', clk(7, 0), 'Good morning!'), 'Ollie the owl wakes up. The short hand points to seven and the long hand points to twelve. It is seven o’clock.'),
-        pg(P('kitchen', 'owl', clk(7, 30)), 'Ollie eats his breakfast. Now the long hand points to six. It is half past seven.'),
-        pg(P('room', 'owl', cards(DAYS)), 'Today is Monday. Tomorrow will be Tuesday. There are seven days in a week.', Q('What day comes after Tuesday?', ['Monday', 'Wednesday', 'Sunday'], 'Wednesday', 'Monday, Tuesday, Wednesday.')),
+        pg(P('room', 'owl', clk(7, 0), 'Good morning!'), 'Ollie the owl wakes up. The short hand points to seven and the long hand points to twelve. It is seven o’clock.', null, [['wakes up', 'Wake up: 7 o’clock']]),
+        pg(P('room', 'owl', '<span style="font-size:3rem">🪥</span>'), 'Next, Ollie brushes his teeth. A minute is short. Ollie can clap twenty times in a minute. An hour is long. One hour is sixty minutes.', Q('What takes about a minute?', ['brushing your teeth', 'a night’s sleep', 'a school day'], 'brushing your teeth', 'Brushing your teeth takes about two minutes.'), [['brushes', 'Brush teeth'], ['sixty minutes', '1 hour = 60 minutes']]),
+        pg(P('kitchen', 'owl', clk(7, 30)), 'Then Ollie eats his breakfast. Now the long hand points to six. It is half past seven.', null, [['half past seven', 'Breakfast: half past 7']]),
+        pg(P('room', 'owl', cards(DAYS)), 'Today is Monday. Monday to Friday are school days. Saturday and Sunday are the weekend, with no school. There are seven days in a week.', Q('What day comes after Tuesday?', ['Monday', 'Wednesday', 'Sunday'], 'Wednesday', 'Monday, Tuesday, Wednesday.'), [['school days', 'School days: Monday to Friday'], ['weekend', 'Weekend: Saturday and Sunday, no school'], ['seven days', '7 days in a week']]),
         pg(P('day', 'owl', clk(9, 0)), 'Ollie flies to school. Look at the clock!', Q('What time does Ollie get to school?', ['9 o’clock', 'half past 9', '3 o’clock'], '9 o’clock', 'The short hand is on nine and the long hand is on twelve.')),
-        pg(P('day', 'owl', cards(['1. breakfast', '2. school', '3. bed'])), 'First Ollie eats breakfast. Next he goes to school. Last he goes to bed.'),
-        pg(P('day', 'owl', cards(['clap 20 times', 'a minute'])), 'A minute is short. Ollie can clap twenty times in a minute. An hour is long, like a whole lesson.', Q('What takes about a minute?', ['brushing your teeth', 'a night’s sleep', 'a school day'], 'brushing your teeth', 'Brushing your teeth takes about two minutes.')),
-        pg(P('night', 'owl', clk(8, 0)), 'Ollie has a bath and a story. Now it is eight o’clock: bedtime!')
+        pg(P('kitchen', 'owl', clk(12, 15)), 'Lunchtime! Ollie has his lunch from a quarter past twelve until one o’clock.', null, [['lunch', 'Lunchtime: 12:15 to 1 o’clock']]),
+        pg(P('day', 'owl', clk(3, 0)), 'At three o’clock school finishes and Ollie flies home.', null, [['three o’clock', 'Home time: 3 o’clock']]),
+        pg(P('room', 'owl', clk(4, 0)), 'At four o’clock Ollie does his homework.', null, [['homework', 'Homework: 4 o’clock']]),
+        pg(P('day', 'owl', clk(5, 0)), 'Playtime! Ollie plays outside from five o’clock until six o’clock. That is one hour of play.', null, [['playtime', 'Playtime: 5 o’clock to 6 o’clock']]),
+        pg(P('kitchen', 'owl', clk(7, 0)), 'At seven o’clock in the evening Ollie eats his dinner.', Q('Which meal does Ollie eat last?', ['breakfast', 'lunch', 'dinner'], 'dinner', 'Breakfast in the morning, lunch at midday, dinner in the evening.'), [['dinner', 'Dinner: 7 o’clock']]),
+        pg(P('night', 'owl', clk(8, 0)), 'At eight o’clock Ollie has a bath and a story.', null, [['bath', 'Bath time: 8 o’clock']]),
+        pg(P('night', 'owl', clk(8, 30)), 'At half past eight it is bedtime. Night night, Ollie!', null, [['bedtime', 'Bedtime: half past 8']])
       ] },
     learn: [
       { title: 'How to tell the time', char: 'owl', screens: [
-        W('A clock has two hands. The short hand shows the hour. The long hand shows the minutes.', P('room', '', clk(3, 0))),
-        W('When the long hand points to twelve, it is something o’clock. The short hand is on five: five o’clock.', P('room', '', clk(5, 0))),
-        W('When the long hand points to six, it is half past. The short hand is just after two: half past two.', P('room', '', clk(2, 30))),
+        W('A clock has two hands. The short hand shows the hour. The long hand shows the minutes.', P('room', '', clk(3, 0)), [['short hand', 'Short hand: the hour'], ['long hand', 'Long hand: the minutes']]),
+        W('When the long hand points to twelve, it is something o’clock. The short hand is on five: five o’clock.', P('room', '', clk(5, 0)), [['twelve', 'Long hand on 12: o’clock'], ['five o’clock', 'It is 5 o’clock']]),
+        W('When the long hand points to six, it is half past. The short hand is just after two: half past two.', P('room', '', clk(2, 30)), [['six', 'Long hand on 6: half past'], ['half past two', 'It is half past 2']]),
         TG('What time is it?', P('room', '', clk(4, 0)), ['4 o’clock', '12 o’clock', 'half past 4'], '4 o’clock', 'The long hand is on twelve, so it is o’clock. Look at the short hand.', 'Four o’clock.'),
         TG('What time is it?', P('room', '', clk(6, 30)), ['6 o’clock', 'half past 6', 'half past 12'], 'half past 6', 'The long hand is on six, so it is half past.', 'Half past six.'),
         Y('What time is it?', P('room', '', clk(11, 0)), ['11 o’clock', '12 o’clock', 'half past 11'], '11 o’clock', 'Long hand on twelve: o’clock.', 'Eleven o’clock.'),
         Y('What time is it?', P('room', '', clk(1, 30)), ['1 o’clock', 'half past 1', 'half past 6'], 'half past 1', 'Long hand on six: half past.', 'Half past one.')
       ] },
       { title: 'What are the days of the week and the months of the year?', char: 'owl', screens: [
-        W('There are seven days in a week: Monday, Tuesday, Wednesday, Thursday, Friday, Saturday and Sunday.', P('room', '', cards(DAYS))),
-        W('Saturday and Sunday are the weekend. No school!', P('day', '', cards(['Saturday', 'Sunday']))),
-        W('There are twelve months in a year. January is first and December is last.', P('room', '', cards(['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']))),
+        W('There are seven days in a week: Monday, Tuesday, Wednesday, Thursday, Friday, Saturday and Sunday.', P('room', '', cards(DAYS)), [['seven days', '7 days in a week']]),
+        W('Monday to Friday are school days. Saturday and Sunday are the weekend. No school!', P('day', '', cards(['Saturday', 'Sunday'])), [['school days', 'School days: Monday to Friday'], ['weekend', 'Weekend: Saturday and Sunday'], ['no school', 'No school at the weekend']]),
+        W('There are twelve months in a year. January is first and December is last.', P('room', '', cards(['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'])), [['twelve months', '12 months in a year'], ['january', 'First month: January'], ['december', 'Last month: December']]),
         TG('What day comes after Monday?', P('room', '', cards(DAYS)), ['Sunday', 'Tuesday', 'Friday'], 'Tuesday', 'Say the days: Monday, …', 'Monday, Tuesday.'),
         TG('What day comes before Sunday?', P('room', '', cards(DAYS)), ['Saturday', 'Monday', 'Friday'], 'Saturday', 'Sunday is the last day. What comes just before it?', 'Saturday, Sunday.'),
         Y('What month comes after January?', P('room', '', cards(['January', '?'])), ['December', 'February', 'March'], 'February', 'Say the months: January, …', 'January, February.'),
         Y('How many days are in a week?', P('room', '', '<span style="font-size:3rem">📅</span>'), [5, 7, 12], 7, 'Count Monday to Sunday.', 'Seven days.')
       ] },
       { title: 'How can I put the events of a day in order?', char: 'owl', screens: [
-        W('In the morning I wake up and eat breakfast.', P('kitchen', '', clk(7, 0))),
-        W('In the afternoon I play and have a snack.', P('day', '', clk(3, 0))),
-        W('At night I go to bed. Morning, afternoon, night!', P('night', '', clk(8, 0))),
+        W('In the morning I wake up and eat breakfast.', P('kitchen', '', clk(7, 0)), [['morning', 'Morning: wake up and breakfast']]),
+        W('In the afternoon I play and have a snack.', P('day', '', clk(3, 0)), [['afternoon', 'Afternoon: play and a snack']]),
+        W('At night I go to bed. Morning, afternoon, night!', P('night', '', clk(8, 0)), [['night', 'Night: go to bed'], ['morning, afternoon', 'Morning → afternoon → night']]),
         TG('What do we do first: go to bed or wake up?', P('room', '', '<span style="font-size:3rem">🌅 🌙</span>'), ['wake up', 'go to bed'], 'wake up', 'The day starts in the morning.', 'First we wake up.'),
         TG('Which meal comes last in the day?', P('kitchen', '', cards(['breakfast', 'lunch', 'dinner'])), ['breakfast', 'lunch', 'dinner'], 'dinner', 'Dinner is in the evening.', 'Dinner comes last.'),
         Y('Which is in the right order?', P('day', '', '<span style="font-size:3rem">⏰ 🏫 🛏️</span>'), ['wake up, school, bed', 'bed, school, wake up', 'school, wake up, bed'], 'wake up, school, bed', 'What happens first in the day?', 'Wake up, then school, then bed.'),
         Y('Ollie has lunch, then plays. What came first?', P('day', '', cards(['lunch', 'play'])), ['lunch', 'play'], 'lunch', 'Listen for the word then.', 'Lunch came first.')
       ] },
       { title: 'How long is a minute, an hour and a day?', char: 'owl', screens: [
-        W('A minute is short. I can clap twenty times or sing a short song.', P('day', '', cards(['👏 clap', '🎵 sing']))),
-        W('An hour is longer. A lesson at school or a film for children takes about an hour.', P('room', '', clk(10, 0))),
-        W('A day is very long: from one morning to the next morning. There are twenty-four hours in a day!', P('day', '', '<span style="font-size:3rem">🌅 ☀️ 🌙</span>')),
+        W('A minute is short. I can clap twenty times or sing a short song.', P('day', '', cards(['👏 clap', '🎵 sing'])), [['clap', '1 minute: clap 20 times']]),
+        W('An hour is longer. One hour is sixty minutes. A lesson at school or a film for children takes about an hour.', P('room', '', clk(10, 0)), [['sixty minutes', '1 hour = 60 minutes']]),
+        W('A day is very long: from one morning to the next morning. There are twenty-four hours in a day!', P('day', '', '<span style="font-size:3rem">🌅 ☀️ 🌙</span>'), [['twenty-four hours', '24 hours in a day']]),
         TG('How long does it take to brush your teeth?', P('room', '', '<span style="font-size:3rem">🪥</span>'), ['2 minutes', '2 hours', '2 days'], '2 minutes', 'Is it short or long?', 'About two minutes.'),
         TG('How long is a night’s sleep?', P('night', '', '<span style="font-size:3rem">😴</span>'), ['10 minutes', '10 hours', '10 days'], '10 hours', 'It is all night long.', 'About ten hours.'),
         Y('How long does it take to eat an apple?', P('day', '', T(1, 'apple')), ['5 minutes', '5 hours', '5 days'], '5 minutes', 'Is it quick?', 'About five minutes.'),

@@ -93,6 +93,10 @@
     '.gp-vs{display:flex;flex-wrap:wrap;gap:8px 16px;align-items:center}.gp-vs label{display:flex;gap:6px;align-items:center;font-weight:700;font-size:15px}.gp-vs select{min-height:40px;max-width:min(260px,60vw);font:inherit;font-weight:600;border:2px solid var(--line);border-radius:10px;padding:4px 8px;background:var(--surface);color:var(--fg)}',
     '.gp-body.gp-turn{animation:gpTurn .7s ease both}@keyframes gpTurn{0%{opacity:0;transform:translateX(40px) rotate(1deg)}100%{opacity:1;transform:none}}',
     '.gp-cap .now{background:#fff2a8;border-radius:6px;box-shadow:0 0 0 3px #fff2a8}.gp-cap .think{display:inline-flex;gap:6px;align-items:center;font-weight:800;color:#881cd6}',
+    '.fl-facts{position:absolute;left:12px;right:12px;top:10px;display:flex;flex-direction:column;align-items:center;gap:8px;pointer-events:none;z-index:3}'+
+    '.fl-fact{background:#fff;color:#221a3a;border:4px solid #ffb703;border-radius:999px;padding:5px 22px;font-weight:900;font-size:26px;line-height:1.2;text-align:center;max-width:100%;box-shadow:0 8px 22px rgba(0,0,0,.25);visibility:hidden}'+
+    '.fl-fact.on{visibility:visible;animation:flFact .5s cubic-bezier(.3,1.6,.6,1) both}@keyframes flFact{0%{opacity:0;transform:scale(.3)}100%{opacity:1;transform:none}}.flx-pic.flx-ask~.fl-facts{display:none}'+
+    '.gp.narrow .fl-facts{top:6px;gap:4px}.gp.narrow .fl-fact{font-size:16px;border-width:2px;padding:2px 10px;box-shadow:0 4px 10px rgba(0,0,0,.25)}' +
     '.flx{position:absolute;inset:0;background:#1b1b4b}.flx-pic{position:absolute;inset:0;display:flex;align-items:center;justify-content:center}',
     '.flx-pic.flx-in{animation:gpTurn .7s ease both}.flx-pic>.flb,.flx-pic .flb-w{width:100%;height:100%;max-width:none;display:flex;align-items:center;justify-content:center;margin:0}',
     '.flx-pic .flb-stage{width:100%;height:100%;display:flex;align-items:center;justify-content:center;border:0;border-radius:0;background:none}.flx-pic .flb-stage>svg{width:100%!important;height:100%!important;max-width:none!important;display:block}',
@@ -142,7 +146,7 @@
     var TT = D(ep.title), FLM = !!ep.fl, slides = [{ title: true, steps: [{ say: FLM ? (ep.intro || ('Today we are going to learn: ' + TT)) : TT + ' In this lesson, we will learn ' + (ep.goal || '') }] }];
     ep.scenes.forEach(function (sc) { slides.push(sc); });
     var chunks = [];
-    slides.forEach(function (sl, si) { sl.steps.forEach(function (st, k) { chunks.push({ si: si, k: k, say: st.say, think: !!st.think, answer: st.answer, last: k === sl.steps.length - 1 }); }); });
+    slides.forEach(function (sl, si) { sl.steps.forEach(function (st, k) { chunks.push({ si: si, k: k, say: st.say, think: !!st.think, answer: st.answer, facts: st.facts, last: k === sl.steps.length - 1 }); }); });
     var dashes = ''; for (var d = 0; d < meta.of; d++) dashes += '<i class="' + (d <= meta.q ? 'on' : '') + '"></i>';
     var short = TT;   /* the lesson's question, with its question mark, stays in the purple label at the top */
     function same(a, b) { var n = function (x) { return String(x || '').replace(/<[^>]+>/g, '').toLowerCase().replace(/[^a-z0-9]+/g, ' ').trim(); }; return n(a) === n(b); }
@@ -360,10 +364,15 @@
       }
       if (FLM && H.flTell) {
         /* First level: told like a storyteller, sentence by sentence, counting things as they light up */
-        var c0 = chunks[i], blk = stage.querySelector('.flx-pic') || stage;
+        var c0 = chunks[i], blk = stage.querySelector('.flx-pic') || stage, fx = stage.querySelector('.flx');
+        /* the fact for what is being said: written at the top while that sentence is explained, then it goes; the next fact appears in the same place */
+        var board = null, fs = c0.facts || [], shown = [];
+        if (fx) { var old = fx.querySelector('.fl-facts'); if (old) old.remove(); }
+        if (fx && fs.length) { board = document.createElement('div'); board.className = 'fl-facts'; board.innerHTML = '<div class="fl-fact"></div>'; fx.appendChild(board); }
+        function factFor(t) { if (!board) return; var low = String(t).toLowerCase(); fs.some(function (f, j) { if (shown[j] || low.indexOf(String(f[0]).toLowerCase()) < 0) return false; shown[j] = 1; var row = board.firstChild; row.classList.remove('on'); void row.offsetWidth; row.textContent = f[1]; row.classList.add('on'); return true; }) || board.firstChild.classList.remove('on'); }   /* shown while its sentence is said, gone when the next sentence starts */
         root.classList.add('gp-talk');
-        H.flTell(c0.say, { box: blk, keys: stage.querySelector('.flx'), cap: null, voice: okVoice, alive: function () { return my === token && playing && root.isConnected; } }, function () {
-          root.classList.remove('gp-talk');
+        H.flTell(c0.say, { box: blk, keys: fx, fact: factFor, cap: null, voice: okVoice, alive: function () { return my === token && playing && root.isConnected; } }, function () {
+          root.classList.remove('gp-talk'); if (board) board.firstChild.classList.remove('on');
           if (my !== token || !playing || !root.isConnected) return;
           /* a question: give the child time to think before the answer */
           if (c0.think) { waitPick(c0, my); return; }

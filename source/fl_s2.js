@@ -7,10 +7,11 @@
   function clk(h, m) { return '<div style="width:170px;max-width:100%">' + V.clock(h, m) + '</div>'; }
   function big(t, col) { return '<div style="font-size:2.4rem;font-weight:800;color:' + (col || '#2b2340') + ';background:#fff;border:3px solid #2b2340;border-radius:16px;padding:6px 18px">' + t + '</div>'; }
   function cards(list) { return '<div style="display:flex;flex-wrap:wrap;gap:8px;justify-content:center">' + list.map(function (t) { return '<span style="background:#fff;border:3px solid #2b2340;border-radius:14px;padding:6px 12px;font-weight:800;color:#2b2340">' + t + '</span>'; }).join('') + '</div>'; }
-  function W(say, pic) { return { mode: 'watch', say: say, pic: pic }; }
+  /* facts: [[words in the story, the fact written on the board]], shown when the story says those words */
+  function W(say, pic, facts) { return { mode: 'watch', say: say, pic: pic, facts: facts }; }
   function TG(say, pic, options, answer, tip, explain) { return { mode: 'together', say: say, pic: pic, options: options, answer: answer, tip: tip, explain: explain }; }
   function Y(say, pic, options, answer, tip, explain) { return { mode: 'turn', say: say, pic: pic, options: options, answer: answer, tip: tip, explain: explain }; }
-  function pg(pic, text, ask) { return { pic: pic, text: text, ask: ask }; }
+  function pg(pic, text, ask, facts) { return { pic: pic, text: text, ask: ask, facts: facts }; }
   function Q(q, options, answer, explain) { return { q: q, options: options, answer: answer, explain: explain }; }
 
   /* ================= 202 Adding and taking away: Benny's picnic ================= */
@@ -72,17 +73,17 @@
       pages: [
         pg(P('shop', 'mouse', '', 'Hello!'), 'Molly the mouse has a little toy shop. Let’s help her today!'),
         pg(P('shop', 'mouse', C([1, 2, 5, 10, 20, 50, 100, 200], 8)), 'These are our coins: one penny, two pence, five pence, ten pence, twenty pence, fifty pence, one pound and two pounds.'),
-        pg(P('shop', 'mouse', C([500, 1000])), 'Notes are paper money for bigger amounts. Here is a five pound note and a ten pound note.'),
+        pg(P('shop', 'mouse', C([500, 1000])), 'Notes are paper money for bigger amounts. Here is a five pound note and a ten pound note.', null, [['five pound note', 'Notes: £5 and £10']]),
         pg(P('shop', 'owl', C([2, 2, 1])), 'Ollie the owl wants a ball for five pence. He pays with two pence, two pence and one penny.', Q('Do 2p, 2p and 1p make <b>5p</b>?', ['Yes', 'No'], 'Yes', 'Two, four, five. Yes!')),
         pg(P('shop', 'owl', C([5, 2, 1])), 'Next Ollie wants a toy car. He pays with five pence, two pence and one penny.', Q('How much does Ollie pay?', ['7p', '8p', '9p'], '8p', 'Five, seven, eight. Eight pence.')),
-        pg(P('shop', 'frog', C([20])), 'Frankie the frog wants a kite for fifteen pence. He only has a twenty pence coin.'),
+        pg(P('shop', 'frog', C([20])), 'Frankie the frog wants a kite for fifteen pence. He only has a twenty pence coin.', null, [['fifteen pence', 'Kite: 15p'], ['twenty pence', 'Frankie has 20p']]),
         pg(P('shop', 'mouse', FL.trackP(15, 20, [15, 20], [[15, 16], [16, 17], [17, 18], [18, 19], [19, 20]])), 'Molly counts on from fifteen to twenty: sixteen, seventeen, eighteen, nineteen, twenty.', Q('How much change does Frankie get?', ['4p', '5p', '6p'], '5p', 'Five jumps, so five pence change.'))
       ] },
     learn: [
       { title: 'What coins and notes do we use?', char: 'mouse', screens: [
-        W('These are the small coins: one penny, two pence and five pence.', P('shop', '', C([1, 2, 5]))),
-        W('These are worth more: ten pence, twenty pence and fifty pence. Look at their shapes!', P('shop', '', C([10, 20, 50]))),
-        W('These are pound coins and notes: one pound, two pounds, a five pound note and a ten pound note.', P('shop', '', C([100, 200, 500, 1000]))),
+        W('These are the small coins: one penny, two pence and five pence.', P('shop', '', C([1, 2, 5])), [['small coins', 'Small coins: 1p, 2p, 5p']]),
+        W('These are worth more: ten pence, twenty pence and fifty pence. Look at their shapes!', P('shop', '', C([10, 20, 50])), [['worth more', 'Bigger coins: 10p, 20p, 50p']]),
+        W('These are pound coins and notes: one pound, two pounds, a five pound note and a ten pound note.', P('shop', '', C([100, 200, 500, 1000])), [['pound coins', '£1, £2, £5 and £10']]),
         TG('What is this coin?', P('shop', '', C([10])), ['1p', '10p', '50p'], '10p', 'Read the number on the coin.', 'It is ten pence.'),
         TG('What is this coin? It has seven sides.', P('shop', '', C([50])), ['5p', '20p', '50p'], '50p', 'The big coin with seven sides is fifty pence.', 'It is fifty pence.'),
         Y('What is this coin?', P('shop', '', C([200])), ['£1', '£2', '20p'], '£2', 'It is gold and silver, with a £ sign.', 'It is two pounds.'),
@@ -90,16 +91,16 @@
       ] },
       { title: 'How can different coins and notes make the same total?', char: 'mouse', screens: [
         W('Ten pence can be one ten pence coin …', P('shop', '', C([10]))),
-        W('… or two five pence coins. Five, ten. Still ten pence!', P('shop', '', C([5, 5]))),
-        W('… or five pence, two pence, two pence and one penny. Five, seven, nine, ten!', P('shop', '', C([5, 2, 2, 1]))),
+        W('… or two five pence coins. Five, ten. Still ten pence!', P('shop', '', C([5, 5])), [['still ten', '5p + 5p = 10p']]),
+        W('… or five pence, two pence, two pence and one penny. Five, seven, nine, ten!', P('shop', '', C([5, 2, 2, 1])), [['one penny', '5p + 2p + 2p + 1p = 10p']]),
         TG('Do these coins make ten pence?', P('shop', '', C([5, 5])), ['Yes', 'No'], 'Yes', 'Count them: five, ten.', 'Five and five make ten pence.'),
         TG('How much money is this?', P('shop', '', C([2, 2, 2])), ['4p', '6p', '8p'], '6p', 'Count in twos: two, four, six.', 'Six pence.'),
         Y('How much money is this?', P('shop', '', C([10, 5, 1])), ['15p', '16p', '17p'], '16p', 'Start with the biggest coin: ten, then fifteen, then …', 'Ten, fifteen, sixteen. Sixteen pence.'),
         Y('Which coins make twenty pence?', P('shop', '', C([20])), ['10p + 10p', '10p + 5p', '5p + 2p'], '10p + 10p', 'Add each pair. Which one makes twenty?', 'Ten and ten make twenty pence.')
       ] },
       { title: 'How can adding coins help me pay for something?', char: 'mouse', screens: [
-        W('A lolly costs twelve pence. I pay with ten pence and two pence. Ten, twelve!', P('shop', '', C([10, 2]))),
-        W('Start with the biggest coin, then count on. Twenty, twenty-five, twenty-six. Twenty-six pence.', P('shop', '', C([20, 5, 1]))),
+        W('A lolly costs twelve pence. I pay with ten pence and two pence. Ten, twelve!', P('shop', '', C([10, 2])), [['ten pence and two pence', '10p + 2p = 12p']]),
+        W('Start with the biggest coin, then count on. Twenty, twenty-five, twenty-six. Twenty-six pence.', P('shop', '', C([20, 5, 1])), [['twenty-six pence', '20p + 5p + 1p = 26p']]),
         W('Counting on is quicker than counting in ones!', P('shop', '', big('20 → 25 → 26'))),
         TG('How much money is this?', P('shop', '', C([10, 5])), ['14p', '15p', '16p'], '15p', 'Start at ten and count on five.', 'Ten and five make fifteen pence.'),
         TG('How much money is this?', P('shop', '', C([5, 2, 1])), ['7p', '8p', '9p'], '8p', 'Five, then seven, then …', 'Five, seven, eight. Eight pence.'),
@@ -107,9 +108,9 @@
         Y('How much money is this?', P('shop', '', C([10, 10, 5])), ['20p', '25p', '30p'], '25p', 'Ten, twenty, then five more.', 'Twenty-five pence.')
       ] },
       { title: 'How can counting on help me find change from 20p?', char: 'mouse', screens: [
-        W('A ball costs fifteen pence. I pay with twenty pence. I count on from fifteen to twenty: five jumps. Five pence change!', P('shop', '', FL.trackP(15, 20, [15, 20], [[15, 16], [16, 17], [17, 18], [18, 19], [19, 20]]))),
-        W('A pen costs twelve pence. From twelve to twenty is eight jumps. Eight pence change.', P('shop', '', FL.trackP(12, 20, [12, 20]))),
-        W('Change is the money you get back when you pay too much.', P('shop', 'mouse', C([20]) + C([5]))),
+        W('A ball costs fifteen pence. I pay with twenty pence. I count on from fifteen to twenty: five jumps. Five pence change!', P('shop', '', FL.trackP(15, 20, [15, 20], [[15, 16], [16, 17], [17, 18], [18, 19], [19, 20]])), [['five pence change', 'Change: 20p − 15p = 5p']]),
+        W('A pen costs twelve pence. From twelve to twenty is eight jumps. Eight pence change.', P('shop', '', FL.trackP(12, 20, [12, 20])), [['eight pence change', 'Change: 20p − 12p = 8p']]),
+        W('Change is the money you get back when you pay too much.', P('shop', 'mouse', C([20]) + C([5])), [['change is', 'Change: the money you get back']]),
         TG('A sticker costs seventeen pence. You pay twenty pence. How much change?', P('shop', '', FL.trackP(17, 20, [17, 20])), ['2p', '3p', '4p'], '3p', 'Count on: eighteen, nineteen, twenty.', 'Three jumps, so three pence change.'),
         TG('A cookie costs ten pence. You pay twenty pence. How much change?', P('shop', '', C([20])), ['5p', '10p', '15p'], '10p', 'Ten and what make twenty?', 'Ten pence change.'),
         Y('A toy costs fourteen pence. You pay twenty pence. How much change?', P('shop', '', FL.trackP(14, 20, [14, 20])), ['5p', '6p', '7p'], '6p', 'Count on from fourteen to twenty.', 'Six pence change.'),
@@ -121,48 +122,53 @@
   /* ================= 204 Time: Ollie's busy day ================= */
   var DAYS = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
   FL.addStory(204, {
-    story: { title: 'Ollie’s Busy Day', endPic: P('night', 'owl', clk(8, 0), 'Night night!'), endText: 'At eight o’clock Ollie went to sleep. What a busy day! Thank you for helping Ollie with the time.',
+    story: { title: 'Ollie’s Busy Day', endPic: P('night', 'owl', clk(8, 30), 'Night night!'), endText: 'At half past eight Ollie goes to sleep. What a busy day! Thank you for helping Ollie with the time.',
       pages: [
-        pg(P('room', 'owl', clk(7, 0), 'Good morning!'), 'Ollie the owl wakes up. The short hand points to seven and the long hand points to twelve. It is seven o’clock.'),
-        pg(P('kitchen', 'owl', clk(7, 30)), 'Ollie eats his breakfast. Now the long hand points to six. It is half past seven.'),
-        pg(P('room', 'owl', cards(DAYS)), 'Today is Monday. Tomorrow will be Tuesday. There are seven days in a week.', Q('What day comes after Tuesday?', ['Monday', 'Wednesday', 'Sunday'], 'Wednesday', 'Monday, Tuesday, Wednesday.')),
+        pg(P('room', 'owl', clk(7, 0), 'Good morning!'), 'Ollie the owl wakes up. The short hand points to seven and the long hand points to twelve. It is seven o’clock.', null, [['wakes up', 'Wake up: 7 o’clock']]),
+        pg(P('room', 'owl', '<span style="font-size:3rem">🪥</span>'), 'Next, Ollie brushes his teeth. A minute is short. Ollie can clap twenty times in a minute. An hour is long. One hour is sixty minutes.', Q('What takes about a minute?', ['brushing your teeth', 'a night’s sleep', 'a school day'], 'brushing your teeth', 'Brushing your teeth takes about two minutes.'), [['brushes', 'Brush teeth'], ['sixty minutes', '1 hour = 60 minutes']]),
+        pg(P('kitchen', 'owl', clk(7, 30)), 'Then Ollie eats his breakfast. Now the long hand points to six. It is half past seven.', null, [['half past seven', 'Breakfast: half past 7']]),
+        pg(P('room', 'owl', cards(DAYS)), 'Today is Monday. Monday to Friday are school days. Saturday and Sunday are the weekend, with no school. There are seven days in a week.', Q('What day comes after Tuesday?', ['Monday', 'Wednesday', 'Sunday'], 'Wednesday', 'Monday, Tuesday, Wednesday.'), [['school days', 'School days: Monday to Friday'], ['weekend', 'Weekend: Saturday and Sunday, no school'], ['seven days', '7 days in a week']]),
         pg(P('day', 'owl', clk(9, 0)), 'Ollie flies to school. Look at the clock!', Q('What time does Ollie get to school?', ['9 o’clock', 'half past 9', '3 o’clock'], '9 o’clock', 'The short hand is on nine and the long hand is on twelve.')),
-        pg(P('day', 'owl', cards(['1. breakfast', '2. school', '3. bed'])), 'First Ollie eats breakfast. Next he goes to school. Last he goes to bed.'),
-        pg(P('day', 'owl', cards(['clap 20 times', 'a minute'])), 'A minute is short. Ollie can clap twenty times in a minute. An hour is long, like a whole lesson.', Q('What takes about a minute?', ['brushing your teeth', 'a night’s sleep', 'a school day'], 'brushing your teeth', 'Brushing your teeth takes about two minutes.')),
-        pg(P('night', 'owl', clk(8, 0)), 'Ollie has a bath and a story. Now it is eight o’clock: bedtime!')
+        pg(P('kitchen', 'owl', clk(12, 15)), 'Lunchtime! Ollie has his lunch from a quarter past twelve until one o’clock.', null, [['lunch', 'Lunchtime: 12:15 to 1 o’clock']]),
+        pg(P('day', 'owl', clk(3, 0)), 'At three o’clock school finishes and Ollie flies home.', null, [['three o’clock', 'Home time: 3 o’clock']]),
+        pg(P('room', 'owl', clk(4, 0)), 'At four o’clock Ollie does his homework.', null, [['homework', 'Homework: 4 o’clock']]),
+        pg(P('day', 'owl', clk(5, 0)), 'Playtime! Ollie plays outside from five o’clock until six o’clock. That is one hour of play.', null, [['playtime', 'Playtime: 5 o’clock to 6 o’clock']]),
+        pg(P('kitchen', 'owl', clk(7, 0)), 'At seven o’clock in the evening Ollie eats his dinner.', Q('Which meal does Ollie eat last?', ['breakfast', 'lunch', 'dinner'], 'dinner', 'Breakfast in the morning, lunch at midday, dinner in the evening.'), [['dinner', 'Dinner: 7 o’clock']]),
+        pg(P('night', 'owl', clk(8, 0)), 'At eight o’clock Ollie has a bath and a story.', null, [['bath', 'Bath time: 8 o’clock']]),
+        pg(P('night', 'owl', clk(8, 30)), 'At half past eight it is bedtime. Night night, Ollie!', null, [['bedtime', 'Bedtime: half past 8']])
       ] },
     learn: [
       { title: 'How to tell the time', char: 'owl', screens: [
-        W('A clock has two hands. The short hand shows the hour. The long hand shows the minutes.', P('room', '', clk(3, 0))),
-        W('When the long hand points to twelve, it is something o’clock. The short hand is on five: five o’clock.', P('room', '', clk(5, 0))),
-        W('When the long hand points to six, it is half past. The short hand is just after two: half past two.', P('room', '', clk(2, 30))),
+        W('A clock has two hands. The short hand shows the hour. The long hand shows the minutes.', P('room', '', clk(3, 0)), [['short hand', 'Short hand: the hour'], ['long hand', 'Long hand: the minutes']]),
+        W('When the long hand points to twelve, it is something o’clock. The short hand is on five: five o’clock.', P('room', '', clk(5, 0)), [['twelve', 'Long hand on 12: o’clock'], ['five o’clock', 'It is 5 o’clock']]),
+        W('When the long hand points to six, it is half past. The short hand is just after two: half past two.', P('room', '', clk(2, 30)), [['six', 'Long hand on 6: half past'], ['half past two', 'It is half past 2']]),
         TG('What time is it?', P('room', '', clk(4, 0)), ['4 o’clock', '12 o’clock', 'half past 4'], '4 o’clock', 'The long hand is on twelve, so it is o’clock. Look at the short hand.', 'Four o’clock.'),
         TG('What time is it?', P('room', '', clk(6, 30)), ['6 o’clock', 'half past 6', 'half past 12'], 'half past 6', 'The long hand is on six, so it is half past.', 'Half past six.'),
         Y('What time is it?', P('room', '', clk(11, 0)), ['11 o’clock', '12 o’clock', 'half past 11'], '11 o’clock', 'Long hand on twelve: o’clock.', 'Eleven o’clock.'),
         Y('What time is it?', P('room', '', clk(1, 30)), ['1 o’clock', 'half past 1', 'half past 6'], 'half past 1', 'Long hand on six: half past.', 'Half past one.')
       ] },
       { title: 'What are the days of the week and the months of the year?', char: 'owl', screens: [
-        W('There are seven days in a week: Monday, Tuesday, Wednesday, Thursday, Friday, Saturday and Sunday.', P('room', '', cards(DAYS))),
-        W('Saturday and Sunday are the weekend. No school!', P('day', '', cards(['Saturday', 'Sunday']))),
-        W('There are twelve months in a year. January is first and December is last.', P('room', '', cards(['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']))),
+        W('There are seven days in a week: Monday, Tuesday, Wednesday, Thursday, Friday, Saturday and Sunday.', P('room', '', cards(DAYS)), [['seven days', '7 days in a week']]),
+        W('Monday to Friday are school days. Saturday and Sunday are the weekend. No school!', P('day', '', cards(['Saturday', 'Sunday'])), [['school days', 'School days: Monday to Friday'], ['weekend', 'Weekend: Saturday and Sunday'], ['no school', 'No school at the weekend']]),
+        W('There are twelve months in a year. January is first and December is last.', P('room', '', cards(['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'])), [['twelve months', '12 months in a year'], ['january', 'First month: January'], ['december', 'Last month: December']]),
         TG('What day comes after Monday?', P('room', '', cards(DAYS)), ['Sunday', 'Tuesday', 'Friday'], 'Tuesday', 'Say the days: Monday, …', 'Monday, Tuesday.'),
         TG('What day comes before Sunday?', P('room', '', cards(DAYS)), ['Saturday', 'Monday', 'Friday'], 'Saturday', 'Sunday is the last day. What comes just before it?', 'Saturday, Sunday.'),
         Y('What month comes after January?', P('room', '', cards(['January', '?'])), ['December', 'February', 'March'], 'February', 'Say the months: January, …', 'January, February.'),
         Y('How many days are in a week?', P('room', '', '<span style="font-size:3rem">📅</span>'), [5, 7, 12], 7, 'Count Monday to Sunday.', 'Seven days.')
       ] },
       { title: 'How can I put the events of a day in order?', char: 'owl', screens: [
-        W('In the morning I wake up and eat breakfast.', P('kitchen', '', clk(7, 0))),
-        W('In the afternoon I play and have a snack.', P('day', '', clk(3, 0))),
-        W('At night I go to bed. Morning, afternoon, night!', P('night', '', clk(8, 0))),
+        W('In the morning I wake up and eat breakfast.', P('kitchen', '', clk(7, 0)), [['morning', 'Morning: wake up and breakfast']]),
+        W('In the afternoon I play and have a snack.', P('day', '', clk(3, 0)), [['afternoon', 'Afternoon: play and a snack']]),
+        W('At night I go to bed. Morning, afternoon, night!', P('night', '', clk(8, 0)), [['night', 'Night: go to bed'], ['morning, afternoon', 'Morning → afternoon → night']]),
         TG('What do we do first: go to bed or wake up?', P('room', '', '<span style="font-size:3rem">🌅 🌙</span>'), ['wake up', 'go to bed'], 'wake up', 'The day starts in the morning.', 'First we wake up.'),
         TG('Which meal comes last in the day?', P('kitchen', '', cards(['breakfast', 'lunch', 'dinner'])), ['breakfast', 'lunch', 'dinner'], 'dinner', 'Dinner is in the evening.', 'Dinner comes last.'),
         Y('Which is in the right order?', P('day', '', '<span style="font-size:3rem">⏰ 🏫 🛏️</span>'), ['wake up, school, bed', 'bed, school, wake up', 'school, wake up, bed'], 'wake up, school, bed', 'What happens first in the day?', 'Wake up, then school, then bed.'),
         Y('Ollie has lunch, then plays. What came first?', P('day', '', cards(['lunch', 'play'])), ['lunch', 'play'], 'lunch', 'Listen for the word then.', 'Lunch came first.')
       ] },
       { title: 'How long is a minute, an hour and a day?', char: 'owl', screens: [
-        W('A minute is short. I can clap twenty times or sing a short song.', P('day', '', cards(['👏 clap', '🎵 sing']))),
-        W('An hour is longer. A lesson at school or a film for children takes about an hour.', P('room', '', clk(10, 0))),
-        W('A day is very long: from one morning to the next morning. There are twenty-four hours in a day!', P('day', '', '<span style="font-size:3rem">🌅 ☀️ 🌙</span>')),
+        W('A minute is short. I can clap twenty times or sing a short song.', P('day', '', cards(['👏 clap', '🎵 sing'])), [['clap', '1 minute: clap 20 times']]),
+        W('An hour is longer. One hour is sixty minutes. A lesson at school or a film for children takes about an hour.', P('room', '', clk(10, 0)), [['sixty minutes', '1 hour = 60 minutes']]),
+        W('A day is very long: from one morning to the next morning. There are twenty-four hours in a day!', P('day', '', '<span style="font-size:3rem">🌅 ☀️ 🌙</span>'), [['twenty-four hours', '24 hours in a day']]),
         TG('How long does it take to brush your teeth?', P('room', '', '<span style="font-size:3rem">🪥</span>'), ['2 minutes', '2 hours', '2 days'], '2 minutes', 'Is it short or long?', 'About two minutes.'),
         TG('How long is a night’s sleep?', P('night', '', '<span style="font-size:3rem">😴</span>'), ['10 minutes', '10 hours', '10 days'], '10 hours', 'It is all night long.', 'About ten hours.'),
         Y('How long does it take to eat an apple?', P('day', '', T(1, 'apple')), ['5 minutes', '5 hours', '5 days'], '5 minutes', 'Is it quick?', 'About five minutes.'),
