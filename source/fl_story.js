@@ -204,7 +204,9 @@
     var el = its[off + p.count]; if (!el) return;
     its.forEach(function (e) { if (e.classList.contains('fl-hl')) { e.classList.remove('fl-hl'); e.classList.add('fl-done'); } });
     el.classList.add('fl-hl');
-    try { var bb = el.getBBox(), t = document.createElementNS('http://www.w3.org/2000/svg', 'text'); t.setAttribute('class', 'fl-num'); t.setAttribute('x', bb.x + bb.width / 2); t.setAttribute('y', bb.y - 3); t.setAttribute('text-anchor', 'middle'); t.setAttribute('font-size', Math.max(12, Math.min(30, bb.height * 0.75))); t.textContent = p.n; el.appendChild(t); } catch (e) { /* ignore */ }
+    try { var bb = el.getBBox(), t = document.createElementNS('http://www.w3.org/2000/svg', 'text'); t.setAttribute('class', 'fl-num'); t.setAttribute('x', bb.x + bb.width / 2); t.setAttribute('y', bb.y - 3); t.setAttribute('text-anchor', 'middle'); t.setAttribute('font-size', Math.max(12, Math.min(30, bb.height * 0.75))); t.textContent = p.n; el.appendChild(t);
+      /* near the top of the picture: put the number under the thing instead */
+      var sv = el.ownerSVGElement, sr = sv && sv.getBoundingClientRect(), tr = t.getBoundingClientRect(); if (sr && tr.top < sr.top + 2) { t.setAttribute('y', bb.y + bb.height + Number(t.getAttribute('font-size'))); } } catch (e) { /* ignore */ }
   }
   function glow(box, t) {
     var ks = {}; [].forEach.call(box.querySelectorAll('.fl-it[data-k]'), function (e) { ks[e.getAttribute('data-k')] = 1; });
