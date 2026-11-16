@@ -175,6 +175,12 @@ r = await adminPost({ action: 'send', subject: 'P5 news', body: 'x', confirm: '1
   ok(!/unsubscribe/i.test(one[0].text) && /<p[^>]*>Hello<\/p>/.test(one[0].html), 'admin email is a normal letter, not a newsletter');
   ok(/Send an email/.test(t) && /name="to" value="parent@example.com"/.test(t), 'admin page lists accounts to tick');
   globalThis.fetch = rf2; }
+// admin log out
+{ let q = await worker.fetch(new Request(B + '/admin/logout'), env); const t = await q.text(); ok(q.status === 200 && /logged out of admin/.test(t) && /\/admin\/bye/.test(t), 'admin log out page works without the password');
+  q = await worker.fetch(new Request(B + '/admin/bye'), env); ok(q.status === 401 && /MathsStudio admin/.test(q.headers.get('WWW-Authenticate') || ''), 'log out replaces the saved admin password');
+  sqlite.prepare('DELETE FROM rate').run();
+  for (let i = 0; i < 12; i++) await worker.fetch(new Request(B + '/admin', { headers: { Authorization: 'Basic ' + btoa('logged-out:x'), 'CF-Connecting-IP': '9.9.9.9' } }), env);
+  q = await worker.fetch(new Request(B + '/admin', { headers: { Authorization: 'Basic ' + btoa('a:pw'), 'CF-Connecting-IP': '9.9.9.9' } }), env); ok(q.status === 200 && /href="\/admin\/logout"/.test(await q.text()), 'after log out the right password still works, and the page has a Log out button'); }
 globalThis.fetch = rf;
 // monthly subscription
 const nowS = () => Math.floor(Date.now() / 1000); let subState = { id: 'sub_test_1', status: 'active', customer: 'cus_test_1', current_period_end: nowS() + 30 * 86400 }; let portalBody = null;

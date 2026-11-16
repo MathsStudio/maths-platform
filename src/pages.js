@@ -14,6 +14,11 @@ export function shell(title, body) {
 export function message(title, text, extra) {
   return shell(title, '<div class="card"><h1>' + esc(title) + '</h1><p>' + text + '</p>' + (extra || '') + '</div>');
 }
+export function adminOut() {
+  return shell('Logged out', '<div class="card"><h1>You are logged out of admin</h1><p id="outmsg">Logging out…</p><p><a class="btn" href="/admin">Log in again</a> <a class="btn alt" href="/">Go to MathsStudio</a></p></div>' +
+    '<script>(function(){var m=document.getElementById("outmsg");function done(){m.textContent="Done. To get back in you will need the admin password again. On a shared computer, also close the browser.";}' +
+    'try{var x=new XMLHttpRequest();x.open("GET","/admin/bye",true,"logged-out","x");x.onloadend=done;x.send();}catch(e){done();}})();</script>');
+}
 export function confirmLink(token) {
   return shell('Continue to MathsStudio', '<div class="card"><h1>Almost there</h1><p>Press the button to confirm and sign in.</p>' +
     '<form method="post" action="/auth/verify"><input type="hidden" name="t" value="' + esc(token) + '"><button class="btn" type="submit">Confirm and sign in</button></form></div>');
@@ -86,7 +91,7 @@ export function admin(rows, o) {
   const by = {}; rows.forEach(r => { if (r.verified_at) by[r.year || '-'] = (by[r.year || '-'] || 0) + 1; });
   const hl = String(o.hl || '').toLowerCase(), tr = rows.map(r => '<tr' + (hl && String(r.email).toLowerCase() === hl ? ' style="background:#fff6d6"' : '') + '><td>' + esc(r.email) + '</td><td>' + esc(r.role || '') + '</td><td>' + accessCell(r) + '</td><td>' + (r.verified_at ? 'Yes' : 'No') + '</td><td>' + ((r.verified_at && r.marketing) ? 'Yes' : 'No') + '</td><td>' + esc((r.created_at || '').slice(0, 10)) + '</td><td>' + esc((r.last_login || '').slice(0, 10)) + '</td></tr>').join('');
   return '<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="robots" content="noindex"><title>Admin · MathsStudio</title><link rel="stylesheet" href="/site.css?v=4"></head><body class="plain"><main class="adm">' +
-    '<header class="admbar"><h1>Admin</h1><a class="btn alt" href="/admin/export.csv">Download CSV</a></header><div class="stats"><div><b>' + rows.length + '</b><span>Sign-ups</span></div><div><b>' + verified + '</b><span>Verified</span></div><div><b>' + mk + '</b><span>OK to email with news</span></div>' +
+    '<header class="admbar"><h1>Admin</h1><span class="admact"><a class="btn alt" href="/admin/export.csv">Download CSV</a><a class="btn alt" href="/admin/logout">Log out</a></span></header><div class="stats"><div><b>' + rows.length + '</b><span>Sign-ups</span></div><div><b>' + verified + '</b><span>Verified</span></div><div><b>' + mk + '</b><span>OK to email with news</span></div>' +
     Object.keys(by).sort().map(k => '<div><b>' + by[k] + '</b><span>' + esc(k) + ' verified</span></div>').join('') + '</div>' +
     (o.note && !o.hl ? '<p class="nlnote" role="status">' + esc(o.note) + '</p>' : '') +
     '<div class="admgrid"><section class="card nl"><h2>Send a newsletter</h2><p class="note">Goes only to people who verified their email, said yes to news and have not unsubscribed (<b>' + mk + '</b> now). Every email has its own unsubscribe link.</p>' +

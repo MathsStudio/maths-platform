@@ -201,7 +201,8 @@ async function admin(request, env, url) {
   if (!env.ADMIN_PASSWORD) return page(pg.message('Admin locked', 'The admin password has not been set yet.'), 503);
   const h = request.headers.get('Authorization') || '', ok = h.startsWith('Basic ') && (() => { try { const s = atob(h.slice(6)), i = s.indexOf(':'); return safeEqual(s.slice(i + 1), env.ADMIN_PASSWORD); } catch (e) { return false; } })();
   if (!(await db.rateOkPeek(env, 'adminfail:' + ip(request), 10, 900))) return new Response('Too many wrong tries. Wait 15 minutes.', { status: 429, headers: { 'Cache-Control': 'no-store' } });
-  if (!ok && h) await db.rateOk(env, 'adminfail:' + ip(request), 1000, 900);   // only wrong passwords count, not the browser's first empty request
+  const out = (() => { try { return h.startsWith('Basic ') && atob(h.slice(6)).startsWith('logged-out:'); } catch (e) { return false; } })();   // the dummy login left by Log out is not a wrong try
+  if (!ok && h && !out) await db.rateOk(env, 'adminfail:' + ip(request), 1000, 900);   // only wrong passwords count, not the browser's first empty request
   if (!ok) return new Response('Password required.', { status: 401, headers: { 'WWW-Authenticate': 'Basic realm="MathsStudio admin", charset="UTF-8"', 'Cache-Control': 'no-store' } });
   if (url.pathname === '/admin/newsletter' && request.method === 'POST') return await newsletter(request, env);
   if (url.pathname === '/admin/email' && request.method === 'POST') return await directEmail(request, env);
@@ -402,6 +403,9 @@ export default {
   async fetch(request, env) {
     const url = new URL(request.url), p = url.pathname, m = request.method;
     try {
+      /* log out of admin: the browser keeps the admin password until it is replaced, so the page swaps it for a dummy one */
+      if (p === '/admin/logout') return page(pg.adminOut());
+      if (p === '/admin/bye') return new Response('Logged out.', { status: 401, headers: { 'WWW-Authenticate': 'Basic realm="MathsStudio admin", charset="UTF-8"', 'Cache-Control': 'no-store', 'X-Robots-Tag': 'noindex' } });
       if (p === '/admin' || p === '/admin/' || p === '/admin/export.csv' || p === '/admin/newsletter' || p === '/admin/email' || p === '/admin/revoke' || p === '/admin/grant') { await db.init(env); return await admin(request, env, url); }
       const dynamic = p.startsWith('/api/') || p.startsWith('/auth/') || p === '/logout' || p === '/unsubscribe' || p === '/account' || p.startsWith('/account/') || p === '/app' || p.startsWith('/app/') || p === '/learn' || p.startsWith('/learn/');
       if (!dynamic) return withHeaders(await env.ASSETS.fetch(request));
