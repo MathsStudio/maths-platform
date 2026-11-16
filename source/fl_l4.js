@@ -234,7 +234,7 @@
 
   LI(405, 'learn2', ['Making totals', 'How can different coins and notes make the same total?',
     'An amount can be made with different coins and notes. Start with the biggest one that fits, then add smaller ones.', COIN([200, 50]),
-    [['coin', '1p, 2p, 5p, 10p, 20p, 50p, £1, £2', '🪙'], ['note', '£5 and £10', '💷'], ['total', 'how much altogether', '➕'], ['fewest coins', 'use the biggest first', '🥇']],
+    [['coin', '1p, 2p, 5p, 10p, 20p, 50p, £1, £2', '🪙'], ['note', '£5, £10, £20, £50 and £100', '💷'], ['total', 'how much altogether', '➕'], ['fewest coins', 'use the biggest first', '🥇']],
     [['Molly needs £2.50 for a float.', COIN([200, 50])],
       ['£2.50 could be £2 + 50p, or £1 + £1 + 50p.', pair(COIN([200, 50]), COIN([100, 100, 50]))],
       ['£2.50 = £2 + 50p = £1 + £1 + 50p', B('£2 + 50p = £2.50')]],

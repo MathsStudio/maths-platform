@@ -73,7 +73,7 @@
       pages: [
         pg(P('shop', 'mouse', '', 'Hello!'), 'Molly the mouse has a little toy shop. Let’s help her today!'),
         pg(P('shop', 'mouse', C([1, 2, 5, 10, 20, 50, 100, 200], 8)), 'These are our coins: one penny, two pence, five pence, ten pence, twenty pence, fifty pence, one pound and two pounds.'),
-        pg(P('shop', 'mouse', C([500, 1000])), 'Notes are paper money for bigger amounts. Here is a five pound note and a ten pound note.', null, [['five pound note', 'Notes: £5 and £10']]),
+        pg(P('shop', 'mouse', C([500, 1000, 2000, 5000, 10000])), 'Notes are paper money for bigger amounts. Here are the notes: five pounds, ten pounds, twenty pounds, fifty pounds and one hundred pounds.', null, [['here are the notes', 'Notes: £5, £10, £20, £50, £100']]),
         pg(P('shop', 'owl', C([2, 2, 1])), 'Ollie the owl wants a ball for five pence. He pays with two pence, two pence and one penny.', Q('Do 2p, 2p and 1p make <b>5p</b>?', ['Yes', 'No'], 'Yes', 'Two, four, five. Yes!')),
         pg(P('shop', 'owl', C([5, 2, 1])), 'Next Ollie wants a toy car. He pays with five pence, two pence and one penny.', Q('How much does Ollie pay?', ['7p', '8p', '9p'], '8p', 'Five, seven, eight. Eight pence.')),
         pg(P('shop', 'frog', C([20])), 'Frankie the frog wants a kite for fifteen pence. He only has a twenty pence coin.', null, [['fifteen pence', 'Kite: 15p'], ['twenty pence', 'Frankie has 20p']]),
@@ -83,7 +83,7 @@
       { title: 'What coins and notes do we use?', char: 'mouse', screens: [
         W('These are the small coins: one penny, two pence and five pence.', P('shop', '', C([1, 2, 5])), [['small coins', 'Small coins: 1p, 2p, 5p']]),
         W('These are worth more: ten pence, twenty pence and fifty pence. Look at their shapes!', P('shop', '', C([10, 20, 50])), [['worth more', 'Bigger coins: 10p, 20p, 50p']]),
-        W('These are pound coins and notes: one pound, two pounds, a five pound note and a ten pound note.', P('shop', '', C([100, 200, 500, 1000])), [['pound coins', '£1, £2, £5 and £10']]),
+        W('These are pound coins: one pound and two pounds. And these are notes: five, ten, twenty, fifty and one hundred pounds.', P('shop', '', C([100, 200, 500, 1000, 2000, 5000, 10000])), [['pound coins', 'Pound coins: £1 and £2'], ['these are notes', 'Notes: £5, £10, £20, £50, £100']]),
         TG('What is this coin?', P('shop', '', C([10])), ['1p', '10p', '50p'], '10p', 'Read the number on the coin.', 'It is ten pence.'),
         TG('What is this coin? It has seven sides.', P('shop', '', C([50])), ['5p', '20p', '50p'], '50p', 'The big coin with seven sides is fifty pence.', 'It is fifty pence.'),
         Y('What is this coin?', P('shop', '', C([200])), ['£1', '£2', '20p'], '£2', 'It is gold and silver, with a £ sign.', 'It is two pounds.'),
@@ -129,7 +129,7 @@
         pg(P('kitchen', 'owl', clk(7, 30)), 'Then Ollie eats his breakfast. Now the long hand points to six. It is half past seven.', null, [['half past seven', 'Breakfast: half past 7']]),
         pg(P('room', 'owl', cards(DAYS)), 'Today is Monday. Monday to Friday are school days. Saturday and Sunday are the weekend, with no school. There are seven days in a week.', Q('What day comes after Tuesday?', ['Monday', 'Wednesday', 'Sunday'], 'Wednesday', 'Monday, Tuesday, Wednesday.'), [['school days', 'School days: Monday to Friday'], ['weekend', 'Weekend: Saturday and Sunday, no school'], ['seven days', '7 days in a week']]),
         pg(P('day', 'owl', clk(9, 0)), 'Ollie flies to school. Look at the clock!', Q('What time does Ollie get to school?', ['9 o’clock', 'half past 9', '3 o’clock'], '9 o’clock', 'The short hand is on nine and the long hand is on twelve.')),
-        pg(P('kitchen', 'owl', clk(12, 15)), 'Lunchtime! Ollie has his lunch from a quarter past twelve until one o’clock.', null, [['lunch', 'Lunchtime: 12:15 to 1 o’clock']]),
+        pg(P('kitchen', 'owl', clk(12, 15)), 'Lunchtime! Ollie has his lunch from a quarter past twelve until one o’clock.', null, [['lunch', 'Lunchtime: quarter past 12 to 1 o’clock']]),
         pg(P('day', 'owl', clk(3, 0)), 'At three o’clock school finishes and Ollie flies home.', null, [['three o’clock', 'Home time: 3 o’clock']]),
         pg(P('room', 'owl', clk(4, 0)), 'At four o’clock Ollie does his homework.', null, [['homework', 'Homework: 4 o’clock']]),
         pg(P('day', 'owl', clk(5, 0)), 'Playtime! Ollie plays outside from five o’clock until six o’clock. That is one hour of play.', null, [['playtime', 'Playtime: 5 o’clock to 6 o’clock']]),

@@ -94,7 +94,7 @@
   };
   function coinSvg(v, cx, cy) {
     var c = COIN[v]; if (!c) {   /* a note */
-      var col = v === 500 ? '#7fc7c2' : v === 1000 ? '#e8956b' : '#b78ad6';
+      var col = { 500: '#7fc7c2', 1000: '#e8956b', 2000: '#b78ad6', 5000: '#ef8a8a', 10000: '#9fb4e8' }[v] || '#b78ad6';   /* £5, £10, £20, £50, £100 notes */
       return '<rect x="' + (cx - 38) + '" y="' + (cy - 21) + '" width="76" height="42" rx="5" fill="' + col + '" stroke="' + INK + '" stroke-width="2"/>' + tx(cx, cy + 8, '£' + v / 100, 20);
     }
     var r = c[2], s;

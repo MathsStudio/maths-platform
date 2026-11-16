@@ -245,7 +245,7 @@
 
   LI(306, 'learn2', ['Making totals', 'How can different coins and notes make the same total?',
     'You can make the same amount with different coins. 20p can be one 20p, two 10ps, or four 5ps.', COIN([20]),
-    [['coin', 'metal money', '🪙'], ['note', 'paper money, like £5', '💷'], ['total', 'how much altogether', '➕'], ['amount', 'how much money', '💰']],
+    [['coin', 'metal money', '🪙'], ['note', 'paper money, like £5, £10, £20 or £50', '💷'], ['total', 'how much altogether', '➕'], ['amount', 'how much money', '💰']],
     [['Ollie has a 20p coin. His friend has two 10p coins. They both have 20p.', pair(COIN([20]), COIN([10, 10]))],
       ['More ways to make 20p.', pair(COIN([10, 5, 5]), COIN([5, 5, 5, 5]))],
       ['We write 20p = 10p + 10p = 10p + 5p + 5p.', B('20p = 10p + 10p')]],

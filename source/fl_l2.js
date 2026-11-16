@@ -116,10 +116,10 @@
   /* ========================= 203 Money (Molly's toy shop) ========================= */
   LI(203, 'learn1', ['Coins and notes', 'What coins and notes do we use?',
     'We use coins and notes to pay. Each coin has a value written on it.', COIN([1, 2, 5, 10, 20, 50]),
-    [['coin', 'metal money', '🪙'], ['note', 'paper money', '💷'], ['p (pence)', 'small amounts, like 5p', '🔸'], ['£ (pounds)', 'bigger amounts, like £1', '💰']],
+    [['coin', 'metal money', '🪙'], ['note', 'paper money, like £5, £10, £20, £50 or £100', '💷'], ['p (pence)', 'small amounts, like 5p', '🔸'], ['£ (pounds)', 'bigger amounts, like £1', '💰']],
     [['Molly’s till has coins of different sizes and colours.', COIN([1, 2, 5, 10, 20, 50])],
       ['Pound coins too: £1 and £2.', COIN([100, 200])],
-      ['Notes: £5 and £10.', C(['£5', '£10'])]],
+      ['Notes: £5, £10, £20, £50 and £100.', C(['£5', '£10', '£20', '£50', '£100'])]],
     [['Which coin is worth the most?', ['Read the number on each coin.', '50 is the biggest.'], 'The 50p coin', COIN([5, 50, 10])],
       ['How much is this coin?', ['Read the number: 20.'], '20p', COIN([20])],
       ['Which is worth more: 10p or 2p?', ['Compare 10 and 2.', '10 is more.'], '10p', COIN([10, 2])]],
