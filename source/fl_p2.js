@@ -10,7 +10,7 @@
   /* ================= 1. Counting and numbers: Ruby the rocket ================= */
   FL.topic({ n: 201, year: 'P2', short: 'Counting', title: 'Counting and numbers', blurb: 'Count with Ruby the rocket: number patterns, tens and ones, number lines, one more and one less.',
     /* Story time: Ruby needs 10 stars to fly home (counting, a pattern, ten, one more and one less) */
-    story: { title: 'Ruby’s Star Count', intro: 'Ruby’s Star Count. This is Ruby the rocket. Today she needs our help to count some stars. Let’s begin.',
+    story: { title: 'Ruby’s Star Count', intro: 'Ruby’s Star Count.',
       endPic: FL.panel('space', 'rocket', '<div style="font-size:2.4rem;font-weight:800;color:#2b2340;background:#fff;border:3px solid #2b2340;border-radius:16px;padding:6px 18px">3, 2, 1, blast off!</div>'),
       endText: 'Ruby counts down: three, two, one, blast off! She flies home with ten stars. Well done for counting with Ruby!',
       pages: (function () {
@@ -20,7 +20,7 @@
         function pg(pic, text, ask) { return { pic: pic, text: text, ask: ask }; }
         function Q(q, options, answer, explain) { return { q: q, options: options, answer: answer, explain: explain }; }
         return [
-          pg(P('space', 'rocket', '', 'Let’s count!'), 'Ruby the rocket wants to fly home. She needs ten stars to fill her fuel tank.'),
+          pg(P('space', 'rocket', ''), 'This is Ruby the rocket. Ruby says, “Can you help me count some stars?” Ruby wants to fly home. She needs ten stars to fill her fuel tank.'),
           pg(P('space', 'rocket', T(5, 'star', 5)), 'Ruby finds some stars. Let’s count them.', Q('How many stars are there?', [4, 5, 6], 5, 'One, two, three, four, five. There are five stars.')),
           pg(P('space', 'rocket', tank(5)), 'Ruby puts the stars in her fuel tank. The tank has ten spaces.', Q('How many more stars make <b>10</b>?', [4, 5, 6], 5, 'Five and five make ten.')),
           pg(P('pond', 'rocket', stones([2, 4, 6, '?'])), 'Ruby hops on the stepping stones: two, four, six.', Q('What number comes next?', [7, 8, 10], 8, 'Two, four, six, eight. Each stone is two more.')),

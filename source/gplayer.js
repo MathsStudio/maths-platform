@@ -93,6 +93,13 @@
     '.gp-vs{display:flex;flex-wrap:wrap;gap:8px 16px;align-items:center}.gp-vs label{display:flex;gap:6px;align-items:center;font-weight:700;font-size:15px}.gp-vs select{min-height:40px;max-width:min(260px,60vw);font:inherit;font-weight:600;border:2px solid var(--line);border-radius:10px;padding:4px 8px;background:var(--surface);color:var(--fg)}',
     '.gp-body.gp-turn{animation:gpTurn .7s ease both}@keyframes gpTurn{0%{opacity:0;transform:translateX(40px) rotate(1deg)}100%{opacity:1;transform:none}}',
     '.gp-cap .now{background:#fff2a8;border-radius:6px;box-shadow:0 0 0 3px #fff2a8}.gp-cap .think{display:inline-flex;gap:6px;align-items:center;font-weight:800;color:#881cd6}',
+    '.fl-cloud{position:absolute;z-index:4;box-sizing:border-box;background:#fff;color:#221a3a;border:4px solid #221a3a;border-radius:26px;padding:16px 26px;font-family:"Comic Sans MS","Comic Neue","Chalkboard SE",system-ui,sans-serif;font-weight:800;font-size:26px;line-height:1.25;text-align:left;box-shadow:4px 6px 0 rgba(0,0,0,.22);pointer-events:none;visibility:hidden}' +
+    '.fl-cloud::after{content:"";position:absolute;left:var(--tx,26px);bottom:-26px;width:0;height:0;border-left:14px solid transparent;border-right:14px solid transparent;border-top:28px solid #221a3a;transform:skewX(-25deg)}' +
+    '.fl-cloud::before{content:"";position:absolute;left:calc(var(--tx,26px) + 4px);bottom:-17px;width:0;height:0;border-left:10px solid transparent;border-right:10px solid transparent;border-top:20px solid #fff;transform:skewX(-25deg);z-index:1}' +
+    '.fl-cloud.side::after{left:-28px;top:var(--ty,calc(50% - 14px));bottom:auto;border:14px solid transparent;border-right:28px solid #221a3a;border-left:0;transform:none}.fl-cloud.side::before{left:-18px;top:calc(var(--ty,calc(50% - 14px)) + 4px);bottom:auto;border:10px solid transparent;border-right:20px solid #fff;border-left:0;transform:none}' +
+    '.fl-cloud.on{visibility:visible;animation:flFact .45s cubic-bezier(.3,1.6,.6,1) both;transform-origin:10% 100%}' +
+    '.gp.narrow .fl-cloud{font-size:14px;border-width:2px;padding:7px 11px;border-radius:14px}.gp.narrow .fl-cloud::after{bottom:-15px;border-left-width:8px;border-right-width:8px;border-top-width:16px}.gp.narrow .fl-cloud::before{bottom:-11px;left:calc(var(--tx,26px) + 3px);border-left-width:6px;border-right-width:6px;border-top-width:12px}' +
+    '.gp.narrow .fl-cloud.side::after{left:-16px;border-width:8px;border-right-width:16px;border-left-width:0}.gp.narrow .fl-cloud.side::before{left:-12px;border-width:6px;border-right-width:12px;border-left-width:0}' +
     '.gp-stage,.gp-stage *{-webkit-user-select:none;user-select:none;caret-color:transparent;cursor:default}.gp-stage button,.gp-stage .o{cursor:pointer}' +
     '.fl-facts{position:absolute;left:12px;right:12px;top:10px;display:flex;flex-direction:column;align-items:center;gap:8px;pointer-events:none;z-index:3}'+
     '.fl-fact{background:#fff;color:#221a3a;border:4px solid #ffb703;border-radius:999px;padding:5px 22px;font-weight:900;font-size:26px;line-height:1.2;text-align:center;max-width:100%;box-shadow:0 8px 22px rgba(0,0,0,.25);visibility:hidden}'+
@@ -371,9 +378,45 @@
         if (fx) { var old = fx.querySelector('.fl-facts'); if (old) old.remove(); }
         if (fx && fs.length) { board = document.createElement('div'); board.className = 'fl-facts'; board.innerHTML = '<div class="fl-fact"></div>'; fx.appendChild(board); }
         function factFor(t) { if (!board) return; var low = String(t).toLowerCase(); fs.some(function (f, j) { if (shown[j] || low.indexOf(String(f[0]).toLowerCase()) < 0) return false; shown[j] = 1; var row = board.firstChild; row.classList.remove('on'); void row.offsetWidth; row.textContent = f[1]; row.classList.add('on'); return true; }) || board.firstChild.classList.remove('on'); }   /* shown while its sentence is said, gone when the next sentence starts */
+        /* a speech cloud from the character while their own words (in quotes) are spoken */
+        var cloud = null;
+        function quoteFor(t) {
+          if (!fx) return;
+          var pp = blk.querySelector('.flp-pic');
+          if (!t) { if (cloud) { cloud.classList.remove('on'); } if (pp) pp.style.transform = ''; return; }
+          var ch = blk.querySelector('.flp-ch'); if (!ch) return;
+          if (!cloud) { cloud = document.createElement('div'); cloud.className = 'fl-cloud'; fx.appendChild(cloud); }
+          var fr = fx.getBoundingClientRect(), cr = (ch.querySelector('svg') || ch).getBoundingClientRect(), k = fr.width / Math.max(1, fx.offsetWidth);   /* the stage may be scaled to fit the screen */
+          /* written with numerals: the voice says "seven am", the cloud shows "7 am" */
+          var NW = { zero: 0, one: 1, two: 2, three: 3, four: 4, five: 5, six: 6, seven: 7, eight: 8, nine: 9, ten: 10, eleven: 11, twelve: 12, thirteen: 13, fourteen: 14, fifteen: 15, sixteen: 16, seventeen: 17, eighteen: 18, nineteen: 19, twenty: 20, thirty: 30, forty: 40, fifty: 50, sixty: 60, seventy: 70, eighty: 80, ninety: 90, hundred: 100 };
+          var txt = String(t).replace(/[“”"]/g, '').trim().replace(/\b(twenty|thirty|forty|fifty|sixty|seventy|eighty|ninety)-(one|two|three|four|five|six|seven|eight|nine)\b/gi, function (m, a, b) { return NW[a.toLowerCase()] + NW[b.toLowerCase()]; })
+            .replace(/\b(zero|one|two|three|four|five|six|seven|eight|nine|ten|eleven|twelve|thirteen|fourteen|fifteen|sixteen|seventeen|eighteen|nineteen|twenty|thirty|forty|fifty|sixty|seventy|eighty|ninety|hundred)\b/gi, function (m) { return NW[m.toLowerCase()]; });
+          txt = txt.replace(/(\d)\s+(am|pm|o’clock|minutes?|hours?|cm|kg|m)\b/g, '$1\u00a0$2');   /* keep 7 and am on the same line */
+          cloud.textContent = txt;
+          var W = fx.offsetWidth, H = fx.offsetHeight, cl = (cr.left - fr.left) / k, cw = cr.width / k, cy = (cr.top - fr.top) / k, ch2 = cr.height / k;
+          cloud.style.left = '0px'; cloud.style.top = '0px'; cloud.style.fontSize = ''; cloud.style.maxWidth = Math.min(460, W - cl - cw * 0.6 - 16) + 'px';
+          var bw = cloud.offsetWidth, bh = cloud.offsetHeight, tl = fx.closest('.gp.narrow') ? 16 : 26;
+          /* the tail's tip touches the speaker: above them, made wider (fewer lines) if needed to fit; beside them only as a last resort */
+          var tipX = cl + cw * 0.62, tipY = cy + ch2 * 0.12, left = tipX - 34, top = tipY - tl - bh;
+          if (top < 6) { cloud.style.maxWidth = (W - Math.max(6, left) - 8) + 'px'; bw = cloud.offsetWidth; bh = cloud.offsetHeight; top = tipY - tl - bh; }
+          if (top < 6 && tipY - tl - 6 > 40) { cloud.style.fontSize = '0.82em'; bw = cloud.offsetWidth; bh = cloud.offsetHeight; top = tipY - tl - bh; }
+          var side = top < 6; if (side) { cloud.style.fontSize = ''; cloud.style.maxWidth = Math.min(460, W - cl - cw * 0.6 - 16) + 'px'; bw = cloud.offsetWidth; bh = cloud.offsetHeight; }
+          if (side) { tipX = cl + cw * 0.8; tipY = cy + ch2 * 0.35; left = tipX + tl; top = tipY - bh / 2; }
+          left = Math.min(Math.max(6, left), W - bw - 6); top = Math.min(Math.max(6, top), H - bh - 6);
+          cloud.classList.toggle('side', side);
+          cloud.style.left = left + 'px'; cloud.style.top = top + 'px';
+          /* keep the tail pointing at the speaker even when the cloud had to be nudged to stay inside */
+          if (side) cloud.style.setProperty('--ty', Math.min(bh - 24, Math.max(6, tipY - top - 14)) + 'px'); else cloud.style.setProperty('--tx', Math.min(bw - 40, Math.max(8, tipX - left - 14)) + 'px');
+          /* if the cloud would cover part of the picture, move the picture down a little while the cloud shows */
+          if (pp) { pp.style.transform = ''; var kids = [].slice.call(pp.querySelectorAll('svg, .card, span, div')).map(function (e) { return e.getBoundingClientRect(); }).filter(function (r) { return r.width > 4 && r.height > 4; });
+            if (kids.length) { var pt = Math.min.apply(null, kids.map(function (r) { return r.top; })), pb = Math.max.apply(null, kids.map(function (r) { return r.bottom; })), pl = Math.min.apply(null, kids.map(function (r) { return r.left; }));
+              var cb = fr.top + (top + bh) * k, cR = fr.left + (left + bw) * k, over = cb + 6 * k - pt;
+              if (over > 0 && cR > pl) { var space = fr.bottom - 4 * k - pb; pp.style.transition = 'transform .3s'; pp.style.transform = 'translateY(' + Math.max(0, Math.min(over, space)) / k + 'px)'; } } }
+          cloud.classList.remove('on'); void cloud.offsetWidth; cloud.classList.add('on');
+        }
         root.classList.add('gp-talk');
-        H.flTell(c0.say, { box: blk, keys: fx, fact: factFor, cap: null, voice: okVoice, alive: function () { return my === token && playing && root.isConnected; } }, function () {
-          root.classList.remove('gp-talk'); if (board) board.firstChild.classList.remove('on');
+        H.flTell(c0.say, { box: blk, keys: fx, fact: factFor, quote: quoteFor, cap: null, voice: okVoice, alive: function () { return my === token && playing && root.isConnected; } }, function () {
+          root.classList.remove('gp-talk'); if (board) board.firstChild.classList.remove('on'); quoteFor(null);
           if (my !== token || !playing || !root.isConnected) return;
           /* a question: give the child time to think before the answer */
           if (c0.think) { waitPick(c0, my); return; }

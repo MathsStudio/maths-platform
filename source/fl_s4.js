@@ -260,7 +260,7 @@
         pg(P('day', 'owl', clk(9, 10)), 'The train leaves at ten past nine. The long hand points to two: ten minutes past.', Q('What time is it?', ['10 past 9', '2 past 9', '10 to 9'], '10 past 9', 'Each number is five minutes.')),
         pg(P('day', 'owl', K.tbl(TT, ['Station', 'Train 1', 'Train 2'])), 'Ollie reads the timetable. Train one leaves Glasgow at nine fifteen and reaches Perth at ten twenty.'),
         pg(P('day', 'owl', clk(2, 50)), 'Ollie’s next train leaves at ten to three and takes twenty-five minutes. Ten minutes gets to three o’clock, then fifteen more.', Q('When does it arrive?', ['3:15', '3:25', '2:75'], '3:15', 'Bridge through the hour.')),
-        pg(P('night', 'owl', cards(['7 am ☀️', '7 pm 🌙'])), 'Ollie’s gran says: we eat breakfast at seven am and dinner at seven pm.'),
+        pg(P('night', 'owl', cards(['7 am ☀️', '7 pm 🌙'])), 'Ollie says, “At home we eat breakfast at seven am and dinner at seven pm.”'),
         pg(P('night', 'owl', clk(9, 0)), 'At nine pm Ollie is tucked up in bed after a long day.')
       ] },
     learn: [

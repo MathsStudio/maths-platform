@@ -16019,6 +16019,13 @@ S.spatialExtra = S.extraMakers;
     '.gp-vs{display:flex;flex-wrap:wrap;gap:8px 16px;align-items:center}.gp-vs label{display:flex;gap:6px;align-items:center;font-weight:700;font-size:15px}.gp-vs select{min-height:40px;max-width:min(260px,60vw);font:inherit;font-weight:600;border:2px solid var(--line);border-radius:10px;padding:4px 8px;background:var(--surface);color:var(--fg)}',
     '.gp-body.gp-turn{animation:gpTurn .7s ease both}@keyframes gpTurn{0%{opacity:0;transform:translateX(40px) rotate(1deg)}100%{opacity:1;transform:none}}',
     '.gp-cap .now{background:#fff2a8;border-radius:6px;box-shadow:0 0 0 3px #fff2a8}.gp-cap .think{display:inline-flex;gap:6px;align-items:center;font-weight:800;color:#881cd6}',
+    '.fl-cloud{position:absolute;z-index:4;box-sizing:border-box;background:#fff;color:#221a3a;border:4px solid #221a3a;border-radius:26px;padding:16px 26px;font-family:"Comic Sans MS","Comic Neue","Chalkboard SE",system-ui,sans-serif;font-weight:800;font-size:26px;line-height:1.25;text-align:left;box-shadow:4px 6px 0 rgba(0,0,0,.22);pointer-events:none;visibility:hidden}' +
+    '.fl-cloud::after{content:"";position:absolute;left:var(--tx,26px);bottom:-26px;width:0;height:0;border-left:14px solid transparent;border-right:14px solid transparent;border-top:28px solid #221a3a;transform:skewX(-25deg)}' +
+    '.fl-cloud::before{content:"";position:absolute;left:calc(var(--tx,26px) + 4px);bottom:-17px;width:0;height:0;border-left:10px solid transparent;border-right:10px solid transparent;border-top:20px solid #fff;transform:skewX(-25deg);z-index:1}' +
+    '.fl-cloud.side::after{left:-28px;top:var(--ty,calc(50% - 14px));bottom:auto;border:14px solid transparent;border-right:28px solid #221a3a;border-left:0;transform:none}.fl-cloud.side::before{left:-18px;top:calc(var(--ty,calc(50% - 14px)) + 4px);bottom:auto;border:10px solid transparent;border-right:20px solid #fff;border-left:0;transform:none}' +
+    '.fl-cloud.on{visibility:visible;animation:flFact .45s cubic-bezier(.3,1.6,.6,1) both;transform-origin:10% 100%}' +
+    '.gp.narrow .fl-cloud{font-size:14px;border-width:2px;padding:7px 11px;border-radius:14px}.gp.narrow .fl-cloud::after{bottom:-15px;border-left-width:8px;border-right-width:8px;border-top-width:16px}.gp.narrow .fl-cloud::before{bottom:-11px;left:calc(var(--tx,26px) + 3px);border-left-width:6px;border-right-width:6px;border-top-width:12px}' +
+    '.gp.narrow .fl-cloud.side::after{left:-16px;border-width:8px;border-right-width:16px;border-left-width:0}.gp.narrow .fl-cloud.side::before{left:-12px;border-width:6px;border-right-width:12px;border-left-width:0}' +
     '.gp-stage,.gp-stage *{-webkit-user-select:none;user-select:none;caret-color:transparent;cursor:default}.gp-stage button,.gp-stage .o{cursor:pointer}' +
     '.fl-facts{position:absolute;left:12px;right:12px;top:10px;display:flex;flex-direction:column;align-items:center;gap:8px;pointer-events:none;z-index:3}'+
     '.fl-fact{background:#fff;color:#221a3a;border:4px solid #ffb703;border-radius:999px;padding:5px 22px;font-weight:900;font-size:26px;line-height:1.2;text-align:center;max-width:100%;box-shadow:0 8px 22px rgba(0,0,0,.25);visibility:hidden}'+
@@ -16297,9 +16304,45 @@ S.spatialExtra = S.extraMakers;
         if (fx) { var old = fx.querySelector('.fl-facts'); if (old) old.remove(); }
         if (fx && fs.length) { board = document.createElement('div'); board.className = 'fl-facts'; board.innerHTML = '<div class="fl-fact"></div>'; fx.appendChild(board); }
         function factFor(t) { if (!board) return; var low = String(t).toLowerCase(); fs.some(function (f, j) { if (shown[j] || low.indexOf(String(f[0]).toLowerCase()) < 0) return false; shown[j] = 1; var row = board.firstChild; row.classList.remove('on'); void row.offsetWidth; row.textContent = f[1]; row.classList.add('on'); return true; }) || board.firstChild.classList.remove('on'); }   /* shown while its sentence is said, gone when the next sentence starts */
+        /* a speech cloud from the character while their own words (in quotes) are spoken */
+        var cloud = null;
+        function quoteFor(t) {
+          if (!fx) return;
+          var pp = blk.querySelector('.flp-pic');
+          if (!t) { if (cloud) { cloud.classList.remove('on'); } if (pp) pp.style.transform = ''; return; }
+          var ch = blk.querySelector('.flp-ch'); if (!ch) return;
+          if (!cloud) { cloud = document.createElement('div'); cloud.className = 'fl-cloud'; fx.appendChild(cloud); }
+          var fr = fx.getBoundingClientRect(), cr = (ch.querySelector('svg') || ch).getBoundingClientRect(), k = fr.width / Math.max(1, fx.offsetWidth);   /* the stage may be scaled to fit the screen */
+          /* written with numerals: the voice says "seven am", the cloud shows "7 am" */
+          var NW = { zero: 0, one: 1, two: 2, three: 3, four: 4, five: 5, six: 6, seven: 7, eight: 8, nine: 9, ten: 10, eleven: 11, twelve: 12, thirteen: 13, fourteen: 14, fifteen: 15, sixteen: 16, seventeen: 17, eighteen: 18, nineteen: 19, twenty: 20, thirty: 30, forty: 40, fifty: 50, sixty: 60, seventy: 70, eighty: 80, ninety: 90, hundred: 100 };
+          var txt = String(t).replace(/[“”"]/g, '').trim().replace(/\b(twenty|thirty|forty|fifty|sixty|seventy|eighty|ninety)-(one|two|three|four|five|six|seven|eight|nine)\b/gi, function (m, a, b) { return NW[a.toLowerCase()] + NW[b.toLowerCase()]; })
+            .replace(/\b(zero|one|two|three|four|five|six|seven|eight|nine|ten|eleven|twelve|thirteen|fourteen|fifteen|sixteen|seventeen|eighteen|nineteen|twenty|thirty|forty|fifty|sixty|seventy|eighty|ninety|hundred)\b/gi, function (m) { return NW[m.toLowerCase()]; });
+          txt = txt.replace(/(\d)\s+(am|pm|o’clock|minutes?|hours?|cm|kg|m)\b/g, '$1\u00a0$2');   /* keep 7 and am on the same line */
+          cloud.textContent = txt;
+          var W = fx.offsetWidth, H = fx.offsetHeight, cl = (cr.left - fr.left) / k, cw = cr.width / k, cy = (cr.top - fr.top) / k, ch2 = cr.height / k;
+          cloud.style.left = '0px'; cloud.style.top = '0px'; cloud.style.fontSize = ''; cloud.style.maxWidth = Math.min(460, W - cl - cw * 0.6 - 16) + 'px';
+          var bw = cloud.offsetWidth, bh = cloud.offsetHeight, tl = fx.closest('.gp.narrow') ? 16 : 26;
+          /* the tail's tip touches the speaker: above them, made wider (fewer lines) if needed to fit; beside them only as a last resort */
+          var tipX = cl + cw * 0.62, tipY = cy + ch2 * 0.12, left = tipX - 34, top = tipY - tl - bh;
+          if (top < 6) { cloud.style.maxWidth = (W - Math.max(6, left) - 8) + 'px'; bw = cloud.offsetWidth; bh = cloud.offsetHeight; top = tipY - tl - bh; }
+          if (top < 6 && tipY - tl - 6 > 40) { cloud.style.fontSize = '0.82em'; bw = cloud.offsetWidth; bh = cloud.offsetHeight; top = tipY - tl - bh; }
+          var side = top < 6; if (side) { cloud.style.fontSize = ''; cloud.style.maxWidth = Math.min(460, W - cl - cw * 0.6 - 16) + 'px'; bw = cloud.offsetWidth; bh = cloud.offsetHeight; }
+          if (side) { tipX = cl + cw * 0.8; tipY = cy + ch2 * 0.35; left = tipX + tl; top = tipY - bh / 2; }
+          left = Math.min(Math.max(6, left), W - bw - 6); top = Math.min(Math.max(6, top), H - bh - 6);
+          cloud.classList.toggle('side', side);
+          cloud.style.left = left + 'px'; cloud.style.top = top + 'px';
+          /* keep the tail pointing at the speaker even when the cloud had to be nudged to stay inside */
+          if (side) cloud.style.setProperty('--ty', Math.min(bh - 24, Math.max(6, tipY - top - 14)) + 'px'); else cloud.style.setProperty('--tx', Math.min(bw - 40, Math.max(8, tipX - left - 14)) + 'px');
+          /* if the cloud would cover part of the picture, move the picture down a little while the cloud shows */
+          if (pp) { pp.style.transform = ''; var kids = [].slice.call(pp.querySelectorAll('svg, .card, span, div')).map(function (e) { return e.getBoundingClientRect(); }).filter(function (r) { return r.width > 4 && r.height > 4; });
+            if (kids.length) { var pt = Math.min.apply(null, kids.map(function (r) { return r.top; })), pb = Math.max.apply(null, kids.map(function (r) { return r.bottom; })), pl = Math.min.apply(null, kids.map(function (r) { return r.left; }));
+              var cb = fr.top + (top + bh) * k, cR = fr.left + (left + bw) * k, over = cb + 6 * k - pt;
+              if (over > 0 && cR > pl) { var space = fr.bottom - 4 * k - pb; pp.style.transition = 'transform .3s'; pp.style.transform = 'translateY(' + Math.max(0, Math.min(over, space)) / k + 'px)'; } } }
+          cloud.classList.remove('on'); void cloud.offsetWidth; cloud.classList.add('on');
+        }
         root.classList.add('gp-talk');
-        H.flTell(c0.say, { box: blk, keys: fx, fact: factFor, cap: null, voice: okVoice, alive: function () { return my === token && playing && root.isConnected; } }, function () {
-          root.classList.remove('gp-talk'); if (board) board.firstChild.classList.remove('on');
+        H.flTell(c0.say, { box: blk, keys: fx, fact: factFor, quote: quoteFor, cap: null, voice: okVoice, alive: function () { return my === token && playing && root.isConnected; } }, function () {
+          root.classList.remove('gp-talk'); if (board) board.firstChild.classList.remove('on'); quoteFor(null);
           if (my !== token || !playing || !root.isConnected) return;
           /* a question: give the child time to think before the answer */
           if (c0.think) { waitPick(c0, my); return; }
@@ -25149,7 +25192,10 @@ S.extraMakers = function (n, level) {
   var NUM = '(?:\\d+|' + Object.keys(NV).join('|') + ')', RUN = new RegExp('\\b' + NUM + '(?:\\s*,\\s*(?:and\\s+)?' + NUM + '){2,}\\b', 'i');
   function nval(w) { w = String(w).toLowerCase(); return /^\d+$/.test(w) ? Number(w) : NV[w]; }
   function plan(text) {
-    var out = [], sents = String(text).replace(/\s+/g, ' ').match(/[^.!?…]+(?:[.!?…]+[”"’)]*|$)/g) || [text];
+    var out = [], sents = [];
+    /* a character's words in quotes stay together as one part, even when they hold more than one sentence */
+    String(text).replace(/\s+/g, ' ').split(/(“[^”]*”)/).forEach(function (seg) { if (/^“/.test(seg)) sents.push(seg); else sents.push.apply(sents, seg.match(/[^.!?…]+(?:[.!?…]+[”"’)]*|$)/g) || []); });
+    if (!sents.length) sents = [text];
     sents.forEach(function (se) {
       se = se.trim(); if (!se) return;
       se.split(/(“[^”]*”)/).forEach(function (part) {
@@ -25196,6 +25242,7 @@ S.extraMakers = function (n, level) {
       if (!o.alive()) return;
       if (k >= ps.length) { if (o.box) o.box.querySelectorAll('.fl-hl').forEach(function (e) { e.classList.remove('fl-hl'); e.classList.add('fl-done'); }); done(); return; }
       var p = ps[k]; capShow(); if (p.count != null && o.box) light(o.box, p); else if (o.box) glow(o.box, p.t);
+      if (o.quote) o.quote(p.q ? p.t : null);   /* a character speaking: their words go in a speech cloud */
       if (o.fact) o.fact(p.t);   /* a fact for this sentence is written on the board (no more flashing key words) */
       var fin = function () { if (!o.alive()) return; k++; setTimeout(step, pauseAfter(p)); };
       if (!o.voice) { setTimeout(fin, p.count != null ? 420 : p.t.split(' ').length * 330 + 250); return; }
@@ -25335,7 +25382,7 @@ S.extraMakers = function (n, level) {
   /* ================= 1. Counting and numbers: Ruby the rocket ================= */
   FL.topic({ n: 201, year: 'P2', short: 'Counting', title: 'Counting and numbers', blurb: 'Count with Ruby the rocket: number patterns, tens and ones, number lines, one more and one less.',
     /* Story time: Ruby needs 10 stars to fly home (counting, a pattern, ten, one more and one less) */
-    story: { title: 'Ruby’s Star Count', intro: 'Ruby’s Star Count. This is Ruby the rocket. Today she needs our help to count some stars. Let’s begin.',
+    story: { title: 'Ruby’s Star Count', intro: 'Ruby’s Star Count.',
       endPic: FL.panel('space', 'rocket', '<div style="font-size:2.4rem;font-weight:800;color:#2b2340;background:#fff;border:3px solid #2b2340;border-radius:16px;padding:6px 18px">3, 2, 1, blast off!</div>'),
       endText: 'Ruby counts down: three, two, one, blast off! She flies home with ten stars. Well done for counting with Ruby!',
       pages: (function () {
@@ -25345,7 +25392,7 @@ S.extraMakers = function (n, level) {
         function pg(pic, text, ask) { return { pic: pic, text: text, ask: ask }; }
         function Q(q, options, answer, explain) { return { q: q, options: options, answer: answer, explain: explain }; }
         return [
-          pg(P('space', 'rocket', '', 'Let’s count!'), 'Ruby the rocket wants to fly home. She needs ten stars to fill her fuel tank.'),
+          pg(P('space', 'rocket', ''), 'This is Ruby the rocket. Ruby says, “Can you help me count some stars?” Ruby wants to fly home. She needs ten stars to fill her fuel tank.'),
           pg(P('space', 'rocket', T(5, 'star', 5)), 'Ruby finds some stars. Let’s count them.', Q('How many stars are there?', [4, 5, 6], 5, 'One, two, three, four, five. There are five stars.')),
           pg(P('space', 'rocket', tank(5)), 'Ruby puts the stars in her fuel tank. The tank has ten spaces.', Q('How many more stars make <b>10</b>?', [4, 5, 6], 5, 'Five and five make ten.')),
           pg(P('pond', 'rocket', stones([2, 4, 6, '?'])), 'Ruby hops on the stepping stones: two, four, six.', Q('What number comes next?', [7, 8, 10], 8, 'Two, four, six, eight. Each stone is two more.')),
@@ -26901,7 +26948,7 @@ S.extraMakers = function (n, level) {
       pages: [
         pg(P('day', 'bear', '', 'Hello!'), 'It is a sunny day. Benny the bear is going on a picnic!'),
         pg(P('day', 'bear', G(3, 2, 'apple')), 'Benny puts three red apples in his basket. Then he adds two more.', Q('How many apples are in the basket now?', [4, 5, 6], 5, 'Three and two make five.')),
-        pg(P('pond', 'frog', G(2, 3, 'apple')), 'Frankie the frog hops over. He says: two and three makes five too! You can add in any order.'),
+        pg(P('pond', 'frog', G(2, 3, 'apple')), 'Frankie the frog hops over. He says, “Two and three makes five too! You can add in any order.”'),
         pg(P('day', 'bear', G(4, 4, 'sweet')), 'Benny lays out the cakes. Four on one plate and four on the other. Double four is eight!'),
         pg(P('day', 'bear', G(4, 5, 'sweet')), 'Then Frankie brings five more cakes for a new plate. Benny has four. Four and five is double four and one more.', Q('What is <b>4 + 5</b>?', [8, 9, 10], 9, 'Double four is eight, and one more is nine.')),
         pg(P('day', 'bear', '<div style="width:230px">' + FL.frame(6, 4) + '</div>'), 'Benny counts the strawberries. Six red and four blue make ten!'),
@@ -27780,7 +27827,7 @@ S.extraMakers = function (n, level) {
         pg(P('day', 'owl', clk(9, 10)), 'The train leaves at ten past nine. The long hand points to two: ten minutes past.', Q('What time is it?', ['10 past 9', '2 past 9', '10 to 9'], '10 past 9', 'Each number is five minutes.')),
         pg(P('day', 'owl', K.tbl(TT, ['Station', 'Train 1', 'Train 2'])), 'Ollie reads the timetable. Train one leaves Glasgow at nine fifteen and reaches Perth at ten twenty.'),
         pg(P('day', 'owl', clk(2, 50)), 'Ollie’s next train leaves at ten to three and takes twenty-five minutes. Ten minutes gets to three o’clock, then fifteen more.', Q('When does it arrive?', ['3:15', '3:25', '2:75'], '3:15', 'Bridge through the hour.')),
-        pg(P('night', 'owl', cards(['7 am ☀️', '7 pm 🌙'])), 'Ollie’s gran says: we eat breakfast at seven am and dinner at seven pm.'),
+        pg(P('night', 'owl', cards(['7 am ☀️', '7 pm 🌙'])), 'Ollie says, “At home we eat breakfast at seven am and dinner at seven pm.”'),
         pg(P('night', 'owl', clk(9, 0)), 'At nine pm Ollie is tucked up in bed after a long day.')
       ] },
     learn: [

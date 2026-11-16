@@ -176,7 +176,10 @@
   var NUM = '(?:\\d+|' + Object.keys(NV).join('|') + ')', RUN = new RegExp('\\b' + NUM + '(?:\\s*,\\s*(?:and\\s+)?' + NUM + '){2,}\\b', 'i');
   function nval(w) { w = String(w).toLowerCase(); return /^\d+$/.test(w) ? Number(w) : NV[w]; }
   function plan(text) {
-    var out = [], sents = String(text).replace(/\s+/g, ' ').match(/[^.!?…]+(?:[.!?…]+[”"’)]*|$)/g) || [text];
+    var out = [], sents = [];
+    /* a character's words in quotes stay together as one part, even when they hold more than one sentence */
+    String(text).replace(/\s+/g, ' ').split(/(“[^”]*”)/).forEach(function (seg) { if (/^“/.test(seg)) sents.push(seg); else sents.push.apply(sents, seg.match(/[^.!?…]+(?:[.!?…]+[”"’)]*|$)/g) || []); });
+    if (!sents.length) sents = [text];
     sents.forEach(function (se) {
       se = se.trim(); if (!se) return;
       se.split(/(“[^”]*”)/).forEach(function (part) {
@@ -223,6 +226,7 @@
       if (!o.alive()) return;
       if (k >= ps.length) { if (o.box) o.box.querySelectorAll('.fl-hl').forEach(function (e) { e.classList.remove('fl-hl'); e.classList.add('fl-done'); }); done(); return; }
       var p = ps[k]; capShow(); if (p.count != null && o.box) light(o.box, p); else if (o.box) glow(o.box, p.t);
+      if (o.quote) o.quote(p.q ? p.t : null);   /* a character speaking: their words go in a speech cloud */
       if (o.fact) o.fact(p.t);   /* a fact for this sentence is written on the board (no more flashing key words) */
       var fin = function () { if (!o.alive()) return; k++; setTimeout(step, pauseAfter(p)); };
       if (!o.voice) { setTimeout(fin, p.count != null ? 420 : p.t.split(' ').length * 330 + 250); return; }

@@ -20,7 +20,7 @@
       pages: [
         pg(P('day', 'bear', '', 'Hello!'), 'It is a sunny day. Benny the bear is going on a picnic!'),
         pg(P('day', 'bear', G(3, 2, 'apple')), 'Benny puts three red apples in his basket. Then he adds two more.', Q('How many apples are in the basket now?', [4, 5, 6], 5, 'Three and two make five.')),
-        pg(P('pond', 'frog', G(2, 3, 'apple')), 'Frankie the frog hops over. He says: two and three makes five too! You can add in any order.'),
+        pg(P('pond', 'frog', G(2, 3, 'apple')), 'Frankie the frog hops over. He says, “Two and three makes five too! You can add in any order.”'),
         pg(P('day', 'bear', G(4, 4, 'sweet')), 'Benny lays out the cakes. Four on one plate and four on the other. Double four is eight!'),
         pg(P('day', 'bear', G(4, 5, 'sweet')), 'Then Frankie brings five more cakes for a new plate. Benny has four. Four and five is double four and one more.', Q('What is <b>4 + 5</b>?', [8, 9, 10], 9, 'Double four is eight, and one more is nine.')),
         pg(P('day', 'bear', '<div style="width:230px">' + FL.frame(6, 4) + '</div>'), 'Benny counts the strawberries. Six red and four blue make ten!'),
