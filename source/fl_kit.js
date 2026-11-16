@@ -25,7 +25,9 @@
   };
   FL.char = function (k, size) { return '<svg viewBox="0 0 100 100" role="img" aria-label="' + k + '" style="width:' + (size || 110) + 'px;max-width:100%;height:auto">' + (CH[k] || CH.fox) + '</svg>'; };
   /* a character saying something, in a speech bubble */
-  FL.says = function (k, words) { return '<div style="display:flex;align-items:center;gap:14px;justify-content:center;flex-wrap:wrap">' + FL.char(k, 120) + '<div style="background:#fff;border:3px solid ' + INK + ';border-radius:22px;padding:12px 18px;font-weight:800;font-size:1.25em;max-width:440px;color:' + INK + '">' + words + '</div></div>'; };
+  /* a character turned to face a direction: 0 up, 90 right, 180 down, 270 left (so the picture matches "Ruby faces right") */
+  FL.facing = function (k, deg, size) { return '<div style="display:inline-block;transform:rotate(' + (deg || 0) + 'deg);line-height:0">' + FL.char(k, size || 120) + '</div>'; };
+  FL.says = function (k, words, deg) { return '<div style="display:flex;align-items:center;gap:14px;justify-content:center;flex-wrap:wrap">' + (deg ? FL.facing(k, deg, 120) : FL.char(k, 120)) + '<div style="background:#fff;border:3px solid ' + INK + ';border-radius:22px;padding:12px 18px;font-weight:800;font-size:1.25em;max-width:440px;color:' + INK + '">' + words + '</div></div>'; };
 
   /* little things to count */
   var THING = {
