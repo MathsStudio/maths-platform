@@ -332,7 +332,7 @@
       function gapNext(ms) {
         if (my !== token || !playing || !root.isConnected) return;
         if (i + 1 < chunks.length) { idx = i + 1; timer = setTimeout(function () { if (my === token && playing && root.isConnected) say(idx); }, ms); }
-        else { playing = false; idx = 0; setPb('Watch again'); }
+        else { playing = false; idx = 0; setPb('Watch again'); markSeen(); }
       }
       function next() {
         if (my !== token || !playing || !root.isConnected) return;
@@ -366,7 +366,7 @@
       stop(); H.__gpAutoplay = true; if (H.slideJump) H.slideJump(j);
     }); });
     current = { stop: stop }; show(0); host.__storyShow = show; host.__storyN = chunks.length;
-    if (H.__gpAutoplay) { H.__gpAutoplay = false; setTimeout(function () { if (root.isConnected && !playing) pb.click(); }, 350); }
+    if (H.__gpAutoplay || (FLM && H.flAuto && H.flAuto())) { H.__gpAutoplay = false; setTimeout(function () { if (root.isConnected && !playing) pb.click(); }, 350); }
   };
 
   function toSlides(episodes, n) {
