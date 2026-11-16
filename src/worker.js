@@ -1,6 +1,6 @@
 import { page, json, redirect, withHeaders, sameOrigin, validEmail, randomToken, sha256, safeEqual, parseCookies, cookie, hashPassword, checkPassword } from './util.js';
 import * as db from './db.js';
-import { sendMail, sendBatch, newsletterMail, purchaseMail, verifyMail, loginMail, resetMail } from './mail.js';
+import { sendMail, sendBatch, newsletterMail, personalMail, purchaseMail, verifyMail, loginMail, resetMail } from './mail.js';
 import * as pg from './pages.js';
 
 const SESSION_SEC = 30 * 86400, VERIFY_SEC = 86400, LOGIN_SEC = 1800;
@@ -204,6 +204,7 @@ async function admin(request, env, url) {
   if (!ok && h) await db.rateOk(env, 'adminfail:' + ip(request), 1000, 900);   // only wrong passwords count, not the browser's first empty request
   if (!ok) return new Response('Password required.', { status: 401, headers: { 'WWW-Authenticate': 'Basic realm="MathsStudio admin", charset="UTF-8"', 'Cache-Control': 'no-store' } });
   if (url.pathname === '/admin/newsletter' && request.method === 'POST') return await newsletter(request, env);
+  if (url.pathname === '/admin/email' && request.method === 'POST') return await directEmail(request, env);
   if (url.pathname === '/admin/revoke' && request.method === 'POST') return await revoke(request, env);
   if (url.pathname === '/admin/grant' && request.method === 'POST') return await grant(request, env);
   const rows = await adminRows(env);
@@ -242,6 +243,29 @@ async function newsletter(request, env) {
   }
   await db.logNewsletter(env, subject, audience || 'everyone', sent, failed);
   return page(pg.admin(rows, { note: 'Sent to ' + sent + ' people' + (failed ? ', ' + failed + ' could not be sent (try again later for them).' : '.'), log: await db.recentNewsletters(env) }));
+}
+
+/* an email from info@ to people the owner picks (accounts ticked on the list, or any typed address) */
+async function directEmail(request, env) {
+  if (!sameOrigin(request)) return json({ error: 'Not allowed' }, 403);
+  const fd = await request.formData(), get = k => String(fd.get(k) || '');
+  const subject = get('subject').trim().slice(0, 150), body = get('body').trim().slice(0, 20000);
+  const picked = fd.getAll('to').map(x => String(x).trim().toLowerCase());
+  const typed = get('to_other').split(/[\s,;]+/).map(x => x.trim().toLowerCase()).filter(Boolean);
+  const rows = await adminRows(env), log = await db.recentNewsletters(env);
+  const back = (note, keep) => page(pg.admin(rows, Object.assign({ log, emNote: note }, keep ? { em: { subject, body, to: picked, other: get('to_other') } } : {})));
+  const bad = typed.filter(x => !validEmail(x));
+  if (bad.length) return back('This does not look like an email address: ' + bad[0], true);
+  const to = Array.from(new Set(picked.filter(validEmail).concat(typed)));
+  if (!to.length) return back('Choose at least one person, or type an email address.', true);
+  if (to.length > 50) return back('Please send to 50 people or fewer at a time. For everyone, use the newsletter.', true);
+  if (!subject || !body) return back('Please write a subject and a message first.', true);
+  if (!(await db.rateOk(env, 'direct', 200, 3600))) return back('Too many emails in the last hour. Please wait a little.', true);
+  const m = personalMail(subject, body);
+  let sent = 0, failed = [];
+  for (const addr of to) { try { await sendMail(env, addr, m.subject, m.text, m.html, 'info@mathsstudio.co.uk'); sent++; } catch (e) { failed.push(addr); } }
+  await db.logNewsletter(env, subject, 'email to ' + (to.length === 1 ? to[0] : to.length + ' people'), sent, failed.length);
+  return page(pg.admin(rows, { log: await db.recentNewsletters(env), emNote: 'Sent to ' + sent + (sent === 1 ? ' person' : ' people') + ' from info@mathsstudio.co.uk.' + (failed.length ? ' Could not send to: ' + failed.join(', ') + '.' : '') }));
 }
 
 /* gives free access (one year group or all) to an existing account, for a chosen length of time */
@@ -378,7 +402,7 @@ export default {
   async fetch(request, env) {
     const url = new URL(request.url), p = url.pathname, m = request.method;
     try {
-      if (p === '/admin' || p === '/admin/' || p === '/admin/export.csv' || p === '/admin/newsletter' || p === '/admin/revoke' || p === '/admin/grant') { await db.init(env); return await admin(request, env, url); }
+      if (p === '/admin' || p === '/admin/' || p === '/admin/export.csv' || p === '/admin/newsletter' || p === '/admin/email' || p === '/admin/revoke' || p === '/admin/grant') { await db.init(env); return await admin(request, env, url); }
       const dynamic = p.startsWith('/api/') || p.startsWith('/auth/') || p === '/logout' || p === '/unsubscribe' || p === '/account' || p.startsWith('/account/') || p === '/app' || p.startsWith('/app/') || p === '/learn' || p.startsWith('/learn/');
       if (!dynamic) return withHeaders(await env.ASSETS.fetch(request));
       await db.init(env);

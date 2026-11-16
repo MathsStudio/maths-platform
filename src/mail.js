@@ -49,6 +49,17 @@ export function newsletterMail(subject, body, unsubUrl) {
       '<p style="color:#5b6788;font-size:13px;margin-top:28px;border-top:1px solid #e3e8f4;padding-top:14px">You get this because you chose to receive news from MathsStudio. <a href="' + esc(unsubUrl) + '" style="color:#5b6788">Unsubscribe</a></p></div>'
   };
 }
+/* a personal email from the admin page to chosen people: plain text in, paragraphs out, replies go to info@ */
+export function personalMail(subject, body) {
+  const ps = paras(body);
+  return {
+    subject,
+    text: ps.join('\n\n') + '\n\n--\nMathsStudio\ninfo@mathsstudio.co.uk',
+    html: '<div style="font-family:Arial,Helvetica,sans-serif;font-size:16px;color:#14213d;line-height:1.55;max-width:560px">' +
+      ps.map(x => '<p style="margin:0 0 14px">' + linkify(x) + '</p>').join('') +
+      '<p style="color:#5b6788;font-size:14px;margin-top:24px;border-top:1px solid #e3e8f4;padding-top:12px">MathsStudio<br>info@mathsstudio.co.uk</p></div>'
+  };
+}
 /* up to 100 emails per call */
 export async function sendBatch(env, items) {
   if (!env.RESEND_API_KEY || !env.FROM_EMAIL) throw new Error('mail-not-configured');

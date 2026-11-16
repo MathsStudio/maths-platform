@@ -164,6 +164,17 @@ r = await adminPost({ action: 'send', subject: 'News', body: 'Hello\n\nSee https
 ok(/unsubscribe\?t=/.test(sentB[0].text) && /List-Unsubscribe/.test(JSON.stringify(sentB[0].headers)) && /<a href="https:\/\/x.test"/.test(sentB[0].html), 'each copy has its own unsubscribe link and clickable links');
 ok(sqlite.prepare('SELECT COUNT(*) c FROM newsletters').get().c === 1, 'send is logged');
 r = await adminPost({ action: 'send', subject: 'P5 news', body: 'x', confirm: '1', audience: 'P5' }); ok(/nothing was sent|Nobody/.test(await r.text()), 'year filter only reaches that year');
+// admin: a normal email from info@ to chosen people
+{ const one = []; const rf2 = globalThis.fetch; globalThis.fetch = async (u, o) => { if (String(u).endsWith('api.resend.com/emails')) { one.push(JSON.parse(o.body)); return new Response('{}', { status: 200 }); } return rf2(u, o); };
+  const em = (body, pw = 'pw') => { const f = new URLSearchParams(); for (const [k, v] of body) f.append(k, v); return worker.fetch(new Request(B + '/admin/email', { method: 'POST', headers: { Authorization: 'Basic ' + btoa('a:' + pw), Origin: B, 'Content-Type': 'application/x-www-form-urlencoded', 'CF-Connecting-IP': '8.8.8.8' }, body: f.toString() }), env); };
+  let q = await em([['to', 'parent@example.com'], ['subject', 'Hi'], ['body', 'x']], 'wrong'); ok(q.status === 401 && one.length === 0, 'admin email needs the admin password');
+  q = await em([['subject', 'Hi'], ['body', 'x']]); ok(/Choose at least one person/.test(await q.text()) && one.length === 0, 'admin email needs someone to send to');
+  q = await em([['to_other', 'not-an-email'], ['subject', 'Hi'], ['body', 'x']]); ok(/does not look like an email/.test(await q.text()) && one.length === 0, 'admin email checks typed addresses');
+  q = await em([['to', 'parent@example.com'], ['to_other', 'someone@else.test, parent@example.com'], ['subject', 'About your account'], ['body', 'Hello\n\nThanks']]); const t = await q.text();
+  ok(/Sent to 2 people from info@mathsstudio.co.uk/.test(t) && one.length === 2 && one.every(m => m.from === 'MathsStudio <info@mathsstudio.co.uk>' && m.reply_to === 'info@mathsstudio.co.uk'), 'admin email goes from info@ to each chosen person once, replies to info@');
+  ok(!/unsubscribe/i.test(one[0].text) && /<p[^>]*>Hello<\/p>/.test(one[0].html), 'admin email is a normal letter, not a newsletter');
+  ok(/Send an email/.test(t) && /name="to" value="parent@example.com"/.test(t), 'admin page lists accounts to tick');
+  globalThis.fetch = rf2; }
 globalThis.fetch = rf;
 // monthly subscription
 const nowS = () => Math.floor(Date.now() / 1000); let subState = { id: 'sub_test_1', status: 'active', customer: 'cus_test_1', current_period_end: nowS() + 30 * 86400 }; let portalBody = null;

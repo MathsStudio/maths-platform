@@ -65,13 +65,27 @@ function accessCell(r) {
   if (acc.length === PAID.length) return 'All years<br><small class="note">until ' + dates.sort()[0] + ' or later</small>';
   return acc.map(y => esc(y) + ' <small class="note">until ' + day(u[y] || 0) + '</small>').join('<br>');
 }
+/* send an email from info@ to chosen accounts, or to any address typed in */
+function emailCard(rows, o) {
+  const em = o.em || {}, pick = new Set(em.to || []);
+  const list = rows.filter(r => r.email).map(r => '<label class="empick"><input type="checkbox" name="to" value="' + esc(r.email) + '"' + (pick.has(String(r.email).toLowerCase()) ? ' checked' : '') + '><span>' + esc(r.email) + '</span><small>' + esc([r.year, r.role].filter(Boolean).join(' · ')) + '</small></label>').join('');
+  return '<section class="card nl em" id="email"><h2>Send an email</h2><p class="note">Sends a normal email from <b>info@mathsstudio.co.uk</b> to the people you choose. Their replies come to info@, which forwards to your Gmail. For news to everyone, use the newsletter above.</p>' +
+    (o.emNote ? '<p class="nlnote" role="status">' + esc(o.emNote) + '</p>' : '') +
+    '<form method="post" action="/admin/email#email"><fieldset class="emto"><legend>To: tick the people</legend><input class="emfind" type="search" placeholder="Type to find an email" aria-label="Find an email" oninput="var q=this.value.toLowerCase();this.parentNode.querySelectorAll(\'.empick\').forEach(function(l){l.hidden=q&&l.textContent.toLowerCase().indexOf(q)<0})">' +
+    '<div class="emlist">' + (list || '<p class="note">Nobody has signed up yet.</p>') + '</div></fieldset>' +
+    '<label>Or type email addresses (separate with commas)<input name="to_other" value="' + esc(em.other || '') + '" placeholder="name@example.com, another@example.com"></label>' +
+    '<label>Subject<input name="subject" maxlength="150" required value="' + esc(em.subject || '') + '"></label>' +
+    '<label>Message<textarea name="body" rows="8" required placeholder="Write in plain text. Leave a blank line between paragraphs.">' + esc(em.body || '') + '</textarea></label>' +
+    '<button class="btn" type="submit">Send email</button></form></section>';
+}
+
 export function admin(rows, o) {
   o = o || {};
   const verified = rows.filter(r => r.verified_at).length, mk = rows.filter(r => r.verified_at && r.marketing).length;
   const mkBy = { P2: 0, P3: 0, P4: 0, P5: 0, P6: 0, P7: 0, S1: 0, S2: 0, S3: 0 }; rows.forEach(r => { if (r.verified_at && r.marketing && !r.unsub_at && mkBy[r.year] !== undefined) mkBy[r.year]++; });
   const by = {}; rows.forEach(r => { if (r.verified_at) by[r.year || '-'] = (by[r.year || '-'] || 0) + 1; });
   const hl = String(o.hl || '').toLowerCase(), tr = rows.map(r => '<tr' + (hl && String(r.email).toLowerCase() === hl ? ' style="background:#fff6d6"' : '') + '><td>' + esc(r.email) + '</td><td>' + esc(r.role || '') + '</td><td>' + accessCell(r) + '</td><td>' + (r.verified_at ? 'Yes' : 'No') + '</td><td>' + ((r.verified_at && r.marketing) ? 'Yes' : 'No') + '</td><td>' + esc((r.created_at || '').slice(0, 10)) + '</td><td>' + esc((r.last_login || '').slice(0, 10)) + '</td></tr>').join('');
-  return '<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="robots" content="noindex"><title>Admin · MathsStudio</title><link rel="stylesheet" href="/site.css?v=3"></head><body class="plain"><main class="adm">' +
+  return '<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="robots" content="noindex"><title>Admin · MathsStudio</title><link rel="stylesheet" href="/site.css?v=4"></head><body class="plain"><main class="adm">' +
     '<header class="admbar"><h1>Admin</h1><a class="btn alt" href="/admin/export.csv">Download CSV</a></header><div class="stats"><div><b>' + rows.length + '</b><span>Sign-ups</span></div><div><b>' + verified + '</b><span>Verified</span></div><div><b>' + mk + '</b><span>OK to email with news</span></div>' +
     Object.keys(by).sort().map(k => '<div><b>' + by[k] + '</b><span>' + esc(k) + ' verified</span></div>').join('') + '</div>' +
     (o.note && !o.hl ? '<p class="nlnote" role="status">' + esc(o.note) + '</p>' : '') +
@@ -85,6 +99,7 @@ export function admin(rows, o) {
     (o.log && o.log.length ? '<h3>Recently sent</h3><ul class="nllog">' + o.log.map(x => '<li><b>' + esc(x.subject) + '</b> · ' + esc(x.audience) + ' · ' + x.sent + ' sent' + (x.failed ? ', ' + x.failed + ' failed' : '') + ' · ' + esc((x.created_at || '').slice(0, 10)) + '</li>').join('') + '</ul>' : '') + '</section>' +
     '<div style="display:grid;gap:16px;min-width:0"><section class="card nl"><h2>Give access</h2><p class="note">Gives an existing account access to one year group, or all of them, without payment. Extends access if they already have it.</p><form method="post" action="/admin/grant"><label>Account email<input name="email" type="email" required></label><label>Year<select name="year"><option value="ALL">All paid years (P4 to S3)</option>' + PAID.map(y => '<option>' + y + '</option>').join('') + '</select></label><label>For<select name="months"><option value="1">1 month</option><option value="3">3 months</option><option value="12" selected>12 months</option><option value="60">5 years</option></select></label><button class="btn" type="submit">Give access</button></form></section>' +
     '<section class="card nl"><h2>Remove a paid year</h2><p class="note">Takes away paid access for one year group. Refund the payment in Stripe first, and cancel a monthly plan there too.</p><form method="post" action="/admin/revoke"><label>Account email<input name="email" type="email" required></label><label>Year<select name="year">' + PAID.map(y => '<option>' + y + '</option>').join('') + '</select></label><button class="btn alt" type="submit">Remove access</button></form></section></div></div>' +
+    emailCard(rows, o) +
     '<h2 class="admh" id="people">People who signed up</h2>' + (o.note && o.hl ? '<p class="nlnote" role="status">' + esc(o.note) + ' The changed account is highlighted below.</p>' : '') + '<p class="note">Only email people with "OK to email with news" = Yes. Every email you send must include an unsubscribe link.</p>' +
     '<div class="tablewrap"><table><thead><tr><th>Email</th><th>Role</th><th>Access</th><th>Verified</th><th>OK to email</th><th>Signed up</th><th>Last sign-in</th></tr></thead><tbody>' + (tr || '<tr><td colspan="7">Nobody yet.</td></tr>') + '</tbody></table></div></main></body></html>';
 }
