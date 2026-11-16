@@ -1094,7 +1094,9 @@ var SLIDE_MORE = {"1.learn1": [{"more": ["Our number system uses only ten digits
   /* Access: the first topic of each year is free. Other topics need a pass for that year (or the owner login). */
   var LOCK_TOPICS = true;   /* set to false to unlock every topic for everyone again */
   var access = { owner: location.protocol === 'file:', years: [] };
-  function isLocked(base) { if (!LOCK_TOPICS) return false; var y = yearOf(); if (y === 'all') y = 'P6'; return !access.owner && access.years.indexOf(y) < 0 && visibleOrder()[0] !== base; }
+  /* P2 and P3 are free for everyone: no locks, no payment */
+  function freeYear(y) { return y === 'P2' || y === 'P3'; } S.freeYear = freeYear;
+  function isLocked(base) { if (!LOCK_TOPICS) return false; var y = yearOf(); if (freeYear(y)) return false; if (y === 'all') y = 'P6'; return !access.owner && access.years.indexOf(y) < 0 && visibleOrder()[0] !== base; }
   var PRICE = '£15', PRICE_M = '£2.99';
   function renderLocked(v, what, keep) {
     var t = topic(), y = yearOf() === 'all' ? 'P6' : yearOf(), plan = 'year';
@@ -1128,7 +1130,7 @@ var SLIDE_MORE = {"1.learn1": [{"more": ["Our number system uses only ten digits
     });
   }
   /* the 10-minute test is part of the paid year pass (no free topic for it) */
-  S.testLocked = function () { if (!LOCK_TOPICS) return false; var y = yearOf(); if (y === 'all') y = 'P6'; return !access.owner && access.years.indexOf(y) < 0; };
+  S.testLocked = function () { if (!LOCK_TOPICS) return false; var y = yearOf(); if (freeYear(y)) return false; if (y === 'all') y = 'P6'; return !access.owner && access.years.indexOf(y) < 0; };
   /* a small window into the app for add-on modules (strengths.js) */
   S.app = { get state() { return state; }, get store() { return store; }, get learner() { return learner; }, access: access,
     save: save, render: render, go: go, enter: enter, openPart: openPart, yearOf: yearOf, visibleOrder: visibleOrder, openTopicFor: openTopicFor,
@@ -1353,7 +1355,7 @@ var SLIDE_MORE = {"1.learn1": [{"more": ["Our number system uses only ten digits
       var t = openTopicFor(n), have = stageOf(t) === cs || cs === 'P6', pr = progOf(t), c = pr.done, pct = pr.total ? Math.round(c / pr.total * 100) : 0, label = c === 0 ? 'Start topic' : (c >= pr.total ? 'Review topic' : 'Continue');
       var role = yr === 'all' ? '' : ((YEAR_ROLE[n] || {})[yr] || (n === 11 && yr === 'P6' ? 'start' : 'core')), badge = role ? '<span class="tag role-' + role + '">' + yr + ' · ' + ROLE_LABEL[role] + '</span>' : '';
       var note = have ? '' : '<p class="note" style="margin:0;min-height:0">' + cs + ' stage is coming. Showing the ' + stageOf(t) + ' stage for now.</p>';
-      return '<div class="card topic"><span class="tn">Topic ' + (ix + 1) + '</span>' + badge + (ix === 0 && !access.owner && access.years.indexOf(yr === 'all' ? 'P6' : yr) < 0 ? '<span class="tag role-core">Free</span>' : '') + '<h3>' + t.title + '</h3><p class="note" style="margin:0;min-height:0">' + t.blurb + '</p>' + '<div class="bar" aria-label="' + pct + ' percent complete"><i style="width:' + pct + '%"></i></div>' +
+      return '<div class="card topic"><span class="tn">Topic ' + (ix + 1) + '</span>' + badge + ((ix === 0 || freeYear(yr)) && !access.owner && access.years.indexOf(yr === 'all' ? 'P6' : yr) < 0 ? '<span class="tag role-core">Free</span>' : '') + '<h3>' + t.title + '</h3><p class="note" style="margin:0;min-height:0">' + t.blurb + '</p>' + '<div class="bar" aria-label="' + pct + ' percent complete"><i style="width:' + pct + '%"></i></div>' +
         '<p class="note" style="margin:0;min-height:0">' + c + ' of ' + pr.total + ' parts done · ' + pct + '%</p><button class="btn' + (isLocked(n) ? ' ghost' : '') + '" data-open="' + t.n + '" type="button" style="margin-top:auto">' + (isLocked(n) ? '🔒 Unlock ' + (yr === 'all' ? 'P6' : yr) : label) + '</button></div>';
     }).join('');
     var tot = 0, dn = 0, full = 0; order.forEach(function (n) { var p = progOf(openTopicFor(n)); tot += p.total; dn += p.done; if (p.total && p.done >= p.total) full++; });
@@ -1368,6 +1370,8 @@ var SLIDE_MORE = {"1.learn1": [{"more": ["Our number system uses only ten digits
     var bm = document.getElementById('brandMark'); if (bm) bm.textContent = yr === 'all' ? 'P5-7' : yr;
     v.innerHTML =
       '<section class="yrtop"><div class="yrbar"><span class="tag">' + (yr === 'all' ? 'All years' : yr) + '</span><button class="yr" type="button" id="chgYear">Change year</button></div><p class="note say" style="margin:8px 0 0">' + YEAR_NOTE[yr] + '</p></section>' +
+      /* nobody signed in: progress is only kept on this device, so offer a free account */
+      (!access.signedIn && !access.owner ? '<section class="card" id="saveNote" style="display:flex;align-items:center;gap:12px 16px;flex-wrap:wrap;background:#fff8e1;border:2px solid #f2c94c"><span aria-hidden="true" style="font-size:1.8rem">\ud83d\udcbe</span><p class="say" style="margin:0;flex:1 1 240px"><b>Sign up free to keep your child\u2019s progress on every device.</b> Without an account, progress is saved only on this device.</p><div class="row" style="gap:8px;flex-wrap:wrap"><a class="btn" href="/signup/" style="text-decoration:none">Sign up free</a><a class="btn ghost" href="/login/" style="text-decoration:none">Sign in</a></div></section>' : '') +
       '<section class="hero"><span class="eyebrow">' + (yr === 'all' ? 'Primary 5 to 7' : (yr.charAt(0) === 'S' ? 'Secondary ' + yr.slice(1) : 'Primary ' + yr.slice(1))) + ' · Curriculum for Excellence, ' + ({ S1: 'Third level', S2: 'Third and Fourth level', S3: 'Fourth level', P2: 'First level', P3: 'First level', P4: 'First level' }[yr] || 'Second level') + '</span><h1 class="say">' + (yr === 'all' ? 'Every topic' : yr + ' topics') + '</h1>' +
       '<p class="lead say">' + ({ 1: 'One', 5: 'Five', 8: 'Eight', 9: 'Nine', 10: 'Ten', 12: 'Twelve' }[order.length] || order.length) + ' topics. ' + (firstLevel(yr) ? 'Each topic starts with a picture-book story, then short lessons in the same story and lots of hands-on activities' + (yr === 'P4' ? ', then practice questions like P5' : '') + '. Turn the Voice on and everything is read aloud.' : 'Each starts with a short animated explainer and lessons with worked examples, then hands-on activities, and practice: a warm-up, plenty of questions at each of Low, Medium and High, and real-life problems. Switch level at any time. Verbal and non-verbal reasoning appear throughout the course.') + '</p></section>' +
       '<section class="pillars"><div class="card"><h3 class="say">Read it</h3><p class="say">Clear steps and pictures, one idea at a time.</p></div><div class="card"><h3 class="say">Hear it</h3><p class="say">Turn the Voice on once and it keeps reading new pages and questions, where your device allows it.</p></div><div class="card"><h3 class="say">Try it</h3><p class="say">Build, slide, spin and plot. Then answer questions. Hints come one step at a time.</p></div></section>' +

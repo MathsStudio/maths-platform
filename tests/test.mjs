@@ -219,13 +219,14 @@ r = await grantPost({ email: 'parent@example.com', year: 'ALL', months: '12' }, 
 r = await grantPost({ email: 'nobody@example.com', year: 'ALL', months: '12' }); ok(/No account found/.test(await r.text()), 'give access reports unknown email');
 r = await grantPost({ email: 'parent@example.com', year: 'ALL', months: '12' }); const gTxt = await r.text(); ok(/all years access for 12 months/.test(gTxt), 'give access to all years works');
 ok(/<td>All years<br><small class="note">until \d{4}-\d\d-\d\d( or later)?<\/small><\/td>/.test(gTxt) && /background:#fff6d6/.test(gTxt), 'the sign-ups table shows All years and the end date straight away, with the row highlighted');
-ok(sqlite.prepare("SELECT COUNT(*) c FROM purchases WHERE user_id=? AND until>?").get(uid, nowS()).c === 9, 'all nine years (P2 to S3) are open after giving all years');
+ok(sqlite.prepare("SELECT COUNT(*) c FROM purchases WHERE user_id=? AND until>?").get(uid, nowS()).c === 7, 'all seven paid years (P4 to S3) are open after giving all years');
 await grantPost({ email: 'parent@example.com', year: 'P5', months: '60' });
 ok(sqlite.prepare("SELECT until FROM purchases WHERE user_id=? AND year='P5'").get(uid).until > nowS() + 365 * 86400 * 5, 'a further grant extends the time');
 // progress is saved to the account and follows the email
 r = await call('/api/me'); ok(JSON.parse(r.text).signedIn === true, 'still signed in for progress tests');
 const jarP = cookieJar; cookieJar = ''; r = await call('/api/progress'); ok(r.status === 401, 'progress needs sign-in'); cookieJar = jarP;
 r = await call('/api/progress', { method: 'POST', json: { progress: { t5: { steps: { learn1: true }, best: 3 } } } }); ok(r.status === 200 && JSON.parse(r.text).progress.t5.steps.learn1 === true, 'progress is saved');
+r = await call('/api/progress', { method: 'POST', json: { progress: { t201: { steps: { watch: true, fl1: true } }, t305: { steps: { fl4: true } }, t401: { steps: { practise: true }, best: 17 } } } }); { const pr = JSON.parse(r.text).progress; ok(r.status === 200 && pr.t201.steps.watch && pr.t201.steps.fl1 && pr.t305.steps.fl4 && pr.t401.best === 17 && pr.t5.steps.learn1, 'First level progress (P2, P3, P4) is saved like the other years'); }
 r = await call('/api/progress', { method: 'POST', json: { progress: { t5: { steps: { warm: true }, best: 2 }, t6: { steps: { learn1: true } } } } });
 let pj = JSON.parse(r.text).progress; ok(pj.t5.steps.learn1 && pj.t5.steps.warm && pj.t5.best === 3 && pj.t6.steps.learn1, 'progress from two devices is added together, best score kept');
 r = await call('/api/progress'); pj = JSON.parse(r.text).progress; ok(pj.t5.steps.warm === true && pj.t6.steps.learn1 === true, 'progress loads back on another device');
