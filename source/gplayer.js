@@ -101,6 +101,7 @@
     '.gp.narrow .fl-cloud{font-size:14px;border-width:2px;padding:7px 11px;border-radius:14px}.gp.narrow .fl-cloud::after{bottom:-15px;border-left-width:8px;border-right-width:8px;border-top-width:16px}.gp.narrow .fl-cloud::before{bottom:-11px;left:calc(var(--tx,26px) + 3px);border-left-width:6px;border-right-width:6px;border-top-width:12px}' +
     '.gp.narrow .fl-cloud.side::after{left:-16px;border-width:8px;border-right-width:16px;border-left-width:0}.gp.narrow .fl-cloud.side::before{left:-12px;border-width:6px;border-right-width:12px;border-left-width:0}' +
     '.gp-stage,.gp-stage *{-webkit-user-select:none;user-select:none;caret-color:transparent;cursor:default}.gp-stage button,.gp-stage .o{cursor:pointer}' +
+    '.gp-end{position:absolute;top:14px;right:14px;z-index:6;font:inherit;font-weight:800;font-size:20px;background:#2b5fd9;color:#fff;border:0;border-radius:14px;padding:10px 20px;cursor:pointer;box-shadow:0 6px 16px rgba(0,0,0,.25)}.gp.narrow .gp-end{top:6px;right:6px;font-size:13px;padding:6px 10px;border-radius:10px}' +
     '.fl-facts{position:absolute;left:12px;right:12px;top:10px;display:flex;flex-direction:column;align-items:center;gap:8px;pointer-events:none;z-index:3}'+
     '.fl-fact{background:#fff;color:#221a3a;border:4px solid #ffb703;border-radius:999px;padding:5px 22px;font-weight:900;font-size:26px;line-height:1.2;text-align:center;max-width:100%;box-shadow:0 8px 22px rgba(0,0,0,.25);visibility:hidden}'+
     '.fl-fact.on{visibility:visible;animation:flFact .5s cubic-bezier(.3,1.6,.6,1) both}@keyframes flFact{0%{opacity:0;transform:scale(.3)}100%{opacity:1;transform:none}}.flx-pic.flx-ask~.fl-facts{display:none}'+
@@ -174,6 +175,7 @@
       '<button class="btn ghost" type="button" data-b aria-label="Back one step"><span class="gp-ic" aria-hidden="true">◀</span><span class="gp-tx">◀ Back</span></button>' +
       '<button class="btn ghost" type="button" data-n aria-label="Next step"><span class="gp-ic" aria-hidden="true">▶</span><span class="gp-tx">Next ▶</span></button>' +
       '<button class="btn ghost" type="button" data-r aria-label="Start again"><span class="gp-ic" aria-hidden="true">↺</span><span class="gp-tx">Start again</span></button>' +
+      '<button class="btn ghost" type="button" data-nl aria-label="Next lesson"><span class="gp-ic" aria-hidden="true">⏭</span><span class="gp-tx">Next lesson ⏭</span></button>' +
       '<button class="btn ghost" type="button" data-f aria-label="Full screen"><span class="gp-ic" aria-hidden="true">⛶</span><span class="gp-tx">Full screen</span></button>' +
       '<div class="gp-prog" aria-hidden="true"><i></i></div><span class="gp-cnt"></span></div>' +
       ('<div class="gp-vs"><label>Voice <select data-vv></select></label><label>Reading speed <select data-vr><option value="0.8">Slower</option><option value="1">Normal</option><option value="1.2">Faster</option></select></label></div>') +
@@ -340,7 +342,21 @@
       timer = setTimeout(function () { if (my !== token || !playing || answered) return; root.classList.add('gp-talk');
         H.flTell('Tap the answer you think is right.', { box: null, voice: okVoice, alive: function () { return my === token && playing; } }, function () { root.classList.remove('gp-talk'); }); }, 12000);
     }
+    /* next lesson: the next question in this Watch lesson, or the next step after the last one */
+    function nextLesson() {
+      stop(); var ts = meta.titles || [];
+      if (meta.q + 1 < ts.length) { H.__gpAutoplay = true; if (H.slideJump) H.slideJump(meta.q + 1); }
+      else { var sn = document.getElementById('sNext'); if (sn) sn.click(); }
+    }
+    /* when a lesson ends: the last picture stays and a Next lesson button sits in the top right corner (no pop-up) */
+    function endCard() {
+      if (!stage || !root.isConnected) return;
+      var old = stage.querySelector('.gp-end'); if (old) old.remove();
+      var b = document.createElement('button'); b.type = 'button'; b.className = 'gp-end'; b.textContent = 'Next lesson →';
+      b.addEventListener('click', nextLesson); stage.appendChild(b);
+    }
     function show(i) {
+      var oldEnd = stage && stage.querySelector('.gp-end'); if (oldEnd) oldEnd.remove();
       lastI = i;
       var c = chunks[i];
       if (shown !== c.si) { shown = c.si; build(c.si); }
@@ -363,12 +379,12 @@
       function gapNext(ms) {
         if (my !== token || !playing || !root.isConnected) return;
         if (i + 1 < chunks.length) { idx = i + 1; timer = setTimeout(function () { if (my === token && playing && root.isConnected) say(idx); }, ms); }
-        else { playing = false; idx = 0; setPb('Watch again'); markSeen(); }
+        else { playing = false; idx = 0; setPb('Watch again'); markSeen(); endCard(); }
       }
       function next() {
         if (my !== token || !playing || !root.isConnected) return;
         if (i + 1 < chunks.length) { idx = i + 1; timer = setTimeout(function () { if (my === token && playing && root.isConnected) say(idx); }, 600); }
-        else { playing = false; idx = 0; setPb('Watch again'); }
+        else { playing = false; idx = 0; setPb('Watch again'); endCard(); }
       }
       if (FLM && H.flTell) {
         /* First level: told like a storyteller, sentence by sentence, counting things as they light up */
@@ -432,6 +448,7 @@
     pb.addEventListener('click', function () { if (playing) { stop(); return; } current = { stop: stop }; playing = true; setPb('Pause'); say(idx); });
     root.querySelector('[data-b]').addEventListener('click', function () { go(idx - 1); });
     root.querySelector('[data-n]').addEventListener('click', function () { go(idx + 1); });
+    root.querySelector('[data-nl]').addEventListener('click', nextLesson);
     root.querySelector('[data-r]').addEventListener('click', function () { stop(); idx = 0; shown = -1; current = { stop: stop }; playing = true; setPb('Pause'); say(0); });
     host.querySelectorAll('[data-q]').forEach(function (bt) { bt.addEventListener('click', function () {
       var j = Number(bt.getAttribute('data-q')); if (j === meta.q) { if (!playing) pb.click(); return; }

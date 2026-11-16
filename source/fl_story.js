@@ -95,7 +95,8 @@
   function tank(x, y, n, from, rollLast) {
     var s = '<g transform="translate(' + x + ' ' + y + ')"><rect x="-6" y="-6" width="232" height="104" rx="14" fill="#fff" stroke="' + INK + '" stroke-width="3"/>';
     for (var i = 0; i < 10; i++) { var c = i % 5, r = Math.floor(i / 5), cx = 22 + c * 44, cy = 22 + r * 46; s += '<rect x="' + (cx - 20) + '" y="' + (cy - 20) + '" width="40" height="40" rx="6" fill="#f3efff" stroke="#b9acd8" stroke-width="2"/>';
-      if (i < n) s += '<g transform="translate(' + cx + ' ' + cy + ')"><g class="fl-it" data-k="star"><g class="' + (rollLast && i === n - 1 ? 'a-roll' : i >= (from || 0) ? 'a-pop' : '') + '" style="animation-delay:' + (i >= (from || 0) ? ((i - (from || 0)) * .35 + .3).toFixed(2) : 0) + 's">' + FL.THING.star(0, 0) + '</g></g></g>'; }
+      if (rollLast && i === n - 1) { s += '<path d="M' + cx + ' ' + cy + ' Q' + (cx + 30) + ' ' + (cy + 50) + ' 200 132" fill="none" stroke="#ffd166" stroke-width="3" stroke-dasharray="4 6"/><g transform="translate(200 132) rotate(25)"><g class="fl-it" data-k="star">' + FL.THING.star(0, 0) + '</g></g>'; continue; }   /* the star that rolled away sits outside the tank, so its space is empty */
+      if (i < n) s += '<g transform="translate(' + cx + ' ' + cy + ')"><g class="fl-it" data-k="star"><g class="' + (i >= (from || 0) ? 'a-pop' : '') + '" style="animation-delay:' + (i >= (from || 0) ? ((i - (from || 0)) * .35 + .3).toFixed(2) : 0) + 's">' + FL.THING.star(0, 0) + '</g></g></g>'; }
     return s + '</g>';
   }
   function label(x, y, t, size, fill) { return tx(x, y, t, size || 22, fill || '#fff'); }
@@ -144,7 +145,7 @@
         var p = pic(pg.pic), say = pg.text;
         if (pg.tap) { var c = []; for (var j = 1; j <= pg.tap; j++) c.push(NUMW[j]); say = say.replace(/ Tap each [a-z]+!?/i, '') + ' Count with me: ' + c.join(', ') + '.'; }
         var st0 = L.st(say, p); if (pg.facts) st0.facts = pg.facts; sc.push(L.SC(story.title, 'Page ' + (i + 1), [st0]));
-        if (pg.ask) sc.push(L.SC('Your turn', 'Help with the story', sw(askSteps(pg.ask.q, p, pg.ask.options, pg.ask.answer, pg.ask.explain))));
+        if (pg.ask) sc.push(L.SC('Your turn', 'Help with the story', sw(askSteps(pg.ask.q, pg.askPic ? pic(pg.askPic) : p, pg.ask.options, pg.ask.answer, pg.ask.explain))));
       });
       sc.push(L.SC('The end', story.title, [L.st(story.endText || 'The end.', pic(story.endPic))]));
       var sep = L.ep('📖 ' + story.title, 'a picture-book story that uses the maths in this topic.', sc); if (story.film) sep.film = story.film; eps.push(sep);

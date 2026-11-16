@@ -16027,6 +16027,7 @@ S.spatialExtra = S.extraMakers;
     '.gp.narrow .fl-cloud{font-size:14px;border-width:2px;padding:7px 11px;border-radius:14px}.gp.narrow .fl-cloud::after{bottom:-15px;border-left-width:8px;border-right-width:8px;border-top-width:16px}.gp.narrow .fl-cloud::before{bottom:-11px;left:calc(var(--tx,26px) + 3px);border-left-width:6px;border-right-width:6px;border-top-width:12px}' +
     '.gp.narrow .fl-cloud.side::after{left:-16px;border-width:8px;border-right-width:16px;border-left-width:0}.gp.narrow .fl-cloud.side::before{left:-12px;border-width:6px;border-right-width:12px;border-left-width:0}' +
     '.gp-stage,.gp-stage *{-webkit-user-select:none;user-select:none;caret-color:transparent;cursor:default}.gp-stage button,.gp-stage .o{cursor:pointer}' +
+    '.gp-end{position:absolute;top:14px;right:14px;z-index:6;font:inherit;font-weight:800;font-size:20px;background:#2b5fd9;color:#fff;border:0;border-radius:14px;padding:10px 20px;cursor:pointer;box-shadow:0 6px 16px rgba(0,0,0,.25)}.gp.narrow .gp-end{top:6px;right:6px;font-size:13px;padding:6px 10px;border-radius:10px}' +
     '.fl-facts{position:absolute;left:12px;right:12px;top:10px;display:flex;flex-direction:column;align-items:center;gap:8px;pointer-events:none;z-index:3}'+
     '.fl-fact{background:#fff;color:#221a3a;border:4px solid #ffb703;border-radius:999px;padding:5px 22px;font-weight:900;font-size:26px;line-height:1.2;text-align:center;max-width:100%;box-shadow:0 8px 22px rgba(0,0,0,.25);visibility:hidden}'+
     '.fl-fact.on{visibility:visible;animation:flFact .5s cubic-bezier(.3,1.6,.6,1) both}@keyframes flFact{0%{opacity:0;transform:scale(.3)}100%{opacity:1;transform:none}}.flx-pic.flx-ask~.fl-facts{display:none}'+
@@ -16100,6 +16101,7 @@ S.spatialExtra = S.extraMakers;
       '<button class="btn ghost" type="button" data-b aria-label="Back one step"><span class="gp-ic" aria-hidden="true">◀</span><span class="gp-tx">◀ Back</span></button>' +
       '<button class="btn ghost" type="button" data-n aria-label="Next step"><span class="gp-ic" aria-hidden="true">▶</span><span class="gp-tx">Next ▶</span></button>' +
       '<button class="btn ghost" type="button" data-r aria-label="Start again"><span class="gp-ic" aria-hidden="true">↺</span><span class="gp-tx">Start again</span></button>' +
+      '<button class="btn ghost" type="button" data-nl aria-label="Next lesson"><span class="gp-ic" aria-hidden="true">⏭</span><span class="gp-tx">Next lesson ⏭</span></button>' +
       '<button class="btn ghost" type="button" data-f aria-label="Full screen"><span class="gp-ic" aria-hidden="true">⛶</span><span class="gp-tx">Full screen</span></button>' +
       '<div class="gp-prog" aria-hidden="true"><i></i></div><span class="gp-cnt"></span></div>' +
       ('<div class="gp-vs"><label>Voice <select data-vv></select></label><label>Reading speed <select data-vr><option value="0.8">Slower</option><option value="1">Normal</option><option value="1.2">Faster</option></select></label></div>') +
@@ -16266,7 +16268,21 @@ S.spatialExtra = S.extraMakers;
       timer = setTimeout(function () { if (my !== token || !playing || answered) return; root.classList.add('gp-talk');
         H.flTell('Tap the answer you think is right.', { box: null, voice: okVoice, alive: function () { return my === token && playing; } }, function () { root.classList.remove('gp-talk'); }); }, 12000);
     }
+    /* next lesson: the next question in this Watch lesson, or the next step after the last one */
+    function nextLesson() {
+      stop(); var ts = meta.titles || [];
+      if (meta.q + 1 < ts.length) { H.__gpAutoplay = true; if (H.slideJump) H.slideJump(meta.q + 1); }
+      else { var sn = document.getElementById('sNext'); if (sn) sn.click(); }
+    }
+    /* when a lesson ends: the last picture stays and a Next lesson button sits in the top right corner (no pop-up) */
+    function endCard() {
+      if (!stage || !root.isConnected) return;
+      var old = stage.querySelector('.gp-end'); if (old) old.remove();
+      var b = document.createElement('button'); b.type = 'button'; b.className = 'gp-end'; b.textContent = 'Next lesson →';
+      b.addEventListener('click', nextLesson); stage.appendChild(b);
+    }
     function show(i) {
+      var oldEnd = stage && stage.querySelector('.gp-end'); if (oldEnd) oldEnd.remove();
       lastI = i;
       var c = chunks[i];
       if (shown !== c.si) { shown = c.si; build(c.si); }
@@ -16289,12 +16305,12 @@ S.spatialExtra = S.extraMakers;
       function gapNext(ms) {
         if (my !== token || !playing || !root.isConnected) return;
         if (i + 1 < chunks.length) { idx = i + 1; timer = setTimeout(function () { if (my === token && playing && root.isConnected) say(idx); }, ms); }
-        else { playing = false; idx = 0; setPb('Watch again'); markSeen(); }
+        else { playing = false; idx = 0; setPb('Watch again'); markSeen(); endCard(); }
       }
       function next() {
         if (my !== token || !playing || !root.isConnected) return;
         if (i + 1 < chunks.length) { idx = i + 1; timer = setTimeout(function () { if (my === token && playing && root.isConnected) say(idx); }, 600); }
-        else { playing = false; idx = 0; setPb('Watch again'); }
+        else { playing = false; idx = 0; setPb('Watch again'); endCard(); }
       }
       if (FLM && H.flTell) {
         /* First level: told like a storyteller, sentence by sentence, counting things as they light up */
@@ -16358,6 +16374,7 @@ S.spatialExtra = S.extraMakers;
     pb.addEventListener('click', function () { if (playing) { stop(); return; } current = { stop: stop }; playing = true; setPb('Pause'); say(idx); });
     root.querySelector('[data-b]').addEventListener('click', function () { go(idx - 1); });
     root.querySelector('[data-n]').addEventListener('click', function () { go(idx + 1); });
+    root.querySelector('[data-nl]').addEventListener('click', nextLesson);
     root.querySelector('[data-r]').addEventListener('click', function () { stop(); idx = 0; shown = -1; current = { stop: stop }; playing = true; setPb('Pause'); say(0); });
     host.querySelectorAll('[data-q]').forEach(function (bt) { bt.addEventListener('click', function () {
       var j = Number(bt.getAttribute('data-q')); if (j === meta.q) { if (!playing) pb.click(); return; }
@@ -25111,7 +25128,8 @@ S.extraMakers = function (n, level) {
   function tank(x, y, n, from, rollLast) {
     var s = '<g transform="translate(' + x + ' ' + y + ')"><rect x="-6" y="-6" width="232" height="104" rx="14" fill="#fff" stroke="' + INK + '" stroke-width="3"/>';
     for (var i = 0; i < 10; i++) { var c = i % 5, r = Math.floor(i / 5), cx = 22 + c * 44, cy = 22 + r * 46; s += '<rect x="' + (cx - 20) + '" y="' + (cy - 20) + '" width="40" height="40" rx="6" fill="#f3efff" stroke="#b9acd8" stroke-width="2"/>';
-      if (i < n) s += '<g transform="translate(' + cx + ' ' + cy + ')"><g class="fl-it" data-k="star"><g class="' + (rollLast && i === n - 1 ? 'a-roll' : i >= (from || 0) ? 'a-pop' : '') + '" style="animation-delay:' + (i >= (from || 0) ? ((i - (from || 0)) * .35 + .3).toFixed(2) : 0) + 's">' + FL.THING.star(0, 0) + '</g></g></g>'; }
+      if (rollLast && i === n - 1) { s += '<path d="M' + cx + ' ' + cy + ' Q' + (cx + 30) + ' ' + (cy + 50) + ' 200 132" fill="none" stroke="#ffd166" stroke-width="3" stroke-dasharray="4 6"/><g transform="translate(200 132) rotate(25)"><g class="fl-it" data-k="star">' + FL.THING.star(0, 0) + '</g></g>'; continue; }   /* the star that rolled away sits outside the tank, so its space is empty */
+      if (i < n) s += '<g transform="translate(' + cx + ' ' + cy + ')"><g class="fl-it" data-k="star"><g class="' + (i >= (from || 0) ? 'a-pop' : '') + '" style="animation-delay:' + (i >= (from || 0) ? ((i - (from || 0)) * .35 + .3).toFixed(2) : 0) + 's">' + FL.THING.star(0, 0) + '</g></g></g>'; }
     return s + '</g>';
   }
   function label(x, y, t, size, fill) { return tx(x, y, t, size || 22, fill || '#fff'); }
@@ -25160,7 +25178,7 @@ S.extraMakers = function (n, level) {
         var p = pic(pg.pic), say = pg.text;
         if (pg.tap) { var c = []; for (var j = 1; j <= pg.tap; j++) c.push(NUMW[j]); say = say.replace(/ Tap each [a-z]+!?/i, '') + ' Count with me: ' + c.join(', ') + '.'; }
         var st0 = L.st(say, p); if (pg.facts) st0.facts = pg.facts; sc.push(L.SC(story.title, 'Page ' + (i + 1), [st0]));
-        if (pg.ask) sc.push(L.SC('Your turn', 'Help with the story', sw(askSteps(pg.ask.q, p, pg.ask.options, pg.ask.answer, pg.ask.explain))));
+        if (pg.ask) sc.push(L.SC('Your turn', 'Help with the story', sw(askSteps(pg.ask.q, pg.askPic ? pic(pg.askPic) : p, pg.ask.options, pg.ask.answer, pg.ask.explain))));
       });
       sc.push(L.SC('The end', story.title, [L.st(story.endText || 'The end.', pic(story.endPic))]));
       var sep = L.ep('📖 ' + story.title, 'a picture-book story that uses the maths in this topic.', sc); if (story.film) sep.film = story.film; eps.push(sep);
@@ -25387,9 +25405,10 @@ S.extraMakers = function (n, level) {
       endText: 'Ruby counts down: three, two, one, blast off! She flies home with ten stars. Well done for counting with Ruby!',
       pages: (function () {
         var P = FL.panel, T = FL.things;
-        function tank(n, roll) { return FL.svg(244, 116, 'A fuel tank with ' + n + ' stars', '<g transform="translate(12 12)">' + FL.tank(0, 0, n, 0, roll) + '</g>', 260); }
+        /* from: how many stars are already in the tank (they do not pop in again); the same size on every page */
+        function tank(n, roll, from) { return FL.svg(244, roll ? 170 : 126, 'A fuel tank with ' + (roll ? n - 1 : n) + ' stars' + (roll ? ' and one star rolling away' : ''), '<g transform="translate(12 12)">' + FL.tank(0, 0, n, from || 0, roll) + '</g>', 260); }
         function stones(list, planet) { return FL.svg(400, 120, planet ? 'Three planets' : 'Stepping stones', FL.stones(list, 70, planet), 400); }
-        function pg(pic, text, ask) { return { pic: pic, text: text, ask: ask }; }
+        function pg(pic, text, ask, askPic) { return { pic: pic, text: text, ask: ask, askPic: askPic }; }
         function Q(q, options, answer, explain) { return { q: q, options: options, answer: answer, explain: explain }; }
         return [
           pg(P('space', 'rocket', ''), 'This is Ruby the rocket. Ruby says, “Can you help me count some stars?” Ruby wants to fly home. She needs ten stars to fill her fuel tank.'),
@@ -25398,15 +25417,16 @@ S.extraMakers = function (n, level) {
           pg(P('pond', 'rocket', stones([2, 4, 6, '?'])), 'Ruby hops on the stepping stones: two, four, six.', Q('What number comes next?', [7, 8, 10], 8, 'Two, four, six, eight. Each stone is two more.')),
           pg(P('space', 'rocket', FL.starTens(2, 3)), 'Ruby fills two tanks with ten stars each. She has three more stars too.', Q('How many stars is that?', [5, 23, 32], 23, 'Two tens and three ones make twenty-three.')),
           pg(P('space', 'rocket', stones([7, 3, 5], true)), 'Ruby visits three planets. Each planet has a number.', Q('Which number is the smallest?', [3, 5, 7], 3, 'Three is the smallest. On a number line, three comes before five and seven.')),
-          pg(P('space', 'rocket', tank(10, true)), 'Ruby’s tank is full with ten stars. Oh no, one star rolls away!', Q('What is one less than <b>10</b>?', [8, 9, 11], 9, 'One less than ten is nine.')),
-          pg(P('space', 'rocket', '<div style="width:244px;max-width:100%">' + FL.svg(244, 116, 'A fuel tank with 10 stars', '<g transform="translate(12 12)">' + FL.tank(0, 0, 10, 9) + '</g>', 244) + '</div>'), 'Ruby catches the star and puts it back in her tank.', Q('What is one more than <b>9</b>?', [8, 10, 11], 10, 'One more than nine is ten.'))
+          pg(P('space', 'rocket', tank(10, true)), 'Ruby’s tank is full with ten stars. Oh no, one star rolls away!', Q('What is one less than <b>10</b>?', [8, 9, 11], 9, 'One less than ten is nine.'), P('space', 'rocket', tank(9, false, 9))),   /* the question shows the 9 stars left */
+          pg(P('space', 'rocket', tank(10, false, 9)), 'Ruby catches the star and puts it back in her tank.', Q('What is one more than <b>9</b>?', [8, 10, 11], 10, 'One more than nine is ten.'))
         ];
       })() },
     /* Let's learn: short lessons that carry on Ruby's story, one small idea at a time */
     learn: (function () {
       /* the same picture panels as Benny's Picnic: Ruby on the left, the things to look at on the right */
       var P = FL.panel, T = FL.things, INK = '#2b2340';
-      function tank(n, roll, from) { return '<div style="width:190px;max-width:100%">' + FL.svg(244, 116, 'A fuel tank with ' + n + ' stars', '<g transform="translate(12 12)">' + FL.tank(0, 0, n, from == null ? n : from, roll) + '</g>', 244) + '</div>'; }
+      /* the same size as in the story */
+      function tank(n, roll, from) { return FL.svg(244, roll ? 170 : 126, 'A fuel tank with ' + (roll ? n - 1 : n) + ' stars' + (roll ? ' and one star rolling away' : ''), '<g transform="translate(12 12)">' + FL.tank(0, 0, n, from == null ? n : from, roll) + '</g>', 260); }
       function tens(t, o) { var s = ''; for (var k = 0; k < t; k++) s += tank(10); return '<div style="display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:center">' + s + (o ? '<div style="max-width:200px">' + T(o, 'star', 5) + '</div>' : '') + '</div>'; }
       function stones(list, planet) { return FL.svg(400, 120, planet ? 'Planets with numbers' : 'Stepping stones', FL.stones(list, 70, planet), 400); }
       function boxes(list) { return FL.svg(400, 110, 'Boxes of stars', list.map(function (v, k) { return '<rect x="' + (22 + k * 92) + '" y="15" width="80" height="80" rx="10" fill="' + (v === '?' ? '#ffd166' : '#fff') + '" stroke="' + INK + '" stroke-width="3"/>' + FL.tx(62 + k * 92, 67, v, 28, INK); }).join(''), 400); }

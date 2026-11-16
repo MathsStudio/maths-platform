@@ -15,9 +15,10 @@
       endText: 'Ruby counts down: three, two, one, blast off! She flies home with ten stars. Well done for counting with Ruby!',
       pages: (function () {
         var P = FL.panel, T = FL.things;
-        function tank(n, roll) { return FL.svg(244, 116, 'A fuel tank with ' + n + ' stars', '<g transform="translate(12 12)">' + FL.tank(0, 0, n, 0, roll) + '</g>', 260); }
+        /* from: how many stars are already in the tank (they do not pop in again); the same size on every page */
+        function tank(n, roll, from) { return FL.svg(244, roll ? 170 : 126, 'A fuel tank with ' + (roll ? n - 1 : n) + ' stars' + (roll ? ' and one star rolling away' : ''), '<g transform="translate(12 12)">' + FL.tank(0, 0, n, from || 0, roll) + '</g>', 260); }
         function stones(list, planet) { return FL.svg(400, 120, planet ? 'Three planets' : 'Stepping stones', FL.stones(list, 70, planet), 400); }
-        function pg(pic, text, ask) { return { pic: pic, text: text, ask: ask }; }
+        function pg(pic, text, ask, askPic) { return { pic: pic, text: text, ask: ask, askPic: askPic }; }
         function Q(q, options, answer, explain) { return { q: q, options: options, answer: answer, explain: explain }; }
         return [
           pg(P('space', 'rocket', ''), 'This is Ruby the rocket. Ruby says, “Can you help me count some stars?” Ruby wants to fly home. She needs ten stars to fill her fuel tank.'),
@@ -26,15 +27,16 @@
           pg(P('pond', 'rocket', stones([2, 4, 6, '?'])), 'Ruby hops on the stepping stones: two, four, six.', Q('What number comes next?', [7, 8, 10], 8, 'Two, four, six, eight. Each stone is two more.')),
           pg(P('space', 'rocket', FL.starTens(2, 3)), 'Ruby fills two tanks with ten stars each. She has three more stars too.', Q('How many stars is that?', [5, 23, 32], 23, 'Two tens and three ones make twenty-three.')),
           pg(P('space', 'rocket', stones([7, 3, 5], true)), 'Ruby visits three planets. Each planet has a number.', Q('Which number is the smallest?', [3, 5, 7], 3, 'Three is the smallest. On a number line, three comes before five and seven.')),
-          pg(P('space', 'rocket', tank(10, true)), 'Ruby’s tank is full with ten stars. Oh no, one star rolls away!', Q('What is one less than <b>10</b>?', [8, 9, 11], 9, 'One less than ten is nine.')),
-          pg(P('space', 'rocket', '<div style="width:244px;max-width:100%">' + FL.svg(244, 116, 'A fuel tank with 10 stars', '<g transform="translate(12 12)">' + FL.tank(0, 0, 10, 9) + '</g>', 244) + '</div>'), 'Ruby catches the star and puts it back in her tank.', Q('What is one more than <b>9</b>?', [8, 10, 11], 10, 'One more than nine is ten.'))
+          pg(P('space', 'rocket', tank(10, true)), 'Ruby’s tank is full with ten stars. Oh no, one star rolls away!', Q('What is one less than <b>10</b>?', [8, 9, 11], 9, 'One less than ten is nine.'), P('space', 'rocket', tank(9, false, 9))),   /* the question shows the 9 stars left */
+          pg(P('space', 'rocket', tank(10, false, 9)), 'Ruby catches the star and puts it back in her tank.', Q('What is one more than <b>9</b>?', [8, 10, 11], 10, 'One more than nine is ten.'))
         ];
       })() },
     /* Let's learn: short lessons that carry on Ruby's story, one small idea at a time */
     learn: (function () {
       /* the same picture panels as Benny's Picnic: Ruby on the left, the things to look at on the right */
       var P = FL.panel, T = FL.things, INK = '#2b2340';
-      function tank(n, roll, from) { return '<div style="width:190px;max-width:100%">' + FL.svg(244, 116, 'A fuel tank with ' + n + ' stars', '<g transform="translate(12 12)">' + FL.tank(0, 0, n, from == null ? n : from, roll) + '</g>', 244) + '</div>'; }
+      /* the same size as in the story */
+      function tank(n, roll, from) { return FL.svg(244, roll ? 170 : 126, 'A fuel tank with ' + (roll ? n - 1 : n) + ' stars' + (roll ? ' and one star rolling away' : ''), '<g transform="translate(12 12)">' + FL.tank(0, 0, n, from == null ? n : from, roll) + '</g>', 260); }
       function tens(t, o) { var s = ''; for (var k = 0; k < t; k++) s += tank(10); return '<div style="display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:center">' + s + (o ? '<div style="max-width:200px">' + T(o, 'star', 5) + '</div>' : '') + '</div>'; }
       function stones(list, planet) { return FL.svg(400, 120, planet ? 'Planets with numbers' : 'Stepping stones', FL.stones(list, 70, planet), 400); }
       function boxes(list) { return FL.svg(400, 110, 'Boxes of stars', list.map(function (v, k) { return '<rect x="' + (22 + k * 92) + '" y="15" width="80" height="80" rx="10" fill="' + (v === '?' ? '#ffd166' : '#fff') + '" stroke="' + INK + '" stroke-width="3"/>' + FL.tx(62 + k * 92, 67, v, 28, INK); }).join(''), 400); }
