@@ -16233,6 +16233,8 @@ S.spatialExtra = S.extraMakers;
       if (base !== flOpt) { flOpt = base; O.innerHTML = oh; } else if (oh !== O.innerHTML) { O.innerHTML = oh; }
       var ol = O.querySelectorAll('.o'), mx = 0; [].forEach.call(ol, function (e) { mx = Math.max(mx, e.textContent.length); });
       O.classList.toggle('flx-long', mx > 6); O.classList.toggle('flx-xl', mx > 14);
+      /* when the choices wrap onto two rows (long answers, small screens), the picture moves up to give them all the room they need */
+      if (op) { var need = O.offsetHeight + (O.offsetTop ? 0 : 0) + 20, base0 = stage.closest('.gp.narrow') ? 96 : 104; P.style.bottom = Math.max(base0, need) + 'px'; fitPic(P); fitBox(P); } else P.style.bottom = '';
       /* a question: the child taps their answer on the picture */
       tries = 0; answered = false;
       if (c.think) O.querySelectorAll('.o').forEach(function (el) {
