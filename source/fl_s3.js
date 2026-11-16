@@ -398,4 +398,5 @@
       ] }
     ]
   });
+  FL.KS3 = { clk: clk, hto: hto, coinsBox: coinsBox, dots: dots, trays: trays, balance: balance, jug: jug };
 })();

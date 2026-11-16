@@ -437,4 +437,5 @@
       ] }
     ]
   });
+  FL.KS4 = { clk: clk, col: col, hto: hto, TT: TT };
 })();

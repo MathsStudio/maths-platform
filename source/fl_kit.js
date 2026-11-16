@@ -279,6 +279,7 @@
   /* ---------- making a topic ---------- */
   FL.topic = function (o) {
     if (S.topics[o.n]) return;
+    FL.GENS = FL.GENS || {}; if (o.gens) FL.GENS[o.n] = o.gens;
     S.addTopic({ n: o.n, base: o.n, year: o.year, short: o.short, title: o.title, blurb: o.blurb, gens: {}, steps: o.gens && o.year !== 'P3' ? (o.life ? [warmStep(o.gens), practiseStep(o.gens), lifeStep(o.life, o.lifeLead || 'this topic')] : [practiseStep(o.gens)]) : [] });   /* P3 has no practice, only lessons and activities */
     if (o.lessons) BT.L.use(o.n, o.lessons);
     /* First level: the story and story-based lessons play in the Watch player, like P5 to P7 (see fl_story.js) */

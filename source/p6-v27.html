@@ -1466,6 +1466,7 @@ var SLIDE_MORE = {"1.learn1": [{"more": ["Our number system uses only ten digits
       if (!dn) return '';
       return '<section class="more"><span class="step-tag">Let\u2019s go deeper</span>' + dn.map(function (x) { return '<p class="say">' + x + '</p>'; }).join('') + '</section>';
     }
+    if (sl && sl.noMore && sl.flLearn) return '';
     var ins = (window.BT && BT.pickInsight && sl) ? BT.pickInsight(t.n, sl.title, '') : [];
     if (!ins.length && m && m.more) ins = m.more;
     if (!ins.length) return '';

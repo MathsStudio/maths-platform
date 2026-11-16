@@ -1464,6 +1464,7 @@ var SLIDE_MORE = {"1.learn1": [{"more": ["Our number system uses only ten digits
       if (!dn) return '';
       return '<section class="more"><span class="step-tag">Let\u2019s go deeper</span>' + dn.map(function (x) { return '<p class="say">' + x + '</p>'; }).join('') + '</section>';
     }
+    if (sl && sl.noMore && sl.flLearn) return '';
     var ins = (window.BT && BT.pickInsight && sl) ? BT.pickInsight(t.n, sl.title, '') : [];
     if (!ins.length && m && m.more) ins = m.more;
     if (!ins.length) return '';
@@ -24751,6 +24752,7 @@ S.extraMakers = function (n, level) {
   /* ---------- making a topic ---------- */
   FL.topic = function (o) {
     if (S.topics[o.n]) return;
+    FL.GENS = FL.GENS || {}; if (o.gens) FL.GENS[o.n] = o.gens;
     S.addTopic({ n: o.n, base: o.n, year: o.year, short: o.short, title: o.title, blurb: o.blurb, gens: {}, steps: o.gens && o.year !== 'P3' ? (o.life ? [warmStep(o.gens), practiseStep(o.gens), lifeStep(o.life, o.lifeLead || 'this topic')] : [practiseStep(o.gens)]) : [] });   /* P3 has no practice, only lessons and activities */
     if (o.lessons) BT.L.use(o.n, o.lessons);
     /* First level: the story and story-based lessons play in the Watch player, like P5 to P7 (see fl_story.js) */
@@ -26813,6 +26815,7 @@ S.extraMakers = function (n, level) {
       ] }
     ]
   });
+  FL.KS2 = { clk: clk };
 })();
 </script>
 <script>
@@ -27216,6 +27219,7 @@ S.extraMakers = function (n, level) {
       ] }
     ]
   });
+  FL.KS3 = { clk: clk, hto: hto, coinsBox: coinsBox, dots: dots, trays: trays, balance: balance, jug: jug };
 })();
 </script>
 <script>
@@ -27658,6 +27662,1356 @@ S.extraMakers = function (n, level) {
       ] }
     ]
   });
+  FL.KS4 = { clk: clk, col: col, hto: hto, TT: TT };
+})();
+</script>
+<script>
+/* fl_learn.js: First level "Learn it" lessons and worked examples for Let's learn, in the same slide format as P5 to P7.
+   Each workbook question gets its own slide lesson: the big question, key words, see it / draw it / write it,
+   three worked examples shown step by step, a common mistake, a quick check and a recap.
+   Each topic also gets three sets of worked examples (getting started, building up, challenge) of 8 slides each. */
+(function () {
+  'use strict';
+  var FL = window.FL, BT = window.BT, S = window.Studio; if (!FL || !BT || !BT.add || !S) return;
+  var V = BT.sv, INK = '#2b2340', r = FL.r, pick = FL.pick, shuffle = FL.shuffle;
+
+  function big(t) { return '<div style="font-size:clamp(1.6rem,6vw,2.4rem);font-weight:800;color:' + INK + ';background:#fff;border:3px solid ' + INK + ';border-radius:16px;padding:6px 18px;text-align:center;display:inline-block">' + t + '</div>'; }
+  function cards(list) { return '<div style="display:flex;flex-wrap:wrap;gap:8px;justify-content:center">' + list.map(function (t) { return '<span style="background:#fff;border:3px solid ' + INK + ';border-radius:14px;padding:6px 12px;font-weight:800;color:' + INK + '">' + t + '</span>'; }).join('') + '</div>'; }
+  function words(list) { return '<div style="display:grid;gap:8px;max-width:520px;margin:0 auto">' + list.map(function (w) { return '<div style="display:flex;gap:12px;align-items:center;background:#fff;border:2px solid #dcd3f0;border-radius:14px;padding:8px 12px;color:' + INK + '"><span style="font-size:1.6rem">' + (w[2] || '🔤') + '</span><span><b>' + w[0] + '</b><br>' + w[1] + '</span></div>'; }).join('') + '</div>'; }
+  function row3(list, kind) { return '<div style="display:flex;align-items:center;justify-content:center;gap:8px;flex-wrap:wrap">' + list.map(function (n) { return '<div style="max-width:200px">' + FL.things(n, kind, 5) + '</div>'; }).join('<b style="font-size:1.8em">+</b>') + '</div>'; }
+  FL.big = big; FL.cards = cards; FL.row3 = row3;
+
+  /* a quick check: one question answered by tapping, then the explanation */
+  function check(c) {
+    return function (host) {
+      host.innerHTML = '<div class="flb">' + (c.pic ? '<div class="flb-pic">' + c.pic + '</div>' : '') + '<div class="flb-q">' + c.q + '</div><div class="flb-opts' + (function () { var L = Math.max.apply(null, c.options.map(function (o) { return String(o).length; })); return L > 12 ? ' col' : L > 4 ? ' long' : ''; })() + '">' + c.options.map(function (o) { return '<button type="button" data-o="' + String(o).replace(/"/g, '&quot;') + '">' + o + '</button>'; }).join('') + '</div><p class="flb-fb" aria-live="polite"></p></div>';
+      var fb = host.querySelector('.flb-fb');
+      host.querySelectorAll('[data-o]').forEach(function (b) { b.addEventListener('click', function () {
+        if (String(b.getAttribute('data-o')) === String(c.answer)) { b.classList.add('ok'); host.querySelectorAll('[data-o]').forEach(function (x) { x.disabled = true; }); fb.className = 'flb-fb ok'; fb.textContent = 'Well done! ' + c.explain; }
+        else { b.classList.add('no'); b.disabled = true; fb.className = 'flb-fb no'; fb.textContent = 'Not quite. ' + (c.tip || 'Have another go.'); }
+      }); });
+    };
+  }
+  /* a worked example slide: the question, a picture for each step, and the steps shown one at a time */
+  function worked(w) {
+    return { q: w.q, steps: w.steps, final: w.final, render: function (k) { var p = w.pics || (w.pic ? [w.pic] : []); return p[Math.min(k, p.length - 1)] || ''; } };
+  }
+
+  /* d = { short, title, what, words: [[word, meaning, emoji]], see: [[say, pic] x3], ex: [w x3], mistake: [say, pic], check: {q, pic, options, answer, explain, tip}, remember: [say, pic] } */
+  FL.learnIt = function (n, id, d) {
+    var sl = [];
+    sl.push({ title: d.title, say: [d.what], v: d.pic || '', kind: 'The big question', noMore: true });
+    sl.push({ title: 'Key words', say: ['Here are the words we use in this lesson.'], v: words(d.words), kind: 'Key words', noMore: true });
+    [['See it', 'Real things'], ['Draw it', 'A picture'], ['Write it', 'Numbers']].forEach(function (k, i) { var s = d.see[i]; if (s) sl.push({ title: k[0], say: [s[0]], v: s[1], kind: k[1], noMore: true }); });
+    d.ex.forEach(function (w, i) { sl.push({ title: 'Worked example ' + (i + 1), say: [], ex: worked(w), kind: 'Step by step', noMore: true }); });
+    sl.push({ title: 'Watch out!', say: [d.mistake[0]], v: d.mistake[1], kind: 'A common mistake', noMore: true });
+    sl.push({ title: 'Quick check', say: ['Now you try. Tap your answer.'], live: check(d.check), kind: 'Your turn', noMore: true });
+    sl.push({ title: 'Remember', say: [d.remember[0]], v: d.remember[1], kind: 'Let’s recap', noMore: true });
+    sl.forEach(function (x) { x.flLearn = true; });
+    BT.add(n, id, d.short, sl);
+  };
+
+  /* compact form: FL.LI(n, id, [short, title, what, pic, words, see, ex, mistake, check, remember])
+     ex: [q, steps, final, pic or [pics]]; check: [q, pic, options, answer, explain, tip] */
+  FL.LI = function (n, id, a) {
+    FL.learnIt(n, id, { short: a[0], title: a[1], what: a[2], pic: a[3], words: a[4], see: a[5],
+      ex: a[6].map(function (e) { return { q: e[0], steps: e[1], final: e[2], pics: Array.isArray(e[3]) ? e[3] : null, pic: Array.isArray(e[3]) ? null : e[3] }; }),
+      mistake: a[7], check: { q: a[8][0], pic: a[8][1], options: a[8][2], answer: a[8][3], explain: a[8][4], tip: a[8][5] }, remember: a[9] });
+  };
+  /* worked examples made from the topic's question makers: the hints become the steps */
+  FL.wexGens = function (n, gens) {
+    function conv(fn) { return function () { var q = fn(), st = [];
+      (q.hints || []).forEach(function (h) { if (st.indexOf(h) < 0 && !/one step at a time|look carefully at each/i.test(h)) st.push(h); });
+      if (q.explain) st.push(q.explain);
+      if (!st.length) st.push('Think about what the question asks.');
+      return { q: q.text, steps: st, final: 'The answer is ' + q.answer + '.', pic: (q.pic || '') + (q.options ? '<div style="margin-top:8px">' + cards(q.options) + '</div>' : '') }; }; }
+    var m = {}; ['low', 'medium', 'high'].forEach(function (l) { m[l] = (gens[l] || gens.medium || []).map(conv); });
+    FL.workedSets(n, m);
+  };
+
+  /* three sets of worked examples, 8 slides each, made from worked-example makers for each level */
+  FL.workedSets = function (n, makers) {
+    [['wex1', 'Worked examples: getting started', 'low'], ['wex2', 'Worked examples: building up', 'medium'], ['wex3', 'Worked examples: challenge', 'high']].forEach(function (p) {
+      var list = makers[p[2]] || [], sl = [], seen = {};
+      for (var k = 0; sl.length < 8 && k < 200 && list.length; k++) {
+        var w = list[k % list.length](); var key = w.q + '|' + w.final; if (seen[key]) continue; seen[key] = 1;
+        sl.push({ flLearn: true, title: 'Worked example ' + (sl.length + 1), say: [], ex: worked(w), kind: p[1].split(': ')[1].replace(/^./, function (c) { return c.toUpperCase(); }), noMore: true });
+      }
+      if (sl.length) BT.add(n, p[0], p[1], sl);
+    });
+  };
+
+  /* ========================= P3 · 302 Adding and subtracting ========================= */
+  var T = FL.track;
+  FL.learnIt(302, 'learn1', { short: 'Reordering', title: 'How can reordering numbers help me add them?',
+    what: 'When we add, we can change the order of the numbers and the answer stays the same. Choosing a good order makes adding easier.',
+    pic: FL.says('frog', '3 + 8 + 7 = ?'),
+    words: [['add (+)', 'put numbers together', '➕'], ['total', 'how many altogether', '🧮'], ['pair', 'two numbers that go together', '👯'], ['make ten', 'two numbers that add up to 10, like 3 and 7', '🔟']],
+    see: [['Frankie catches 3 flies, then 8, then 7. He puts the 3 and the 7 together first.', row3([3, 8, 7], 'star')],
+      ['Three and seven fill a ten-frame. Then 8 more.', '<div style="max-width:240px;margin:0 auto">' + FL.frame(3, 7) + '</div>'],
+      ['We write it like this: 3 + 7 = 10, and 10 + 8 = 18.', big('3 + 8 + 7<br>= 10 + 8 = 18')]],
+    ex: [{ q: 'What is 4 + 9 + 6?', steps: ['Look for two numbers that make 10.', '4 and 6 make 10.', 'Now add the 9: 10 + 9 = 19.'], final: '4 + 9 + 6 = 19', pics: [big('4 + 9 + 6'), big('4 + 6 + 9'), big('10 + 9'), big('19')] },
+      { q: 'What is 5 + 8 + 5?', steps: ['Look for a pair that makes 10.', '5 and 5 make 10.', '10 + 8 = 18.'], final: '5 + 8 + 5 = 18', pics: [big('5 + 8 + 5'), big('5 + 5 + 8'), big('10 + 8'), big('18')] },
+      { q: 'What is 2 + 7 + 8?', steps: ['Which two numbers make 10?', '2 and 8 make 10.', '10 + 7 = 17.'], final: '2 + 7 + 8 = 17', pics: [big('2 + 7 + 8'), big('2 + 8 + 7'), big('10 + 7'), big('17')] }],
+    mistake: ['Reordering works for adding, but not for taking away. 9 take away 4 is 5, but 4 take away 9 does not work with whole numbers.', cards(['9 − 4 = 5 ✓', '4 − 9 ✗'])],
+    check: { q: 'What is <b>6 + 3 + 4</b>?', options: [12, 13, 14], answer: 13, explain: '6 and 4 make 10, and 3 more is 13.', tip: 'Find the pair that makes 10.' },
+    remember: ['Any order gives the same answer. Look for pairs that make 10 and add them first.', cards(['1 + 9', '2 + 8', '3 + 7', '4 + 6', '5 + 5'])] });
+
+  FL.learnIt(302, 'learn2', { short: 'Bridging through 10', title: 'How can bridging through 10 help me to add and subtract?',
+    what: 'To add or take away across 10, jump to 10 first, then jump the rest.',
+    pic: T(7, 15, [7, 10, 15], [[7, 10], [10, 15]]),
+    words: [['bridge', 'go across a ten', '🌉'], ['jump', 'a hop along the number line', '🐸'], ['split', 'break a number into two parts, like 5 = 2 + 3', '✂️'], ['number line', 'numbers in order on a line', '📏']],
+    see: [['Frankie has 8 flies in a box of 10. He adds 5 more: 2 fill the box, and 3 go in a new box.', '<div style="max-width:240px;margin:0 auto">' + FL.frame(8, 2) + '</div>' + FL.things(3, 'star', 3)],
+      ['On a number line: 8, jump 2 to 10, then jump 3 to 13.', T(8, 13, [8, 10, 13], [[8, 10], [10, 13]])],
+      ['We write: 8 + 5 = 8 + 2 + 3 = 13.', big('8 + 5 = 8 + 2 + 3 = 13')]],
+    ex: [{ q: 'What is 7 + 6?', steps: ['How far is 7 from 10? 3.', 'Split 6 into 3 and 3.', '7 + 3 = 10, then 10 + 3 = 13.'], final: '7 + 6 = 13', pics: [T(7, 13, [7]), T(7, 13, [7, 10]), T(7, 13, [7, 10], [[7, 10]]), T(7, 13, [7, 10, 13], [[7, 10], [10, 13]])] },
+      { q: 'What is 14 − 6?', steps: ['How far is 14 from 10? 4.', 'Split 6 into 4 and 2.', '14 − 4 = 10, then 10 − 2 = 8.'], final: '14 − 6 = 8', pics: [T(8, 14, [14]), T(8, 14, [14, 10]), T(8, 14, [14, 10], [[14, 10]]), T(8, 14, [8, 10, 14], [[14, 10], [10, 8]])] },
+      { q: 'What is 9 + 8?', steps: ['9 needs 1 to make 10.', 'Split 8 into 1 and 7.', '9 + 1 = 10, then 10 + 7 = 17.'], final: '9 + 8 = 17', pics: [T(9, 17, [9]), T(9, 17, [9, 10]), T(9, 17, [9, 10], [[9, 10]]), T(9, 17, [9, 10, 17], [[9, 10], [10, 17]])] }],
+    mistake: ['Split the second number, not the first. For 8 + 5, keep the 8 and split the 5 into 2 and 3.', cards(['8 + 5', '8 + 2 + 3 ✓'])],
+    check: { q: 'What is <b>6 + 7</b>?', pic: T(6, 13, [6, 10]), options: [12, 13, 14], answer: 13, explain: '6 + 4 = 10, then 3 more is 13.', tip: 'Jump to 10 first.' },
+    remember: ['Jump to 10 first, then jump the rest.', T(7, 15, [7, 10, 15], [[7, 10], [10, 15]])] });
+
+  FL.learnIt(302, 'learn3', { short: 'Counting on', title: 'How can counting on help me add two-digit numbers?',
+    what: 'Start at the bigger number. Count on the tens first, then the ones.',
+    pic: FL.says('frog', '35 + 24 = ?'),
+    words: [['tens', 'groups of ten', '🔟'], ['ones', 'single things', '1️⃣'], ['count on', 'start at a number and keep going', '➡️'], ['bigger number', 'start here to save time', '⬆️']],
+    see: [['Frankie has 35 flies. He catches 2 tens and 4 ones more.', FL.tensOnes(3, 5) + FL.tensOnes(2, 4)],
+      ['Start at 35. Jump ten to 45, ten to 55, then 4 ones to 59.', cards(['35', '→ 45', '→ 55', '→ 59'])],
+      ['We write: 35 + 24 = 59.', big('35 + 24 = 59')]],
+    ex: [{ q: 'What is 42 + 13?', steps: ['Start at 42.', 'Count on 1 ten: 52.', 'Count on 3 ones: 53, 54, 55.'], final: '42 + 13 = 55', pics: [cards(['42']), cards(['42', '→ 52']), cards(['42', '→ 52', '→ 55'])] },
+      { q: 'What is 26 + 31?', steps: ['Start at 31, the bigger number.', 'Count on 2 tens: 41, 51.', 'Count on 6 ones: 57.'], final: '26 + 31 = 57', pics: [cards(['31']), cards(['31', '→ 41', '→ 51']), cards(['31', '→ 41', '→ 51', '→ 57'])] },
+      { q: 'What is 47 + 15?', steps: ['Start at 47.', 'Count on 1 ten: 57.', 'Count on 5 ones: 58, 59, 60, 61, 62.'], final: '47 + 15 = 62', pics: [cards(['47']), cards(['47', '→ 57']), cards(['47', '→ 57', '→ 62'])] }],
+    mistake: ['Remember the ones! 35 + 24 is not 55. After the tens, count on the 4 ones too.', cards(['35 + 24 = 55 ✗', '35 + 24 = 59 ✓'])],
+    check: { q: 'What is <b>53 + 21</b>?', options: [73, 74, 84], answer: 74, explain: '53, 63, 73, then 1 more is 74.', tip: 'Count on the tens first.' },
+    remember: ['Start at the bigger number. Count on the tens, then the ones.', cards(['bigger number', '+ tens', '+ ones'])] });
+
+  FL.learnIt(302, 'learn4', { short: 'Partitioning', title: 'How can partitioning help me add two-digit numbers?',
+    what: 'Split each number into tens and ones. Add the tens, add the ones, then put them back together.',
+    pic: FL.says('frog', '34 + 25 = ?'),
+    words: [['partition', 'split a number into tens and ones', '✂️'], ['tens', '30 is 3 tens', '🔟'], ['ones', '4 is 4 ones', '1️⃣'], ['put together', 'add the parts to get the answer', '🧩']],
+    see: [['34 is 3 tens and 4 ones. 25 is 2 tens and 5 ones.', FL.tensOnes(3, 4) + FL.tensOnes(2, 5)],
+      ['Tens together: 5 tens. Ones together: 9 ones.', FL.tensOnes(5, 9)],
+      ['We write: 30 + 20 = 50, 4 + 5 = 9, so 59.', big('30 + 20 = 50<br>4 + 5 = 9<br>50 + 9 = 59')]],
+    ex: [{ q: 'What is 41 + 36?', steps: ['Split: 40 and 1, 30 and 6.', 'Tens: 40 + 30 = 70.', 'Ones: 1 + 6 = 7.', 'Put together: 70 + 7 = 77.'], final: '41 + 36 = 77', pics: [big('41 + 36'), cards(['40 + 1', '30 + 6']), big('40 + 30 = 70'), big('1 + 6 = 7'), big('77')] },
+      { q: 'What is 23 + 45?', steps: ['Split: 20 and 3, 40 and 5.', 'Tens: 20 + 40 = 60.', 'Ones: 3 + 5 = 8.', 'Put together: 60 + 8 = 68.'], final: '23 + 45 = 68', pics: [big('23 + 45'), cards(['20 + 3', '40 + 5']), big('20 + 40 = 60'), big('3 + 5 = 8'), big('68')] },
+      { q: 'What is 26 + 38?', steps: ['Split: 20 and 6, 30 and 8.', 'Tens: 20 + 30 = 50.', 'Ones: 6 + 8 = 14. That is another ten!', 'Put together: 50 + 14 = 64.'], final: '26 + 38 = 64', pics: [big('26 + 38'), cards(['20 + 6', '30 + 8']), big('20 + 30 = 50'), big('6 + 8 = 14'), big('64')] }],
+    mistake: ['3 tens is thirty, not three. In 34 + 25, add 30 and 20, not 3 and 2.', cards(['3 + 2 = 5 ✗', '30 + 20 = 50 ✓'])],
+    check: { q: 'What is <b>32 + 15</b>?', options: [37, 47, 57], answer: 47, explain: '30 + 10 = 40, 2 + 5 = 7, so 47.', tip: 'Add the tens, then the ones.' },
+    remember: ['Split into tens and ones, add each part, then put them together.', cards(['split', 'add tens', 'add ones', 'put together'])] });
+
+  /* worked-example makers for 302, a level each */
+  var W2 = {
+    low: [function () { var a = r(6, 9), b = r(11 - a, 9), need = 10 - a; return { q: 'What is ' + a + ' + ' + b + '?', steps: [a + ' needs ' + need + ' to make 10.', 'Split ' + b + ' into ' + need + ' and ' + (b - need) + '.', a + ' + ' + need + ' = 10, then 10 + ' + (b - need) + ' = ' + (a + b) + '.'], final: a + ' + ' + b + ' = ' + (a + b), pics: [T(a, a + b, [a]), T(a, a + b, [a, 10]), T(a, a + b, [a, 10, a + b], [[a, 10], [10, a + b]])] }; },
+      function () { var a = r(1, 9), b = 10 - a, c = r(2, 9); return { q: 'What is ' + a + ' + ' + c + ' + ' + b + '?', steps: ['Look for two numbers that make 10.', a + ' and ' + b + ' make 10.', '10 + ' + c + ' = ' + (10 + c) + '.'], final: a + ' + ' + c + ' + ' + b + ' = ' + (10 + c), pics: [big(a + ' + ' + c + ' + ' + b), big(a + ' + ' + b + ' + ' + c), big('10 + ' + c)] }; }],
+    medium: [function () { var a = r(11, 18), b = r(a - 9, 9), down = a - 10; return { q: 'What is ' + a + ' − ' + b + '?', steps: [a + ' take away ' + down + ' is 10.', 'Split ' + b + ' into ' + down + ' and ' + (b - down) + '.', '10 − ' + (b - down) + ' = ' + (a - b) + '.'], final: a + ' − ' + b + ' = ' + (a - b), pics: [T(a - b, a, [a]), T(a - b, a, [a, 10], [[a, 10]]), T(a - b, a, [a - b, 10, a], [[a, 10], [10, a - b]])] }; },
+      function () { var a = r(21, 59), t = r(1, 3), o = r(1, 8 - a % 10 > 0 ? Math.min(8, 9 - a % 10) : 1); var b = 10 * t + o, steps = ['Start at ' + a + '.'], pics = [cards([a])], cur = a, ch = [String(a)];
+        for (var i = 0; i < t; i++) { cur += 10; ch.push('→ ' + cur); } steps.push('Count on ' + t + ' ten' + (t > 1 ? 's' : '') + ': ' + ch.slice(1).join(' ').replace(/→ /g, '') + '.'); pics.push(cards(ch.slice()));
+        cur += o; ch.push('→ ' + cur); steps.push('Count on ' + o + ' one' + (o > 1 ? 's' : '') + ': ' + cur + '.'); pics.push(cards(ch.slice()));
+        return { q: 'What is ' + a + ' + ' + b + '?', steps: steps, final: a + ' + ' + b + ' = ' + (a + b), pics: pics }; }],
+    high: [function () { var a = 10 * r(1, 4) + r(3, 9), b = 10 * r(1, 4) + r(3, 9), ta = Math.floor(a / 10) * 10, tb = Math.floor(b / 10) * 10, oa = a % 10, ob = b % 10;
+        return { q: 'What is ' + a + ' + ' + b + '?', steps: ['Split: ' + ta + ' and ' + oa + ', ' + tb + ' and ' + ob + '.', 'Tens: ' + ta + ' + ' + tb + ' = ' + (ta + tb) + '.', 'Ones: ' + oa + ' + ' + ob + ' = ' + (oa + ob) + (oa + ob >= 10 ? '. That is another ten!' : '.'), 'Put together: ' + (ta + tb) + ' + ' + (oa + ob) + ' = ' + (a + b) + '.'], final: a + ' + ' + b + ' = ' + (a + b), pics: [big(a + ' + ' + b), cards([ta + ' + ' + oa, tb + ' + ' + ob]), big(ta + ' + ' + tb + ' = ' + (ta + tb)), big(oa + ' + ' + ob + ' = ' + (oa + ob)), big(a + b)] }; },
+      function () { var a = 10 * r(3, 9) + r(1, 4), b = r(5, 9), down = a % 10; return { q: 'What is ' + a + ' − ' + b + '?', steps: [a + ' take away ' + down + ' is ' + (a - down) + '.', 'Split ' + b + ' into ' + down + ' and ' + (b - down) + '.', (a - down) + ' − ' + (b - down) + ' = ' + (a - b) + '.'], final: a + ' − ' + b + ' = ' + (a - b), pics: [big(a + ' − ' + b), cards([a + ' − ' + down + ' = ' + (a - down)]), big((a - down) + ' − ' + (b - down) + ' = ' + (a - b))] }; }]
+  };
+  FL.workedSets(302, W2);
+})();
+</script>
+<script>
+/* fl_l3.js: P3 "Learn it" lessons (one per workbook question) and worked-example sets for topics 301 and 303 to 308.
+   Topic 302 is in fl_learn.js. Pictures reuse the story helpers so each lesson looks like its story. */
+(function () {
+  'use strict';
+  var FL = window.FL, BT = window.BT; if (!FL || !FL.LI || !FL.KS3) return;
+  var V = BT.sv, INK = '#2b2340', K = FL.KS3, B = FL.big, C = FL.cards, SAY = FL.says, T = FL.things, TR = FL.track, TO = FL.tensOnes, PIE = FL.pie, COIN = FL.coins, SH = FL.shape, ROW = FL.shapeRow, LI = FL.LI;
+
+  /* ---------- small pictures shared by the First level lessons ---------- */
+  function pair() { return '<div style="display:flex;gap:14px;justify-content:center;align-items:center;flex-wrap:wrap">' + [].slice.call(arguments).join('') + '</div>'; }
+  function seq(list, kind) { return '<div style="display:flex;gap:6px;justify-content:center;align-items:center;flex-wrap:wrap">' + list.map(function (n) { return '<div style="max-width:' + (n > 5 ? 190 : 110) + 'px">' + T(n, kind, 5) + '</div>'; }).join('<b style="font-size:1.4em">→</b>') + '</div>'; }
+  function fbar(n, k, w) { var W = w || 260, s = ''; for (var i = 0; i < n; i++) s += '<rect x="' + (10 + i * W / n) + '" y="10" width="' + (W / n) + '" height="60" fill="' + (i < k ? '#ffb03b' : '#fff') + '" stroke="' + INK + '" stroke-width="3"/>'; return FL.svg(W + 20, 80, 'a bar in ' + n + ' equal parts with ' + k + ' shaded', s, W + 40); }
+  function badBar() { return FL.svg(280, 80, 'a bar cut into two different sized parts', '<rect x="10" y="10" width="180" height="60" fill="#ffb03b" stroke="' + INK + '" stroke-width="3"/><rect x="190" y="10" width="80" height="60" fill="#fff" stroke="' + INK + '" stroke-width="3"/>', 300); }
+  function cubes(n, col) { var s = ''; for (var i = 0; i < n; i++) s += '<rect x="' + (10 + i * 28) + '" y="10" width="28" height="28" fill="' + (col || '#4aa8ff') + '" stroke="' + INK + '" stroke-width="2"/>'; return FL.svg(n * 28 + 20, 48, n + ' cubes in a line', s, Math.min(n * 40 + 30, 460)); }
+  function clocks(h1, m1, h2, m2) { return pair('<div style="text-align:center;font-weight:800">Start' + K.clk(h1, m1) + '</div>', '<b style="font-size:1.6em">→</b>', '<div style="text-align:center;font-weight:800">End' + K.clk(h2, m2) + '</div>'); }
+  function arrow(deg, label) { return '<div style="text-align:center;font-weight:800">' + FL.svg(100, 100, 'an arrow', '<circle cx="50" cy="50" r="44" fill="#fff8e1" stroke="' + INK + '" stroke-width="2"/><g transform="rotate(' + deg + ' 50 50)"><path d="M50 82V22" stroke="#e0457b" stroke-width="8" stroke-linecap="round"/><path d="M50 12 66 34H34z" fill="#e0457b"/></g>', 100) + (label || '') + '</div>'; }
+  function mirror(k, ok) { return '<div style="position:relative;display:inline-block">' + SH(k, '#7cc4ff', 120) + '<div style="position:absolute;top:-4px;bottom:-4px;left:' + (ok === false ? '30%' : '50%') + ';border-left:4px dashed #e0457b"></div></div>'; }
+  FL.KL = { pair: pair, seq: seq, fbar: fbar, badBar: badBar, cubes: cubes, clocks: clocks, arrow: arrow, mirror: mirror };
+
+  /* ========================= 301 Numbers to 100 and beyond (Captain Pip) ========================= */
+  LI(301, 'learn1', ['Number patterns', 'How can I use number patterns to work out a sequence?',
+    'A sequence is a list of numbers that follows a rule. Find the rule, check it, then use it to find the next number.', SAY('pirate', '5, 10, 15, 20, ?'),
+    [['sequence', 'numbers in order that follow a pattern', '🔢'], ['rule', 'what you do each time, like add 2', '⚙️'], ['count on', 'go up in equal steps', '➕'], ['count back', 'go down in equal steps', '➖']],
+    [['Captain Pip opens treasure chests: 2 coins, then 4, then 6, then 8.', seq([2, 4, 6, 8], 'star')],
+      ['On a number line each jump is the same: 2.', TR(0, 10, [2, 4, 6, 8], [[2, 4], [4, 6], [6, 8]])],
+      ['The rule is add 2. The next number is 10.', B('2, 4, 6, 8, 10')]],
+    [['What comes next? 10, 20, 30, 40, ?', ['Find the gap: 10 to 20 is 10.', 'Check: 20 to 30 is 10 too. The rule is add 10.', '40 + 10 = 50.'], 'The next number is 50.', C(['10', '20', '30', '40', '?'])],
+      ['What comes next? 25, 30, 35, 40, ?', ['25 to 30 is 5.', 'The rule is add 5.', '40 + 5 = 45.'], 'The next number is 45.', C(['25', '30', '35', '40', '?'])],
+      ['What comes next? 18, 16, 14, 12, ?', ['The numbers are getting smaller.', '18 to 16 is 2 less. The rule is take away 2.', '12 − 2 = 10.'], 'The next number is 10.', C(['18', '16', '14', '12', '?'])]],
+    ['Check that the rule works for every jump, not just the first one.', C(['3, 6, 9, 12', 'add 3 every time ✓'])],
+    ['What comes next? <b>5, 10, 15, 20, ?</b>', '', [22, 25, 30], 25, 'The rule is add 5, and 20 + 5 = 25.', 'How much does it go up each time?'],
+    ['Find the rule, check it, then use it.', C(['find the gap', 'check the rule', 'use the rule'])]]);
+
+  LI(301, 'learn2', ['Hundreds, tens, ones', 'What are hundreds, tens and ones?',
+    'In a 3-digit number each digit has a value. In 245 the 2 is 2 hundreds, the 4 is 4 tens and the 5 is 5 ones.', K.hto(2, 4, 5),
+    [['digit', 'one of 0, 1, 2, 3, 4, 5, 6, 7, 8, 9', '🔢'], ['hundreds', 'groups of 100', '💯'], ['tens', 'groups of 10', '🔟'], ['ones', 'single ones', '1️⃣']],
+    [['Captain Pip has 1 bag of 100 coins, 3 stacks of 10 and 6 single coins.', pair(K.coinsBox(1), TO(3, 6))],
+      ['In a place value chart: 1 hundred, 3 tens and 6 ones.', K.hto(1, 3, 6)],
+      ['We write 100 + 30 + 6 = 136.', B('100 + 30 + 6 = 136')]],
+    [['What is the value of the 4 in 342?', ['Put 342 in a chart: 3 hundreds, 4 tens, 2 ones.', 'The 4 is in the tens column.', '4 tens is 40.'], 'The 4 is worth 40.', K.hto(3, 4, 2)],
+      ['Write 5 hundreds, 2 tens and 7 ones as a number.', ['Hundreds: 5.', 'Tens: 2.', 'Ones: 7.'], 'The number is 527.', K.hto(5, 2, 7)],
+      ['Partition 608.', ['6 hundreds is 600.', '0 tens: the zero keeps the tens place.', '8 ones is 8.'], '608 = 600 + 8', K.hto(6, 0, 8)]],
+    ['Do not forget the zero. 4 hundreds and 5 ones is 405, not 45.', C(['405 ✓', '45 ✗'])],
+    ['What is the value of the <b>7</b> in 375?', K.hto(3, 7, 5), [7, 70, 700], 70, 'The 7 is in the tens column, so it is worth 70.', 'Which column is the 7 in?'],
+    ['Where a digit sits tells you what it is worth.', K.hto('H', 'T', 'O')]]);
+
+  LI(301, 'learn3', ['Comparing numbers', 'How do I compare and order numbers to 1000?',
+    'Compare the hundreds first. If they are the same, compare the tens. Then compare the ones.', SAY('pirate', '324 or 342?'),
+    [['compare', 'look to see which is bigger', '⚖️'], ['bigger (>)', 'more than', '⬆️'], ['smaller (<)', 'less than', '⬇️'], ['order', 'put in a line from smallest to biggest', '📶']],
+    [['Two chests: one has 324 coins and the other has 342.', C(['324 coins', '342 coins'])],
+      ['The hundreds are the same. Look at the tens: 2 tens and 4 tens.', pair(K.hto(3, 2, 4), K.hto(3, 4, 2))],
+      ['4 tens is more than 2 tens, so 342 is bigger.', B('342 > 324')]],
+    [['Which is bigger: 518 or 581?', ['Hundreds: 5 and 5, the same.', 'Tens: 1 and 8. 8 tens is more.', 'So 581 is bigger.'], '581 > 518', C(['518', '581'])],
+      ['Order 207, 270 and 72 from smallest to biggest.', ['72 has no hundreds, so it is the smallest.', '207 and 270 both have 2 hundreds.', 'Tens: 0 and 7, so 207 comes before 270.'], '72, 207, 270', C(['207', '270', '72'])],
+      ['Which is smaller: 639 or 693?', ['Hundreds: both 6.', 'Tens: 3 and 9.', '3 tens is less.'], '639 < 693', C(['639', '693'])]],
+    ['Start with the biggest place, not the last digit. 199 is smaller than 201, even though 9 is bigger than 1.', C(['199 < 201 ✓'])],
+    ['Which is the biggest?', '', [456, 465, 546], 546, '546 has 5 hundreds, the most.', 'Compare the hundreds first.'],
+    ['Hundreds first, then tens, then ones.', C(['hundreds', 'tens', 'ones'])]]);
+
+  LI(301, 'learn4', ['Rounding to 10', 'How do I round numbers to the nearest 10?',
+    'Rounding finds the nearest ten. Look at the ones digit: 5 or more rounds up, 4 or less rounds down.', TR(30, 40, [34]),
+    [['round', 'change to the nearest ten', '🎯'], ['nearest', 'closest', '📍'], ['round up', 'go to the next ten', '⬆️'], ['round down', 'go back to the ten before', '⬇️']],
+    [['The pirate ship is at 37 on the map. Is it closer to 30 or to 40?', TR(30, 40, [37])],
+      ['37 is 3 away from 40 and 7 away from 30. 40 is nearer.', TR(30, 40, [37, 40], [[37, 40]])],
+      ['37 rounded to the nearest 10 is 40.', B('37 → 40')]],
+    [['Round 23 to the nearest 10.', ['23 is between 20 and 30.', 'The ones digit is 3. That is 4 or less.', 'Round down.'], '23 rounds to 20.', TR(20, 30, [23])],
+      ['Round 68 to the nearest 10.', ['68 is between 60 and 70.', 'The ones digit is 8. That is 5 or more.', 'Round up.'], '68 rounds to 70.', TR(60, 70, [68])],
+      ['Round 45 to the nearest 10.', ['45 is between 40 and 50.', 'It is exactly halfway.', 'When the ones digit is 5, we round up.'], '45 rounds to 50.', TR(40, 50, [45])]],
+    ['Five rounds up, not down. 35 rounds to 40.', C(['35 → 40 ✓', '35 → 30 ✗'])],
+    ['Round <b>52</b> to the nearest 10.', TR(50, 60, [52]), [50, 55, 60], 50, 'The ones digit is 2, so round down to 50.', 'Look at the ones digit.'],
+    ['0 to 4: round down. 5 to 9: round up.', C(['0–4 ⬇️', '5–9 ⬆️'])]]);
+
+  /* ========================= 303 Multiplication (Benny the bear bakes) ========================= */
+  LI(303, 'learn1', ['Adding to multiply', 'How can adding help me multiply?',
+    'Multiplying is adding equal groups. 3 groups of 4 is 4 + 4 + 4 = 12, and we write 3 × 4 = 12.', K.trays(3, 4),
+    [['equal groups', 'groups with the same number in each', '🧁'], ['multiply (×)', 'lots of, or groups of', '✖️'], ['times', 'another word for multiply', '🔁'], ['repeated adding', 'adding the same number again and again', '➕']],
+    [['Benny bakes 3 trays of buns with 5 buns on each tray.', K.trays(3, 5)],
+      ['Draw 3 rows of 5 dots.', K.dots(3, 5)],
+      ['5 + 5 + 5 = 15, so 3 × 5 = 15.', B('5 + 5 + 5 = 15<br>3 × 5 = 15')]],
+    [['What is 4 groups of 2?', ['Write it as adding: 2 + 2 + 2 + 2.', 'Count in twos: 2, 4, 6, 8.', 'So 4 × 2 = 8.'], '4 × 2 = 8', K.trays(4, 2)],
+      ['What is 3 × 10?', ['3 lots of 10 is 10 + 10 + 10.', 'Count in tens: 10, 20, 30.'], '3 × 10 = 30', K.dots(3, 10)],
+      ['5 plates have 2 cakes each. How many cakes?', ['That is 5 groups of 2.', '2 + 2 + 2 + 2 + 2.', 'Count in twos: 2, 4, 6, 8, 10.'], '5 × 2 = 10 cakes', K.trays(5, 2)]],
+    ['The groups must be equal. 3 + 4 + 5 is not a times fact.', C(['5 + 5 + 5 = 3 × 5 ✓', '3 + 4 + 5 ✗'])],
+    ['Which times fact is <b>2 + 2 + 2</b>?', '', ['2 × 2', '3 × 2', '6 × 2'], '3 × 2', 'There are 3 twos, so it is 3 × 2.', 'Count how many 2s there are.'],
+    ['Equal groups: add them, or multiply.', C(['equal groups', 'add again and again', '×'])]]);
+
+  LI(303, 'learn2', ['Arrays', 'How can an array help me multiply?',
+    'An array is things set out in rows. Count the rows, count how many are in each row, then multiply.', K.dots(3, 4),
+    [['array', 'things set out in equal rows', '🔲'], ['row', 'a line going across', '↔️'], ['column', 'a line going up and down', '↕️'], ['multiply', 'rows × how many in each row', '✖️']],
+    [['Benny puts cookies on a tray in 2 rows of 5.', T(10, 'sweet', 5)],
+      ['Draw it as dots: 2 rows, 5 in each row.', K.dots(2, 5)],
+      ['2 rows of 5 is 2 × 5 = 10.', B('2 × 5 = 10')]],
+    [['How many dots in 3 rows of 4?', ['Rows: 3.', 'In each row: 4.', 'Count in fours: 4, 8, 12.'], '3 × 4 = 12', K.dots(3, 4)],
+      ['How many dots in 5 rows of 2?', ['Rows: 5.', 'In each row: 2.', 'Count in twos: 2, 4, 6, 8, 10.'], '5 × 2 = 10', K.dots(5, 2)],
+      ['How many dots in 4 rows of 5?', ['Rows: 4.', 'In each row: 5.', 'Count in fives: 5, 10, 15, 20.'], '4 × 5 = 20', K.dots(4, 5)]],
+    ['Every row must be the same length, or it is not an array.', B('● ● ●<br>● ● ●<br>● ● &nbsp;&nbsp;✗')],
+    ['How many dots?', K.dots(2, 10), [12, 20, 22], 20, '2 rows of 10 is 20.', 'Count the rows, then count in tens.'],
+    ['Rows × how many in each row.', C(['rows', 'in each row', 'multiply'])]]);
+
+  LI(303, 'learn3', ['Turnaround facts', 'Which way round should I multiply two numbers?',
+    'You can multiply in either order and get the same answer. 2 × 5 and 5 × 2 are both 10.', pair(K.dots(2, 5), K.dots(5, 2)),
+    [['turnaround fact', 'the same numbers, swapped round', '🔄'], ['order', 'which number comes first', '1️⃣'], ['multiply', 'groups of', '✖️'], ['same answer', 'it does not change', '✅']],
+    [['Benny has 2 trays of 5 buns. Turn them round and it is 5 trays of 2. Still 10 buns.', pair(K.trays(2, 5), K.trays(5, 2))],
+      ['Turn an array round and it has the same number of dots.', pair(K.dots(2, 5), K.dots(5, 2))],
+      ['We write 2 × 5 = 10 and 5 × 2 = 10.', B('2 × 5 = 5 × 2 = 10')]],
+    [['Use 3 × 10 = 30 to find 10 × 3.', ['10 × 3 has the same numbers, swapped.', 'Swapping does not change the answer.'], '10 × 3 = 30', B('3 × 10 = 10 × 3')],
+      ['What is 2 × 7?', ['Turn it round: 7 × 2 is 7 twos.', 'Count in twos: 2, 4, 6, 8, 10, 12, 14.'], '2 × 7 = 14', K.dots(2, 7)],
+      ['Is 4 × 5 the same as 5 × 4?', ['4 rows of 5 is 20.', '5 rows of 4 is 20.', 'Yes, they are turnaround facts.'], '4 × 5 = 5 × 4 = 20', pair(K.dots(4, 5), K.dots(5, 4))]],
+    ['Turnarounds work for multiplying, but not for sharing. 10 ÷ 2 is not the same as 2 ÷ 10.', C(['5 × 2 = 2 × 5 ✓', '10 ÷ 2 ✓', '2 ÷ 10 ✗'])],
+    ['6 × 5 = 30. What is <b>5 × 6</b>?', '', [11, 30, 56], 30, 'It is a turnaround fact, so it is 30.', 'The numbers are just swapped.'],
+    ['Swap the numbers: same answer.', B('3 × 4 = 4 × 3')]]);
+
+  LI(303, 'learn4', ['2, 5 and 10 times tables', 'How can counting in 2s, 5s and 10s help me learn times tables?',
+    'Counting in equal steps gives you the times table. Count in 5s: 5, 10, 15, 20. So 4 × 5 = 20.', TR(0, 20, [5, 10, 15, 20], [[0, 5], [5, 10], [10, 15], [15, 20]]),
+    [['count in 2s', '2, 4, 6, 8, 10', '2️⃣'], ['count in 5s', '5, 10, 15, 20, 25', '5️⃣'], ['count in 10s', '10, 20, 30, 40, 50', '🔟'], ['times table', 'a list of multiplying facts', '📋']],
+    [['Benny puts 2 cookies on each of 4 plates.', K.trays(4, 2)],
+      ['Jump in 2s on a number line: 2, 4, 6, 8.', TR(0, 10, [2, 4, 6, 8], [[0, 2], [2, 4], [4, 6], [6, 8]])],
+      ['4 jumps of 2 is 8, so 4 × 2 = 8.', B('4 × 2 = 8')]],
+    [['What is 6 × 2?', ['Count in 2s six times.', '2, 4, 6, 8, 10, 12.'], '6 × 2 = 12', C(['2', '4', '6', '8', '10', '12'])],
+      ['What is 3 × 5?', ['Count in 5s three times.', '5, 10, 15.'], '3 × 5 = 15', C(['5', '10', '15'])],
+      ['What is 7 × 10?', ['Count in 10s seven times.', '10, 20, 30, 40, 50, 60, 70.'], '7 × 10 = 70', C(['10', '20', '30', '40', '50', '60', '70'])]],
+    ['Keep track of how many jumps you make. Hold up a finger for each one.', C(['5 ☝️', '10 ✌️', '15 🤟'])],
+    ['What is <b>4 × 10</b>?', '', [14, 40, 400], 40, '10, 20, 30, 40.', 'Count in tens four times.'],
+    ['The 2s end in 0, 2, 4, 6 or 8. The 5s end in 0 or 5. The 10s end in 0.', C(['2s: 0 2 4 6 8', '5s: 0 or 5', '10s: 0'])]]);
+
+  /* ========================= 304 Division (Molly the mouse's picnic) ========================= */
+  LI(304, 'learn1', ['Sharing equally', 'How can sharing equally help me divide?',
+    'Dividing can mean sharing equally. Give one to each group at a time until they are all gone.', SAY('mouse', '12 ÷ 3 = ?'),
+    [['share', 'give out', '🤲'], ['equally', 'everyone gets the same', '⚖️'], ['divide (÷)', 'share equally or make equal groups', '➗'], ['each', 'every one of them', '👆']],
+    [['Molly shares 12 sweets between 3 friends.', T(12, 'sweet', 6)],
+      ['Give one to each friend in turn. Each friend gets 4.', K.trays(3, 4)],
+      ['We write 12 ÷ 3 = 4.', B('12 ÷ 3 = 4')]],
+    [['Share 10 sweets between 2 friends.', ['Give one to each friend, again and again.', 'Each friend gets 5.', 'Check: 5 + 5 = 10.'], '10 ÷ 2 = 5', K.trays(2, 5)],
+      ['Share 8 sweets between 4 plates.', ['Put one on each plate, then again.', 'Each plate gets 2.', 'Check: 4 × 2 = 8.'], '8 ÷ 4 = 2', K.trays(4, 2)],
+      ['Share 15 sweets between 5 mice.', ['One each, round and round.', 'Each mouse gets 3.', 'Check: 5 × 3 = 15.'], '15 ÷ 5 = 3', K.trays(5, 3)]],
+    ['Everyone must get the same. 3 and 7 is not sharing 10 equally.', C(['5 and 5 ✓', '3 and 7 ✗'])],
+    ['Share <b>6</b> cakes between <b>2</b> friends. How many each?', T(6, 'sweet', 6), [2, 3, 4], 3, '6 ÷ 2 = 3.', 'Give one each until they are gone.'],
+    ['Share one at a time until they are all gone. Everyone gets the same.', C(['share', 'equally', '÷'])]]);
+
+  LI(304, 'learn2', ['Taking away groups', 'How can subtracting help me with division?',
+    'Dividing can mean making groups. Take away the group size again and again, and count how many times.', TR(0, 12, [0, 4, 8, 12], [[12, 8], [8, 4], [4, 0]]),
+    [['group', 'a set of things together', '📦'], ['take away', 'subtract', '➖'], ['how many groups', 'count the groups you make', '🔢'], ['divide', 'make equal groups', '➗']],
+    [['Molly has 12 cheese bites. She puts 4 in each box. How many boxes?', T(12, 'sweet', 4)],
+      ['Jump back 4 each time: 12, 8, 4, 0. That is 3 jumps.', TR(0, 12, [0, 4, 8, 12], [[12, 8], [8, 4], [4, 0]])],
+      ['3 groups of 4, so 12 ÷ 4 = 3.', B('12 ÷ 4 = 3')]],
+    [['How many groups of 2 are in 10?', ['Take away 2 again and again: 10, 8, 6, 4, 2, 0.', 'Count the jumps: 5.'], '10 ÷ 2 = 5', TR(0, 10, [0, 2, 4, 6, 8, 10], [[10, 8], [8, 6], [6, 4], [4, 2], [2, 0]])],
+      ['How many groups of 5 are in 20?', ['20, then 15, then 10, then 5, then 0.', 'That is 4 jumps.'], '20 ÷ 5 = 4', TR(0, 20, [0, 5, 10, 15, 20], [[20, 15], [15, 10], [10, 5], [5, 0]])],
+      ['How many groups of 10 are in 30?', ['30, then 20, then 10, then 0.', 'That is 3 jumps.'], '30 ÷ 10 = 3', C(['30', '20', '10', '0'])]],
+    ['Count the jumps, not the numbers you land on.', C(['12 → 8 → 4 → 0', '3 jumps ✓'])],
+    ['How many groups of <b>3</b> are in <b>9</b>?', TR(0, 9, [0, 3, 6, 9]), [2, 3, 4], 3, '9, 6, 3, 0: that is 3 jumps.', 'Jump back 3 each time.'],
+    ['Take away the group size until you reach 0. Count the jumps.', C(['take away', 'again', 'count the jumps'])]]);
+
+  LI(304, 'learn3', ['Arrays for dividing', 'How can an array help me with division?',
+    'An array shows a times fact and a dividing fact. 3 rows of 5 is 15, so 15 ÷ 3 = 5.', K.dots(3, 5),
+    [['array', 'things set out in equal rows', '🔲'], ['row', 'a line going across', '↔️'], ['in each row', 'how many in one row', '👉'], ['fact family', 'times and dividing facts that go together', '👨‍👩‍👧']],
+    [['Molly sets out 15 sandwiches in 3 rows.', T(15, 'sweet', 5)],
+      ['As an array: 3 rows, 5 in each row.', K.dots(3, 5)],
+      ['3 × 5 = 15, so 15 ÷ 3 = 5 and 15 ÷ 5 = 3.', B('15 ÷ 3 = 5<br>15 ÷ 5 = 3')]],
+    [['Use the array to find 8 ÷ 2.', ['There are 8 dots in 2 rows.', 'Count one row: 4.'], '8 ÷ 2 = 4', K.dots(2, 4)],
+      ['20 dots in 4 rows. How many in each row?', ['Make 4 rows.', 'Each row has 5.', 'Check: 4 × 5 = 20.'], '20 ÷ 4 = 5', K.dots(4, 5)],
+      ['Use 2 × 10 = 20 to find 20 ÷ 10.', ['2 rows of 10 make 20.', 'So 20 in groups of 10 makes 2 groups.'], '20 ÷ 10 = 2', K.dots(2, 10)]],
+    ['In a dividing fact the biggest number comes first: 15 ÷ 3, not 3 ÷ 15.', C(['15 ÷ 3 ✓', '3 ÷ 15 ✗'])],
+    ['12 dots in 3 rows. How many in each row?', K.dots(3, 4), [3, 4, 9], 4, '3 × 4 = 12, so 12 ÷ 3 = 4.', 'Count one row.'],
+    ['One array gives two times facts and two dividing facts.', C(['3 × 5', '5 × 3', '15 ÷ 3', '15 ÷ 5'])]]);
+
+  LI(304, 'learn4', ['Halving', 'How can halving help me divide?',
+    'Halving means splitting into 2 equal parts. It is the same as dividing by 2.', PIE(2, 1),
+    [['half', 'one of 2 equal parts', '🌗'], ['halve', 'split into 2 equal parts', '✂️'], ['double', 'the opposite of halving', '👯'], ['divide by 2', 'the same as halving', '➗']],
+    [['Molly splits 8 carrots into two equal piles.', K.trays(2, 4)],
+      ['8 split into 2 equal parts is 4 and 4.', K.dots(2, 4)],
+      ['Half of 8 is 4, and 8 ÷ 2 = 4.', B('half of 8 = 4<br>8 ÷ 2 = 4')]],
+    [['What is half of 10?', ['Split 10 into 2 equal parts.', '5 and 5.', 'Check: double 5 is 10.'], 'Half of 10 is 5.', K.trays(2, 5)],
+      ['What is half of 16?', ['Think of a double: double 8 is 16.', 'So half of 16 is 8.'], 'Half of 16 is 8.', K.trays(2, 8)],
+      ['What is half of 30?', ['Split 30 into 20 and 10.', 'Half of 20 is 10. Half of 10 is 5.', '10 + 5 = 15.'], 'Half of 30 is 15.', B('20 + 10<br>10 + 5 = 15')]],
+    ['Halves must be equal. 3 and 5 are not halves of 8.', C(['4 and 4 ✓', '3 and 5 ✗'])],
+    ['What is half of <b>14</b>?', '', [6, 7, 8], 7, 'Double 7 is 14, so half of 14 is 7.', 'Which number doubled makes 14?'],
+    ['Halving undoes doubling.', C(['double 6 = 12', 'half of 12 = 6'])]]);
+
+  /* ========================= 305 Fractions (Finn the fox) ========================= */
+  LI(305, 'learn1', ['What is a fraction?', 'What is a fraction?',
+    'A fraction is a part of a whole that has been cut into equal parts.', PIE(4, 1),
+    [['whole', 'all of it', '🍕'], ['equal parts', 'parts that are all the same size', '⚖️'], ['half', 'one of 2 equal parts', '🌗'], ['quarter', 'one of 4 equal parts', '🍰']],
+    [['Finn cuts a pizza into 4 equal slices and eats 1. He ate one quarter.', PIE(4, 1)],
+      ['Draw a bar and split it into 2 equal parts. Shade 1. That is one half.', fbar(2, 1)],
+      ['We write one half as 1/2 and one quarter as 1/4.', B('1/2 &nbsp; 1/4')]],
+    [['A cake is cut into 2 equal pieces. What is one piece called?', ['There are 2 equal parts.', 'One of 2 equal parts is a half.'], 'One half: 1/2', PIE(2, 1)],
+      ['A pizza is cut into 4 equal slices. What is one slice called?', ['There are 4 equal parts.', 'One of 4 equal parts is a quarter.'], 'One quarter: 1/4', PIE(4, 1)],
+      ['A bar is cut into 3 equal parts. What is one part called?', ['There are 3 equal parts.', 'One of 3 equal parts is a third.'], 'One third: 1/3', fbar(3, 1)]],
+    ['The parts must be the same size. This bar is not cut into halves.', badBar()],
+    ['What fraction is shaded?', PIE(4, 1), ['1/2', '1/3', '1/4'], '1/4', '1 of 4 equal parts is one quarter.', 'Count the equal parts.'],
+    ['A fraction is part of a whole cut into equal parts.', pair(PIE(2, 1), PIE(3, 1), PIE(4, 1))]]);
+
+  LI(305, 'learn2', ['Writing fractions', 'How to write fractions',
+    'The bottom number says how many equal parts the whole has. The top number says how many of those parts we have.', B('3/4'),
+    [['top number', 'how many parts we have', '⬆️'], ['bottom number', 'how many equal parts in the whole', '⬇️'], ['fraction line', 'the line between the numbers', '➖'], ['three quarters', '3 parts out of 4', '🥧']],
+    [['Finn has a pizza in 4 slices. He gives 3 to his friends.', PIE(4, 3)],
+      ['Shade 3 of the 4 equal parts.', fbar(4, 3)],
+      ['3 parts out of 4. We write 3/4: three quarters.', B('3/4')]],
+    [['Write the fraction: 1 part shaded out of 2.', ['Equal parts: 2. That goes on the bottom.', 'Shaded: 1. That goes on the top.'], '1/2', PIE(2, 1)],
+      ['Write the fraction: 2 parts shaded out of 4.', ['Bottom: 4 equal parts.', 'Top: 2 shaded parts.'], '2/4: two quarters', PIE(4, 2)],
+      ['Write the fraction: 2 parts shaded out of 3.', ['Bottom: 3 equal parts.', 'Top: 2 shaded parts.'], '2/3: two thirds', fbar(3, 2)]],
+    ['Do not swap the numbers. The number of equal parts goes on the bottom.', C(['3/4 ✓', '4/3 ✗'])],
+    ['What fraction is shaded?', PIE(4, 3), ['3/4', '4/3', '1/4'], '3/4', '3 shaded out of 4 equal parts.', 'The bottom number is how many parts.'],
+    ['Top: the parts we have. Bottom: the equal parts in the whole.', C(['top: parts we have', 'bottom: equal parts'])]]);
+
+  LI(305, 'learn3', ['Half and quarter of a number', 'How can halving help me find a half or a quarter of a number?',
+    'To find a half, share into 2 equal groups. To find a quarter, halve and then halve again.', T(8, 'sweet', 4),
+    [['half', 'share into 2 equal groups', '🌗'], ['quarter', 'share into 4 equal groups', '🍰'], ['halve', 'split into 2 equal parts', '✂️'], ['share', 'give out equally', '🤲']],
+    [['Finn shares 8 berries between 2 bowls: 4 each. That is half.', K.trays(2, 4)],
+      ['Now share 8 between 4 bowls: 2 each. That is a quarter.', K.trays(4, 2)],
+      ['Half of 8 is 4. A quarter of 8 is 2.', B('½ of 8 = 4<br>¼ of 8 = 2')]],
+    [['What is half of 12?', ['Share 12 into 2 equal groups.', 'Each group has 6.'], 'Half of 12 is 6.', K.trays(2, 6)],
+      ['What is a quarter of 12?', ['Halve 12: 6.', 'Halve again: 3.'], 'A quarter of 12 is 3.', K.trays(4, 3)],
+      ['What is a quarter of 20?', ['Halve 20: 10.', 'Halve 10: 5.'], 'A quarter of 20 is 5.', B('20 → 10 → 5')]],
+    ['A quarter is smaller than a half. To find a quarter, halve twice.', C(['½ of 8 = 4', '¼ of 8 = 2'])],
+    ['What is a quarter of <b>16</b>?', '', [4, 8, 12], 4, 'Half of 16 is 8. Half of 8 is 4.', 'Halve, then halve again.'],
+    ['Half: halve once. Quarter: halve twice.', C(['½ → halve', '¼ → halve, halve'])]]);
+
+  LI(305, 'learn4', ['Fraction of a shape', 'How can I find a fraction of a shape?',
+    'Count all the equal parts in the shape. Then count the shaded parts.', PIE(3, 1),
+    [['shape', 'like a circle or a rectangle', '🔵'], ['equal parts', 'parts the same size', '⚖️'], ['shaded', 'coloured in', '🖍️'], ['fraction', 'shaded parts over all the parts', '½']],
+    [['Finn cuts a sandwich into 2 equal parts. Each part is a half.', fbar(2, 1)],
+      ['This circle has 4 equal parts with 2 shaded.', PIE(4, 2)],
+      ['We write 2/4. Two quarters is the same as one half.', B('2/4 = 1/2')]],
+    [['What fraction of the circle is shaded?', ['Count all the equal parts: 3.', 'Count the shaded parts: 1.'], '1/3', PIE(3, 1)],
+      ['What fraction of the bar is shaded?', ['Equal parts: 4.', 'Shaded parts: 3.'], '3/4', fbar(4, 3)],
+      ['What fraction of the circle is shaded?', ['Equal parts: 8.', 'Shaded parts: 3.'], '3/8', PIE(8, 3)]],
+    ['The bottom number counts all the parts, not just the parts that are not shaded. 1 shaded and 3 not shaded is 1/4.', C(['1/4 ✓', '1/3 ✗'])],
+    ['What fraction is shaded?', fbar(3, 2), ['1/3', '2/3', '3/2'], '2/3', '2 shaded out of 3 equal parts.', 'Count all the parts first.'],
+    ['Shaded parts on the top. All the equal parts on the bottom.', C(['shaded', '────', 'all parts'])]]);
+
+  /* ========================= 306 Money and time (Ollie the owl) ========================= */
+  LI(306, 'learn1', ['Working out change', 'How can I use adding and subtracting to work out change?',
+    'Change is the money you get back. Count on from the price to the money you paid.', SAY('owl', 'I pay 50p for a 35p pencil.'),
+    [['price', 'how much something costs', '🏷️'], ['pay', 'give money for it', '👛'], ['change', 'the money you get back', '🪙'], ['count on', 'start at the price and count up', '➕']],
+    [['Ollie buys a 35p pencil with a 50p coin.', COIN([50])],
+      ['Count on from 35p to 40p (5p), then to 50p (10p).', TR(35, 50, [35, 40, 50], [[35, 40], [40, 50]])],
+      ['5p + 10p = 15p change.', B('50p − 35p = 15p')]],
+    [['A rubber costs 7p. Ollie pays 10p. What is the change?', ['Count on from 7 to 10.', '8, 9, 10: that is 3.'], '3p change', COIN([10])],
+      ['A book costs 45p. Ollie pays 50p. What is the change?', ['Count on from 45 to 50.', 'That is 5.'], '5p change', COIN([50])],
+      ['A toy costs 62p. Ollie pays £1. What is the change?', ['£1 is 100p.', 'Count on from 62 to 70: 8p.', 'From 70 to 100: 30p. 8p + 30p = 38p.'], '38p change', COIN([100])]],
+    ['Change is what you get back, not the price. A 40p sweet paid with 50p gives 10p change.', C(['price 40p', 'change 10p'])],
+    ['A sticker costs <b>15p</b>. Ollie pays <b>20p</b>. What is the change?', COIN([20]), ['5p', '15p', '35p'], '5p', '15 + 5 = 20.', 'Count on from 15p to 20p.'],
+    ['Count on from the price to what you paid.', C(['price', 'count on', 'change'])]]);
+
+  LI(306, 'learn2', ['Making totals', 'How can different coins and notes make the same total?',
+    'You can make the same amount with different coins. 20p can be one 20p, two 10ps, or four 5ps.', COIN([20]),
+    [['coin', 'metal money', '🪙'], ['note', 'paper money, like £5', '💷'], ['total', 'how much altogether', '➕'], ['amount', 'how much money', '💰']],
+    [['Ollie has a 20p coin. His friend has two 10p coins. They both have 20p.', pair(COIN([20]), COIN([10, 10]))],
+      ['More ways to make 20p.', pair(COIN([10, 5, 5]), COIN([5, 5, 5, 5]))],
+      ['We write 20p = 10p + 10p = 10p + 5p + 5p.', B('20p = 10p + 10p')]],
+    [['Make 30p with two coins.', ['Start with the biggest coin that fits: 20p.', '30p − 20p = 10p.', 'Use a 10p coin.'], '20p + 10p = 30p', COIN([20, 10])],
+      ['Make 15p in two different ways.', ['10p + 5p = 15p.', '5p + 5p + 5p = 15p.'], 'Two ways to make 15p', pair(COIN([10, 5]), COIN([5, 5, 5]))],
+      ['Make £1 with 50p coins.', ['£1 is 100p.', '50p + 50p = 100p.'], 'Two 50p coins make £1.', COIN([50, 50])]],
+    ['Count the value, not the number of coins. Three 1p coins is less than one 5p coin.', pair(COIN([1, 1, 1]), '<b>&lt;</b>', COIN([5]))],
+    ['Which coins make <b>12p</b>?', '', ['10p + 2p', '10p + 5p', '5p + 2p'], '10p + 2p', '10 + 2 = 12.', 'Add up the coins.'],
+    ['Many ways, the same total. Start with the biggest coin.', C(['biggest coin first', 'then add the rest'])]]);
+
+  LI(306, 'learn3', ['Telling the time', 'How to tell the time',
+    'The short hand shows the hour. The long hand shows the minutes. At quarter past it points to 3, at half past to 6 and at quarter to it points to 9.', K.clk(3, 15),
+    [['hour hand', 'the short hand', '🕐'], ['minute hand', 'the long hand', '⏱️'], ['quarter past', '15 minutes after the hour', '🍰'], ['quarter to', '15 minutes before the hour', '🥧']],
+    [['Ollie has breakfast at quarter past 8.', K.clk(8, 15)],
+      ['From 12 to 3 is a quarter of the way round the clock: a quarter of an hour.', PIE(4, 1)],
+      ['Quarter past 8 can be written as 8:15.', B('quarter past 8 = 8:15')]],
+    [['What time does the clock show?', ['The long hand points to 3: quarter past.', 'The short hand is just past 4.'], 'Quarter past 4', K.clk(4, 15)],
+      ['What time does the clock show?', ['The long hand points to 9: quarter to.', 'The short hand is nearly at 7.'], 'Quarter to 7', K.clk(6, 45)],
+      ['What time does the clock show?', ['The long hand points to 6: half past.', 'The short hand is between 2 and 3.'], 'Half past 2', K.clk(2, 30)]],
+    ['At quarter to, the short hand is nearly at the next hour. This is quarter to 7, not quarter to 6.', K.clk(6, 45)],
+    ['What time is it?', K.clk(9, 15), ['quarter to 9', 'quarter past 9', 'half past 9'], 'quarter past 9', 'The long hand points to 3.', 'Where is the long hand pointing?'],
+    ['Long hand at 3: quarter past. At 6: half past. At 9: quarter to.', C(['3 → quarter past', '6 → half past', '9 → quarter to'])]]);
+
+  LI(306, 'learn4', ['How long?', 'How long does something take?',
+    'To find how long something takes, count on from the start time to the end time.', clocks(2, 0, 4, 0),
+    [['start time', 'when it begins', '▶️'], ['end time', 'when it finishes', '⏹️'], ['hour', '60 minutes', '🕐'], ['half an hour', '30 minutes', '🌗']],
+    [['Ollie starts painting at 2 o’clock and finishes at 4 o’clock.', clocks(2, 0, 4, 0)],
+      ['Count the hours on a time line: 2 to 3, then 3 to 4.', TR(2, 4, [2, 3, 4], [[2, 3], [3, 4]])],
+      ['That is 2 hours.', B('2 hours')]],
+    [['A film starts at 1 o’clock and ends at 3 o’clock. How long is it?', ['Count on from 1 to 2: 1 hour.', 'Then 2 to 3: 1 more hour.'], '2 hours', clocks(1, 0, 3, 0)],
+      ['Swimming starts at 10 o’clock and ends at half past 10. How long?', ['The long hand goes from 12 to 6.', 'That is half way round: half an hour.'], '30 minutes', clocks(10, 0, 10, 30)],
+      ['A walk starts at 4 o’clock and ends at half past 5. How long?', ['4 o’clock to 5 o’clock is 1 hour.', '5 o’clock to half past 5 is 30 minutes.'], '1 hour and 30 minutes', clocks(4, 0, 5, 30)]],
+    ['Count the jumps between the times, not the numbers. 3 o’clock to 5 o’clock is 2 hours, not 3.', TR(3, 5, [3, 4, 5], [[3, 4], [4, 5]])],
+    ['Lunch starts at 12 o’clock and ends at 1 o’clock. How long is it?', clocks(12, 0, 1, 0), ['30 minutes', '1 hour', '2 hours'], '1 hour', '12 to 1 is one hour.', 'Count on from the start.'],
+    ['Count on from the start time to the end time.', C(['start', 'count on', 'end'])]]);
+
+  /* ========================= 307 Measurement (Benny in the giant's garden) ========================= */
+  LI(307, 'learn1', ['Length', 'How can I work out the length of an object?',
+    'Length is how long something is. We can measure it with things that are all the same size, like cubes, or with a ruler.', cubes(8),
+    [['length', 'how long something is', '📏'], ['longer', 'more length', '⬆️'], ['shorter', 'less length', '⬇️'], ['measure', 'find out how long, heavy or full', '🔍']],
+    [['Benny lines up cubes along a giant leaf. It is 8 cubes long.', cubes(8, '#8fd67d')],
+      ['Start at one end. Put the cubes in a line with no gaps.', cubes(8)],
+      ['We write: the leaf is 8 cubes long.', B('8 cubes')]],
+    [['How long is the pencil?', ['Line one end up with 0.', 'Read the number at the other end: 5.'], '5 cm', FL.rulerPic(5)],
+      ['Which is longer: a worm 6 cm long or a worm 9 cm long?', ['Compare the numbers: 6 and 9.', '9 is bigger.'], 'The 9 cm worm is longer.', C(['6 cm', '9 cm'])],
+      ['One stick is 10 cubes long and one is 7. How much longer is the first?', ['Find the difference: 10 − 7.', '10 − 7 = 3.'], '3 cubes longer', '<div>' + cubes(10) + cubes(7, '#ffb03b') + '</div>']],
+    ['Leave no gaps and do not overlap the cubes, or the length will be wrong.', C(['■■■■ ✓', '■ ■ ■ ✗'])],
+    ['How long is the ribbon?', FL.rulerPic(7), ['6 cm', '7 cm', '8 cm'], '7 cm', 'It ends at 7.', 'Start counting at 0.'],
+    ['Start at one end, leave no gaps, read the other end.', C(['start at 0', 'no gaps', 'read the end'])]]);
+
+  LI(307, 'learn2', ['Using a ruler', 'How do I use a ruler to measure in centimetres?',
+    'Put the 0 on the ruler at one end of the object. Read the number at the other end. That is the length in centimetres, cm.', FL.rulerPic(4),
+    [['ruler', 'a strip marked in centimetres', '📏'], ['centimetre (cm)', 'a small unit of length', '🐜'], ['zero (0)', 'where you start measuring', '0️⃣'], ['end', 'where the object stops', '🏁']],
+    [['Benny measures a giant’s button with a ruler.', FL.rulerPic(3)],
+      ['Line up 0 with the start of the object.', FL.rulerPic(6)],
+      ['It ends at 6, so it is 6 cm long.', B('6 cm')]],
+    [['How long is the worm?', ['Check it starts at 0.', 'Read where it ends: 8.'], '8 cm', FL.rulerPic(8)],
+      ['How long is the bean?', ['It starts at 0.', 'It ends at 2.'], '2 cm', FL.rulerPic(2)],
+      ['How long is the straw?', ['Start at 0.', 'It ends at 10.'], '10 cm', FL.rulerPic(10)]],
+    ['Start at 0, not at 1 and not at the very edge of the ruler.', C(['start at 0 ✓', 'start at 1 ✗'])],
+    ['How long is the stick?', FL.rulerPic(9), ['8 cm', '9 cm', '10 cm'], '9 cm', 'It ends at 9.', 'Read the number at the end.'],
+    ['Line up 0, read the end, write cm.', C(['0 at the start', 'read the end', 'write cm'])]]);
+
+  LI(307, 'learn3', ['Mass', 'How can I compare mass with a balance?',
+    'Mass is how heavy something is. On a balance, the heavier side goes down and the lighter side goes up.', K.balance('pumpkin', 'apple', true),
+    [['mass', 'how heavy something is', '⚖️'], ['heavier', 'more mass', '🏋️'], ['lighter', 'less mass', '🪶'], ['balance', 'scales that compare two things', '⚖️']],
+    [['Benny puts a pumpkin and an apple on a balance.', K.balance('pumpkin', 'apple', true)],
+      ['The side that goes down is heavier. The side that goes up is lighter.', K.balance('heavy', 'light', true)],
+      ['We write: the pumpkin is heavier than the apple.', B('pumpkin > apple')]],
+    [['Which is heavier, the melon or the grape?', ['Look for the side that is lower.', 'The melon side is down.'], 'The melon is heavier.', K.balance('melon', 'grape', true)],
+      ['Which is lighter, the feather or the book?', ['The feather side is up.', 'The side that goes up is lighter.'], 'The feather is lighter.', K.balance('feather', 'book', false)],
+      ['Two apples balance. What does that tell you?', ['The balance is level.', 'Level means the same mass.'], 'They have the same mass.', K.balance('apple', 'apple', null)]],
+    ['Bigger is not always heavier. A big balloon is lighter than a small stone.', K.balance('balloon', 'stone', false)],
+    ['Which is heavier?', K.balance('book', 'pencil', true), ['book', 'pencil', 'the same'], 'book', 'The book side goes down.', 'Which side is lower?'],
+    ['Down is heavier. Up is lighter. Level is the same.', C(['down: heavier', 'up: lighter', 'level: same'])]]);
+
+  LI(307, 'learn4', ['Capacity', 'How can I compare how much containers hold?',
+    'Capacity is how much a container can hold. Fill both and compare, or pour one into the other.', pair(K.jug(90, 'big'), K.jug(30, 'small')),
+    [['capacity', 'how much a container holds', '🫙'], ['full', 'holds as much as it can', '🌊'], ['empty', 'holds nothing', '🫗'], ['litre', 'a unit for how much liquid', '🥛']],
+    [['Benny fills a bucket and a cup with water.', pair(K.jug(100, 'bucket'), K.jug(25, 'cup'))],
+      ['The higher the water, the more it holds.', pair(K.jug(90, 'A'), K.jug(45, 'B'))],
+      ['We write: A holds more than B.', B('A > B')]],
+    [['Which jug holds more?', ['Compare the water levels.', 'Jug A is fuller.'], 'Jug A holds more.', pair(K.jug(80, 'A'), K.jug(40, 'B'))],
+      ['A cup fills a jug 4 times. Another cup fills it 2 times. Which cup holds more?', ['Fewer cups to fill means each cup holds more.', 'The second cup needs only 2.'], 'The second cup holds more.', C(['4 cups', '2 cups'])],
+      ['Put these in order, holding least first: bath, cup, bucket.', ['A cup holds a little.', 'A bucket holds more.', 'A bath holds the most.'], 'cup, bucket, bath', C(['cup', 'bucket', 'bath'])]],
+    ['A tall thin glass does not always hold more than a short wide one. Pour to check.', pair(K.jug(70, 'tall'), K.jug(70, 'wide'))],
+    ['Which holds the most?', pair(K.jug(30, 'A'), K.jug(95, 'B'), K.jug(60, 'C')), ['A', 'B', 'C'], 'B', 'B has the most water.', 'Look at the water levels.'],
+    ['Fill and compare, or pour and see.', C(['fill', 'compare', 'more or less'])]]);
+
+  /* ========================= 308 Shape, movement and data (Ruby the rocket) ========================= */
+  LI(308, 'learn1', ['3D shapes', 'What are the properties of 3D shapes?',
+    '3D shapes are solid. We describe them by their faces, edges and corners (vertices).', ROW(['cube', 'cuboid', 'sphere', 'cylinder'], 80),
+    [['face', 'a flat or curved surface', '⬛'], ['edge', 'where two faces meet', '📐'], ['vertex', 'a corner (more than one: vertices)', '📍'], ['solid', 'a 3D shape you can hold', '🧊']],
+    [['Ruby finds a dice in the maze. It is a cube.', SH('cube', null, 120)],
+      ['A cube has 6 square faces.', SH('cube', null, 120)],
+      ['A cube: 6 faces, 12 edges, 8 vertices.', C(['6 faces', '12 edges', '8 vertices'])]],
+    [['How many faces does a cuboid have?', ['Count front and back: 2.', 'Top and bottom: 2.', 'Two sides: 2. That makes 6.'], 'A cuboid has 6 faces.', SH('cuboid', null, 120)],
+      ['Which shape has no flat faces?', ['A sphere is round all over.', 'It has 1 curved face and no edges.'], 'A sphere', SH('sphere', null, 110)],
+      ['How many flat faces does a cylinder have?', ['Look at the top and the bottom: 2 circles.', 'The side is curved.'], '2 flat faces', SH('cylinder', null, 110)]],
+    ['A 3D shape is not the same as a flat shape. A cube has square faces, but it is not a square.', pair(SH('square', '#7cc4ff', 80), SH('cube', null, 90))],
+    ['Which shape is a <b>cone</b>?', ROW(['cone', 'cylinder', 'pyramid'], 80), ['the 1st', 'the 2nd', 'the 3rd'], 'the 1st', 'A cone has one circle face and a point.', 'It looks like an ice-cream cone.'],
+    ['Count faces, edges and vertices.', C(['faces', 'edges', 'vertices'])]]);
+
+  LI(308, 'learn2', ['Symmetry', 'What makes a shape symmetrical?',
+    'A shape is symmetrical if a mirror line splits it into two halves that match exactly.', mirror('square'),
+    [['symmetry', 'both halves match', '🦋'], ['line of symmetry', 'the fold or mirror line', '🪞'], ['half', 'one of two matching parts', '🌗'], ['match', 'exactly the same', '✅']],
+    [['A butterfly in Ruby’s window: both wings match.', B('🦋')],
+      ['Fold a square down the middle. The halves match.', mirror('square')],
+      ['The dashed line is a line of symmetry.', mirror('triangle')]],
+    [['Is this a line of symmetry?', ['Imagine folding along the dashed line.', 'Both halves of the circle match.'], 'Yes', mirror('circle')],
+      ['Is this a line of symmetry?', ['Fold along the dashed line.', 'One side is bigger than the other.'], 'No', mirror('rectangle', false)],
+      ['How many lines of symmetry does a square have?', ['Fold it down the middle, then across the middle: 2 lines.', 'Fold it corner to corner, both ways: 2 more lines.'], '4 lines of symmetry', SH('square', '#7cc4ff', 110)]],
+    ['A line that cuts a shape in two is not always a mirror line. The halves must match when folded.', mirror('rectangle', false)],
+    ['Is the dashed line a line of symmetry?', mirror('circle'), ['yes', 'no'], 'yes', 'Both halves match.', 'Imagine folding it.'],
+    ['Fold it: if the halves match, it is symmetrical.', C(['fold', 'match?', 'line of symmetry'])]]);
+
+  LI(308, 'learn3', ['Directions and turns', 'How to use directions and turns',
+    'We give directions with left, right, forwards and backwards. A turn can be a quarter turn, a half turn or a whole turn.', pair(arrow(0, 'start'), arrow(90, 'quarter turn')),
+    [['quarter turn', 'a turn to the next side', '↪️'], ['half turn', 'turn to face the other way', '🌗'], ['whole turn', 'all the way round', '🔄'], ['clockwise', 'the way clock hands go', '🕐']],
+    [['Ruby faces up. She makes a quarter turn to the right.', pair(arrow(0, 'start'), arrow(90, 'end'))],
+      ['Two quarter turns make a half turn. Now she faces down.', pair(arrow(0, 'start'), arrow(180, 'half turn'))],
+      ['Four quarter turns make a whole turn, back to the start.', C(['¼ + ¼ = ½', '¼ + ¼ + ¼ + ¼ = whole'])]],
+    [['Ruby faces up and makes a half turn. Which way does she face?', ['A half turn is two quarter turns.', 'Up turns to down.'], 'She faces down.', pair(arrow(0), arrow(180))],
+      ['Ruby faces right and makes a quarter turn clockwise. Which way does she face?', ['Clockwise goes the way clock hands go.', 'From right, a quarter turn goes to down.'], 'She faces down.', pair(arrow(90), arrow(180))],
+      ['Ruby goes forwards 2, turns right, then forwards 1. What does she do?', ['Move 2 squares forwards.', 'Turn a quarter turn right.', 'Move 1 square forwards.'], 'forwards 2, right, forwards 1', C(['⬆️ 2', '↪️ right', '➡️ 1'])]],
+    ['Left and right depend on which way you face. Turn yourself to check.', pair(arrow(270, 'left'), arrow(90, 'right'))],
+    ['How many quarter turns make a whole turn?', '', [2, 3, 4], 4, 'Four quarter turns go all the way round.', 'Think of a clock: 12, 3, 6, 9, back to 12.'],
+    ['Quarter, half, whole: 1, 2 and 4 quarter turns.', C(['¼ turn', '½ turn', 'whole turn'])]]);
+
+  LI(308, 'learn4', ['Bar charts', 'How do I record and display data?',
+    'Data is information we collect. We can show it in a bar chart. The taller the bar, the more there are.', V.bars([['Cubes', 6], ['Spheres', 3], ['Cones', 4]], 8),
+    [['data', 'information we collect', '📋'], ['tally', 'marks to count, in groups of 5', '✏️'], ['bar chart', 'bars that show how many', '📊'], ['most / least', 'the tallest bar / the shortest bar', '🏆']],
+    [['Ruby counts the shapes she passes: 6 cubes, 3 spheres, 4 cones.', ROW(['cube', 'sphere', 'cone'], 70)],
+      ['She keeps a tally: 6 is one group of 5 and 1 more.', FL.tally(6)],
+      ['She draws a bar chart.', V.bars([['Cubes', 6], ['Spheres', 3], ['Cones', 4]], 8)]],
+    [['Which shape did Ruby see most?', ['Find the tallest bar.', 'Cubes: 6.'], 'Cubes', V.bars([['Cubes', 6], ['Spheres', 3], ['Cones', 4]], 8)],
+      ['How many more cubes than spheres?', ['Cubes: 6. Spheres: 3.', '6 − 3 = 3.'], '3 more cubes', V.bars([['Cubes', 6], ['Spheres', 3], ['Cones', 4]], 8)],
+      ['How many shapes altogether?', ['6 + 3 + 4.', '6 + 4 = 10, then 10 + 3 = 13.'], '13 shapes', V.bars([['Cubes', 6], ['Spheres', 3], ['Cones', 4]], 8)]],
+    ['Read across from the top of the bar to the number. Do not just guess by looking.', V.bars([['Red', 5], ['Blue', 7]], 8)],
+    ['How many chose dogs?', V.bars([['Dogs', 7], ['Cats', 4]], 8), [4, 7, 8], 7, 'The dogs bar reaches 7.', 'Read across from the top of the bar.'],
+    ['Collect, tally, then draw a bar chart.', C(['collect', 'tally', 'bar chart'])]]);
+
+  /* worked examples for every P3 topic except 302 (in fl_learn.js) */
+  [301, 303, 304, 305, 306, 307, 308].forEach(function (n) { if (FL.GENS && FL.GENS[n]) FL.wexGens(n, FL.GENS[n]); });
+})();
+</script>
+<script>
+/* fl_l2.js: P2 "Learn it" lessons (one per workbook question) and worked-example sets for topics 201 to 205.
+   Short sentences, small numbers and lots of pictures for the youngest learners. */
+(function () {
+  'use strict';
+  var FL = window.FL, BT = window.BT; if (!FL || !FL.LI || !FL.KL) return;
+  var V = BT.sv, KL = FL.KL, B = FL.big, C = FL.cards, SAY = FL.says, T = FL.things, G = FL.groups, TR = FL.track, TO = FL.tensOnes, COIN = FL.coins, SH = FL.shape, ROW = FL.shapeRow, LI = FL.LI, pair = KL.pair, r = FL.r, pick = FL.pick;
+  function clk(h, m) { return '<div style="width:170px;max-width:100%;margin:0 auto">' + V.clock(h, m) + '</div>'; }
+  function tr(n, lo, hi) { lo = Math.max(0, lo); return TR(lo, hi); }
+
+  /* ========================= 201 Counting (Ruby the rocket) ========================= */
+  LI(201, 'learn1', ['Number patterns', 'How can I use number patterns to work out a sequence?',
+    'A pattern goes up or down by the same amount each time. Find the jump, then keep going.', SAY('rocket', '2, 4, 6, ?'),
+    [['pattern', 'something that repeats or grows the same way', '🔁'], ['count on', 'go up', '⬆️'], ['count back', 'go down', '⬇️'], ['jump', 'the same step each time', '🐸']],
+    [['Ruby sees stars: 2, then 4, then 6.', KL.seq([2, 4, 6], 'star')],
+      ['On a number line, each jump is 2.', TR(0, 10, [2, 4, 6], [[2, 4], [4, 6]])],
+      ['2, 4, 6, 8. The next number is 8.', B('2, 4, 6, 8')]],
+    [['What comes next? 1, 2, 3, 4, ?', ['Each jump is 1.', '4 and 1 more is 5.'], '5', C(['1', '2', '3', '4', '?'])],
+      ['What comes next? 5, 10, 15, ?', ['Each jump is 5.', 'Count on 5 from 15: 20.'], '20', C(['5', '10', '15', '?'])],
+      ['What comes next? 10, 9, 8, ?', ['It goes down by 1.', '1 less than 8 is 7.'], '7', C(['10', '9', '8', '?'])]],
+    ['Look at all the jumps, not just one.', C(['2, 4, 6, 8 ✓', 'jump 2 each time'])],
+    ['What comes next? <b>10, 20, 30, ?</b>', '', [31, 40, 50], 40, 'It goes up in tens: 40.', 'How big is each jump?'],
+    ['Find the jump. Keep going.', C(['find the jump', 'keep going'])]]);
+
+  LI(201, 'learn2', ['Tens and ones', 'What are tens and ones?',
+    'A ten is a group of 10. Ones are single things. 23 is 2 tens and 3 ones.', TO(2, 3),
+    [['ten', 'a group of 10', '🔟'], ['ones', 'single ones', '1️⃣'], ['digit', 'one of 0 to 9', '🔢'], ['group', 'things put together', '📦']],
+    [['Ruby packs 23 stars: 2 boxes of 10 and 3 more.', pair('<div style="border:3px solid #2b2340;border-radius:12px;padding:2px;max-width:200px">' + T(10, 'star', 5) + '</div>', '<div style="border:3px solid #2b2340;border-radius:12px;padding:2px;max-width:200px">' + T(10, 'star', 5) + '</div>', T(3, 'star'))],
+      ['Draw it: 2 sticks of ten and 3 ones.', TO(2, 3)],
+      ['We write 20 + 3 = 23.', B('20 + 3 = 23')]],
+    [['How many tens and ones in 14?', ['14 is 1 group of 10.', 'And 4 more.'], '1 ten and 4 ones', TO(1, 4)],
+      ['What number is 3 tens and 5 ones?', ['3 tens is 30.', '30 and 5 more is 35.'], '35', TO(3, 5)],
+      ['How many tens in 40?', ['Count in tens: 10, 20, 30, 40.', 'That is 4 tens.'], '4 tens', TO(4, 0)]],
+    ['The tens digit is first. 31 is 3 tens and 1 one. 13 is 1 ten and 3 ones.', C(['31', '13'])],
+    ['How many tens in <b>27</b>?', TO(2, 7), [2, 7, 27], 2, '27 is 2 tens and 7 ones.', 'Count the sticks.'],
+    ['Tens first, then ones.', C(['tens', 'ones'])]]);
+
+  LI(201, 'learn3', ['Number lines', 'How do I order numbers on a number line?',
+    'On a number line, numbers go up in order. Smaller numbers are on the left. Bigger numbers are on the right.', TR(0, 10, []),
+    [['number line', 'numbers in order on a line', '📏'], ['order', 'put in the right place', '📶'], ['before', 'just to the left', '⬅️'], ['after', 'just to the right', '➡️']],
+    [['Ruby’s planets are numbered 3, 7 and 5.', C(['3', '7', '5'])],
+      ['Find them on the number line.', TR(0, 10, [3, 5, 7])],
+      ['In order: 3, 5, 7.', B('3, 5, 7')]],
+    [['Put 8, 2, 6 in order, smallest first.', ['Find 2: it is furthest left.', 'Then 6, then 8.'], '2, 6, 8', TR(0, 10, [2, 6, 8])],
+      ['What number is between 11 and 13?', ['Count: 11, 12, 13.'], '12', TR(10, 14, [11, 13])],
+      ['Which is bigger, 15 or 19?', ['19 is further right.', 'Further right is bigger.'], '19', TR(14, 20, [15, 19])]],
+    ['Smaller is on the left, bigger is on the right.', TR(0, 5, [0, 5])],
+    ['Which number comes just after <b>9</b>?', TR(6, 12, [9]), [8, 10, 11], 10, '10 comes after 9.', 'Look to the right.'],
+    ['Left: smaller. Right: bigger.', C(['⬅️ smaller', 'bigger ➡️'])]]);
+
+  LI(201, 'learn4', ['One more, one less', 'What is one more and one less?',
+    'One more is the next number. One less is the number before.', TR(4, 8, [5, 6, 7], [[6, 7], [6, 5]]),
+    [['one more', 'the next number, add 1', '➕'], ['one less', 'the number before, take away 1', '➖'], ['next', 'just after', '➡️'], ['before', 'just before', '⬅️']],
+    [['Ruby has 6 stars. One more comes: 7.', pair(T(6, 'star'), T(1, 'star'))],
+      ['On the number line: 6, jump 1 to 7.', TR(4, 8, [6, 7], [[6, 7]])],
+      ['One more than 6 is 7. One less than 6 is 5.', C(['6 + 1 = 7', '6 − 1 = 5'])]],
+    [['What is one more than 9?', ['Start at 9.', 'Jump 1 forward: 10.'], '10', TR(7, 11, [9, 10], [[9, 10]])],
+      ['What is one less than 15?', ['Start at 15.', 'Jump 1 back: 14.'], '14', TR(12, 16, [15, 14], [[15, 14]])],
+      ['What is one more than 19?', ['Start at 19.', 'One more is 20.'], '20', TR(17, 21, [19, 20], [[19, 20]])]],
+    ['One less goes back. Do not jump forward.', TR(3, 7, [5, 4], [[5, 4]])],
+    ['What is one less than <b>12</b>?', TR(9, 14, [12]), [11, 12, 13], 11, 'One back from 12 is 11.', 'Jump back 1.'],
+    ['One more: forward 1. One less: back 1.', C(['➕ 1', '➖ 1'])]]);
+
+  /* ========================= 202 Adding (Benny the bear) ========================= */
+  LI(202, 'learn1', ['Turnaround adding', 'Which way round should I add two numbers?',
+    'You can add two numbers either way round. The answer is the same.', G(3, 5, 'apple'),
+    [['add (+)', 'put together', '➕'], ['total', 'how many altogether', '🧮'], ['turnaround', 'swap the numbers round', '🔄'], ['same', 'not different', '🟰']],
+    [['Benny has 3 apples and 5 apples.', G(3, 5, 'apple')],
+      ['Turn it round: 5 apples and 3 apples. Still 8.', G(5, 3, 'apple')],
+      ['3 + 5 = 8 and 5 + 3 = 8.', B('3 + 5 = 5 + 3')]],
+    [['What is 2 + 6?', ['Count 2, then 6 more.', 'Altogether: 8.'], '2 + 6 = 8', G(2, 6, 'apple')],
+      ['What is 6 + 2?', ['It is the same numbers, turned round.', 'So it is 8 too.'], '6 + 2 = 8', G(6, 2, 'apple')],
+      ['4 + 7 = 11. What is 7 + 4?', ['Turn it round.', 'The answer stays the same.'], '7 + 4 = 11', B('4 + 7 = 7 + 4')]],
+    ['This works for adding, not for taking away.', C(['3 + 5 = 5 + 3 ✓', '5 − 3 ≠ 3 − 5'])],
+    ['1 + 9 = 10. What is <b>9 + 1</b>?', '', [8, 10, 19], 10, 'Turnaround: still 10.', 'The numbers just swapped.'],
+    ['Either way round, the same answer.', C(['3 + 5', '5 + 3', '= 8'])]]);
+
+  LI(202, 'learn2', ['Bigger number first', 'Which order should I add numbers in?',
+    'Start with the bigger number and count on the smaller one. It is quicker!', TR(7, 12, [9, 11], [[9, 10], [10, 11]]),
+    [['bigger', 'more', '⬆️'], ['smaller', 'less', '⬇️'], ['count on', 'start at a number and keep counting', '➡️'], ['make ten', 'two numbers that add to 10', '🔟']],
+    [['Benny picks 2 apples, then 9 apples.', G(2, 9, 'apple')],
+      ['Start at 9, count on 2: 10, 11.', TR(7, 12, [9, 11], [[9, 10], [10, 11]])],
+      ['2 + 9 = 11.', B('9 + 2 = 11')]],
+    [['What is 3 + 8?', ['Start at the bigger number: 8.', 'Count on 3: 9, 10, 11.'], '3 + 8 = 11', TR(7, 12, [8, 11], [[8, 9], [9, 10], [10, 11]])],
+      ['What is 6 + 3 + 4?', ['Look for numbers that make 10: 6 and 4.', '10 + 3 = 13.'], '13', B('6 + 4 + 3')],
+      ['What is 1 + 7?', ['Start at 7.', 'Count on 1: 8.'], '1 + 7 = 8', TR(5, 9, [7, 8], [[7, 8]])]],
+    ['Start counting from the next number. From 8, say 9, 10, 11, not 8, 9, 10.', TR(7, 12, [8, 11])],
+    ['What is <b>2 + 8</b>?', '', [9, 10, 11], 10, 'Start at 8, count on 2: 9, 10.', 'Start with the bigger number.'],
+    ['Bigger number first, then count on.', C(['bigger first', 'count on'])]]);
+
+  LI(202, 'learn3', ['Near doubles', 'How can using near doubles help me add numbers?',
+    'A double is the same number twice, like 4 + 4. If the numbers are next to each other, use the double and add 1.', G(4, 5, 'apple'),
+    [['double', 'the same number twice', '👯'], ['near double', 'numbers next to each other, like 4 and 5', '🤏'], ['one more', 'add 1', '➕'], ['add', 'put together', '🧮']],
+    [['Benny has 4 apples and 5 apples.', G(4, 5, 'apple')],
+      ['4 + 4 is 8. The 5 is one more.', pair(G(4, 4, 'apple'), T(1, 'apple'))],
+      ['4 + 5 = 8 + 1 = 9.', B('4 + 5 = 9')]],
+    [['What is 3 + 4?', ['Double 3 is 6.', 'One more is 7.'], '3 + 4 = 7', G(3, 4, 'apple')],
+      ['What is 6 + 7?', ['Double 6 is 12.', 'One more is 13.'], '6 + 7 = 13', G(6, 7, 'apple')],
+      ['What is 5 + 6?', ['Double 5 is 10.', 'One more is 11.'], '5 + 6 = 11', G(5, 6, 'apple')]],
+    ['Near doubles need numbers next to each other. 3 + 8 is not a near double.', C(['4 + 5 ✓', '3 + 8 ✗'])],
+    ['Double 7 is 14. What is <b>7 + 8</b>?', '', [14, 15, 16], 15, '14 and one more is 15.', 'Use the double, then add 1.'],
+    ['Double, then one more.', C(['4 + 4 = 8', '4 + 5 = 9'])]]);
+
+  LI(202, 'learn4', ['Adding to take away', 'How can adding help me with subtracting?',
+    'Adding and taking away are a family. If 3 + 4 = 7, then 7 − 4 = 3 and 7 − 3 = 4.', C(['3 + 4 = 7', '7 − 4 = 3', '7 − 3 = 4']),
+    [['take away (−)', 'some go away', '➖'], ['left', 'how many are still there', '👀'], ['fact family', 'three numbers that go together', '👨‍👩‍👧'], ['count on', 'count up to find the gap', '➡️']],
+    [['Benny has 7 apples. He eats 4.', T(7, 'apple')],
+      ['3 and 4 make 7, so 3 are left.', G(3, 4, 'apple')],
+      ['7 − 4 = 3.', B('7 − 4 = 3')]],
+    [['What is 10 − 8?', ['What goes with 8 to make 10?', '8 + 2 = 10.'], '10 − 8 = 2', TR(7, 11, [8, 10], [[8, 9], [9, 10]])],
+      ['6 + 2 = 8. What is 8 − 2?', ['It is the same family.', '6 and 2 make 8.'], '8 − 2 = 6', B('6 + 2 = 8 → 8 − 2 = 6')],
+      ['What is 9 − 5?', ['What goes with 5 to make 9?', '5 + 4 = 9.'], '9 − 5 = 4', G(5, 4, 'apple')]],
+    ['In a take away, the biggest number comes first: 7 − 4, not 4 − 7.', C(['7 − 4 ✓', '4 − 7 ✗'])],
+    ['5 + 3 = 8. What is <b>8 − 3</b>?', '', [3, 5, 11], 5, 'Same family: 8 − 3 = 5.', 'Use the adding fact.'],
+    ['Know one adding fact: know two take aways.', C(['3 + 4 = 7', '7 − 4 = 3', '7 − 3 = 4'])]]);
+
+  /* ========================= 203 Money (Molly's toy shop) ========================= */
+  LI(203, 'learn1', ['Coins and notes', 'What coins and notes do we use?',
+    'We use coins and notes to pay. Each coin has a value written on it.', COIN([1, 2, 5, 10, 20, 50]),
+    [['coin', 'metal money', '🪙'], ['note', 'paper money', '💷'], ['p (pence)', 'small amounts, like 5p', '🔸'], ['£ (pounds)', 'bigger amounts, like £1', '💰']],
+    [['Molly’s till has coins of different sizes and colours.', COIN([1, 2, 5, 10, 20, 50])],
+      ['Pound coins too: £1 and £2.', COIN([100, 200])],
+      ['Notes: £5 and £10.', C(['£5', '£10'])]],
+    [['Which coin is worth the most?', ['Read the number on each coin.', '50 is the biggest.'], 'The 50p coin', COIN([5, 50, 10])],
+      ['How much is this coin?', ['Read the number: 20.'], '20p', COIN([20])],
+      ['Which is worth more: 10p or 2p?', ['Compare 10 and 2.', '10 is more.'], '10p', COIN([10, 2])]],
+    ['A bigger coin is not always worth more. The 5p is small, but it is worth more than the 2p.', COIN([5, 2])],
+    ['How much is this coin?', COIN([10]), ['1p', '10p', '£10'], '10p', 'It says 10: ten pence.', 'Read the number on it.'],
+    ['Read the number on the coin.', COIN([1, 2, 5, 10, 20, 50, 100, 200])]]);
+
+  LI(203, 'learn2', ['Same total', 'How can different coins and notes make the same total?',
+    'Different coins can make the same amount. 10p can be a 10p coin, or two 5p coins.', pair(COIN([10]), COIN([5, 5])),
+    [['total', 'how much altogether', '➕'], ['amount', 'how much money', '💰'], ['same', 'equal', '🟰'], ['coins', 'metal money', '🪙']],
+    [['Molly has a 10p coin. Her friend has two 5p coins.', pair(COIN([10]), COIN([5, 5]))],
+      ['5p and 5p make 10p.', COIN([5, 5])],
+      ['10p = 5p + 5p.', B('10p = 5p + 5p')]],
+    [['Make 7p.', ['Start with 5p.', '2p more makes 7p.'], '5p + 2p = 7p', COIN([5, 2])],
+      ['Make 20p with two coins.', ['10p and 10p.'], '10p + 10p = 20p', COIN([10, 10])],
+      ['How much is 5p + 2p + 1p?', ['5 and 2 is 7.', '7 and 1 is 8.'], '8p', COIN([5, 2, 1])]],
+    ['Count the value, not the number of coins.', pair(COIN([1, 1, 1]), COIN([5]))],
+    ['Which makes <b>6p</b>?', '', ['5p + 1p', '5p + 2p', '2p + 2p'], '5p + 1p', '5 and 1 is 6.', 'Add the coins.'],
+    ['Lots of ways to make the same total.', pair(COIN([10]), COIN([5, 5]), COIN([5, 2, 2, 1]))]]);
+
+  LI(203, 'learn3', ['Paying', 'How can adding coins help me pay for something?',
+    'To pay, add your coins until they make the price.', SAY('mouse', 'The car costs 8p.'),
+    [['price', 'how much it costs', '🏷️'], ['pay', 'give money', '👛'], ['add', 'put together', '➕'], ['enough', 'the right amount or more', '✅']],
+    [['A toy car costs 8p.', C(['🚗 8p'])],
+      ['Use a 5p, a 2p and a 1p.', COIN([5, 2, 1])],
+      ['5p + 2p + 1p = 8p.', B('5p + 2p + 1p = 8p')]],
+    [['A ball costs 12p. Which coins?', ['Start with 10p.', '2p more makes 12p.'], '10p + 2p', COIN([10, 2])],
+      ['A sweet costs 4p. Which coins?', ['2p and 2p make 4p.'], '2p + 2p', COIN([2, 2])],
+      ['A kite costs 15p. Which coins?', ['Start with 10p.', '5p more makes 15p.'], '10p + 5p', COIN([10, 5])]],
+    ['Start with the biggest coin that fits. It saves counting lots of small coins.', COIN([10, 5])],
+    ['A toy costs <b>7p</b>. Which coins?', '', ['5p + 2p', '5p + 1p', '2p + 2p'], '5p + 2p', '5 and 2 make 7.', 'Start with the 5p.'],
+    ['Biggest coin first, then add.', C(['biggest coin', 'add more', 'price'])]]);
+
+  LI(203, 'learn4', ['Change from 20p', 'How can counting on help me find change from 20p?',
+    'Change is the money you get back. Count on from the price up to 20p.', TR(15, 20, [15, 20], [[15, 16], [16, 17], [17, 18], [18, 19], [19, 20]]),
+    [['change', 'money back', '🪙'], ['price', 'how much it costs', '🏷️'], ['count on', 'count up from the price', '➡️'], ['20p', 'the coin you pay with', '2️⃣0️⃣']],
+    [['A teddy costs 15p. Molly is given 20p.', COIN([20])],
+      ['Count on from 15 to 20: 16, 17, 18, 19, 20. That is 5.', TR(15, 20, [15, 20], [[15, 16], [16, 17], [17, 18], [18, 19], [19, 20]])],
+      ['The change is 5p.', B('20p − 15p = 5p')]],
+    [['A toy costs 18p. Pay 20p. Change?', ['Count on: 19, 20.', 'That is 2.'], '2p', TR(17, 20, [18, 20], [[18, 19], [19, 20]])],
+      ['A toy costs 10p. Pay 20p. Change?', ['10 and 10 make 20.'], '10p', COIN([10])],
+      ['A toy costs 16p. Pay 20p. Change?', ['Count on: 17, 18, 19, 20.', 'That is 4.'], '4p', TR(15, 20, [16, 20], [[16, 17], [17, 18], [18, 19], [19, 20]])]],
+    ['Count the jumps, not the price. 15p to 20p is 5 jumps, so 5p.', C(['5 jumps', '5p'])],
+    ['A toy costs <b>17p</b>. Pay 20p. Change?', '', ['2p', '3p', '17p'], '3p', '18, 19, 20: 3 jumps.', 'Count on from 17.'],
+    ['Count on from the price to 20p.', C(['price', 'count on', 'change'])]]);
+
+  /* ========================= 204 Time (Ollie the owl) ========================= */
+  LI(204, 'learn1', ['O’clock and half past', 'How to tell the time',
+    'The long hand shows minutes. The short hand shows the hour. At o’clock the long hand points to 12. At half past it points to 6.', clk(3, 0),
+    [['clock', 'tells us the time', '🕐'], ['hour hand', 'the short hand', '⏰'], ['o’clock', 'long hand on 12', '🔝'], ['half past', 'long hand on 6', '🌗']],
+    [['Ollie wakes up at 7 o’clock.', clk(7, 0)],
+      ['The long hand points to 12. The short hand points to 7.', clk(7, 0)],
+      ['We say 7 o’clock.', B('7 o’clock')]],
+    [['What time is it?', ['The long hand is on 12: o’clock.', 'The short hand is on 3.'], '3 o’clock', clk(3, 0)],
+      ['What time is it?', ['The long hand is on 6: half past.', 'The short hand is between 8 and 9.'], 'Half past 8', clk(8, 30)],
+      ['What time is it?', ['Long hand on 12.', 'Short hand on 11.'], '11 o’clock', clk(11, 0)]],
+    ['Do not mix up the hands. The short hand is the hour.', clk(12, 30)],
+    ['What time is it?', clk(5, 0), ['5 o’clock', '12 o’clock', 'half past 5'], '5 o’clock', 'Long hand on 12, short hand on 5.', 'Look at the short hand.'],
+    ['Long hand on 12: o’clock. Long hand on 6: half past.', pair(clk(4, 0), clk(4, 30))]]);
+
+  LI(204, 'learn2', ['Days and months', 'What are the days of the week and the months of the year?',
+    'There are 7 days in a week and 12 months in a year. They always come in the same order.', C(['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']),
+    [['day', 'from morning to night', '☀️'], ['week', '7 days', '📅'], ['month', 'about 4 weeks', '🗓️'], ['year', '12 months', '🎂']],
+    [['Ollie goes to school Monday to Friday.', C(['Mon', 'Tue', 'Wed', 'Thu', 'Fri'])],
+      ['Then the weekend: Saturday and Sunday.', C(['Sat', 'Sun'])],
+      ['The months: January, February, March and on to December.', C(['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'])]],
+    [['What day comes after Tuesday?', ['Say the days: Monday, Tuesday…', 'Next is Wednesday.'], 'Wednesday', C(['Mon', 'Tue', '?'])],
+      ['What day comes before Friday?', ['…Wednesday, Thursday, Friday.', 'Just before Friday is Thursday.'], 'Thursday', C(['?', 'Fri'])],
+      ['What month comes after June?', ['…May, June, July.'], 'July', C(['May', 'Jun', '?'])]],
+    ['After Sunday the week starts again with Monday. After December comes January.', C(['Sun → Mon', 'Dec → Jan'])],
+    ['How many days are in a week?', '', [5, 7, 12], 7, 'Monday to Sunday is 7 days.', 'Count them.'],
+    ['7 days in a week. 12 months in a year.', C(['7 days', '12 months'])]]);
+
+  LI(204, 'learn3', ['Order of a day', 'How can I put the events of a day in order?',
+    'Things in a day happen in order: morning, afternoon, evening and night. Think what comes first.', C(['🌅 morning', '☀️ afternoon', '🌆 evening', '🌙 night']),
+    [['morning', 'the start of the day', '🌅'], ['afternoon', 'after lunch', '☀️'], ['evening', 'before bed', '🌆'], ['first, next, last', 'the order things happen', '1️⃣']],
+    [['Ollie wakes up, eats lunch and goes to bed.', C(['wake up', 'lunch', 'bed'])],
+      ['Wake up in the morning. Lunch in the afternoon. Bed at night.', pair(clk(7, 0), clk(12, 0), clk(8, 0))],
+      ['First wake up, next lunch, last bed.', C(['1 wake up', '2 lunch', '3 bed'])]],
+    [['Which comes first: breakfast or dinner?', ['Breakfast is in the morning.', 'Dinner is in the evening.'], 'Breakfast', C(['🥣', '🍝'])],
+      ['Put in order: go home, go to school, play at break.', ['Go to school first.', 'Then play at break.', 'Then go home.'], 'school, break, home', C(['🏫', '⚽', '🏠'])],
+      ['What happens after you brush your teeth at night?', ['You brush your teeth before bed.'], 'Go to bed', C(['🪥', '🛏️'])]],
+    ['Think about what really happens. You put socks on before shoes!', C(['🧦 then 👟'])],
+    ['What comes <b>last</b>?', C(['lunch', 'breakfast', 'bedtime']), ['lunch', 'breakfast', 'bedtime'], 'bedtime', 'Bedtime is at the end of the day.', 'Think about the night.'],
+    ['Morning, afternoon, evening, night.', C(['🌅', '☀️', '🌆', '🌙'])]]);
+
+  LI(204, 'learn4', ['Minutes, hours, days', 'How long is a minute, an hour and a day?',
+    'A minute is short. An hour is longer: 60 minutes. A day is 24 hours.', C(['minute ⏱️', 'hour 🕐', 'day 📅']),
+    [['minute', 'about the time to wash your hands well', '⏱️'], ['hour', 'about the time of a film for children', '🕐'], ['day', 'from one morning to the next', '📅'], ['longer', 'takes more time', '⬆️']],
+    [['Ollie brushes his teeth for about 2 minutes.', C(['🪥 2 minutes'])],
+      ['A swimming lesson takes about 1 hour.', C(['🏊 1 hour'])],
+      ['A trip to Granny’s takes all day.', C(['🚗 1 day'])]],
+    [['Which takes about a minute: eating an apple or a school day?', ['A school day is many hours.', 'An apple takes about a minute.'], 'Eating an apple', C(['🍎', '🏫'])],
+      ['Which is longer: an hour or a minute?', ['An hour is 60 minutes.'], 'An hour', C(['hour', 'minute'])],
+      ['Which takes about a day: a holiday trip or blinking?', ['Blinking takes less than a second.'], 'A holiday trip', C(['✈️', '😉'])]],
+    ['A minute is not very long. You cannot watch a whole film in a minute.', C(['⏱️ < 🕐 < 📅'])],
+    ['Which is the <b>longest</b>?', '', ['a minute', 'an hour', 'a day'], 'a day', 'A day is 24 hours.', 'Think of how long each one is.'],
+    ['Minute, hour, day: short to long.', C(['minute', 'hour', 'day'])]]);
+
+  /* ========================= 205 Shapes and data (Finn's shape park) ========================= */
+  LI(205, 'learn1', ['2D shapes', 'What are 2D shapes?',
+    '2D shapes are flat. We name them by their sides and corners.', ROW(['circle', 'triangle', 'square', 'rectangle'], 70),
+    [['2D', 'flat, like a drawing', '📄'], ['side', 'a straight edge', '📏'], ['corner', 'where two sides meet', '📐'], ['circle', 'round, no corners', '⚪']],
+    [['Finn sees a round clock, a square window and a triangle sign.', ROW(['circle', 'square', 'triangle'], 80)],
+      ['A triangle has 3 sides and 3 corners.', SH('triangle', null, 110)],
+      ['Square: 4 equal sides. Rectangle: 4 sides, 2 long and 2 short.', ROW(['square', 'rectangle'], 90)]],
+    [['How many sides does a triangle have?', ['Count the straight sides.', '1, 2, 3.'], '3 sides', SH('triangle', null, 110)],
+      ['What shape is this?', ['It has 4 sides.', 'All the sides are the same length.'], 'A square', SH('square', null, 110)],
+      ['How many corners does a circle have?', ['A circle is round all the way.', 'It has no corners.'], '0 corners', SH('circle', null, 110)]],
+    ['A square turned on its corner is still a square.', SH('square', null, 100)],
+    ['Which shape has <b>3 sides</b>?', ROW(['square', 'triangle', 'circle'], 70), ['square', 'triangle', 'circle'], 'triangle', 'A triangle has 3 sides.', 'Count the sides.'],
+    ['Count sides and corners to name a shape.', ROW(['circle', 'triangle', 'square', 'rectangle'], 60)]]);
+
+  LI(205, 'learn2', ['2D and 3D', 'What is the difference between a 2D shape and a 3D object?',
+    '2D shapes are flat. 3D objects are solid: you can pick them up.', pair(SH('square', '#7cc4ff', 90), SH('cube', null, 100)),
+    [['2D', 'flat', '📄'], ['3D', 'solid', '🧊'], ['cube', 'like a dice', '🎲'], ['sphere', 'like a ball', '⚽']],
+    [['Finn has a ball and a drawing of a circle.', pair(SH('sphere', null, 100), SH('circle', '#ffb03b', 90))],
+      ['The ball is 3D. The circle is flat: 2D.', pair(SH('sphere', null, 100), SH('circle', '#ffb03b', 90))],
+      ['Sphere: 3D. Circle: 2D.', C(['sphere 3D', 'circle 2D'])]],
+    [['Is a dice 2D or 3D?', ['You can hold a dice.', 'It is solid.'], '3D: a cube', SH('cube', null, 100)],
+      ['Is a drawing of a square 2D or 3D?', ['It is flat on the paper.'], '2D', SH('square', '#7cc4ff', 100)],
+      ['What 3D object is a tin of beans?', ['It has 2 flat circle ends.', 'It has a curved side.'], 'A cylinder', SH('cylinder', null, 100)]],
+    ['A ball is not a circle. A ball is a sphere: it is solid.', pair(SH('sphere', null, 90), SH('circle', '#ffb03b', 80))],
+    ['Which is <b>3D</b>?', ROW(['circle', 'cube', 'square'], 70), ['circle', 'cube', 'square'], 'cube', 'A cube is solid.', 'Which one could you pick up?'],
+    ['Flat: 2D. Solid: 3D.', C(['📄 2D', '🧊 3D'])]]);
+
+  LI(205, 'learn3', ['Sorting shapes', 'How can I sort shapes?',
+    'We sort shapes into groups that are the same in some way, like colour, size or number of sides.', ROW(['circle', 'square', 'triangle', 'square'], 60),
+    [['sort', 'put into groups', '🗂️'], ['group', 'things that go together', '📦'], ['same', 'alike', '🟰'], ['different', 'not alike', '↔️']],
+    [['Finn has a pile of shapes to tidy.', ROW(['circle', 'square', 'triangle', 'circle', 'square'], 55)],
+      ['He sorts them: circles here, squares there, triangles there.', '<div>' + ROW(['circle', 'circle'], 50) + ROW(['square', 'square'], 50) + ROW(['triangle'], 50) + '</div>'],
+      ['3 groups: circles, squares, triangles.', C(['circles', 'squares', 'triangles'])]],
+    [['Sort by sides: which shapes have 4 sides?', ['Count the sides of each.', 'Square and rectangle have 4.'], 'Square and rectangle', ROW(['square', 'triangle', 'rectangle'], 70)],
+      ['Which shape does not belong? Circle, circle, square.', ['Two are round.', 'The square has corners.'], 'The square', ROW(['circle', 'circle', 'square'], 70)],
+      ['Sort by round or not round.', ['Round: circle, oval.', 'Not round: square, triangle.'], 'circle, oval | square, triangle', ROW(['circle', 'square', 'oval', 'triangle'], 60)]],
+    ['Choose one rule and stick to it. Sort by sides, or by colour, not both at once.', C(['one rule'])],
+    ['Which one is <b>not</b> a triangle?', ROW(['triangle', 'triangle', 'square'], 70), ['the 1st', 'the 2nd', 'the 3rd'], 'the 3rd', 'The 3rd shape has 4 sides.', 'Count the sides.'],
+    ['Pick a rule, then sort.', C(['rule', 'sort', 'groups'])]]);
+
+  LI(205, 'learn4', ['Tally and pictograms', 'How do I record and display data?',
+    'We count with tally marks, in groups of 5. Then we show the data in a pictogram.', FL.tally(7),
+    [['data', 'things we count', '📋'], ['tally', 'a mark for each one', '✏️'], ['pictogram', 'pictures to show how many', '🖼️'], ['most', 'the biggest number', '🏆']],
+    [['Finn counts the fruit at a picnic: 4 apples, 2 fish sandwiches, 3 sweets.', C(['🍎 4', '🐟 2', '🍬 3'])],
+      ['He makes a tally: one mark for each.', '<div>' + FL.tally(4) + FL.tally(2) + FL.tally(3) + '</div>'],
+      ['He shows it as a pictogram.', FL.picto([['Apple', 4, 'apple'], ['Fish', 2, 'fish'], ['Sweet', 3, 'sweet']])]],
+    [['How many apples?', ['Find the apple row.', 'Count: 1, 2, 3, 4.'], '4 apples', FL.picto([['Apple', 4, 'apple'], ['Fish', 2, 'fish'], ['Sweet', 3, 'sweet']])],
+      ['Which is the most?', ['Find the longest row.', 'Apples have 4.'], 'Apples', FL.picto([['Apple', 4, 'apple'], ['Fish', 2, 'fish'], ['Sweet', 3, 'sweet']])],
+      ['How many does this tally show?', ['Four marks and a line across make 5.', '2 more: 6, 7.'], '7', FL.tally(7)]],
+    ['The fifth tally mark goes across the other four.', FL.tally(5)],
+    ['How many does the tally show?', FL.tally(6), [5, 6, 7], 6, 'A 5 and 1 more: 6.', 'Count the group of 5 first.'],
+    ['Tally to count, pictogram to show.', C(['count', 'tally', 'pictogram'])]]);
+
+  /* ========================= P2 worked examples ========================= */
+  function W(q, steps, final, pic) { return { q: q, steps: steps, final: final, pic: pic || '' }; }
+  var P2W = {
+    201: { low: [function () { var n = r(2, 18); return W('What is one more than ' + n + '?', ['Start at ' + n + '.', 'Jump 1 forward.'], 'One more than ' + n + ' is ' + (n + 1) + '.', TR(n - 1, n + 2, [n, n + 1], [[n, n + 1]])); },
+        function () { var n = r(3, 19); return W('What is one less than ' + n + '?', ['Start at ' + n + '.', 'Jump 1 back.'], 'One less than ' + n + ' is ' + (n - 1) + '.', TR(n - 2, n + 1, [n, n - 1], [[n, n - 1]])); }],
+      medium: [function () { var t = r(1, 4), o = r(0, 9); return W('How many tens and ones in ' + (10 * t + o) + '?', ['Count the tens: ' + t + '.', 'Count the ones: ' + o + '.'], (10 * t + o) + ' is ' + t + ' ten' + (t > 1 ? 's' : '') + ' and ' + o + ' one' + (o === 1 ? '' : 's') + '.', TO(t, o)); },
+        function () { var a = r(2, 9), s = pick([1, 2]); return W('What comes next? ' + a + ', ' + (a + s) + ', ' + (a + 2 * s) + ', ?', ['Each jump is ' + s + '.', (a + 2 * s) + ' + ' + s + ' = ' + (a + 3 * s) + '.'], 'The next number is ' + (a + 3 * s) + '.', C([a, a + s, a + 2 * s, '?'])); }],
+      high: [function () { var s = pick([2, 5, 10]), a = s * r(1, 3); return W('What comes next? ' + a + ', ' + (a + s) + ', ' + (a + 2 * s) + ', ?', ['Find the jump: ' + s + '.', 'Count on ' + s + ' from ' + (a + 2 * s) + '.'], 'The next number is ' + (a + 3 * s) + '.', C([a, a + s, a + 2 * s, '?'])); },
+        function () { var x = [r(1, 9), r(10, 19), r(20, 40)].sort(function () { return Math.random() - 0.5; }), o = x.slice().sort(function (a, b) { return a - b; }); return W('Put ' + x.join(', ') + ' in order, smallest first.', ['Look at the tens first.', 'The smallest has the fewest tens.'], o.join(', '), C(x)); }] },
+    202: { low: [function () { var a = r(1, 5), b = r(1, 5); return W('What is ' + a + ' + ' + b + '?', ['Count ' + a + ', then count on ' + b + '.'], a + ' + ' + b + ' = ' + (a + b), G(a, b, 'apple')); },
+        function () { var a = r(2, 9), b = r(1, a - 1); return W('Benny has ' + a + ' apples. He eats ' + b + '. How many are left?', ['Start with ' + a + '.', 'Take away ' + b + '.'], a + ' − ' + b + ' = ' + (a - b), T(a, 'apple')); }],
+      medium: [function () { var a = r(2, 9); return W('What is ' + a + ' + ' + (a + 1) + '?', ['Double ' + a + ' is ' + 2 * a + '.', 'One more is ' + (2 * a + 1) + '.'], a + ' + ' + (a + 1) + ' = ' + (2 * a + 1), G(a, a + 1, 'apple')); },
+        function () { var b = r(1, 3), a = r(6, 9); return W('What is ' + b + ' + ' + a + '?', ['Start at the bigger number: ' + a + '.', 'Count on ' + b + '.'], b + ' + ' + a + ' = ' + (a + b), TR(a - 1, a + b + 1, [a, a + b])); }],
+      high: [function () { var a = r(1, 9), c = r(2, 9); return W('What is ' + a + ' + ' + c + ' + ' + (10 - a) + '?', ['Find two numbers that make 10: ' + a + ' and ' + (10 - a) + '.', '10 + ' + c + ' = ' + (10 + c) + '.'], 'The answer is ' + (10 + c) + '.', B(a + ' + ' + c + ' + ' + (10 - a))); },
+        function () { var b = r(2, 8); return W('What is 10 − ' + b + '?', ['What goes with ' + b + ' to make 10?', b + ' + ' + (10 - b) + ' = 10.'], '10 − ' + b + ' = ' + (10 - b), FL.frame(b, 10 - b)); }] },
+    203: { low: [function () { var c = pick([[5, 2], [10, 5], [10, 2], [5, 1], [2, 2]]); return W('How much is ' + c[0] + 'p + ' + c[1] + 'p?', ['Start with the bigger coin: ' + c[0] + 'p.', 'Count on ' + c[1] + '.'], 'It makes ' + (c[0] + c[1]) + 'p.', COIN(c)); },
+        function () { var c = pick([1, 2, 5, 10, 20, 50]); return W('How much is this coin worth?', ['Read the number on the coin.'], 'It is ' + c + 'p.', COIN([c])); }],
+      medium: [function () { var c = pick([[5, 1], [5, 2], [5, 2, 1], [10, 1], [10, 2], [10, 2, 1], [10, 5], [10, 5, 1], [10, 5, 2]]), p = c.reduce(function (a, b) { return a + b; }, 0);
+        return W('A toy costs ' + p + 'p. Which coins could you use?', ['Start with the biggest coin that fits: ' + c[0] + 'p.', 'Add smaller coins until you reach ' + p + 'p.'], c.join('p + ') + 'p = ' + p + 'p', COIN(c)); },
+        function () { var c = pick([[10, 5, 2], [5, 5, 1], [10, 2, 1], [5, 2, 2]]); var t = c[0] + c[1] + c[2]; return W('How much is ' + c.join('p + ') + 'p?', [c[0] + ' + ' + c[1] + ' = ' + (c[0] + c[1]) + '.', (c[0] + c[1]) + ' + ' + c[2] + ' = ' + t + '.'], 'It makes ' + t + 'p.', COIN(c)); }],
+      high: [function () { var p = r(11, 19); return W('A toy costs ' + p + 'p. You pay 20p. What is the change?', ['Count on from ' + p + ' to 20.', 'That is ' + (20 - p) + ' jumps.'], 'The change is ' + (20 - p) + 'p.', TR(p, 20, [p, 20])); },
+        function () { var p = r(3, 9); return W('A sweet costs ' + p + 'p. You pay 10p. What is the change?', ['Count on from ' + p + ' to 10.', 'That is ' + (10 - p) + '.'], 'The change is ' + (10 - p) + 'p.', TR(p, 10, [p, 10])); }] },
+    204: { low: [function () { var h = r(1, 12); return W('What time does the clock show?', ['The long hand is on 12: o’clock.', 'The short hand is on ' + h + '.'], h + ' o’clock', clk(h, 0)); },
+        function () { var D = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'], i = r(0, 5); return W('What day comes after ' + D[i] + '?', ['Say the days in order.', 'After ' + D[i] + ' comes ' + D[i + 1] + '.'], D[i + 1], C(D.slice(0, 7).map(function (d) { return d.slice(0, 3); }))); }],
+      medium: [function () { var h = r(1, 12); return W('What time does the clock show?', ['The long hand is on 6: half past.', 'The short hand is just past ' + h + '.'], 'Half past ' + h, clk(h, 30)); },
+        function () { var M = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'], i = r(0, 10); return W('What month comes after ' + M[i] + '?', ['Say the months in order.', 'After ' + M[i] + ' comes ' + M[i + 1] + '.'], M[i + 1], C(M.map(function (m) { return m.slice(0, 3); }))); }],
+      high: [function () { var h = r(1, 10), d = r(1, 2); return W('A party starts at ' + h + ' o’clock and ends at ' + (h + d) + ' o’clock. How long is it?', ['Count on the hours from ' + h + ' to ' + (h + d) + '.'], d + ' hour' + (d > 1 ? 's' : ''), pair(clk(h, 0), clk(h + d, 0))); },
+        function () { var e = pick([['breakfast', 'lunch', 'dinner'], ['wake up', 'go to school', 'go to bed'], ['get dressed', 'play outside', 'have a bath']]); return W('Put in order: ' + e.slice().reverse().join(', ') + '.', ['What happens in the morning?', 'What happens last, at night?'], e.join(', '), C(e.slice().reverse())); }] },
+    205: { low: [function () { var s = pick([['triangle', 3], ['square', 4], ['rectangle', 4], ['pentagon', 5]]); return W('How many sides does a ' + s[0] + ' have?', ['Count the straight sides.'], 'A ' + s[0] + ' has ' + s[1] + ' sides.', SH(s[0], null, 110)); },
+        function () { var n = r(3, 9); return W('How many does this tally show?', ['A group with a line across is 5.', 'Count on the rest.'], n, FL.tally(n)); }],
+      medium: [function () { var s = pick([['cube', 'like a dice'], ['sphere', 'like a ball'], ['cylinder', 'like a tin'], ['cone', 'like an ice-cream cone']]); return W('What is this 3D object called?', ['It is solid.', 'It looks ' + s[1] + '.'], 'A ' + s[0], SH(s[0], null, 110)); },
+        function () { var a = r(3, 6), b = r(1, a - 1); return W('How many more apples than fish?', ['Apples: ' + a + '. Fish: ' + b + '.', a + ' − ' + b + ' = ' + (a - b) + '.'], (a - b) + ' more apples', FL.picto([['Apple', a, 'apple'], ['Fish', b, 'fish']])); }],
+      high: [function () { var a = r(2, 5), b = r(1, 4), c = r(1, 4); return W('How many altogether?', ['Count each row: ' + a + ', ' + b + ' and ' + c + '.', 'Add them: ' + (a + b + c) + '.'], (a + b + c) + ' altogether', FL.picto([['Apple', a, 'apple'], ['Fish', b, 'fish'], ['Sweet', c, 'sweet']])); },
+        function () { var s = pick([['square', '2D'], ['cube', '3D'], ['circle', '2D'], ['sphere', '3D'], ['triangle', '2D'], ['cylinder', '3D']]); return W('Is this shape 2D or 3D?', ['Is it flat, or could you pick it up?'], 'It is ' + s[1] + '.', SH(s[0], null, 100)); }] }
+  };
+  Object.keys(P2W).forEach(function (n) { FL.workedSets(+n, P2W[n]); });
+})();
+</script>
+<script>
+/* fl_l4.js: P4 "Learn it" lessons (one per workbook question) and worked-example sets for topics 401 to 409.
+   Everything stays at First level depth: numbers to 1000, the 2, 3, 4, 5 and 10 tables, simple fractions, m and cm, money to £10. */
+(function () {
+  'use strict';
+  var FL = window.FL, BT = window.BT; if (!FL || !FL.LI || !FL.KS4 || !FL.KL || !FL.p4) return;
+  var V = BT.sv, K = FL.KS4, P = FL.p4, KL = FL.KL, B = FL.big, C = FL.cards, SAY = FL.says, TR = FL.track, PIE = FL.pie, COIN = FL.coins, SH = FL.shape, ROW = FL.shapeRow, LI = FL.LI, pair = KL.pair;
+  var hto = K.hto, col = K.col, clk = K.clk, TT = K.TT, TTH = ['Station', 'Train 1', 'Train 2'];
+
+  /* ========================= 401 Place value (Professor Owl's number lab) ========================= */
+  LI(401, 'learn1', ['Number patterns', 'How can I use number patterns to work out a sequence?',
+    'A sequence follows a rule, like add 4 or take away 100. Find the rule from the gaps, check it, then use it.', SAY('owl', '3, 7, 11, 15, ?'),
+    [['sequence', 'numbers that follow a rule', '🔢'], ['rule', 'what happens each time', '⚙️'], ['term', 'one number in the sequence', '📍'], ['difference', 'the gap between two numbers', '↔️']],
+    [['Professor Owl stacks test tubes in rows of 3, 7, 11 and 15.', C(['3', '7', '11', '15'])],
+      ['Each jump on the number line is 4.', TR(3, 15, [3, 7, 11, 15], [[3, 7], [7, 11], [11, 15]])],
+      ['The rule is add 4. The next term is 19.', B('3, 7, 11, 15, 19')]],
+    [['What comes next? 100, 200, 300, 400, ?', ['Find the gap: 100.', 'The rule is add 100.', '400 + 100 = 500.'], 'The next number is 500.', C(['100', '200', '300', '400', '?'])],
+      ['What comes next? 90, 80, 70, 60, ?', ['The numbers get smaller by 10.', 'The rule is take away 10.', '60 − 10 = 50.'], 'The next number is 50.', C(['90', '80', '70', '60', '?'])],
+      ['What is missing? 12, 15, ?, 21, 24', ['15 − 12 = 3, and 24 − 21 = 3.', 'The rule is add 3.', '15 + 3 = 18. Check: 18 + 3 = 21.'], 'The missing number is 18.', C(['12', '15', '?', '21', '24'])]],
+    ['Check the rule on every gap. If one gap is different, look again.', C(['5, 10, 15, 20 ✓', '5, 10, 16 ✗'])],
+    ['What comes next? <b>50, 100, 150, ?</b>', '', [160, 200, 250], 200, 'The rule is add 50, and 150 + 50 = 200.', 'Find the gap first.'],
+    ['Find the gap, check it, then use the rule.', C(['find the gap', 'check', 'next term'])]]);
+
+  LI(401, 'learn2', ['Value of each digit', 'What is the value of each digit in a 3-digit number?',
+    'A digit’s value depends on its place. In 473 the 4 is worth 400, the 7 is worth 70 and the 3 is worth 3.', hto(4, 7, 3),
+    [['digit', 'one of 0 to 9', '🔢'], ['place', 'hundreds, tens or ones', '🏠'], ['value', 'what the digit is worth', '💰'], ['partition', 'split into hundreds, tens and ones', '✂️']],
+    [['Professor Owl has 4 boxes of 100 beakers, 7 packs of 10 and 3 single beakers.', C(['100 100 100 100', '10 × 7', '1 1 1'])],
+      ['In a place value chart: 4 hundreds, 7 tens and 3 ones.', hto(4, 7, 3)],
+      ['473 = 400 + 70 + 3', B('473 = 400 + 70 + 3')]],
+    [['What is the value of the 6 in 625?', ['Put 625 in the chart.', 'The 6 is in the hundreds column.', '6 hundreds is 600.'], 'The 6 is worth 600.', hto(6, 2, 5)],
+      ['Partition 853.', ['8 hundreds: 800.', '5 tens: 50.', '3 ones: 3.'], '853 = 800 + 50 + 3', hto(8, 5, 3)],
+      ['What number is 400 + 9?', ['Hundreds: 4.', 'Tens: none, so write 0.', 'Ones: 9.'], '409', hto(4, 0, 9)]],
+    ['A zero holds a place. 400 + 9 is 409, not 49.', C(['409 ✓', '49 ✗'])],
+    ['What is the value of the <b>3</b> in 238?', hto(2, 3, 8), [3, 30, 300], 30, 'The 3 is in the tens column, so it is worth 30.', 'Which column is it in?'],
+    ['Place gives value: hundreds, tens, ones.', hto('H', 'T', 'O')]]);
+
+  LI(401, 'learn3', ['Rounding to 10 and 100', 'How do I round to the nearest 10 and 100?',
+    'To round to the nearest 10, look at the ones digit. To round to the nearest 100, look at the tens digit. 5 or more rounds up.', P.scale(300, 400, 10, 362, ''),
+    [['round', 'change to a nearby, easier number', '🎯'], ['nearest 10', 'the closest multiple of 10', '🔟'], ['nearest 100', 'the closest multiple of 100', '💯'], ['halfway', '5 rounds up', '⬆️']],
+    [['A jar holds 362 marbles. Is that nearer 300 or 400?', P.scale(300, 400, 10, 362, '')],
+      ['362 is past the halfway point, 350. It is nearer 400.', P.scale(300, 400, 10, 362, '')],
+      ['362 rounded to the nearest 100 is 400. To the nearest 10 it is 360.', B('362 → 400<br>362 → 360')]],
+    [['Round 74 to the nearest 10.', ['74 is between 70 and 80.', 'The ones digit is 4: round down.'], '74 rounds to 70.', TR(70, 80, [74])],
+      ['Round 245 to the nearest 100.', ['245 is between 200 and 300.', 'Look at the tens digit: 4. That is less than 5.', 'Round down.'], '245 rounds to 200.', P.scale(200, 300, 10, 245, '')],
+      ['Round 650 to the nearest 100.', ['650 is between 600 and 700.', 'The tens digit is 5: exactly halfway.', 'Round up.'], '650 rounds to 700.', P.scale(600, 700, 10, 650, '')]],
+    ['When rounding to 100, look at the tens digit, not the ones. 349 rounds to 300, not 400.', C(['349 → 300 ✓', '349 → 400 ✗'])],
+    ['Round <b>186</b> to the nearest 100.', P.scale(100, 200, 10, 186, ''), [100, 190, 200], 200, 'The tens digit is 8, so round up to 200.', 'Look at the tens digit.'],
+    ['Nearest 10: look at ones. Nearest 100: look at tens. 5 or more, round up.', C(['10 → ones digit', '100 → tens digit', '5+ ⬆️'])]]);
+
+  LI(401, 'learn4', ['Negative numbers', 'How can a thermometer help me understand negative numbers?',
+    'Numbers below zero are negative numbers. On a thermometer, the lower you go, the colder it is and the smaller the number.', FL.thermo(-3),
+    [['negative number', 'a number below zero, like −3', '❄️'], ['zero', 'the point between negative and positive', '0️⃣'], ['colder', 'lower on the thermometer', '🥶'], ['warmer', 'higher on the thermometer', '🌡️']],
+    [['On a frosty morning, the temperature is 3 degrees below zero.', FL.thermo(-3)],
+      ['On a number line, −3 is 3 steps to the left of 0.', TR(-5, 5, [-3, 0])],
+      ['We write minus three: −3 °C.', B('−3 °C')]],
+    [['It is 2 °C. It gets 5 degrees colder. What is the temperature now?', ['Count down 2 to reach 0.', 'Count down 3 more: −1, −2, −3.'], '−3 °C', TR(-5, 5, [2, 0, -3], [[2, 0], [0, -3]])],
+      ['Which is colder: −4 °C or −1 °C?', ['−4 is further below zero.', 'Further below zero is colder.'], '−4 °C is colder.', TR(-5, 1, [-4, -1])],
+      ['It is −2 °C. It warms up by 6 degrees. What is it now?', ['Count up 2 to reach 0.', 'Count up 4 more: 1, 2, 3, 4.'], '4 °C', TR(-3, 5, [-2, 0, 4], [[-2, 0], [0, 4]])]],
+    ['−5 is smaller than −2, even though 5 is bigger than 2. The further below zero, the smaller.', C(['−5 < −2 ✓'])],
+    ['What temperature does the thermometer show?', FL.thermo(-5), ['5 °C', '−5 °C', '0 °C'], '−5 °C', 'It is 5 below zero.', 'Is it above or below 0?'],
+    ['Below zero is negative. Count through 0 when you go up or down.', TR(-5, 5, [0])]]);
+
+  /* ========================= 402 Adding and subtracting (Ruby at the space station) ========================= */
+  LI(402, 'learn1', ['Compensating', 'How can compensating help me add and subtract?',
+    'Compensating means using an easy number, then fixing the answer. To add 9, add 10 and take away 1.', B('46 + 9<br>= 46 + 10 − 1'),
+    [['compensate', 'change a number, then fix the answer', '🔧'], ['round', 'change to a near ten, like 9 → 10', '🎯'], ['adjust', 'add or take away the extra', '⚖️'], ['near ten', 'a number close to a ten, like 19 or 31', '🔟']],
+    [['Ruby needs 46 + 9 fuel cells. Adding 10 is easier.', C(['46', '+ 9'])],
+      ['46 + 10 = 56. That is 1 too many, so take 1 away.', TR(54, 57, [56, 55], [[56, 55]])],
+      ['46 + 9 = 46 + 10 − 1 = 55.', B('46 + 9 = 55')]],
+    [['What is 35 + 19?', ['19 is nearly 20.', '35 + 20 = 55.', 'We added 1 too many: 55 − 1 = 54.'], '35 + 19 = 54', B('35 + 20 − 1')],
+      ['What is 73 − 19?', ['19 is nearly 20.', '73 − 20 = 53.', 'We took away 1 too many, so add 1 back: 54.'], '73 − 19 = 54', B('73 − 20 + 1')],
+      ['What is 128 + 29?', ['29 is nearly 30.', '128 + 30 = 158.', '158 − 1 = 157.'], '128 + 29 = 157', B('128 + 30 − 1')]],
+    ['When you subtract too much, add it back. 73 − 19 is 73 − 20 + 1, not 73 − 20 − 1.', C(['73 − 20 + 1 ✓', '73 − 20 − 1 ✗'])],
+    ['What is <b>35 + 9</b>?', '', [43, 44, 45], 44, '35 + 10 = 45, then 45 − 1 = 44.', 'Add 10, then take 1 away.'],
+    ['Use a near ten, then fix the answer.', C(['+ 9 → + 10 − 1', '− 9 → − 10 + 1'])]]);
+
+  LI(402, 'learn2', ['Adding in columns', 'How do I add using columns?',
+    'Write the numbers in columns: hundreds, tens and ones. Add the ones first. If they make 10 or more, carry a ten to the next column.', col(247, 135, '+'),
+    [['column', 'hundreds, tens or ones lined up', '📊'], ['carry', 'move a ten to the next column', '➡️'], ['ones first', 'always start on the right', '1️⃣'], ['total', 'the answer when you add', '➕']],
+    [['Ruby has 247 red bolts and 135 blue bolts.', C(['247', '135'])],
+      ['Line them up in columns, ones under ones.', col(247, 135, '+')],
+      ['Ones: 7 + 5 = 12, write 2 and carry 1. Tens: 4 + 3 + 1 = 8. Hundreds: 2 + 1 = 3.', B('247 + 135 = 382')]],
+    [['What is 315 + 142?', ['Ones: 5 + 2 = 7.', 'Tens: 1 + 4 = 5.', 'Hundreds: 3 + 1 = 4.'], '315 + 142 = 457', col(315, 142, '+')],
+      ['What is 168 + 254?', ['Ones: 8 + 4 = 12. Write 2, carry 1.', 'Tens: 6 + 5 + 1 = 12. Write 2, carry 1.', 'Hundreds: 1 + 2 + 1 = 4.'], '168 + 254 = 422', col(168, 254, '+')],
+      ['What is 406 + 57?', ['Line up 57 under the tens and ones.', 'Ones: 6 + 7 = 13. Write 3, carry 1.', 'Tens: 0 + 5 + 1 = 6. Hundreds: 4.'], '406 + 57 = 463', col(406, ' 57', '+')]],
+    ['Line up the digits by place. The ones must be under the ones.', C(['ones under ones ✓', 'line up the left ✗'])],
+    ['What is <b>125 + 234</b>?', col(125, 234, '+'), [359, 369, 459], 359, '5 + 4 = 9, 2 + 3 = 5, 1 + 2 = 3.', 'Start with the ones.'],
+    ['Ones first, carry if 10 or more, then tens, then hundreds.', C(['ones', 'tens', 'hundreds'])]]);
+
+  LI(402, 'learn3', ['Subtracting in columns', 'How do I subtract using columns?',
+    'Write the bigger number on top. Take away the ones first. If the top digit is too small, exchange a ten from the next column.', col(352, 127, '−'),
+    [['subtract', 'take away', '➖'], ['exchange', 'swap 1 ten for 10 ones', '🔄'], ['top number', 'the number you start with', '⬆️'], ['difference', 'the answer when you subtract', '↔️']],
+    [['The station has 352 bolts. Ruby uses 127.', C(['352', '− 127'])],
+      ['Ones: 2 take away 7 does not work. Exchange 1 ten: now 12 ones and 4 tens.', col(352, 127, '−')],
+      ['12 − 7 = 5, 4 − 2 = 2, 3 − 1 = 2.', B('352 − 127 = 225')]],
+    [['What is 486 − 152?', ['Ones: 6 − 2 = 4.', 'Tens: 8 − 5 = 3.', 'Hundreds: 4 − 1 = 3.'], '486 − 152 = 334', col(486, 152, '−')],
+      ['What is 543 − 218?', ['Ones: 3 − 8 does not work. Exchange a ten: 13 − 8 = 5.', 'Tens: now 3, and 3 − 1 = 2.', 'Hundreds: 5 − 2 = 3.'], '543 − 218 = 325', col(543, 218, '−')],
+      ['What is 760 − 35?', ['Ones: 0 − 5 does not work. Exchange a ten: 10 − 5 = 5.', 'Tens: now 5, and 5 − 3 = 2.', 'Hundreds: 7.'], '760 − 35 = 725', col(760, ' 35', '−')]],
+    ['Do not take the smaller digit from the bigger one when it is on the bottom. Exchange instead.', C(['52 − 27: 12 − 7 ✓', '7 − 2 ✗'])],
+    ['What is <b>375 − 142</b>?', col(375, 142, '−'), [233, 217, 333], 233, '5 − 2 = 3, 7 − 4 = 3, 3 − 1 = 2.', 'Start with the ones.'],
+    ['Ones first. Too small? Exchange a ten.', C(['ones', 'exchange?', 'tens', 'hundreds'])]]);
+
+  LI(402, 'learn4', ['Estimating', 'How can estimating help me check my answer?',
+    'Estimate by rounding the numbers first. If your answer is far from the estimate, check again.', B('298 + 403<br>≈ 300 + 400 = 700'),
+    [['estimate', 'a sensible guess using easy numbers', '🤔'], ['round', 'change to the nearest 10 or 100', '🎯'], ['about (≈)', 'close to, not exact', '〰️'], ['check', 'make sure the answer makes sense', '✅']],
+    [['Ruby adds 298 and 403 fuel litres.', C(['298', '403'])],
+      ['Round: 298 is about 300, and 403 is about 400.', TR(295, 305, [298, 300])],
+      ['300 + 400 = 700, so the answer should be close to 700. It is 701.', B('≈ 700 → 701 ✓')]],
+    [['Estimate 189 + 212, then work it out.', ['189 ≈ 200 and 212 ≈ 200.', 'Estimate: 200 + 200 = 400.', 'Work it out: 401. That is close, so it makes sense.'], 'Estimate 400. Answer 401.', B('189 + 212')],
+      ['Estimate 512 − 298.', ['512 ≈ 500 and 298 ≈ 300.', '500 − 300 = 200.'], 'About 200. (The answer is 214.)', B('512 − 298')],
+      ['Sam says 395 + 210 = 405. Is that sensible?', ['Estimate: 400 + 200 = 600.', '405 is far from 600.', 'Sam made a mistake. The answer is 605.'], 'No: it should be about 600.', B('395 + 210 = 405?')]],
+    ['An estimate is close, not exact. Still work out the real answer after you estimate.', C(['estimate ≈ 600', 'answer = 605'])],
+    ['Estimate <b>396 + 204</b>.', '', [500, 600, 700], 600, '400 + 200 = 600.', 'Round each number to the nearest 100.'],
+    ['Round, add, compare with your answer.', C(['round', 'estimate', 'check'])]]);
+
+  /* ========================= 403 Multiplication and division (Finn on the farm) ========================= */
+  LI(403, 'learn1', ['Doubling and halving', 'How can doubling and halving help me multiply and divide?',
+    'Doubling the 2 times table gives the 4 times table. Halving undoes doubling, so it helps you divide by 2 and by 4.', B('2 × 6 = 12<br>4 × 6 = 24'),
+    [['double', 'times by 2', '👯'], ['halve', 'divide by 2', '✂️'], ['4 times table', 'double the 2 times table', '4️⃣'], ['divide by 4', 'halve, then halve again', '➗']],
+    [['Finn has 6 hens. Each lays 2 eggs: 12. On Sunday each lays 4: double 12 is 24.', C(['2', '2', '2', '2', '2', '2'])],
+      ['Double 12 on a bar: 12 and 12 makes 24.', C(['12', '12', '= 24'])],
+      ['2 × 6 = 12, so 4 × 6 = 24.', B('4 × 6 = double 12 = 24')]],
+    [['What is 4 × 7?', ['2 × 7 = 14.', 'Double 14: 28.'], '4 × 7 = 28', B('2 × 7 = 14<br>double → 28')],
+      ['What is half of 18?', ['Split 18 into 10 and 8.', 'Half of 10 is 5, half of 8 is 4.', '5 + 4 = 9.'], 'Half of 18 is 9.', B('18 ÷ 2 = 9')],
+      ['What is 40 ÷ 4?', ['Halve 40: 20.', 'Halve again: 10.'], '40 ÷ 4 = 10', B('40 → 20 → 10')]],
+    ['Dividing by 4 means halving twice, not once. Half of 20 is 10, but 20 ÷ 4 is 5.', C(['20 ÷ 4 = 5 ✓', '20 ÷ 4 = 10 ✗'])],
+    ['What is <b>4 × 5</b>?', '', [10, 20, 25], 20, '2 × 5 = 10. Double 10 is 20.', 'Find 2 × 5, then double.'],
+    ['Double to multiply by 4. Halve twice to divide by 4.', C(['× 4 = double, double', '÷ 4 = halve, halve'])]]);
+
+  LI(403, 'learn2', ['Multiples of ten', 'How do I multiply by multiples of ten?',
+    'Use a fact you know. 3 × 2 = 6, so 3 × 20 = 6 tens = 60.', B('3 × 2 = 6<br>3 × 20 = 60'),
+    [['multiple of ten', '10, 20, 30, 40 and so on', '🔟'], ['tens', '20 is 2 tens', '📦'], ['fact', 'something you know, like 3 × 2 = 6', '💡'], ['ten times bigger', 'the digits move one place left', '⬅️']],
+    [['Finn has 3 crates of 20 apples.', C(['20', '20', '20'])],
+      ['Each crate is 2 tens. 3 crates is 6 tens.', FL.tensOnes(6, 0)],
+      ['6 tens is 60, so 3 × 20 = 60.', B('3 × 20 = 60')]],
+    [['What is 4 × 30?', ['You know 4 × 3 = 12.', '4 × 30 is 12 tens.', '12 tens is 120.'], '4 × 30 = 120', B('4 × 3 = 12 → 120')],
+      ['What is 5 × 40?', ['5 × 4 = 20.', '20 tens is 200.'], '5 × 40 = 200', B('5 × 4 = 20 → 200')],
+      ['What is 2 × 50?', ['2 × 5 = 10.', '10 tens is 100.'], '2 × 50 = 100', B('2 × 5 = 10 → 100')]],
+    ['3 × 20 is 60, not 6 and not 600. Count the tens: 6 tens.', C(['60 ✓', '6 ✗', '600 ✗'])],
+    ['What is <b>2 × 40</b>?', '', [8, 80, 800], 80, '2 × 4 = 8, so 2 × 40 = 8 tens = 80.', 'Use 2 × 4.'],
+    ['Know the small fact, then make it tens.', C(['3 × 4 = 12', '3 × 40 = 120'])]]);
+
+  LI(403, 'learn3', ['Multiplying 2-digit numbers', 'How can I multiply a two-digit number?',
+    'Split the number into tens and ones. Multiply each part, then add.', B('14 × 3<br>= 30 + 12 = 42'),
+    [['partition', 'split into tens and ones', '✂️'], ['multiply each part', 'tens × and ones ×', '✖️'], ['add the parts', 'put the answers together', '➕'], ['grid', 'a box to keep the parts tidy', '🔲']],
+    [['Finn has 3 fields with 14 sheep in each.', C(['14', '14', '14'])],
+      ['Split 14 into 10 and 4. Three 10s is 30, three 4s is 12.', V.tbl([['3', '30', '12']], ['×', '10', '4'])],
+      ['30 + 12 = 42, so 14 × 3 = 42.', B('14 × 3 = 42')]],
+    [['What is 23 × 4?', ['Split 23 into 20 and 3.', '20 × 4 = 80. 3 × 4 = 12.', '80 + 12 = 92.'], '23 × 4 = 92', V.tbl([['4', '80', '12']], ['×', '20', '3'])],
+      ['What is 16 × 5?', ['Split 16 into 10 and 6.', '10 × 5 = 50. 6 × 5 = 30.', '50 + 30 = 80.'], '16 × 5 = 80', V.tbl([['5', '50', '30']], ['×', '10', '6'])],
+      ['What is 32 × 3?', ['Split 32 into 30 and 2.', '30 × 3 = 90. 2 × 3 = 6.', '90 + 6 = 96.'], '32 × 3 = 96', V.tbl([['3', '90', '6']], ['×', '30', '2'])]],
+    ['Multiply both parts. 14 × 3 is not 10 × 3 + 4. The 4 must be multiplied too.', C(['30 + 12 ✓', '30 + 4 ✗'])],
+    ['What is <b>12 × 3</b>?', '', [32, 36, 39], 36, '10 × 3 = 30, 2 × 3 = 6, 30 + 6 = 36.', 'Split 12 into 10 and 2.'],
+    ['Split, multiply each part, add.', C(['split', 'multiply', 'add'])]]);
+
+  LI(403, 'learn4', ['New facts from old', 'How can known facts help me find new facts?',
+    'One fact gives you many more. If 3 × 4 = 12, then 4 × 3 = 12, 12 ÷ 3 = 4 and 12 ÷ 4 = 3.', C(['3 × 4 = 12', '4 × 3 = 12', '12 ÷ 3 = 4', '12 ÷ 4 = 3']),
+    [['known fact', 'a fact you already know', '💡'], ['fact family', 'facts with the same three numbers', '👨‍👩‍👧'], ['inverse', 'the opposite: ÷ undoes ×', '🔄'], ['one more group', 'add one more lot', '➕']],
+    [['Finn plants 3 rows of 4 carrots: 12 carrots.', BT.sv.dots(3, 4, '#ff8a3d')],
+      ['Turn the field round: 4 rows of 3. Still 12.', BT.sv.dots(4, 3, '#ff8a3d')],
+      ['One array, four facts.', C(['3 × 4', '4 × 3', '12 ÷ 3', '12 ÷ 4'])]],
+    [['5 × 6 = 30. What is 5 × 7?', ['5 × 7 is one more group of 5.', '30 + 5 = 35.'], '5 × 7 = 35', B('5 × 6 = 30<br>+ 5 → 35')],
+      ['4 × 5 = 20. What is 20 ÷ 5?', ['Dividing undoes multiplying.', '4 groups of 5 make 20.'], '20 ÷ 5 = 4', B('4 × 5 = 20<br>20 ÷ 5 = 4')],
+      ['3 × 4 = 12. What is 30 × 4?', ['30 is ten times 3.', 'So the answer is ten times 12.'], '30 × 4 = 120', B('3 × 4 = 12<br>30 × 4 = 120')]],
+    ['In a dividing fact, the biggest number comes first: 12 ÷ 3, not 3 ÷ 12.', C(['12 ÷ 3 ✓', '3 ÷ 12 ✗'])],
+    ['4 × 5 = 20. What is <b>20 ÷ 4</b>?', '', [4, 5, 16], 5, 'If 4 × 5 = 20, then 20 ÷ 4 = 5.', 'Use the fact family.'],
+    ['One fact, many facts: turn it round, undo it, add a group.', C(['turn round', 'undo it', 'one more group'])]]);
+
+  /* ========================= 404 Fractions (Benny judges the cakes) ========================= */
+  LI(404, 'learn1', ['Comparing fractions', 'How can I compare fractions?',
+    'When the bottom numbers are the same, the bigger top number is bigger. When the top numbers are 1, the bigger bottom number means smaller pieces.', pair(PIE(3, 1), PIE(5, 1)),
+    [['compare', 'find which is bigger', '⚖️'], ['top number', 'how many parts we have', '⬆️'], ['bottom number', 'how many equal parts in the whole', '⬇️'], ['unit fraction', 'a fraction with 1 on top, like 1/4', '1️⃣']],
+    [['Benny cuts one cake into 3 and another into 5. Which slice is bigger?', pair(PIE(3, 1), PIE(5, 1))],
+      ['A bar in 3 parts and a bar in 5 parts: the thirds are bigger.', '<div>' + KL.fbar(3, 1) + KL.fbar(5, 1) + '</div>'],
+      ['1/3 is bigger than 1/5.', B('1/3 > 1/5')]],
+    [['Which is bigger: 1/2 or 1/4?', ['Both have 1 on top.', '2 parts are bigger than 4 parts.'], '1/2 is bigger.', pair(PIE(2, 1), PIE(4, 1))],
+      ['Which is bigger: 3/8 or 5/8?', ['The bottom numbers are the same: eighths.', 'Compare the tops: 5 is more than 3.'], '5/8 is bigger.', pair(PIE(8, 3), PIE(8, 5))],
+      ['Which is smaller: 1/3 or 1/6?', ['Both have 1 on top.', 'Sixths are smaller pieces than thirds.'], '1/6 is smaller.', pair(PIE(3, 1), PIE(6, 1))]],
+    ['1/8 is not bigger than 1/4 just because 8 is bigger than 4. More pieces means smaller pieces.', C(['1/4 > 1/8 ✓'])],
+    ['Which is bigger?', pair(PIE(4, 1), PIE(10, 1)), ['1/4', '1/10'], '1/4', 'Quarters are bigger pieces than tenths.', 'Fewer pieces means bigger pieces.'],
+    ['Same bottom: compare tops. 1 on top: smaller bottom is bigger.', C(['3/5 > 2/5', '1/3 > 1/5'])]]);
+
+  LI(404, 'learn2', ['Fractions, decimals, percentages', 'How can I compare fractions, decimals and percentages?',
+    'The same amount can be written in three ways. One half is 1/2, 0.5 and 50%.', pair(PIE(2, 1), B('½ = 0.5 = 50%')),
+    [['decimal', 'a number with a point, like 0.5', '🔘'], ['percentage (%)', 'out of 100', '💯'], ['equivalent', 'worth the same', '🟰'], ['one tenth', '1/10 = 0.1 = 10%', '🔟']],
+    [['Benny eats half a cake.', PIE(2, 1)],
+      ['Half of a bar is shaded. Half of 100 is 50, so half is 50%.', KL.fbar(2, 1)],
+      ['1/2 = 0.5 = 50%. 1/4 = 0.25 = 25%. 1/10 = 0.1 = 10%.', C(['½ = 0.5 = 50%', '¼ = 0.25 = 25%', '1/10 = 0.1 = 10%'])]],
+    [['Write 1/2 as a decimal.', ['One half is 5 tenths.', '5 tenths is 0.5.'], '1/2 = 0.5', PIE(2, 1)],
+      ['Write 1/10 as a percentage.', ['1/10 is 10 out of 100.', '10 out of 100 is 10%.'], '1/10 = 10%', KL.fbar(10, 1)],
+      ['What percentage is 3/4?', ['One quarter is 25%.', 'Three quarters: 25 + 25 + 25.'], '3/4 = 75%', PIE(4, 3)]],
+    ['0.5 is not the same as 5%. 0.5 is a half, which is 50%.', C(['0.5 = 50% ✓', '0.5 = 5% ✗'])],
+    ['Which is the same as <b>0.25</b>?', '', ['1/2', '1/4', '2/5'], '1/4', '0.25 is twenty-five hundredths, one quarter.', 'Think 25%.'],
+    ['Learn the three key families.', C(['½ 0.5 50%', '¼ 0.25 25%', '1/10 0.1 10%'])]]);
+
+  LI(404, 'learn3', ['Fractions on a number line', 'How can I order fractions on a number line?',
+    'Split the line from 0 to 1 into equal steps. Count the steps from 0 to find each fraction.', P.fline(4, [[0.25, '1/4'], [0.75, '3/4']]),
+    [['number line', 'a line with numbers in order', '📏'], ['equal steps', 'all the gaps are the same', '👣'], ['order', 'smallest to biggest', '📶'], ['halfway', 'the middle, 1/2', '⚖️']],
+    [['Benny lays a cake tin 1 metre long and marks it into 4 equal steps.', P.fline(4, [])],
+      ['One step is 1/4. Three steps is 3/4.', P.fline(4, [[0.25, '1/4'], [0.75, '3/4']])],
+      ['Two quarters is halfway: 2/4 = 1/2.', P.fline(4, [[0.5, '1/2']])]],
+    [['What fraction is at the dot?', ['The line is split into 5 equal steps: fifths.', 'Count the steps to the dot: 3.'], '3/5', P.fline(5, [[0.6, '?']])],
+      ['Order 7/10, 2/10, 5/10, smallest first.', ['They are all tenths.', 'Compare the tops: 2, 5, 7.'], '2/10, 5/10, 7/10', P.fline(10, [[0.2, ''], [0.5, ''], [0.7, '']])],
+      ['Which is closer to 1: 2/5 or 4/5?', ['Further right is closer to 1.', '4/5 is further right.'], '4/5', P.fline(5, [[0.4, ''], [0.8, '']])]],
+    ['Count the steps, not the marks. 0 is not a step.', P.fline(4, [[0.25, '1 step']])],
+    ['What fraction is at the dot?', P.fline(8, [[0.375, '?']]), ['3/8', '5/8', '3/5'], '3/8', 'Three steps of eighths.', 'Count the eighths from 0.'],
+    ['Equal steps from 0 to 1. Further right is bigger.', P.fline(4, [[0.25, '¼'], [0.5, '½'], [0.75, '¾']])]]);
+
+  LI(404, 'learn4', ['Fraction of an amount', 'How do I find a fraction of an amount?',
+    'To find a fraction like 1/4 of an amount, divide by the bottom number.', B('¼ of 20 = 20 ÷ 4 = 5'),
+    [['of', 'means find part of', '🧩'], ['divide', 'share into equal groups', '➗'], ['bottom number', 'how many groups to share into', '⬇️'], ['amount', 'how many things there are', '🔢']],
+    [['Benny has 20 cherries and puts 1/4 on each cake.', FL.things(20, 'apple', 5)],
+      ['Share 20 into 4 equal groups: 5 in each.', C(['5', '5', '5', '5'])],
+      ['1/4 of 20 is 20 ÷ 4 = 5.', B('¼ of 20 = 5')]],
+    [['What is 1/3 of 12?', ['The bottom number is 3.', '12 ÷ 3 = 4.'], '1/3 of 12 = 4', C(['4', '4', '4'])],
+      ['What is 1/5 of 30?', ['The bottom number is 5.', '30 ÷ 5 = 6.'], '1/5 of 30 = 6', C(['6', '6', '6', '6', '6'])],
+      ['What is 1/10 of 50?', ['The bottom number is 10.', '50 ÷ 10 = 5.'], '1/10 of 50 = 5', B('50 ÷ 10 = 5')]],
+    ['Divide by the bottom number, not the top. 1/4 of 20 is 20 ÷ 4, not 20 ÷ 1.', C(['20 ÷ 4 = 5 ✓', '20 ÷ 1 ✗'])],
+    ['What is <b>1/4 of 16</b>?', '', [4, 8, 12], 4, '16 ÷ 4 = 4.', 'Divide by the bottom number.'],
+    ['Fraction of an amount: divide by the bottom number.', C(['½ → ÷ 2', '⅓ → ÷ 3', '¼ → ÷ 4'])]]);
+
+  /* ========================= 405 Money (Molly's stall at the school fair) ========================= */
+  LI(405, 'learn1', ['Working out change', 'How can I use adding and subtracting to work out change?',
+    'Count on from the price to the money paid. Go to the next pound first, then count the pounds.', SAY('mouse', '£3.40 paid with £5'),
+    [['price', 'how much it costs', '🏷️'], ['change', 'the money you get back', '🪙'], ['count on', 'from the price up to what you paid', '➕'], ['pence and pounds', '100p = £1', '💷']],
+    [['A customer buys a cake for £3.40 and pays with a £5 note.', C(['£3.40', '£5 note'])],
+      ['Count on: £3.40 to £4 is 60p. £4 to £5 is £1.', C(['£3.40', '+60p → £4', '+£1 → £5'])],
+      ['60p + £1 = £1.60 change.', B('£5 − £3.40 = £1.60')]],
+    [['A drink costs 75p. Molly is paid £1. What is the change?', ['Count on from 75p to 80p: 5p.', 'From 80p to £1: 20p.', '5p + 20p = 25p.'], '25p change', COIN([100])],
+      ['A book costs £2.30. The customer pays £5. What is the change?', ['£2.30 to £3: 70p.', '£3 to £5: £2.', '£2 + 70p = £2.70.'], '£2.70 change', C(['£2.30', '£5'])],
+      ['A game costs £6.50. The customer pays £10. What is the change?', ['£6.50 to £7: 50p.', '£7 to £10: £3.'], '£3.50 change', C(['£6.50', '£10'])]],
+    ['Check change by adding it back on. £3.40 + £1.60 = £5. If it does not make what was paid, try again.', B('£3.40 + £1.60 = £5 ✓')],
+    ['A badge costs <b>£1.80</b>. Paid with <b>£2</b>. What is the change?', '', ['20p', '80p', '£1.20'], '20p', '£1.80 + 20p = £2.', 'Count on to £2.'],
+    ['Count on to the next pound, then the pounds.', C(['price', 'next pound', 'paid'])]]);
+
+  LI(405, 'learn2', ['Making totals', 'How can different coins and notes make the same total?',
+    'An amount can be made with different coins and notes. Start with the biggest one that fits, then add smaller ones.', COIN([200, 50]),
+    [['coin', '1p, 2p, 5p, 10p, 20p, 50p, £1, £2', '🪙'], ['note', '£5 and £10', '💷'], ['total', 'how much altogether', '➕'], ['fewest coins', 'use the biggest first', '🥇']],
+    [['Molly needs £2.50 for a float.', COIN([200, 50])],
+      ['£2.50 could be £2 + 50p, or £1 + £1 + 50p.', pair(COIN([200, 50]), COIN([100, 100, 50]))],
+      ['£2.50 = £2 + 50p = £1 + £1 + 50p', B('£2 + 50p = £2.50')]],
+    [['Make £5.75 with the fewest notes and coins.', ['Biggest first: a £5 note. 75p left.', '50p, then 20p, then 5p.'], '£5 + 50p + 20p + 5p', C(['£5', '50p', '20p', '5p'])],
+      ['Make £3 in two different ways.', ['£2 + £1 = £3.', '£1 + £1 + £1 = £3.'], 'Two ways to make £3', pair(COIN([200, 100]), COIN([100, 100, 100]))],
+      ['How much is £1 + 50p + 20p + 2p?', ['£1 is 100p.', '100 + 50 + 20 + 2 = 172.'], '£1.72', COIN([100, 50, 20, 2])]],
+    ['Write pence after the point with two digits: £1.05, not £1.5, for one pound and five pence.', C(['£1.05 ✓', '£1.5 ✗'])],
+    ['Which coins make <b>£1.50</b>?', '', ['£1 + 50p', '£1 + 5p', '50p + 50p'], '£1 + 50p', '£1 and 50p is £1.50.', 'Add up the coins.'],
+    ['Biggest first, then add smaller coins.', C(['£5', '£2', '£1', '50p', '20p', '…'])]]);
+
+  LI(405, 'learn3', ['Best buy', 'How do I compare prices to find the best buy?',
+    'To find the best buy, find the price for one of each. The lower price for one is better value.', C(['2 for 60p', '35p each']),
+    [['price', 'how much it costs', '🏷️'], ['each', 'for one', '1️⃣'], ['best buy', 'the best value for money', '🏆'], ['cheaper', 'costs less', '⬇️']],
+    [['Pens are 2 for 60p, or 35p each.', C(['2 for 60p', '35p each'])],
+      ['2 for 60p: halve it. That is 30p for one.', B('60p ÷ 2 = 30p')],
+      ['30p is less than 35p, so 2 for 60p is the best buy.', B('30p < 35p')]],
+    [['A cake is 85p at one stall and 90p at another. Which is cheaper?', ['Compare 85p and 90p.', '85p is less.'], '85p is cheaper.', C(['85p', '90p'])],
+      ['Buns: 3 for £1.20 or 45p each. Which is better value?', ['£1.20 is 120p. 120 ÷ 3 = 40p each.', '40p is less than 45p.'], '3 for £1.20 is better value.', C(['3 for £1.20', '45p each'])],
+      ['Cookies: 4 for £2 or 2 for 90p. Which is better value?', ['4 for £2: £2 ÷ 4 = 50p each.', '2 for 90p: 90p ÷ 2 = 45p each.', '45p is less.'], '2 for 90p is better value.', C(['4 for £2', '2 for 90p'])]],
+    ['The bigger pack is not always cheaper. Work out the price of one.', C(['price for one', 'then compare'])],
+    ['Which is better value?', '', ['2 for 50p', '30p each'], '2 for 50p', '2 for 50p is 25p each, less than 30p.', 'Find the price of one.'],
+    ['Find the price for one, then compare.', C(['÷ to find one', 'compare', 'cheaper wins'])]]);
+
+  LI(405, 'learn4', ['Planning what to spend', 'How can I plan what to spend?',
+    'Add up the prices of what you want. Check the total is not more than the money you have, and work out what is left.', C(['£5 to spend']),
+    [['budget', 'how much money you can spend', '👛'], ['total', 'all the prices added', '➕'], ['afford', 'have enough money for it', '✅'], ['left over', 'what you still have', '💰']],
+    [['Molly has £5 to spend at the fair: a drink £1.50, a cake £2.20 and a badge 90p.', C(['£1.50', '£2.20', '90p'])],
+      ['Add: £1.50 + £2.20 = £3.70. Then + 90p = £4.60.', C(['£1.50', '+ £2.20 = £3.70', '+ 90p = £4.60'])],
+      ['£4.60 is less than £5. She has 40p left.', B('£5 − £4.60 = 40p')]],
+    [['Can Molly buy a ball for £3.50 and a kite for £2.80 with £6?', ['£3.50 + £2.80 = £6.30.', '£6.30 is more than £6.'], 'No: she needs 30p more.', C(['£3.50', '£2.80', '£6'])],
+      ['She has £10. A book is £4.25 and paints are £3.50. How much is left?', ['Total: £4.25 + £3.50 = £7.75.', 'Left: £7.75 up to £8 is 25p, then £2 more to £10.'], '£2.25 left', C(['£4.25', '£3.50', '£10'])],
+      ['Lollies are 45p each. How much for 3?', ['45p + 45p = 90p.', '90p + 45p = £1.35.'], '£1.35', C(['45p', '45p', '45p'])]],
+    ['Add every item before you decide. Forgetting one can take you over budget.', C(['add them all', 'then compare'])],
+    ['£4 to spend. A toy is £2.60 and juice is £1.10. Can she buy both?', '', ['yes', 'no'], 'yes', '£2.60 + £1.10 = £3.70, less than £4.', 'Add the prices.'],
+    ['Add up, compare with your budget, work out what is left.', C(['add', 'compare', 'left over'])]]);
+
+  /* ========================= 406 Time (Ollie on the train) ========================= */
+  LI(406, 'learn1', ['Bridging the hour', 'How can bridging through the hour help me work out time?',
+    'To find how long from one time to another across an hour, count on to the o’clock first, then the rest.', pair(clk(9, 45), clk(10, 15)),
+    [['bridge the hour', 'count on to the next o’clock first', '🌉'], ['minutes', '60 minutes in an hour', '⏱️'], ['start time', 'when it begins', '▶️'], ['end time', 'when it finishes', '⏹️']],
+    [['Ollie’s train leaves at 9:45 and arrives at 10:15.', pair(clk(9, 45), clk(10, 15))],
+      ['9:45 to 10:00 is 15 minutes. 10:00 to 10:15 is 15 more.', C(['9:45', '→ 10:00: 15 min', '→ 10:15: 15 min'])],
+      ['15 + 15 = 30 minutes.', B('9:45 → 10:00 → 10:15<br>15 + 15 = 30 min')]],
+    [['How long from 8:50 to 9:20?', ['8:50 to 9:00 is 10 minutes.', '9:00 to 9:20 is 20 minutes.', '10 + 20 = 30.'], '30 minutes', pair(clk(8, 50), clk(9, 20))],
+      ['How long from 10:40 to 11:25?', ['10:40 to 11:00 is 20 minutes.', '11:00 to 11:25 is 25 minutes.', '20 + 25 = 45.'], '45 minutes', pair(clk(10, 40), clk(11, 25))],
+      ['A trip starts at 2:30 and takes 45 minutes. When does it end?', ['2:30 + 30 minutes = 3:00.', '15 minutes more: 3:15.'], 'It ends at 3:15.', clk(2, 30)]],
+    ['There are 60 minutes in an hour, not 100. 9:50 to 10:10 is 20 minutes, not 60.', C(['9:50 → 10:10 = 20 min ✓'])],
+    ['How long from <b>2:50</b> to <b>3:10</b>?', pair(clk(2, 50), clk(3, 10)), ['20 minutes', '40 minutes', '60 minutes'], '20 minutes', '10 minutes to 3:00, then 10 more.', 'Count on to 3 o’clock first.'],
+    ['Count on to the o’clock, then add the rest.', C(['to the hour', 'then the rest', 'add'])]]);
+
+  LI(406, 'learn2', ['Telling the time to 5 minutes', 'How to tell the time',
+    'Each number on the clock is 5 minutes for the long hand. Count in 5s past the hour, or to the next hour after half past.', clk(4, 20),
+    [['minutes past', 'after the hour, up to half past', '➡️'], ['minutes to', 'before the next hour, after half past', '⬅️'], ['count in 5s', '5, 10, 15, 20, 25, 30', '5️⃣'], ['digital time', 'like 4:20', '📱']],
+    [['Ollie’s train leaves when the long hand is on 4 and the short hand is past 4.', clk(4, 20)],
+      ['Count in 5s from 12 to 4: 5, 10, 15, 20.', clk(4, 20)],
+      ['20 past 4, or 4:20.', B('20 past 4 = 4:20')]],
+    [['What time is it?', ['The long hand is on 7: count 5s to 35 minutes.', 'After half past, say minutes to: 60 − 35 = 25.', 'The short hand is near 8.'], '25 to 8 (7:35)', clk(7, 35)],
+      ['What time is it?', ['The long hand is on 10: 50 minutes.', '10 minutes before the next hour.'], '10 to 12 (11:50)', clk(11, 50)],
+      ['What time is it?', ['The long hand is on 2: 10 minutes.', 'The short hand is just past 6.'], '10 past 6 (6:10)', clk(6, 10)]],
+    ['After half past, the short hand points nearly to the next hour. 7:35 is 25 to 8, not 25 to 7.', clk(7, 35)],
+    ['What time is it?', clk(3, 25), ['25 past 3', '25 to 3', '5 past 3'], '25 past 3', 'The long hand is on 5: 25 minutes past.', 'Count in 5s from 12.'],
+    ['Long hand: count in 5s. Past up to 30, then to.', C([':05 → 1', ':20 → 4', ':45 → 9'])]]);
+
+  LI(406, 'learn3', ['am and pm', 'What do am and pm mean?',
+    'am is from midnight to midday, the morning. pm is from midday to midnight, the afternoon and evening.', C(['8 am 🌅', '8 pm 🌙']),
+    [['am', 'midnight to midday: the morning', '🌅'], ['pm', 'midday to midnight: afternoon and evening', '🌙'], ['midday', '12 o’clock in the day', '☀️'], ['midnight', '12 o’clock at night', '🌑']],
+    [['Ollie catches the train at 8 am, and goes to bed at 8 pm.', C(['8 am: breakfast', '8 pm: bedtime'])],
+      ['A day goes from midnight, through midday, back to midnight.', TR(0, 12, [0, 12])],
+      ['Morning: am. After 12 noon: pm.', C(['am → before noon', 'pm → after noon'])]],
+    [['School starts at 9 o’clock. Is that am or pm?', ['School starts in the morning.', 'Morning is am.'], '9 am', clk(9, 0)],
+      ['Dinner is at 6 o’clock. am or pm?', ['Dinner is in the evening.', 'Evening is pm.'], '6 pm', clk(6, 0)],
+      ['How long from 11 am to 2 pm?', ['11 am to 12 noon: 1 hour.', '12 noon to 2 pm: 2 hours.', '1 + 2 = 3.'], '3 hours', C(['11 am', '12 noon', '2 pm'])]],
+    ['12 noon is midday, not midnight. Lunch is about 12 pm.', C(['12 noon = midday', '12 midnight = night'])],
+    ['You go to bed at 8 ___', '', ['am', 'pm'], 'pm', 'Bedtime is in the evening: pm.', 'Is it morning or evening?'],
+    ['am: morning. pm: afternoon and evening.', C(['am 🌅', 'pm 🌙'])]]);
+
+  LI(406, 'learn4', ['Timetables', 'How do I read a timetable?',
+    'A timetable shows where and when. Find the row for the place and the column for the train, then read where they meet.', P.tbl(TT, TTH),
+    [['timetable', 'a table of times', '📋'], ['row', 'goes across', '↔️'], ['column', 'goes down', '↕️'], ['depart / arrive', 'leave / get there', '🚆']],
+    [['Ollie looks at the timetable at the station.', P.tbl(TT, TTH)],
+      ['Find Perth in the rows and Train 1 in the columns.', P.tbl(TT, TTH)],
+      ['Train 1 reaches Perth at 10:20.', B('Perth · Train 1 → 10:20')]],
+    [['When does Train 2 leave Glasgow?', ['Find the Glasgow row.', 'Go across to Train 2.'], '10:05', P.tbl(TT, TTH)],
+      ['How long does Train 1 take from Glasgow to Stirling?', ['Glasgow 9:15, Stirling 9:45.', '9:15 to 9:45 is 30 minutes.'], '30 minutes', P.tbl(TT, TTH)],
+      ['Ollie is at Stirling at 10:00. Which train can he catch?', ['Train 1 left Stirling at 9:45: too early.', 'Train 2 leaves Stirling at 10:35.'], 'Train 2 at 10:35', P.tbl(TT, TTH)]],
+    ['Read across the right row. Use a finger or a ruler so you do not slip to the next row.', P.tbl(TT, TTH)],
+    ['When does Train 1 reach <b>Dundee</b>?', P.tbl(TT, TTH), ['10:55', '11:45', '10:20'], '10:55', 'Dundee row, Train 1 column: 10:55.', 'Find the Dundee row.'],
+    ['Find the row, find the column, read where they meet.', C(['row', 'column', 'meet'])]]);
+
+  /* ========================= 407 Measurement (Frankie's pond garden) ========================= */
+  LI(407, 'learn1', ['Area', 'How can I find the area of a shape?',
+    'Area is the space inside a flat shape. Count the squares that cover it.', P.gridShape(P.rectCells(4, 3), 6, 5),
+    [['area', 'the space inside a flat shape', '🟩'], ['square', 'one unit of area', '⬛'], ['cover', 'fill with no gaps', '🧱'], ['rows', 'lines of squares going across', '↔️']],
+    [['Frankie covers a flower bed with square paving slabs.', P.gridShape(P.rectCells(4, 3), 6, 5)],
+      ['There are 3 rows of 4 squares.', P.gridShape(P.rectCells(4, 3), 6, 5)],
+      ['4 + 4 + 4 = 12, so the area is 12 squares.', B('area = 12 squares')]],
+    [['What is the area?', ['Count the rows: 2.', 'Count in each row: 5.', '5 + 5 = 10.'], '10 squares', P.gridShape(P.rectCells(5, 2), 7, 4)],
+      ['What is the area of this L shape?', ['Count the top row: 2.', 'Count the bottom row: 4.', '2 + 4 = 6.'], '6 squares', P.gridShape(['1,1', '2,1', '1,2', '2,2', '3,2', '4,2'], 6, 4)],
+      ['Which has the bigger area: 3 by 3 or 2 by 4?', ['3 by 3: 9 squares.', '2 by 4: 8 squares.'], '3 by 3 is bigger.', pair(P.gridShape(P.rectCells(3, 3), 5, 5), P.gridShape(P.rectCells(4, 2), 6, 4))]],
+    ['Count each square once. Mark them as you count so you do not count one twice.', P.gridShape(P.rectCells(3, 2), 5, 4)],
+    ['What is the area?', P.gridShape(P.rectCells(3, 3), 5, 5), [6, 9, 12], 9, '3 rows of 3 is 9 squares.', 'Count the squares inside.'],
+    ['Area: count the squares inside.', C(['count squares', 'no gaps', 'square units'])]]);
+
+  LI(407, 'learn2', ['Metres and centimetres', 'How can I work out the length of an object?',
+    'We measure long things in metres (m) and short things in centimetres (cm). 1 metre is 100 centimetres.', B('1 m = 100 cm'),
+    [['metre (m)', 'about one big step', '🚶'], ['centimetre (cm)', 'about the width of a finger', '☝️'], ['100 cm', 'the same as 1 m', '💯'], ['measure', 'use a ruler or tape', '📏']],
+    [['Frankie measures the pond: it is 2 metres long.', C(['pond: 2 m'])],
+      ['A metre stick has 100 centimetres marked on it.', P.scale(0, 100, 10, 100, 'cm')],
+      ['2 m = 200 cm.', B('2 m = 200 cm')]],
+    [['How many centimetres is 3 m?', ['1 m is 100 cm.', '3 m is 3 × 100 cm.'], '300 cm', B('3 × 100 = 300')],
+      ['Write 150 cm in metres and centimetres.', ['100 cm is 1 m.', '50 cm is left.'], '1 m 50 cm', B('150 cm = 1 m 50 cm')],
+      ['Which is longer: 90 cm or 1 m?', ['1 m is 100 cm.', '100 cm is more than 90 cm.'], '1 m is longer.', C(['90 cm', '1 m = 100 cm'])]],
+    ['Change to the same unit before you compare. 2 m is longer than 50 cm, even though 50 is bigger than 2.', C(['2 m = 200 cm', '200 > 50'])],
+    ['How many centimetres is <b>4 m</b>?', '', ['40 cm', '400 cm', '4 cm'], '400 cm', '4 × 100 = 400.', '1 m is 100 cm.'],
+    ['1 m = 100 cm. Use the same unit to compare.', C(['m for long', 'cm for short', '1 m = 100 cm'])]]);
+
+  LI(407, 'learn3', ['Perimeter', 'How do I find the perimeter of a shape?',
+    'Perimeter is the distance all the way round the edge of a shape. Add up the lengths of all the sides.', P.rectPic(5, 3, 'm'),
+    [['perimeter', 'the distance round the edge', '🔲'], ['side', 'one edge of a shape', '📐'], ['add', 'put all the sides together', '➕'], ['fence', 'a real-life perimeter', '🚧']],
+    [['Frankie puts a fence round his pond garden, 5 m by 3 m.', P.rectPic(5, 3, 'm')],
+      ['A rectangle has 4 sides: two 5 m sides and two 3 m sides.', C(['5 m', '3 m', '5 m', '3 m'])],
+      ['5 + 3 + 5 + 3 = 16 m.', B('perimeter = 16 m')]],
+    [['Find the perimeter of a square with sides of 4 cm.', ['A square has 4 equal sides.', '4 + 4 + 4 + 4 = 16.'], '16 cm', P.rectPic(4, 4, 'cm')],
+      ['Find the perimeter of a 6 cm by 2 cm rectangle.', ['Sides: 6, 2, 6, 2.', '6 + 6 = 12, 2 + 2 = 4, 12 + 4 = 16.'], '16 cm', P.rectPic(6, 2, 'cm')],
+      ['A triangle has sides 3 cm, 4 cm and 5 cm. Find its perimeter.', ['Add the three sides.', '3 + 4 + 5 = 12.'], '12 cm', SH('triangle', '#d6ecff', 110)]],
+    ['Perimeter is not area. Perimeter goes round the edge. Area fills the inside.', C(['perimeter: round', 'area: inside'])],
+    ['What is the perimeter?', P.rectPic(4, 2, 'cm'), ['8 cm', '12 cm', '6 cm'], '12 cm', '4 + 2 + 4 + 2 = 12.', 'Add all four sides.'],
+    ['Add every side, all the way round.', C(['every side', 'add', 'units'])]]);
+
+  LI(407, 'learn4', ['Reading scales', 'How do I read a scale?',
+    'Find what each small step is worth. Count the steps from a numbered mark to the pointer.', P.scale(0, 50, 5, 35, ''),
+    [['scale', 'a line of marks with numbers', '📏'], ['mark', 'a line on the scale', '➖'], ['step', 'the jump from one mark to the next', '👣'], ['pointer', 'the arrow showing the amount', '🔻']],
+    [['Frankie weighs a bag of soil on a scale.', P.scale(0, 50, 5, 35, '')],
+      ['The numbers go up in 10s, with a mark halfway. Each step is 5.', P.scale(0, 50, 5, 35, '')],
+      ['The pointer is one step past 30: 35.', B('35')]],
+    [['What does the scale show?', ['The steps go up in 10s.', 'The pointer is at 70.'], '70', P.scale(0, 100, 10, 70, '')],
+      ['What does the scale show?', ['Each step is 100.', 'The pointer is at 600.'], '600', P.scale(0, 1000, 100, 600, '')],
+      ['What does the scale show?', ['Each step is 1.', 'The pointer is 2 steps past 6.'], '8', P.scale(0, 10, 1, 8, '')]],
+    ['Not every step is worth 1. Work out what one step is worth first.', P.scale(0, 50, 5, 25, '')],
+    ['What does the scale show?', P.scale(0, 100, 10, 40, ''), [4, 40, 45], 40, 'Each step is 10. The pointer is at 40.', 'What is each step worth?'],
+    ['Find the step size, then count from a number.', C(['step size', 'count on', 'read'])]]);
+
+  /* ========================= 408 Shape, position and movement (Captain Pip's island) ========================= */
+  LI(408, 'learn1', ['Tessellation', 'What is tessellation?',
+    'Shapes tessellate when they fit together with no gaps and no overlaps, like floor tiles.', ROW(['hexagon', 'hexagon', 'hexagon'], 60),
+    [['tessellate', 'fit together with no gaps', '🧩'], ['gap', 'an empty space', '⬜'], ['overlap', 'one shape on top of another', '📚'], ['tile', 'a shape used to cover a floor', '🟫']],
+    [['Captain Pip’s cabin floor is covered in square tiles.', ROW(['square', 'square', 'square'], 60)],
+      ['Squares fit side by side with no gaps.', P.gridShape(P.rectCells(4, 2), 6, 4)],
+      ['Squares tessellate.', B('squares ✓')]],
+    [['Do squares tessellate?', ['Put them side by side.', 'There are no gaps.'], 'Yes', ROW(['square', 'square', 'square'], 60)],
+      ['Do circles tessellate?', ['Put circles next to each other.', 'There are gaps between them.'], 'No', ROW(['circle', 'circle', 'circle'], 60)],
+      ['Do triangles tessellate?', ['Turn every other triangle upside down.', 'They fit with no gaps.'], 'Yes', ROW(['triangle', 'triangle', 'triangle'], 60)]],
+    ['If there are any gaps or overlaps, the shapes do not tessellate.', ROW(['circle', 'circle', 'circle'], 60)],
+    ['Which shape tessellates?', ROW(['hexagon', 'circle', 'oval'], 70), ['hexagon', 'circle', 'oval'], 'hexagon', 'Hexagons fit like a honeycomb.', 'Think of a beehive.'],
+    ['No gaps, no overlaps: it tessellates.', C(['no gaps', 'no overlaps', 'tessellate'])]]);
+
+  LI(408, 'learn2', ['Grid references', 'How can I use grid references?',
+    'A grid reference gives a square on a grid. Go along to find the letter, then up to find the number.', FL.grid(2, 3, '💎'),
+    [['grid', 'squares in rows and columns', '🔲'], ['column', 'goes up, has a letter', '🔤'], ['row', 'goes across, has a number', '🔢'], ['grid reference', 'letter then number, like C4', '📍']],
+    [['Captain Pip’s map shows the diamond.', FL.grid(2, 3, '💎')],
+      ['Go along to column C, then up to row 4.', FL.grid(2, 3, '💎')],
+      ['The diamond is at C4.', B('C4')]],
+    [['Where is the palm tree?', ['Go along: column B.', 'Go up: row 1.'], 'B1', FL.grid(1, 0, '🌴')],
+      ['Where is the anchor?', ['Along: column E.', 'Up: row 3.'], 'E3', FL.grid(4, 2, '⚓')],
+      ['Where is the parrot?', ['Along: column A.', 'Up: row 5.'], 'A5', FL.grid(0, 4, '🦜')]],
+    ['Along first, then up. The letter comes before the number: C4, not 4C.', C(['along ➡️ then up ⬆️'])],
+    ['Where is the treasure?', FL.grid(3, 1, '💰'), ['D2', 'B4', 'C2'], 'D2', 'Along to D, up to 2.', 'Along the corridor, up the stairs.'],
+    ['Along the corridor, then up the stairs.', C(['letter', 'then number'])]]);
+
+  LI(408, 'learn3', ['Right angles', 'What is a right angle?',
+    'A right angle is a square corner. It is a quarter turn.', SH('square', '#8fd67d', 110),
+    [['angle', 'the amount of turn between two lines', '📐'], ['right angle', 'a square corner, a quarter turn', '⬛'], ['quarter turn', 'a right angle', '↪️'], ['corner', 'where two sides meet', '📍']],
+    [['The corner of Captain Pip’s map is a square corner.', SH('rectangle', '#ffe08a', 120)],
+      ['A quarter turn makes a right angle.', pair(KL.arrow(0, 'start'), KL.arrow(90, 'quarter turn'))],
+      ['We mark a right angle with a small square in the corner.', B('∟')]],
+    [['Does a square have right angles?', ['Look at each corner.', 'They are all square corners.'], 'Yes: 4 right angles.', SH('square', '#8fd67d', 110)],
+      ['How many right angles in a rectangle?', ['Check each corner.', 'All 4 are square corners.'], '4 right angles', SH('rectangle', '#7cc4ff', 120)],
+      ['How many quarter turns make a whole turn?', ['Each quarter turn is a right angle.', '4 quarter turns go all the way round.'], '4', C(['¼', '¼', '¼', '¼'])]],
+    ['A right angle is still a right angle if the shape is turned. Check the corner, not the way it faces.', SH('square', '#8fd67d', 100)],
+    ['Which shape has <b>4 right angles</b>?', ROW(['rectangle', 'triangle', 'circle'], 70), ['rectangle', 'triangle', 'circle'], 'rectangle', 'A rectangle has 4 square corners.', 'Look for square corners.'],
+    ['Right angle: square corner, quarter turn.', C(['square corner', 'quarter turn', '∟'])]]);
+
+  LI(408, 'learn4', ['Compass points', 'How do I use compass points?',
+    'A compass shows North, East, South and West. Never Eat Shredded Wheat helps you remember the order going clockwise.', FL.compass('N'),
+    [['North (N)', 'up on a map', '⬆️'], ['East (E)', 'right on a map', '➡️'], ['South (S)', 'down on a map', '⬇️'], ['West (W)', 'left on a map', '⬅️']],
+    [['Captain Pip uses a compass to steer his ship.', FL.compass('N')],
+      ['Clockwise from North: North, East, South, West.', FL.compass('E')],
+      ['Never Eat Shredded Wheat: N, E, S, W.', C(['N', 'E', 'S', 'W'])]],
+    [['What is opposite North?', ['North is at the top.', 'The opposite is at the bottom.'], 'South', FL.compass('S')],
+      ['Pip faces North and makes a quarter turn clockwise. Where does he face?', ['Clockwise from North goes to East.'], 'East', FL.compass('E')],
+      ['Pip faces East and makes a half turn. Where does he face?', ['A half turn faces the opposite way.', 'Opposite East is West.'], 'West', FL.compass('W')]],
+    ['East and West are easy to mix up. Remember the order: Never Eat Shredded Wheat, going clockwise.', FL.compass('E')],
+    ['Pip faces <b>West</b>. He makes a half turn. Where does he face?', FL.compass('W'), ['North', 'East', 'South'], 'East', 'Opposite West is East.', 'A half turn faces the opposite way.'],
+    ['N, E, S, W clockwise. Opposites: N–S and E–W.', FL.compass('N')]]);
+
+  /* ========================= 409 Data and chance (Ollie's weather station) ========================= */
+  var WX = [['Sunny', 5], ['Rainy', 8], ['Cloudy', 4]];
+  LI(409, 'learn1', ['Recording data', 'How do I record and display data?',
+    'Collect data with a tally, then show it in a bar chart. The bars make it easy to compare.', V.bars(WX, 10),
+    [['data', 'information we collect', '📋'], ['tally', 'marks in groups of five', '✏️'], ['bar chart', 'bars to show how many', '📊'], ['scale', 'the numbers up the side', '📏']],
+    [['Ollie records the weather for 17 days.', C(['☀️ 5', '🌧️ 8', '☁️ 4'])],
+      ['Rainy: 8 is one group of 5 and 3 more.', FL.tally(8)],
+      ['He shows the data in a bar chart.', V.bars(WX, 10)]],
+    [['Which weather happened most?', ['Find the tallest bar.', 'Rainy reaches 8.'], 'Rainy', V.bars(WX, 10)],
+      ['How many more rainy days than cloudy days?', ['Rainy: 8. Cloudy: 4.', '8 − 4 = 4.'], '4 more', V.bars(WX, 10)],
+      ['How many days altogether?', ['5 + 8 + 4.', '5 + 8 = 13, then 13 + 4 = 17.'], '17 days', V.bars(WX, 10)]],
+    ['Check the scale. If it goes up in 2s, a bar between 6 and 8 shows 7.', V.bars([['Snow', 7], ['Hail', 2]], 10)],
+    ['How many days were sunny?', V.bars(WX, 10), [4, 5, 8], 5, 'The sunny bar reaches 5.', 'Read across from the top of the bar.'],
+    ['Collect, tally, then draw a bar chart.', C(['collect', 'tally', 'bar chart'])]]);
+
+  var TEMP = [['8', '11', '6', '14']], DAYS = ['Mon', 'Tue', 'Wed', 'Thu'];
+  LI(409, 'learn2', ['Tables', 'How do I read and make tables?',
+    'A table puts data in rows and columns with headings. Find the heading, then read the value under it.', P.tbl(TEMP, DAYS),
+    [['table', 'data in rows and columns', '📋'], ['heading', 'tells you what is in the column', '🏷️'], ['row', 'goes across', '↔️'], ['column', 'goes down', '↕️']],
+    [['Ollie writes down the temperature at noon each day, in °C.', P.tbl(TEMP, DAYS)],
+      ['Each day has its own column.', P.tbl(TEMP, DAYS)],
+      ['On Tuesday it was 11 °C.', B('Tue → 11 °C')]],
+    [['Which day was warmest?', ['Find the biggest number: 14.', 'It is under Thu.'], 'Thursday', P.tbl(TEMP, DAYS)],
+      ['How much warmer was Tuesday than Wednesday?', ['Tuesday 11, Wednesday 6.', '11 − 6 = 5.'], '5 °C warmer', P.tbl(TEMP, DAYS)],
+      ['Make a table: 3 cats, 5 dogs, 2 fish.', ['Write a heading for each pet.', 'Write each number under its heading.'], 'Cats 3, Dogs 5, Fish 2', P.tbl([['3', '5', '2']], ['Cats', 'Dogs', 'Fish'])]],
+    ['Read the heading before the number. Read the right column, not the one beside it.', P.tbl(TEMP, DAYS)],
+    ['Which day was <b>6 °C</b>?', P.tbl(TEMP, DAYS), ['Mon', 'Wed', 'Thu'], 'Wed', '6 is under Wed.', 'Find 6, then read its heading.'],
+    ['Find the heading, read down, read the value.', C(['heading', 'column', 'value'])]]);
+
+  var VN = function (items) { return P.venn('Even', 'More than 10', items); };
+  LI(409, 'learn3', ['Venn and Carroll diagrams', 'How can I sort data with Venn and Carroll diagrams?',
+    'A Venn diagram sorts things into circles. Things that fit both go in the overlap. Things that fit neither go outside.', VN([['4', 70, 95], ['12', 145, 95], ['15', 215, 95]]),
+    [['sort', 'put into groups', '🗂️'], ['Venn diagram', 'overlapping circles', '⭕'], ['overlap', 'the middle part: both', '🔗'], ['Carroll diagram', 'a sorting table with yes and no', '▦']],
+    [['Ollie sorts numbers: is it even? is it more than 10?', C(['4', '12', '15', '7'])],
+      ['4 is even only. 15 is more than 10 only. 12 is both.', VN([['4', 70, 95], ['12', 145, 95], ['15', 215, 95]])],
+      ['7 is neither, so it goes outside the circles.', VN([['4', 70, 95], ['12', 145, 95], ['15', 215, 95], ['7', 270, 160]])]],
+    [['Where does 20 go?', ['Is 20 even? Yes.', 'Is 20 more than 10? Yes.', 'Both: the overlap.'], 'In the middle', VN([['20', 145, 95]])],
+      ['Where does 8 go?', ['Is 8 even? Yes.', 'More than 10? No.'], 'In the Even circle only', VN([['8', 70, 95]])],
+      ['In a Carroll diagram, where does 13 go?', ['Even? No.', 'More than 10? Yes.'], 'Not even, more than 10', P.tbl([['Even', '12', '4'], ['Not even', '13', '7']], ['', 'More than 10', 'Not more than 10'])]],
+    ['If something fits both, put it in the overlap, not in one circle.', VN([['12', 145, 95]])],
+    ['Where does <b>6</b> go?', VN([]), ['Even only', 'Both', 'Neither'], 'Even only', '6 is even but not more than 10.', 'Ask both questions.'],
+    ['Ask both questions, then place it.', C(['one circle', 'overlap: both', 'outside: neither'])]]);
+
+  LI(409, 'learn4', ['Chance', 'How likely is it?',
+    'Chance is how likely something is. We use words: impossible, unlikely, even chance, likely and certain.', C(['impossible', 'unlikely', 'even chance', 'likely', 'certain']),
+    [['impossible', 'cannot happen', '🚫'], ['unlikely', 'probably will not happen', '🤏'], ['likely', 'probably will happen', '👍'], ['certain', 'will definitely happen', '✅']],
+    [['Ollie wonders: will it snow in July in Glasgow?', B('❄️ July?')],
+      ['On a line from impossible to certain, it is near the impossible end.', C(['impossible', '👉 unlikely', 'even chance', 'likely', 'certain'])],
+      ['Snow in July is unlikely.', B('unlikely')]],
+    [['The sun will rise tomorrow.', ['This happens every day.'], 'Certain', B('🌅')],
+      ['You roll a 7 on a normal dice.', ['A dice has 1 to 6.', 'There is no 7.'], 'Impossible', B('🎲')],
+      ['A bag has 9 red balls and 1 blue. You pick red.', ['Most balls are red.', 'Red is much more likely than blue.'], 'Likely', C(['🔴 × 9', '🔵 × 1'])]],
+    ['Even chance means the same chance both ways, like heads or tails on a coin.', C(['heads', 'tails'])],
+    ['A bag has <b>5 red and 5 blue</b>. How likely is red?', '', ['unlikely', 'even chance', 'certain'], 'even chance', 'Half are red, half are blue.', 'Compare how many of each.'],
+    ['Impossible, unlikely, even chance, likely, certain.', C(['🚫', '🤏', '⚖️', '👍', '✅'])]]);
+
+  [401, 402, 403, 404, 405, 406, 407, 408, 409].forEach(function (n) { if (FL.GENS && FL.GENS[n]) FL.wexGens(n, FL.GENS[n]); });
 })();
 </script>
 <script>Studio.start();</script>
