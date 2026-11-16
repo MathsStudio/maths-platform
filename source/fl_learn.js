@@ -34,7 +34,11 @@
     var sl = [];
     sl.push({ title: d.title, say: [d.what], v: d.pic || '', kind: 'The big question', noMore: true });
     sl.push({ title: 'Key words', say: ['Here are the words we use in this lesson.'], v: words(d.words), kind: 'Key words', noMore: true });
-    [['See it', 'Real things'], ['Draw it', 'A picture'], ['Write it', 'Numbers']].forEach(function (k, i) { var s = d.see[i]; if (s) sl.push({ title: k[0], say: [s[0]], v: s[1], kind: k[1], noMore: true }); });
+    [['See it', 'Real things'], ['Draw it', 'A picture'], ['Write it', 'Numbers']].forEach(function (k, i) { var s = d.see[i]; if (!s) return;
+      var o = { title: k[0], say: [s[0]], v: s[1], kind: k[1], noMore: true };
+      /* Draw it and Write it: the child copies the example on a scribble pad, open and ready */
+      if (i > 0) { var pad = { open: true }; o.say = [s[0], i === 1 ? 'Your turn: draw it on the scribble pad.' : 'Your turn: write it on the scribble pad.']; o.live = function (host) { var H = S.h; if (H && H.scribble) H.scribble(host, pad); }; }
+      sl.push(o); });
     d.ex.forEach(function (w, i) { sl.push({ title: 'Worked example ' + (i + 1), say: [], ex: worked(w), kind: 'Step by step', noMore: true }); });
     sl.push({ title: 'Watch out!', say: [d.mistake[0]], v: d.mistake[1], kind: 'A common mistake', noMore: true });
     sl.push({ title: 'Quick check', say: ['Now you try. Tap your answer.'], live: check(d.check), kind: 'Your turn', noMore: true });
