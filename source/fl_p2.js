@@ -10,35 +10,26 @@
   /* ================= 1. Counting and numbers: Ruby the rocket ================= */
   FL.topic({ n: 201, year: 'P2', short: 'Counting', title: 'Counting and numbers', blurb: 'Count with Ruby the rocket: number patterns, tens and ones, number lines, one more and one less.',
     /* Story time: Ruby needs 10 stars to fly home (counting, a pattern, ten, one more and one less) */
-    story: { title: 'Ruby and the Star Garden', film: 'ruby',
-      intro: 'This is the story of Ruby and the Star Garden.',
-      endPic: FL.scene('space', FL.who('rocket', 130, 40, 150, 'up') + FL.label(200, 230, 'Blast off!', 26)),
-      endText: 'Blast off! Whoosh! Up, up, up went Ruby, all the way home to the twinkly sky. “Thank you for counting with me,” she called. “Goodnight!” And that is the end of our story.',
-      pages: [
-        { pic: function () { return FL.scene('space', FL.who('rocket', 115, 30, 170, 'bob')); },
-          text: 'Once upon a time, high up in the night sky, there lived a little red rocket called Ruby. Ruby loved to zoom. Whoosh, round the moon! Whoosh, past the clouds! “Wheee!” giggled Ruby. “I love flying!”' },
-        { pic: function () { return FL.scene('space', FL.who('rocket', 4, 55, 140, 'wig') + FL.tank(150, 80, 0)); },
-          text: 'But one night, Ruby’s engine went splutter… splutter… pop! Oh no! Ruby looked inside her fuel tank. It was empty. “Oh dear,” said Ruby in a tiny, worried voice. “Rockets like me run on star power. I need ten stars to fly home.”' },
-        { pic: function () { return FL.scene('garden', FL.who('rocket', -5, 85, 125, 'bob') + [[160, 70], [225, 135], [285, 55], [335, 140], [385, 80]].map(function (p, k) { return FL.bit('star', p[0] - 20, p[1], 'tw', k * .2, k, 2); }).join('')); },
-          text: 'Down, down, down floated Ruby, until she landed softly in a magical place called the Star Garden. And look! Shiny stars, twinkling in the grass. Shall we count them with Ruby? Point to each star with your finger. Tap each star!', tap: 5 },
-        { pic: function () { return FL.scene('space', FL.who('rocket', 4, 55, 140, 'bob') + FL.tank(150, 80, 5, 0)); },
-          text: '“Five stars!” Ruby smiled a big smile. Carefully, she popped them into her tank, one at a time. Let’s count them going in. One, two, three, four, five. Plink, plink, plink, plink, plink!' },
-        { pic: function () { return FL.scene('space', FL.who('rocket', 4, 55, 140) + FL.tank(150, 80, 5)); },
-          text: 'Ruby peeked at her tank. It has ten spaces, in two rows of five. The top row is full, but the bottom row is empty. “Hmm,” Ruby wondered, tapping her nose. “How many more stars do I need?”',
-          ask: { q: 'How many more stars does Ruby need to make <b>10</b>?', options: [4, 5, 6], answer: 5, explain: 'Five and five make ten. Ruby needs five more stars.' } },
-        { pic: function () { return FL.scene('pond', FL.who('rocket', 10, 10, 120, 'bob') + FL.stones([2, 4, 6, '?'], 190)); },
-          text: 'Over the pond, Ruby could see more stars glowing. But how could she get across without getting wet? “Stepping stones!” she cheered. Ruby hopped. Two, four, six. Every hop jumps on two.',
-          ask: { q: 'What number is on the next stone?', options: [7, 8, 10], answer: 8, explain: 'Two, four, six, eight. We jump on two each time.' } },
-        { pic: function () { return FL.scene('space', FL.who('rocket', 4, 55, 140, 'bob') + FL.tank(150, 80, 10, 5)); },
-          text: 'Hop, hop, hop! Ruby made it to the other side, and there were five more stars, waiting just for her. Into the tank they went. Let’s keep counting. Six, seven, eight, nine, ten! “Ten stars!” cheered Ruby. “Ten ones make one whole ten!”' },
-        { pic: function () { return FL.scene('space', FL.who('rocket', 4, 55, 140, 'wig') + FL.tank(150, 80, 10, 10, true)); },
-          text: 'But then… wibble, wobble… whoops! One little star rolled right out of the tank! Ruby gasped. Ten stars, take away one star. Now there are only nine. One less than ten is nine.' },
-        { pic: function () { return FL.scene('space', FL.who('rocket', 4, 55, 140, 'bob') + FL.tank(150, 80, 9) + FL.bit('star', 352, 125, 'fly', 0, null, 1)); },
-          text: 'Ruby stretched, and stretched, as far as she could… and caught it! “Got you, little star!” she laughed. Nine stars, and one more. One more than nine is ten. The tank was full again.',
-          ask: { q: 'What is one more than <b>9</b>?', options: [8, 10, 11], answer: 10, explain: 'Nine, then ten. One more than nine is ten.' } },
-        { pic: function () { return FL.scene('space', FL.who('rocket', 125, 20, 160, 'bob') + FL.label(200, 232, '3 … 2 … 1 …', 32)); },
-          text: 'Ruby’s engine began to rumble. Rumble, rumble, rumble! She was ready to fly home. Will you help her blast off? Let’s count down together, nice and loud. Three… two… one…' }
-      ] },
+    story: { title: 'Ruby’s Star Count', intro: 'Ruby’s Star Count. This is Ruby the rocket. Today she needs our help to count some stars. Let’s begin.',
+      endPic: FL.panel('space', 'rocket', '<div style="font-size:2.4rem;font-weight:800;color:#2b2340;background:#fff;border:3px solid #2b2340;border-radius:16px;padding:6px 18px">3, 2, 1, blast off!</div>'),
+      endText: 'Ruby counts down: three, two, one, blast off! She flies home with ten stars. Well done for counting with Ruby!',
+      pages: (function () {
+        var P = FL.panel, T = FL.things;
+        function tank(n, roll) { return FL.svg(244, 116, 'A fuel tank with ' + n + ' stars', '<g transform="translate(12 12)">' + FL.tank(0, 0, n, 0, roll) + '</g>', 260); }
+        function stones(list, planet) { return FL.svg(400, 120, planet ? 'Three planets' : 'Stepping stones', FL.stones(list, 70, planet), 400); }
+        function pg(pic, text, ask) { return { pic: pic, text: text, ask: ask }; }
+        function Q(q, options, answer, explain) { return { q: q, options: options, answer: answer, explain: explain }; }
+        return [
+          pg(P('space', 'rocket', '', 'Let’s count!'), 'Ruby the rocket wants to fly home. She needs ten stars to fill her fuel tank.'),
+          pg(P('space', 'rocket', T(5, 'star', 5)), 'Ruby finds some stars. Let’s count them.', Q('How many stars are there?', [4, 5, 6], 5, 'One, two, three, four, five. There are five stars.')),
+          pg(P('space', 'rocket', tank(5)), 'Ruby puts the stars in her fuel tank. The tank has ten spaces.', Q('How many more stars make <b>10</b>?', [4, 5, 6], 5, 'Five and five make ten.')),
+          pg(P('pond', 'rocket', stones([2, 4, 6, '?'])), 'Ruby hops on the stepping stones: two, four, six.', Q('What number comes next?', [7, 8, 10], 8, 'Two, four, six, eight. Each stone is two more.')),
+          pg(P('space', 'rocket', FL.starTens(2, 3)), 'Ruby fills two tanks with ten stars each. She has three more stars too.', Q('How many stars is that?', [5, 23, 32], 23, 'Two tens and three ones make twenty-three.')),
+          pg(P('space', 'rocket', stones([7, 3, 5], true)), 'Ruby visits three planets. Each planet has a number.', Q('Which number is the smallest?', [3, 5, 7], 3, 'Three is the smallest. On a number line, three comes before five and seven.')),
+          pg(P('space', 'rocket', tank(10, true)), 'Ruby’s tank is full with ten stars. Oh no, one star rolls away!', Q('What is one less than <b>10</b>?', [8, 9, 11], 9, 'One less than ten is nine.')),
+          pg(P('space', 'rocket', tank(9)), 'Ruby catches the star. Now she has nine stars, and the star she caught.', Q('What is one more than <b>9</b>?', [8, 10, 11], 10, 'One more than nine is ten.'))
+        ];
+      })() },
     /* Let's learn: short lessons that carry on Ruby's story, one small idea at a time */
     learn: [
       { title: 'How can I use number patterns to work out a sequence?', char: 'rocket', screens: [
