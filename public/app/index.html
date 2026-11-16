@@ -380,6 +380,13 @@ html, body { overflow-x: hidden; max-width: 100vw; }
 .real { background: var(--surface-2); border-left: 5px solid var(--good); border-radius: 12px; padding: 12px 14px; display: flex; flex-direction: column; gap: 4px; }
 .real .step-tag { color: var(--good); }
 .wvis { display: flex; flex-direction: column; align-items: center; gap: 8px; }
+.wask { margin: 12px 0 4px; display: grid; gap: 8px; }
+.wask-l { margin: 0; font-weight: 800; }
+.wrow { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+.wIn { font: inherit; font-size: 1.2rem; font-weight: 700; padding: 10px 12px; border: 2px solid var(--line, #c9cfe0); border-radius: 12px; width: 11em; max-width: 100%; background: var(--surface, #fff); color: inherit; }
+.wopts { display: flex; flex-wrap: wrap; gap: 8px; }
+.wopt.ok { outline: 3px solid var(--good); }
+.wfb { margin: 0; }
 .wvis svg { max-width: 100%; height: auto; }
 .card.topic h3 { margin: 0; }
 .lab-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px; }
@@ -1026,18 +1033,43 @@ var SLIDE_MORE = {"1.learn1": [{"more": ["Our number system uses only ten digits
 
   /* ================= slides and worked examples ================= */
   function visualOf(s) { return typeof s.v === 'function' ? s.v() : (s.v || ''); }
+  /* the child answers first (a number box or tap choices), then can press Show step for help */
+  function wNums(t) { return (String(t).replace(/\u2212/g, '-').match(/-?\d+(?:\.\d+)?(?:\/\d+)?/g) || []).map(function (x) { return /\//.test(x) ? x : String(parseFloat(x)); }); }
+  function wSame(typed, want) {
+    var a = String(typed).trim(); if (!a) return false;
+    if (/:/.test(want)) a = a.replace(/\./g, ':');
+    if (/^[A-H]\d{1,2}$/i.test(want)) return a.replace(/\s/g, '').toUpperCase() === want.toUpperCase();
+    var x = wNums(a), y = wNums(want); return x.length > 0 && x.length === y.length && x.every(function (v, i) { return v === y[i]; });
+  }
   function mountWorked(host, ex) {
-    var shown = 0;
+    var shown = 0, ck = ex.check, done = false, tries = 0, fb = '', typed = '';
+    function speak(t) { if (Nar.ok && (store.settings.auto || store.settings.readMode || (S.h.flAuto && S.h.flAuto()))) narSpeakNow(t); }
+    function answer(ok) {
+      tries++; done = ok;
+      fb = ok ? '<div class="fb ok say wfb"><strong>Right!</strong> Well done. Press Show step 1 to see how it works.</div>'
+        : '<div class="fb no say wfb"><strong>Not quite.</strong> ' + (tries > 1 ? 'Press Show step 1 for some help.' : 'Have another go, or press Show step 1 for some help.') + '</div>';
+      draw(); speak(ok ? 'Right! Well done.' : (tries > 1 ? 'Not quite. Press show step 1 for some help.' : 'Not quite. Have another go, or press show step 1 for some help.'));
+    }
+    function askBox() {
+      if (!ck) return '';
+      if (ck.kind === 'tap') return '<div class="wask"><p class="wask-l">Your answer:</p><div class="wopts">' + ck.options.map(function (o, i) { var cls = done && o === ck.answer ? ' ok' : ''; return '<button type="button" class="btn ghost wopt' + cls + '" data-wo="' + i + '"' + (done ? ' disabled' : '') + '>' + o + '</button>'; }).join('') + '</div>' + fb + '</div>';
+      return '<div class="wask"><label class="wask-l" for="wIn">Your answer:</label><div class="wrow"><input id="wIn" class="wIn" type="text" inputmode="' + (/^[\d\s.,]+$/.test(ck.answer) ? 'decimal' : 'text') + '" autocomplete="off" value="' + typed.replace(/"/g, '&quot;') + '"' + (done ? ' disabled' : '') + '><button class="btn" id="wChk" type="button"' + (done ? ' disabled' : '') + '>Check</button></div>' + fb + '</div>';
+    }
     function draw() {
       var list = ex.steps.slice(0, shown).map(function (t) { return '<li><span class="say">' + t + '</span></li>'; }).join('');
-      host.innerHTML = '<p class="wq say">' + ex.q + '</p><div class="wvis">' + ex.render(shown) + '</div>' +
+      host.innerHTML = '<p class="wq say">' + ex.q + '</p><div class="wvis">' + ex.render(shown) + '</div>' + askBox() +
         '<ol class="wsteps">' + list + '</ol>' + (shown >= ex.steps.length ? '<p class="wres">' + ex.final + '</p>' : '') +
         '<div class="row"><button class="btn ghost" id="wBtn" type="button">' + (shown >= ex.steps.length ? 'Start again' : 'Show step ' + (shown + 1)) + '</button></div>';
       $('wBtn').addEventListener('click', function () {
-        if (shown >= ex.steps.length) { shown = 0; draw(); return; }
+        if (shown >= ex.steps.length) { shown = 0; done = false; tries = 0; fb = ''; typed = ''; draw(); return; }
         shown++; draw();
         if (Nar.ok && (store.settings.auto || store.settings.readMode)) narSpeakNow(ex.steps[shown - 1]);
       });
+      var inp = $('wIn');
+      if (inp) { inp.addEventListener('input', function () { typed = inp.value; });
+        inp.addEventListener('keydown', function (e) { if (e.key === 'Enter') { e.preventDefault(); $('wChk').click(); } });
+        $('wChk').addEventListener('click', function () { typed = inp.value; if (!typed.trim()) return; answer(wSame(typed, ck.answer)); }); }
+      host.querySelectorAll('[data-wo]').forEach(function (b) { b.addEventListener('click', function () { answer(ck.options[Number(b.getAttribute('data-wo'))] === ck.answer); }); });
     }
     draw();
   }
@@ -27953,8 +27985,33 @@ S.extraMakers = function (n, level) {
     };
   }
   /* a worked example slide: the question, a picture for each step, and the steps shown one at a time */
+  /* what the child should answer, worked out from the example: tap choices when the question gives them, a number box when the answer is a number */
+  var NUMA = /^\(?[£−-]?\d[\d.,:/]*\)?(\s*(p|cm|m|km|kg|g|ml|l|°C|mm|minutes|hours))?(,\s*[£−-]?\d[\d.,:/]*(\s*(p|cm|m|kg|g))?)*\)?$/i;
+  function plain(t) { return String(t).replace(/<[^>]+>/g, '').replace(/\s+/g, ' ').trim(); }
+  function answerOf(w) {
+    if (w.ans !== undefined && w.options && w.options.length > 1) return { kind: 'tap', answer: String(w.ans), options: w.options.map(String) };
+    var f = plain(w.final).replace(/[.!]$/, ''), a = f;
+    if (/which coins|coins could|with (two|three) coins|different ways|^make /i.test(plain(w.q))) return null;   /* many right answers: steps only */
+    if (/=/.test(f)) a = f.split('=').pop().trim();
+    else if (/^The answer is /i.test(f)) a = f.replace(/^The answer is /i, '');
+    else if (/ is /.test(f) && f.split(' ').length > 3) a = f.split(' is ').pop().trim();
+    var q = plain(w.q), or = /(?:^|[:?] |, )([^:?,]+?) or ([^:?,]+?)\?$/.exec(q);
+    if (/^(Do|Does|Is|Are|Can|Will|Has|Have)\b/.test(q) && !or && /^(Yes|No)\b/.test(f)) return { kind: 'tap', answer: /^Yes/.test(f) ? 'Yes' : 'No', options: ['Yes', 'No'] };
+    if (or) { var B = or[2].trim(), A = (B.split(' ').length === 1 ? or[1].split(' ').pop() : or[1].replace(/^(Which (is|comes|has|one)[^:]*:?|Is it|Is that) /i, '')).trim(), lf = f.toLowerCase();
+      var hasA = lf.indexOf(A.toLowerCase()) > -1, hasB = lf.indexOf(B.toLowerCase()) > -1;
+      if (A.length < 30 && B.length < 30 && hasA !== hasB) return { kind: 'tap', answer: hasA ? A : B, options: [A, B] }; }
+    a = a.replace(/^(about|it should be about) /i, '');
+    if (NUMA.test(a) && /\d/.test(a)) return { kind: 'num', answer: a };
+    if (/^[A-H]\d{1,2}$/.test(a)) return { kind: 'num', answer: a };   /* a grid reference such as B4 */
+    /* one number in the answer, for a question that asks for a number: "3 more apples", "It makes 6p", "£2.25 left" */
+    var nums = f.match(/[£−-]?\d+(?:[.:/]\d+)?\s*(?:p\b|cm\b|m\b|kg\b|g\b|ml\b|l\b|°C)?/g) || [];
+    if (nums.length === 1 && /\b(how many|how much|how long|what is|what number|change|worth|when|value|left|round|altogether|total)\b/i.test(q)) return { kind: 'num', answer: nums[0].trim() };
+    return null;
+  }
   function worked(w) {
-    return { q: w.q, steps: w.steps, final: w.final, render: function (k) { var p = w.pics || (w.pic ? [w.pic] : []); return p[Math.min(k, p.length - 1)] || ''; } };
+    var p = w.pics || (w.pic ? [w.pic] : []), chk = answerOf(w);
+    if (chk && chk.kind === 'tap' && w.optCards) p = p.map(function (x) { return String(x).replace(w.optCards, ''); });   /* the choices become buttons, so they are not shown twice */
+    return { q: w.q, steps: w.steps, final: w.final, check: chk, render: function (k) { return p[Math.min(k, p.length - 1)] || ''; } };
   }
 
   /* Draw it: the child draws something NEW, not a copy of the picture already on screen.
@@ -28096,7 +28153,8 @@ S.extraMakers = function (n, level) {
       (q.hints || []).forEach(function (h) { if (st.indexOf(h) < 0 && !/one step at a time|look carefully at each/i.test(h)) st.push(h); });
       if (q.explain) st.push(q.explain);
       if (!st.length) st.push('Think about what the question asks.');
-      return { q: q.text, steps: st, final: 'The answer is ' + q.answer + '.', pic: (q.pic || '') + (q.options ? '<div style="margin-top:8px">' + cards(q.options) + '</div>' : '') }; }; }
+      var oc = q.options ? '<div style="margin-top:8px">' + cards(q.options) + '</div>' : '';
+      return { q: q.text, steps: st, final: 'The answer is ' + q.answer + '.', pic: (q.pic || '') + oc, ans: q.answer, options: q.options, optCards: oc }; }; }
     var m = {}; ['low', 'medium', 'high'].forEach(function (l) { m[l] = (gens[l] || gens.medium || []).map(conv); });
     FL.workedSets(n, m);
   };

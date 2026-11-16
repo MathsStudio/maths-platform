@@ -29,8 +29,33 @@
     };
   }
   /* a worked example slide: the question, a picture for each step, and the steps shown one at a time */
+  /* what the child should answer, worked out from the example: tap choices when the question gives them, a number box when the answer is a number */
+  var NUMA = /^\(?[£−-]?\d[\d.,:/]*\)?(\s*(p|cm|m|km|kg|g|ml|l|°C|mm|minutes|hours))?(,\s*[£−-]?\d[\d.,:/]*(\s*(p|cm|m|kg|g))?)*\)?$/i;
+  function plain(t) { return String(t).replace(/<[^>]+>/g, '').replace(/\s+/g, ' ').trim(); }
+  function answerOf(w) {
+    if (w.ans !== undefined && w.options && w.options.length > 1) return { kind: 'tap', answer: String(w.ans), options: w.options.map(String) };
+    var f = plain(w.final).replace(/[.!]$/, ''), a = f;
+    if (/which coins|coins could|with (two|three) coins|different ways|^make /i.test(plain(w.q))) return null;   /* many right answers: steps only */
+    if (/=/.test(f)) a = f.split('=').pop().trim();
+    else if (/^The answer is /i.test(f)) a = f.replace(/^The answer is /i, '');
+    else if (/ is /.test(f) && f.split(' ').length > 3) a = f.split(' is ').pop().trim();
+    var q = plain(w.q), or = /(?:^|[:?] |, )([^:?,]+?) or ([^:?,]+?)\?$/.exec(q);
+    if (/^(Do|Does|Is|Are|Can|Will|Has|Have)\b/.test(q) && !or && /^(Yes|No)\b/.test(f)) return { kind: 'tap', answer: /^Yes/.test(f) ? 'Yes' : 'No', options: ['Yes', 'No'] };
+    if (or) { var B = or[2].trim(), A = (B.split(' ').length === 1 ? or[1].split(' ').pop() : or[1].replace(/^(Which (is|comes|has|one)[^:]*:?|Is it|Is that) /i, '')).trim(), lf = f.toLowerCase();
+      var hasA = lf.indexOf(A.toLowerCase()) > -1, hasB = lf.indexOf(B.toLowerCase()) > -1;
+      if (A.length < 30 && B.length < 30 && hasA !== hasB) return { kind: 'tap', answer: hasA ? A : B, options: [A, B] }; }
+    a = a.replace(/^(about|it should be about) /i, '');
+    if (NUMA.test(a) && /\d/.test(a)) return { kind: 'num', answer: a };
+    if (/^[A-H]\d{1,2}$/.test(a)) return { kind: 'num', answer: a };   /* a grid reference such as B4 */
+    /* one number in the answer, for a question that asks for a number: "3 more apples", "It makes 6p", "£2.25 left" */
+    var nums = f.match(/[£−-]?\d+(?:[.:/]\d+)?\s*(?:p\b|cm\b|m\b|kg\b|g\b|ml\b|l\b|°C)?/g) || [];
+    if (nums.length === 1 && /\b(how many|how much|how long|what is|what number|change|worth|when|value|left|round|altogether|total)\b/i.test(q)) return { kind: 'num', answer: nums[0].trim() };
+    return null;
+  }
   function worked(w) {
-    return { q: w.q, steps: w.steps, final: w.final, render: function (k) { var p = w.pics || (w.pic ? [w.pic] : []); return p[Math.min(k, p.length - 1)] || ''; } };
+    var p = w.pics || (w.pic ? [w.pic] : []), chk = answerOf(w);
+    if (chk && chk.kind === 'tap' && w.optCards) p = p.map(function (x) { return String(x).replace(w.optCards, ''); });   /* the choices become buttons, so they are not shown twice */
+    return { q: w.q, steps: w.steps, final: w.final, check: chk, render: function (k) { return p[Math.min(k, p.length - 1)] || ''; } };
   }
 
   /* Draw it: the child draws something NEW, not a copy of the picture already on screen.
@@ -172,7 +197,8 @@
       (q.hints || []).forEach(function (h) { if (st.indexOf(h) < 0 && !/one step at a time|look carefully at each/i.test(h)) st.push(h); });
       if (q.explain) st.push(q.explain);
       if (!st.length) st.push('Think about what the question asks.');
-      return { q: q.text, steps: st, final: 'The answer is ' + q.answer + '.', pic: (q.pic || '') + (q.options ? '<div style="margin-top:8px">' + cards(q.options) + '</div>' : '') }; }; }
+      var oc = q.options ? '<div style="margin-top:8px">' + cards(q.options) + '</div>' : '';
+      return { q: q.text, steps: st, final: 'The answer is ' + q.answer + '.', pic: (q.pic || '') + oc, ans: q.answer, options: q.options, optCards: oc }; }; }
     var m = {}; ['low', 'medium', 'high'].forEach(function (l) { m[l] = (gens[l] || gens.medium || []).map(conv); });
     FL.workedSets(n, m);
   };
