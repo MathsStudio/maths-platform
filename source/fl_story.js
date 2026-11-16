@@ -146,7 +146,7 @@
         if (pg.ask) sc.push(L.SC('Your turn', 'Help with the story', sw(askSteps(pg.ask.q, p, pg.ask.options, pg.ask.answer, pg.ask.explain))));
       });
       sc.push(L.SC('The end', story.title, [L.st(story.endText || 'The end.', pic(story.endPic))]));
-      eps.push(L.ep('📖 ' + story.title, 'a picture-book story that uses the maths in this topic.', sc));
+      var sep = L.ep('📖 ' + story.title, 'a picture-book story that uses the maths in this topic.', sc); if (story.film) sep.film = story.film; eps.push(sep);
     }
     (learn || []).forEach(function (l) {
       var sc = [], watch = [], tog = [], turn = [], tips = [];
@@ -162,7 +162,7 @@
       eps.push(L.ep(l.title, strip(l.title).replace(/\?$/, '').toLowerCase() + '.', sc));
     });
     eps.forEach(function (e) { e.fl = true; });
-    if (story && eps[0]) eps[0].intro = story.intro || ('Story time! Get comfy, and let’s read ' + story.title + ' together.');
+    if (story && eps[0]) eps[0].intro = story.intro || ('This is the story of ' + story.title + '.');
     BT.L.use(n, eps);
   };
   FL.addStory = function (n, o) { FL.toWatch(n, o.story, o.learn); };
@@ -213,6 +213,7 @@
     Object.keys(ks).forEach(function (k) { if (!new RegExp('\\b' + k + '(e?s)?\\b', 'i').test(t)) return;
       box.querySelectorAll('.fl-it[data-k="' + k + '"]').forEach(function (e, j) { setTimeout(function () { e.classList.add('fl-glow'); setTimeout(function () { e.classList.remove('fl-glow'); }, 1300); }, j * 90); }); });
   }
+  H.flPlan = plan; H.flPause = pauseAfter;
   H.flTell = function (text, o, done) {
     var ps = plan(text), k = 0, base = Math.max(0.6, Math.min(1.25, ((S.app && S.app.store.settings.rate) || 1) * 0.86));
     function capShow() { if (!o.cap) return; o.cap.innerHTML = ps.map(function (p, j) { var t = esc(p.t + (p.count != null && j < ps.length - 1 && ps[j + 1].count != null ? ',' : '') + (p.end || '')); return j === k ? '<span class="now">' + t + '</span>' : t; }).join(' '); }

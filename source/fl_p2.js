@@ -10,10 +10,10 @@
   /* ================= 1. Counting and numbers: Ruby the rocket ================= */
   FL.topic({ n: 201, year: 'P2', short: 'Counting', title: 'Counting and numbers', blurb: 'Count with Ruby the rocket: number patterns, tens and ones, number lines, one more and one less.',
     /* Story time: Ruby needs 10 stars to fly home (counting, a pattern, ten, one more and one less) */
-    story: { title: 'Ruby and the Star Garden',
-      intro: 'Story time! Get cosy, sit back, and listen carefully. This is the story of Ruby and the Star Garden.',
+    story: { title: 'Ruby and the Star Garden', film: 'ruby',
+      intro: 'This is the story of Ruby and the Star Garden.',
       endPic: FL.scene('space', FL.who('rocket', 130, 40, 150, 'up') + FL.label(200, 230, 'Blast off!', 26)),
-      endText: 'Blast off! Whoosh! Up, up, up went Ruby, all the way home to the twinkly sky. “Thank you for helping me count,” she called. “Goodnight, my clever friend!” And that is the end of our story.',
+      endText: 'Blast off! Whoosh! Up, up, up went Ruby, all the way home to the twinkly sky. “Thank you for counting with me,” she called. “Goodnight!” And that is the end of our story.',
       pages: [
         { pic: function () { return FL.scene('space', FL.who('rocket', 115, 30, 170, 'bob')); },
           text: 'Once upon a time, high up in the night sky, there lived a little red rocket called Ruby. Ruby loved to zoom. Whoosh, round the moon! Whoosh, past the clouds! “Wheee!” giggled Ruby. “I love flying!”' },

@@ -133,7 +133,9 @@
 
   H.gifPlayer = function (host, ep, meta) {
     meta = meta || { q: 0, of: 1 };
-    var TT = D(ep.title), FLM = !!ep.fl, slides = [{ title: true, steps: [{ say: FLM ? (ep.intro || ('Hello again, my friend! Today we are going to find out: ' + TT)) : TT + ' In this lesson, we will learn ' + (ep.goal || '') }] }];
+    /* a First level story with a film script plays as a cartoon (fl_film.js) */
+    if (ep.film && H.flFilm) { var fs = H.flFilm(host, ep, meta); if (fs) { current = { stop: fs }; return; } }
+    var TT = D(ep.title), FLM = !!ep.fl, slides = [{ title: true, steps: [{ say: FLM ? (ep.intro || ('Today we are going to learn: ' + TT)) : TT + ' In this lesson, we will learn ' + (ep.goal || '') }] }];
     ep.scenes.forEach(function (sc) { slides.push(sc); });
     var chunks = [];
     slides.forEach(function (sl, si) { sl.steps.forEach(function (st, k) { chunks.push({ si: si, k: k, say: st.say, think: !!st.think, answer: st.answer, last: k === sl.steps.length - 1 }); }); });
@@ -157,7 +159,7 @@
       '<button class="btn ghost" type="button" data-r aria-label="Start again"><span class="gp-ic" aria-hidden="true">↺</span><span class="gp-tx">Start again</span></button>' +
       '<button class="btn ghost" type="button" data-f aria-label="Full screen"><span class="gp-ic" aria-hidden="true">⛶</span><span class="gp-tx">Full screen</span></button>' +
       '<div class="gp-prog" aria-hidden="true"><i></i></div><span class="gp-cnt"></span></div>' +
-      (FLM ? '<div class="gp-vs"><label>Voice <select data-vv></select></label><label>Reading speed <select data-vr><option value="0.8">Slower</option><option value="1">Normal</option><option value="1.2">Faster</option></select></label></div>' : '') +
+      ('<div class="gp-vs"><label>Voice <select data-vv></select></label><label>Reading speed <select data-vr><option value="0.8">Slower</option><option value="1">Normal</option><option value="1.2">Faster</option></select></label></div>') +
       '<p class="note" style="margin:0" data-note></p></div>';
     var root = host.querySelector('.gp'), frame0 = FLM && root.classList.add('gp-fl'), frame = root.querySelector('.gp-frame'), stage = root.querySelector('.gp-stage'), cap = root.querySelector('.gp-cap');
     var pb = root.querySelector('[data-p]'), bar = root.querySelector('.gp-prog i'), cnt = root.querySelector('.gp-cnt'), note = root.querySelector('[data-note]');
@@ -165,10 +167,10 @@
     function setPb(t) { pb.setAttribute('aria-label', t); pb.innerHTML = '<span class="gp-ic" aria-hidden="true">' + (t === 'Pause' ? '❚❚' : '▶') + '</span><span class="gp-tx">' + t + '</span><span class="gp-sh">' + (t === 'Pause' ? ' Pause' : ' Play') + '</span>'; }
     setPb('Play the lesson');
     var okVoice = H.voiceOk && H.voiceOk();
-    note.textContent = okVoice ? (FLM ? '🔊 Turn the sound on: this story is read aloud. Choose a voice and a speed that suit your child.' : 'Your device reads this aloud. You can change the voice and speed in Settings.') : 'The voice is not available here, so the lesson plays with words only.';
+    note.textContent = okVoice ? (FLM ? '🔊 Turn the sound on: this story is read aloud. Choose a voice and a speed that suit your child.' : 'Your device reads this aloud. Choose the voice and reading speed above.') : 'The voice is not available here, so the lesson plays with words only.';
     /* First level stories are listened to, not read: without a voice, say so clearly */
     if (FLM && !okVoice) { note.className = 'gp-snd'; note.innerHTML = '🔇 This story needs to be heard. This browser cannot read aloud, so please open MathsStudio in Chrome, Safari or Edge and turn the sound on.'; }
-    if (FLM) {
+    {
       var vv = root.querySelector('[data-vv]'), vr = root.querySelector('[data-vr]');
       /* the same choices as Settings (used in P5 to S3): Automatic (British English), then every English voice */
       var fillV = function () { var src = document.getElementById('setVoice'); if (src) { vv.innerHTML = src.innerHTML; vv.value = src.value; } };
