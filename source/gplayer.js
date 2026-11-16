@@ -96,7 +96,9 @@
     '.flx{position:absolute;inset:0;background:#1b1b4b}.flx-pic{position:absolute;inset:0;display:flex;align-items:center;justify-content:center}',
     '.flx-pic.flx-in{animation:gpTurn .7s ease both}.flx-pic>.flb,.flx-pic .flb-w{width:100%;height:100%;max-width:none;display:flex;align-items:center;justify-content:center;margin:0}',
     '.flx-pic .flb-stage{width:100%;height:100%;display:flex;align-items:center;justify-content:center;border:0;border-radius:0;background:none}.flx-pic .flb-stage>svg{width:100%!important;height:100%!important;max-width:none!important;display:block}',
-    '.flx-pic .flp-pic{min-width:0;flex:1 1 0}.flx-pic .flp-pic svg{max-width:100%!important}.gp.narrow .flx-pic .flp-ch svg{width:110px!important}.flx-pic .flp{width:100%;height:100%;box-sizing:border-box;flex-wrap:nowrap;font-size:24px;border-radius:0;border:0;margin:0}.flx-pic .flp-ch svg{width:150px!important}.flx-pic .flp-pic{height:100%;align-content:center}.flx-pic .flp-pic svg{max-height:100%}',
+    '.flx-pic .flp-pic{min-width:0;flex:1 1 0;max-height:100%;overflow:hidden}.flx-pic .flp-pic svg{max-width:100%!important}.gp.narrow .gp-stage .flx-pic .flp-ch svg{width:150px!important}.flx-pic .flp{width:100%;height:100%;box-sizing:border-box;flex-wrap:nowrap;font-size:24px;border-radius:0;border:0;margin:0}.gp-stage .flx-pic .flp-ch svg{width:210px!important}.flx-pic .flp-pic{height:100%;align-content:center}.flx-pic .flp-pic svg{max-height:100%}.gp-stage .flx-pic .flp-pic{flex-wrap:nowrap}.gp-stage .flx-pic .flp-pic>span[style*="font-size:3rem"]{font-size:7.5rem!important;line-height:1}.gp.narrow .flx-pic .flp-pic>span[style*="font-size:3rem"]{font-size:4.5rem!important}.gp-stage .flx-pic .flp-pic>svg{min-width:0!important;flex:1 1 0!important}',
+    '.flx-pic.flx-ask{bottom:104px}.gp.narrow .flx-pic.flx-ask{bottom:96px}',
+    '.flx-pic.flx-plain{overflow:hidden;align-items:center;inset:28px 40px;background:#fff8e6;color:#221a3a;border:4px solid #221a3a;border-radius:24px;padding:24px 34px;box-sizing:border-box}.flx-plain .sv-list{font-size:26px;gap:16px;max-width:none}.flx-plain .sv-list div{font-size:26px}',
     '.flx-top{position:absolute;left:0;right:0;top:8px;display:flex;justify-content:center;pointer-events:none}.flx-q{max-width:86%;background:rgba(255,255,255,.96);border:3px solid #221a3a;border-radius:18px;padding:8px 18px;font-weight:800;font-size:26px;line-height:1.3;text-align:center;box-shadow:0 6px 18px rgba(0,0,0,.2);animation:flxDrop .55s cubic-bezier(.3,1.5,.6,1) both}',
     '.flx-tip{font-size:18px;font-weight:700;color:#7a5600;margin-top:4px}',
     '.flx-opts{position:absolute;left:0;right:0;bottom:12px;display:flex;justify-content:center}.flx-opts .flb-opts{margin:0;gap:14px;width:auto}.flx-opts .flb-show .o{min-width:96px;max-width:none;flex:0 0 auto;min-height:72px;font-size:34px;padding:4px 18px;box-shadow:0 6px 16px rgba(0,0,0,.22);animation:flxPop .5s cubic-bezier(.3,1.6,.6,1) both}',
@@ -278,10 +280,13 @@
       var q = tmp.querySelector('.flb-q'), tip = tmp.querySelector('.flb-tip'), op = tmp.querySelector('.flb-opts');
       [q, tip, op].forEach(function (e) { if (e) e.parentNode.removeChild(e); });
       var ph = tmp.innerHTML.trim(), P = stage.querySelector('.flx-pic'), T = stage.querySelector('.flx-top'), O = stage.querySelector('.flx-opts');
-      if (ph !== flPic) { flPic = ph; P.innerHTML = ph; P.classList.remove('flx-in'); void P.offsetWidth; P.classList.add('flx-in'); fitPic(P); }
+      if (ph !== flPic) { flPic = ph; P.innerHTML = ph; P.classList.toggle('flx-plain', !!ph && ph.indexOf('flb-stage') < 0); P.classList.remove('flx-in'); void P.offsetWidth; P.classList.add('flx-in'); fitPic(P); }
       /* the question is told, not written: only the choices appear, for the child to tap */
       var th = '';
       if (th !== flTop) { flTop = th; T.innerHTML = th; }
+      /* answer choices get their own space under the picture, so they never cover it */
+      if (P.classList.contains('flx-ask') !== !!op) { P.classList.toggle('flx-ask', !!op); fitPic(P); }
+      fitBox(P);
       var oh = op ? op.outerHTML : '', base = oh.replace(/ ok"/g, '"');
       if (base !== flOpt) { flOpt = base; O.innerHTML = oh; } else if (oh !== O.innerHTML) { O.innerHTML = oh; }
       var ol = O.querySelectorAll('.o'), mx = 0; [].forEach.call(ol, function (e) { mx = Math.max(mx, e.textContent.length); });
@@ -294,7 +299,14 @@
       });
     }
     /* the picture fills the stage as far as it can without cropping or stretching */
-    function fitPic(P) { var g = P.querySelector('.flb-stage>svg[viewBox]'); if (g) g.setAttribute('preserveAspectRatio', 'xMidYMid slice'); }
+    /* a picture or a tips card that is too big for its space is made smaller, never cut off */
+    function fitBox(P) {
+      var el = P.classList.contains('flx-plain') ? P.firstElementChild : P.querySelector('.flp-pic'); if (!el) return;
+      el.style.zoom = ''; var room = P.classList.contains('flx-plain') ? P : el;
+      var r = Math.min(1, (room.clientWidth - (room === P ? 40 : 0)) / Math.max(1, el.scrollWidth), (room.clientHeight - (room === P ? 40 : 0)) / Math.max(1, el.scrollHeight));
+      if (r < 0.98) el.style.zoom = Math.max(0.35, r * 0.97).toFixed(3);
+    }
+    function fitPic(P) { var g = P.querySelector('.flb-stage>svg[viewBox]'); if (g) g.setAttribute('preserveAspectRatio', P.classList.contains('flx-ask') ? 'xMidYMid meet' : 'xMidYMid slice'); }
     var tries = 0, answered = false, PRAISE = ['Yes! You are right!', 'Brilliant! Well done!', 'That’s right! Super thinking!', 'Yes! Clever you!'], NUDGE = ['Not quite. Have another go!', 'Ooh, nearly! Try again.'];
     function pick(el) {
       var c = chunks[lastI]; if (!c || !c.think || answered || el.classList.contains('no')) return;

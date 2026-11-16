@@ -27,48 +27,58 @@
           pg(P('space', 'rocket', FL.starTens(2, 3)), 'Ruby fills two tanks with ten stars each. She has three more stars too.', Q('How many stars is that?', [5, 23, 32], 23, 'Two tens and three ones make twenty-three.')),
           pg(P('space', 'rocket', stones([7, 3, 5], true)), 'Ruby visits three planets. Each planet has a number.', Q('Which number is the smallest?', [3, 5, 7], 3, 'Three is the smallest. On a number line, three comes before five and seven.')),
           pg(P('space', 'rocket', tank(10, true)), 'Ruby’s tank is full with ten stars. Oh no, one star rolls away!', Q('What is one less than <b>10</b>?', [8, 9, 11], 9, 'One less than ten is nine.')),
-          pg(P('space', 'rocket', tank(9)), 'Ruby catches the star. Now she has nine stars, and the star she caught.', Q('What is one more than <b>9</b>?', [8, 10, 11], 10, 'One more than nine is ten.'))
+          pg(P('space', 'rocket', '<div style="width:244px;max-width:100%">' + FL.svg(244, 116, 'A fuel tank with 10 stars', '<g transform="translate(12 12)">' + FL.tank(0, 0, 10, 9) + '</g>', 244) + '</div>'), 'Ruby catches the star and puts it back in her tank.', Q('What is one more than <b>9</b>?', [8, 10, 11], 10, 'One more than nine is ten.'))
         ];
       })() },
     /* Let's learn: short lessons that carry on Ruby's story, one small idea at a time */
-    learn: [
-      { title: 'How can I use number patterns to work out a sequence?', char: 'rocket', screens: [
-        { mode: 'watch', say: 'Back at the pond, I hop on the stepping stones. One, two, three, four. Each stone is one more.', pic: function () { return FL.scene('pond', FL.who('rocket', 290, 25, 95, 'bob') + FL.stones([1, 2, 3, 4], 195)); } },
-        { mode: 'watch', say: 'Now the stones go up in twos. Two, four, six, eight. I jump two each time.', pic: function () { return FL.scene('pond', FL.who('rocket', 290, 25, 95, 'bob') + FL.stones([2, 4, 6, 8], 195)); } },
-        { mode: 'watch', say: 'I pack my stars in boxes of ten. Ten, twenty, thirty, forty stars!', pic: function () { return FL.scene('space', [0, 1, 2, 3].map(function (k) { return '<g class="a-pop" style="animation-delay:' + (k * .5 + .2) + 's"><rect x="' + (22 + k * 92) + '" y="80" width="80" height="80" rx="10" fill="#fff" stroke="#2b2340" stroke-width="3"/>' + FL.tx(62 + k * 92, 132, (k + 1) * 10, 28, '#2b2340') + '</g>'; }).join('')); } },
-        { mode: 'together', say: 'Help me hop! Five, six, seven … what number is on the next stone?', pic: function () { return FL.scene('pond', FL.who('rocket', 290, 25, 95, 'bob') + FL.stones([5, 6, 7, '?'], 195)); }, tip: 'Each stone is one more. Count on one from seven.', options: [6, 8, 9], answer: 8, explain: 'Seven, eight. I can hop on!' },
-        { mode: 'together', say: 'These stones go two, four, six … what comes next?', pic: function () { return FL.scene('pond', FL.who('rocket', 290, 25, 95, 'bob') + FL.stones([2, 4, 6, '?'], 195)); }, tip: 'Jump in twos: whisper seven, say eight out loud!', options: [7, 8, 9], answer: 8, explain: 'Six, then eight.' },
-        { mode: 'turn', say: 'One box of stars has lost its number. Ten, twenty, blank, forty. What is missing?', pic: function () { return FL.scene('space', [10, 20, '?', 40].map(function (v, k) { return '<rect x="' + (22 + k * 92) + '" y="80" width="80" height="80" rx="10" fill="' + (v === '?' ? '#ffd166' : '#fff') + '" stroke="#2b2340" stroke-width="3"/>' + FL.tx(62 + k * 92, 132, v, 28, '#2b2340'); }).join('')); }, tip: 'The boxes go up in tens.', options: [25, 30, 50], answer: 30, explain: 'Ten, twenty, thirty, forty.' },
-        { mode: 'turn', say: 'Blast-off countdown! Nine, eight, seven … what comes next?', pic: function () { return FL.scene('space', FL.who('rocket', 150, 40, 120, 'wig') + FL.label(200, 232, '9 … 8 … 7 … ?', 30)); }, tip: 'Count back one from seven.', options: [6, 8, 10], answer: 6, explain: 'Seven, then six.' }
-      ] },
-      { title: 'What are tens and ones?', char: 'rocket', screens: [
-        { mode: 'watch', say: 'My fuel tank holds ten stars. A full tank is one ten.', pic: function () { return FL.starTens(1, 0); } },
-        { mode: 'watch', say: 'One full tank and three loose stars. Ten and three make thirteen.', pic: function () { return FL.starTens(1, 3); } },
-        { mode: 'watch', say: 'Two full tanks and five loose stars. Twenty and five make twenty-five.', pic: function () { return FL.starTens(2, 5); } },
-        { mode: 'together', say: 'One full tank and six loose stars. How many stars do I have?', pic: function () { return FL.starTens(1, 6); }, tip: 'Say ten for the tank, then count on the loose stars: eleven, twelve …', options: [16, 61, 7], answer: 16, explain: 'Ten and six make sixteen.' },
-        { mode: 'together', say: 'One full tank and four loose stars. How many?', pic: function () { return FL.starTens(1, 4); }, tip: 'A full tank is ten. Count on four.', options: [14, 10, 4], answer: 14, explain: 'Ten and four make fourteen.' },
-        { mode: 'turn', say: 'Three full tanks and no loose stars. How many stars?', pic: function () { return FL.starTens(3, 0); }, tip: 'Count the tanks in tens: ten, twenty, thirty.', options: [3, 30, 13], answer: 30, explain: 'Three tens are thirty.' },
-        { mode: 'turn', say: 'Two full tanks and seven loose stars. How many stars?', pic: function () { return FL.starTens(2, 7); }, tip: 'Twenty, then count on seven.', options: [27, 72, 9], answer: 27, explain: 'Twenty and seven make twenty-seven.' }
-      ] },
-      { title: 'How do I order numbers on a number line?', char: 'rocket', screens: [
-        { mode: 'watch', say: 'My flight path is a number line. The numbers get bigger as I fly along.', pic: function () { return FL.scene('space', FL.who('rocket', 0, 30, 90, 'in') + FL.stones([1, 2, 3, 4, 5, 6], 200, true)); } },
-        { mode: 'watch', say: 'Planet three comes before planet seven, so three is smaller than seven.', pic: function () { return FL.scene('space', FL.stones([3, 4, 5, 6, 7], 200, true) + FL.label(70, 120, '◀ smaller', 18) + FL.label(330, 120, 'bigger ▶', 18)); } },
-        { mode: 'watch', say: 'Planet twelve comes after planet nine, so twelve is bigger than nine.', pic: function () { return FL.scene('space', FL.stones([9, 10, 11, 12], 200, true)); } },
-        { mode: 'together', say: 'Which planet is further along my path, four or nine?', pic: function () { return FL.scene('space', FL.who('rocket', 0, 30, 90, 'bob') + FL.stones([2, 4, 6, 9], 200, true)); }, tip: 'The bigger number is further along the path.', options: [4, 9], answer: 9, explain: 'Nine is further along, so nine is bigger.' },
-        { mode: 'together', say: 'A planet has lost its number. Five, blank, seven. What is it?', pic: function () { return FL.scene('space', FL.stones([5, '?', 7], 200, true)); }, tip: 'What comes just after five?', options: [4, 6, 8], answer: 6, explain: 'Five, six, seven.' },
-        { mode: 'turn', say: 'Put my planets in order, smallest first.', pic: function () { return FL.scene('space', FL.stones([8, 2, 5], 200, true)); }, options: ['2, 5, 8', '8, 5, 2', '5, 2, 8'], answer: '2, 5, 8', tip: 'Start with the number nearest the start of the path.', explain: 'Two, five, eight.' },
-        { mode: 'turn', say: 'Which planet comes first, fifteen or twelve?', pic: function () { return FL.scene('space', FL.stones([15, 12], 200, true)); }, tip: 'The smaller number comes first on the path.', options: [12, 15], answer: 12, explain: 'Twelve comes before fifteen.' }
-      ] },
-      { title: 'What is one more and one less?', char: 'rocket', screens: [
-        { mode: 'watch', say: 'I have four stars. One more star flies in. Now I have five! One more than four is five.', pic: function () { return FL.scene('space', [0, 1, 2, 3].map(function (k) { return FL.bit('star', 70 + k * 60, 130, '', 0, null, 1.6); }).join('') + FL.bit('star', 315, 130, 'fly', .4, null, 1.6)); } },
-        { mode: 'watch', say: 'I have six stars. One star rolls away. Now I have five. One less than six is five.', pic: function () { return FL.scene('space', [0, 1, 2, 3, 4].map(function (k) { return FL.bit('star', 60 + k * 55, 130, '', 0, null, 1.5); }).join('') + FL.bit('star', 335, 130, 'roll', .6, null, 1.5)); } },
-        { mode: 'watch', say: 'On my flight path, one more is one hop forward. One less is one hop back.', pic: FL.track(5, 9, [6, 7, 8], [[7, 8], [7, 6, 1]]) },
-        { mode: 'together', say: 'I have eight stars. One more flies in. How many now?', pic: function () { return FL.scene('space', [0, 1, 2, 3, 4, 5, 6, 7].map(function (k) { return FL.bit('star', 50 + (k % 4) * 60, 80 + Math.floor(k / 4) * 70, '', 0, null, 1.4); }).join('') + FL.bit('star', 330, 115, 'fly', .4, null, 1.4)); }, tip: 'One more than eight: count on one.', options: [7, 9, 10], answer: 9, explain: 'One more than eight is nine.' },
-        { mode: 'together', say: 'My tank has ten stars. One rolls away. How many are left?', pic: function () { return FL.scene('space', FL.tank(85, 75, 10, 10, true)); }, tip: 'One less than ten: count back one.', options: [9, 11, 8], answer: 9, explain: 'One less than ten is nine.' },
-        { mode: 'turn', say: 'I have fourteen stars and find one more. How many now?', pic: function () { return FL.starTens(1, 4); }, options: [13, 15, 16], answer: 15, tip: 'Count on one: fourteen, fifteen.', explain: 'One more than fourteen is fifteen.' },
-        { mode: 'turn', say: 'I have twenty stars and one rolls away. How many are left?', pic: function () { return FL.starTens(2, 0); }, options: [19, 21, 10], answer: 19, tip: 'Count back one from twenty.', explain: 'One less than twenty is nineteen.' }
-      ] }
-    ],
+    learn: (function () {
+      /* the same picture panels as Benny's Picnic: Ruby on the left, the things to look at on the right */
+      var P = FL.panel, T = FL.things, INK = '#2b2340';
+      function tank(n, roll, from) { return '<div style="width:190px;max-width:100%">' + FL.svg(244, 116, 'A fuel tank with ' + n + ' stars', '<g transform="translate(12 12)">' + FL.tank(0, 0, n, from == null ? n : from, roll) + '</g>', 244) + '</div>'; }
+      function tens(t, o) { var s = ''; for (var k = 0; k < t; k++) s += tank(10); return '<div style="display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:center">' + s + (o ? '<div style="max-width:200px">' + T(o, 'star', 5) + '</div>' : '') + '</div>'; }
+      function stones(list, planet) { return FL.svg(400, 120, planet ? 'Planets with numbers' : 'Stepping stones', FL.stones(list, 70, planet), 400); }
+      function boxes(list) { return FL.svg(400, 110, 'Boxes of stars', list.map(function (v, k) { return '<rect x="' + (22 + k * 92) + '" y="15" width="80" height="80" rx="10" fill="' + (v === '?' ? '#ffd166' : '#fff') + '" stroke="' + INK + '" stroke-width="3"/>' + FL.tx(62 + k * 92, 67, v, 28, INK); }).join(''), 400); }
+      function big(t) { return '<div style="font-size:2.2rem;font-weight:800;color:' + INK + ';background:#fff;border:3px solid ' + INK + ';border-radius:16px;padding:6px 18px">' + t + '</div>'; }
+      function plus(a, b) { return '<div style="display:flex;gap:10px;align-items:center;justify-content:center;flex-wrap:wrap"><div style="max-width:220px">' + T(a, 'star', 5) + '</div><b style="font-size:2em;color:#fff">+</b><div style="max-width:60px">' + T(b, 'star', 1) + '</div></div>'; }
+      return [
+        { title: 'How can I use number patterns to work out a sequence?', char: 'rocket', screens: [
+          { mode: 'watch', say: 'I hop on the stepping stones. One, two, three, four. Each stone is one more.', pic: P('pond', '', stones([1, 2, 3, 4])) },
+          { mode: 'watch', say: 'Now the stones go up in twos. Two, four, six, eight. I jump two each time.', pic: P('pond', '', stones([2, 4, 6, 8])) },
+          { mode: 'watch', say: 'I pack my stars in boxes of ten. Ten, twenty, thirty, forty stars!', pic: P('space', '', boxes([10, 20, 30, 40])) },
+          { mode: 'together', say: 'Help me hop! Five, six, seven … what number is on the next stone?', pic: P('pond', '', stones([5, 6, 7, '?'])), tip: 'Each stone is one more. Count on one from seven.', options: [6, 8, 9], answer: 8, explain: 'Seven, eight. I can hop on!' },
+          { mode: 'together', say: 'These stones go two, four, six … what comes next?', pic: P('pond', '', stones([2, 4, 6, '?'])), tip: 'Jump in twos: whisper seven, say eight out loud!', options: [7, 8, 9], answer: 8, explain: 'Six, then eight.' },
+          { mode: 'turn', say: 'One box of stars has lost its number. Ten, twenty, blank, forty. What is missing?', pic: P('space', '', boxes([10, 20, '?', 40])), tip: 'Count in tens.', options: [25, 30, 50], answer: 30, explain: 'Ten, twenty, thirty, forty.' },
+          { mode: 'turn', say: 'Blast-off countdown! Nine, eight, seven … what comes next?', pic: P('space', '', big('9 … 8 … 7 … ?')), tip: 'Count back one from seven.', options: [6, 8, 10], answer: 6, explain: 'Seven, then six.' }
+        ] },
+        { title: 'What are tens and ones?', char: 'rocket', screens: [
+          { mode: 'watch', say: 'My fuel tank holds ten stars. A full tank is one ten.', pic: P('space', '', tens(1, 0)) },
+          { mode: 'watch', say: 'One full tank and three loose stars. Ten and three make thirteen.', pic: P('space', '', tens(1, 3)) },
+          { mode: 'watch', say: 'Two full tanks and five loose stars. Twenty and five make twenty-five.', pic: P('space', '', tens(2, 5)) },
+          { mode: 'together', say: 'One full tank and six loose stars. How many stars do I have?', pic: P('space', '', tens(1, 6)), tip: 'Say ten for the tank, then count on the loose stars: eleven, twelve …', options: [16, 61, 7], answer: 16, explain: 'Ten and six make sixteen.' },
+          { mode: 'together', say: 'One full tank and four loose stars. How many?', pic: P('space', '', tens(1, 4)), tip: 'A full tank is ten. Count on four.', options: [14, 10, 4], answer: 14, explain: 'Ten and four make fourteen.' },
+          { mode: 'turn', say: 'Three full tanks and no loose stars. How many stars?', pic: P('space', '', tens(3, 0)), tip: 'Count the tanks in tens: ten, twenty, thirty.', options: [3, 30, 13], answer: 30, explain: 'Three tens are thirty.' },
+          { mode: 'turn', say: 'Two full tanks and seven loose stars. How many stars?', pic: P('space', '', tens(2, 7)), tip: 'Twenty, then count on seven.', options: [27, 72, 9], answer: 27, explain: 'Twenty and seven make twenty-seven.' }
+        ] },
+        { title: 'How do I order numbers on a number line?', char: 'rocket', screens: [
+          { mode: 'watch', say: 'My flight path is a number line. The numbers get bigger as I fly along.', pic: P('space', '', FL.track(1, 6, [])) },
+          { mode: 'watch', say: 'Three comes before seven, so three is smaller than seven.', pic: P('space', '', FL.track(3, 7, [3, 7])) },
+          { mode: 'watch', say: 'Twelve comes after nine, so twelve is bigger than nine.', pic: P('space', '', FL.track(9, 12, [9, 12])) },
+          { mode: 'together', say: 'Which planet is further along my path, four or nine?', pic: P('space', '', stones([2, 4, 6, 9], true)), tip: 'The bigger number is further along the path.', options: [4, 9], answer: 9, explain: 'Nine is further along, so nine is bigger.' },
+          { mode: 'together', say: 'A planet has lost its number. Five, blank, seven. What is it?', pic: P('space', '', stones([5, '?', 7], true)), tip: 'What comes just after five?', options: [4, 6, 8], answer: 6, explain: 'Five, six, seven.' },
+          { mode: 'turn', say: 'Put my planets in order, smallest first.', pic: P('space', '', stones([8, 2, 5], true)), options: ['2, 5, 8', '8, 5, 2', '5, 2, 8'], answer: '2, 5, 8', tip: 'Start with the smallest number.', explain: 'Two, five, eight.' },
+          { mode: 'turn', say: 'Which planet comes first, fifteen or twelve?', pic: P('space', '', stones([15, 12], true)), tip: 'The smaller number comes first on the path.', options: [12, 15], answer: 12, explain: 'Twelve comes before fifteen.' }
+        ] },
+        { title: 'What is one more and one less?', char: 'rocket', screens: [
+          { mode: 'watch', say: 'I have four stars. One more star flies in. Now I have five! One more than four is five.', pic: P('space', '', plus(4, 1)) },
+          { mode: 'watch', say: 'I have six stars. One star rolls away. Now I have five. One less than six is five.', pic: P('space', '', '<div style="max-width:300px">' + T(5, 'star', 5) + '</div>') },
+          { mode: 'watch', say: 'On my flight path, one more is one hop forward. One less is one hop back.', pic: P('space', '', FL.track(5, 9, [6, 7, 8], [[7, 8], [7, 6, 1]])) },
+          { mode: 'together', say: 'I have eight stars. One more flies in. How many now?', pic: P('space', '', plus(8, 1)), tip: 'One more than eight: count on one.', options: [7, 9, 10], answer: 9, explain: 'Eight, then nine.' },
+          { mode: 'together', say: 'My tank has ten stars. One rolls away. How many are left?', pic: P('space', '', tank(10, true, 10)), tip: 'One less than ten: count back one.', options: [9, 11, 8], answer: 9, explain: 'One less than ten is nine.' },
+          { mode: 'turn', say: 'I have fourteen stars and find one more. How many now?', pic: P('space', '', tens(1, 4)), options: [13, 15, 16], answer: 15, tip: 'Count on one: fourteen, fifteen.', explain: 'One more than fourteen is fifteen.' },
+          { mode: 'turn', say: 'I have twenty stars and one rolls away. How many are left?', pic: P('space', '', tens(2, 0)), options: [19, 21, 10], answer: 19, tip: 'Count back one from twenty.', explain: 'One less than twenty is nineteen.' }
+        ] }
+      ];
+    })(),
     acts: [
       ['Count them!', 'Count the pictures. Tap the right number.', FL.rounds(function (k) { var n = r(3, k > 2 ? 20 : 10), kind = pick(['star', 'apple', 'fish', 'duck', 'balloon', 'car']); return { vis: FL.things(n, kind), q: 'How many ' + kind + 's?', answer: String(n), wrong: nums(n, [n - 1, n + 1, n + 2, n - 2]), explain: 'Count them in fives: there are ' + n + '.' }; }, 6)],
       ['Fill the ten-frame', 'Tap the boxes to show a number.', FL.fillFrame([3, 5, 7, 9, 10, 12, 15])],

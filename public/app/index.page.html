@@ -19,6 +19,7 @@
   --zone-down: #FFE3DD;
   --zone-up: #DDF3E6;
   --hl: #FFE88A;
+  --ul: #8B5CF6;
   --band-s: 90%;
   --band-l: 88%;
   --dot-s: 72%;
@@ -45,6 +46,7 @@
     --zone-down: #4A2A30;
     --zone-up: #1F4636;
     --hl: #5A4B12;
+    --ul: #B79CFF;
     --band-s: 35%;
     --band-l: 26%;
     --dot-s: 75%;
@@ -70,6 +72,7 @@
   --zone-down: #4A2A30;
   --zone-up: #1F4636;
   --hl: #5A4B12;
+  --ul: #B79CFF;
   --band-s: 35%;
   --band-l: 26%;
   --dot-s: 75%;
@@ -116,7 +119,7 @@ button:focus-visible, input:focus-visible, select:focus-visible, summary:focus-v
 
 /* spoken sentences light up while they are read */
 .say { border-radius: 6px; transition: background .15s; }
-.say.on { background: var(--hl); box-shadow: 0 0 0 3px var(--hl); }
+.say.on { text-decoration: underline; text-decoration-color: var(--ul); text-decoration-thickness: 3px; text-underline-offset: 5px; text-decoration-skip-ink: none; }
 
 /* Top bar */
 .top { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px; }
@@ -442,7 +445,6 @@ input[type=range].slider { width: 100%; }
 .more li, .more p { animation: drawin .5s ease both; }
 .more li:nth-child(1) { animation-delay: 1.8s; } .more li:nth-child(2) { animation-delay: 2.1s; } .more li:nth-child(3) { animation-delay: 2.4s; }
 .pop { animation: popin .45s cubic-bezier(.2,.9,.3,1.3) both; transform-box: fill-box; transform-origin: center; }
-.say.on { animation: pulse .35s ease both; }
 .wsteps li:last-child { animation: drawin .45s ease both; }
 .wres { animation: popin .5s cubic-bezier(.2,.9,.3,1.3) both; }
 .wvis { animation: rise .35s ease both; }
@@ -658,7 +660,7 @@ var SLIDE_MORE = {"1.learn1": [{"more": ["Our number system uses only ten digits
     Nar.at = i; unmarkAll();
     if (i >= Nar.units.length) { Nar.playing = false; Nar.at = 0; setPlayerUI(); return; }
     var u = Nar.units[i];
-    if (!(S.firstLevel && S.firstLevel())) u.el.classList.add('on');   /* P2 to P4: read naturally, no highlight */
+    u.el.classList.add('on');   /* every year: the sentence being read gets a soft underline */
     try { var rc = u.el.getBoundingClientRect(), vh = window.innerHeight || 700; if (rc.top < 60 || rc.bottom > vh - 90) u.el.scrollIntoView({ block: 'nearest', behavior: 'auto' }); } catch (e) { /* ignore */ }
     var ut = new SpeechSynthesisUtterance(speakable(u.text)), started = false;
     ut.lang = 'en-GB'; ut.rate = Number(store.settings.rate) || 1;
@@ -15972,7 +15974,9 @@ S.spatialExtra = S.extraMakers;
     '.flx{position:absolute;inset:0;background:#1b1b4b}.flx-pic{position:absolute;inset:0;display:flex;align-items:center;justify-content:center}',
     '.flx-pic.flx-in{animation:gpTurn .7s ease both}.flx-pic>.flb,.flx-pic .flb-w{width:100%;height:100%;max-width:none;display:flex;align-items:center;justify-content:center;margin:0}',
     '.flx-pic .flb-stage{width:100%;height:100%;display:flex;align-items:center;justify-content:center;border:0;border-radius:0;background:none}.flx-pic .flb-stage>svg{width:100%!important;height:100%!important;max-width:none!important;display:block}',
-    '.flx-pic .flp-pic{min-width:0;flex:1 1 0}.flx-pic .flp-pic svg{max-width:100%!important}.gp.narrow .flx-pic .flp-ch svg{width:110px!important}.flx-pic .flp{width:100%;height:100%;box-sizing:border-box;flex-wrap:nowrap;font-size:24px;border-radius:0;border:0;margin:0}.flx-pic .flp-ch svg{width:150px!important}.flx-pic .flp-pic{height:100%;align-content:center}.flx-pic .flp-pic svg{max-height:100%}',
+    '.flx-pic .flp-pic{min-width:0;flex:1 1 0;max-height:100%;overflow:hidden}.flx-pic .flp-pic svg{max-width:100%!important}.gp.narrow .gp-stage .flx-pic .flp-ch svg{width:150px!important}.flx-pic .flp{width:100%;height:100%;box-sizing:border-box;flex-wrap:nowrap;font-size:24px;border-radius:0;border:0;margin:0}.gp-stage .flx-pic .flp-ch svg{width:210px!important}.flx-pic .flp-pic{height:100%;align-content:center}.flx-pic .flp-pic svg{max-height:100%}.gp-stage .flx-pic .flp-pic{flex-wrap:nowrap}.gp-stage .flx-pic .flp-pic>span[style*="font-size:3rem"]{font-size:7.5rem!important;line-height:1}.gp.narrow .flx-pic .flp-pic>span[style*="font-size:3rem"]{font-size:4.5rem!important}.gp-stage .flx-pic .flp-pic>svg{min-width:0!important;flex:1 1 0!important}',
+    '.flx-pic.flx-ask{bottom:104px}.gp.narrow .flx-pic.flx-ask{bottom:96px}',
+    '.flx-pic.flx-plain{overflow:hidden;align-items:center;inset:28px 40px;background:#fff8e6;color:#221a3a;border:4px solid #221a3a;border-radius:24px;padding:24px 34px;box-sizing:border-box}.flx-plain .sv-list{font-size:26px;gap:16px;max-width:none}.flx-plain .sv-list div{font-size:26px}',
     '.flx-top{position:absolute;left:0;right:0;top:8px;display:flex;justify-content:center;pointer-events:none}.flx-q{max-width:86%;background:rgba(255,255,255,.96);border:3px solid #221a3a;border-radius:18px;padding:8px 18px;font-weight:800;font-size:26px;line-height:1.3;text-align:center;box-shadow:0 6px 18px rgba(0,0,0,.2);animation:flxDrop .55s cubic-bezier(.3,1.5,.6,1) both}',
     '.flx-tip{font-size:18px;font-weight:700;color:#7a5600;margin-top:4px}',
     '.flx-opts{position:absolute;left:0;right:0;bottom:12px;display:flex;justify-content:center}.flx-opts .flb-opts{margin:0;gap:14px;width:auto}.flx-opts .flb-show .o{min-width:96px;max-width:none;flex:0 0 auto;min-height:72px;font-size:34px;padding:4px 18px;box-shadow:0 6px 16px rgba(0,0,0,.22);animation:flxPop .5s cubic-bezier(.3,1.6,.6,1) both}',
@@ -16154,10 +16158,13 @@ S.spatialExtra = S.extraMakers;
       var q = tmp.querySelector('.flb-q'), tip = tmp.querySelector('.flb-tip'), op = tmp.querySelector('.flb-opts');
       [q, tip, op].forEach(function (e) { if (e) e.parentNode.removeChild(e); });
       var ph = tmp.innerHTML.trim(), P = stage.querySelector('.flx-pic'), T = stage.querySelector('.flx-top'), O = stage.querySelector('.flx-opts');
-      if (ph !== flPic) { flPic = ph; P.innerHTML = ph; P.classList.remove('flx-in'); void P.offsetWidth; P.classList.add('flx-in'); fitPic(P); }
+      if (ph !== flPic) { flPic = ph; P.innerHTML = ph; P.classList.toggle('flx-plain', !!ph && ph.indexOf('flb-stage') < 0); P.classList.remove('flx-in'); void P.offsetWidth; P.classList.add('flx-in'); fitPic(P); }
       /* the question is told, not written: only the choices appear, for the child to tap */
       var th = '';
       if (th !== flTop) { flTop = th; T.innerHTML = th; }
+      /* answer choices get their own space under the picture, so they never cover it */
+      if (P.classList.contains('flx-ask') !== !!op) { P.classList.toggle('flx-ask', !!op); fitPic(P); }
+      fitBox(P);
       var oh = op ? op.outerHTML : '', base = oh.replace(/ ok"/g, '"');
       if (base !== flOpt) { flOpt = base; O.innerHTML = oh; } else if (oh !== O.innerHTML) { O.innerHTML = oh; }
       var ol = O.querySelectorAll('.o'), mx = 0; [].forEach.call(ol, function (e) { mx = Math.max(mx, e.textContent.length); });
@@ -16170,7 +16177,14 @@ S.spatialExtra = S.extraMakers;
       });
     }
     /* the picture fills the stage as far as it can without cropping or stretching */
-    function fitPic(P) { var g = P.querySelector('.flb-stage>svg[viewBox]'); if (g) g.setAttribute('preserveAspectRatio', 'xMidYMid slice'); }
+    /* a picture or a tips card that is too big for its space is made smaller, never cut off */
+    function fitBox(P) {
+      var el = P.classList.contains('flx-plain') ? P.firstElementChild : P.querySelector('.flp-pic'); if (!el) return;
+      el.style.zoom = ''; var room = P.classList.contains('flx-plain') ? P : el;
+      var r = Math.min(1, (room.clientWidth - (room === P ? 40 : 0)) / Math.max(1, el.scrollWidth), (room.clientHeight - (room === P ? 40 : 0)) / Math.max(1, el.scrollHeight));
+      if (r < 0.98) el.style.zoom = Math.max(0.35, r * 0.97).toFixed(3);
+    }
+    function fitPic(P) { var g = P.querySelector('.flb-stage>svg[viewBox]'); if (g) g.setAttribute('preserveAspectRatio', P.classList.contains('flx-ask') ? 'xMidYMid meet' : 'xMidYMid slice'); }
     var tries = 0, answered = false, PRAISE = ['Yes! You are right!', 'Brilliant! Well done!', 'That’s right! Super thinking!', 'Yes! Clever you!'], NUDGE = ['Not quite. Have another go!', 'Ooh, nearly! Try again.'];
     function pick(el) {
       var c = chunks[lastI]; if (!c || !c.think || answered || el.classList.contains('no')) return;
@@ -24958,7 +24972,7 @@ S.extraMakers = function (n, level) {
     '@keyframes flTw{0%,100%{transform:scale(1);opacity:1}50%{transform:scale(.8);opacity:.7}}' +
     '@keyframes flDrop{0%{transform:translateY(-140px);opacity:0}100%{transform:translateY(0);opacity:1}}' +
     '@keyframes flFly{0%{transform:translate(-160px,-60px) scale(.4);opacity:0}100%{transform:translate(0,0) scale(1);opacity:1}}' +
-    '@keyframes flRoll{0%{transform:translate(0,0) rotate(0)}100%{transform:translate(170px,40px) rotate(540deg);opacity:.2}}' +
+    '@keyframes flRoll{0%{transform:translate(0,0) rotate(0);opacity:1}80%{opacity:.6}100%{transform:translate(170px,40px) rotate(540deg);opacity:0}}' +
     '@keyframes flUp{0%{transform:translateY(0)}20%{transform:translateY(4px)}100%{transform:translateY(-320px)}}' +
     '@keyframes flWig{0%,100%{transform:rotate(0)}25%{transform:rotate(-6deg)}75%{transform:rotate(6deg)}}' +
     '@keyframes flIn{0%{transform:translateX(-60px);opacity:0}100%{transform:translateX(0);opacity:1}}' +
@@ -24972,7 +24986,7 @@ S.extraMakers = function (n, level) {
     '.fl-num{font-weight:900;fill:#e0457b;stroke:#fff;stroke-width:3px;paint-order:stroke;animation:flPop .4s cubic-bezier(.3,1.6,.6,1) both;font-family:inherit}' +
     '.fl-who{transform-box:fill-box;transform-origin:50% 100%}.gp-talk .fl-who,.gp-talk .flp-ch svg{animation:flTalk .42s ease-in-out infinite alternate}' +
     '@keyframes flTalk{from{transform:translateY(0) scale(1)}to{transform:translateY(-4px) scale(1.03,0.98)}}' +
-    '@media (prefers-reduced-motion:reduce){.flb [class*="a-"],.fl-who,.flp-ch svg{animation:none!important}.fl-it{transition:none}}';
+    '@media (prefers-reduced-motion:reduce){.flb [class*="a-"],.fl-who,.flp-ch svg{animation:none!important}.fl-it{transition:none}.flb .a-roll{opacity:0!important}}';
   document.head.appendChild(css);
 
   /* ---------- scene drawing (400 x 250) ---------- */
@@ -25061,7 +25075,7 @@ S.extraMakers = function (n, level) {
       if (watch.length) sc.push(L.SC('Watch me', l.title, sw(watch)));
       if (tog.length) sc.push(L.SC('Let’s do it together', 'Try it with me', sw(tog)));
       if (turn.length) sc.push(L.SC('Your turn', 'Pause, think, then listen', sw(turn)));
-      if (tips.length) sc.push(L.rec(l.title, 'Let’s remember the tips from this lesson.', tips.map(strip)));
+      if (tips.length) sc.push(L.rec(l.title, 'Let’s remember the tips from this lesson. ' + tips.map(strip).map(function (t) { return /[.!?…]$/.test(t) ? t : t + '.'; }).join(' '), tips.map(strip)));
       eps.push(L.ep(l.title, strip(l.title).replace(/\?$/, '').toLowerCase() + '.', sc));
     });
     eps.forEach(function (e) { e.fl = true; });
@@ -25108,13 +25122,14 @@ S.extraMakers = function (n, level) {
     its.forEach(function (e) { if (e.classList.contains('fl-hl')) { e.classList.remove('fl-hl'); e.classList.add('fl-done'); } });
     el.classList.add('fl-hl');
     try { var bb = el.getBBox(), t = document.createElementNS('http://www.w3.org/2000/svg', 'text'); t.setAttribute('class', 'fl-num'); t.setAttribute('x', bb.x + bb.width / 2); t.setAttribute('y', bb.y - 3); t.setAttribute('text-anchor', 'middle'); t.setAttribute('font-size', Math.max(12, Math.min(30, bb.height * 0.75))); t.textContent = p.n; el.appendChild(t);
-      /* near the top of the picture: put the number under the thing instead */
-      var sv = el.ownerSVGElement, sr = sv && sv.getBoundingClientRect(), tr = t.getBoundingClientRect(); if (sr && tr.top < sr.top + 2) { t.setAttribute('y', bb.y + bb.height + Number(t.getAttribute('font-size'))); } } catch (e) { /* ignore */ }
+      /* let the number and the glow show outside a small picture, and keep the number fully on the screen */
+      var sv = el.ownerSVGElement; if (sv) sv.style.overflow = 'visible';
+      var stg = el.closest('.gp-stage, .flb-stage') || sv, sr = stg && stg.getBoundingClientRect(), tr = t.getBoundingClientRect(); if (sr && tr.top < sr.top + 4) { t.setAttribute('y', bb.y + bb.height + Number(t.getAttribute('font-size'))); } } catch (e) { /* ignore */ }
   }
   /* key words: when the story says one, it pops up on the screen (or glows if it is already in the picture) */
   var KEYS = [['breakfast', '🥣'], ['lunchtime', '🥪'], ['lunch', '🥪'], ['dinner', '🍝'], ['snack', '🍎'], ['school', '🏫'], ['bedtime', '🛏️'], ['bed', '🛏️'], ['bath', '🛁'], ['sleep', '😴'], ['wakes up', '⏰'], ['wake up', '⏰'],
     ['morning', '🌅'], ['afternoon', '☀️'], ['evening', '🌆'], ['night', '🌙'], ['minute', '⏱️'], ['hour', '🕐'], ['week', '📅'], ['weekend', '🎉'], ['picnic', '🧺'], ['shop', '🏪'], ['change', '🪙'], ['coins', '🪙'], ['notes', '💷'],
-    ['first', '1️⃣'], ['next', '➡️'], ['last', '🏁'], ['double', '👯'], ['half', '🌗'], ['quarter', '◔'], ['total', '🧮'], ['altogether', '🧮'], ['take away', '➖'], ['add', '➕'],
+    ['first', '1️⃣'], ['last', '🏁'], ['double', '👯'], ['half', '🌗'], ['quarter', '◔'], ['total', '🧮'], ['altogether', '🧮'], ['take away', '➖'], ['add', '➕'],
     ['Monday', ''], ['Tuesday', ''], ['Wednesday', ''], ['Thursday', ''], ['Friday', ''], ['Saturday', ''], ['Sunday', ''], ['January', ''], ['February', ''], ['December', '']];
   var TNUM = { one: 1, two: 2, three: 3, four: 4, five: 5, six: 6, seven: 7, eight: 8, nine: 9, ten: 10, eleven: 11, twelve: 12 };
   function keyFind(t) {
@@ -25304,48 +25319,58 @@ S.extraMakers = function (n, level) {
           pg(P('space', 'rocket', FL.starTens(2, 3)), 'Ruby fills two tanks with ten stars each. She has three more stars too.', Q('How many stars is that?', [5, 23, 32], 23, 'Two tens and three ones make twenty-three.')),
           pg(P('space', 'rocket', stones([7, 3, 5], true)), 'Ruby visits three planets. Each planet has a number.', Q('Which number is the smallest?', [3, 5, 7], 3, 'Three is the smallest. On a number line, three comes before five and seven.')),
           pg(P('space', 'rocket', tank(10, true)), 'Ruby’s tank is full with ten stars. Oh no, one star rolls away!', Q('What is one less than <b>10</b>?', [8, 9, 11], 9, 'One less than ten is nine.')),
-          pg(P('space', 'rocket', tank(9)), 'Ruby catches the star. Now she has nine stars, and the star she caught.', Q('What is one more than <b>9</b>?', [8, 10, 11], 10, 'One more than nine is ten.'))
+          pg(P('space', 'rocket', '<div style="width:244px;max-width:100%">' + FL.svg(244, 116, 'A fuel tank with 10 stars', '<g transform="translate(12 12)">' + FL.tank(0, 0, 10, 9) + '</g>', 244) + '</div>'), 'Ruby catches the star and puts it back in her tank.', Q('What is one more than <b>9</b>?', [8, 10, 11], 10, 'One more than nine is ten.'))
         ];
       })() },
     /* Let's learn: short lessons that carry on Ruby's story, one small idea at a time */
-    learn: [
-      { title: 'How can I use number patterns to work out a sequence?', char: 'rocket', screens: [
-        { mode: 'watch', say: 'Back at the pond, I hop on the stepping stones. One, two, three, four. Each stone is one more.', pic: function () { return FL.scene('pond', FL.who('rocket', 290, 25, 95, 'bob') + FL.stones([1, 2, 3, 4], 195)); } },
-        { mode: 'watch', say: 'Now the stones go up in twos. Two, four, six, eight. I jump two each time.', pic: function () { return FL.scene('pond', FL.who('rocket', 290, 25, 95, 'bob') + FL.stones([2, 4, 6, 8], 195)); } },
-        { mode: 'watch', say: 'I pack my stars in boxes of ten. Ten, twenty, thirty, forty stars!', pic: function () { return FL.scene('space', [0, 1, 2, 3].map(function (k) { return '<g class="a-pop" style="animation-delay:' + (k * .5 + .2) + 's"><rect x="' + (22 + k * 92) + '" y="80" width="80" height="80" rx="10" fill="#fff" stroke="#2b2340" stroke-width="3"/>' + FL.tx(62 + k * 92, 132, (k + 1) * 10, 28, '#2b2340') + '</g>'; }).join('')); } },
-        { mode: 'together', say: 'Help me hop! Five, six, seven … what number is on the next stone?', pic: function () { return FL.scene('pond', FL.who('rocket', 290, 25, 95, 'bob') + FL.stones([5, 6, 7, '?'], 195)); }, tip: 'Each stone is one more. Count on one from seven.', options: [6, 8, 9], answer: 8, explain: 'Seven, eight. I can hop on!' },
-        { mode: 'together', say: 'These stones go two, four, six … what comes next?', pic: function () { return FL.scene('pond', FL.who('rocket', 290, 25, 95, 'bob') + FL.stones([2, 4, 6, '?'], 195)); }, tip: 'Jump in twos: whisper seven, say eight out loud!', options: [7, 8, 9], answer: 8, explain: 'Six, then eight.' },
-        { mode: 'turn', say: 'One box of stars has lost its number. Ten, twenty, blank, forty. What is missing?', pic: function () { return FL.scene('space', [10, 20, '?', 40].map(function (v, k) { return '<rect x="' + (22 + k * 92) + '" y="80" width="80" height="80" rx="10" fill="' + (v === '?' ? '#ffd166' : '#fff') + '" stroke="#2b2340" stroke-width="3"/>' + FL.tx(62 + k * 92, 132, v, 28, '#2b2340'); }).join('')); }, tip: 'The boxes go up in tens.', options: [25, 30, 50], answer: 30, explain: 'Ten, twenty, thirty, forty.' },
-        { mode: 'turn', say: 'Blast-off countdown! Nine, eight, seven … what comes next?', pic: function () { return FL.scene('space', FL.who('rocket', 150, 40, 120, 'wig') + FL.label(200, 232, '9 … 8 … 7 … ?', 30)); }, tip: 'Count back one from seven.', options: [6, 8, 10], answer: 6, explain: 'Seven, then six.' }
-      ] },
-      { title: 'What are tens and ones?', char: 'rocket', screens: [
-        { mode: 'watch', say: 'My fuel tank holds ten stars. A full tank is one ten.', pic: function () { return FL.starTens(1, 0); } },
-        { mode: 'watch', say: 'One full tank and three loose stars. Ten and three make thirteen.', pic: function () { return FL.starTens(1, 3); } },
-        { mode: 'watch', say: 'Two full tanks and five loose stars. Twenty and five make twenty-five.', pic: function () { return FL.starTens(2, 5); } },
-        { mode: 'together', say: 'One full tank and six loose stars. How many stars do I have?', pic: function () { return FL.starTens(1, 6); }, tip: 'Say ten for the tank, then count on the loose stars: eleven, twelve …', options: [16, 61, 7], answer: 16, explain: 'Ten and six make sixteen.' },
-        { mode: 'together', say: 'One full tank and four loose stars. How many?', pic: function () { return FL.starTens(1, 4); }, tip: 'A full tank is ten. Count on four.', options: [14, 10, 4], answer: 14, explain: 'Ten and four make fourteen.' },
-        { mode: 'turn', say: 'Three full tanks and no loose stars. How many stars?', pic: function () { return FL.starTens(3, 0); }, tip: 'Count the tanks in tens: ten, twenty, thirty.', options: [3, 30, 13], answer: 30, explain: 'Three tens are thirty.' },
-        { mode: 'turn', say: 'Two full tanks and seven loose stars. How many stars?', pic: function () { return FL.starTens(2, 7); }, tip: 'Twenty, then count on seven.', options: [27, 72, 9], answer: 27, explain: 'Twenty and seven make twenty-seven.' }
-      ] },
-      { title: 'How do I order numbers on a number line?', char: 'rocket', screens: [
-        { mode: 'watch', say: 'My flight path is a number line. The numbers get bigger as I fly along.', pic: function () { return FL.scene('space', FL.who('rocket', 0, 30, 90, 'in') + FL.stones([1, 2, 3, 4, 5, 6], 200, true)); } },
-        { mode: 'watch', say: 'Planet three comes before planet seven, so three is smaller than seven.', pic: function () { return FL.scene('space', FL.stones([3, 4, 5, 6, 7], 200, true) + FL.label(70, 120, '◀ smaller', 18) + FL.label(330, 120, 'bigger ▶', 18)); } },
-        { mode: 'watch', say: 'Planet twelve comes after planet nine, so twelve is bigger than nine.', pic: function () { return FL.scene('space', FL.stones([9, 10, 11, 12], 200, true)); } },
-        { mode: 'together', say: 'Which planet is further along my path, four or nine?', pic: function () { return FL.scene('space', FL.who('rocket', 0, 30, 90, 'bob') + FL.stones([2, 4, 6, 9], 200, true)); }, tip: 'The bigger number is further along the path.', options: [4, 9], answer: 9, explain: 'Nine is further along, so nine is bigger.' },
-        { mode: 'together', say: 'A planet has lost its number. Five, blank, seven. What is it?', pic: function () { return FL.scene('space', FL.stones([5, '?', 7], 200, true)); }, tip: 'What comes just after five?', options: [4, 6, 8], answer: 6, explain: 'Five, six, seven.' },
-        { mode: 'turn', say: 'Put my planets in order, smallest first.', pic: function () { return FL.scene('space', FL.stones([8, 2, 5], 200, true)); }, options: ['2, 5, 8', '8, 5, 2', '5, 2, 8'], answer: '2, 5, 8', tip: 'Start with the number nearest the start of the path.', explain: 'Two, five, eight.' },
-        { mode: 'turn', say: 'Which planet comes first, fifteen or twelve?', pic: function () { return FL.scene('space', FL.stones([15, 12], 200, true)); }, tip: 'The smaller number comes first on the path.', options: [12, 15], answer: 12, explain: 'Twelve comes before fifteen.' }
-      ] },
-      { title: 'What is one more and one less?', char: 'rocket', screens: [
-        { mode: 'watch', say: 'I have four stars. One more star flies in. Now I have five! One more than four is five.', pic: function () { return FL.scene('space', [0, 1, 2, 3].map(function (k) { return FL.bit('star', 70 + k * 60, 130, '', 0, null, 1.6); }).join('') + FL.bit('star', 315, 130, 'fly', .4, null, 1.6)); } },
-        { mode: 'watch', say: 'I have six stars. One star rolls away. Now I have five. One less than six is five.', pic: function () { return FL.scene('space', [0, 1, 2, 3, 4].map(function (k) { return FL.bit('star', 60 + k * 55, 130, '', 0, null, 1.5); }).join('') + FL.bit('star', 335, 130, 'roll', .6, null, 1.5)); } },
-        { mode: 'watch', say: 'On my flight path, one more is one hop forward. One less is one hop back.', pic: FL.track(5, 9, [6, 7, 8], [[7, 8], [7, 6, 1]]) },
-        { mode: 'together', say: 'I have eight stars. One more flies in. How many now?', pic: function () { return FL.scene('space', [0, 1, 2, 3, 4, 5, 6, 7].map(function (k) { return FL.bit('star', 50 + (k % 4) * 60, 80 + Math.floor(k / 4) * 70, '', 0, null, 1.4); }).join('') + FL.bit('star', 330, 115, 'fly', .4, null, 1.4)); }, tip: 'One more than eight: count on one.', options: [7, 9, 10], answer: 9, explain: 'One more than eight is nine.' },
-        { mode: 'together', say: 'My tank has ten stars. One rolls away. How many are left?', pic: function () { return FL.scene('space', FL.tank(85, 75, 10, 10, true)); }, tip: 'One less than ten: count back one.', options: [9, 11, 8], answer: 9, explain: 'One less than ten is nine.' },
-        { mode: 'turn', say: 'I have fourteen stars and find one more. How many now?', pic: function () { return FL.starTens(1, 4); }, options: [13, 15, 16], answer: 15, tip: 'Count on one: fourteen, fifteen.', explain: 'One more than fourteen is fifteen.' },
-        { mode: 'turn', say: 'I have twenty stars and one rolls away. How many are left?', pic: function () { return FL.starTens(2, 0); }, options: [19, 21, 10], answer: 19, tip: 'Count back one from twenty.', explain: 'One less than twenty is nineteen.' }
-      ] }
-    ],
+    learn: (function () {
+      /* the same picture panels as Benny's Picnic: Ruby on the left, the things to look at on the right */
+      var P = FL.panel, T = FL.things, INK = '#2b2340';
+      function tank(n, roll, from) { return '<div style="width:190px;max-width:100%">' + FL.svg(244, 116, 'A fuel tank with ' + n + ' stars', '<g transform="translate(12 12)">' + FL.tank(0, 0, n, from == null ? n : from, roll) + '</g>', 244) + '</div>'; }
+      function tens(t, o) { var s = ''; for (var k = 0; k < t; k++) s += tank(10); return '<div style="display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:center">' + s + (o ? '<div style="max-width:200px">' + T(o, 'star', 5) + '</div>' : '') + '</div>'; }
+      function stones(list, planet) { return FL.svg(400, 120, planet ? 'Planets with numbers' : 'Stepping stones', FL.stones(list, 70, planet), 400); }
+      function boxes(list) { return FL.svg(400, 110, 'Boxes of stars', list.map(function (v, k) { return '<rect x="' + (22 + k * 92) + '" y="15" width="80" height="80" rx="10" fill="' + (v === '?' ? '#ffd166' : '#fff') + '" stroke="' + INK + '" stroke-width="3"/>' + FL.tx(62 + k * 92, 67, v, 28, INK); }).join(''), 400); }
+      function big(t) { return '<div style="font-size:2.2rem;font-weight:800;color:' + INK + ';background:#fff;border:3px solid ' + INK + ';border-radius:16px;padding:6px 18px">' + t + '</div>'; }
+      function plus(a, b) { return '<div style="display:flex;gap:10px;align-items:center;justify-content:center;flex-wrap:wrap"><div style="max-width:220px">' + T(a, 'star', 5) + '</div><b style="font-size:2em;color:#fff">+</b><div style="max-width:60px">' + T(b, 'star', 1) + '</div></div>'; }
+      return [
+        { title: 'How can I use number patterns to work out a sequence?', char: 'rocket', screens: [
+          { mode: 'watch', say: 'I hop on the stepping stones. One, two, three, four. Each stone is one more.', pic: P('pond', '', stones([1, 2, 3, 4])) },
+          { mode: 'watch', say: 'Now the stones go up in twos. Two, four, six, eight. I jump two each time.', pic: P('pond', '', stones([2, 4, 6, 8])) },
+          { mode: 'watch', say: 'I pack my stars in boxes of ten. Ten, twenty, thirty, forty stars!', pic: P('space', '', boxes([10, 20, 30, 40])) },
+          { mode: 'together', say: 'Help me hop! Five, six, seven … what number is on the next stone?', pic: P('pond', '', stones([5, 6, 7, '?'])), tip: 'Each stone is one more. Count on one from seven.', options: [6, 8, 9], answer: 8, explain: 'Seven, eight. I can hop on!' },
+          { mode: 'together', say: 'These stones go two, four, six … what comes next?', pic: P('pond', '', stones([2, 4, 6, '?'])), tip: 'Jump in twos: whisper seven, say eight out loud!', options: [7, 8, 9], answer: 8, explain: 'Six, then eight.' },
+          { mode: 'turn', say: 'One box of stars has lost its number. Ten, twenty, blank, forty. What is missing?', pic: P('space', '', boxes([10, 20, '?', 40])), tip: 'Count in tens.', options: [25, 30, 50], answer: 30, explain: 'Ten, twenty, thirty, forty.' },
+          { mode: 'turn', say: 'Blast-off countdown! Nine, eight, seven … what comes next?', pic: P('space', '', big('9 … 8 … 7 … ?')), tip: 'Count back one from seven.', options: [6, 8, 10], answer: 6, explain: 'Seven, then six.' }
+        ] },
+        { title: 'What are tens and ones?', char: 'rocket', screens: [
+          { mode: 'watch', say: 'My fuel tank holds ten stars. A full tank is one ten.', pic: P('space', '', tens(1, 0)) },
+          { mode: 'watch', say: 'One full tank and three loose stars. Ten and three make thirteen.', pic: P('space', '', tens(1, 3)) },
+          { mode: 'watch', say: 'Two full tanks and five loose stars. Twenty and five make twenty-five.', pic: P('space', '', tens(2, 5)) },
+          { mode: 'together', say: 'One full tank and six loose stars. How many stars do I have?', pic: P('space', '', tens(1, 6)), tip: 'Say ten for the tank, then count on the loose stars: eleven, twelve …', options: [16, 61, 7], answer: 16, explain: 'Ten and six make sixteen.' },
+          { mode: 'together', say: 'One full tank and four loose stars. How many?', pic: P('space', '', tens(1, 4)), tip: 'A full tank is ten. Count on four.', options: [14, 10, 4], answer: 14, explain: 'Ten and four make fourteen.' },
+          { mode: 'turn', say: 'Three full tanks and no loose stars. How many stars?', pic: P('space', '', tens(3, 0)), tip: 'Count the tanks in tens: ten, twenty, thirty.', options: [3, 30, 13], answer: 30, explain: 'Three tens are thirty.' },
+          { mode: 'turn', say: 'Two full tanks and seven loose stars. How many stars?', pic: P('space', '', tens(2, 7)), tip: 'Twenty, then count on seven.', options: [27, 72, 9], answer: 27, explain: 'Twenty and seven make twenty-seven.' }
+        ] },
+        { title: 'How do I order numbers on a number line?', char: 'rocket', screens: [
+          { mode: 'watch', say: 'My flight path is a number line. The numbers get bigger as I fly along.', pic: P('space', '', FL.track(1, 6, [])) },
+          { mode: 'watch', say: 'Three comes before seven, so three is smaller than seven.', pic: P('space', '', FL.track(3, 7, [3, 7])) },
+          { mode: 'watch', say: 'Twelve comes after nine, so twelve is bigger than nine.', pic: P('space', '', FL.track(9, 12, [9, 12])) },
+          { mode: 'together', say: 'Which planet is further along my path, four or nine?', pic: P('space', '', stones([2, 4, 6, 9], true)), tip: 'The bigger number is further along the path.', options: [4, 9], answer: 9, explain: 'Nine is further along, so nine is bigger.' },
+          { mode: 'together', say: 'A planet has lost its number. Five, blank, seven. What is it?', pic: P('space', '', stones([5, '?', 7], true)), tip: 'What comes just after five?', options: [4, 6, 8], answer: 6, explain: 'Five, six, seven.' },
+          { mode: 'turn', say: 'Put my planets in order, smallest first.', pic: P('space', '', stones([8, 2, 5], true)), options: ['2, 5, 8', '8, 5, 2', '5, 2, 8'], answer: '2, 5, 8', tip: 'Start with the smallest number.', explain: 'Two, five, eight.' },
+          { mode: 'turn', say: 'Which planet comes first, fifteen or twelve?', pic: P('space', '', stones([15, 12], true)), tip: 'The smaller number comes first on the path.', options: [12, 15], answer: 12, explain: 'Twelve comes before fifteen.' }
+        ] },
+        { title: 'What is one more and one less?', char: 'rocket', screens: [
+          { mode: 'watch', say: 'I have four stars. One more star flies in. Now I have five! One more than four is five.', pic: P('space', '', plus(4, 1)) },
+          { mode: 'watch', say: 'I have six stars. One star rolls away. Now I have five. One less than six is five.', pic: P('space', '', '<div style="max-width:300px">' + T(5, 'star', 5) + '</div>') },
+          { mode: 'watch', say: 'On my flight path, one more is one hop forward. One less is one hop back.', pic: P('space', '', FL.track(5, 9, [6, 7, 8], [[7, 8], [7, 6, 1]])) },
+          { mode: 'together', say: 'I have eight stars. One more flies in. How many now?', pic: P('space', '', plus(8, 1)), tip: 'One more than eight: count on one.', options: [7, 9, 10], answer: 9, explain: 'Eight, then nine.' },
+          { mode: 'together', say: 'My tank has ten stars. One rolls away. How many are left?', pic: P('space', '', tank(10, true, 10)), tip: 'One less than ten: count back one.', options: [9, 11, 8], answer: 9, explain: 'One less than ten is nine.' },
+          { mode: 'turn', say: 'I have fourteen stars and find one more. How many now?', pic: P('space', '', tens(1, 4)), options: [13, 15, 16], answer: 15, tip: 'Count on one: fourteen, fifteen.', explain: 'One more than fourteen is fifteen.' },
+          { mode: 'turn', say: 'I have twenty stars and one rolls away. How many are left?', pic: P('space', '', tens(2, 0)), options: [19, 21, 10], answer: 19, tip: 'Count back one from twenty.', explain: 'One less than twenty is nineteen.' }
+        ] }
+      ];
+    })(),
     acts: [
       ['Count them!', 'Count the pictures. Tap the right number.', FL.rounds(function (k) { var n = r(3, k > 2 ? 20 : 10), kind = pick(['star', 'apple', 'fish', 'duck', 'balloon', 'car']); return { vis: FL.things(n, kind), q: 'How many ' + kind + 's?', answer: String(n), wrong: nums(n, [n - 1, n + 1, n + 2, n - 2]), explain: 'Count them in fives: there are ' + n + '.' }; }, 6)],
       ['Fill the ten-frame', 'Tap the boxes to show a number.', FL.fillFrame([3, 5, 7, 9, 10, 12, 15])],

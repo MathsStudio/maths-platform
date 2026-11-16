@@ -59,7 +59,7 @@
     '@keyframes flTw{0%,100%{transform:scale(1);opacity:1}50%{transform:scale(.8);opacity:.7}}' +
     '@keyframes flDrop{0%{transform:translateY(-140px);opacity:0}100%{transform:translateY(0);opacity:1}}' +
     '@keyframes flFly{0%{transform:translate(-160px,-60px) scale(.4);opacity:0}100%{transform:translate(0,0) scale(1);opacity:1}}' +
-    '@keyframes flRoll{0%{transform:translate(0,0) rotate(0)}100%{transform:translate(170px,40px) rotate(540deg);opacity:.2}}' +
+    '@keyframes flRoll{0%{transform:translate(0,0) rotate(0);opacity:1}80%{opacity:.6}100%{transform:translate(170px,40px) rotate(540deg);opacity:0}}' +
     '@keyframes flUp{0%{transform:translateY(0)}20%{transform:translateY(4px)}100%{transform:translateY(-320px)}}' +
     '@keyframes flWig{0%,100%{transform:rotate(0)}25%{transform:rotate(-6deg)}75%{transform:rotate(6deg)}}' +
     '@keyframes flIn{0%{transform:translateX(-60px);opacity:0}100%{transform:translateX(0);opacity:1}}' +
@@ -73,7 +73,7 @@
     '.fl-num{font-weight:900;fill:#e0457b;stroke:#fff;stroke-width:3px;paint-order:stroke;animation:flPop .4s cubic-bezier(.3,1.6,.6,1) both;font-family:inherit}' +
     '.fl-who{transform-box:fill-box;transform-origin:50% 100%}.gp-talk .fl-who,.gp-talk .flp-ch svg{animation:flTalk .42s ease-in-out infinite alternate}' +
     '@keyframes flTalk{from{transform:translateY(0) scale(1)}to{transform:translateY(-4px) scale(1.03,0.98)}}' +
-    '@media (prefers-reduced-motion:reduce){.flb [class*="a-"],.fl-who,.flp-ch svg{animation:none!important}.fl-it{transition:none}}';
+    '@media (prefers-reduced-motion:reduce){.flb [class*="a-"],.fl-who,.flp-ch svg{animation:none!important}.fl-it{transition:none}.flb .a-roll{opacity:0!important}}';
   document.head.appendChild(css);
 
   /* ---------- scene drawing (400 x 250) ---------- */
@@ -162,7 +162,7 @@
       if (watch.length) sc.push(L.SC('Watch me', l.title, sw(watch)));
       if (tog.length) sc.push(L.SC('Let’s do it together', 'Try it with me', sw(tog)));
       if (turn.length) sc.push(L.SC('Your turn', 'Pause, think, then listen', sw(turn)));
-      if (tips.length) sc.push(L.rec(l.title, 'Let’s remember the tips from this lesson.', tips.map(strip)));
+      if (tips.length) sc.push(L.rec(l.title, 'Let’s remember the tips from this lesson. ' + tips.map(strip).map(function (t) { return /[.!?…]$/.test(t) ? t : t + '.'; }).join(' '), tips.map(strip)));
       eps.push(L.ep(l.title, strip(l.title).replace(/\?$/, '').toLowerCase() + '.', sc));
     });
     eps.forEach(function (e) { e.fl = true; });
@@ -209,13 +209,14 @@
     its.forEach(function (e) { if (e.classList.contains('fl-hl')) { e.classList.remove('fl-hl'); e.classList.add('fl-done'); } });
     el.classList.add('fl-hl');
     try { var bb = el.getBBox(), t = document.createElementNS('http://www.w3.org/2000/svg', 'text'); t.setAttribute('class', 'fl-num'); t.setAttribute('x', bb.x + bb.width / 2); t.setAttribute('y', bb.y - 3); t.setAttribute('text-anchor', 'middle'); t.setAttribute('font-size', Math.max(12, Math.min(30, bb.height * 0.75))); t.textContent = p.n; el.appendChild(t);
-      /* near the top of the picture: put the number under the thing instead */
-      var sv = el.ownerSVGElement, sr = sv && sv.getBoundingClientRect(), tr = t.getBoundingClientRect(); if (sr && tr.top < sr.top + 2) { t.setAttribute('y', bb.y + bb.height + Number(t.getAttribute('font-size'))); } } catch (e) { /* ignore */ }
+      /* let the number and the glow show outside a small picture, and keep the number fully on the screen */
+      var sv = el.ownerSVGElement; if (sv) sv.style.overflow = 'visible';
+      var stg = el.closest('.gp-stage, .flb-stage') || sv, sr = stg && stg.getBoundingClientRect(), tr = t.getBoundingClientRect(); if (sr && tr.top < sr.top + 4) { t.setAttribute('y', bb.y + bb.height + Number(t.getAttribute('font-size'))); } } catch (e) { /* ignore */ }
   }
   /* key words: when the story says one, it pops up on the screen (or glows if it is already in the picture) */
   var KEYS = [['breakfast', '🥣'], ['lunchtime', '🥪'], ['lunch', '🥪'], ['dinner', '🍝'], ['snack', '🍎'], ['school', '🏫'], ['bedtime', '🛏️'], ['bed', '🛏️'], ['bath', '🛁'], ['sleep', '😴'], ['wakes up', '⏰'], ['wake up', '⏰'],
     ['morning', '🌅'], ['afternoon', '☀️'], ['evening', '🌆'], ['night', '🌙'], ['minute', '⏱️'], ['hour', '🕐'], ['week', '📅'], ['weekend', '🎉'], ['picnic', '🧺'], ['shop', '🏪'], ['change', '🪙'], ['coins', '🪙'], ['notes', '💷'],
-    ['first', '1️⃣'], ['next', '➡️'], ['last', '🏁'], ['double', '👯'], ['half', '🌗'], ['quarter', '◔'], ['total', '🧮'], ['altogether', '🧮'], ['take away', '➖'], ['add', '➕'],
+    ['first', '1️⃣'], ['last', '🏁'], ['double', '👯'], ['half', '🌗'], ['quarter', '◔'], ['total', '🧮'], ['altogether', '🧮'], ['take away', '➖'], ['add', '➕'],
     ['Monday', ''], ['Tuesday', ''], ['Wednesday', ''], ['Thursday', ''], ['Friday', ''], ['Saturday', ''], ['Sunday', ''], ['January', ''], ['February', ''], ['December', '']];
   var TNUM = { one: 1, two: 2, three: 3, four: 4, five: 5, six: 6, seven: 7, eight: 8, nine: 9, ten: 10, eleven: 11, twelve: 12 };
   function keyFind(t) {
