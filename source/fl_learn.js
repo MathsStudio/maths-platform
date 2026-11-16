@@ -33,6 +33,110 @@
     return { q: w.q, steps: w.steps, final: w.final, render: function (k) { var p = w.pics || (w.pic ? [w.pic] : []); return p[Math.min(k, p.length - 1)] || ''; } };
   }
 
+  /* Draw it: the child draws something NEW, not a copy of the picture already on screen.
+     Number lines with jumps: the pad shows the same line without the jumps, and the child draws the jumps.
+     Tens and ones: the child builds a new number by tapping ten sticks and ones. */
+  var DRAWT = {
+    'Find them on the number line.': 'Your turn: draw a number line from 0 to 10. Circle 3 and 8.',
+    'Turn it round: 5 apples and 3 apples. Still 8.': 'Your turn: draw 2 apples and 6 apples. Then turn it round: 6 and 2. Still 8.',
+    '4 + 4 is 8. The 5 is one more.': 'Your turn: draw 3 dots and 3 dots. Then draw 3 dots and 4 dots. That is one more.',
+    '3 and 4 make 7, so 3 are left.': 'Your turn: draw 6 dots. Cross out 2. How many are left?',
+    'Pound coins too: £1 and £2.': 'Your turn: draw a £2 coin and a £1 coin. How much is that?',
+    '5p and 5p make 10p.': 'Your turn: draw two 10p coins. They make 20p.',
+    'Use a 5p, a 2p and a 1p.': 'Your turn: draw coins that make 7p.',
+    'The long hand points to 12. The short hand points to 7.': 'Your turn: draw a clock that shows 3 o’clock.',
+    'Then the weekend: Saturday and Sunday.': 'Your turn: draw something you do at the weekend.',
+    'Wake up in the morning. Lunch in the afternoon. Bed at night.': 'Your turn: draw something you do in the morning, and something you do at night.',
+    'A swimming lesson takes about 1 hour.': 'Your turn: draw something that takes about 1 minute, like washing your hands.',
+    'A triangle has 3 sides and 3 corners.': 'Your turn: draw a square. Count its 4 sides and 4 corners.',
+    'The ball is 3D. The circle is flat: 2D.': 'Your turn: draw a flat shape, like a square or a triangle.',
+    'He sorts them: circles here, squares there, triangles there.': 'Your turn: draw 3 circles and 2 triangles. Put them in two groups.',
+    'He makes a tally: one mark for each.': 'Your turn: draw a tally for 4.',
+    'In a place value chart: 1 hundred, 3 tens and 6 ones.': 'Your turn: draw a place value chart for 254.',
+    'The hundreds are the same. Look at the tens: 2 tens and 4 tens.': 'Your turn: draw 3 tens and 5 tens. Which is more?',
+    'Three and seven fill a ten-frame. Then 8 more.': 'Your turn: draw a ten-frame. Fill it with 6 and 4.',
+    'Start at 35. Jump ten to 45, ten to 55, then 4 ones to 59.': 'Your turn: draw a number line. Start at 24 and jump ten to 34, then ten to 44.',
+    'Draw 3 rows of 5 dots.': 'Your turn: draw 2 rows of 4 dots.',
+    'Draw it as dots: 2 rows, 5 in each row.': 'Your turn: draw 3 rows with 3 dots in each row.',
+    'Turn an array round and it has the same number of dots.': 'Your turn: draw 2 rows of 3 dots. Then draw 3 rows of 2 dots.',
+    'Give one to each friend in turn. Each friend gets 4.': 'Your turn: share 6 dots between 2 friends. Draw them.',
+    'As an array: 3 rows, 5 in each row.': 'Your turn: draw 2 rows with 6 in each row.',
+    '8 split into 2 equal parts is 4 and 4.': 'Your turn: draw 10 dots split into 2 equal parts.',
+    'Draw a bar and split it into 2 equal parts. Shade 1. That is one half.': 'Your turn: draw a bar in 4 equal parts. Shade 1. That is one quarter.',
+    'Shade 3 of the 4 equal parts.': 'Your turn: draw a square in 4 equal parts. Shade 2 of them.',
+    'Now share 8 between 4 bowls: 2 each. That is a quarter.': 'Your turn: draw 12 dots in 4 equal groups.',
+    'This circle has 4 equal parts with 2 shaded.': 'Your turn: draw a circle in 2 equal parts. Shade 1.',
+    'More ways to make 20p.': 'Your turn: draw coins that make 15p.',
+    'From 12 to 3 is a quarter of the way round the clock: a quarter of an hour.': 'Your turn: draw a clock that shows half past 2.',
+    'Start at one end. Put the cubes in a line with no gaps.': 'Your turn: draw a pencil, with cubes under it in a line and no gaps.',
+    'Line up 0 with the start of the object.': 'Your turn: draw a ruler and a stick 4 centimetres long.',
+    'The side that goes down is heavier. The side that goes up is lighter.': 'Your turn: draw a balance with an apple and a feather. Which side goes down?',
+    'The higher the water, the more it holds.': 'Your turn: draw two jugs. Make one hold more water.',
+    'A cube has 6 square faces.': 'Your turn: draw a square, then a cube.',
+    'Fold a square down the middle. The halves match.': 'Your turn: draw a heart with a line down the middle.',
+    'Two quarter turns make a half turn. Now she faces down.': 'Your turn: draw an arrow facing up. Then draw it after a half turn.',
+    'She keeps a tally: 6 is one group of 5 and 1 more.': 'Your turn: draw a tally for 8.',
+    'In a place value chart: 4 hundreds, 7 tens and 3 ones.': 'Your turn: draw a place value chart for 625.',
+    '362 is past the halfway point, 350. It is nearer 400.': 'Your turn: draw a number line from 200 to 300. Mark 280. Is it nearer 200 or 300?',
+    'On a number line, −3 is 3 steps to the left of 0.': 'Your turn: draw a number line from −5 to 5. Mark −2.',
+    'Line them up in columns, ones under ones.': 'Your turn: write 145 + 32 in columns, ones under ones.',
+    'Ones: 2 take away 7 does not work. Exchange 1 ten: now 12 ones and 4 tens.': 'Your turn: write 63 − 28 in columns and exchange a ten.',
+    'Round: 298 is about 300, and 403 is about 400.': 'Your turn: draw a number line and round 512 to the nearest hundred.',
+    'Double 12 on a bar: 12 and 12 makes 24.': 'Your turn: draw a bar for double 15.',
+    'Each crate is 2 tens. 3 crates is 6 tens.': 'Your turn: draw 4 crates with 2 tens in each. How many tens?',
+    'Split 14 into 10 and 4. Three 10s is 30, three 4s is 12.': 'Your turn: draw a grid to work out 13 × 4.',
+    'Turn the field round: 4 rows of 3. Still 12.': 'Your turn: draw 2 rows of 5. Then draw 5 rows of 2.',
+    'A bar in 3 parts and a bar in 5 parts: the thirds are bigger.': 'Your turn: draw a bar in 2 parts and a bar in 4 parts. Which parts are bigger?',
+    'Half of a bar is shaded. Half of 100 is 50, so half is 50%.': 'Your turn: draw a bar in 4 equal parts. Shade 1. That is 25%.',
+    'One step is 1/4. Three steps is 3/4.': 'Your turn: draw a number line from 0 to 1 in quarters. Mark 2/4.',
+    'Share 20 into 4 equal groups: 5 in each.': 'Your turn: share 12 into 3 equal groups.',
+    'Count on: £3.40 to £4 is 60p. £4 to £5 is £1.': 'Your turn: draw a number line from £2.70 to £4. Count on.',
+    '£2.50 could be £2 + 50p, or £1 + £1 + 50p.': 'Your turn: draw coins that make £1.20.',
+    '2 for 60p: halve it. That is 30p for one.': 'Your turn: draw 2 apples for 80p. How much is one?',
+    'Add: £1.50 + £2.20 = £3.70. Then + 90p = £4.60.': 'Your turn: write £1.30 + £2.40.',
+    '9:45 to 10:00 is 15 minutes. 10:00 to 10:15 is 15 more.': 'Your turn: draw a time line from 2:30 to 3:00.',
+    'Count in 5s from 12 to 4: 5, 10, 15, 20.': 'Your turn: draw a clock that shows 20 past 3.',
+    'A day goes from midnight, through midday, back to midnight.': 'Your turn: draw a sun for am and a moon for pm.',
+    'Find Perth in the rows and Train 1 in the columns.': 'Your turn: draw a table with 2 rows and 2 columns.',
+    'There are 3 rows of 4 squares.': 'Your turn: draw 2 rows of 5 squares. Count them.',
+    'A metre stick has 100 centimetres marked on it.': 'Your turn: draw a line about 10 centimetres long.',
+    'A rectangle has 4 sides: two 5 m sides and two 3 m sides.': 'Your turn: draw a rectangle with sides of 4 m and 2 m. Add all four sides.',
+    'The numbers go up in 10s, with a mark halfway. Each step is 5.': 'Your turn: draw a scale from 0 to 20 going up in 5s.',
+    'Squares fit side by side with no gaps.': 'Your turn: draw 4 triangles that fit together with no gaps.',
+    'Go along to column C, then up to row 4.': 'Your turn: draw a grid and put a star at B3.',
+    'A quarter turn makes a right angle.': 'Your turn: draw a right angle.',
+    'Clockwise from North: North, East, South, West.': 'Your turn: draw a compass with N, E, S and W.',
+    'Rainy: 8 is one group of 5 and 3 more.': 'Your turn: draw a tally for 12.',
+    'Each day has its own column.': 'Your turn: draw a table with a column for each day.',
+    '4 is even only. 15 is more than 10 only. 12 is both.': 'Your turn: draw two circles that overlap. Put 6 in the even circle.',
+    'On a line from impossible to certain, it is near the impossible end.': 'Your turn: draw a line from impossible to certain. Mark where “It will snow today” goes.'
+  };
+  /* tens and ones: build a new number by tapping */
+  var BUILD = { 'Draw it: 2 sticks of ten and 3 ones.': [3, 5], 'Tens together: 5 tens. Ones together: 9 ones.': [4, 6] };
+  function build(host, t0, o0) {
+    var t = 0, o = 0, want = t0 * 10 + o0, box = document.createElement('div');
+    box.className = 'flbuild';
+    box.innerHTML = '<div class="flbuild-in"><div class="flbuild-tray"><button type="button" data-a="t" aria-label="Add a ten stick">' + '<svg viewBox="0 0 14 54" width="14" height="44" aria-hidden="true">' + [0, 1, 2, 3, 4, 5, 6, 7, 8, 9].map(function (j) { return '<rect x="1" y="' + (1 + j * 5.2) + '" width="12" height="5.2" fill="#4aa8ff" stroke="#2b2340" stroke-width="1"/>'; }).join('') + '</svg>' + '<span>Add a ten</span></button><button type="button" data-a="o" aria-label="Add a one">' + '<svg viewBox="0 0 20 20" width="22" height="22" aria-hidden="true"><rect x="2" y="2" width="16" height="16" fill="#ffd166" stroke="#2b2340" stroke-width="2"/></svg>' + '<span>Add a one</span></button><button type="button" data-a="x" class="flbuild-clear">Start again</button></div>' +
+      '<div class="flbuild-mat" aria-live="polite"></div><p class="flbuild-fb"></p></div>';
+    host.appendChild(box);
+    var mat = box.querySelector('.flbuild-mat'), fb = box.querySelector('.flbuild-fb');
+    function draw() {
+      mat.innerHTML = t || o ? FL.tensOnes(t, o) : '<span class="flbuild-hint">Tap to add tens and ones here.</span>';
+      var n = t * 10 + o;
+      if (n === want && t === t0) { fb.className = 'flbuild-fb ok'; fb.textContent = 'Well done! ' + t0 + ' tens and ' + o0 + ' ones make ' + want + '.'; }
+      else if (t > t0 || o > o0) { fb.className = 'flbuild-fb no'; fb.textContent = 'Too many. ' + want + ' is ' + t0 + ' tens and ' + o0 + ' ones. Tap Start again.'; }
+      else { fb.className = 'flbuild-fb'; fb.textContent = 'Tens: ' + t + '   Ones: ' + o; }
+    }
+    box.addEventListener('click', function (e) { var b = e.target.closest('[data-a]'); if (!b) return; var a = b.getAttribute('data-a'); if (a === 't') t++; else if (a === 'o') o++; else { t = 0; o = 0; } draw(); });
+    draw();
+  }
+  if (!document.getElementById('flbuild-css')) { var bc = document.createElement('style'); bc.id = 'flbuild-css';
+    bc.textContent = '.flbuild{margin:10px 0}.flbuild-in{display:grid;gap:10px;background:var(--panel,#eef2fb);border-radius:16px;padding:12px}.flbuild-tray{display:flex;flex-wrap:wrap;gap:8px;justify-content:center}' +
+      '.flbuild-tray button{display:flex;align-items:center;gap:6px;min-height:52px;padding:6px 12px;border-radius:14px;border:3px solid #2b2340;background:#fff;color:#2b2340;font:inherit;font-weight:800;cursor:pointer}.flbuild-tray button svg{flex:none}.flbuild-tray .flbuild-clear{background:#f3eefc}' +
+      '.flbuild-mat{min-height:150px;display:flex;align-items:center;justify-content:center;background:#fff;border:3px dashed #9a8fc0;border-radius:14px;padding:8px;overflow:hidden}.flbuild-mat svg{max-width:100%;height:auto;max-height:200px}.flbuild-hint{color:#6b6390;font-weight:700}' +
+      '.flbuild-fb{margin:0;text-align:center;font-weight:800;color:var(--ink,#2b2340);white-space:pre-wrap}.flbuild-fb.ok{color:#137a3a}.flbuild-fb.no{color:#b3261e}';
+    document.head.appendChild(bc); }
+  function noHops(v) { return String(v).replace(/<path[^>]*marker-end="url\(#flA\)"[^>]*\/>/g, ''); }
   /* d = { short, title, what, words: [[word, meaning, emoji]], see: [[say, pic] x3], ex: [w x3], mistake: [say, pic], check: {q, pic, options, answer, explain, tip}, remember: [say, pic] } */
   FL.learnIt = function (n, id, d) {
     var sl = [];
@@ -41,7 +145,11 @@
     [['See it', 'Real things'], ['Draw it', 'A picture'], ['Write it', 'Numbers']].forEach(function (k, i) { var s = d.see[i]; if (!s) return;
       var o = { title: k[0], say: [s[0]], v: s[1], kind: k[1], noMore: true };
       /* Draw it and Write it: the child copies the example on a scribble pad, open and ready */
-      if (i > 0) { var pad = { open: true, bg: i === 1 ? s[1] : '' };   /* Draw it: the same picture is already on the pad, so the child only adds to it */ o.say = [s[0], i === 1 ? 'Your turn: draw it on the scribble pad.' : 'Your turn: write it on the scribble pad.']; o.live = function (host) { var H = S.h; if (H && H.scribble) H.scribble(host, pad); }; }
+      if (i === 1 && BUILD[s[0]]) { var bt = BUILD[s[0]]; o.say = [s[0], 'Your turn: make ' + (bt[0] * 10 + bt[1]) + '. Tap to add ten sticks and ones.']; o.live = function (host) { build(host, bt[0], bt[1]); }; }
+      else if (i > 0) { var hops = i === 1 && /marker-end="url\(#flA\)"/.test(s[1]);
+        /* Draw it: a number line with jumps goes on the pad without its jumps, so the child draws them; anything else gets a new thing to draw */
+        var pad = { open: true, bg: hops ? noHops(s[1]) : '' };
+        o.say = [s[0], i === 1 ? (hops ? 'Your turn: draw the jumps on the number line.' : DRAWT[s[0]] || 'Your turn: draw your own on the scribble pad.') : 'Your turn: write it on the scribble pad.']; o.live = function (host) { var H = S.h; if (H && H.scribble) H.scribble(host, pad); }; }
       sl.push(o); });
     d.ex.forEach(function (w, i) { sl.push({ title: 'Worked example ' + (i + 1), say: [], ex: worked(w), kind: 'Step by step', noMore: true }); });
     sl.push({ title: 'Watch out!', say: [d.mistake[0]], v: d.mistake[1], kind: 'A common mistake', noMore: true });
