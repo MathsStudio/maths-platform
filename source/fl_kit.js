@@ -281,11 +281,8 @@
     if (S.topics[o.n]) return;
     S.addTopic({ n: o.n, base: o.n, year: o.year, short: o.short, title: o.title, blurb: o.blurb, gens: {}, steps: o.gens && o.year !== 'P3' ? (o.life ? [warmStep(o.gens), practiseStep(o.gens), lifeStep(o.life, o.lifeLead || 'this topic')] : [practiseStep(o.gens)]) : [] });   /* P3 has no practice, only lessons and activities */
     if (o.lessons) BT.L.use(o.n, o.lessons);
-    /* First level picture-book story and Let's learn steps (see fl_story.js) */
-    var t = S.topics[o.n], add = [];
-    if (o.story) add.push({ id: 'story', label: '\ud83d\udcd6 Story: ' + o.story.title, type: 'lab', fgroup: 'learn', noReset: true, tag: 'Story time', title: o.story.title, lead: 'A picture-book story. Tap Read to me to hear it.', mount: FL.storyMount(o.story) });
-    (o.learn || []).forEach(function (l, k) { add.push({ id: 'learn' + (k + 1), label: l.title, type: 'lab', fgroup: 'learn', noReset: true, tag: 'Let\u2019s learn', title: l.title, lead: 'Watch me, then try it together, then on your own.', mount: FL.learnMount(l) }); });
-    if (add.length) { add.forEach(function (st) { t.steps.push(st); }); S.arrange(t); }
+    /* First level: the story and story-based lessons play in the Watch player, like P5 to P7 (see fl_story.js) */
+    if (o.story) FL.toWatch(o.n, o.story, o.learn);
     (o.acts || []).concat(o.more || []).forEach(function (a, k) { BT.addLab(o.n, 'fl' + (k + 1), a[0], a[1], a[2]); });
   };
   /* turn a question maker (FL.Q or FL.MC) into a hands-on activity of 6 rounds with big answer buttons */

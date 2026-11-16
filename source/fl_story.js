@@ -21,6 +21,8 @@
     '.flb-read{background:#ffd166!important;color:' + INK + '!important;border-color:' + INK + '!important}' +
     '.flb-opts{display:flex;gap:10px;flex-wrap:nowrap;justify-content:center;margin:12px 0}' +
     '.flb-opts button{flex:1 1 0;min-width:0;max-width:150px;min-height:72px;padding:6px 4px;font-size:1.6rem;font-weight:800;border-radius:18px;border:3px solid ' + INK + ';background:#fff;color:' + INK + ';cursor:pointer}' +
+    '.flb-show .o{flex:1 1 0;min-width:0;max-width:150px;display:flex;align-items:center;justify-content:center;min-height:56px;padding:6px 4px;font-size:1.3rem;font-weight:800;border-radius:16px;border:3px solid ' + INK + ';background:#fff;color:' + INK + ';text-align:center;line-height:1.15}.flb-show .o.ok{background:#8fd67d}' +
+    '.flb-q{font-weight:800;font-size:1.2rem;line-height:1.35;text-align:center;margin:8px 0 0;max-width:560px}.flb-w{width:100%;max-width:560px}.flb-w .flp-pic>svg{min-width:min(260px,100%)!important;flex:1 1 260px!important}.flb-w .flp-ch svg{width:76px!important}.flb-w .flb-tip{font-size:1rem;line-height:1.35;margin:8px 0 0;text-align:left}.flb-w+.flb-opts,.gp-stage .flb-opts{margin:8px 0 0}' +
     '.flb-opts.long button{font-size:1.15rem;min-height:64px}.flb-opts.col{flex-direction:column;align-items:center}.flb-opts.col button{font-size:1.15rem;min-height:56px;width:100%;max-width:420px;flex:0 0 auto}' +
     '.flb-opts button.ok{background:#8fd67d}.flb-opts button.no{background:#ffd0d0;opacity:.75}' +
     '.flb-fb{min-height:2.2em;text-align:center;font-weight:800;font-size:1.25rem;margin:4px 0}' +
@@ -106,13 +108,54 @@
   /* a story panel: coloured background, a bobbing character and any picture (coins, clocks, shapes, charts) */
   FL.panel = function (bg, k, pic, bubble) { return '<div class="flp flp-' + (bg || 'day') + '">' + (bubble ? '<span class="flp-say">' + bubble + '</span>' : '') + (k ? '<div class="flp-ch">' + FL.char(k, 110) + '</div>' : '') + '<div class="flp-pic">' + (pic || '') + '</div></div>'; };
   /* swap a topic's old Watch lesson for a story and story-based lessons (First level) */
-  FL.addStory = function (n, o) {
+  /* First level lessons use the same Watch player as P5 to P7: the story is one Watch lesson and each
+     story-based lesson is another, with Watch me, Let's do it together, Your turn and a recap. */
+  var NUMW = ['zero', 'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine', 'ten', 'eleven', 'twelve', 'thirteen', 'fourteen', 'fifteen', 'sixteen', 'seventeen', 'eighteen', 'nineteen', 'twenty'];
+  function strip(h) { return String(h).replace(/<[^>]+>/g, ''); }
+  function pic(p, ch) { var h = typeof p === 'function' ? p() : (p || '');
+    if (ch && h.indexOf('class="flp ') >= 0 && h.indexOf('flp-ch') < 0) h = h.replace('<div class="flp-pic">', '<div class="flp-ch">' + FL.char(ch, 110) + '</div><div class="flp-pic">');
+    return h ? '<div class="flb flb-w"><div class="flb-stage">' + h + '</div></div>' : ''; }
+  function chips(options, answer, show) { return '<div class="flb-opts flb-show">' + options.map(function (o) { return '<span class="o' + (show && String(o) === String(answer) ? ' ok' : '') + '">' + o + '</span>'; }).join('') + '</div>'; }
+  function askSteps(q, p, options, answer, explain, tip) {
+    var qh = '<div class="flb-q">' + q + '</div>';
+    return [L.st(strip(q) + (tip ? ' Here is a tip: ' + strip(tip) : '') + ' Pause, think, then listen.', p + qh + (tip ? '<div class="flb-tip">💡 ' + tip + '</div>' : '') + chips(options, answer, false)),
+      L.st('The answer is ' + strip(answer) + '. ' + strip(explain || ''), p + qh + chips(options, answer, true))];
+  }
+  var L = null;
+  /* in the Watch player each new picture replaces the one before it, so the picture stays big */
+  function sw(steps) { return steps.map(function (st, i) { if (i > 0 && st.html) st.html = L.SW + st.html; return st; }); }
+  FL.toWatch = function (n, story, learn) {
+    L = BT.L; if (!L) return;
     var t = S.topics[n]; if (!t) return;
-    for (var k = t.steps.length - 1; k >= 0; k--) if (t.steps[k].type === 'slides') t.steps.splice(k, 1);
-    var add = [{ id: 'story', label: '\ud83d\udcd6 Story: ' + o.story.title, type: 'lab', fgroup: 'learn', noReset: true, tag: 'Story time', title: o.story.title, lead: 'A picture-book story. Tap Read to me to hear it.', mount: FL.storyMount(o.story) }];
-    o.learn.forEach(function (l, k) { add.push({ id: 'learn' + (k + 1), label: l.title, type: 'lab', fgroup: 'learn', noReset: true, tag: 'Let\u2019s learn', title: l.title, lead: 'Watch me, then try it together, then on your own.', mount: FL.learnMount(l) }); });
-    t.steps.unshift.apply(t.steps, add); S.arrange(t);
+    for (var k = t.steps.length - 1; k >= 0; k--) if (t.steps[k].type === 'slides' || t.steps[k].fgroup) t.steps.splice(k, 1);
+    var eps = [];
+    if (story) {
+      var sc = [];
+      story.pages.forEach(function (pg, i) {
+        var p = pic(pg.pic), say = pg.text;
+        if (pg.tap) { var c = []; for (var j = 1; j <= pg.tap; j++) c.push(NUMW[j]); say = say.replace(/ Tap each [a-z]+!?/i, '') + ' Count with me: ' + c.join(', ') + '.'; }
+        sc.push(L.SC(story.title, 'Page ' + (i + 1), [L.st(say, p)]));
+        if (pg.ask) sc.push(L.SC('Your turn', 'Help with the story', sw(askSteps(pg.ask.q, p, pg.ask.options, pg.ask.answer, pg.ask.explain))));
+      });
+      sc.push(L.SC('The end', story.title, [L.st(story.endText || 'The end.', pic(story.endPic))]));
+      eps.push(L.ep('📖 ' + story.title, 'a picture-book story that uses the maths in this topic.', sc));
+    }
+    (learn || []).forEach(function (l) {
+      var sc = [], watch = [], tog = [], turn = [], tips = [];
+      l.screens.forEach(function (x) {
+        var p = pic(x.pic, l.char);
+        if (x.mode === 'watch') watch.push(L.st(x.say, p));
+        else { if (x.tip && tips.length < 4) tips.push(x.tip); (x.mode === 'together' ? tog : turn).push.apply(x.mode === 'together' ? tog : turn, askSteps(x.say, p, x.options, x.answer, x.explain, x.mode === 'together' ? x.tip : '')); }
+      });
+      if (watch.length) sc.push(L.SC('Watch me', l.title, sw(watch)));
+      if (tog.length) sc.push(L.SC('Let’s do it together', 'Try it with me', sw(tog)));
+      if (turn.length) sc.push(L.SC('Your turn', 'Pause, think, then listen', sw(turn)));
+      if (tips.length) sc.push(L.rec(l.title, 'Let’s remember the tips from this lesson.', tips.map(strip)));
+      eps.push(L.ep(l.title, strip(l.title).replace(/\?$/, '').toLowerCase() + '.', sc));
+    });
+    BT.L.use(n, eps);
   };
+  FL.addStory = function (n, o) { FL.toWatch(n, o.story, o.learn); };
   FL.scene = scene; FL.who = who; FL.bit = bit; FL.tank = tank; FL.stones = stones; FL.label = label;
 
   /* ---------- reading aloud, word by word ---------- */

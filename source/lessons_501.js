@@ -19,7 +19,7 @@
     scenes: [
       SC('What is place value?', 'Meet the ten digits', [
         st("Hello! Today we are answering a big question: what is place value? Let's start with the digits. Every number you will ever write is made from just these ten digits.",
-          V.cards(['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'], ['b', 'g', 'r', 'y'], true)),
+          V.cards(['0', '1', '2', '3', '4'], ['b', 'g', 'r', 'y'], true) + V.cards(['5', '6', '7', '8', '9'], ['g', 'r', 'y', 'b'], true)),
         st("So how can ten little digits make huge numbers, like seventy-two thousand? The secret is where each digit sits in the number. We call that its place.", V.big('72,000'))]),
 
       SC('The big idea', 'Place value', [
