@@ -96,11 +96,13 @@
     '.flx{position:absolute;inset:0;background:#1b1b4b}.flx-pic{position:absolute;inset:0;display:flex;align-items:center;justify-content:center}',
     '.flx-pic.flx-in{animation:gpTurn .7s ease both}.flx-pic>.flb,.flx-pic .flb-w{width:100%;height:100%;max-width:none;display:flex;align-items:center;justify-content:center;margin:0}',
     '.flx-pic .flb-stage{width:100%;height:100%;display:flex;align-items:center;justify-content:center;border:0;border-radius:0;background:none}.flx-pic .flb-stage>svg{width:100%!important;height:100%!important;max-width:none!important;display:block}',
-    '.flx-pic .flp{width:100%;height:100%;box-sizing:border-box;flex-wrap:nowrap;font-size:24px;border-radius:0;border:0;margin:0}.flx-pic .flp-ch svg{width:150px!important}.flx-pic .flp-pic{height:100%;align-content:center}.flx-pic .flp-pic svg{max-height:100%}',
+    '.flx-pic .flp-pic{min-width:0;flex:1 1 0}.flx-pic .flp-pic svg{max-width:100%!important}.gp.narrow .flx-pic .flp-ch svg{width:110px!important}.flx-pic .flp{width:100%;height:100%;box-sizing:border-box;flex-wrap:nowrap;font-size:24px;border-radius:0;border:0;margin:0}.flx-pic .flp-ch svg{width:150px!important}.flx-pic .flp-pic{height:100%;align-content:center}.flx-pic .flp-pic svg{max-height:100%}',
     '.flx-top{position:absolute;left:0;right:0;top:8px;display:flex;justify-content:center;pointer-events:none}.flx-q{max-width:86%;background:rgba(255,255,255,.96);border:3px solid #221a3a;border-radius:18px;padding:8px 18px;font-weight:800;font-size:26px;line-height:1.3;text-align:center;box-shadow:0 6px 18px rgba(0,0,0,.2);animation:flxDrop .55s cubic-bezier(.3,1.5,.6,1) both}',
     '.flx-tip{font-size:18px;font-weight:700;color:#7a5600;margin-top:4px}',
     '.flx-opts{position:absolute;left:0;right:0;bottom:12px;display:flex;justify-content:center}.flx-opts .flb-opts{margin:0;gap:14px;width:auto}.flx-opts .flb-show .o{min-width:96px;max-width:none;flex:0 0 auto;min-height:72px;font-size:34px;padding:4px 18px;box-shadow:0 6px 16px rgba(0,0,0,.22);animation:flxPop .5s cubic-bezier(.3,1.6,.6,1) both}',
     '.flx-opts .flb-show .o:nth-child(2){animation-delay:.12s}.flx-opts .flb-show .o:nth-child(3){animation-delay:.24s}.flx-opts .flb-show .o:nth-child(4){animation-delay:.36s}',
+    '.flx-opts.flx-long .flb-opts{flex-wrap:wrap;max-width:94%;margin:0 auto;justify-content:center}.flx-opts.flx-long .flb-show .o{font-size:24px;min-height:58px;min-width:0;padding:4px 14px;white-space:nowrap}',
+    '.flx-opts.flx-xl .flb-show .o{font-size:20px;white-space:normal;max-width:30%;line-height:1.15}',
     '.flx-opts .flb-show .o.tap{cursor:pointer}.flx-opts .flb-show .o.tap:hover{transform:scale(1.08)}.flx-opts .flb-show .o.no{background:#ffd0d0;animation:flxNo .5s ease both;opacity:.8}@keyframes flxNo{0%,100%{transform:translateX(0)}25%{transform:translateX(-8px)}75%{transform:translateX(8px)}}',
     '.flx-opts .flb-show .o.ok{animation:flxWin .9s ease both;box-shadow:0 0 0 6px #ffe14d,0 0 26px 8px rgba(255,225,77,.9)}',
     '.flx-think{position:absolute;right:10px;top:6px;font-size:46px;opacity:0;transform:scale(.4);transition:opacity .3s,transform .3s}.flx-think.on{opacity:1;transform:scale(1);animation:flxThink 1.2s ease-in-out infinite}',
@@ -140,7 +142,8 @@
     var chunks = [];
     slides.forEach(function (sl, si) { sl.steps.forEach(function (st, k) { chunks.push({ si: si, k: k, say: st.say, think: !!st.think, answer: st.answer, last: k === sl.steps.length - 1 }); }); });
     var dashes = ''; for (var d = 0; d < meta.of; d++) dashes += '<i class="' + (d <= meta.q ? 'on' : '') + '"></i>';
-    var short = TT.replace(/\?$/, '');
+    var short = TT;   /* the lesson's question, with its question mark, stays in the purple label at the top */
+    function same(a, b) { var n = function (x) { return String(x || '').replace(/<[^>]+>/g, '').toLowerCase().replace(/[^a-z0-9]+/g, ' ').trim(); }; return n(a) === n(b); }
     /* a lesson counts as watched once its last step has been shown; the tick is saved with the child's progress */
     function seen(j) { return meta.n && H.isDone ? H.isDone(meta.n, 'w' + j) : false; }
     function markSeen() {
@@ -227,7 +230,9 @@
         return;
       }
       if (FLM) { stage.innerHTML = '<div class="flx gp-turn"><div class="flx-pic"></div><div class="flx-top"></div><div class="flx-opts"></div><div class="flx-think" aria-hidden="true">🤔</div></div>'; flPic = ''; flTop = ''; flOpt = ''; return; }
-      h = chrome(sl) + '<div class="gp-body"><div class="gp-fit"><h3 class="gp-h">' + sl.h + '</h3>' + (sl.sub ? '<p class="gp-sub">' + sl.sub + '</p>' : '');
+      /* a heading that only repeats the question in the label is left out: the slide starts from its own heading */
+      var rep = same(sl.h, TT), hh = rep ? (sl.sub || '') : sl.h, sb = rep ? '' : sl.sub;
+      h = chrome(sl) + '<div class="gp-body"><div class="gp-fit">' + (hh ? '<h3 class="gp-h">' + hh + '</h3>' : '') + (sb ? '<p class="gp-sub">' + sb + '</p>' : '');
       /* a step whose html starts with <!--swap--> replaces the block before it, in the same place */
       var groups = [];
       sl.steps.forEach(function (st, k) {
@@ -279,6 +284,8 @@
       if (th !== flTop) { flTop = th; T.innerHTML = th; }
       var oh = op ? op.outerHTML : '', base = oh.replace(/ ok"/g, '"');
       if (base !== flOpt) { flOpt = base; O.innerHTML = oh; } else if (oh !== O.innerHTML) { O.innerHTML = oh; }
+      var ol = O.querySelectorAll('.o'), mx = 0; [].forEach.call(ol, function (e) { mx = Math.max(mx, e.textContent.length); });
+      O.classList.toggle('flx-long', mx > 6); O.classList.toggle('flx-xl', mx > 14);
       /* a question: the child taps their answer on the picture */
       tries = 0; answered = false;
       if (c.think) O.querySelectorAll('.o').forEach(function (el) {
@@ -343,7 +350,7 @@
         /* First level: told like a storyteller, sentence by sentence, counting things as they light up */
         var c0 = chunks[i], blk = stage.querySelector('.flx-pic') || stage;
         root.classList.add('gp-talk');
-        H.flTell(c0.say, { box: blk, cap: null, voice: okVoice, alive: function () { return my === token && playing && root.isConnected; } }, function () {
+        H.flTell(c0.say, { box: blk, keys: stage.querySelector('.flx'), cap: null, voice: okVoice, alive: function () { return my === token && playing && root.isConnected; } }, function () {
           root.classList.remove('gp-talk');
           if (my !== token || !playing || !root.isConnected) return;
           /* a question: give the child time to think before the answer */

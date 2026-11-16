@@ -9,7 +9,11 @@
 
   function big(t) { return '<div style="font-size:clamp(1.6rem,6vw,2.4rem);font-weight:800;color:' + INK + ';background:#fff;border:3px solid ' + INK + ';border-radius:16px;padding:6px 18px;text-align:center;display:inline-block">' + t + '</div>'; }
   function cards(list) { return '<div style="display:flex;flex-wrap:wrap;gap:8px;justify-content:center">' + list.map(function (t) { return '<span style="background:#fff;border:3px solid ' + INK + ';border-radius:14px;padding:6px 12px;font-weight:800;color:' + INK + '">' + t + '</span>'; }).join('') + '</div>'; }
-  function words(list) { return '<div style="display:grid;gap:8px;max-width:520px;margin:0 auto">' + list.map(function (w) { return '<div style="display:flex;gap:12px;align-items:center;background:#fff;border:2px solid #dcd3f0;border-radius:14px;padding:8px 12px;color:' + INK + '"><span style="font-size:1.6rem">' + (w[2] || '🔤') + '</span><span><b>' + w[0] + '</b><br>' + w[1] + '</span></div>'; }).join('') + '</div>'; }
+  /* each key word is read and explained in turn: "Bigger means more." */
+  function spoken(w) { var raw = String(w[0]), pm = /\(([^)]*)\)/.exec(raw), word = raw.replace(/\s*\([^)]*\)/g, '').trim(), m = String(w[1]).trim();
+    if (pm && (word.length <= 2 || !/[a-z]{3}/i.test(word))) word = pm[1];   /* p (pence) is read as pence */
+    return /^\d/.test(m) ? word.charAt(0).toUpperCase() + word.slice(1) + '. For example, ' + m + '.' : word.charAt(0).toUpperCase() + word.slice(1) + ' means ' + m + '.'; }
+  function words(list) { return '<div style="display:grid;gap:8px;max-width:520px;margin:0 auto"><p class="say" style="margin:0 0 4px;font-weight:700;text-align:center">Here are the key words for this lesson.</p>' + list.map(function (w) { return '<div class="say" data-say="' + spoken(w).replace(/"/g, '&quot;') + '" style="display:flex;gap:12px;align-items:center;background:#fff;border:2px solid #dcd3f0;border-radius:14px;padding:8px 12px;color:' + INK + '"><span style="font-size:1.6rem" aria-hidden="true">' + (w[2] || '🔤') + '</span><span><b>' + w[0] + '</b><br>' + w[1] + '</span></div>'; }).join('') + '</div>'; }
   function row3(list, kind) { return '<div style="display:flex;align-items:center;justify-content:center;gap:8px;flex-wrap:wrap">' + list.map(function (n) { return '<div style="max-width:200px">' + FL.things(n, kind, 5) + '</div>'; }).join('<b style="font-size:1.8em">+</b>') + '</div>'; }
   FL.big = big; FL.cards = cards; FL.row3 = row3;
 
@@ -33,11 +37,11 @@
   FL.learnIt = function (n, id, d) {
     var sl = [];
     sl.push({ title: d.title, say: [d.what], v: d.pic || '', kind: 'The big question', noMore: true });
-    sl.push({ title: 'Key words', say: ['Here are the words we use in this lesson.'], v: words(d.words), kind: 'Key words', noMore: true });
+    sl.push({ title: 'Key words', say: [], v: words(d.words), kind: 'Key words', noMore: true });
     [['See it', 'Real things'], ['Draw it', 'A picture'], ['Write it', 'Numbers']].forEach(function (k, i) { var s = d.see[i]; if (!s) return;
       var o = { title: k[0], say: [s[0]], v: s[1], kind: k[1], noMore: true };
       /* Draw it and Write it: the child copies the example on a scribble pad, open and ready */
-      if (i > 0) { var pad = { open: true }; o.say = [s[0], i === 1 ? 'Your turn: draw it on the scribble pad.' : 'Your turn: write it on the scribble pad.']; o.live = function (host) { var H = S.h; if (H && H.scribble) H.scribble(host, pad); }; }
+      if (i > 0) { var pad = { open: true, bg: i === 1 ? s[1] : '' };   /* Draw it: the same picture is already on the pad, so the child only adds to it */ o.say = [s[0], i === 1 ? 'Your turn: draw it on the scribble pad.' : 'Your turn: write it on the scribble pad.']; o.live = function (host) { var H = S.h; if (H && H.scribble) H.scribble(host, pad); }; }
       sl.push(o); });
     d.ex.forEach(function (w, i) { sl.push({ title: 'Worked example ' + (i + 1), say: [], ex: worked(w), kind: 'Step by step', noMore: true }); });
     sl.push({ title: 'Watch out!', say: [d.mistake[0]], v: d.mistake[1], kind: 'A common mistake', noMore: true });

@@ -62,11 +62,11 @@
     return svg(20 + cols * 46, 20 + rows * 46, 'A ten-frame showing ' + n + (m ? ' and ' + m : ''), s, 300);
   };
   /* a number track from lo to hi; mark: numbers to circle; hops: [from, to] arrows */
-  FL.track = function (lo, hi, mark, hops, gap) {
+  FL.track = function (lo, hi, mark, hops, gap, unit) {
     var n = hi - lo + 1, step = gap || Math.max(30, Math.min(52, 620 / n)), w = n * step + 20, s = '';
     for (var i = 0; i < n; i++) {
       var v = lo + i, x = 10 + i * step, on = (mark || []).indexOf(v) > -1;
-      s += '<rect x="' + x + '" y="40" width="' + (step - 4) + '" height="36" rx="7" fill="' + (on ? '#ffd166' : '#fff') + '" stroke="' + INK + '" stroke-width="2"/>' + tx(x + (step - 4) / 2, 64, v, step > 36 ? 17 : 13);
+      s += '<rect x="' + x + '" y="40" width="' + (step - 4) + '" height="36" rx="7" fill="' + (on ? '#ffd166' : '#fff') + '" stroke="' + INK + '" stroke-width="2"/>' + tx(x + (step - 4) / 2, 64, v + (unit || ''), step > 36 ? (unit ? 15 : 17) : (unit ? 11 : 13));
     }
     (hops || []).forEach(function (hp) {
       var a = 10 + (hp[0] - lo) * step + (step - 4) / 2, b = 10 + (hp[1] - lo) * step + (step - 4) / 2;
@@ -74,6 +74,8 @@
     });
     return svg(w, 84, 'A number track from ' + lo + ' to ' + hi, '<defs><marker id="flA" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto"><path d="M0 0 8 4 0 8z" fill="#7a1fc2"/></marker></defs>' + s, Math.min(w, 680));
   };
+  /* the same number track for money: every number shows p, like 15p */
+  FL.trackP = function (lo, hi, mark, hops) { return FL.track(lo, hi, mark, hops, null, 'p'); };
   /* tens sticks and ones cubes */
   FL.tensOnes = function (t, o) {
     var s = '', x = 10;

@@ -154,14 +154,14 @@
     ['Biggest coin first, then add.', C(['biggest coin', 'add more', 'price'])]]);
 
   LI(203, 'learn4', ['Change from 20p', 'How can counting on help me find change from 20p?',
-    'Change is the money you get back. Count on from the price up to 20p.', TR(15, 20, [15, 20], [[15, 16], [16, 17], [17, 18], [18, 19], [19, 20]]),
+    'Change is the money you get back. Count on from the price up to 20p.', FL.trackP(15, 20, [15, 20], [[15, 16], [16, 17], [17, 18], [18, 19], [19, 20]]),
     [['change', 'money back', '🪙'], ['price', 'how much it costs', '🏷️'], ['count on', 'count up from the price', '➡️'], ['20p', 'the coin you pay with', '2️⃣0️⃣']],
     [['A teddy costs 15p. Molly is given 20p.', COIN([20])],
-      ['Count on from 15 to 20: 16, 17, 18, 19, 20. That is 5.', TR(15, 20, [15, 20], [[15, 16], [16, 17], [17, 18], [18, 19], [19, 20]])],
+      ['Count on from 15 to 20: 16, 17, 18, 19, 20. That is 5.', FL.trackP(15, 20, [15, 20], [[15, 16], [16, 17], [17, 18], [18, 19], [19, 20]])],
       ['The change is 5p.', B('20p − 15p = 5p')]],
-    [['A toy costs 18p. Pay 20p. Change?', ['Count on: 19, 20.', 'That is 2.'], '2p', TR(17, 20, [18, 20], [[18, 19], [19, 20]])],
+    [['A toy costs 18p. Pay 20p. Change?', ['Count on: 19, 20.', 'That is 2.'], '2p', FL.trackP(17, 20, [18, 20], [[18, 19], [19, 20]])],
       ['A toy costs 10p. Pay 20p. Change?', ['10 and 10 make 20.'], '10p', COIN([10])],
-      ['A toy costs 16p. Pay 20p. Change?', ['Count on: 17, 18, 19, 20.', 'That is 4.'], '4p', TR(15, 20, [16, 20], [[16, 17], [17, 18], [18, 19], [19, 20]])]],
+      ['A toy costs 16p. Pay 20p. Change?', ['Count on: 17, 18, 19, 20.', 'That is 4.'], '4p', FL.trackP(15, 20, [16, 20], [[16, 17], [17, 18], [18, 19], [19, 20]])]],
     ['Count the jumps, not the price. 15p to 20p is 5 jumps, so 5p.', C(['5 jumps', '5p'])],
     ['A toy costs <b>17p</b>. Pay 20p. Change?', '', ['2p', '3p', '17p'], '3p', '18, 19, 20: 3 jumps.', 'Count on from 17.'],
     ['Count on from the price to 20p.', C(['price', 'count on', 'change'])]]);
@@ -292,8 +292,8 @@
       medium: [function () { var c = pick([[5, 1], [5, 2], [5, 2, 1], [10, 1], [10, 2], [10, 2, 1], [10, 5], [10, 5, 1], [10, 5, 2]]), p = c.reduce(function (a, b) { return a + b; }, 0);
         return W('A toy costs ' + p + 'p. Which coins could you use?', ['Start with the biggest coin that fits: ' + c[0] + 'p.', 'Add smaller coins until you reach ' + p + 'p.'], c.join('p + ') + 'p = ' + p + 'p', COIN(c)); },
         function () { var c = pick([[10, 5, 2], [5, 5, 1], [10, 2, 1], [5, 2, 2]]); var t = c[0] + c[1] + c[2]; return W('How much is ' + c.join('p + ') + 'p?', [c[0] + ' + ' + c[1] + ' = ' + (c[0] + c[1]) + '.', (c[0] + c[1]) + ' + ' + c[2] + ' = ' + t + '.'], 'It makes ' + t + 'p.', COIN(c)); }],
-      high: [function () { var p = r(11, 19); return W('A toy costs ' + p + 'p. You pay 20p. What is the change?', ['Count on from ' + p + ' to 20.', 'That is ' + (20 - p) + ' jumps.'], 'The change is ' + (20 - p) + 'p.', TR(p, 20, [p, 20])); },
-        function () { var p = r(3, 9); return W('A sweet costs ' + p + 'p. You pay 10p. What is the change?', ['Count on from ' + p + ' to 10.', 'That is ' + (10 - p) + '.'], 'The change is ' + (10 - p) + 'p.', TR(p, 10, [p, 10])); }] },
+      high: [function () { var p = r(11, 19); return W('A toy costs ' + p + 'p. You pay 20p. What is the change?', ['Count on from ' + p + ' to 20.', 'That is ' + (20 - p) + ' jumps.'], 'The change is ' + (20 - p) + 'p.', FL.trackP(p, 20, [p, 20])); },
+        function () { var p = r(3, 9); return W('A sweet costs ' + p + 'p. You pay 10p. What is the change?', ['Count on from ' + p + ' to 10.', 'That is ' + (10 - p) + '.'], 'The change is ' + (10 - p) + 'p.', FL.trackP(p, 10, [p, 10])); }] },
     204: { low: [function () { var h = r(1, 12); return W('What time does the clock show?', ['The long hand is on 12: o’clock.', 'The short hand is on ' + h + '.'], h + ' o’clock', clk(h, 0)); },
         function () { var D = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'], i = r(0, 5); return W('What day comes after ' + D[i] + '?', ['Say the days in order.', 'After ' + D[i] + ' comes ' + D[i + 1] + '.'], D[i + 1], C(D.slice(0, 7).map(function (d) { return d.slice(0, 3); }))); }],
       medium: [function () { var h = r(1, 12); return W('What time does the clock show?', ['The long hand is on 6: half past.', 'The short hand is just past ' + h + '.'], 'Half past ' + h, clk(h, 30)); },

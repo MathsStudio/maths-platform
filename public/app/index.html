@@ -660,7 +660,7 @@ var SLIDE_MORE = {"1.learn1": [{"more": ["Our number system uses only ten digits
     Nar.at = i; unmarkAll();
     if (i >= Nar.units.length) { Nar.playing = false; Nar.at = 0; setPlayerUI(); return; }
     var u = Nar.units[i];
-    u.el.classList.add('on');
+    if (!(S.firstLevel && S.firstLevel())) u.el.classList.add('on');   /* P2 to P4: read naturally, no highlight */
     try { var rc = u.el.getBoundingClientRect(), vh = window.innerHeight || 700; if (rc.top < 60 || rc.bottom > vh - 90) u.el.scrollIntoView({ block: 'nearest', behavior: 'auto' }); } catch (e) { /* ignore */ }
     var ut = new SpeechSynthesisUtterance(speakable(u.text)), started = false;
     ut.lang = 'en-GB'; ut.rate = Number(store.settings.rate) || 1;
@@ -13399,6 +13399,7 @@ S.spatialExtra = S.extraMakers;
     '.padbox{margin-top:8px;border:2px solid var(--accent);border-radius:14px;background:#fff;overflow:hidden}.padbox canvas{display:block;width:100%;height:210px;touch-action:none;cursor:crosshair}' +
     '.padtools{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-top:8px}.padtools .btn{min-height:40px;padding:6px 14px;background:var(--surface);color:var(--fg);border:2px solid var(--accent);box-shadow:0 2px 0 var(--line)}' +
     '.padtools .btn[aria-pressed="true"]{background:var(--accent);color:var(--accent-fg)}.padcol{width:34px;height:34px;min-height:0!important;padding:0!important;border-radius:50%!important;border:3px solid #fff!important;box-shadow:0 0 0 2px var(--line)!important}.padcol[aria-pressed="true"]{box-shadow:0 0 0 3px var(--accent)!important}' +
+    '.padhasbg{position:relative}.padbg{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;padding:10px;pointer-events:none}.padbg svg{max-width:100%;max-height:100%;height:auto}.padhasbg canvas{position:relative;z-index:1;background:transparent}' +
     '@media (min-width:700px){.padbox canvas{height:260px}}';
   document.head.appendChild(css);
   var COLS = ['#17233F', '#2B62D9', '#E0682A'];
@@ -13408,7 +13409,7 @@ S.spatialExtra = S.extraMakers;
     var tool = 'pen', col = COLS[0];
     function render() {
       el.innerHTML = '<div class="padbar"><button class="btn" type="button" data-padt aria-expanded="' + (st.open ? 'true' : 'false') + '">✏️ ' + (st.open ? 'Hide scribble pad' : 'Scribble pad') + '</button>' + (st.open ? '' : '<span style="font-size:.9rem;opacity:.75">Work it out here</span>') + '</div>' +
-        (st.open ? '<div class="padbox"><canvas aria-label="Scribble pad. Draw your working here."></canvas></div><div class="padtools"><button class="btn" type="button" data-pen aria-pressed="true">Pen</button><button class="btn" type="button" data-er aria-pressed="false">Eraser</button>' +
+        (st.open ? '<div class="padbox' + (st.bg ? ' padhasbg' : '') + '">' + (st.bg ? '<div class="padbg" aria-hidden="true">' + st.bg + '</div>' : '') + '<canvas aria-label="Scribble pad. Draw your working here."></canvas></div><div class="padtools"><button class="btn" type="button" data-pen aria-pressed="true">Pen</button><button class="btn" type="button" data-er aria-pressed="false">Eraser</button>' +
           COLS.map(function (c, i) { return '<button class="btn padcol" type="button" data-c="' + i + '" aria-label="Pen colour ' + (i + 1) + '" aria-pressed="' + (i === 0) + '" style="background:' + c + '"></button>'; }).join('') + '<button class="btn" type="button" data-clr style="margin-left:auto">Clear</button></div>' : '');
       el.querySelector("[data-padt]").addEventListener('click', function () { st.open = !st.open; render(); });
       if (!st.open) return;
@@ -15973,11 +15974,13 @@ S.spatialExtra = S.extraMakers;
     '.flx{position:absolute;inset:0;background:#1b1b4b}.flx-pic{position:absolute;inset:0;display:flex;align-items:center;justify-content:center}',
     '.flx-pic.flx-in{animation:gpTurn .7s ease both}.flx-pic>.flb,.flx-pic .flb-w{width:100%;height:100%;max-width:none;display:flex;align-items:center;justify-content:center;margin:0}',
     '.flx-pic .flb-stage{width:100%;height:100%;display:flex;align-items:center;justify-content:center;border:0;border-radius:0;background:none}.flx-pic .flb-stage>svg{width:100%!important;height:100%!important;max-width:none!important;display:block}',
-    '.flx-pic .flp{width:100%;height:100%;box-sizing:border-box;flex-wrap:nowrap;font-size:24px;border-radius:0;border:0;margin:0}.flx-pic .flp-ch svg{width:150px!important}.flx-pic .flp-pic{height:100%;align-content:center}.flx-pic .flp-pic svg{max-height:100%}',
+    '.flx-pic .flp-pic{min-width:0;flex:1 1 0}.flx-pic .flp-pic svg{max-width:100%!important}.gp.narrow .flx-pic .flp-ch svg{width:110px!important}.flx-pic .flp{width:100%;height:100%;box-sizing:border-box;flex-wrap:nowrap;font-size:24px;border-radius:0;border:0;margin:0}.flx-pic .flp-ch svg{width:150px!important}.flx-pic .flp-pic{height:100%;align-content:center}.flx-pic .flp-pic svg{max-height:100%}',
     '.flx-top{position:absolute;left:0;right:0;top:8px;display:flex;justify-content:center;pointer-events:none}.flx-q{max-width:86%;background:rgba(255,255,255,.96);border:3px solid #221a3a;border-radius:18px;padding:8px 18px;font-weight:800;font-size:26px;line-height:1.3;text-align:center;box-shadow:0 6px 18px rgba(0,0,0,.2);animation:flxDrop .55s cubic-bezier(.3,1.5,.6,1) both}',
     '.flx-tip{font-size:18px;font-weight:700;color:#7a5600;margin-top:4px}',
     '.flx-opts{position:absolute;left:0;right:0;bottom:12px;display:flex;justify-content:center}.flx-opts .flb-opts{margin:0;gap:14px;width:auto}.flx-opts .flb-show .o{min-width:96px;max-width:none;flex:0 0 auto;min-height:72px;font-size:34px;padding:4px 18px;box-shadow:0 6px 16px rgba(0,0,0,.22);animation:flxPop .5s cubic-bezier(.3,1.6,.6,1) both}',
     '.flx-opts .flb-show .o:nth-child(2){animation-delay:.12s}.flx-opts .flb-show .o:nth-child(3){animation-delay:.24s}.flx-opts .flb-show .o:nth-child(4){animation-delay:.36s}',
+    '.flx-opts.flx-long .flb-opts{flex-wrap:wrap;max-width:94%;margin:0 auto;justify-content:center}.flx-opts.flx-long .flb-show .o{font-size:24px;min-height:58px;min-width:0;padding:4px 14px;white-space:nowrap}',
+    '.flx-opts.flx-xl .flb-show .o{font-size:20px;white-space:normal;max-width:30%;line-height:1.15}',
     '.flx-opts .flb-show .o.tap{cursor:pointer}.flx-opts .flb-show .o.tap:hover{transform:scale(1.08)}.flx-opts .flb-show .o.no{background:#ffd0d0;animation:flxNo .5s ease both;opacity:.8}@keyframes flxNo{0%,100%{transform:translateX(0)}25%{transform:translateX(-8px)}75%{transform:translateX(8px)}}',
     '.flx-opts .flb-show .o.ok{animation:flxWin .9s ease both;box-shadow:0 0 0 6px #ffe14d,0 0 26px 8px rgba(255,225,77,.9)}',
     '.flx-think{position:absolute;right:10px;top:6px;font-size:46px;opacity:0;transform:scale(.4);transition:opacity .3s,transform .3s}.flx-think.on{opacity:1;transform:scale(1);animation:flxThink 1.2s ease-in-out infinite}',
@@ -16017,7 +16020,8 @@ S.spatialExtra = S.extraMakers;
     var chunks = [];
     slides.forEach(function (sl, si) { sl.steps.forEach(function (st, k) { chunks.push({ si: si, k: k, say: st.say, think: !!st.think, answer: st.answer, last: k === sl.steps.length - 1 }); }); });
     var dashes = ''; for (var d = 0; d < meta.of; d++) dashes += '<i class="' + (d <= meta.q ? 'on' : '') + '"></i>';
-    var short = TT.replace(/\?$/, '');
+    var short = TT;   /* the lesson's question, with its question mark, stays in the purple label at the top */
+    function same(a, b) { var n = function (x) { return String(x || '').replace(/<[^>]+>/g, '').toLowerCase().replace(/[^a-z0-9]+/g, ' ').trim(); }; return n(a) === n(b); }
     /* a lesson counts as watched once its last step has been shown; the tick is saved with the child's progress */
     function seen(j) { return meta.n && H.isDone ? H.isDone(meta.n, 'w' + j) : false; }
     function markSeen() {
@@ -16104,7 +16108,9 @@ S.spatialExtra = S.extraMakers;
         return;
       }
       if (FLM) { stage.innerHTML = '<div class="flx gp-turn"><div class="flx-pic"></div><div class="flx-top"></div><div class="flx-opts"></div><div class="flx-think" aria-hidden="true">🤔</div></div>'; flPic = ''; flTop = ''; flOpt = ''; return; }
-      h = chrome(sl) + '<div class="gp-body"><div class="gp-fit"><h3 class="gp-h">' + sl.h + '</h3>' + (sl.sub ? '<p class="gp-sub">' + sl.sub + '</p>' : '');
+      /* a heading that only repeats the question in the label is left out: the slide starts from its own heading */
+      var rep = same(sl.h, TT), hh = rep ? (sl.sub || '') : sl.h, sb = rep ? '' : sl.sub;
+      h = chrome(sl) + '<div class="gp-body"><div class="gp-fit">' + (hh ? '<h3 class="gp-h">' + hh + '</h3>' : '') + (sb ? '<p class="gp-sub">' + sb + '</p>' : '');
       /* a step whose html starts with <!--swap--> replaces the block before it, in the same place */
       var groups = [];
       sl.steps.forEach(function (st, k) {
@@ -16156,6 +16162,8 @@ S.spatialExtra = S.extraMakers;
       if (th !== flTop) { flTop = th; T.innerHTML = th; }
       var oh = op ? op.outerHTML : '', base = oh.replace(/ ok"/g, '"');
       if (base !== flOpt) { flOpt = base; O.innerHTML = oh; } else if (oh !== O.innerHTML) { O.innerHTML = oh; }
+      var ol = O.querySelectorAll('.o'), mx = 0; [].forEach.call(ol, function (e) { mx = Math.max(mx, e.textContent.length); });
+      O.classList.toggle('flx-long', mx > 6); O.classList.toggle('flx-xl', mx > 14);
       /* a question: the child taps their answer on the picture */
       tries = 0; answered = false;
       if (c.think) O.querySelectorAll('.o').forEach(function (el) {
@@ -16220,7 +16228,7 @@ S.spatialExtra = S.extraMakers;
         /* First level: told like a storyteller, sentence by sentence, counting things as they light up */
         var c0 = chunks[i], blk = stage.querySelector('.flx-pic') || stage;
         root.classList.add('gp-talk');
-        H.flTell(c0.say, { box: blk, cap: null, voice: okVoice, alive: function () { return my === token && playing && root.isConnected; } }, function () {
+        H.flTell(c0.say, { box: blk, keys: stage.querySelector('.flx'), cap: null, voice: okVoice, alive: function () { return my === token && playing && root.isConnected; } }, function () {
           root.classList.remove('gp-talk');
           if (my !== token || !playing || !root.isConnected) return;
           /* a question: give the child time to think before the answer */
@@ -24645,11 +24653,11 @@ S.extraMakers = function (n, level) {
     return svg(20 + cols * 46, 20 + rows * 46, 'A ten-frame showing ' + n + (m ? ' and ' + m : ''), s, 300);
   };
   /* a number track from lo to hi; mark: numbers to circle; hops: [from, to] arrows */
-  FL.track = function (lo, hi, mark, hops, gap) {
+  FL.track = function (lo, hi, mark, hops, gap, unit) {
     var n = hi - lo + 1, step = gap || Math.max(30, Math.min(52, 620 / n)), w = n * step + 20, s = '';
     for (var i = 0; i < n; i++) {
       var v = lo + i, x = 10 + i * step, on = (mark || []).indexOf(v) > -1;
-      s += '<rect x="' + x + '" y="40" width="' + (step - 4) + '" height="36" rx="7" fill="' + (on ? '#ffd166' : '#fff') + '" stroke="' + INK + '" stroke-width="2"/>' + tx(x + (step - 4) / 2, 64, v, step > 36 ? 17 : 13);
+      s += '<rect x="' + x + '" y="40" width="' + (step - 4) + '" height="36" rx="7" fill="' + (on ? '#ffd166' : '#fff') + '" stroke="' + INK + '" stroke-width="2"/>' + tx(x + (step - 4) / 2, 64, v + (unit || ''), step > 36 ? (unit ? 15 : 17) : (unit ? 11 : 13));
     }
     (hops || []).forEach(function (hp) {
       var a = 10 + (hp[0] - lo) * step + (step - 4) / 2, b = 10 + (hp[1] - lo) * step + (step - 4) / 2;
@@ -24657,6 +24665,8 @@ S.extraMakers = function (n, level) {
     });
     return svg(w, 84, 'A number track from ' + lo + ' to ' + hi, '<defs><marker id="flA" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto"><path d="M0 0 8 4 0 8z" fill="#7a1fc2"/></marker></defs>' + s, Math.min(w, 680));
   };
+  /* the same number track for money: every number shows p, like 15p */
+  FL.trackP = function (lo, hi, mark, hops) { return FL.track(lo, hi, mark, hops, null, 'p'); };
   /* tens sticks and ones cubes */
   FL.tensOnes = function (t, o) {
     var s = '', x = 10;
@@ -24955,6 +24965,10 @@ S.extraMakers = function (n, level) {
     '@keyframes flWig{0%,100%{transform:rotate(0)}25%{transform:rotate(-6deg)}75%{transform:rotate(6deg)}}' +
     '@keyframes flIn{0%{transform:translateX(-60px);opacity:0}100%{transform:translateX(0);opacity:1}}' +
     '.fl-it{transition:transform .3s cubic-bezier(.3,1.6,.6,1),filter .3s;transform-box:fill-box;transform-origin:center}' +
+    '.fl-keys{position:absolute;left:0;right:0;top:10px;display:flex;justify-content:center;gap:10px;flex-wrap:wrap;pointer-events:none;z-index:3}' +
+    '.fl-key{background:#fff;color:#221a3a;border:4px solid #ffb703;border-radius:999px;padding:6px 22px;font-weight:900;font-size:30px;box-shadow:0 8px 22px rgba(0,0,0,.25);animation:flKey .5s cubic-bezier(.3,1.6,.6,1) both;transition:opacity .4s,transform .4s}' +
+    '.fl-key.out{opacity:0;transform:translateY(-14px) scale(.9)}@keyframes flKey{0%{opacity:0;transform:scale(.3)}100%{opacity:1;transform:none}}' +
+    '.fl-pulse{animation:flPulse 1.4s ease 1;transform-box:fill-box;transform-origin:center}@keyframes flPulse{0%,100%{transform:scale(1);filter:none}40%{transform:scale(1.12);filter:drop-shadow(0 0 10px #ffd400) drop-shadow(0 0 3px #fff)}}' +
     '.fl-it.fl-glow{animation:flGlow 1.2s ease}@keyframes flGlow{0%,100%{filter:none;transform:scale(1)}45%{filter:drop-shadow(0 0 7px #ffe14d) drop-shadow(0 0 3px #fff);transform:scale(1.25)}}' +
     '.fl-it.fl-hl{transform:scale(1.4);filter:drop-shadow(0 0 5px #ffe14d) drop-shadow(0 0 2px #fff)}.fl-it.fl-done{filter:drop-shadow(0 0 3px #ffe14d)}' +
     '.fl-num{font-weight:900;fill:#e0457b;stroke:#fff;stroke-width:3px;paint-order:stroke;animation:flPop .4s cubic-bezier(.3,1.6,.6,1) both;font-family:inherit}' +
@@ -25099,6 +25113,31 @@ S.extraMakers = function (n, level) {
       /* near the top of the picture: put the number under the thing instead */
       var sv = el.ownerSVGElement, sr = sv && sv.getBoundingClientRect(), tr = t.getBoundingClientRect(); if (sr && tr.top < sr.top + 2) { t.setAttribute('y', bb.y + bb.height + Number(t.getAttribute('font-size'))); } } catch (e) { /* ignore */ }
   }
+  /* key words: when the story says one, it pops up on the screen (or glows if it is already in the picture) */
+  var KEYS = [['breakfast', '🥣'], ['lunchtime', '🥪'], ['lunch', '🥪'], ['dinner', '🍝'], ['snack', '🍎'], ['school', '🏫'], ['bedtime', '🛏️'], ['bed', '🛏️'], ['bath', '🛁'], ['sleep', '😴'], ['wakes up', '⏰'], ['wake up', '⏰'],
+    ['morning', '🌅'], ['afternoon', '☀️'], ['evening', '🌆'], ['night', '🌙'], ['minute', '⏱️'], ['hour', '🕐'], ['week', '📅'], ['weekend', '🎉'], ['picnic', '🧺'], ['shop', '🏪'], ['change', '🪙'], ['coins', '🪙'], ['notes', '💷'],
+    ['first', '1️⃣'], ['next', '➡️'], ['last', '🏁'], ['double', '👯'], ['half', '🌗'], ['quarter', '◔'], ['total', '🧮'], ['altogether', '🧮'], ['take away', '➖'], ['add', '➕'],
+    ['Monday', ''], ['Tuesday', ''], ['Wednesday', ''], ['Thursday', ''], ['Friday', ''], ['Saturday', ''], ['Sunday', ''], ['January', ''], ['February', ''], ['December', '']];
+  var TNUM = { one: 1, two: 2, three: 3, four: 4, five: 5, six: 6, seven: 7, eight: 8, nine: 9, ten: 10, eleven: 11, twelve: 12 };
+  function keyFind(t) {
+    var out = [], low = ' ' + String(t).toLowerCase().replace(/[’']/g, "'") + ' ';
+    var tm = /\b(half past|quarter past|quarter to)?\s*(one|two|three|four|five|six|seven|eight|nine|ten|eleven|twelve|\d{1,2})( o'clock)?\b/g, m;
+    while ((m = tm.exec(low))) { if (!m[1] && !m[3]) continue; var n = TNUM[m[2]] || m[2]; out.push({ label: (m[1] ? m[1] + ' ' + n : n + ' o’clock'), em: '🕐', clock: true, at: m.index }); }
+    KEYS.forEach(function (k) { var re = new RegExp("\\b" + k[0].toLowerCase() + "(s|es)?\\b"), mm = re.exec(low); if (mm && !out.some(function (o) { return o.label.indexOf(k[0]) >= 0 || k[0].indexOf(o.label) >= 0; })) out.push({ label: k[0], em: k[1], at: mm.index }); });
+    return out.sort(function (a, b) { return a.at - b.at; }).slice(0, 3);
+  }
+  function flashKeys(box, host, t) {
+    if (!host) return; var ks = keyFind(t); if (!ks.length) return;
+    var wrap = host.querySelector('.fl-keys'); if (!wrap) { wrap = document.createElement('div'); wrap.className = 'fl-keys'; host.appendChild(wrap); }
+    ks.forEach(function (k, j) { setTimeout(function () {
+      /* already in the picture as words: make that glow; a clock time: make the clock glow too */
+      var found = null; if (box) [].some.call(box.querySelectorAll('span,b,text,div'), function (e) { if (e.children.length > 1) return false; var tx = (e.textContent || '').toLowerCase(); if (tx && tx.length < 40 && tx.indexOf(k.label.toLowerCase()) >= 0) { found = e; return true; } return false; });
+      if (k.clock && box) { var c = [].filter.call(box.querySelectorAll('svg'), function (g) { return g.querySelectorAll('line').length >= 60; })[0]; if (c) { c.classList.remove('fl-pulse'); void c.getBoundingClientRect(); c.classList.add('fl-pulse'); } }
+      if (found) { found.classList.remove('fl-pulse'); void found.getBoundingClientRect(); found.classList.add('fl-pulse'); }
+      var pill = document.createElement('span'); pill.className = 'fl-key'; pill.textContent = (k.em ? k.em + ' ' : '') + k.label; wrap.appendChild(pill);
+      setTimeout(function () { pill.classList.add('out'); setTimeout(function () { pill.remove(); }, 500); }, 2600);
+    }, j * 700); });
+  }
   function glow(box, t) {
     var ks = {}; [].forEach.call(box.querySelectorAll('.fl-it[data-k]'), function (e) { ks[e.getAttribute('data-k')] = 1; });
     Object.keys(ks).forEach(function (k) { if (!new RegExp('\\b' + k + '(e?s)?\\b', 'i').test(t)) return;
@@ -25111,7 +25150,7 @@ S.extraMakers = function (n, level) {
     function step() {
       if (!o.alive()) return;
       if (k >= ps.length) { if (o.box) o.box.querySelectorAll('.fl-hl').forEach(function (e) { e.classList.remove('fl-hl'); e.classList.add('fl-done'); }); done(); return; }
-      var p = ps[k]; capShow(); if (p.count != null && o.box) light(o.box, p); else if (o.box) glow(o.box, p.t);
+      var p = ps[k]; capShow(); if (p.count != null && o.box) light(o.box, p); else if (o.box) { glow(o.box, p.t); flashKeys(o.box, o.keys, p.t); }
       var fin = function () { if (!o.alive()) return; k++; setTimeout(step, pauseAfter(p)); };
       if (!o.voice) { setTimeout(fin, p.count != null ? 420 : p.t.split(' ').length * 330 + 250); return; }
       var u = new SpeechSynthesisUtterance(S.speakable ? S.speakable(p.t.replace(/[“”]/g, '')) : p.t), v = H.pickVoice && H.pickVoice();
@@ -25416,7 +25455,7 @@ S.extraMakers = function (n, level) {
       }),
       LS('How can counting on help me find change from 20p?', 'how to count on to find the change.', {
         intro: ['Change', 'Money back', "If you pay with a coin worth more than the price, the shop gives you change. Count on from the price to find it.", FL.says('mouse', 'Here is your change!')],
-        ex: [['From 10p', 'A 6p sweet', [["A sweet costs six pence. You pay ten pence. Count on from six: seven, eight, nine, ten. Four pence change.", FL.track(6, 10, [6, 10], [[6, 7], [7, 8], [8, 9], [9, 10]])]]],
+        ex: [['From 10p', 'A 6p sweet', [["A sweet costs six pence. You pay ten pence. Count on from six: seven, eight, nine, ten. Four pence change.", FL.trackP(6, 10, [6, 10], [[6, 7], [7, 8], [8, 9], [9, 10]])]]],
           ['From 20p', 'A 15p pencil', [["A pencil costs fifteen pence. You pay twenty pence. From fifteen to twenty is five. Five pence change.", E('15p + 5p = 20p', 'g')]]],
           ['From 20p', 'An 18p ball', [["A ball costs eighteen pence. Count on: nineteen, twenty. Two pence change.", E('18p + 2p = 20p', 'g')]]]],
         real: ['At the shop', "Molly's comic costs twelve pence. She pays twenty pence. From twelve to twenty is eight pence change.", E('12p + 8p = 20p', 'b')],
@@ -26862,7 +26901,7 @@ S.extraMakers = function (n, level) {
         pg(P('shop', 'owl', C([2, 2, 1])), 'Ollie the owl wants a ball for five pence. He pays with two pence, two pence and one penny.', Q('Do 2p, 2p and 1p make <b>5p</b>?', ['Yes', 'No'], 'Yes', 'Two, four, five. Yes!')),
         pg(P('shop', 'owl', C([5, 2, 1])), 'Next Ollie wants a toy car. He pays with five pence, two pence and one penny.', Q('How much does Ollie pay?', ['7p', '8p', '9p'], '8p', 'Five, seven, eight. Eight pence.')),
         pg(P('shop', 'frog', C([20])), 'Frankie the frog wants a kite for fifteen pence. He only has a twenty pence coin.'),
-        pg(P('shop', 'mouse', FL.track(15, 20, [15, 20], [[15, 16], [16, 17], [17, 18], [18, 19], [19, 20]])), 'Molly counts on from fifteen to twenty: sixteen, seventeen, eighteen, nineteen, twenty.', Q('How much change does Frankie get?', ['4p', '5p', '6p'], '5p', 'Five jumps, so five pence change.'))
+        pg(P('shop', 'mouse', FL.trackP(15, 20, [15, 20], [[15, 16], [16, 17], [17, 18], [18, 19], [19, 20]])), 'Molly counts on from fifteen to twenty: sixteen, seventeen, eighteen, nineteen, twenty.', Q('How much change does Frankie get?', ['4p', '5p', '6p'], '5p', 'Five jumps, so five pence change.'))
       ] },
     learn: [
       { title: 'What coins and notes do we use?', char: 'mouse', screens: [
@@ -26893,12 +26932,12 @@ S.extraMakers = function (n, level) {
         Y('How much money is this?', P('shop', '', C([10, 10, 5])), ['20p', '25p', '30p'], '25p', 'Ten, twenty, then five more.', 'Twenty-five pence.')
       ] },
       { title: 'How can counting on help me find change from 20p?', char: 'mouse', screens: [
-        W('A ball costs fifteen pence. I pay with twenty pence. I count on from fifteen to twenty: five jumps. Five pence change!', P('shop', '', FL.track(15, 20, [15, 20], [[15, 16], [16, 17], [17, 18], [18, 19], [19, 20]]))),
-        W('A pen costs twelve pence. From twelve to twenty is eight jumps. Eight pence change.', P('shop', '', FL.track(12, 20, [12, 20]))),
+        W('A ball costs fifteen pence. I pay with twenty pence. I count on from fifteen to twenty: five jumps. Five pence change!', P('shop', '', FL.trackP(15, 20, [15, 20], [[15, 16], [16, 17], [17, 18], [18, 19], [19, 20]]))),
+        W('A pen costs twelve pence. From twelve to twenty is eight jumps. Eight pence change.', P('shop', '', FL.trackP(12, 20, [12, 20]))),
         W('Change is the money you get back when you pay too much.', P('shop', 'mouse', C([20]) + C([5]))),
-        TG('A sticker costs seventeen pence. You pay twenty pence. How much change?', P('shop', '', FL.track(17, 20, [17, 20])), ['2p', '3p', '4p'], '3p', 'Count on: eighteen, nineteen, twenty.', 'Three jumps, so three pence change.'),
+        TG('A sticker costs seventeen pence. You pay twenty pence. How much change?', P('shop', '', FL.trackP(17, 20, [17, 20])), ['2p', '3p', '4p'], '3p', 'Count on: eighteen, nineteen, twenty.', 'Three jumps, so three pence change.'),
         TG('A cookie costs ten pence. You pay twenty pence. How much change?', P('shop', '', C([20])), ['5p', '10p', '15p'], '10p', 'Ten and what make twenty?', 'Ten pence change.'),
-        Y('A toy costs fourteen pence. You pay twenty pence. How much change?', P('shop', '', FL.track(14, 20, [14, 20])), ['5p', '6p', '7p'], '6p', 'Count on from fourteen to twenty.', 'Six pence change.'),
+        Y('A toy costs fourteen pence. You pay twenty pence. How much change?', P('shop', '', FL.trackP(14, 20, [14, 20])), ['5p', '6p', '7p'], '6p', 'Count on from fourteen to twenty.', 'Six pence change.'),
         Y('A sweet costs nineteen pence. You pay twenty pence. How much change?', P('shop', '', C([20])), ['1p', '2p', '9p'], '1p', 'What comes after nineteen?', 'One penny change.')
       ] }
     ]
@@ -27278,14 +27317,14 @@ S.extraMakers = function (n, level) {
       pages: [
         pg(P('shop', 'owl', clk(9, 15), 'Open!'), 'Ollie the owl opens his shop at quarter past nine. The long hand points to three.'),
         pg(P('shop', 'owl', C([20, 20, 10])), 'Benny buys a comic. He pays with twenty pence, twenty pence and ten pence.', Q('How much does Benny pay?', ['40p', '50p', '60p'], '50p', 'Twenty, forty, fifty.')),
-        pg(P('shop', 'owl', FL.track(14, 20, [14, 20])), 'Molly buys a pencil for fourteen pence and pays with twenty pence. Ollie counts on to twenty.', Q('How much change?', ['4p', '6p', '14p'], '6p', 'Fourteen to twenty is six jumps.')),
+        pg(P('shop', 'owl', FL.trackP(14, 20, [14, 20])), 'Molly buys a pencil for fourteen pence and pays with twenty pence. Ollie counts on to twenty.', Q('How much change?', ['4p', '6p', '14p'], '6p', 'Fourteen to twenty is six jumps.')),
         pg(P('shop', 'owl', clk(12, 30)), 'At half past twelve Ollie has lunch.'),
         pg(P('shop', 'owl', clk(3, 45)), 'The long hand points to nine. It is quarter to four. Nearly home time!', Q('What time is it?', ['quarter past 3', 'quarter to 4', 'half past 3'], 'quarter to 4', 'Long hand on nine: quarter to.')),
         pg(P('shop', 'owl', cards(['9 o’clock → 5 o’clock', '8 hours'])), 'The shop is open from nine o’clock to five o’clock. That is eight hours.')
       ] },
     learn: [
       { title: 'How can I use adding and subtracting to work out change?', char: 'owl', screens: [
-        W('A comic costs fourteen pence. Benny pays twenty pence. I count on: fifteen, sixteen … twenty. Six pence change.', P('shop', '', FL.track(14, 20, [14, 20]))),
+        W('A comic costs fourteen pence. Benny pays twenty pence. I count on: fifteen, sixteen … twenty. Six pence change.', P('shop', '', FL.trackP(14, 20, [14, 20]))),
         W('A toy costs thirty-five pence. Molly pays fifty pence. Thirty-five to forty is five, forty to fifty is ten. Fifteen pence change.', P('shop', '', cards(['35p', '40p', '50p']))),
         TG('A pencil costs 42p. You pay 50p. How much change?', P('shop', '', C([50])), ['7p', '8p', '18p'], '8p', 'Count on from forty-two to fifty.', 'Eight pence.'),
         TG('A sandwich costs 80p. You pay £1. How much change?', P('shop', '', C([100])), ['10p', '20p', '30p'], '20p', 'One pound is one hundred pence.', 'Twenty pence.'),
@@ -27871,7 +27910,11 @@ S.extraMakers = function (n, level) {
 
   function big(t) { return '<div style="font-size:clamp(1.6rem,6vw,2.4rem);font-weight:800;color:' + INK + ';background:#fff;border:3px solid ' + INK + ';border-radius:16px;padding:6px 18px;text-align:center;display:inline-block">' + t + '</div>'; }
   function cards(list) { return '<div style="display:flex;flex-wrap:wrap;gap:8px;justify-content:center">' + list.map(function (t) { return '<span style="background:#fff;border:3px solid ' + INK + ';border-radius:14px;padding:6px 12px;font-weight:800;color:' + INK + '">' + t + '</span>'; }).join('') + '</div>'; }
-  function words(list) { return '<div style="display:grid;gap:8px;max-width:520px;margin:0 auto">' + list.map(function (w) { return '<div style="display:flex;gap:12px;align-items:center;background:#fff;border:2px solid #dcd3f0;border-radius:14px;padding:8px 12px;color:' + INK + '"><span style="font-size:1.6rem">' + (w[2] || '🔤') + '</span><span><b>' + w[0] + '</b><br>' + w[1] + '</span></div>'; }).join('') + '</div>'; }
+  /* each key word is read and explained in turn: "Bigger means more." */
+  function spoken(w) { var raw = String(w[0]), pm = /\(([^)]*)\)/.exec(raw), word = raw.replace(/\s*\([^)]*\)/g, '').trim(), m = String(w[1]).trim();
+    if (pm && (word.length <= 2 || !/[a-z]{3}/i.test(word))) word = pm[1];   /* p (pence) is read as pence */
+    return /^\d/.test(m) ? word.charAt(0).toUpperCase() + word.slice(1) + '. For example, ' + m + '.' : word.charAt(0).toUpperCase() + word.slice(1) + ' means ' + m + '.'; }
+  function words(list) { return '<div style="display:grid;gap:8px;max-width:520px;margin:0 auto"><p class="say" style="margin:0 0 4px;font-weight:700;text-align:center">Here are the key words for this lesson.</p>' + list.map(function (w) { return '<div class="say" data-say="' + spoken(w).replace(/"/g, '&quot;') + '" style="display:flex;gap:12px;align-items:center;background:#fff;border:2px solid #dcd3f0;border-radius:14px;padding:8px 12px;color:' + INK + '"><span style="font-size:1.6rem" aria-hidden="true">' + (w[2] || '🔤') + '</span><span><b>' + w[0] + '</b><br>' + w[1] + '</span></div>'; }).join('') + '</div>'; }
   function row3(list, kind) { return '<div style="display:flex;align-items:center;justify-content:center;gap:8px;flex-wrap:wrap">' + list.map(function (n) { return '<div style="max-width:200px">' + FL.things(n, kind, 5) + '</div>'; }).join('<b style="font-size:1.8em">+</b>') + '</div>'; }
   FL.big = big; FL.cards = cards; FL.row3 = row3;
 
@@ -27895,11 +27938,11 @@ S.extraMakers = function (n, level) {
   FL.learnIt = function (n, id, d) {
     var sl = [];
     sl.push({ title: d.title, say: [d.what], v: d.pic || '', kind: 'The big question', noMore: true });
-    sl.push({ title: 'Key words', say: ['Here are the words we use in this lesson.'], v: words(d.words), kind: 'Key words', noMore: true });
+    sl.push({ title: 'Key words', say: [], v: words(d.words), kind: 'Key words', noMore: true });
     [['See it', 'Real things'], ['Draw it', 'A picture'], ['Write it', 'Numbers']].forEach(function (k, i) { var s = d.see[i]; if (!s) return;
       var o = { title: k[0], say: [s[0]], v: s[1], kind: k[1], noMore: true };
       /* Draw it and Write it: the child copies the example on a scribble pad, open and ready */
-      if (i > 0) { var pad = { open: true }; o.say = [s[0], i === 1 ? 'Your turn: draw it on the scribble pad.' : 'Your turn: write it on the scribble pad.']; o.live = function (host) { var H = S.h; if (H && H.scribble) H.scribble(host, pad); }; }
+      if (i > 0) { var pad = { open: true, bg: i === 1 ? s[1] : '' };   /* Draw it: the same picture is already on the pad, so the child only adds to it */ o.say = [s[0], i === 1 ? 'Your turn: draw it on the scribble pad.' : 'Your turn: write it on the scribble pad.']; o.live = function (host) { var H = S.h; if (H && H.scribble) H.scribble(host, pad); }; }
       sl.push(o); });
     d.ex.forEach(function (w, i) { sl.push({ title: 'Worked example ' + (i + 1), say: [], ex: worked(w), kind: 'Step by step', noMore: true }); });
     sl.push({ title: 'Watch out!', say: [d.mistake[0]], v: d.mistake[1], kind: 'A common mistake', noMore: true });
@@ -28249,7 +28292,7 @@ S.extraMakers = function (n, level) {
     'Change is the money you get back. Count on from the price to the money you paid.', SAY('owl', 'I pay 50p for a 35p pencil.'),
     [['price', 'how much something costs', '🏷️'], ['pay', 'give money for it', '👛'], ['change', 'the money you get back', '🪙'], ['count on', 'start at the price and count up', '➕']],
     [['Ollie buys a 35p pencil with a 50p coin.', COIN([50])],
-      ['Count on from 35p to 40p (5p), then to 50p (10p).', TR(35, 50, [35, 40, 50], [[35, 40], [40, 50]])],
+      ['Count on from 35p to 40p (5p), then to 50p (10p).', FL.trackP(35, 50, [35, 40, 50], [[35, 40], [40, 50]])],
       ['5p + 10p = 15p change.', B('50p − 35p = 15p')]],
     [['A rubber costs 7p. Ollie pays 10p. What is the change?', ['Count on from 7 to 10.', '8, 9, 10: that is 3.'], '3p change', COIN([10])],
       ['A book costs 45p. Ollie pays 50p. What is the change?', ['Count on from 45 to 50.', 'That is 5.'], '5p change', COIN([50])],
@@ -28564,14 +28607,14 @@ S.extraMakers = function (n, level) {
     ['Biggest coin first, then add.', C(['biggest coin', 'add more', 'price'])]]);
 
   LI(203, 'learn4', ['Change from 20p', 'How can counting on help me find change from 20p?',
-    'Change is the money you get back. Count on from the price up to 20p.', TR(15, 20, [15, 20], [[15, 16], [16, 17], [17, 18], [18, 19], [19, 20]]),
+    'Change is the money you get back. Count on from the price up to 20p.', FL.trackP(15, 20, [15, 20], [[15, 16], [16, 17], [17, 18], [18, 19], [19, 20]]),
     [['change', 'money back', '🪙'], ['price', 'how much it costs', '🏷️'], ['count on', 'count up from the price', '➡️'], ['20p', 'the coin you pay with', '2️⃣0️⃣']],
     [['A teddy costs 15p. Molly is given 20p.', COIN([20])],
-      ['Count on from 15 to 20: 16, 17, 18, 19, 20. That is 5.', TR(15, 20, [15, 20], [[15, 16], [16, 17], [17, 18], [18, 19], [19, 20]])],
+      ['Count on from 15 to 20: 16, 17, 18, 19, 20. That is 5.', FL.trackP(15, 20, [15, 20], [[15, 16], [16, 17], [17, 18], [18, 19], [19, 20]])],
       ['The change is 5p.', B('20p − 15p = 5p')]],
-    [['A toy costs 18p. Pay 20p. Change?', ['Count on: 19, 20.', 'That is 2.'], '2p', TR(17, 20, [18, 20], [[18, 19], [19, 20]])],
+    [['A toy costs 18p. Pay 20p. Change?', ['Count on: 19, 20.', 'That is 2.'], '2p', FL.trackP(17, 20, [18, 20], [[18, 19], [19, 20]])],
       ['A toy costs 10p. Pay 20p. Change?', ['10 and 10 make 20.'], '10p', COIN([10])],
-      ['A toy costs 16p. Pay 20p. Change?', ['Count on: 17, 18, 19, 20.', 'That is 4.'], '4p', TR(15, 20, [16, 20], [[16, 17], [17, 18], [18, 19], [19, 20]])]],
+      ['A toy costs 16p. Pay 20p. Change?', ['Count on: 17, 18, 19, 20.', 'That is 4.'], '4p', FL.trackP(15, 20, [16, 20], [[16, 17], [17, 18], [18, 19], [19, 20]])]],
     ['Count the jumps, not the price. 15p to 20p is 5 jumps, so 5p.', C(['5 jumps', '5p'])],
     ['A toy costs <b>17p</b>. Pay 20p. Change?', '', ['2p', '3p', '17p'], '3p', '18, 19, 20: 3 jumps.', 'Count on from 17.'],
     ['Count on from the price to 20p.', C(['price', 'count on', 'change'])]]);
@@ -28702,8 +28745,8 @@ S.extraMakers = function (n, level) {
       medium: [function () { var c = pick([[5, 1], [5, 2], [5, 2, 1], [10, 1], [10, 2], [10, 2, 1], [10, 5], [10, 5, 1], [10, 5, 2]]), p = c.reduce(function (a, b) { return a + b; }, 0);
         return W('A toy costs ' + p + 'p. Which coins could you use?', ['Start with the biggest coin that fits: ' + c[0] + 'p.', 'Add smaller coins until you reach ' + p + 'p.'], c.join('p + ') + 'p = ' + p + 'p', COIN(c)); },
         function () { var c = pick([[10, 5, 2], [5, 5, 1], [10, 2, 1], [5, 2, 2]]); var t = c[0] + c[1] + c[2]; return W('How much is ' + c.join('p + ') + 'p?', [c[0] + ' + ' + c[1] + ' = ' + (c[0] + c[1]) + '.', (c[0] + c[1]) + ' + ' + c[2] + ' = ' + t + '.'], 'It makes ' + t + 'p.', COIN(c)); }],
-      high: [function () { var p = r(11, 19); return W('A toy costs ' + p + 'p. You pay 20p. What is the change?', ['Count on from ' + p + ' to 20.', 'That is ' + (20 - p) + ' jumps.'], 'The change is ' + (20 - p) + 'p.', TR(p, 20, [p, 20])); },
-        function () { var p = r(3, 9); return W('A sweet costs ' + p + 'p. You pay 10p. What is the change?', ['Count on from ' + p + ' to 10.', 'That is ' + (10 - p) + '.'], 'The change is ' + (10 - p) + 'p.', TR(p, 10, [p, 10])); }] },
+      high: [function () { var p = r(11, 19); return W('A toy costs ' + p + 'p. You pay 20p. What is the change?', ['Count on from ' + p + ' to 20.', 'That is ' + (20 - p) + ' jumps.'], 'The change is ' + (20 - p) + 'p.', FL.trackP(p, 20, [p, 20])); },
+        function () { var p = r(3, 9); return W('A sweet costs ' + p + 'p. You pay 10p. What is the change?', ['Count on from ' + p + ' to 10.', 'That is ' + (10 - p) + '.'], 'The change is ' + (10 - p) + 'p.', FL.trackP(p, 10, [p, 10])); }] },
     204: { low: [function () { var h = r(1, 12); return W('What time does the clock show?', ['The long hand is on 12: o’clock.', 'The short hand is on ' + h + '.'], h + ' o’clock', clk(h, 0)); },
         function () { var D = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'], i = r(0, 5); return W('What day comes after ' + D[i] + '?', ['Say the days in order.', 'After ' + D[i] + ' comes ' + D[i + 1] + '.'], D[i + 1], C(D.slice(0, 7).map(function (d) { return d.slice(0, 3); }))); }],
       medium: [function () { var h = r(1, 12); return W('What time does the clock show?', ['The long hand is on 6: half past.', 'The short hand is just past ' + h + '.'], 'Half past ' + h, clk(h, 30)); },

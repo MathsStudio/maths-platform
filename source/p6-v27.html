@@ -660,7 +660,7 @@ var SLIDE_MORE = {"1.learn1": [{"more": ["Our number system uses only ten digits
     Nar.at = i; unmarkAll();
     if (i >= Nar.units.length) { Nar.playing = false; Nar.at = 0; setPlayerUI(); return; }
     var u = Nar.units[i];
-    u.el.classList.add('on');
+    if (!(S.firstLevel && S.firstLevel())) u.el.classList.add('on');   /* P2 to P4: read naturally, no highlight */
     try { var rc = u.el.getBoundingClientRect(), vh = window.innerHeight || 700; if (rc.top < 60 || rc.bottom > vh - 90) u.el.scrollIntoView({ block: 'nearest', behavior: 'auto' }); } catch (e) { /* ignore */ }
     var ut = new SpeechSynthesisUtterance(speakable(u.text)), started = false;
     ut.lang = 'en-GB'; ut.rate = Number(store.settings.rate) || 1;

@@ -9,6 +9,7 @@
     '.padbox{margin-top:8px;border:2px solid var(--accent);border-radius:14px;background:#fff;overflow:hidden}.padbox canvas{display:block;width:100%;height:210px;touch-action:none;cursor:crosshair}' +
     '.padtools{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-top:8px}.padtools .btn{min-height:40px;padding:6px 14px;background:var(--surface);color:var(--fg);border:2px solid var(--accent);box-shadow:0 2px 0 var(--line)}' +
     '.padtools .btn[aria-pressed="true"]{background:var(--accent);color:var(--accent-fg)}.padcol{width:34px;height:34px;min-height:0!important;padding:0!important;border-radius:50%!important;border:3px solid #fff!important;box-shadow:0 0 0 2px var(--line)!important}.padcol[aria-pressed="true"]{box-shadow:0 0 0 3px var(--accent)!important}' +
+    '.padhasbg{position:relative}.padbg{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;padding:10px;pointer-events:none}.padbg svg{max-width:100%;max-height:100%;height:auto}.padhasbg canvas{position:relative;z-index:1;background:transparent}' +
     '@media (min-width:700px){.padbox canvas{height:260px}}';
   document.head.appendChild(css);
   var COLS = ['#17233F', '#2B62D9', '#E0682A'];
@@ -18,7 +19,7 @@
     var tool = 'pen', col = COLS[0];
     function render() {
       el.innerHTML = '<div class="padbar"><button class="btn" type="button" data-padt aria-expanded="' + (st.open ? 'true' : 'false') + '">✏️ ' + (st.open ? 'Hide scribble pad' : 'Scribble pad') + '</button>' + (st.open ? '' : '<span style="font-size:.9rem;opacity:.75">Work it out here</span>') + '</div>' +
-        (st.open ? '<div class="padbox"><canvas aria-label="Scribble pad. Draw your working here."></canvas></div><div class="padtools"><button class="btn" type="button" data-pen aria-pressed="true">Pen</button><button class="btn" type="button" data-er aria-pressed="false">Eraser</button>' +
+        (st.open ? '<div class="padbox' + (st.bg ? ' padhasbg' : '') + '">' + (st.bg ? '<div class="padbg" aria-hidden="true">' + st.bg + '</div>' : '') + '<canvas aria-label="Scribble pad. Draw your working here."></canvas></div><div class="padtools"><button class="btn" type="button" data-pen aria-pressed="true">Pen</button><button class="btn" type="button" data-er aria-pressed="false">Eraser</button>' +
           COLS.map(function (c, i) { return '<button class="btn padcol" type="button" data-c="' + i + '" aria-label="Pen colour ' + (i + 1) + '" aria-pressed="' + (i === 0) + '" style="background:' + c + '"></button>'; }).join('') + '<button class="btn" type="button" data-clr style="margin-left:auto">Clear</button></div>' : '');
       el.querySelector("[data-padt]").addEventListener('click', function () { st.open = !st.open; render(); });
       if (!st.open) return;

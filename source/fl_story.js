@@ -64,6 +64,10 @@
     '@keyframes flWig{0%,100%{transform:rotate(0)}25%{transform:rotate(-6deg)}75%{transform:rotate(6deg)}}' +
     '@keyframes flIn{0%{transform:translateX(-60px);opacity:0}100%{transform:translateX(0);opacity:1}}' +
     '.fl-it{transition:transform .3s cubic-bezier(.3,1.6,.6,1),filter .3s;transform-box:fill-box;transform-origin:center}' +
+    '.fl-keys{position:absolute;left:0;right:0;top:10px;display:flex;justify-content:center;gap:10px;flex-wrap:wrap;pointer-events:none;z-index:3}' +
+    '.fl-key{background:#fff;color:#221a3a;border:4px solid #ffb703;border-radius:999px;padding:6px 22px;font-weight:900;font-size:30px;box-shadow:0 8px 22px rgba(0,0,0,.25);animation:flKey .5s cubic-bezier(.3,1.6,.6,1) both;transition:opacity .4s,transform .4s}' +
+    '.fl-key.out{opacity:0;transform:translateY(-14px) scale(.9)}@keyframes flKey{0%{opacity:0;transform:scale(.3)}100%{opacity:1;transform:none}}' +
+    '.fl-pulse{animation:flPulse 1.4s ease 1;transform-box:fill-box;transform-origin:center}@keyframes flPulse{0%,100%{transform:scale(1);filter:none}40%{transform:scale(1.12);filter:drop-shadow(0 0 10px #ffd400) drop-shadow(0 0 3px #fff)}}' +
     '.fl-it.fl-glow{animation:flGlow 1.2s ease}@keyframes flGlow{0%,100%{filter:none;transform:scale(1)}45%{filter:drop-shadow(0 0 7px #ffe14d) drop-shadow(0 0 3px #fff);transform:scale(1.25)}}' +
     '.fl-it.fl-hl{transform:scale(1.4);filter:drop-shadow(0 0 5px #ffe14d) drop-shadow(0 0 2px #fff)}.fl-it.fl-done{filter:drop-shadow(0 0 3px #ffe14d)}' +
     '.fl-num{font-weight:900;fill:#e0457b;stroke:#fff;stroke-width:3px;paint-order:stroke;animation:flPop .4s cubic-bezier(.3,1.6,.6,1) both;font-family:inherit}' +
@@ -208,6 +212,31 @@
       /* near the top of the picture: put the number under the thing instead */
       var sv = el.ownerSVGElement, sr = sv && sv.getBoundingClientRect(), tr = t.getBoundingClientRect(); if (sr && tr.top < sr.top + 2) { t.setAttribute('y', bb.y + bb.height + Number(t.getAttribute('font-size'))); } } catch (e) { /* ignore */ }
   }
+  /* key words: when the story says one, it pops up on the screen (or glows if it is already in the picture) */
+  var KEYS = [['breakfast', '🥣'], ['lunchtime', '🥪'], ['lunch', '🥪'], ['dinner', '🍝'], ['snack', '🍎'], ['school', '🏫'], ['bedtime', '🛏️'], ['bed', '🛏️'], ['bath', '🛁'], ['sleep', '😴'], ['wakes up', '⏰'], ['wake up', '⏰'],
+    ['morning', '🌅'], ['afternoon', '☀️'], ['evening', '🌆'], ['night', '🌙'], ['minute', '⏱️'], ['hour', '🕐'], ['week', '📅'], ['weekend', '🎉'], ['picnic', '🧺'], ['shop', '🏪'], ['change', '🪙'], ['coins', '🪙'], ['notes', '💷'],
+    ['first', '1️⃣'], ['next', '➡️'], ['last', '🏁'], ['double', '👯'], ['half', '🌗'], ['quarter', '◔'], ['total', '🧮'], ['altogether', '🧮'], ['take away', '➖'], ['add', '➕'],
+    ['Monday', ''], ['Tuesday', ''], ['Wednesday', ''], ['Thursday', ''], ['Friday', ''], ['Saturday', ''], ['Sunday', ''], ['January', ''], ['February', ''], ['December', '']];
+  var TNUM = { one: 1, two: 2, three: 3, four: 4, five: 5, six: 6, seven: 7, eight: 8, nine: 9, ten: 10, eleven: 11, twelve: 12 };
+  function keyFind(t) {
+    var out = [], low = ' ' + String(t).toLowerCase().replace(/[’']/g, "'") + ' ';
+    var tm = /\b(half past|quarter past|quarter to)?\s*(one|two|three|four|five|six|seven|eight|nine|ten|eleven|twelve|\d{1,2})( o'clock)?\b/g, m;
+    while ((m = tm.exec(low))) { if (!m[1] && !m[3]) continue; var n = TNUM[m[2]] || m[2]; out.push({ label: (m[1] ? m[1] + ' ' + n : n + ' o’clock'), em: '🕐', clock: true, at: m.index }); }
+    KEYS.forEach(function (k) { var re = new RegExp("\\b" + k[0].toLowerCase() + "(s|es)?\\b"), mm = re.exec(low); if (mm && !out.some(function (o) { return o.label.indexOf(k[0]) >= 0 || k[0].indexOf(o.label) >= 0; })) out.push({ label: k[0], em: k[1], at: mm.index }); });
+    return out.sort(function (a, b) { return a.at - b.at; }).slice(0, 3);
+  }
+  function flashKeys(box, host, t) {
+    if (!host) return; var ks = keyFind(t); if (!ks.length) return;
+    var wrap = host.querySelector('.fl-keys'); if (!wrap) { wrap = document.createElement('div'); wrap.className = 'fl-keys'; host.appendChild(wrap); }
+    ks.forEach(function (k, j) { setTimeout(function () {
+      /* already in the picture as words: make that glow; a clock time: make the clock glow too */
+      var found = null; if (box) [].some.call(box.querySelectorAll('span,b,text,div'), function (e) { if (e.children.length > 1) return false; var tx = (e.textContent || '').toLowerCase(); if (tx && tx.length < 40 && tx.indexOf(k.label.toLowerCase()) >= 0) { found = e; return true; } return false; });
+      if (k.clock && box) { var c = [].filter.call(box.querySelectorAll('svg'), function (g) { return g.querySelectorAll('line').length >= 60; })[0]; if (c) { c.classList.remove('fl-pulse'); void c.getBoundingClientRect(); c.classList.add('fl-pulse'); } }
+      if (found) { found.classList.remove('fl-pulse'); void found.getBoundingClientRect(); found.classList.add('fl-pulse'); }
+      var pill = document.createElement('span'); pill.className = 'fl-key'; pill.textContent = (k.em ? k.em + ' ' : '') + k.label; wrap.appendChild(pill);
+      setTimeout(function () { pill.classList.add('out'); setTimeout(function () { pill.remove(); }, 500); }, 2600);
+    }, j * 700); });
+  }
   function glow(box, t) {
     var ks = {}; [].forEach.call(box.querySelectorAll('.fl-it[data-k]'), function (e) { ks[e.getAttribute('data-k')] = 1; });
     Object.keys(ks).forEach(function (k) { if (!new RegExp('\\b' + k + '(e?s)?\\b', 'i').test(t)) return;
@@ -220,7 +249,7 @@
     function step() {
       if (!o.alive()) return;
       if (k >= ps.length) { if (o.box) o.box.querySelectorAll('.fl-hl').forEach(function (e) { e.classList.remove('fl-hl'); e.classList.add('fl-done'); }); done(); return; }
-      var p = ps[k]; capShow(); if (p.count != null && o.box) light(o.box, p); else if (o.box) glow(o.box, p.t);
+      var p = ps[k]; capShow(); if (p.count != null && o.box) light(o.box, p); else if (o.box) { glow(o.box, p.t); flashKeys(o.box, o.keys, p.t); }
       var fin = function () { if (!o.alive()) return; k++; setTimeout(step, pauseAfter(p)); };
       if (!o.voice) { setTimeout(fin, p.count != null ? 420 : p.t.split(' ').length * 330 + 250); return; }
       var u = new SpeechSynthesisUtterance(S.speakable ? S.speakable(p.t.replace(/[“”]/g, '')) : p.t), v = H.pickVoice && H.pickVoice();

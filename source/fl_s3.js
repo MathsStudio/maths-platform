@@ -263,14 +263,14 @@
       pages: [
         pg(P('shop', 'owl', clk(9, 15), 'Open!'), 'Ollie the owl opens his shop at quarter past nine. The long hand points to three.'),
         pg(P('shop', 'owl', C([20, 20, 10])), 'Benny buys a comic. He pays with twenty pence, twenty pence and ten pence.', Q('How much does Benny pay?', ['40p', '50p', '60p'], '50p', 'Twenty, forty, fifty.')),
-        pg(P('shop', 'owl', FL.track(14, 20, [14, 20])), 'Molly buys a pencil for fourteen pence and pays with twenty pence. Ollie counts on to twenty.', Q('How much change?', ['4p', '6p', '14p'], '6p', 'Fourteen to twenty is six jumps.')),
+        pg(P('shop', 'owl', FL.trackP(14, 20, [14, 20])), 'Molly buys a pencil for fourteen pence and pays with twenty pence. Ollie counts on to twenty.', Q('How much change?', ['4p', '6p', '14p'], '6p', 'Fourteen to twenty is six jumps.')),
         pg(P('shop', 'owl', clk(12, 30)), 'At half past twelve Ollie has lunch.'),
         pg(P('shop', 'owl', clk(3, 45)), 'The long hand points to nine. It is quarter to four. Nearly home time!', Q('What time is it?', ['quarter past 3', 'quarter to 4', 'half past 3'], 'quarter to 4', 'Long hand on nine: quarter to.')),
         pg(P('shop', 'owl', cards(['9 o’clock → 5 o’clock', '8 hours'])), 'The shop is open from nine o’clock to five o’clock. That is eight hours.')
       ] },
     learn: [
       { title: 'How can I use adding and subtracting to work out change?', char: 'owl', screens: [
-        W('A comic costs fourteen pence. Benny pays twenty pence. I count on: fifteen, sixteen … twenty. Six pence change.', P('shop', '', FL.track(14, 20, [14, 20]))),
+        W('A comic costs fourteen pence. Benny pays twenty pence. I count on: fifteen, sixteen … twenty. Six pence change.', P('shop', '', FL.trackP(14, 20, [14, 20]))),
         W('A toy costs thirty-five pence. Molly pays fifty pence. Thirty-five to forty is five, forty to fifty is ten. Fifteen pence change.', P('shop', '', cards(['35p', '40p', '50p']))),
         TG('A pencil costs 42p. You pay 50p. How much change?', P('shop', '', C([50])), ['7p', '8p', '18p'], '8p', 'Count on from forty-two to fifty.', 'Eight pence.'),
         TG('A sandwich costs 80p. You pay £1. How much change?', P('shop', '', C([100])), ['10p', '20p', '30p'], '20p', 'One pound is one hundred pence.', 'Twenty pence.'),

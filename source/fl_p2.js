@@ -176,7 +176,7 @@
       }),
       LS('How can counting on help me find change from 20p?', 'how to count on to find the change.', {
         intro: ['Change', 'Money back', "If you pay with a coin worth more than the price, the shop gives you change. Count on from the price to find it.", FL.says('mouse', 'Here is your change!')],
-        ex: [['From 10p', 'A 6p sweet', [["A sweet costs six pence. You pay ten pence. Count on from six: seven, eight, nine, ten. Four pence change.", FL.track(6, 10, [6, 10], [[6, 7], [7, 8], [8, 9], [9, 10]])]]],
+        ex: [['From 10p', 'A 6p sweet', [["A sweet costs six pence. You pay ten pence. Count on from six: seven, eight, nine, ten. Four pence change.", FL.trackP(6, 10, [6, 10], [[6, 7], [7, 8], [8, 9], [9, 10]])]]],
           ['From 20p', 'A 15p pencil', [["A pencil costs fifteen pence. You pay twenty pence. From fifteen to twenty is five. Five pence change.", E('15p + 5p = 20p', 'g')]]],
           ['From 20p', 'An 18p ball', [["A ball costs eighteen pence. Count on: nineteen, twenty. Two pence change.", E('18p + 2p = 20p', 'g')]]]],
         real: ['At the shop', "Molly's comic costs twelve pence. She pays twenty pence. From twelve to twenty is eight pence change.", E('12p + 8p = 20p', 'b')],

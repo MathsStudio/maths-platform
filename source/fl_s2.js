@@ -76,7 +76,7 @@
         pg(P('shop', 'owl', C([2, 2, 1])), 'Ollie the owl wants a ball for five pence. He pays with two pence, two pence and one penny.', Q('Do 2p, 2p and 1p make <b>5p</b>?', ['Yes', 'No'], 'Yes', 'Two, four, five. Yes!')),
         pg(P('shop', 'owl', C([5, 2, 1])), 'Next Ollie wants a toy car. He pays with five pence, two pence and one penny.', Q('How much does Ollie pay?', ['7p', '8p', '9p'], '8p', 'Five, seven, eight. Eight pence.')),
         pg(P('shop', 'frog', C([20])), 'Frankie the frog wants a kite for fifteen pence. He only has a twenty pence coin.'),
-        pg(P('shop', 'mouse', FL.track(15, 20, [15, 20], [[15, 16], [16, 17], [17, 18], [18, 19], [19, 20]])), 'Molly counts on from fifteen to twenty: sixteen, seventeen, eighteen, nineteen, twenty.', Q('How much change does Frankie get?', ['4p', '5p', '6p'], '5p', 'Five jumps, so five pence change.'))
+        pg(P('shop', 'mouse', FL.trackP(15, 20, [15, 20], [[15, 16], [16, 17], [17, 18], [18, 19], [19, 20]])), 'Molly counts on from fifteen to twenty: sixteen, seventeen, eighteen, nineteen, twenty.', Q('How much change does Frankie get?', ['4p', '5p', '6p'], '5p', 'Five jumps, so five pence change.'))
       ] },
     learn: [
       { title: 'What coins and notes do we use?', char: 'mouse', screens: [
@@ -107,12 +107,12 @@
         Y('How much money is this?', P('shop', '', C([10, 10, 5])), ['20p', '25p', '30p'], '25p', 'Ten, twenty, then five more.', 'Twenty-five pence.')
       ] },
       { title: 'How can counting on help me find change from 20p?', char: 'mouse', screens: [
-        W('A ball costs fifteen pence. I pay with twenty pence. I count on from fifteen to twenty: five jumps. Five pence change!', P('shop', '', FL.track(15, 20, [15, 20], [[15, 16], [16, 17], [17, 18], [18, 19], [19, 20]]))),
-        W('A pen costs twelve pence. From twelve to twenty is eight jumps. Eight pence change.', P('shop', '', FL.track(12, 20, [12, 20]))),
+        W('A ball costs fifteen pence. I pay with twenty pence. I count on from fifteen to twenty: five jumps. Five pence change!', P('shop', '', FL.trackP(15, 20, [15, 20], [[15, 16], [16, 17], [17, 18], [18, 19], [19, 20]]))),
+        W('A pen costs twelve pence. From twelve to twenty is eight jumps. Eight pence change.', P('shop', '', FL.trackP(12, 20, [12, 20]))),
         W('Change is the money you get back when you pay too much.', P('shop', 'mouse', C([20]) + C([5]))),
-        TG('A sticker costs seventeen pence. You pay twenty pence. How much change?', P('shop', '', FL.track(17, 20, [17, 20])), ['2p', '3p', '4p'], '3p', 'Count on: eighteen, nineteen, twenty.', 'Three jumps, so three pence change.'),
+        TG('A sticker costs seventeen pence. You pay twenty pence. How much change?', P('shop', '', FL.trackP(17, 20, [17, 20])), ['2p', '3p', '4p'], '3p', 'Count on: eighteen, nineteen, twenty.', 'Three jumps, so three pence change.'),
         TG('A cookie costs ten pence. You pay twenty pence. How much change?', P('shop', '', C([20])), ['5p', '10p', '15p'], '10p', 'Ten and what make twenty?', 'Ten pence change.'),
-        Y('A toy costs fourteen pence. You pay twenty pence. How much change?', P('shop', '', FL.track(14, 20, [14, 20])), ['5p', '6p', '7p'], '6p', 'Count on from fourteen to twenty.', 'Six pence change.'),
+        Y('A toy costs fourteen pence. You pay twenty pence. How much change?', P('shop', '', FL.trackP(14, 20, [14, 20])), ['5p', '6p', '7p'], '6p', 'Count on from fourteen to twenty.', 'Six pence change.'),
         Y('A sweet costs nineteen pence. You pay twenty pence. How much change?', P('shop', '', C([20])), ['1p', '2p', '9p'], '1p', 'What comes after nineteen?', 'One penny change.')
       ] }
     ]

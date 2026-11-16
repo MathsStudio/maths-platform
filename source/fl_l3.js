@@ -233,7 +233,7 @@
     'Change is the money you get back. Count on from the price to the money you paid.', SAY('owl', 'I pay 50p for a 35p pencil.'),
     [['price', 'how much something costs', '🏷️'], ['pay', 'give money for it', '👛'], ['change', 'the money you get back', '🪙'], ['count on', 'start at the price and count up', '➕']],
     [['Ollie buys a 35p pencil with a 50p coin.', COIN([50])],
-      ['Count on from 35p to 40p (5p), then to 50p (10p).', TR(35, 50, [35, 40, 50], [[35, 40], [40, 50]])],
+      ['Count on from 35p to 40p (5p), then to 50p (10p).', FL.trackP(35, 50, [35, 40, 50], [[35, 40], [40, 50]])],
       ['5p + 10p = 15p change.', B('50p − 35p = 15p')]],
     [['A rubber costs 7p. Ollie pays 10p. What is the change?', ['Count on from 7 to 10.', '8, 9, 10: that is 3.'], '3p change', COIN([10])],
       ['A book costs 45p. Ollie pays 50p. What is the change?', ['Count on from 45 to 50.', 'That is 5.'], '5p change', COIN([50])],
