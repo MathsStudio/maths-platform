@@ -733,6 +733,10 @@ var SLIDE_MORE = {"1.learn1": [{"more": ["Our number system uses only ten digits
     speechSynthesis.speak(ut); return true;
   };
   S.h.voiceOk = function () { return Nar.ok; };
+  var ACC = { GB: 'UK', US: 'US', AU: 'Australia', IE: 'Ireland', IN: 'India', ZA: 'South Africa', CA: 'Canada', NZ: 'New Zealand', SC: 'Scotland' };
+  S.h.voiceInfo = function () { return Nar.voices.filter(function (x) { return /^en/i.test(x.lang); }).map(function (x) { var m = /^en[-_]([A-Za-z]+)/.exec(x.lang), a = m ? (ACC[m[1].toUpperCase()] || m[1].toUpperCase()) : 'English';
+    return { name: x.name, lang: x.lang, label: x.name.replace(/^(Microsoft|Google|Apple)\s+/, '').replace(/\s*[-–(].*$/, '').replace(/ Online$/, '') + ' · ' + a }; }); };
+  S.h.pickVoice = function () { return pickVoice(); };
   S.h.voiceList = function () { return Nar.voices.filter(function (x) { return /^en/i.test(x.lang); }).map(function (x) { return x.name; }); };
   S.h.voiceCur = function () { var v = pickVoice(); return v ? v.name : ''; };
   S.h.setVoice = function (n) { store.settings.voice = n; save(); };
@@ -15957,6 +15961,23 @@ S.spatialExtra = S.extraMakers;
     '@media (max-width:600px){.card:has(.gp){padding-left:10px;padding-right:10px}.live:has(.gp){padding-left:0;padding-right:0}}',
     '.gp.full .gp-frame{position:fixed;inset:0;z-index:9999;border-radius:0;aspect-ratio:auto;background:#111}',
     '.gp.full .gp-close{display:flex}.gp-close{display:none;position:absolute;right:max(12px,env(safe-area-inset-right));top:max(12px,env(safe-area-inset-top));z-index:2;width:44px;height:44px;border-radius:50%;border:0;background:#fff;color:#221a3a;font-size:22px;align-items:center;justify-content:center;box-shadow:0 2px 10px rgba(0,0,0,.3)}',
+    '.gp-vs{display:flex;flex-wrap:wrap;gap:8px 16px;align-items:center}.gp-vs label{display:flex;gap:6px;align-items:center;font-weight:700;font-size:15px}.gp-vs select{min-height:40px;max-width:min(260px,60vw);font:inherit;font-weight:600;border:2px solid var(--line);border-radius:10px;padding:4px 8px;background:var(--surface);color:var(--fg)}',
+    '.gp-body.gp-turn{animation:gpTurn .7s ease both}@keyframes gpTurn{0%{opacity:0;transform:translateX(40px) rotate(1deg)}100%{opacity:1;transform:none}}',
+    '.gp-cap .now{background:#fff2a8;border-radius:6px;box-shadow:0 0 0 3px #fff2a8}.gp-cap .think{display:inline-flex;gap:6px;align-items:center;font-weight:800;color:#881cd6}',
+    '.flx{position:absolute;left:14px;right:14px;top:46px;bottom:30px}.flx-pic{position:absolute;inset:0;display:flex;align-items:center;justify-content:center}',
+    '.flx-pic.flx-in{animation:gpTurn .7s ease both}.flx-pic>.flb,.flx-pic .flb-w{width:100%;height:100%;max-width:none;display:flex;align-items:center;justify-content:center;margin:0}',
+    '.flx-pic .flb-stage{width:100%;height:100%;display:flex;align-items:center;justify-content:center;border:0;background:none}.flx-pic .flb-stage>svg{max-width:100%!important;max-height:100%;border:3px solid #221a3a;border-radius:18px;box-sizing:border-box}',
+    '.flx-pic .flp{width:100%;height:100%;box-sizing:border-box;flex-wrap:nowrap;font-size:24px}.flx-pic .flp-ch svg{width:150px!important}.flx-pic .flp-pic{height:100%;align-content:center}.flx-pic .flp-pic svg{max-height:100%}',
+    '.flx-top{position:absolute;left:0;right:0;top:8px;display:flex;justify-content:center;pointer-events:none}.flx-q{max-width:86%;background:rgba(255,255,255,.96);border:3px solid #221a3a;border-radius:18px;padding:8px 18px;font-weight:800;font-size:26px;line-height:1.3;text-align:center;box-shadow:0 6px 18px rgba(0,0,0,.2);animation:flxDrop .55s cubic-bezier(.3,1.5,.6,1) both}',
+    '.flx-tip{font-size:18px;font-weight:700;color:#7a5600;margin-top:4px}',
+    '.flx-opts{position:absolute;left:0;right:0;bottom:12px;display:flex;justify-content:center}.flx-opts .flb-opts{margin:0;gap:14px;width:auto}.flx-opts .flb-show .o{min-width:96px;max-width:none;flex:0 0 auto;min-height:72px;font-size:34px;padding:4px 18px;box-shadow:0 6px 16px rgba(0,0,0,.22);animation:flxPop .5s cubic-bezier(.3,1.6,.6,1) both}',
+    '.flx-opts .flb-show .o:nth-child(2){animation-delay:.12s}.flx-opts .flb-show .o:nth-child(3){animation-delay:.24s}.flx-opts .flb-show .o:nth-child(4){animation-delay:.36s}',
+    '.flx-opts .flb-show .o.tap{cursor:pointer}.flx-opts .flb-show .o.tap:hover{transform:scale(1.08)}.flx-opts .flb-show .o.no{background:#ffd0d0;animation:flxNo .5s ease both;opacity:.8}@keyframes flxNo{0%,100%{transform:translateX(0)}25%{transform:translateX(-8px)}75%{transform:translateX(8px)}}',
+    '.flx-opts .flb-show .o.ok{animation:flxWin .9s ease both;box-shadow:0 0 0 6px #ffe14d,0 0 26px 8px rgba(255,225,77,.9)}',
+    '.flx-think{position:absolute;right:10px;top:6px;font-size:46px;opacity:0;transform:scale(.4);transition:opacity .3s,transform .3s}.flx-think.on{opacity:1;transform:scale(1);animation:flxThink 1.2s ease-in-out infinite}',
+    '@keyframes flxDrop{0%{opacity:0;transform:translateY(-30px)}100%{opacity:1;transform:none}}@keyframes flxPop{0%{opacity:0;transform:scale(.3)}100%{opacity:1;transform:none}}',
+    '@keyframes flxWin{0%{transform:scale(1)}30%{transform:scale(1.35) rotate(-4deg)}60%{transform:scale(1.15) rotate(3deg)}100%{transform:scale(1.2)}}@keyframes flxThink{0%,100%{transform:translateY(0) rotate(-6deg)}50%{transform:translateY(-8px) rotate(6deg)}}',
+    '.gp-fl .gp-cap{display:none}.gp-fl .gp-snd{display:flex;gap:10px;align-items:center;background:#fff4d6;border:2px solid #e0a800;border-radius:14px;padding:10px 14px;font-weight:800;font-size:16px;color:#221a3a}.gp.narrow .flx{left:8px;right:8px}.gp.narrow .flx-q{font-size:24px}',
     '.gp-cnt{font-size:13px;color:var(--muted);font-variant-numeric:tabular-nums}',
     '@media(prefers-reduced-motion:reduce){.gp-stage *{animation:none!important;transition:none!important}.gp-stage [data-sb]{opacity:1;transform:none}}'
   ].join('\n');
@@ -15983,10 +16004,10 @@ S.spatialExtra = S.extraMakers;
 
   H.gifPlayer = function (host, ep, meta) {
     meta = meta || { q: 0, of: 1 };
-    var TT = D(ep.title), slides = [{ title: true, steps: [{ say: TT + ' In this lesson, we will learn ' + (ep.goal || '') }] }];
+    var TT = D(ep.title), FLM = !!ep.fl, slides = [{ title: true, steps: [{ say: FLM ? (ep.intro || ('Hello again, my friend! Today we are going to find out: ' + TT)) : TT + ' In this lesson, we will learn ' + (ep.goal || '') }] }];
     ep.scenes.forEach(function (sc) { slides.push(sc); });
     var chunks = [];
-    slides.forEach(function (sl, si) { sl.steps.forEach(function (st, k) { chunks.push({ si: si, k: k, say: st.say }); }); });
+    slides.forEach(function (sl, si) { sl.steps.forEach(function (st, k) { chunks.push({ si: si, k: k, say: st.say, think: !!st.think, answer: st.answer, last: k === sl.steps.length - 1 }); }); });
     var dashes = ''; for (var d = 0; d < meta.of; d++) dashes += '<i class="' + (d <= meta.q ? 'on' : '') + '"></i>';
     var short = TT.replace(/\?$/, '');
     /* a lesson counts as watched once its last step has been shown; the tick is saved with the child's progress */
@@ -16007,14 +16028,27 @@ S.spatialExtra = S.extraMakers;
       '<button class="btn ghost" type="button" data-r aria-label="Start again"><span class="gp-ic" aria-hidden="true">↺</span><span class="gp-tx">Start again</span></button>' +
       '<button class="btn ghost" type="button" data-f aria-label="Full screen"><span class="gp-ic" aria-hidden="true">⛶</span><span class="gp-tx">Full screen</span></button>' +
       '<div class="gp-prog" aria-hidden="true"><i></i></div><span class="gp-cnt"></span></div>' +
+      (FLM ? '<div class="gp-vs"><label>Voice <select data-vv></select></label><label>Reading speed <select data-vr><option value="0.8">Slower</option><option value="1">Normal</option><option value="1.2">Faster</option></select></label></div>' : '') +
       '<p class="note" style="margin:0" data-note></p></div>';
-    var root = host.querySelector('.gp'), frame = root.querySelector('.gp-frame'), stage = root.querySelector('.gp-stage'), cap = root.querySelector('.gp-cap');
+    var root = host.querySelector('.gp'), frame0 = FLM && root.classList.add('gp-fl'), frame = root.querySelector('.gp-frame'), stage = root.querySelector('.gp-stage'), cap = root.querySelector('.gp-cap');
     var pb = root.querySelector('[data-p]'), bar = root.querySelector('.gp-prog i'), cnt = root.querySelector('.gp-cnt'), note = root.querySelector('[data-note]');
     var idx = 0, playing = false, token = 0, timer = null, shown = -1;
     function setPb(t) { pb.setAttribute('aria-label', t); pb.innerHTML = '<span class="gp-ic" aria-hidden="true">' + (t === 'Pause' ? '❚❚' : '▶') + '</span><span class="gp-tx">' + t + '</span><span class="gp-sh">' + (t === 'Pause' ? ' Pause' : ' Play') + '</span>'; }
     setPb('Play the lesson');
     var okVoice = H.voiceOk && H.voiceOk();
-    note.textContent = okVoice ? 'Your device reads this aloud. You can change the voice and speed in Settings.' : 'The voice is not available here, so the lesson plays with words only.';
+    note.textContent = okVoice ? (FLM ? '🔊 Turn the sound on: this story is read aloud. Choose a voice and a speed that suit your child.' : 'Your device reads this aloud. You can change the voice and speed in Settings.') : 'The voice is not available here, so the lesson plays with words only.';
+    /* First level stories are listened to, not read: without a voice, say so clearly */
+    if (FLM && !okVoice) { note.className = 'gp-snd'; note.innerHTML = '🔇 This story needs to be heard. This browser cannot read aloud, so please open MathsStudio in Chrome, Safari or Edge and turn the sound on.'; }
+    if (FLM) {
+      var vv = root.querySelector('[data-vv]'), vr = root.querySelector('[data-vr]');
+      /* the same choices as Settings (used in P5 to S3): Automatic (British English), then every English voice */
+      var fillV = function () { var src = document.getElementById('setVoice'); if (src) { vv.innerHTML = src.innerHTML; vv.value = src.value; } };
+      fillV(); setTimeout(fillV, 900); try { speechSynthesis.addEventListener('voiceschanged', fillV); } catch (e) { /* ignore */ }
+      var r0 = H.rateCur ? H.rateCur() : 1; vr.value = r0 <= 0.85 ? '0.8' : r0 >= 1.15 ? '1.2' : '1';
+      var again = function () { if (playing) { stop(); playing = true; setPb('Pause'); current = { stop: stop }; say(idx); } };
+      vv.addEventListener('change', function () { if (H.setVoice) H.setVoice(vv.value); var src = document.getElementById('setVoice'); if (src) src.value = vv.value; again(); });
+      vr.addEventListener('change', function () { if (H.setRate) H.setRate(Number(vr.value)); var src = document.getElementById('setRate'); if (src) src.value = vr.value; again(); });
+    }
 
     var narrow = null, lastI = 0;
     function fit() {
@@ -16059,6 +16093,7 @@ S.spatialExtra = S.extraMakers;
         while (fz > 24 && tall()) { fz -= 2; t2.style.fontSize = fz + 'px'; }
         return;
       }
+      if (FLM) { stage.innerHTML = chrome(sl) + '<div class="flx gp-turn"><div class="flx-pic"></div><div class="flx-top"></div><div class="flx-opts"></div><div class="flx-think" aria-hidden="true">🤔</div></div>'; flPic = ''; flTop = ''; flOpt = ''; return; }
       h = chrome(sl) + '<div class="gp-body"><div class="gp-fit"><h3 class="gp-h">' + sl.h + '</h3>' + (sl.sub ? '<p class="gp-sub">' + sl.sub + '</p>' : '');
       /* a step whose html starts with <!--swap--> replaces the block before it, in the same place */
       var groups = [];
@@ -16097,17 +16132,67 @@ S.spatialExtra = S.extraMakers;
       }
       if (k2 < 1) f.style.transform = 'scale(' + k2.toFixed(3) + ')';
     }
+    var flPic = '', flTop = '', flOpt = '';
+    function showFL(c) {
+      var steps = slides[c.si].steps, html = '';
+      for (var k = c.k; k >= 0 && !html; k--) html = String(steps[k].html || '').replace('<!--swap-->', '');
+      var tmp = document.createElement('div'); tmp.innerHTML = html;
+      var q = tmp.querySelector('.flb-q'), tip = tmp.querySelector('.flb-tip'), op = tmp.querySelector('.flb-opts');
+      [q, tip, op].forEach(function (e) { if (e) e.parentNode.removeChild(e); });
+      var ph = tmp.innerHTML.trim(), P = stage.querySelector('.flx-pic'), T = stage.querySelector('.flx-top'), O = stage.querySelector('.flx-opts');
+      if (ph !== flPic) { flPic = ph; P.innerHTML = ph; P.classList.remove('flx-in'); void P.offsetWidth; P.classList.add('flx-in'); fitPic(P); }
+      /* the question is told, not written: only the choices appear, for the child to tap */
+      var th = '';
+      if (th !== flTop) { flTop = th; T.innerHTML = th; }
+      var oh = op ? op.outerHTML : '', base = oh.replace(/ ok"/g, '"');
+      if (base !== flOpt) { flOpt = base; O.innerHTML = oh; } else if (oh !== O.innerHTML) { O.innerHTML = oh; }
+      /* a question: the child taps their answer on the picture */
+      tries = 0; answered = false;
+      if (c.think) O.querySelectorAll('.o').forEach(function (el) {
+        el.classList.add('tap'); el.setAttribute('role', 'button'); el.tabIndex = 0; el.setAttribute('aria-label', 'Answer ' + el.textContent);
+        el.onclick = function () { pick(el); }; el.onkeydown = function (e) { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); pick(el); } };
+      });
+    }
+    /* the picture fills the stage as far as it can without cropping or stretching */
+    function fitPic(P) {
+      var g = P.querySelector('.flb-stage>svg[viewBox]'); if (!g) return;
+      var vb = g.getAttribute('viewBox').split(/\s+/).map(Number), vr = vb[2] / vb[3], cr = P.clientWidth / Math.max(1, P.clientHeight);
+      if (vr >= cr) { g.style.setProperty('width', '100%', 'important'); g.style.setProperty('height', 'auto', 'important'); }
+      else { g.style.setProperty('height', '100%', 'important'); g.style.setProperty('width', 'auto', 'important'); }
+    }
+    var tries = 0, answered = false, PRAISE = ['Yes! You are right!', 'Brilliant! Well done!', 'That’s right! Super thinking!', 'Yes! Clever you!'], NUDGE = ['Not quite. Have another go!', 'Ooh, nearly! Try again.'];
+    function pick(el) {
+      var c = chunks[lastI]; if (!c || !c.think || answered || el.classList.contains('no')) return;
+      var ok = String(el.textContent).trim() === String(c.answer).trim();
+      token++; clearTimeout(timer); try { speechSynthesis.cancel(); } catch (e) { /* ignore */ }
+      var th = stage.querySelector('.flx-think'); if (th) th.classList.remove('on');
+      if (ok) { answered = true; el.classList.add('ok'); } else { tries++; el.classList.add('no'); }
+      var my = token, at = lastI; playing = true; setPb('Pause'); current = { stop: stop };
+      var line = ok ? PRAISE[Math.floor(Math.random() * PRAISE.length)] : tries >= 2 ? 'Good try! Let’s find out together.' : NUDGE[(tries - 1) % NUDGE.length];
+      cap.textContent = line; root.classList.add('gp-talk');
+      H.flTell(line, { box: stage.querySelector('.flx-pic'), voice: okVoice, alive: function () { return my === token && root.isConnected; } }, function () {
+        root.classList.remove('gp-talk'); if (my !== token || !root.isConnected) return;
+        if (ok || tries >= 2) { idx = Math.min(chunks.length - 1, at + 1); timer = setTimeout(function () { if (my === token && playing) say(idx); }, 500); }
+        else { if (th) th.classList.add('on'); cap.textContent = chunks[at].say; }
+      });
+    }
+    function waitPick(c0, my) {
+      var th = stage.querySelector('.flx-think'); if (th) th.classList.add('on');
+      timer = setTimeout(function () { if (my !== token || !playing || answered) return; root.classList.add('gp-talk');
+        H.flTell('Tap the answer you think is right.', { box: null, voice: okVoice, alive: function () { return my === token && playing; } }, function () { root.classList.remove('gp-talk'); }); }, 12000);
+    }
     function show(i) {
       lastI = i;
       var c = chunks[i];
       if (shown !== c.si) { shown = c.si; build(c.si); }
+      if (FLM && !slides[c.si].title) { showFL(c); cap.textContent = c.say; bar.style.width = ((i + 1) / chunks.length * 100) + '%'; cnt.textContent = 'Slide ' + (c.si + 1) + ' of ' + slides.length; if (i === chunks.length - 1) markSeen(); return; }
       stage.querySelectorAll('[data-sb]').forEach(function (e) {
         var k = Number(e.getAttribute('data-sb')), on = k <= c.k;
         if (on && e.parentNode.classList.contains('gp-swap')) {
           var later = [].some.call(e.parentNode.children, function (o) { var j = Number(o.getAttribute('data-sb')); return j > k && j <= c.k; });
           if (later) on = false;
         }
-        if (on && !e.classList.contains('on')) { e.classList.add('on'); drawIn(e); }
+        if (on && !e.classList.contains('on')) { e.classList.add('on'); if (!FLM) drawIn(e); }
         else if (!on) e.classList.remove('on');
       });
       cap.textContent = c.say; bar.style.width = ((i + 1) / chunks.length * 100) + '%';
@@ -16116,15 +16201,33 @@ S.spatialExtra = S.extraMakers;
     }
     function say(i) {
       show(i); var my = ++token; clearTimeout(timer);
+      function gapNext(ms) {
+        if (my !== token || !playing || !root.isConnected) return;
+        if (i + 1 < chunks.length) { idx = i + 1; timer = setTimeout(function () { if (my === token && playing && root.isConnected) say(idx); }, ms); }
+        else { playing = false; idx = 0; setPb('Watch again'); }
+      }
       function next() {
         if (my !== token || !playing || !root.isConnected) return;
         if (i + 1 < chunks.length) { idx = i + 1; timer = setTimeout(function () { if (my === token && playing && root.isConnected) say(idx); }, 600); }
         else { playing = false; idx = 0; setPb('Watch again'); }
       }
+      if (FLM && H.flTell) {
+        /* First level: told like a storyteller, sentence by sentence, counting things as they light up */
+        var c0 = chunks[i], blk = stage.querySelector('.flx-pic') || stage;
+        root.classList.add('gp-talk');
+        H.flTell(c0.say, { box: blk, cap: null, voice: okVoice, alive: function () { return my === token && playing && root.isConnected; } }, function () {
+          root.classList.remove('gp-talk');
+          if (my !== token || !playing || !root.isConnected) return;
+          /* a question: give the child time to think before the answer */
+          if (c0.think) { waitPick(c0, my); return; }
+          gapNext(c0.last ? 1500 : 800);
+        });
+        return;
+      }
       var ok = okVoice && H.speakStory(chunks[i].say, function () { next(); });
       if (!ok) timer = setTimeout(next, chunks[i].say.split(' ').length * 380 + 1200);
     }
-    function stop() { token++; clearTimeout(timer); playing = false; try { if (okVoice) speechSynthesis.cancel(); } catch (e) { /* ignore */ } setPb(idx > 0 ? 'Keep watching' : 'Play the lesson'); }
+    function stop() { token++; clearTimeout(timer); playing = false; root.classList.remove('gp-talk'); try { if (okVoice) speechSynthesis.cancel(); } catch (e) { /* ignore */ } setPb(idx > 0 ? 'Keep watching' : 'Play the lesson'); }
     function go(i) { var was = playing; stop(); idx = Math.max(0, Math.min(chunks.length - 1, i)); if (was) { playing = true; setPb('Pause'); current = { stop: stop }; say(idx); } else show(idx); }
     pb.addEventListener('click', function () { if (playing) { stop(); return; } current = { stop: stop }; playing = true; setPb('Pause'); say(idx); });
     root.querySelector('[data-b]').addEventListener('click', function () { go(idx - 1); });
@@ -24518,7 +24621,7 @@ S.extraMakers = function (n, level) {
   FL.things = function (n, kind, perRow) {
     kind = THING[kind] ? kind : 'apple'; perRow = perRow || (n > 10 ? 10 : 5);
     var rows = Math.ceil(n / perRow) || 1, w = Math.min(n, perRow) * 36 + (Math.min(n, perRow) > 5 ? 12 : 0) + 16, h = rows * 38 + 10, s = '';
-    for (var i = 0; i < n; i++) { var r = Math.floor(i / perRow), c = i % perRow; s += THING[kind](24 + c * 36 + (c >= 5 ? 12 : 0), 26 + r * 38); }
+    for (var i = 0; i < n; i++) { var r = Math.floor(i / perRow), c = i % perRow; s += '<g class="fl-it" data-k="' + kind + '">' + THING[kind](24 + c * 36 + (c >= 5 ? 12 : 0), 26 + r * 38) + '</g>'; }
     return svg(Math.max(w, 60), h, n + ' ' + kind + 's', s, Math.max(w, 60) * 1.4);
   };
   /* two groups side by side with a plus sign */
@@ -24787,6 +24890,7 @@ S.extraMakers = function (n, level) {
 (function () {
   'use strict';
   var FL = window.FL, S = window.Studio; if (!FL || !S) return;
+  var H = S.h;
   var INK = '#2b2340', pick = FL.pick, svg = FL.svg, tx = FL.tx;
 
   /* ---------- styles ---------- */
@@ -24845,7 +24949,13 @@ S.extraMakers = function (n, level) {
     '@keyframes flUp{0%{transform:translateY(0)}20%{transform:translateY(4px)}100%{transform:translateY(-320px)}}' +
     '@keyframes flWig{0%,100%{transform:rotate(0)}25%{transform:rotate(-6deg)}75%{transform:rotate(6deg)}}' +
     '@keyframes flIn{0%{transform:translateX(-60px);opacity:0}100%{transform:translateX(0);opacity:1}}' +
-    '@media (prefers-reduced-motion:reduce){.flb [class*="a-"]{animation:none!important}}';
+    '.fl-it{transition:transform .3s cubic-bezier(.3,1.6,.6,1),filter .3s;transform-box:fill-box;transform-origin:center}' +
+    '.fl-it.fl-glow{animation:flGlow 1.2s ease}@keyframes flGlow{0%,100%{filter:none;transform:scale(1)}45%{filter:drop-shadow(0 0 7px #ffe14d) drop-shadow(0 0 3px #fff);transform:scale(1.25)}}' +
+    '.fl-it.fl-hl{transform:scale(1.4);filter:drop-shadow(0 0 5px #ffe14d) drop-shadow(0 0 2px #fff)}.fl-it.fl-done{filter:drop-shadow(0 0 3px #ffe14d)}' +
+    '.fl-num{font-weight:900;fill:#e0457b;stroke:#fff;stroke-width:3px;paint-order:stroke;animation:flPop .4s cubic-bezier(.3,1.6,.6,1) both;font-family:inherit}' +
+    '.fl-who{transform-box:fill-box;transform-origin:50% 100%}.gp-talk .fl-who,.gp-talk .flp-ch svg{animation:flTalk .42s ease-in-out infinite alternate}' +
+    '@keyframes flTalk{from{transform:translateY(0) scale(1)}to{transform:translateY(-4px) scale(1.03,0.98)}}' +
+    '@media (prefers-reduced-motion:reduce){.flb [class*="a-"],.fl-who,.flp-ch svg{animation:none!important}.fl-it{transition:none}}';
   document.head.appendChild(css);
 
   /* ---------- scene drawing (400 x 250) ---------- */
@@ -24860,24 +24970,24 @@ S.extraMakers = function (n, level) {
   };
   function scene(bg, inner, alt) { return svg(400, 250, alt || 'A story picture', (BG[bg] || BG.day)() + inner, 760); }
   /* a character at (x, y), size in px, with an animation class */
-  function who(k, x, y, size, anim, delay) { var sc = (size || 100) / 100; return '<g transform="translate(' + x + ' ' + y + ') scale(' + sc + ')"><g class="' + (anim ? 'a-' + anim : '') + '" style="animation-delay:' + (delay || 0) + 's">' + FL.CH[k] + '</g></g>'; }
+  function who(k, x, y, size, anim, delay) { var sc = (size || 100) / 100; return '<g transform="translate(' + x + ' ' + y + ') scale(' + sc + ')"><g class="fl-who"><g class="' + (anim ? 'a-' + anim : '') + '" style="animation-delay:' + (delay || 0) + 's">' + FL.CH[k] + '</g></g></g>'; }
   /* a small thing (star, apple...) at (x, y), animated, with optional tap target */
   function bit(kind, x, y, anim, delay, tapIx, scale) {
     var t = FL.THING[kind](0, 0), sc = scale || 1;
-    return '<g transform="translate(' + x + ' ' + y + ') scale(' + sc + ')"' + (tapIx != null ? ' data-tap="' + tapIx + '" role="button" tabindex="0" aria-label="' + kind + ' ' + (tapIx + 1) + '"' : '') + '><g class="' + (anim ? 'a-' + anim : '') + '" style="animation-delay:' + (delay || 0) + 's">' + (tapIx != null ? '<circle r="24" fill="transparent"/>' : '') + t + '</g></g>';
+    return '<g transform="translate(' + x + ' ' + y + ') scale(' + sc + ')"' + (tapIx != null ? ' data-tap="' + tapIx + '" role="button" tabindex="0" aria-label="' + kind + ' ' + (tapIx + 1) + '"' : '') + '><g class="fl-it" data-k="' + kind + '"><g class="' + (anim ? 'a-' + anim : '') + '" style="animation-delay:' + (delay || 0) + 's">' + (tapIx != null ? '<circle r="24" fill="transparent"/>' : '') + t + '</g></g></g>';
   }
   /* a fuel tank shaped like a ten-frame, n stars inside (the newest ones pop in) */
   function tank(x, y, n, from, rollLast) {
     var s = '<g transform="translate(' + x + ' ' + y + ')"><rect x="-6" y="-6" width="232" height="104" rx="14" fill="#fff" stroke="' + INK + '" stroke-width="3"/>';
     for (var i = 0; i < 10; i++) { var c = i % 5, r = Math.floor(i / 5), cx = 22 + c * 44, cy = 22 + r * 46; s += '<rect x="' + (cx - 20) + '" y="' + (cy - 20) + '" width="40" height="40" rx="6" fill="#f3efff" stroke="#b9acd8" stroke-width="2"/>';
-      if (i < n) s += '<g transform="translate(' + cx + ' ' + cy + ')"><g class="' + (rollLast && i === n - 1 ? 'a-roll' : i >= (from || 0) ? 'a-pop' : '') + '" style="animation-delay:' + (i >= (from || 0) ? ((i - (from || 0)) * .35 + .3).toFixed(2) : 0) + 's">' + FL.THING.star(0, 0) + '</g></g>'; }
+      if (i < n) s += '<g transform="translate(' + cx + ' ' + cy + ')"><g class="fl-it" data-k="star"><g class="' + (rollLast && i === n - 1 ? 'a-roll' : i >= (from || 0) ? 'a-pop' : '') + '" style="animation-delay:' + (i >= (from || 0) ? ((i - (from || 0)) * .35 + .3).toFixed(2) : 0) + 's">' + FL.THING.star(0, 0) + '</g></g></g>'; }
     return s + '</g>';
   }
   function label(x, y, t, size, fill) { return tx(x, y, t, size || 22, fill || '#fff'); }
   function stones(list, y, planet) {   /* stepping stones (or planets) with numbers */
     var s = '', gap = 400 / (list.length + 1), r = Math.min(34, gap / 2 - 4), PC = ['#ffb3c7', '#9fd7ff', '#b8f0a8', '#ffd9a0', '#d7c2ff', '#a8eee4'];
     list.forEach(function (v, i) { var x = gap * (i + 1), f = v === '?' ? '#ffd166' : planet ? PC[i % PC.length] : '#c9c3d6';
-      s += '<g class="a-pop" style="animation-delay:' + (i * .4 + .2).toFixed(2) + 's">' + (planet ? '<circle cx="' + x + '" cy="' + (y - 14) + '" r="' + r + '" fill="' + f + '" stroke="' + INK + '" stroke-width="3"/>' + tx(x, y - 5, v, 24, INK) : '<ellipse cx="' + x + '" cy="' + y + '" rx="' + r + '" ry="18" fill="' + f + '" stroke="' + INK + '" stroke-width="3"/>' + tx(x, y + 8, v, 24, INK)) + '</g>'; });
+      s += '<g class="a-pop" style="animation-delay:' + (i * .4 + .2).toFixed(2) + 's"><g class="fl-it" data-k="' + (planet ? 'planet' : 'stone') + '">' + (planet ? '<circle cx="' + x + '" cy="' + (y - 14) + '" r="' + r + '" fill="' + f + '" stroke="' + INK + '" stroke-width="3"/>' + tx(x, y - 5, v, 24, INK) : '<ellipse cx="' + x + '" cy="' + y + '" rx="' + r + '" ry="18" fill="' + f + '" stroke="' + INK + '" stroke-width="3"/>' + tx(x, y + 8, v, 24, INK)) + '</g></g>'; });
     return s;
   }
   /* star tens: full fuel tanks (ten stars each) and loose stars, for tens and ones */
@@ -24901,7 +25011,8 @@ S.extraMakers = function (n, level) {
   function chips(options, answer, show) { return '<div class="flb-opts flb-show">' + options.map(function (o) { return '<span class="o' + (show && String(o) === String(answer) ? ' ok' : '') + '">' + o + '</span>'; }).join('') + '</div>'; }
   function askSteps(q, p, options, answer, explain, tip) {
     var qh = '<div class="flb-q">' + q + '</div>';
-    return [L.st(strip(q) + (tip ? ' Here is a tip: ' + strip(tip) : '') + ' Pause, think, then listen.', p + qh + (tip ? '<div class="flb-tip">💡 ' + tip + '</div>' : '') + chips(options, answer, false)),
+    var ask = L.st(strip(q) + (tip ? ' Here is a tip: ' + strip(tip) : ''), p + qh + (tip ? '<div class="flb-tip">💡 ' + tip + '</div>' : '') + chips(options, answer, false)); ask.think = true; ask.answer = strip(String(answer));
+    return [ask,
       L.st('The answer is ' + strip(answer) + '. ' + strip(explain || ''), p + qh + chips(options, answer, true))];
   }
   var L = null;
@@ -24936,9 +25047,81 @@ S.extraMakers = function (n, level) {
       if (tips.length) sc.push(L.rec(l.title, 'Let’s remember the tips from this lesson.', tips.map(strip)));
       eps.push(L.ep(l.title, strip(l.title).replace(/\?$/, '').toLowerCase() + '.', sc));
     });
+    eps.forEach(function (e) { e.fl = true; });
+    if (story && eps[0]) eps[0].intro = story.intro || ('Story time! Get comfy, and let’s read ' + story.title + ' together.');
     BT.L.use(n, eps);
   };
   FL.addStory = function (n, o) { FL.toWatch(n, o.story, o.learn); };
+
+  /* ---------- telling a story like a teacher (First level Watch lessons) ----------
+     H.flTell(text, {box, cap, voice, alive}, done): speaks sentence by sentence with pauses and feeling;
+     a character's words in “quotes” get a brighter voice; when the words count (one, two, three…)
+     the things in the picture light up one at a time with their number. Works silently on a timer too. */
+  var NV = { zero: 0, one: 1, two: 2, three: 3, four: 4, five: 5, six: 6, seven: 7, eight: 8, nine: 9, ten: 10, eleven: 11, twelve: 12, thirteen: 13, fourteen: 14, fifteen: 15, sixteen: 16, seventeen: 17, eighteen: 18, nineteen: 19, twenty: 20, thirty: 30, forty: 40, fifty: 50, sixty: 60, seventy: 70, eighty: 80, ninety: 90, hundred: 100 };
+  var NUM = '(?:\\d+|' + Object.keys(NV).join('|') + ')', RUN = new RegExp('\\b' + NUM + '(?:\\s*,\\s*(?:and\\s+)?' + NUM + '){2,}\\b', 'i');
+  function nval(w) { w = String(w).toLowerCase(); return /^\d+$/.test(w) ? Number(w) : NV[w]; }
+  function plan(text) {
+    var out = [], sents = String(text).replace(/\s+/g, ' ').match(/[^.!?…]+(?:[.!?…]+[”"’)]*|$)/g) || [text];
+    sents.forEach(function (se) {
+      se = se.trim(); if (!se) return;
+      se.split(/(“[^”]*”)/).forEach(function (part) {
+        part = part.trim(); if (!part) return;
+        var q = /^“/.test(part), m = !q && RUN.exec(part);
+        if (m) {
+          var pre = part.slice(0, m.index).trim(), post = part.slice(m.index + m[0].length).trim(), ws = m[0].split(/\s*,\s*(?:and\s+)?/);
+          if (pre) out.push({ t: pre, q: false });
+          ws.forEach(function (w, j) { out.push({ t: w, q: false, count: j, n: nval(w), run: ws.map(nval) }); });
+          if (post && /\w/.test(post)) out.push({ t: post, q: false }); else if (out.length) out[out.length - 1].end = post;
+        } else out.push({ t: part, q: q });
+      });
+    });
+    return out;
+  }
+  function pauseAfter(p) {
+    if (p.count != null) return p.count === p.run.length - 1 ? 650 : 330;
+    var e = (p.end || p.t).trim().slice(-2);
+    return /…|\.\./.test(e) ? 800 : /\?/.test(e) ? 650 : /!/.test(e) ? 480 : p.q ? 380 : /,$/.test(e) ? 220 : 520;
+  }
+  function esc(t) { return String(t).replace(/&/g, '&amp;').replace(/</g, '&lt;'); }
+  function light(box, p) {
+    var its = [].slice.call(box.querySelectorAll('.fl-it')); if (!its.length) return;
+    var s0 = p.run[0], cons = p.run.every(function (v, j) { return v === s0 + j; }), off = cons && s0 >= 1 && its.length >= s0 + p.run.length - 1 ? s0 - 1 : 0;
+    if (p.count === 0) its.forEach(function (e) { e.classList.remove('fl-hl', 'fl-done'); var o = e.querySelector('.fl-num'); if (o) o.remove(); });
+    var el = its[off + p.count]; if (!el) return;
+    its.forEach(function (e) { if (e.classList.contains('fl-hl')) { e.classList.remove('fl-hl'); e.classList.add('fl-done'); } });
+    el.classList.add('fl-hl');
+    try { var bb = el.getBBox(), t = document.createElementNS('http://www.w3.org/2000/svg', 'text'); t.setAttribute('class', 'fl-num'); t.setAttribute('x', bb.x + bb.width / 2); t.setAttribute('y', bb.y - 3); t.setAttribute('text-anchor', 'middle'); t.setAttribute('font-size', Math.max(12, Math.min(30, bb.height * 0.75))); t.textContent = p.n; el.appendChild(t); } catch (e) { /* ignore */ }
+  }
+  function glow(box, t) {
+    var ks = {}; [].forEach.call(box.querySelectorAll('.fl-it[data-k]'), function (e) { ks[e.getAttribute('data-k')] = 1; });
+    Object.keys(ks).forEach(function (k) { if (!new RegExp('\\b' + k + '(e?s)?\\b', 'i').test(t)) return;
+      box.querySelectorAll('.fl-it[data-k="' + k + '"]').forEach(function (e, j) { setTimeout(function () { e.classList.add('fl-glow'); setTimeout(function () { e.classList.remove('fl-glow'); }, 1300); }, j * 90); }); });
+  }
+  H.flTell = function (text, o, done) {
+    var ps = plan(text), k = 0, base = Math.max(0.6, Math.min(1.25, ((S.app && S.app.store.settings.rate) || 1) * 0.86));
+    function capShow() { if (!o.cap) return; o.cap.innerHTML = ps.map(function (p, j) { var t = esc(p.t + (p.count != null && j < ps.length - 1 && ps[j + 1].count != null ? ',' : '') + (p.end || '')); return j === k ? '<span class="now">' + t + '</span>' : t; }).join(' '); }
+    function step() {
+      if (!o.alive()) return;
+      if (k >= ps.length) { if (o.box) o.box.querySelectorAll('.fl-hl').forEach(function (e) { e.classList.remove('fl-hl'); e.classList.add('fl-done'); }); done(); return; }
+      var p = ps[k]; capShow(); if (p.count != null && o.box) light(o.box, p); else if (o.box) glow(o.box, p.t);
+      var fin = function () { if (!o.alive()) return; k++; setTimeout(step, pauseAfter(p)); };
+      if (!o.voice) { setTimeout(fin, p.count != null ? 420 : p.t.split(' ').length * 330 + 250); return; }
+      var u = new SpeechSynthesisUtterance(S.speakable ? S.speakable(p.t.replace(/[“”]/g, '')) : p.t), v = H.pickVoice && H.pickVoice();
+      if (v) { u.voice = v; u.lang = v.lang; } else u.lang = 'en-GB';
+      var bang = /!/.test(p.t), ask = /\?/.test(p.t);
+      u.rate = Math.max(0.55, base * (p.count != null ? 0.95 : p.q ? 1.04 : bang ? 1.02 : 1));
+      u.pitch = p.q ? 1.32 : ask ? 1.18 : bang ? 1.14 : 1.05;
+      var ended = false; u.onend = u.onerror = function () { if (ended) return; ended = true; fin(); };
+      try { speechSynthesis.speak(u); } catch (e) { ended = true; fin(); }
+    }
+    try { speechSynthesis.cancel(); } catch (e) { /* ignore */ }
+    step();
+  };
+  /* a thinking pause before the answer, with a little countdown */
+  H.flThink = function (el, secs, alive, done) {
+    if (el) el.classList.add('on');
+    setTimeout(function () { if (el) el.classList.remove('on'); if (alive()) done(); }, secs * 1000);
+  };
   FL.scene = scene; FL.who = who; FL.bit = bit; FL.tank = tank; FL.stones = stones; FL.label = label;
 
   /* ---------- reading aloud, word by word ---------- */
@@ -25060,23 +25243,33 @@ S.extraMakers = function (n, level) {
   FL.topic({ n: 201, year: 'P2', short: 'Counting', title: 'Counting and numbers', blurb: 'Count with Ruby the rocket: number patterns, tens and ones, number lines, one more and one less.',
     /* Story time: Ruby needs 10 stars to fly home (counting, a pattern, ten, one more and one less) */
     story: { title: 'Ruby and the Star Garden',
+      intro: 'Story time! Get cosy, sit back, and listen carefully. This is the story of Ruby and the Star Garden.',
       endPic: FL.scene('space', FL.who('rocket', 130, 40, 150, 'up') + FL.label(200, 230, 'Blast off!', 26)),
-      endText: 'Ruby zoomed home with ten shiny stars. Thank you for helping her count!',
+      endText: 'Blast off! Whoosh! Up, up, up went Ruby, all the way home to the twinkly sky. “Thank you for helping me count,” she called. “Goodnight, my clever friend!” And that is the end of our story.',
       pages: [
-        { pic: function () { return FL.scene('space', FL.who('rocket', 115, 30, 170, 'bob')); }, text: 'This is Ruby the rocket. Ruby loves to zoom around the sky.' },
-        { pic: function () { return FL.scene('space', FL.who('rocket', 4, 55, 140, 'wig') + FL.tank(150, 80, 0)); }, text: 'Oh no! Ruby is out of fuel. Rockets like Ruby run on star power. She needs ten stars to fly home.' },
+        { pic: function () { return FL.scene('space', FL.who('rocket', 115, 30, 170, 'bob')); },
+          text: 'Once upon a time, high up in the night sky, there lived a little red rocket called Ruby. Ruby loved to zoom. Whoosh, round the moon! Whoosh, past the clouds! “Wheee!” giggled Ruby. “I love flying!”' },
+        { pic: function () { return FL.scene('space', FL.who('rocket', 4, 55, 140, 'wig') + FL.tank(150, 80, 0)); },
+          text: 'But one night, Ruby’s engine went splutter… splutter… pop! Oh no! Ruby looked inside her fuel tank. It was empty. “Oh dear,” said Ruby in a tiny, worried voice. “Rockets like me run on star power. I need ten stars to fly home.”' },
         { pic: function () { return FL.scene('garden', FL.who('rocket', -5, 85, 125, 'bob') + [[160, 70], [225, 135], [285, 55], [335, 140], [385, 80]].map(function (p, k) { return FL.bit('star', p[0] - 20, p[1], 'tw', k * .2, k, 2); }).join('')); },
-          text: 'Ruby lands in the Star Garden. Let’s count the stars with Ruby. Tap each star!', tap: 5 },
-        { pic: function () { return FL.scene('space', FL.who('rocket', 4, 55, 140, 'bob') + FL.tank(150, 80, 5, 0)); }, text: 'Five stars go into Ruby’s fuel tank. One, two, three, four, five.' },
-        { pic: function () { return FL.scene('space', FL.who('rocket', 4, 55, 140) + FL.tank(150, 80, 5)); }, text: 'The tank has ten spaces. Five are full.',
-          ask: { q: 'How many more stars does Ruby need to make <b>10</b>?', options: [4, 5, 6], answer: 5, explain: 'Five and five make ten.' } },
-        { pic: function () { return FL.scene('pond', FL.who('rocket', 10, 10, 120, 'bob') + FL.stones([2, 4, 6, '?'], 190)); }, text: 'To reach more stars, Ruby hops on stepping stones. Two, four, six. The numbers go up in twos.',
-          ask: { q: 'What number is on the next stone?', options: [7, 8, 10], answer: 8, explain: 'Two, four, six, eight. We jump two each time.' } },
-        { pic: function () { return FL.scene('space', FL.who('rocket', 4, 55, 140, 'bob') + FL.tank(150, 80, 10, 5)); }, text: 'Ruby finds five more stars. Now the tank has ten! Ten ones make one ten.' },
-        { pic: function () { return FL.scene('space', FL.who('rocket', 4, 55, 140, 'wig') + FL.tank(150, 80, 10, 10, true)); }, text: 'Whoops! One star rolls away. One less than ten is nine.' },
-        { pic: function () { return FL.scene('space', FL.who('rocket', 4, 55, 140, 'bob') + FL.tank(150, 80, 9) + FL.bit('star', 352, 125, 'fly', 0, null, 1)); }, text: 'Ruby catches it! One more than nine is ten. The tank is full again.',
-          ask: { q: 'What is one more than <b>9</b>?', options: [8, 10, 11], answer: 10, explain: 'Nine, then ten.' } },
-        { pic: function () { return FL.scene('space', FL.who('rocket', 125, 20, 160, 'bob') + FL.label(200, 232, '3 … 2 … 1 …', 32)); }, text: 'Ruby is ready. Let’s count down together. Three, two, one!' }
+          text: 'Down, down, down floated Ruby, until she landed softly in a magical place called the Star Garden. And look! Shiny stars, twinkling in the grass. Shall we count them with Ruby? Point to each star with your finger. Tap each star!', tap: 5 },
+        { pic: function () { return FL.scene('space', FL.who('rocket', 4, 55, 140, 'bob') + FL.tank(150, 80, 5, 0)); },
+          text: '“Five stars!” Ruby smiled a big smile. Carefully, she popped them into her tank, one at a time. Let’s count them going in. One, two, three, four, five. Plink, plink, plink, plink, plink!' },
+        { pic: function () { return FL.scene('space', FL.who('rocket', 4, 55, 140) + FL.tank(150, 80, 5)); },
+          text: 'Ruby peeked at her tank. It has ten spaces, in two rows of five. The top row is full, but the bottom row is empty. “Hmm,” Ruby wondered, tapping her nose. “How many more stars do I need?”',
+          ask: { q: 'How many more stars does Ruby need to make <b>10</b>?', options: [4, 5, 6], answer: 5, explain: 'Five and five make ten. Ruby needs five more stars.' } },
+        { pic: function () { return FL.scene('pond', FL.who('rocket', 10, 10, 120, 'bob') + FL.stones([2, 4, 6, '?'], 190)); },
+          text: 'Over the pond, Ruby could see more stars glowing. But how could she get across without getting wet? “Stepping stones!” she cheered. Ruby hopped. Two, four, six. Every hop jumps on two.',
+          ask: { q: 'What number is on the next stone?', options: [7, 8, 10], answer: 8, explain: 'Two, four, six, eight. We jump on two each time.' } },
+        { pic: function () { return FL.scene('space', FL.who('rocket', 4, 55, 140, 'bob') + FL.tank(150, 80, 10, 5)); },
+          text: 'Hop, hop, hop! Ruby made it to the other side, and there were five more stars, waiting just for her. Into the tank they went. Let’s keep counting. Six, seven, eight, nine, ten! “Ten stars!” cheered Ruby. “Ten ones make one whole ten!”' },
+        { pic: function () { return FL.scene('space', FL.who('rocket', 4, 55, 140, 'wig') + FL.tank(150, 80, 10, 10, true)); },
+          text: 'But then… wibble, wobble… whoops! One little star rolled right out of the tank! Ruby gasped. Ten stars, take away one star. Now there are only nine. One less than ten is nine.' },
+        { pic: function () { return FL.scene('space', FL.who('rocket', 4, 55, 140, 'bob') + FL.tank(150, 80, 9) + FL.bit('star', 352, 125, 'fly', 0, null, 1)); },
+          text: 'Ruby stretched, and stretched, as far as she could… and caught it! “Got you, little star!” she laughed. Nine stars, and one more. One more than nine is ten. The tank was full again.',
+          ask: { q: 'What is one more than <b>9</b>?', options: [8, 10, 11], answer: 10, explain: 'Nine, then ten. One more than nine is ten.' } },
+        { pic: function () { return FL.scene('space', FL.who('rocket', 125, 20, 160, 'bob') + FL.label(200, 232, '3 … 2 … 1 …', 32)); },
+          text: 'Ruby’s engine began to rumble. Rumble, rumble, rumble! She was ready to fly home. Will you help her blast off? Let’s count down together, nice and loud. Three… two… one…' }
       ] },
     /* Let's learn: short lessons that carry on Ruby's story, one small idea at a time */
     learn: [

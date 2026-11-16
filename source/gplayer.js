@@ -89,6 +89,23 @@
     '@media (max-width:600px){.card:has(.gp){padding-left:10px;padding-right:10px}.live:has(.gp){padding-left:0;padding-right:0}}',
     '.gp.full .gp-frame{position:fixed;inset:0;z-index:9999;border-radius:0;aspect-ratio:auto;background:#111}',
     '.gp.full .gp-close{display:flex}.gp-close{display:none;position:absolute;right:max(12px,env(safe-area-inset-right));top:max(12px,env(safe-area-inset-top));z-index:2;width:44px;height:44px;border-radius:50%;border:0;background:#fff;color:#221a3a;font-size:22px;align-items:center;justify-content:center;box-shadow:0 2px 10px rgba(0,0,0,.3)}',
+    '.gp-vs{display:flex;flex-wrap:wrap;gap:8px 16px;align-items:center}.gp-vs label{display:flex;gap:6px;align-items:center;font-weight:700;font-size:15px}.gp-vs select{min-height:40px;max-width:min(260px,60vw);font:inherit;font-weight:600;border:2px solid var(--line);border-radius:10px;padding:4px 8px;background:var(--surface);color:var(--fg)}',
+    '.gp-body.gp-turn{animation:gpTurn .7s ease both}@keyframes gpTurn{0%{opacity:0;transform:translateX(40px) rotate(1deg)}100%{opacity:1;transform:none}}',
+    '.gp-cap .now{background:#fff2a8;border-radius:6px;box-shadow:0 0 0 3px #fff2a8}.gp-cap .think{display:inline-flex;gap:6px;align-items:center;font-weight:800;color:#881cd6}',
+    '.flx{position:absolute;left:14px;right:14px;top:46px;bottom:30px}.flx-pic{position:absolute;inset:0;display:flex;align-items:center;justify-content:center}',
+    '.flx-pic.flx-in{animation:gpTurn .7s ease both}.flx-pic>.flb,.flx-pic .flb-w{width:100%;height:100%;max-width:none;display:flex;align-items:center;justify-content:center;margin:0}',
+    '.flx-pic .flb-stage{width:100%;height:100%;display:flex;align-items:center;justify-content:center;border:0;background:none}.flx-pic .flb-stage>svg{max-width:100%!important;max-height:100%;border:3px solid #221a3a;border-radius:18px;box-sizing:border-box}',
+    '.flx-pic .flp{width:100%;height:100%;box-sizing:border-box;flex-wrap:nowrap;font-size:24px}.flx-pic .flp-ch svg{width:150px!important}.flx-pic .flp-pic{height:100%;align-content:center}.flx-pic .flp-pic svg{max-height:100%}',
+    '.flx-top{position:absolute;left:0;right:0;top:8px;display:flex;justify-content:center;pointer-events:none}.flx-q{max-width:86%;background:rgba(255,255,255,.96);border:3px solid #221a3a;border-radius:18px;padding:8px 18px;font-weight:800;font-size:26px;line-height:1.3;text-align:center;box-shadow:0 6px 18px rgba(0,0,0,.2);animation:flxDrop .55s cubic-bezier(.3,1.5,.6,1) both}',
+    '.flx-tip{font-size:18px;font-weight:700;color:#7a5600;margin-top:4px}',
+    '.flx-opts{position:absolute;left:0;right:0;bottom:12px;display:flex;justify-content:center}.flx-opts .flb-opts{margin:0;gap:14px;width:auto}.flx-opts .flb-show .o{min-width:96px;max-width:none;flex:0 0 auto;min-height:72px;font-size:34px;padding:4px 18px;box-shadow:0 6px 16px rgba(0,0,0,.22);animation:flxPop .5s cubic-bezier(.3,1.6,.6,1) both}',
+    '.flx-opts .flb-show .o:nth-child(2){animation-delay:.12s}.flx-opts .flb-show .o:nth-child(3){animation-delay:.24s}.flx-opts .flb-show .o:nth-child(4){animation-delay:.36s}',
+    '.flx-opts .flb-show .o.tap{cursor:pointer}.flx-opts .flb-show .o.tap:hover{transform:scale(1.08)}.flx-opts .flb-show .o.no{background:#ffd0d0;animation:flxNo .5s ease both;opacity:.8}@keyframes flxNo{0%,100%{transform:translateX(0)}25%{transform:translateX(-8px)}75%{transform:translateX(8px)}}',
+    '.flx-opts .flb-show .o.ok{animation:flxWin .9s ease both;box-shadow:0 0 0 6px #ffe14d,0 0 26px 8px rgba(255,225,77,.9)}',
+    '.flx-think{position:absolute;right:10px;top:6px;font-size:46px;opacity:0;transform:scale(.4);transition:opacity .3s,transform .3s}.flx-think.on{opacity:1;transform:scale(1);animation:flxThink 1.2s ease-in-out infinite}',
+    '@keyframes flxDrop{0%{opacity:0;transform:translateY(-30px)}100%{opacity:1;transform:none}}@keyframes flxPop{0%{opacity:0;transform:scale(.3)}100%{opacity:1;transform:none}}',
+    '@keyframes flxWin{0%{transform:scale(1)}30%{transform:scale(1.35) rotate(-4deg)}60%{transform:scale(1.15) rotate(3deg)}100%{transform:scale(1.2)}}@keyframes flxThink{0%,100%{transform:translateY(0) rotate(-6deg)}50%{transform:translateY(-8px) rotate(6deg)}}',
+    '.gp-fl .gp-cap{display:none}.gp-fl .gp-snd{display:flex;gap:10px;align-items:center;background:#fff4d6;border:2px solid #e0a800;border-radius:14px;padding:10px 14px;font-weight:800;font-size:16px;color:#221a3a}.gp.narrow .flx{left:8px;right:8px}.gp.narrow .flx-q{font-size:24px}',
     '.gp-cnt{font-size:13px;color:var(--muted);font-variant-numeric:tabular-nums}',
     '@media(prefers-reduced-motion:reduce){.gp-stage *{animation:none!important;transition:none!important}.gp-stage [data-sb]{opacity:1;transform:none}}'
   ].join('\n');
@@ -115,10 +132,10 @@
 
   H.gifPlayer = function (host, ep, meta) {
     meta = meta || { q: 0, of: 1 };
-    var TT = D(ep.title), slides = [{ title: true, steps: [{ say: TT + ' In this lesson, we will learn ' + (ep.goal || '') }] }];
+    var TT = D(ep.title), FLM = !!ep.fl, slides = [{ title: true, steps: [{ say: FLM ? (ep.intro || ('Hello again, my friend! Today we are going to find out: ' + TT)) : TT + ' In this lesson, we will learn ' + (ep.goal || '') }] }];
     ep.scenes.forEach(function (sc) { slides.push(sc); });
     var chunks = [];
-    slides.forEach(function (sl, si) { sl.steps.forEach(function (st, k) { chunks.push({ si: si, k: k, say: st.say }); }); });
+    slides.forEach(function (sl, si) { sl.steps.forEach(function (st, k) { chunks.push({ si: si, k: k, say: st.say, think: !!st.think, answer: st.answer, last: k === sl.steps.length - 1 }); }); });
     var dashes = ''; for (var d = 0; d < meta.of; d++) dashes += '<i class="' + (d <= meta.q ? 'on' : '') + '"></i>';
     var short = TT.replace(/\?$/, '');
     /* a lesson counts as watched once its last step has been shown; the tick is saved with the child's progress */
@@ -139,14 +156,27 @@
       '<button class="btn ghost" type="button" data-r aria-label="Start again"><span class="gp-ic" aria-hidden="true">↺</span><span class="gp-tx">Start again</span></button>' +
       '<button class="btn ghost" type="button" data-f aria-label="Full screen"><span class="gp-ic" aria-hidden="true">⛶</span><span class="gp-tx">Full screen</span></button>' +
       '<div class="gp-prog" aria-hidden="true"><i></i></div><span class="gp-cnt"></span></div>' +
+      (FLM ? '<div class="gp-vs"><label>Voice <select data-vv></select></label><label>Reading speed <select data-vr><option value="0.8">Slower</option><option value="1">Normal</option><option value="1.2">Faster</option></select></label></div>' : '') +
       '<p class="note" style="margin:0" data-note></p></div>';
-    var root = host.querySelector('.gp'), frame = root.querySelector('.gp-frame'), stage = root.querySelector('.gp-stage'), cap = root.querySelector('.gp-cap');
+    var root = host.querySelector('.gp'), frame0 = FLM && root.classList.add('gp-fl'), frame = root.querySelector('.gp-frame'), stage = root.querySelector('.gp-stage'), cap = root.querySelector('.gp-cap');
     var pb = root.querySelector('[data-p]'), bar = root.querySelector('.gp-prog i'), cnt = root.querySelector('.gp-cnt'), note = root.querySelector('[data-note]');
     var idx = 0, playing = false, token = 0, timer = null, shown = -1;
     function setPb(t) { pb.setAttribute('aria-label', t); pb.innerHTML = '<span class="gp-ic" aria-hidden="true">' + (t === 'Pause' ? '❚❚' : '▶') + '</span><span class="gp-tx">' + t + '</span><span class="gp-sh">' + (t === 'Pause' ? ' Pause' : ' Play') + '</span>'; }
     setPb('Play the lesson');
     var okVoice = H.voiceOk && H.voiceOk();
-    note.textContent = okVoice ? 'Your device reads this aloud. You can change the voice and speed in Settings.' : 'The voice is not available here, so the lesson plays with words only.';
+    note.textContent = okVoice ? (FLM ? '🔊 Turn the sound on: this story is read aloud. Choose a voice and a speed that suit your child.' : 'Your device reads this aloud. You can change the voice and speed in Settings.') : 'The voice is not available here, so the lesson plays with words only.';
+    /* First level stories are listened to, not read: without a voice, say so clearly */
+    if (FLM && !okVoice) { note.className = 'gp-snd'; note.innerHTML = '🔇 This story needs to be heard. This browser cannot read aloud, so please open MathsStudio in Chrome, Safari or Edge and turn the sound on.'; }
+    if (FLM) {
+      var vv = root.querySelector('[data-vv]'), vr = root.querySelector('[data-vr]');
+      /* the same choices as Settings (used in P5 to S3): Automatic (British English), then every English voice */
+      var fillV = function () { var src = document.getElementById('setVoice'); if (src) { vv.innerHTML = src.innerHTML; vv.value = src.value; } };
+      fillV(); setTimeout(fillV, 900); try { speechSynthesis.addEventListener('voiceschanged', fillV); } catch (e) { /* ignore */ }
+      var r0 = H.rateCur ? H.rateCur() : 1; vr.value = r0 <= 0.85 ? '0.8' : r0 >= 1.15 ? '1.2' : '1';
+      var again = function () { if (playing) { stop(); playing = true; setPb('Pause'); current = { stop: stop }; say(idx); } };
+      vv.addEventListener('change', function () { if (H.setVoice) H.setVoice(vv.value); var src = document.getElementById('setVoice'); if (src) src.value = vv.value; again(); });
+      vr.addEventListener('change', function () { if (H.setRate) H.setRate(Number(vr.value)); var src = document.getElementById('setRate'); if (src) src.value = vr.value; again(); });
+    }
 
     var narrow = null, lastI = 0;
     function fit() {
@@ -191,6 +221,7 @@
         while (fz > 24 && tall()) { fz -= 2; t2.style.fontSize = fz + 'px'; }
         return;
       }
+      if (FLM) { stage.innerHTML = chrome(sl) + '<div class="flx gp-turn"><div class="flx-pic"></div><div class="flx-top"></div><div class="flx-opts"></div><div class="flx-think" aria-hidden="true">🤔</div></div>'; flPic = ''; flTop = ''; flOpt = ''; return; }
       h = chrome(sl) + '<div class="gp-body"><div class="gp-fit"><h3 class="gp-h">' + sl.h + '</h3>' + (sl.sub ? '<p class="gp-sub">' + sl.sub + '</p>' : '');
       /* a step whose html starts with <!--swap--> replaces the block before it, in the same place */
       var groups = [];
@@ -229,17 +260,67 @@
       }
       if (k2 < 1) f.style.transform = 'scale(' + k2.toFixed(3) + ')';
     }
+    var flPic = '', flTop = '', flOpt = '';
+    function showFL(c) {
+      var steps = slides[c.si].steps, html = '';
+      for (var k = c.k; k >= 0 && !html; k--) html = String(steps[k].html || '').replace('<!--swap-->', '');
+      var tmp = document.createElement('div'); tmp.innerHTML = html;
+      var q = tmp.querySelector('.flb-q'), tip = tmp.querySelector('.flb-tip'), op = tmp.querySelector('.flb-opts');
+      [q, tip, op].forEach(function (e) { if (e) e.parentNode.removeChild(e); });
+      var ph = tmp.innerHTML.trim(), P = stage.querySelector('.flx-pic'), T = stage.querySelector('.flx-top'), O = stage.querySelector('.flx-opts');
+      if (ph !== flPic) { flPic = ph; P.innerHTML = ph; P.classList.remove('flx-in'); void P.offsetWidth; P.classList.add('flx-in'); fitPic(P); }
+      /* the question is told, not written: only the choices appear, for the child to tap */
+      var th = '';
+      if (th !== flTop) { flTop = th; T.innerHTML = th; }
+      var oh = op ? op.outerHTML : '', base = oh.replace(/ ok"/g, '"');
+      if (base !== flOpt) { flOpt = base; O.innerHTML = oh; } else if (oh !== O.innerHTML) { O.innerHTML = oh; }
+      /* a question: the child taps their answer on the picture */
+      tries = 0; answered = false;
+      if (c.think) O.querySelectorAll('.o').forEach(function (el) {
+        el.classList.add('tap'); el.setAttribute('role', 'button'); el.tabIndex = 0; el.setAttribute('aria-label', 'Answer ' + el.textContent);
+        el.onclick = function () { pick(el); }; el.onkeydown = function (e) { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); pick(el); } };
+      });
+    }
+    /* the picture fills the stage as far as it can without cropping or stretching */
+    function fitPic(P) {
+      var g = P.querySelector('.flb-stage>svg[viewBox]'); if (!g) return;
+      var vb = g.getAttribute('viewBox').split(/\s+/).map(Number), vr = vb[2] / vb[3], cr = P.clientWidth / Math.max(1, P.clientHeight);
+      if (vr >= cr) { g.style.setProperty('width', '100%', 'important'); g.style.setProperty('height', 'auto', 'important'); }
+      else { g.style.setProperty('height', '100%', 'important'); g.style.setProperty('width', 'auto', 'important'); }
+    }
+    var tries = 0, answered = false, PRAISE = ['Yes! You are right!', 'Brilliant! Well done!', 'That’s right! Super thinking!', 'Yes! Clever you!'], NUDGE = ['Not quite. Have another go!', 'Ooh, nearly! Try again.'];
+    function pick(el) {
+      var c = chunks[lastI]; if (!c || !c.think || answered || el.classList.contains('no')) return;
+      var ok = String(el.textContent).trim() === String(c.answer).trim();
+      token++; clearTimeout(timer); try { speechSynthesis.cancel(); } catch (e) { /* ignore */ }
+      var th = stage.querySelector('.flx-think'); if (th) th.classList.remove('on');
+      if (ok) { answered = true; el.classList.add('ok'); } else { tries++; el.classList.add('no'); }
+      var my = token, at = lastI; playing = true; setPb('Pause'); current = { stop: stop };
+      var line = ok ? PRAISE[Math.floor(Math.random() * PRAISE.length)] : tries >= 2 ? 'Good try! Let’s find out together.' : NUDGE[(tries - 1) % NUDGE.length];
+      cap.textContent = line; root.classList.add('gp-talk');
+      H.flTell(line, { box: stage.querySelector('.flx-pic'), voice: okVoice, alive: function () { return my === token && root.isConnected; } }, function () {
+        root.classList.remove('gp-talk'); if (my !== token || !root.isConnected) return;
+        if (ok || tries >= 2) { idx = Math.min(chunks.length - 1, at + 1); timer = setTimeout(function () { if (my === token && playing) say(idx); }, 500); }
+        else { if (th) th.classList.add('on'); cap.textContent = chunks[at].say; }
+      });
+    }
+    function waitPick(c0, my) {
+      var th = stage.querySelector('.flx-think'); if (th) th.classList.add('on');
+      timer = setTimeout(function () { if (my !== token || !playing || answered) return; root.classList.add('gp-talk');
+        H.flTell('Tap the answer you think is right.', { box: null, voice: okVoice, alive: function () { return my === token && playing; } }, function () { root.classList.remove('gp-talk'); }); }, 12000);
+    }
     function show(i) {
       lastI = i;
       var c = chunks[i];
       if (shown !== c.si) { shown = c.si; build(c.si); }
+      if (FLM && !slides[c.si].title) { showFL(c); cap.textContent = c.say; bar.style.width = ((i + 1) / chunks.length * 100) + '%'; cnt.textContent = 'Slide ' + (c.si + 1) + ' of ' + slides.length; if (i === chunks.length - 1) markSeen(); return; }
       stage.querySelectorAll('[data-sb]').forEach(function (e) {
         var k = Number(e.getAttribute('data-sb')), on = k <= c.k;
         if (on && e.parentNode.classList.contains('gp-swap')) {
           var later = [].some.call(e.parentNode.children, function (o) { var j = Number(o.getAttribute('data-sb')); return j > k && j <= c.k; });
           if (later) on = false;
         }
-        if (on && !e.classList.contains('on')) { e.classList.add('on'); drawIn(e); }
+        if (on && !e.classList.contains('on')) { e.classList.add('on'); if (!FLM) drawIn(e); }
         else if (!on) e.classList.remove('on');
       });
       cap.textContent = c.say; bar.style.width = ((i + 1) / chunks.length * 100) + '%';
@@ -248,15 +329,33 @@
     }
     function say(i) {
       show(i); var my = ++token; clearTimeout(timer);
+      function gapNext(ms) {
+        if (my !== token || !playing || !root.isConnected) return;
+        if (i + 1 < chunks.length) { idx = i + 1; timer = setTimeout(function () { if (my === token && playing && root.isConnected) say(idx); }, ms); }
+        else { playing = false; idx = 0; setPb('Watch again'); }
+      }
       function next() {
         if (my !== token || !playing || !root.isConnected) return;
         if (i + 1 < chunks.length) { idx = i + 1; timer = setTimeout(function () { if (my === token && playing && root.isConnected) say(idx); }, 600); }
         else { playing = false; idx = 0; setPb('Watch again'); }
       }
+      if (FLM && H.flTell) {
+        /* First level: told like a storyteller, sentence by sentence, counting things as they light up */
+        var c0 = chunks[i], blk = stage.querySelector('.flx-pic') || stage;
+        root.classList.add('gp-talk');
+        H.flTell(c0.say, { box: blk, cap: null, voice: okVoice, alive: function () { return my === token && playing && root.isConnected; } }, function () {
+          root.classList.remove('gp-talk');
+          if (my !== token || !playing || !root.isConnected) return;
+          /* a question: give the child time to think before the answer */
+          if (c0.think) { waitPick(c0, my); return; }
+          gapNext(c0.last ? 1500 : 800);
+        });
+        return;
+      }
       var ok = okVoice && H.speakStory(chunks[i].say, function () { next(); });
       if (!ok) timer = setTimeout(next, chunks[i].say.split(' ').length * 380 + 1200);
     }
-    function stop() { token++; clearTimeout(timer); playing = false; try { if (okVoice) speechSynthesis.cancel(); } catch (e) { /* ignore */ } setPb(idx > 0 ? 'Keep watching' : 'Play the lesson'); }
+    function stop() { token++; clearTimeout(timer); playing = false; root.classList.remove('gp-talk'); try { if (okVoice) speechSynthesis.cancel(); } catch (e) { /* ignore */ } setPb(idx > 0 ? 'Keep watching' : 'Play the lesson'); }
     function go(i) { var was = playing; stop(); idx = Math.max(0, Math.min(chunks.length - 1, i)); if (was) { playing = true; setPb('Pause'); current = { stop: stop }; say(idx); } else show(idx); }
     pb.addEventListener('click', function () { if (playing) { stop(); return; } current = { stop: stop }; playing = true; setPb('Pause'); say(idx); });
     root.querySelector('[data-b]').addEventListener('click', function () { go(idx - 1); });

@@ -4,6 +4,7 @@
 (function () {
   'use strict';
   var FL = window.FL, S = window.Studio; if (!FL || !S) return;
+  var H = S.h;
   var INK = '#2b2340', pick = FL.pick, svg = FL.svg, tx = FL.tx;
 
   /* ---------- styles ---------- */
@@ -62,7 +63,13 @@
     '@keyframes flUp{0%{transform:translateY(0)}20%{transform:translateY(4px)}100%{transform:translateY(-320px)}}' +
     '@keyframes flWig{0%,100%{transform:rotate(0)}25%{transform:rotate(-6deg)}75%{transform:rotate(6deg)}}' +
     '@keyframes flIn{0%{transform:translateX(-60px);opacity:0}100%{transform:translateX(0);opacity:1}}' +
-    '@media (prefers-reduced-motion:reduce){.flb [class*="a-"]{animation:none!important}}';
+    '.fl-it{transition:transform .3s cubic-bezier(.3,1.6,.6,1),filter .3s;transform-box:fill-box;transform-origin:center}' +
+    '.fl-it.fl-glow{animation:flGlow 1.2s ease}@keyframes flGlow{0%,100%{filter:none;transform:scale(1)}45%{filter:drop-shadow(0 0 7px #ffe14d) drop-shadow(0 0 3px #fff);transform:scale(1.25)}}' +
+    '.fl-it.fl-hl{transform:scale(1.4);filter:drop-shadow(0 0 5px #ffe14d) drop-shadow(0 0 2px #fff)}.fl-it.fl-done{filter:drop-shadow(0 0 3px #ffe14d)}' +
+    '.fl-num{font-weight:900;fill:#e0457b;stroke:#fff;stroke-width:3px;paint-order:stroke;animation:flPop .4s cubic-bezier(.3,1.6,.6,1) both;font-family:inherit}' +
+    '.fl-who{transform-box:fill-box;transform-origin:50% 100%}.gp-talk .fl-who,.gp-talk .flp-ch svg{animation:flTalk .42s ease-in-out infinite alternate}' +
+    '@keyframes flTalk{from{transform:translateY(0) scale(1)}to{transform:translateY(-4px) scale(1.03,0.98)}}' +
+    '@media (prefers-reduced-motion:reduce){.flb [class*="a-"],.fl-who,.flp-ch svg{animation:none!important}.fl-it{transition:none}}';
   document.head.appendChild(css);
 
   /* ---------- scene drawing (400 x 250) ---------- */
@@ -77,24 +84,24 @@
   };
   function scene(bg, inner, alt) { return svg(400, 250, alt || 'A story picture', (BG[bg] || BG.day)() + inner, 760); }
   /* a character at (x, y), size in px, with an animation class */
-  function who(k, x, y, size, anim, delay) { var sc = (size || 100) / 100; return '<g transform="translate(' + x + ' ' + y + ') scale(' + sc + ')"><g class="' + (anim ? 'a-' + anim : '') + '" style="animation-delay:' + (delay || 0) + 's">' + FL.CH[k] + '</g></g>'; }
+  function who(k, x, y, size, anim, delay) { var sc = (size || 100) / 100; return '<g transform="translate(' + x + ' ' + y + ') scale(' + sc + ')"><g class="fl-who"><g class="' + (anim ? 'a-' + anim : '') + '" style="animation-delay:' + (delay || 0) + 's">' + FL.CH[k] + '</g></g></g>'; }
   /* a small thing (star, apple...) at (x, y), animated, with optional tap target */
   function bit(kind, x, y, anim, delay, tapIx, scale) {
     var t = FL.THING[kind](0, 0), sc = scale || 1;
-    return '<g transform="translate(' + x + ' ' + y + ') scale(' + sc + ')"' + (tapIx != null ? ' data-tap="' + tapIx + '" role="button" tabindex="0" aria-label="' + kind + ' ' + (tapIx + 1) + '"' : '') + '><g class="' + (anim ? 'a-' + anim : '') + '" style="animation-delay:' + (delay || 0) + 's">' + (tapIx != null ? '<circle r="24" fill="transparent"/>' : '') + t + '</g></g>';
+    return '<g transform="translate(' + x + ' ' + y + ') scale(' + sc + ')"' + (tapIx != null ? ' data-tap="' + tapIx + '" role="button" tabindex="0" aria-label="' + kind + ' ' + (tapIx + 1) + '"' : '') + '><g class="fl-it" data-k="' + kind + '"><g class="' + (anim ? 'a-' + anim : '') + '" style="animation-delay:' + (delay || 0) + 's">' + (tapIx != null ? '<circle r="24" fill="transparent"/>' : '') + t + '</g></g></g>';
   }
   /* a fuel tank shaped like a ten-frame, n stars inside (the newest ones pop in) */
   function tank(x, y, n, from, rollLast) {
     var s = '<g transform="translate(' + x + ' ' + y + ')"><rect x="-6" y="-6" width="232" height="104" rx="14" fill="#fff" stroke="' + INK + '" stroke-width="3"/>';
     for (var i = 0; i < 10; i++) { var c = i % 5, r = Math.floor(i / 5), cx = 22 + c * 44, cy = 22 + r * 46; s += '<rect x="' + (cx - 20) + '" y="' + (cy - 20) + '" width="40" height="40" rx="6" fill="#f3efff" stroke="#b9acd8" stroke-width="2"/>';
-      if (i < n) s += '<g transform="translate(' + cx + ' ' + cy + ')"><g class="' + (rollLast && i === n - 1 ? 'a-roll' : i >= (from || 0) ? 'a-pop' : '') + '" style="animation-delay:' + (i >= (from || 0) ? ((i - (from || 0)) * .35 + .3).toFixed(2) : 0) + 's">' + FL.THING.star(0, 0) + '</g></g>'; }
+      if (i < n) s += '<g transform="translate(' + cx + ' ' + cy + ')"><g class="fl-it" data-k="star"><g class="' + (rollLast && i === n - 1 ? 'a-roll' : i >= (from || 0) ? 'a-pop' : '') + '" style="animation-delay:' + (i >= (from || 0) ? ((i - (from || 0)) * .35 + .3).toFixed(2) : 0) + 's">' + FL.THING.star(0, 0) + '</g></g></g>'; }
     return s + '</g>';
   }
   function label(x, y, t, size, fill) { return tx(x, y, t, size || 22, fill || '#fff'); }
   function stones(list, y, planet) {   /* stepping stones (or planets) with numbers */
     var s = '', gap = 400 / (list.length + 1), r = Math.min(34, gap / 2 - 4), PC = ['#ffb3c7', '#9fd7ff', '#b8f0a8', '#ffd9a0', '#d7c2ff', '#a8eee4'];
     list.forEach(function (v, i) { var x = gap * (i + 1), f = v === '?' ? '#ffd166' : planet ? PC[i % PC.length] : '#c9c3d6';
-      s += '<g class="a-pop" style="animation-delay:' + (i * .4 + .2).toFixed(2) + 's">' + (planet ? '<circle cx="' + x + '" cy="' + (y - 14) + '" r="' + r + '" fill="' + f + '" stroke="' + INK + '" stroke-width="3"/>' + tx(x, y - 5, v, 24, INK) : '<ellipse cx="' + x + '" cy="' + y + '" rx="' + r + '" ry="18" fill="' + f + '" stroke="' + INK + '" stroke-width="3"/>' + tx(x, y + 8, v, 24, INK)) + '</g>'; });
+      s += '<g class="a-pop" style="animation-delay:' + (i * .4 + .2).toFixed(2) + 's"><g class="fl-it" data-k="' + (planet ? 'planet' : 'stone') + '">' + (planet ? '<circle cx="' + x + '" cy="' + (y - 14) + '" r="' + r + '" fill="' + f + '" stroke="' + INK + '" stroke-width="3"/>' + tx(x, y - 5, v, 24, INK) : '<ellipse cx="' + x + '" cy="' + y + '" rx="' + r + '" ry="18" fill="' + f + '" stroke="' + INK + '" stroke-width="3"/>' + tx(x, y + 8, v, 24, INK)) + '</g></g>'; });
     return s;
   }
   /* star tens: full fuel tanks (ten stars each) and loose stars, for tens and ones */
@@ -118,7 +125,8 @@
   function chips(options, answer, show) { return '<div class="flb-opts flb-show">' + options.map(function (o) { return '<span class="o' + (show && String(o) === String(answer) ? ' ok' : '') + '">' + o + '</span>'; }).join('') + '</div>'; }
   function askSteps(q, p, options, answer, explain, tip) {
     var qh = '<div class="flb-q">' + q + '</div>';
-    return [L.st(strip(q) + (tip ? ' Here is a tip: ' + strip(tip) : '') + ' Pause, think, then listen.', p + qh + (tip ? '<div class="flb-tip">💡 ' + tip + '</div>' : '') + chips(options, answer, false)),
+    var ask = L.st(strip(q) + (tip ? ' Here is a tip: ' + strip(tip) : ''), p + qh + (tip ? '<div class="flb-tip">💡 ' + tip + '</div>' : '') + chips(options, answer, false)); ask.think = true; ask.answer = strip(String(answer));
+    return [ask,
       L.st('The answer is ' + strip(answer) + '. ' + strip(explain || ''), p + qh + chips(options, answer, true))];
   }
   var L = null;
@@ -153,9 +161,81 @@
       if (tips.length) sc.push(L.rec(l.title, 'Let’s remember the tips from this lesson.', tips.map(strip)));
       eps.push(L.ep(l.title, strip(l.title).replace(/\?$/, '').toLowerCase() + '.', sc));
     });
+    eps.forEach(function (e) { e.fl = true; });
+    if (story && eps[0]) eps[0].intro = story.intro || ('Story time! Get comfy, and let’s read ' + story.title + ' together.');
     BT.L.use(n, eps);
   };
   FL.addStory = function (n, o) { FL.toWatch(n, o.story, o.learn); };
+
+  /* ---------- telling a story like a teacher (First level Watch lessons) ----------
+     H.flTell(text, {box, cap, voice, alive}, done): speaks sentence by sentence with pauses and feeling;
+     a character's words in “quotes” get a brighter voice; when the words count (one, two, three…)
+     the things in the picture light up one at a time with their number. Works silently on a timer too. */
+  var NV = { zero: 0, one: 1, two: 2, three: 3, four: 4, five: 5, six: 6, seven: 7, eight: 8, nine: 9, ten: 10, eleven: 11, twelve: 12, thirteen: 13, fourteen: 14, fifteen: 15, sixteen: 16, seventeen: 17, eighteen: 18, nineteen: 19, twenty: 20, thirty: 30, forty: 40, fifty: 50, sixty: 60, seventy: 70, eighty: 80, ninety: 90, hundred: 100 };
+  var NUM = '(?:\\d+|' + Object.keys(NV).join('|') + ')', RUN = new RegExp('\\b' + NUM + '(?:\\s*,\\s*(?:and\\s+)?' + NUM + '){2,}\\b', 'i');
+  function nval(w) { w = String(w).toLowerCase(); return /^\d+$/.test(w) ? Number(w) : NV[w]; }
+  function plan(text) {
+    var out = [], sents = String(text).replace(/\s+/g, ' ').match(/[^.!?…]+(?:[.!?…]+[”"’)]*|$)/g) || [text];
+    sents.forEach(function (se) {
+      se = se.trim(); if (!se) return;
+      se.split(/(“[^”]*”)/).forEach(function (part) {
+        part = part.trim(); if (!part) return;
+        var q = /^“/.test(part), m = !q && RUN.exec(part);
+        if (m) {
+          var pre = part.slice(0, m.index).trim(), post = part.slice(m.index + m[0].length).trim(), ws = m[0].split(/\s*,\s*(?:and\s+)?/);
+          if (pre) out.push({ t: pre, q: false });
+          ws.forEach(function (w, j) { out.push({ t: w, q: false, count: j, n: nval(w), run: ws.map(nval) }); });
+          if (post && /\w/.test(post)) out.push({ t: post, q: false }); else if (out.length) out[out.length - 1].end = post;
+        } else out.push({ t: part, q: q });
+      });
+    });
+    return out;
+  }
+  function pauseAfter(p) {
+    if (p.count != null) return p.count === p.run.length - 1 ? 650 : 330;
+    var e = (p.end || p.t).trim().slice(-2);
+    return /…|\.\./.test(e) ? 800 : /\?/.test(e) ? 650 : /!/.test(e) ? 480 : p.q ? 380 : /,$/.test(e) ? 220 : 520;
+  }
+  function esc(t) { return String(t).replace(/&/g, '&amp;').replace(/</g, '&lt;'); }
+  function light(box, p) {
+    var its = [].slice.call(box.querySelectorAll('.fl-it')); if (!its.length) return;
+    var s0 = p.run[0], cons = p.run.every(function (v, j) { return v === s0 + j; }), off = cons && s0 >= 1 && its.length >= s0 + p.run.length - 1 ? s0 - 1 : 0;
+    if (p.count === 0) its.forEach(function (e) { e.classList.remove('fl-hl', 'fl-done'); var o = e.querySelector('.fl-num'); if (o) o.remove(); });
+    var el = its[off + p.count]; if (!el) return;
+    its.forEach(function (e) { if (e.classList.contains('fl-hl')) { e.classList.remove('fl-hl'); e.classList.add('fl-done'); } });
+    el.classList.add('fl-hl');
+    try { var bb = el.getBBox(), t = document.createElementNS('http://www.w3.org/2000/svg', 'text'); t.setAttribute('class', 'fl-num'); t.setAttribute('x', bb.x + bb.width / 2); t.setAttribute('y', bb.y - 3); t.setAttribute('text-anchor', 'middle'); t.setAttribute('font-size', Math.max(12, Math.min(30, bb.height * 0.75))); t.textContent = p.n; el.appendChild(t); } catch (e) { /* ignore */ }
+  }
+  function glow(box, t) {
+    var ks = {}; [].forEach.call(box.querySelectorAll('.fl-it[data-k]'), function (e) { ks[e.getAttribute('data-k')] = 1; });
+    Object.keys(ks).forEach(function (k) { if (!new RegExp('\\b' + k + '(e?s)?\\b', 'i').test(t)) return;
+      box.querySelectorAll('.fl-it[data-k="' + k + '"]').forEach(function (e, j) { setTimeout(function () { e.classList.add('fl-glow'); setTimeout(function () { e.classList.remove('fl-glow'); }, 1300); }, j * 90); }); });
+  }
+  H.flTell = function (text, o, done) {
+    var ps = plan(text), k = 0, base = Math.max(0.6, Math.min(1.25, ((S.app && S.app.store.settings.rate) || 1) * 0.86));
+    function capShow() { if (!o.cap) return; o.cap.innerHTML = ps.map(function (p, j) { var t = esc(p.t + (p.count != null && j < ps.length - 1 && ps[j + 1].count != null ? ',' : '') + (p.end || '')); return j === k ? '<span class="now">' + t + '</span>' : t; }).join(' '); }
+    function step() {
+      if (!o.alive()) return;
+      if (k >= ps.length) { if (o.box) o.box.querySelectorAll('.fl-hl').forEach(function (e) { e.classList.remove('fl-hl'); e.classList.add('fl-done'); }); done(); return; }
+      var p = ps[k]; capShow(); if (p.count != null && o.box) light(o.box, p); else if (o.box) glow(o.box, p.t);
+      var fin = function () { if (!o.alive()) return; k++; setTimeout(step, pauseAfter(p)); };
+      if (!o.voice) { setTimeout(fin, p.count != null ? 420 : p.t.split(' ').length * 330 + 250); return; }
+      var u = new SpeechSynthesisUtterance(S.speakable ? S.speakable(p.t.replace(/[“”]/g, '')) : p.t), v = H.pickVoice && H.pickVoice();
+      if (v) { u.voice = v; u.lang = v.lang; } else u.lang = 'en-GB';
+      var bang = /!/.test(p.t), ask = /\?/.test(p.t);
+      u.rate = Math.max(0.55, base * (p.count != null ? 0.95 : p.q ? 1.04 : bang ? 1.02 : 1));
+      u.pitch = p.q ? 1.32 : ask ? 1.18 : bang ? 1.14 : 1.05;
+      var ended = false; u.onend = u.onerror = function () { if (ended) return; ended = true; fin(); };
+      try { speechSynthesis.speak(u); } catch (e) { ended = true; fin(); }
+    }
+    try { speechSynthesis.cancel(); } catch (e) { /* ignore */ }
+    step();
+  };
+  /* a thinking pause before the answer, with a little countdown */
+  H.flThink = function (el, secs, alive, done) {
+    if (el) el.classList.add('on');
+    setTimeout(function () { if (el) el.classList.remove('on'); if (alive()) done(); }, secs * 1000);
+  };
   FL.scene = scene; FL.who = who; FL.bit = bit; FL.tank = tank; FL.stones = stones; FL.label = label;
 
   /* ---------- reading aloud, word by word ---------- */

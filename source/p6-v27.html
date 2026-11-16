@@ -733,6 +733,10 @@ var SLIDE_MORE = {"1.learn1": [{"more": ["Our number system uses only ten digits
     speechSynthesis.speak(ut); return true;
   };
   S.h.voiceOk = function () { return Nar.ok; };
+  var ACC = { GB: 'UK', US: 'US', AU: 'Australia', IE: 'Ireland', IN: 'India', ZA: 'South Africa', CA: 'Canada', NZ: 'New Zealand', SC: 'Scotland' };
+  S.h.voiceInfo = function () { return Nar.voices.filter(function (x) { return /^en/i.test(x.lang); }).map(function (x) { var m = /^en[-_]([A-Za-z]+)/.exec(x.lang), a = m ? (ACC[m[1].toUpperCase()] || m[1].toUpperCase()) : 'English';
+    return { name: x.name, lang: x.lang, label: x.name.replace(/^(Microsoft|Google|Apple)\s+/, '').replace(/\s*[-–(].*$/, '').replace(/ Online$/, '') + ' · ' + a }; }); };
+  S.h.pickVoice = function () { return pickVoice(); };
   S.h.voiceList = function () { return Nar.voices.filter(function (x) { return /^en/i.test(x.lang); }).map(function (x) { return x.name; }); };
   S.h.voiceCur = function () { var v = pickVoice(); return v ? v.name : ''; };
   S.h.setVoice = function (n) { store.settings.voice = n; save(); };

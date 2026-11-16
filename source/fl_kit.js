@@ -43,7 +43,7 @@
   FL.things = function (n, kind, perRow) {
     kind = THING[kind] ? kind : 'apple'; perRow = perRow || (n > 10 ? 10 : 5);
     var rows = Math.ceil(n / perRow) || 1, w = Math.min(n, perRow) * 36 + (Math.min(n, perRow) > 5 ? 12 : 0) + 16, h = rows * 38 + 10, s = '';
-    for (var i = 0; i < n; i++) { var r = Math.floor(i / perRow), c = i % perRow; s += THING[kind](24 + c * 36 + (c >= 5 ? 12 : 0), 26 + r * 38); }
+    for (var i = 0; i < n; i++) { var r = Math.floor(i / perRow), c = i % perRow; s += '<g class="fl-it" data-k="' + kind + '">' + THING[kind](24 + c * 36 + (c >= 5 ? 12 : 0), 26 + r * 38) + '</g>'; }
     return svg(Math.max(w, 60), h, n + ' ' + kind + 's', s, Math.max(w, 60) * 1.4);
   };
   /* two groups side by side with a plus sign */
