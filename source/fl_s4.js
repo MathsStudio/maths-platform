@@ -10,7 +10,7 @@
   function col(a, b, sign) { return '<pre style="font:800 1.8rem/1.3 ui-monospace,monospace;text-align:right;margin:0;padding:8px 18px;border-radius:12px;background:#fff;color:' + INK + ';border:3px solid ' + INK + '">  ' + a + '\n' + sign + ' ' + b + '\n─────</pre>'; }
   function hto(h, t, o) { var c = function (v, bg) { return '<td style="border:3px solid ' + INK + ';padding:6px 14px;font-size:1.8rem;font-weight:800;background:' + bg + '">' + v + '</td>'; };
     return '<table style="border-collapse:collapse;color:' + INK + ';text-align:center;background:#fff"><tr><th style="padding:2px 10px">H</th><th>T</th><th>O</th></tr><tr>' + c(h, '#ffe2ec') + c(t, '#e3f4ff') + c(o, '#fff1c9') + '</tr></table>'; }
-  function W(say, pic) { return { mode: 'watch', say: say, pic: pic }; }
+  function W(say, pic, facts) { return { mode: 'watch', say: say, pic: pic, facts: facts }; }
   function TG(say, pic, options, answer, tip, explain) { return { mode: 'together', say: say, pic: pic, options: options, answer: answer, tip: tip, explain: explain }; }
   function Y(say, pic, options, answer, tip, explain) { return { mode: 'turn', say: say, pic: pic, options: options, answer: answer, tip: tip, explain: explain }; }
   function pg(pic, text, ask) { return { pic: pic, text: text, ask: ask }; }
@@ -275,10 +275,14 @@
       { title: 'How to tell the time', char: 'owl', screens: [
         W('Each number on the clock is five minutes for the long hand. Long hand on four: twenty past. Twenty past three.', P('day', '', clk(3, 20))),
         W('After the six, we say to. Long hand on eight: twenty to the next hour. Twenty to six.', P('day', '', clk(5, 40))),
+        W('A quarter of an hour is fifteen minutes. When the long hand is on three, it is quarter past. Quarter past two.', P('day', '', clk(2, 15)), [['quarter of an hour', 'A quarter of an hour = 15 minutes'], ['quarter past two', 'Long hand on 3: quarter past 2']]),
+        W('When the long hand is on nine, it is quarter to the next hour. Quarter to five.', P('day', '', clk(4, 45)), [['quarter to five', 'Long hand on 9: quarter to 5']]),
         TG('What time is it?', P('day', '', clk(2, 35)), ['25 to 3', '35 past 3', '25 past 2'], '25 to 3', 'The long hand is past the six.', 'Twenty-five to three.'),
         TG('What time is it?', P('day', '', clk(11, 10)), ['10 past 11', '10 to 11', '2 past 11'], '10 past 11', 'Long hand on two: ten minutes.', 'Ten past eleven.'),
         Y('What time is it?', P('day', '', clk(7, 55)), ['5 to 8', '5 past 7', '11 past 7'], '5 to 8', 'Long hand on eleven.', 'Five to eight.'),
-        Y('What time is it?', P('day', '', clk(4, 25)), ['25 past 4', '25 to 4', '5 past 4'], '25 past 4', 'Long hand on five.', 'Twenty-five past four.')
+        Y('What time is it?', P('day', '', clk(4, 25)), ['25 past 4', '25 to 4', '5 past 4'], '25 past 4', 'Long hand on five.', 'Twenty-five past four.'),
+        TG('What time is it?', P('day', '', clk(8, 15)), ['quarter past 8', 'quarter to 8', '3 past 8'], 'quarter past 8', 'The long hand is on three.', 'Quarter past eight.'),
+        Y('What time is it?', P('day', '', clk(10, 45)), ['quarter to 11', 'quarter past 10', 'quarter to 10'], 'quarter to 11', 'Long hand on nine: quarter to the next hour.', 'Quarter to eleven.')
       ] },
       { title: 'What do am and pm mean?', char: 'owl', screens: [
         W('am means from midnight to midday: the morning. Ollie wakes up at seven am.', P('day', '', cards(['7 am ☀️ wake up']))),

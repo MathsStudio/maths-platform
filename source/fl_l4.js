@@ -287,7 +287,7 @@
 
   LI(406, 'learn2', ['Telling the time to 5 minutes', 'How to tell the time',
     'Each number on the clock is 5 minutes for the long hand. Count in 5s past the hour, or to the next hour after half past.', clk(4, 20),
-    [['minutes past', 'after the hour, up to half past', '➡️'], ['minutes to', 'before the next hour, after half past', '⬅️'], ['count in 5s', '5, 10, 15, 20, 25, 30', '5️⃣'], ['digital time', 'like 4:20', '📱']],
+    [['minutes past', 'after the hour, up to half past', '➡️'], ['minutes to', 'before the next hour, after half past', '⬅️'], ['count in 5s', '5, 10, 15, 20, 25, 30', '5️⃣'], ['digital time', 'like 4:20', '📱'], ['quarter past', '15 minutes past: long hand on 3', '◔'], ['quarter to', '15 minutes to the next hour: long hand on 9', '◕']],
     [['Ollie’s train leaves when the long hand is on 4 and the short hand is past 4.', clk(4, 20)],
       ['Count in 5s from 12 to 4: 5, 10, 15, 20.', clk(4, 20)],
       ['20 past 4, or 4:20.', B('20 past 4 = 4:20')]],
