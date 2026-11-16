@@ -27254,7 +27254,7 @@ S.extraMakers = function (n, level) {
 
   /* ================= 302 Adding and subtracting: Frankie's lily pads ================= */
   FL.addStory(302, {
-    story: { title: 'Frankie’s Fly Feast', endPic: P('pond', 'frog', big('13 − 5 = 8'), 'Yum!'), endText: 'Frankie eats his eight flies for dinner. What a fly feast! Thank you for helping him add and take away.',
+    story: { title: 'Frankie’s Fly Feast', endPic: P('pond', 'frog', '<div style="background:#fff;border:4px solid #221a3a;border-radius:20px;padding:12px 22px;color:#221a3a;font-weight:800;text-align:left"><div style="font-size:1.5rem;margin-bottom:6px">Frankie’s day</div><div style="display:grid;grid-template-columns:auto auto;column-gap:18px;font-size:1.25rem;line-height:1.7;white-space:nowrap">' + [['Breakfast', '3 + 8 + 7 = 18'], ['Snack', '7 + 8 = 15'], ['Lunch', '35 + 24 = 59'], ['Dinner', '13 − 5 = 8']].map(function (r) { return '<span style="color:#7a1fc2">' + r[0] + '</span><span>' + r[1] + '</span>'; }).join('') + '</div></div>', 'Yum!'), endText: 'What a busy day! Frankie added at breakfast, snack time and lunch, and took away at dinner. Thank you for helping him!',
       pages: [
         pg(P('pond', 'frog', '', 'Ribbit!'), 'Good morning! Frankie the frog wakes up very hungry. Today he will catch flies for every meal.'),
         pg(P('pond', 'frog', big('3 + 8 + 7')), 'Breakfast time! On three lily pads Frankie catches three, eight and seven flies. He adds three and seven first, because they make ten.', Q('How many flies is that?', [17, 18, 19], 18, 'Three and seven make ten. Ten and eight make eighteen.')),
