@@ -246,6 +246,7 @@ table.plan th, table.plan td { text-align: left; padding: 8px 10px; border-botto
 .dot { width: 12px; height: 12px; border-radius: 50%; background: hsl(var(--h) var(--dot-s) var(--dot-l)); }
 .explain { margin-top: 14px; background: var(--surface-2); border-radius: 12px; padding: 12px 14px; min-height: 3.2em; }
 .note { margin-top: 8px; color: var(--muted); font-size: .92rem; min-height: 1.4em; }
+.fbk:empty { min-height: 0 !important; margin: 0 !important; } /* no empty gap before the answer is checked */
 .tools { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 14px; }
 .chal { list-style: none; margin: 0 0 14px; padding: 0; display: flex; flex-direction: column; gap: 6px; }
 .chal li { display: flex; gap: 10px; align-items: center; padding: 8px 12px; border-radius: 10px; background: var(--surface-2); font-weight: 700; }
@@ -1282,9 +1283,7 @@ var SLIDE_MORE = {"1.learn1": [{"more": ["Our number system uses only ten digits
     if (!el || el.__hold || !window.MutationObserver) return; el.__hold = true;
     new MutationObserver(function () {
       if (!el.isConnected) return;
-      var y = lastY; el.style.minHeight = '';
-      var need = y + window.innerHeight - document.documentElement.scrollHeight;
-      if (need > 0) el.style.minHeight = (el.offsetHeight + need) + 'px';
+      var y = lastY; el.style.minHeight = ''; /* no padding: padding left a big empty gap under shorter content */
       if (Math.abs(window.pageYOffset - y) > 1) window.scrollTo(0, y);
     }).observe(el, { childList: true, subtree: true });
   }
@@ -23942,8 +23941,8 @@ S.extraMakers = function (n, level) {
           '<div class="bg-opts">' + cur.options.map(function (o, k) {
             var c = done ? (o === cur.answer ? ' ok' : k === picked ? ' no' : '') : '';
             return '<button class="bg-opt' + c + '" type="button" data-k="' + k + '"' + (done ? ' disabled' : '') + '>' + o + '</button>'; }).join('') + '</div>' +
-          '<div class="fbk ' + (cls || '') + '" aria-live="polite" style="min-height:2.4em">' + (fb || '') + '</div>' +
-          '<div class="row">' + (done ? '<button class="btn" type="button" data-act="next">' + (i + 1 >= n ? 'See my score' : 'Next') + '</button>' : '') + '</div>';
+          '<div class="fbk ' + (cls || '') + '" aria-live="polite">' + (fb || '') + '</div>' +
+          (done ? '<div class="row"><button class="btn" type="button" data-act="next">' + (i + 1 >= n ? 'See my score' : 'Next') + '</button></div>' : '');
         host.querySelectorAll('.bg-opt:not([disabled])').forEach(function (b) { b.addEventListener('click', function () {
           picked = Number(b.getAttribute('data-k')); var ok = cur.options[picked] === cur.answer; if (ok) score++;
           draw('<b>' + (ok ? pick(CHEER) : pick(TRY)) + '</b> ' + cur.explain, ok ? 'ok' : 'no');

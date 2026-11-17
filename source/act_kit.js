@@ -33,8 +33,8 @@
           '<div class="bg-opts">' + cur.options.map(function (o, k) {
             var c = done ? (o === cur.answer ? ' ok' : k === picked ? ' no' : '') : '';
             return '<button class="bg-opt' + c + '" type="button" data-k="' + k + '"' + (done ? ' disabled' : '') + '>' + o + '</button>'; }).join('') + '</div>' +
-          '<div class="fbk ' + (cls || '') + '" aria-live="polite" style="min-height:2.4em">' + (fb || '') + '</div>' +
-          '<div class="row">' + (done ? '<button class="btn" type="button" data-act="next">' + (i + 1 >= n ? 'See my score' : 'Next') + '</button>' : '') + '</div>';
+          '<div class="fbk ' + (cls || '') + '" aria-live="polite">' + (fb || '') + '</div>' +
+          (done ? '<div class="row"><button class="btn" type="button" data-act="next">' + (i + 1 >= n ? 'See my score' : 'Next') + '</button></div>' : '');
         host.querySelectorAll('.bg-opt:not([disabled])').forEach(function (b) { b.addEventListener('click', function () {
           picked = Number(b.getAttribute('data-k')); var ok = cur.options[picked] === cur.answer; if (ok) score++;
           draw('<b>' + (ok ? pick(CHEER) : pick(TRY)) + '</b> ' + cur.explain, ok ? 'ok' : 'no');
