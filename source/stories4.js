@@ -151,7 +151,8 @@
   var TITLE_KEY = [[/spatial/i, 'spatial'], [/reasoning/i, 'reason'], [/fraction/i, 'frac'], [/percent|decimal/i, 'percent'], [/ratio/i, 'ratio'], [/factor|prime|power|root|number:/i, 'factors'], [/money|finance/i, 'money'], [/time|speed/i, 'speed'], [/volume|area|perimeter/i, 'area'], [/algebra|equation|sequence/i, 'algebra'], [/straight line/i, 'lines'], [/angle|polygon|bearing/i, 'angles'], [/shape|symmetry|similar/i, 'symmetry'], [/pythag|trigon/i, 'pyth'], [/circle/i, 'circle'], [/data|statistic|probab|information/i, 'data'], [/place value|whole numbers|round/i, 'place'], [/four operations|integers/i, 'addsub'], [/measure/i, 'units']];
   function hash(s) { var h = 0; for (var i = 0; i < s.length; i++) h = (h * 31 + s.charCodeAt(i)) | 0; return Math.abs(h); }
   BT.pickStory = function (n, title, goal, k) {
-    var tl = String(title || '').toLowerCase(), text = tl + ' ' + String(goal || '').toLowerCase(), hit = null, i;
+    var tl = String(title || '').toLowerCase(); if (/divid/.test(tl)) tl = tl.replace(/(two|one|single)-digit/g, ''); /* 'dividing by two-digit numbers' is about division, not place value */
+    var text = tl + ' ' + String(goal || '').toLowerCase(), hit = null, i;
     for (i = 0; i < T.length; i++) if (T[i][1].test(tl)) { hit = T[i]; break; }
     if (!hit) for (i = 0; i < T.length; i++) if (T[i][1].test(text)) { hit = T[i]; break; }
     if (!hit) {
@@ -201,7 +202,8 @@
     spatial: ['Spatial reasoning means picturing shapes in your mind and moving them: turning, flipping, folding and viewing from another side. To solve these puzzles, focus on one feature at a time, such as the position of one corner or one marked face, and follow it through the change.', 'Take it in small steps rather than trying to rotate the whole shape at once. Count cubes in layers, and remember that a mirror image is flipped while a rotation is only turned. Sketching or turning the page can help.']
   };
   BT.pickInsight = function (n, title, goal) {
-    var tl = String(title || '').toLowerCase(), text = tl + ' ' + String(goal || '').toLowerCase(), hit = null, i;
+    var tl = String(title || '').toLowerCase(); if (/divid/.test(tl)) tl = tl.replace(/(two|one|single)-digit/g, ''); /* 'dividing by two-digit numbers' is about division, not place value */
+    var text = tl + ' ' + String(goal || '').toLowerCase(), hit = null, i;
     for (i = 0; i < T.length; i++) if (T[i][1].test(tl)) { hit = T[i]; break; }
     if (!hit) for (i = 0; i < T.length; i++) if (T[i][1].test(text)) { hit = T[i]; break; }
     if (!hit) {

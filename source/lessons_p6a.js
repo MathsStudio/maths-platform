@@ -154,6 +154,57 @@
       ['Work from the left', 'Write each answer on top', 'Carry the remainder', 'Check: multiply back'])
   ]);
 
+  ep('How do you add three or four numbers?', 'how to add three or four big numbers at once in columns.', [
+    SC('Adding more than two numbers', '365 + 228 + 437', [
+      st("Sometimes we need to add three or even four numbers, like three hundred and sixty-five, plus two hundred and twenty-eight, plus four hundred and thirty-seven. Column addition still works. We just add more digits in each column.", V.eq('365 + 228 + 437', 'b'))]),
+    SC('Line up the digits', 'Ones under ones', [
+      st("Write all three numbers one under the other: ones under ones, tens under tens, hundreds under hundreds. Leave room on the left, because the answer may grow into the thousands.", LK.col(TH, [['', '', 3, 6, 5], ['', '', 2, 2, 8], ['+', '', 4, 3, 7], LN]))]),
+    SC('Step 1: the ones', '5 + 8 + 7', [
+      st("Five plus eight plus seven is twenty. Twenty is two tens and no ones. Write nought in the ones column and carry two tens. With three numbers, the carry can be two, not just one!", LK.col(TH, [['', '', 3, 6, 5], ['', '', 2, 2, 8], ['+', '', 4, 3, 7], LN, ['', '', '', '', 'h:0'], { carry: ['', '', '', '2', ''] }]) + LK.step('5 + 8 + 7 = 20: write 0, carry 2'))]),
+    SC('Step 2: the tens', '6 + 2 + 3 + the carried 2', [
+      st("Tens: six plus two plus three is eleven, add the two we carried makes thirteen. Write three and carry one to the hundreds.", LK.col(TH, [['', '', 3, 6, 5], ['', '', 2, 2, 8], ['+', '', 4, 3, 7], LN, ['', '', '', 'h:3', 0], { carry: ['', '', '1', '2', ''] }]) + LK.step('6 + 2 + 3 + 2 = 13: write 3, carry 1'))]),
+    SC('Step 3: the hundreds', '3 + 2 + 4 + the carried 1', [
+      st("Hundreds: three plus two plus four is nine, add the one we carried makes ten. Write nought and carry one into the thousands. So the answer is one thousand and thirty.", LK.col(TH, [['', '', 3, 6, 5], ['', '', 2, 2, 8], ['+', '', 4, 3, 7], LN, ['', 'h:1', 'h:0', 3, 0], { carry: ['', '1', '1', '2', ''] }]) + V.eq('365 + 228 + 437 = 1,030', 'g'))]),
+    SC('Four numbers', '4,600 + 3,223 + 1,234 + 875', [
+      st("Now four numbers: four thousand six hundred, three thousand two hundred and twenty-three, one thousand two hundred and thirty-four, and eight hundred and seventy-five. Line up the ones. Eight hundred and seventy-five has no thousands, so that space stays empty.", LK.col(TH, [['', 4, 6, 0, 0], ['', 3, 2, 2, 3], ['', 1, 2, 3, 4], ['+', '', 8, 7, 5], LN])),
+      st("Ones: nought plus three plus four plus five is twelve. Write two, carry one. Tens: nought plus two plus three plus seven, plus one, is thirteen. Write three, carry one. Hundreds: six plus two plus two plus eight, plus one, is nineteen. Write nine, carry one. Thousands: four plus three plus one, plus one, is nine.",
+        SW + LK.col(TH, [['', 4, 6, 0, 0], ['', 3, 2, 2, 3], ['', 1, 2, 3, 4], ['+', '', 8, 7, 5], LN, ['', 'h:9', 'h:9', 'h:3', 'h:2'], { carry: ['', '1', '1', '1', ''] }])),
+      st("The answer is nine thousand, nine hundred and thirty-two.", V.eq('4,600 + 3,223 + 1,234 + 875 = 9,932', 'g'))]),
+    SC('Check with an estimate', 'Is 9,932 sensible?', [
+      st("Round each number to the nearest hundred: four thousand six hundred, plus three thousand two hundred, plus one thousand two hundred, plus nine hundred, is about nine thousand nine hundred. Our answer is close, so it is sensible.", V.eq('4,600 + 3,200 + 1,200 + 900 = 9,900', 'b') + V.eq('9,932 ≈ 9,900 ✓', 'g'))]),
+    turn("Your turn! Work out two hundred and forty-eight, plus three hundred and sixteen, plus one hundred and seventy-five. Pause and try it.", LK.col(HTO, [['', 2, 4, 8], ['', 3, 1, 6], ['+', 1, 7, 5], LN]),
+      "Ones: eight plus six plus five is nineteen. Write nine, carry one. Tens: four plus one plus seven, plus one, is thirteen. Write three, carry one. Hundreds: two plus three plus one, plus one, is seven. The answer is seven hundred and thirty-nine.",
+      LK.col(HTO, [['', 2, 4, 8], ['', 3, 1, 6], ['+', 1, 7, 5], LN, ['', 'k:7', 'k:3', 'k:9'], { carry: ['', '1', '1', ''] }]) + V.eq('248 + 316 + 175 = 739', 'g')),
+    rec('How do you add three or four numbers?', "Line up all the numbers, ones under ones. Add each column from the ones, including every number in that column. The carry can be more than one. Check with an estimate.",
+      ['Line up ones under ones', 'Add every number in the column', 'The carry can be 2 or more', 'Check with an estimate'])
+  ]);
+
+  ep('How do you divide by a two-digit number?', 'how to divide by a two-digit number by taking away easy chunks.', [
+    SC('Dividing by a two-digit number', '156 ÷ 12', [
+      st("Sometimes we divide by a two-digit number, like one hundred and fifty-six divided by twelve. Short division gets tricky here, so we use chunking: we take away easy chunks of twelve until nothing, or only a remainder, is left.", V.eq('156 ÷ 12', 'b'))]),
+    SC('Easy chunks first', 'Multiples of 12', [
+      st("First, write down a few easy multiples of twelve. One twelve is twelve, two twelves are twenty-four, five twelves are sixty, and ten twelves are one hundred and twenty.", V.list(['1 × 12 = 12', '2 × 12 = 24', '5 × 12 = 60', '10 × 12 = 120']))]),
+    SC('Take away the chunks', '156 ÷ 12', [
+      st("Start with a big chunk. Ten twelves are one hundred and twenty. One hundred and fifty-six take away one hundred and twenty leaves thirty-six.", V.eq('156 − 120 = 36   (10 × 12)')),
+      st("How many twelves in thirty-six? Three twelves are thirty-six, so nothing is left.", V.eq('36 − 36 = 0   (3 × 12)')),
+      st("Now add up the chunks: ten and three make thirteen. So one hundred and fifty-six divided by twelve is thirteen.", V.eq('10 + 3 = 13', 'b') + V.eq('156 ÷ 12 = 13', 'g'))]),
+    SC('A bigger one', '756 ÷ 12', [
+      st("Now seven hundred and fifty-six divided by twelve. Use a bigger chunk: fifty twelves are six hundred. Seven hundred and fifty-six take away six hundred leaves one hundred and fifty-six.", V.eq('756 − 600 = 156   (50 × 12)')),
+      st("We already know one hundred and fifty-six is thirteen twelves: ten twelves, then three more. So the chunks are fifty, ten and three.", V.eq('156 − 120 = 36   (10 × 12)') + V.eq('36 − 36 = 0   (3 × 12)')),
+      st("Fifty add ten add three is sixty-three. So seven hundred and fifty-six divided by twelve is sixty-three.", V.eq('50 + 10 + 3 = 63', 'b') + V.eq('756 ÷ 12 = 63', 'g'))]),
+    SC('With a remainder', '200 ÷ 15', [
+      st("Two hundred divided by fifteen. Ten fifteens are one hundred and fifty, which leaves fifty. Three fifteens are forty-five, which leaves five.", V.eq('200 − 150 = 50   (10 × 15)') + V.eq('50 − 45 = 5   (3 × 15)')),
+      st("Five is less than fifteen, so it is the remainder. Ten and three make thirteen, so the answer is thirteen, remainder five.", V.eq('200 ÷ 15 = 13 r 5', 'g'))]),
+    SC('Check by multiplying', 'Inverse operations', [
+      st("Check: fifteen times thirteen is one hundred and ninety-five. Add the remainder, five, to get two hundred. Correct!", V.eq('15 × 13 + 5 = 200 ✓', 'g'))]),
+    SC('In real life', 'Sharing stickers', [
+      st("Seven hundred and fifty-six stickers are shared equally between twelve pupils. Seven hundred and fifty-six divided by twelve is sixty-three, so each pupil gets sixty-three stickers.", V.eq('756 ÷ 12 = 63 stickers each', 'g'))]),
+    turn("Your turn! Work out five hundred and four divided by fourteen. Pause and try it.", V.eq('504 ÷ 14 = ?'),
+      "Thirty fourteens are four hundred and twenty, which leaves eighty-four. Six fourteens are eighty-four, which leaves nothing. Thirty and six make thirty-six.", V.eq('504 ÷ 14 = 36', 'g')),
+    rec('How do you divide by a two-digit number?', "Write some easy multiples. Take away big chunks first, then smaller ones, until nothing or only a remainder is left. Add up the chunks to get the answer, and check by multiplying back.",
+      ['List easy multiples', 'Take away big chunks first', 'Add up the chunks', 'Check: multiply back'])
+  ]);
+
   ep('Long multiplication', 'how to multiply a number by a two-digit number using the column method.', [
     SC('Long multiplication', 'Two rows, then add', [
       st("Long multiplication helps when both numbers are big, like forty-seven times twenty-three. We multiply by the ones, then by the tens, then add the two rows.", V.eq('47 × 23', 'b'))]),
@@ -293,7 +344,7 @@
 
   /* ===================== put topics 1 to 4 together ===================== */
   L.use(1, ['What is place value?', 'What are negative numbers?', 'How do you partition a number?', 'How do you round numbers?', 'How do you round decimal numbers?', 'How do you use estimation to check your answers?', 'Numbers up to millions', 'Sensible estimates and rounding with units', 'Number lines, words and digit values']);
-  L.use(2, ['What is column addition?', 'How do you use column subtraction?', 'How do you add and subtract in your head?', 'How do you multiply in your head?', 'How do you multiply and divide by 0, 1, 10 and 100?', 'How do you work out division with remainders?', 'How do you use written methods for short division?', 'How can counting on help me add two-digit numbers?', 'How can partitioning help me add two-digit numbers?', 'Long multiplication', 'Order of operations and word problems', 'Use a fact you know']);
+  L.use(2, ['What is column addition?', 'How do you add three or four numbers?', 'How do you use column subtraction?', 'How do you add and subtract in your head?', 'How do you multiply in your head?', 'How do you multiply and divide by 0, 1, 10 and 100?', 'How do you work out division with remainders?', 'How do you use written methods for short division?', 'How do you divide by a two-digit number?', 'How can counting on help me add two-digit numbers?', 'How can partitioning help me add two-digit numbers?', 'Long multiplication', 'Order of operations and word problems', 'Use a fact you know']);
   L.use(3, ['What is a fraction?', 'How do you write fractions?', 'How do you compare different fractions?', 'How do you add and subtract fractions?', 'What are unit and mixed fractions?', 'How do you simplify fractions?', 'Fractions of amounts and multiplying', 'Counting parts and fractions as decimals']);
   L.use(4, ['What are decimals?', 'How do you compare fractions, decimals and percentages?', 'What is a percentage?', 'Percentages of a set and of a measure']);
 })();

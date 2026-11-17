@@ -2542,6 +2542,7 @@ function genDiv() {
     hints: ['Find the biggest multiple of ' + d + ' that is not more than ' + n + '.', 'Use 10 × ' + d + ' = ' + (10 * d) + ' as a first chunk. Take it away and keep going until what is left is smaller than ' + d + '.'],
     explain: d + ' × ' + q + ' = ' + (d * q) + ' is the biggest multiple not above ' + n + '. ' + n + ' − ' + (d * q) + ' = ' + r + ', so the remainder is ' + r + '.' });
 }
+function genAddMany6() { var k = pick([3, 3, 3, 4]), xs = [], i, t = 0; for (i = 0; i < k; i++) { var x = (Math.random() < 0.8 ? rnd(100, 999) : rnd(1000, 4999)); xs.push(x); t += x; } return Q({ tag: 'Adding', text: 'Work out <b>' + xs.map(fmtInt).join(' + ') + '</b>.', answer: String(t), hints: ['Write the numbers one under another, ones under ones.', 'Add every number in each column, starting with the ones. The carry can be 2 or more.'], explain: xs.map(fmtInt).join(' + ') + ' = ' + fmtInt(t) + '. Check with an estimate: round each number and add.' }); }
 function genDivFull6() { var d = rnd(4, 9), q = rnd(25, 99), r = pick([0, rnd(1, d - 1), rnd(1, d - 1), rnd(1, d - 1)]); while (q === d) q = rnd(25, 99); var n = d * q + r; return Q({ tag: 'Dividing', kind: 'divr', text: 'Work out <b>' + fmtInt(n) + ' ÷ ' + d + '</b>. Write the answer and the remainder, like <b>5 r 1</b>. If nothing is left over, write <b>r 0</b>.', answer: q + ' r ' + r, hints: ['Use short division: divide by ' + d + ' one digit at a time, from the left.', 'Carry what is left over to the next digit. What is left at the very end is the remainder.'], explain: d + ' × ' + q + ' = ' + fmtInt(d * q) + ', and ' + fmtInt(n) + ' − ' + fmtInt(d * q) + ' = ' + r + '. So ' + fmtInt(n) + ' ÷ ' + d + ' = ' + q + ' r ' + r + (r === 0 ? ': it divides exactly, nothing left over.' : '.') }); }
 function genDivParts6() { var d = rnd(4, 9), q = rnd(25, 99), r = rnd(1, d - 1); while (q === d || r === q) { q = rnd(25, 99); } var n = d * q + r, P = { dividend: n, divisor: d, quotient: q }, ask = pick(['dividend', 'divisor', 'quotient']); return Q({ tag: 'Dividing', type: 'mc', text: 'In <b>' + fmtInt(n) + ' ÷ ' + d + ' = ' + q + ' r ' + r + '</b>, which number is the <b>' + ask + '</b>?', options: shuffle([fmtInt(n), String(d), String(q)]), answer: ask === 'dividend' ? fmtInt(n) : String(P[ask]), hints: ['The dividend is the number being divided. The divisor is the number you divide by.', 'The quotient is the answer.'], explain: fmtInt(n) + ' is the dividend, ' + d + ' the divisor, ' + q + ' the quotient and ' + r + ' the remainder.' }); }
 function genDividend6() { var d = rnd(4, 9), q = rnd(25, 99), r = pick([0, rnd(1, d - 1), rnd(1, d - 1)]), n = d * q + r; return Q({ tag: 'Dividing', text: 'In a division, the <b>divisor</b> is ' + d + ', the <b>quotient</b> is ' + q + ' and the <b>remainder</b> is ' + r + '. What is the <b>dividend</b>?', answer: String(n), hints: ['divisor × quotient + remainder = dividend', d + ' × ' + q + ' = ' + fmtInt(d * q) + '. Now add the remainder.'], explain: d + ' × ' + q + ' + ' + r + ' = ' + fmtInt(n) + ', so the dividend is ' + fmtInt(n) + ' (' + fmtInt(n) + ' ÷ ' + d + ' = ' + q + ' r ' + r + ').' }); }
@@ -2593,7 +2594,7 @@ function genShapes() {
     text: '<span class="eqline"><span class="sym s3"></span> × <span class="sym s3"></span> = ' + (tr * tr) + '</span><span class="eqline"><span class="sym s3"></span> + <span class="sym s4"></span> = ' + (tr + ci) + '</span>What is <span class="sym s4"></span> worth?', answer: String(ci),
     hints: ['Use the first line to find what one square is worth. Which number times itself makes ' + (tr * tr) + '?', 'Once you know the square, take it away from ' + (tr + ci) + ' to find the triangle.'], explain: tr + ' × ' + tr + ' = ' + (tr * tr) + ' so the square is ' + tr + '. Then ' + (tr + ci) + ' − ' + tr + ' = ' + ci + '.' });
 }
-function practiceSet() { return H.buildPracticeSet([genAdd, genSub, genMult, genDiv, genDivFull6, genDivParts6, genDividend6, genBidmas, genWord, genMissing, genVerbal, genMachine, genShapes], 100); }
+function practiceSet() { return H.buildPracticeSet([genAdd, genAddMany6, genSub, genMult, genDiv, genDivFull6, genDivParts6, genDividend6, genBidmas, genWord, genMissing, genVerbal, genMachine, genShapes], 100); }
 
 Studio.addTopic({ n: 2, short: 'Four operations', title: 'The four operations', blurb: 'Add, subtract, multiply and divide with big numbers, with real-life word problems.', practiceCount: 100,
   gens: { genAdd: genAdd, genSub: genSub, genMult: genMult, genDiv: genDiv },
@@ -5147,6 +5148,7 @@ var LEARN2 = [
 ];
 function genMul() { var a = rnd(12, 99), b = rnd(12, 49); return Q({ tag: 'Multiplying', text: 'Work out <b>' + a + ' × ' + b + '</b>.', answer: String(a * b), hints: ['Split each number into tens and ones.', 'Multiply the four parts and add them.'], explain: a + ' × ' + b + ' = ' + fmtInt(a * b) + '.' }); }
 function genDiv() { var d = rnd(12, 25), q = rnd(12, 60); while (q === d) q = rnd(12, 60); var n = d * q; return Q({ tag: 'Dividing', text: 'Work out <b>' + fmtInt(n) + ' ÷ ' + d + '</b>.', answer: String(q), hints: ['Estimate the answer first.', 'Use chunking with multiples of ' + d + '.'], explain: fmtInt(n) + ' ÷ ' + d + ' = ' + q + '.' }); }
+function genAddMany7() { var k = pick([3, 4, 4]), xs = [], i, t = 0; for (i = 0; i < k; i++) { var x = (Math.random() < 0.75 ? rnd(1000, 9999) : rnd(100, 999)); xs.push(x); t += x; } return Q({ tag: 'Adding', text: 'Work out <b>' + xs.map(fmtInt).join(' + ') + '</b>.', answer: String(t), hints: ['Write the numbers one under another, ones under ones.', 'Add every number in each column, starting with the ones. The carry can be 2 or more.'], explain: xs.map(fmtInt).join(' + ') + ' = ' + fmtInt(t) + '. Check with an estimate: round each number and add.' }); }
 function genDivFull7() { var d = rnd(3, 9), q = rnd(50, 500), r = pick([0, rnd(1, d - 1), rnd(1, d - 1), rnd(1, d - 1)]); while (q === d) q = rnd(50, 500); var n = d * q + r; return Q({ tag: 'Dividing', kind: 'divr', text: 'Work out <b>' + fmtInt(n) + ' ÷ ' + d + '</b>. Write the answer and the remainder, like <b>5 r 1</b>. If nothing is left over, write <b>r 0</b>.', answer: q + ' r ' + r, hints: ['Use short division: divide by ' + d + ' one digit at a time, from the left.', 'Carry what is left over to the next digit. What is left at the very end is the remainder.'], explain: d + ' × ' + q + ' = ' + fmtInt(d * q) + ', and ' + fmtInt(n) + ' − ' + fmtInt(d * q) + ' = ' + r + '. So ' + fmtInt(n) + ' ÷ ' + d + ' = ' + q + ' r ' + r + (r === 0 ? ': it divides exactly, nothing left over.' : '.') }); }
 function genDivParts7() { var d = rnd(3, 9), q = rnd(50, 500), r = rnd(1, d - 1); while (q === d || r === q) { q = rnd(50, 500); } var n = d * q + r, P = { dividend: n, divisor: d, quotient: q }, ask = pick(['dividend', 'divisor', 'quotient']); return Q({ tag: 'Dividing', type: 'mc', text: 'In <b>' + fmtInt(n) + ' ÷ ' + d + ' = ' + q + ' r ' + r + '</b>, which number is the <b>' + ask + '</b>?', options: shuffle([fmtInt(n), String(d), String(q)]), answer: ask === 'dividend' ? fmtInt(n) : String(P[ask]), hints: ['The dividend is the number being divided. The divisor is the number you divide by.', 'The quotient is the answer.'], explain: fmtInt(n) + ' is the dividend, ' + d + ' the divisor, ' + q + ' the quotient and ' + r + ' the remainder.' }); }
 function genDividend7() { var d = rnd(3, 9), q = rnd(50, 500), r = pick([0, rnd(1, d - 1), rnd(1, d - 1)]), n = d * q + r; return Q({ tag: 'Dividing', text: 'In a division, the <b>divisor</b> is ' + d + ', the <b>quotient</b> is ' + q + ' and the <b>remainder</b> is ' + r + '. What is the <b>dividend</b>?', answer: String(n), hints: ['divisor × quotient + remainder = dividend', d + ' × ' + q + ' = ' + fmtInt(d * q) + '. Now add the remainder.'], explain: d + ' × ' + q + ' + ' + r + ' = ' + fmtInt(n) + ', so the dividend is ' + fmtInt(n) + ' (' + fmtInt(n) + ' ÷ ' + d + ' = ' + q + ' r ' + r + ').' }); }
@@ -5166,8 +5168,8 @@ K.stage({ n: 702, base: 2, year: 'P7', short: 'Four operations', title: 'The fou
   learn1: LEARN1, learn2: LEARN2,
   lab: { title: 'Order of operations', lead: 'Slide the three numbers. See how brackets change the answer.', need: 6, params: [{ id: 'a', label: 'a', min: 2, max: 9, val: 3 }, { id: 'b', label: 'b', min: 2, max: 9, val: 4 }, { id: 'c', label: 'c', min: 2, max: 9, val: 5 }],
     render: function (v) { return { vis: V.chips([v.a + ' + ' + v.b + ' × ' + v.c, '=', String(v.a + v.b * v.c)]) + V.chips(['(' + v.a + ' + ' + v.b + ') × ' + v.c, '=', String((v.a + v.b) * v.c)]), out: 'Without brackets ' + (v.a + v.b * v.c) + ', with brackets ' + (v.a + v.b) * v.c, explain: 'Multiplication happens before addition unless brackets say otherwise.' }; } },
-  gens: [genMul, genDiv, genDivFull7, genDivParts7, genDividend7, genDecDiv, genBidmas, genPower, genWord, genMissing, genMachine, K.verbal(VERBAL)],
-  easy: [genMul, genDiv, genPower, genMissing], hard: [genDivFull7, genDivParts7, genDividend7, genDecDiv, genBidmas, genWord, genMachine] });
+  gens: [genAddMany7, genMul, genDiv, genDivFull7, genDivParts7, genDividend7, genDecDiv, genBidmas, genPower, genWord, genMissing, genMachine, K.verbal(VERBAL)],
+  easy: [genAddMany7, genMul, genDiv, genPower, genMissing], hard: [genDivFull7, genDivParts7, genDividend7, genDecDiv, genBidmas, genWord, genMachine] });
 })();
 </script>
 <script>
@@ -13651,7 +13653,8 @@ S.spatialExtra = S.extraMakers;
   var TITLE_KEY = [[/spatial/i, 'spatial'], [/reasoning/i, 'reason'], [/fraction/i, 'frac'], [/percent|decimal/i, 'percent'], [/ratio/i, 'ratio'], [/factor|prime|power|root|number:/i, 'factors'], [/money|finance/i, 'money'], [/time|speed/i, 'speed'], [/volume|area|perimeter/i, 'area'], [/algebra|equation|sequence/i, 'algebra'], [/straight line/i, 'lines'], [/angle|polygon|bearing/i, 'angles'], [/shape|symmetry|similar/i, 'symmetry'], [/pythag|trigon/i, 'pyth'], [/circle/i, 'circle'], [/data|statistic|probab|information/i, 'data'], [/place value|whole numbers|round/i, 'place'], [/four operations|integers/i, 'addsub'], [/measure/i, 'units']];
   function hash(s) { var h = 0; for (var i = 0; i < s.length; i++) h = (h * 31 + s.charCodeAt(i)) | 0; return Math.abs(h); }
   BT.pickStory = function (n, title, goal, k) {
-    var tl = String(title || '').toLowerCase(), text = tl + ' ' + String(goal || '').toLowerCase(), hit = null, i;
+    var tl = String(title || '').toLowerCase(); if (/divid/.test(tl)) tl = tl.replace(/(two|one|single)-digit/g, ''); /* 'dividing by two-digit numbers' is about division, not place value */
+    var text = tl + ' ' + String(goal || '').toLowerCase(), hit = null, i;
     for (i = 0; i < T.length; i++) if (T[i][1].test(tl)) { hit = T[i]; break; }
     if (!hit) for (i = 0; i < T.length; i++) if (T[i][1].test(text)) { hit = T[i]; break; }
     if (!hit) {
@@ -13701,7 +13704,8 @@ S.spatialExtra = S.extraMakers;
     spatial: ['Spatial reasoning means picturing shapes in your mind and moving them: turning, flipping, folding and viewing from another side. To solve these puzzles, focus on one feature at a time, such as the position of one corner or one marked face, and follow it through the change.', 'Take it in small steps rather than trying to rotate the whole shape at once. Count cubes in layers, and remember that a mirror image is flipped while a rotation is only turned. Sketching or turning the page can help.']
   };
   BT.pickInsight = function (n, title, goal) {
-    var tl = String(title || '').toLowerCase(), text = tl + ' ' + String(goal || '').toLowerCase(), hit = null, i;
+    var tl = String(title || '').toLowerCase(); if (/divid/.test(tl)) tl = tl.replace(/(two|one|single)-digit/g, ''); /* 'dividing by two-digit numbers' is about division, not place value */
+    var text = tl + ' ' + String(goal || '').toLowerCase(), hit = null, i;
     for (i = 0; i < T.length; i++) if (T[i][1].test(tl)) { hit = T[i]; break; }
     if (!hit) for (i = 0; i < T.length; i++) if (T[i][1].test(text)) { hit = T[i]; break; }
     if (!hit) {
@@ -18637,6 +18641,57 @@ S.spatialExtra = S.extraMakers;
       ['Work from the left', 'Write each answer on top', 'Carry the remainder', 'Check: multiply back'])
   ]);
 
+  ep('How do you add three or four numbers?', 'how to add three or four big numbers at once in columns.', [
+    SC('Adding more than two numbers', '365 + 228 + 437', [
+      st("Sometimes we need to add three or even four numbers, like three hundred and sixty-five, plus two hundred and twenty-eight, plus four hundred and thirty-seven. Column addition still works. We just add more digits in each column.", V.eq('365 + 228 + 437', 'b'))]),
+    SC('Line up the digits', 'Ones under ones', [
+      st("Write all three numbers one under the other: ones under ones, tens under tens, hundreds under hundreds. Leave room on the left, because the answer may grow into the thousands.", LK.col(TH, [['', '', 3, 6, 5], ['', '', 2, 2, 8], ['+', '', 4, 3, 7], LN]))]),
+    SC('Step 1: the ones', '5 + 8 + 7', [
+      st("Five plus eight plus seven is twenty. Twenty is two tens and no ones. Write nought in the ones column and carry two tens. With three numbers, the carry can be two, not just one!", LK.col(TH, [['', '', 3, 6, 5], ['', '', 2, 2, 8], ['+', '', 4, 3, 7], LN, ['', '', '', '', 'h:0'], { carry: ['', '', '', '2', ''] }]) + LK.step('5 + 8 + 7 = 20: write 0, carry 2'))]),
+    SC('Step 2: the tens', '6 + 2 + 3 + the carried 2', [
+      st("Tens: six plus two plus three is eleven, add the two we carried makes thirteen. Write three and carry one to the hundreds.", LK.col(TH, [['', '', 3, 6, 5], ['', '', 2, 2, 8], ['+', '', 4, 3, 7], LN, ['', '', '', 'h:3', 0], { carry: ['', '', '1', '2', ''] }]) + LK.step('6 + 2 + 3 + 2 = 13: write 3, carry 1'))]),
+    SC('Step 3: the hundreds', '3 + 2 + 4 + the carried 1', [
+      st("Hundreds: three plus two plus four is nine, add the one we carried makes ten. Write nought and carry one into the thousands. So the answer is one thousand and thirty.", LK.col(TH, [['', '', 3, 6, 5], ['', '', 2, 2, 8], ['+', '', 4, 3, 7], LN, ['', 'h:1', 'h:0', 3, 0], { carry: ['', '1', '1', '2', ''] }]) + V.eq('365 + 228 + 437 = 1,030', 'g'))]),
+    SC('Four numbers', '4,600 + 3,223 + 1,234 + 875', [
+      st("Now four numbers: four thousand six hundred, three thousand two hundred and twenty-three, one thousand two hundred and thirty-four, and eight hundred and seventy-five. Line up the ones. Eight hundred and seventy-five has no thousands, so that space stays empty.", LK.col(TH, [['', 4, 6, 0, 0], ['', 3, 2, 2, 3], ['', 1, 2, 3, 4], ['+', '', 8, 7, 5], LN])),
+      st("Ones: nought plus three plus four plus five is twelve. Write two, carry one. Tens: nought plus two plus three plus seven, plus one, is thirteen. Write three, carry one. Hundreds: six plus two plus two plus eight, plus one, is nineteen. Write nine, carry one. Thousands: four plus three plus one, plus one, is nine.",
+        SW + LK.col(TH, [['', 4, 6, 0, 0], ['', 3, 2, 2, 3], ['', 1, 2, 3, 4], ['+', '', 8, 7, 5], LN, ['', 'h:9', 'h:9', 'h:3', 'h:2'], { carry: ['', '1', '1', '1', ''] }])),
+      st("The answer is nine thousand, nine hundred and thirty-two.", V.eq('4,600 + 3,223 + 1,234 + 875 = 9,932', 'g'))]),
+    SC('Check with an estimate', 'Is 9,932 sensible?', [
+      st("Round each number to the nearest hundred: four thousand six hundred, plus three thousand two hundred, plus one thousand two hundred, plus nine hundred, is about nine thousand nine hundred. Our answer is close, so it is sensible.", V.eq('4,600 + 3,200 + 1,200 + 900 = 9,900', 'b') + V.eq('9,932 ≈ 9,900 ✓', 'g'))]),
+    turn("Your turn! Work out two hundred and forty-eight, plus three hundred and sixteen, plus one hundred and seventy-five. Pause and try it.", LK.col(HTO, [['', 2, 4, 8], ['', 3, 1, 6], ['+', 1, 7, 5], LN]),
+      "Ones: eight plus six plus five is nineteen. Write nine, carry one. Tens: four plus one plus seven, plus one, is thirteen. Write three, carry one. Hundreds: two plus three plus one, plus one, is seven. The answer is seven hundred and thirty-nine.",
+      LK.col(HTO, [['', 2, 4, 8], ['', 3, 1, 6], ['+', 1, 7, 5], LN, ['', 'k:7', 'k:3', 'k:9'], { carry: ['', '1', '1', ''] }]) + V.eq('248 + 316 + 175 = 739', 'g')),
+    rec('How do you add three or four numbers?', "Line up all the numbers, ones under ones. Add each column from the ones, including every number in that column. The carry can be more than one. Check with an estimate.",
+      ['Line up ones under ones', 'Add every number in the column', 'The carry can be 2 or more', 'Check with an estimate'])
+  ]);
+
+  ep('How do you divide by a two-digit number?', 'how to divide by a two-digit number by taking away easy chunks.', [
+    SC('Dividing by a two-digit number', '156 ÷ 12', [
+      st("Sometimes we divide by a two-digit number, like one hundred and fifty-six divided by twelve. Short division gets tricky here, so we use chunking: we take away easy chunks of twelve until nothing, or only a remainder, is left.", V.eq('156 ÷ 12', 'b'))]),
+    SC('Easy chunks first', 'Multiples of 12', [
+      st("First, write down a few easy multiples of twelve. One twelve is twelve, two twelves are twenty-four, five twelves are sixty, and ten twelves are one hundred and twenty.", V.list(['1 × 12 = 12', '2 × 12 = 24', '5 × 12 = 60', '10 × 12 = 120']))]),
+    SC('Take away the chunks', '156 ÷ 12', [
+      st("Start with a big chunk. Ten twelves are one hundred and twenty. One hundred and fifty-six take away one hundred and twenty leaves thirty-six.", V.eq('156 − 120 = 36   (10 × 12)')),
+      st("How many twelves in thirty-six? Three twelves are thirty-six, so nothing is left.", V.eq('36 − 36 = 0   (3 × 12)')),
+      st("Now add up the chunks: ten and three make thirteen. So one hundred and fifty-six divided by twelve is thirteen.", V.eq('10 + 3 = 13', 'b') + V.eq('156 ÷ 12 = 13', 'g'))]),
+    SC('A bigger one', '756 ÷ 12', [
+      st("Now seven hundred and fifty-six divided by twelve. Use a bigger chunk: fifty twelves are six hundred. Seven hundred and fifty-six take away six hundred leaves one hundred and fifty-six.", V.eq('756 − 600 = 156   (50 × 12)')),
+      st("We already know one hundred and fifty-six is thirteen twelves: ten twelves, then three more. So the chunks are fifty, ten and three.", V.eq('156 − 120 = 36   (10 × 12)') + V.eq('36 − 36 = 0   (3 × 12)')),
+      st("Fifty add ten add three is sixty-three. So seven hundred and fifty-six divided by twelve is sixty-three.", V.eq('50 + 10 + 3 = 63', 'b') + V.eq('756 ÷ 12 = 63', 'g'))]),
+    SC('With a remainder', '200 ÷ 15', [
+      st("Two hundred divided by fifteen. Ten fifteens are one hundred and fifty, which leaves fifty. Three fifteens are forty-five, which leaves five.", V.eq('200 − 150 = 50   (10 × 15)') + V.eq('50 − 45 = 5   (3 × 15)')),
+      st("Five is less than fifteen, so it is the remainder. Ten and three make thirteen, so the answer is thirteen, remainder five.", V.eq('200 ÷ 15 = 13 r 5', 'g'))]),
+    SC('Check by multiplying', 'Inverse operations', [
+      st("Check: fifteen times thirteen is one hundred and ninety-five. Add the remainder, five, to get two hundred. Correct!", V.eq('15 × 13 + 5 = 200 ✓', 'g'))]),
+    SC('In real life', 'Sharing stickers', [
+      st("Seven hundred and fifty-six stickers are shared equally between twelve pupils. Seven hundred and fifty-six divided by twelve is sixty-three, so each pupil gets sixty-three stickers.", V.eq('756 ÷ 12 = 63 stickers each', 'g'))]),
+    turn("Your turn! Work out five hundred and four divided by fourteen. Pause and try it.", V.eq('504 ÷ 14 = ?'),
+      "Thirty fourteens are four hundred and twenty, which leaves eighty-four. Six fourteens are eighty-four, which leaves nothing. Thirty and six make thirty-six.", V.eq('504 ÷ 14 = 36', 'g')),
+    rec('How do you divide by a two-digit number?', "Write some easy multiples. Take away big chunks first, then smaller ones, until nothing or only a remainder is left. Add up the chunks to get the answer, and check by multiplying back.",
+      ['List easy multiples', 'Take away big chunks first', 'Add up the chunks', 'Check: multiply back'])
+  ]);
+
   ep('Long multiplication', 'how to multiply a number by a two-digit number using the column method.', [
     SC('Long multiplication', 'Two rows, then add', [
       st("Long multiplication helps when both numbers are big, like forty-seven times twenty-three. We multiply by the ones, then by the tens, then add the two rows.", V.eq('47 × 23', 'b'))]),
@@ -18776,7 +18831,7 @@ S.spatialExtra = S.extraMakers;
 
   /* ===================== put topics 1 to 4 together ===================== */
   L.use(1, ['What is place value?', 'What are negative numbers?', 'How do you partition a number?', 'How do you round numbers?', 'How do you round decimal numbers?', 'How do you use estimation to check your answers?', 'Numbers up to millions', 'Sensible estimates and rounding with units', 'Number lines, words and digit values']);
-  L.use(2, ['What is column addition?', 'How do you use column subtraction?', 'How do you add and subtract in your head?', 'How do you multiply in your head?', 'How do you multiply and divide by 0, 1, 10 and 100?', 'How do you work out division with remainders?', 'How do you use written methods for short division?', 'How can counting on help me add two-digit numbers?', 'How can partitioning help me add two-digit numbers?', 'Long multiplication', 'Order of operations and word problems', 'Use a fact you know']);
+  L.use(2, ['What is column addition?', 'How do you add three or four numbers?', 'How do you use column subtraction?', 'How do you add and subtract in your head?', 'How do you multiply in your head?', 'How do you multiply and divide by 0, 1, 10 and 100?', 'How do you work out division with remainders?', 'How do you use written methods for short division?', 'How do you divide by a two-digit number?', 'How can counting on help me add two-digit numbers?', 'How can partitioning help me add two-digit numbers?', 'Long multiplication', 'Order of operations and word problems', 'Use a fact you know']);
   L.use(3, ['What is a fraction?', 'How do you write fractions?', 'How do you compare different fractions?', 'How do you add and subtract fractions?', 'What are unit and mixed fractions?', 'How do you simplify fractions?', 'Fractions of amounts and multiplying', 'Counting parts and fractions as decimals']);
   L.use(4, ['What are decimals?', 'How do you compare fractions, decimals and percentages?', 'What is a percentage?', 'Percentages of a set and of a measure']);
 })();
@@ -19485,7 +19540,7 @@ S.spatialExtra = S.extraMakers;
 
   /* ===================== put topics 1 to 6 together ===================== */
   L.use(701, ['What is place value?', 'What are negative numbers?', 'How do you partition a number?', 'How do you round numbers?', 'How do you round decimal numbers?', 'How do you use estimation to check your answers?', 'Decimal places and significant figures', 'Negative numbers and powers of ten', 'Sensible estimates and rounding with units', 'Number lines, words and digit values']);
-  L.use(702, ['What is column addition?', 'How do you use column subtraction?', 'How do you add and subtract in your head?', 'How do you multiply in your head?', 'How do you multiply and divide by 0, 1, 10 and 100?', 'How do you work out division with remainders?', 'How do you use written methods for short division?', 'What is the order of operations?', 'How can counting on help me add two-digit numbers?', 'How can partitioning help me add two-digit numbers?', 'Long multiplication', 'Decimal calculations', 'Use a fact you know']);
+  L.use(702, ['What is column addition?', 'How do you add three or four numbers?', 'How do you use column subtraction?', 'How do you add and subtract in your head?', 'How do you multiply in your head?', 'How do you multiply and divide by 0, 1, 10 and 100?', 'How do you work out division with remainders?', 'How do you use written methods for short division?', 'How do you divide by a two-digit number?', 'What is the order of operations?', 'How can counting on help me add two-digit numbers?', 'How can partitioning help me add two-digit numbers?', 'Long multiplication', 'Decimal calculations', 'Use a fact you know']);
   L.use(703, ['What is a fraction?', 'How do you write fractions?', 'How do you compare different fractions?', 'How do you add and subtract fractions?', 'How do you multiply fractions?', 'What are unit and mixed fractions?', 'How do you simplify fractions?', 'Dividing fractions', 'Fractions of amounts and multiplying', 'Counting parts and fractions as decimals']);
   L.use(704, ['What are decimals?', 'How do you compare fractions, decimals and percentages?', 'What is a percentage?', 'How do you calculate a percentage?', 'Percentage change', 'Percentages as fractions and reverse percentages', 'Percentages of a set and of a measure']);
   L.use(705, ['What is currency?', 'What is financial decision making?', 'How can different coins and notes make the same total?', 'How can I use adding and subtracting to work out change?', 'What is analogue and digital time?', 'What are imperial measurements?', 'What are metric measurements?', 'How can I work out the length of an object?', 'How can I work out the area of a shape?', 'How do you work out the area of triangles?', 'What is the perimeter?', 'Timetables and durations', 'Calendars and time zones']);
