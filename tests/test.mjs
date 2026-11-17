@@ -101,6 +101,15 @@ r = await call('/unsubscribe', { method: 'POST', body: { t: ut } }); ok(r.status
 r = await call('/admin'); ok(r.status === 401, 'admin asks for password');
 r = await call('/admin', { auth: 'wrong' }); ok(r.status === 401, 'admin rejects wrong password');
 r = await call('/admin', { auth: 'pw' }); ok(r.status === 200 && r.text.includes('parent@example.com'), 'admin list');
+{ const lg = (pw, origin = B) => worker.fetch(new Request(B + '/admin/login', { method: 'POST', headers: { Origin: origin, 'CF-Connecting-IP': '7.7.7.7', 'Content-Type': 'application/x-www-form-urlencoded' }, body: 'password=' + encodeURIComponent(pw), redirect: 'manual' }), env);
+  let x = await call('/admin'); ok(x.status === 401 && /Admin sign in/.test(x.text) && !x.r.headers.get('WWW-Authenticate'), 'admin shows its own sign-in page, not the browser pop-up');
+  let y = await lg('wrong'); ok(y.status === 401 && /not right/.test(await y.text()), 'admin sign-in rejects a wrong password');
+  y = await lg('pw', 'https://evil.test'); ok(y.status === 403, 'admin sign-in blocks other sites');
+  y = await lg('pw'); const ck = (y.headers.get('Set-Cookie') || '').split(';')[0];
+  ok(y.status === 303 && /^ms_admin=.{20,}/.test(ck) && /Path=\/admin; HttpOnly; SameSite=Strict/.test(y.headers.get('Set-Cookie')), 'admin sign-in sets a strict admin-only cookie');
+  let z = await worker.fetch(new Request(B + '/admin', { headers: { Cookie: ck } }), env); ok(z.status === 200 && /Who signed up/.test(await z.text()), 'admin cookie opens the admin page');
+  z = await worker.fetch(new Request(B + '/admin/logout', { headers: { Cookie: ck } }), env); ok(/Max-Age=0/.test(z.headers.get('Set-Cookie') || ''), 'admin log out clears the cookie');
+  z = await worker.fetch(new Request(B + '/admin', { headers: { Cookie: ck } }), env); ok(z.status === 401, 'old admin cookie no longer works after log out'); }
 sqlite.prepare("INSERT INTO users (email, unsub_token, created_at, verified_at, marketing) VALUES ('=cmd@x.com','t','2026-01-01','2026-01-01',1)").run();
 r = await call('/admin/export.csv', { auth: 'pw' }); ok(r.status === 200 && /text\/csv/.test(r.r.headers.get('Content-Type')) && r.text.includes("\"'=cmd@x.com\""), 'csv export guards formulas');
 const env2 = { ...env, ADMIN_PASSWORD: undefined }; const r2 = await worker.fetch(new Request(B + '/admin', { headers: { Authorization: 'Basic ' + btoa('a:') } }), env2); ok(r2.status === 503, 'admin fails closed without a password');

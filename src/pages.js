@@ -6,16 +6,24 @@ const PAID = YEARS.filter(y => y !== 'P2' && y !== 'P3');
 export { YEARS };
 export function shell(title, body) {
   return '<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="robots" content="noindex"><title>' + esc(title) + ' · MathsStudio</title>' +
-    '<link rel="icon" href="/favicon.svg" type="image/svg+xml"><link rel="icon" href="/favicon.ico" sizes="48x48"><link rel="icon" href="/favicon-96.png" type="image/png" sizes="96x96"><link rel="icon" href="/icon-192.png" type="image/png" sizes="192x192"><link rel="apple-touch-icon" href="/apple-touch-icon.png"><link rel="stylesheet" href="/site.css?v=3"></head><body class="plain">' +
+    '<link rel="icon" href="/favicon.svg" type="image/svg+xml"><link rel="icon" href="/favicon.ico" sizes="48x48"><link rel="icon" href="/favicon-96.png" type="image/png" sizes="96x96"><link rel="icon" href="/icon-192.png" type="image/png" sizes="192x192"><link rel="apple-touch-icon" href="/apple-touch-icon.png"><link rel="stylesheet" href="/site.css?v=3"><style>body.shell{min-height:100vh;min-height:100dvh;display:flex;flex-direction:column;margin:0}body.shell>header.nav{width:100%;box-sizing:border-box}body.shell main.narrow{flex:1 0 auto;display:flex;flex-direction:column;justify-content:center;width:100%;box-sizing:border-box;margin:0 auto;padding-top:24px;padding-bottom:40px}.sfoot{background:#14213d;color:#dbe3f7}.sfoot>div{max-width:1200px;margin:0 auto;padding:22px 24px;display:flex;flex-wrap:wrap;align-items:center;gap:12px 28px;font-size:15px}.sfoot .sb{display:flex;align-items:center;gap:10px;font-weight:700;font-size:20px;color:#fff;text-decoration:none}.sfoot .sc{flex:1 1 260px;min-width:0;font-size:13px;color:#b9c4e4;line-height:1.5}.sfoot nav{display:flex;flex-wrap:wrap;gap:4px 20px}.sfoot nav a{color:#dbe3f7;min-height:44px;display:inline-flex;align-items:center}</style></head><body class="plain shell">' +
     '<header class="nav"><a class="brand" href="/"><svg class="mark" width="40" height="40" viewBox="0 0 64 64" role="img" aria-label="MathsStudio logo"><rect width="64" height="64" rx="16" fill="#2b5fd9"/><path d="M16 47V21L32 39L48 21V47" fill="none" stroke="#ffffff" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/><circle cx="32" cy="15" r="4.5" fill="#ffd166"/></svg><span class="word"><span>Maths</span><span class="st">Studio</span></span></a></header>' +
     '<main class="narrow">' + body + '</main>' +
-    '<footer class="foot"><a href="/terms/">Terms</a> · <a href="/refunds/">Refunds</a> · <a href="/privacy/">Privacy</a> · <a href="/">Home</a></footer></body></html>';
+    '<footer class="sfoot"><div><a class="sb" href="/"><svg width="32" height="32" viewBox="0 0 64 64" aria-hidden="true"><rect width="64" height="64" rx="16" fill="#2b5fd9"/><path d="M16 47V21L32 39L48 21V47" fill="none" stroke="#ffffff" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/><circle cx="32" cy="15" r="4.5" fill="#ffd166"/></svg>MathsStudio</a>' +
+    '<div class="sc">© 2026 MathsStudio. All rights reserved. The lessons, questions and activities on this site are protected by copyright.</div>' +
+    '<nav aria-label="Footer"><a href="/terms/">Terms</a><a href="/refunds/">Refunds</a><a href="/privacy/">Privacy</a><a href="/">Home</a></nav></div></footer></body></html>';
 }
 export function message(title, text, extra) {
   return shell(title, '<div class="card"><h1>' + esc(title) + '</h1><p>' + text + '</p>' + (extra || '') + '</div>');
 }
+export function adminLogin(err) {
+  return shell('Admin sign in', '<form class="card" method="post" action="/admin/login"><h1 style="font-size:26px;margin:0 0 6px">Admin sign in</h1><p style="margin:0 0 6px;font-size:16px">For the MathsStudio owner only.</p>' +
+    (err ? '<div class="msg err" role="alert">' + esc(err) + '</div>' : '') +
+    '<label for="apw">Admin password</label><input id="apw" name="password" type="password" autocomplete="current-password" required autofocus>' +
+    '<button class="btn block" type="submit">Sign in</button></form>');
+}
 export function adminOut() {
-  return shell('Logged out', '<div class="card"><h1>You are logged out of admin</h1><p id="outmsg">Logging out…</p><p><a class="btn" href="/admin">Log in again</a> <a class="btn alt" href="/">Go to MathsStudio</a></p></div>' +
+  return shell('Logged out', '<div class="card"><h1 style="font-size:26px;margin:0 0 6px">You are logged out of admin</h1><p id="outmsg" style="margin:0 0 16px;font-size:16px">Logging out…</p><p style="display:flex;flex-wrap:wrap;gap:10px;margin:0"><a class="btn" href="/admin" style="width:auto;margin:0;flex:1 1 160px;text-align:center">Log in again</a><a class="btn alt" href="/" style="width:auto;margin:0;flex:1 1 160px;text-align:center">Go to MathsStudio</a></p></div>' +
     '<script>(function(){var m=document.getElementById("outmsg");function done(){m.textContent="Done. To get back in you will need the admin password again. On a shared computer, also close the browser.";}' +
     'try{var x=new XMLHttpRequest();x.open("GET","/admin/bye",true,"logged-out","x");x.onloadend=done;x.send();}catch(e){done();}})();</script>');
 }

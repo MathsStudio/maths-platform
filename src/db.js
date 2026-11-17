@@ -19,6 +19,7 @@ const SCHEMA = [
     hash TEXT PRIMARY KEY, user_id INTEGER NOT NULL, expires_at INTEGER NOT NULL
   )`,
   `CREATE TABLE IF NOT EXISTS rate (k TEXT NOT NULL, ts INTEGER NOT NULL)`,
+  `CREATE TABLE IF NOT EXISTS admin_sessions (hash TEXT PRIMARY KEY, expires_at INTEGER NOT NULL)`,
   `CREATE INDEX IF NOT EXISTS rate_k ON rate (k, ts)`,
   `CREATE TABLE IF NOT EXISTS newsletters (id INTEGER PRIMARY KEY AUTOINCREMENT, subject TEXT NOT NULL, audience TEXT NOT NULL, sent INTEGER NOT NULL, failed INTEGER NOT NULL, created_at TEXT NOT NULL)`,
   `CREATE TABLE IF NOT EXISTS progress (user_id INTEGER PRIMARY KEY, data TEXT NOT NULL, updated_at TEXT NOT NULL)`,
@@ -107,6 +108,7 @@ export async function cleanup(env) {
   await env.DB.batch([
     env.DB.prepare('DELETE FROM tokens WHERE expires_at < ?').bind(t - 86400),
     env.DB.prepare('DELETE FROM sessions WHERE expires_at < ?').bind(t),
+    env.DB.prepare('DELETE FROM admin_sessions WHERE expires_at < ?').bind(t),
     env.DB.prepare("DELETE FROM users WHERE verified_at IS NULL AND created_at < ?").bind(new Date(Date.now() - 7 * 86400000).toISOString())
   ]);
 }
@@ -244,3 +246,8 @@ export async function recentLessonRequests(env) {
 }
 export async function lessonRequest(env, id) { return await env.DB.prepare('SELECT id, email, year, topic, details FROM lesson_requests WHERE id = ?').bind(id).first(); }
 export async function markLessonReplied(env, id, reply) { await env.DB.prepare('UPDATE lesson_requests SET replied_at = ?, reply = ? WHERE id = ?').bind(new Date().toISOString(), reply, id).run(); }
+
+/* admin sign-in sessions (the admin login page sets an HttpOnly cookie for /admin only) */
+export async function addAdminSession(env, hash, expires) { await env.DB.prepare('INSERT INTO admin_sessions (hash, expires_at) VALUES (?, ?)').bind(hash, expires).run(); }
+export async function adminSessionOk(env, hash) { const r = await env.DB.prepare('SELECT expires_at FROM admin_sessions WHERE hash = ?').bind(hash).first(); return !!r && r.expires_at > Math.floor(Date.now() / 1000); }
+export async function dropAdminSession(env, hash) { await env.DB.prepare('DELETE FROM admin_sessions WHERE hash = ?').bind(hash).run(); }
