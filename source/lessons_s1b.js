@@ -348,7 +348,28 @@
   });
 
   /* ===================== put the S1 topics together ===================== */
-  L.use(801, ['What is place value and decimal place value?', 'How do you use column addition and subtraction?', 'How do you add and subtract to three decimal places?', 'Calculating with decimals', 'Rounding and estimating', 'Sensible estimates and rounding with units', 'Number lines, words and digit values']);
+  (function () {
+    var SC = L.SC, st = L.st, ep = L.ep;
+    ep('How do you calculate with mixed operations?', 'how to work out calculations that mix decimals, powers and brackets.', [
+      SC('Mixed operations', 'BIDMAS', [
+        st("In secondary, calculations can mix decimals, powers and brackets. The order is the same as before, with powers added: Brackets, Indices, Division and Multiplication, then Addition and Subtraction.", E('B → I → D M → A S', 'b'))]),
+      SC('Decimals in the mix', '2.5 × 4 + 18 ÷ 3', [
+        st("Multiplying and dividing come first. Two point five times four is ten. Eighteen divided by three is six. Then add: ten plus six is sixteen.", E('2.5 × 4 = 10') + E('18 ÷ 3 = 6') + E('10 + 6 = 16', 'g'))]),
+      SC('Brackets and powers', '(7 − 3)² × 1.5 − 6', [
+        st("Brackets first: seven take away three is four. Then the power: four squared is sixteen. Then multiply: sixteen times one point five is twenty-four. Last, subtract six: eighteen.", E('7 − 3 = 4') + E('4² = 16') + E('16 × 1.5 = 24') + E('24 − 6 = 18', 'g'))]),
+      SC('Brackets inside brackets', '3 × (20 − (4 + 6))', [
+        st("Work from the inside out. Four plus six is ten. Twenty take away ten is ten. Three times ten is thirty.", E('4 + 6 = 10') + E('20 − 10 = 10') + E('3 × 10 = 30', 'g'))]),
+      SC('Two brackets', '(12.6 + 3.4) ÷ (5 − 3)', [
+        st("Work out each bracket first. Twelve point six plus three point four is sixteen. Five take away three is two. Sixteen divided by two is eight.", E('12.6 + 3.4 = 16') + E('5 − 3 = 2') + E('16 ÷ 2 = 8', 'g'))]),
+      SC('In real life', 'A phone bill', [
+        st("A phone costs twelve pounds fifty a month for three months, plus four extra downloads at seventy-five pence each. Three times twelve pounds fifty is thirty-seven pounds fifty. Four times seventy-five pence is three pounds. Add them: forty pounds fifty.", E('3 × 12.50 + 4 × 0.75') + E('37.50 + 3.00 = £40.50', 'g'))]),
+      L.turn("Your turn! Work out four point two, add three times, bracket, one point five plus two point five, squared. Pause and try it.", E('4.2 + 3 × (1.5 + 2.5)² = ?'),
+        "Brackets: one point five plus two point five is four. Four squared is sixteen. Three times sixteen is forty-eight. Four point two plus forty-eight is fifty-two point two.", E('4.2 + 48 = 52.2', 'g')),
+      L.rec('How do you calculate with mixed operations?', "Use BIDMAS: brackets, then powers, then dividing and multiplying, then adding and subtracting. Work brackets from the inside out, and go left to right on the same level.",
+        ['Brackets: inside out', 'Then powers', 'Then ÷ and ×, left to right', 'Then + and −, left to right'])
+    ]);
+  })();
+  L.use(801, ['What is place value and decimal place value?', 'How do you use column addition and subtraction?', 'How do you add and subtract to three decimal places?', 'Calculating with decimals', 'Rounding and estimating', 'Sensible estimates and rounding with units', 'Number lines, words and digit values', 'How do you calculate with mixed operations?']);
   L.use(802, ['What are common multiples?', 'What are common factors?', 'Negative numbers', 'Powers, roots and prime factors', 'Powers, negatives and BODMAS', 'Use a fact you know', 'Always true, factors and multiples']);
   L.use(803, ['What are fractions?', 'What are equivalent fractions?', 'What are mixed numbers and improper fractions?', 'Adding and subtracting mixed numbers', 'Multiplying and dividing fractions', 'Counting parts and fractions as decimals']);
   L.use(804, ['What are percentages?', 'Percentages of amounts', 'Percentage increase and decrease', 'Percentages of a set and of a measure']);

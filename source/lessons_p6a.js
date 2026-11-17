@@ -154,6 +154,45 @@
       ['Work from the left', 'Write each answer on top', 'Carry the remainder', 'Check: multiply back'])
   ]);
 
+  ep('How do you solve mixed operation problems?', 'how to work out questions with two different operations, one step at a time.', [
+    SC('Mixed operations', 'More than one step', [
+      st("Some questions need two operations, like adding and then subtracting. We work them out one step at a time, and write down each step.", V.eq('48 + 27 − 9', 'b'))]),
+    SC('Add, then subtract', '48 + 27 − 9', [
+      st("When there is only adding and subtracting, work from left to right. Forty-eight plus twenty-seven is seventy-five.", V.eq('48 + 27 = 75')),
+      st("Then seventy-five take away nine is sixty-six.", V.eq('75 − 9 = 66') + V.eq('48 + 27 − 9 = 66', 'g'))]),
+    SC('Multiply, then add', '6 × 7 + 15', [
+      st("When there is multiplying or dividing, do that first. Six times seven is forty-two. Then add fifteen to get fifty-seven.", V.eq('6 × 7 = 42') + V.eq('42 + 15 = 57') + V.eq('6 × 7 + 15 = 57', 'g'))]),
+    SC('Watch out!', '15 + 6 × 7', [
+      st("Here the multiplying comes at the end, but we still do it first. Six times seven is forty-two, and fifteen plus forty-two is fifty-seven.", V.eq('15 + 6 × 7 = 15 + 42 = 57 ✓', 'g')),
+      st("If we added first, we would get twenty-one times seven, which is one hundred and forty-seven. That is wrong!", V.eq('21 × 7 = 147 ✗', 'r'))]),
+    SC('Divide, then subtract', 'Sharing sweets', [
+      st("Thirty-six sweets are shared between four children, and each child eats three. How many does each child have left? First divide: thirty-six divided by four is nine. Then subtract: nine take away three is six.", V.eq('36 ÷ 4 = 9') + V.eq('9 − 3 = 6', 'g'))]),
+    SC('A word problem', 'Sam’s stickers', [
+      st("Sam has forty-five stickers. He buys twenty-eight more, then gives twelve to his sister. Forty-five plus twenty-eight is seventy-three. Seventy-three take away twelve is sixty-one. Sam has sixty-one stickers.", V.eq('45 + 28 = 73') + V.eq('73 − 12 = 61') + V.eq('45 + 28 − 12 = 61', 'g'))]),
+    turn("Your turn! Work out sixty-four, take away eighteen, add twenty-five. Pause and try it.", V.eq('64 − 18 + 25 = ?'),
+      "Left to right: sixty-four take away eighteen is forty-six. Forty-six add twenty-five is seventy-one.", V.eq('64 − 18 + 25 = 71', 'g')),
+    rec('How do you solve mixed operation problems?', "Work one step at a time. If there is only adding and subtracting, go from left to right. Do multiplying and dividing before adding and subtracting. Write each step down.",
+      ['Only + and −? Left to right', '× or ÷? Do them first', 'Write each step', 'Check the answer makes sense'])
+  ]);
+
+  ep('How do you work out longer mixed calculations?', 'how to work out calculations with three or more operations, using the order of operations.', [
+    SC('Longer calculations', 'The order of operations', [
+      st("Longer calculations can mix all four operations. Everybody follows the same order, so everybody gets the same answer.", V.rule('Brackets first. Then × and ÷. Then + and −. Same level: left to right.'))]),
+    SC('Three steps', '125 + 36 × 4 − 50', [
+      st("Multiply first: thirty-six times four is one hundred and forty-four.", V.eq('36 × 4 = 144')),
+      st("Now add and subtract from left to right. One hundred and twenty-five plus one hundred and forty-four is two hundred and sixty-nine. Take away fifty: two hundred and nineteen.", V.eq('125 + 144 = 269') + V.eq('269 − 50 = 219') + V.eq('125 + 36 × 4 − 50 = 219', 'g'))]),
+    SC('Brackets first', '(84 − 36) ÷ 6 + 9', [
+      st("Brackets come first: eighty-four take away thirty-six is forty-eight. Then divide: forty-eight divided by six is eight. Last, add nine: seventeen.", V.eq('84 − 36 = 48') + V.eq('48 ÷ 6 = 8') + V.eq('8 + 9 = 17', 'g'))]),
+    SC('Same level: left to right', '72 ÷ 8 × 3 + 10', [
+      st("Dividing and multiplying are on the same level, so go from left to right. Seventy-two divided by eight is nine. Nine times three is twenty-seven. Then add ten: thirty-seven.", V.eq('72 ÷ 8 = 9') + V.eq('9 × 3 = 27') + V.eq('27 + 10 = 37', 'g'))]),
+    SC('In real life', 'At the cinema', [
+      st("Three cinema tickets cost twelve pounds each, and popcorn costs five pounds. You pay with fifty pounds. What is your change? First the bill: three times twelve is thirty-six, plus five is forty-one. Then the change: fifty take away forty-one is nine pounds.", V.eq('3 × £12 + £5 = £41') + V.eq('£50 − £41 = £9 change', 'g'))]),
+    turn("Your turn! Work out two hundred, take away fifteen times six, add forty. Pause and try it.", V.eq('200 − 15 × 6 + 40 = ?'),
+      "Multiply first: fifteen times six is ninety. Then left to right: two hundred take away ninety is one hundred and ten, add forty is one hundred and fifty.", V.eq('200 − 90 + 40 = 150', 'g')),
+    rec('How do you work out longer mixed calculations?', "Brackets first, then multiplying and dividing, then adding and subtracting. When operations are on the same level, go from left to right. Write each step.",
+      ['Brackets first', 'Then × and ÷', 'Then + and −', 'Same level: left to right'])
+  ]);
+
   ep('How do you add three or four numbers?', 'how to add three or four big numbers at once in columns.', [
     SC('Adding more than two numbers', '365 + 228 + 437', [
       st("Sometimes we need to add three or even four numbers, like three hundred and sixty-five, plus two hundred and twenty-eight, plus four hundred and thirty-seven. Column addition still works. We just add more digits in each column.", V.eq('365 + 228 + 437', 'b'))]),
@@ -344,7 +383,7 @@
 
   /* ===================== put topics 1 to 4 together ===================== */
   L.use(1, ['What is place value?', 'What are negative numbers?', 'How do you partition a number?', 'How do you round numbers?', 'How do you round decimal numbers?', 'How do you use estimation to check your answers?', 'Numbers up to millions', 'Sensible estimates and rounding with units', 'Number lines, words and digit values']);
-  L.use(2, ['What is column addition?', 'How do you add three or four numbers?', 'How do you use column subtraction?', 'How do you add and subtract in your head?', 'How do you multiply in your head?', 'How do you multiply and divide by 0, 1, 10 and 100?', 'How do you work out division with remainders?', 'How do you use written methods for short division?', 'How do you divide by a two-digit number?', 'How can counting on help me add two-digit numbers?', 'How can partitioning help me add two-digit numbers?', 'Long multiplication', 'Order of operations and word problems', 'Use a fact you know']);
+  L.use(2, ['What is column addition?', 'How do you add three or four numbers?', 'How do you use column subtraction?', 'How do you add and subtract in your head?', 'How do you multiply in your head?', 'How do you multiply and divide by 0, 1, 10 and 100?', 'How do you work out division with remainders?', 'How do you use written methods for short division?', 'How do you divide by a two-digit number?', 'How can counting on help me add two-digit numbers?', 'How can partitioning help me add two-digit numbers?', 'Long multiplication', 'Order of operations and word problems', 'How do you solve mixed operation problems?', 'Use a fact you know']);
   L.use(3, ['What is a fraction?', 'How do you write fractions?', 'How do you compare different fractions?', 'How do you add and subtract fractions?', 'What are unit and mixed fractions?', 'How do you simplify fractions?', 'Fractions of amounts and multiplying', 'Counting parts and fractions as decimals']);
   L.use(4, ['What are decimals?', 'How do you compare fractions, decimals and percentages?', 'What is a percentage?', 'Percentages of a set and of a measure']);
 })();
