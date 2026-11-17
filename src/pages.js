@@ -94,6 +94,7 @@ export function admin(rows, o) {
     '<header class="admbar"><h1>Admin</h1><span class="admact"><a class="btn alt" href="/admin/export.csv">Download CSV</a><a class="btn alt" href="/admin/logout">Log out</a></span></header><div class="stats"><div><b>' + rows.length + '</b><span>Sign-ups</span></div><div><b>' + verified + '</b><span>Verified</span></div><div><b>' + mk + '</b><span>OK to email with news</span></div>' +
     Object.keys(by).sort().map(k => '<div><b>' + by[k] + '</b><span>' + esc(k) + ' verified</span></div>').join('') + '</div>' +
     (o.note && !o.hl ? '<p class="nlnote" role="status">' + esc(o.note) + '</p>' : '') +
+    reqCard(o.reqs, o) +
     '<div class="admgrid"><section class="card nl"><h2>Send a newsletter</h2><p class="note">Goes only to people who verified their email, said yes to news and have not unsubscribed (<b>' + mk + '</b> now). Every email has its own unsubscribe link.</p>' +
     '<form method="post" action="/admin/newsletter"><label>Send to<select name="audience"><option value="">Everyone who opted in (' + mk + ')</option>' + YEARS.map(y => '<option value="' + y + '"' + (o.audience === y ? ' selected' : '') + '>' + y + ' only (' + mkBy[y] + ')</option>').join('') + '</select></label>' +
     '<label>Subject<input name="subject" maxlength="150" required value="' + esc(o.subject || '') + '"></label>' +
@@ -105,19 +106,32 @@ export function admin(rows, o) {
     '<div style="display:grid;gap:16px;min-width:0"><section class="card nl"><h2>Give access</h2><p class="note">Gives an existing account access to one year group, or all of them, without payment. Extends access if they already have it.</p><form method="post" action="/admin/grant"><label>Account email<input name="email" type="email" required></label><label>Year<select name="year"><option value="ALL">All paid years (P4 to S3)</option>' + PAID.map(y => '<option>' + y + '</option>').join('') + '</select></label><label>For<select name="months"><option value="1">1 month</option><option value="3">3 months</option><option value="12" selected>12 months</option><option value="60">5 years</option></select></label><button class="btn" type="submit">Give access</button></form></section>' +
     '<section class="card nl"><h2>Remove a paid year</h2><p class="note">Takes away paid access for one year group. Refund the payment in Stripe first, and cancel a monthly plan there too.</p><form method="post" action="/admin/revoke"><label>Account email<input name="email" type="email" required></label><label>Year<select name="year">' + PAID.map(y => '<option>' + y + '</option>').join('') + '</select></label><button class="btn alt" type="submit">Remove access</button></form></section></div></div>' +
     emailCard(rows, o) +
-    reqCard(o.reqs) +
     '<h2 class="admh" id="people">People who signed up</h2>' + (o.note && o.hl ? '<p class="nlnote" role="status">' + esc(o.note) + ' The changed account is highlighted below.</p>' : '') + '<p class="note">Only email people with "OK to email with news" = Yes. Every email you send must include an unsubscribe link.</p>' +
     '<div class="tablewrap"><table><thead><tr><th>Email</th><th>Role</th><th>Access</th><th>Verified</th><th>OK to email</th><th>Signed up</th><th>Last sign-in</th></tr></thead><tbody>' + (tr || '<tr><td colspan="7">Nobody yet.</td></tr>') + '</tbody></table></div></main></body></html>';
 }
 
-/* the Lesson requests list: most-asked topics first, then every request, newest first */
-function reqCard(reqs) {
+/* the Lesson requests list: most-asked topics, then each request as a card with a reply box (new ones first) */
+function reqCard(reqs, o) {
   if (!reqs) return '';
+  o = o || {};
   const n = {}; reqs.forEach(r => { const k = r.year + ' · ' + String(r.topic).toLowerCase(); n[k] = (n[k] || 0) + 1; });
-  const top = Object.keys(n).sort((a, b) => n[b] - n[a]).slice(0, 10);
-  return '<h2 class="admh" id="requests">Lesson requests</h2><p class="note">From subscribers on the Request a lesson page. Each one is also emailed to you; reply to that email to answer the parent.</p>' +
+  const top = Object.keys(n).sort((a, b) => n[b] - n[a]).slice(0, 10), waiting = reqs.filter(r => !r.replied_at).length;
+  const card = r => {
+    const done = !!r.replied_at, open = !done || o.reqOpen === r.id;
+    return '<div class="card" style="padding:14px 16px;margin:10px 0;border-left:5px solid ' + (done ? '#17754c' : '#ffd166') + '">' +
+      '<div style="display:flex;flex-wrap:wrap;gap:8px 14px;align-items:baseline;justify-content:space-between"><b style="font-size:17px">' + esc(r.year) + ' · ' + esc(r.topic) + '</b>' +
+      '<span class="note" style="margin:0">' + esc(String(r.created_at || '').slice(0, 10)) + ' · ' + (done ? '<b style="color:#17754c">Replied ' + esc(String(r.replied_at).slice(0, 10)) + '</b>' : '<b style="color:#8a5a00">New</b>') + '</span></div>' +
+      '<div style="margin:4px 0;color:#3b4a6b">From <b>' + esc(r.email) + '</b></div>' +
+      (r.details ? '<p style="margin:6px 0;white-space:pre-wrap">' + esc(r.details) + '</p>' : '<p class="note" style="margin:6px 0">No details given.</p>') +
+      (done ? '<details style="border:0;padding:4px 0"><summary style="font-size:15px">Your reply</summary><p style="white-space:pre-wrap">' + esc(r.reply || '') + '</p></details>' : '') +
+      '<details' + (open && !done ? ' open' : '') + ' style="border:0;padding:4px 0"><summary style="font-size:15px">' + (done ? 'Send another reply' : 'Reply') + '</summary>' +
+      '<form method="post" action="/admin/reply#req' + r.id + '" style="margin-top:8px"><input type="hidden" name="id" value="' + r.id + '">' +
+      '<label style="display:grid;gap:6px;font-weight:800;margin-bottom:10px">Message to ' + esc(r.email) + '<textarea name="body" rows="7" required style="width:100%;box-sizing:border-box;border:2px solid #b8c4e6;border-radius:12px;padding:10px 12px;font:inherit;font-weight:600;line-height:1.45;resize:vertical">' + esc(o.reqOpen === r.id && o.reqBody ? o.reqBody : 'Hello,\n\nThank you for your request about ' + r.topic + ' (' + r.year + ').\n\n') + '</textarea></label>' +
+      '<button class="btn" type="submit">Send reply</button></form></details></div>';
+  };
+  return '<h2 class="admh" id="requests">Lesson requests' + (waiting ? ' <span style="background:#ffd166;border-radius:999px;padding:2px 10px;font-size:15px">' + waiting + ' new</span>' : '') + '</h2>' +
+    '<p class="note">From subscribers on the Request a lesson page. Reply here: it is sent from info@mathsstudio.co.uk and the request is marked as replied.</p>' +
+    (o.reqNote ? '<p class="nlnote" role="status">' + esc(o.reqNote) + '</p>' : '') +
     (top.length ? '<p class="note"><b>Most asked:</b> ' + top.map(k => esc(k) + ' (' + n[k] + ')').join(', ') + '</p>' : '') +
-    '<div class="tablewrap"><table><thead><tr><th>Date</th><th>Year</th><th>Topic</th><th>Details</th><th>Email</th></tr></thead><tbody>' +
-    (reqs.length ? reqs.map(r => '<tr><td>' + esc(String(r.created_at || '').slice(0, 10)) + '</td><td>' + esc(r.year) + '</td><td>' + esc(r.topic) + '</td><td>' + esc(r.details || '') + '</td><td>' + esc(r.email) + '</td></tr>').join('') : '<tr><td colspan="5">No requests yet.</td></tr>') +
-    '</tbody></table></div>';
+    (reqs.length ? reqs.map(r => '<div id="req' + r.id + '">' + card(r) + '</div>').join('') : '<p class="note">No requests yet.</p>');
 }

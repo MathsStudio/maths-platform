@@ -226,6 +226,7 @@ async function admin(request, env, url) {
   if (url.pathname === '/admin/email' && request.method === 'POST') return await directEmail(request, env);
   if (url.pathname === '/admin/revoke' && request.method === 'POST') return await revoke(request, env);
   if (url.pathname === '/admin/grant' && request.method === 'POST') return await grant(request, env);
+  if (url.pathname === '/admin/reply' && request.method === 'POST') return await replyRequest(request, env);
   const rows = await adminRows(env);
   if (url.pathname === '/admin/export.csv')
     return withHeaders(new Response(pg.csv(rows), { headers: { 'Content-Type': 'text/csv; charset=utf-8', 'Content-Disposition': 'attachment; filename="mathsstudio-signups.csv"', 'Cache-Control': 'no-store', 'X-Robots-Tag': 'noindex' } }));
@@ -285,6 +286,21 @@ async function directEmail(request, env) {
   for (const addr of to) { try { await sendMail(env, addr, m.subject, m.text, m.html, 'info@mathsstudio.co.uk'); sent++; } catch (e) { failed.push(addr); } }
   await db.logNewsletter(env, subject, 'email to ' + (to.length === 1 ? to[0] : to.length + ' people'), sent, failed.length);
   return page(pg.admin(rows, { log: await db.recentNewsletters(env), emNote: 'Sent to ' + sent + (sent === 1 ? ' person' : ' people') + ' from info@mathsstudio.co.uk.' + (failed.length ? ' Could not send to: ' + failed.join(', ') + '.' : '') }));
+}
+
+/* answers a lesson request from the admin page: emails the parent from info@ and marks the request as replied */
+async function replyRequest(request, env) {
+  if (!sameOrigin(request)) return json({ error: 'Not allowed' }, 403);
+  const b = await readForm(request), id = Number(b.id), body = String(b.body || '').trim().slice(0, 20000);
+  const back = async note => page(pg.admin(await adminRows(env), { log: await db.recentNewsletters(env), reqs: await db.recentLessonRequests(env), reqNote: note, reqOpen: id, reqBody: body }));
+  const rq = id ? await db.lessonRequest(env, id) : null;
+  if (!rq) return await back('That request could not be found.');
+  if (!body) return await back('Please write your reply first.');
+  if (!(await db.rateOk(env, 'direct', 200, 3600))) return await back('Too many emails in the last hour. Please wait a little.');
+  const m = personalMail('Re: your lesson request: ' + rq.year + ' · ' + rq.topic, body);
+  try { await sendMail(env, rq.email, m.subject, m.text, m.html, 'info@mathsstudio.co.uk'); } catch (e) { return await back('The reply could not be sent. Check that email sending is set up, then try again.'); }
+  await db.markLessonReplied(env, id, body);
+  return page(pg.admin(await adminRows(env), { log: await db.recentNewsletters(env), reqs: await db.recentLessonRequests(env), reqNote: 'Reply sent to ' + rq.email + '.' }));
 }
 
 /* gives free access (one year group or all) to an existing account, for a chosen length of time */
@@ -424,7 +440,7 @@ export default {
       /* log out of admin: the browser keeps the admin password until it is replaced, so the page swaps it for a dummy one */
       if (p === '/admin/logout') return page(pg.adminOut());
       if (p === '/admin/bye') return new Response('Logged out.', { status: 401, headers: { 'WWW-Authenticate': 'Basic realm="MathsStudio admin", charset="UTF-8"', 'Cache-Control': 'no-store', 'X-Robots-Tag': 'noindex' } });
-      if (p === '/admin' || p === '/admin/' || p === '/admin/export.csv' || p === '/admin/newsletter' || p === '/admin/email' || p === '/admin/revoke' || p === '/admin/grant') { await db.init(env); return await admin(request, env, url); }
+      if (p === '/admin' || p === '/admin/' || p === '/admin/export.csv' || p === '/admin/newsletter' || p === '/admin/email' || p === '/admin/revoke' || p === '/admin/grant' || p === '/admin/reply') { await db.init(env); return await admin(request, env, url); }
       const dynamic = p.startsWith('/api/') || p.startsWith('/auth/') || p === '/logout' || p === '/unsubscribe' || p === '/account' || p.startsWith('/account/') || p === '/app' || p.startsWith('/app/') || p === '/learn' || p.startsWith('/learn/');
       if (!dynamic) return withHeaders(await env.ASSETS.fetch(request));
       await db.init(env);

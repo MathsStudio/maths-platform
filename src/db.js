@@ -36,7 +36,9 @@ export function init(env) {
     .then(() => env.DB.prepare('ALTER TABLE users ADD COLUMN pw TEXT').run().catch(() => {}))
     .then(() => env.DB.prepare('ALTER TABLE purchases ADD COLUMN sub_id TEXT').run().catch(() => {}))
     .then(() => env.DB.prepare('ALTER TABLE purchases ADD COLUMN cust_id TEXT').run().catch(() => {}))
-    .then(() => env.DB.prepare('ALTER TABLE purchases ADD COLUMN synced_at INTEGER').run().catch(() => {}))   // adds the password column once; harmless if it already exists
+    .then(() => env.DB.prepare('ALTER TABLE purchases ADD COLUMN synced_at INTEGER').run().catch(() => {}))
+    .then(() => env.DB.prepare('ALTER TABLE lesson_requests ADD COLUMN replied_at TEXT').run().catch(() => {}))
+    .then(() => env.DB.prepare('ALTER TABLE lesson_requests ADD COLUMN reply TEXT').run().catch(() => {}))   // adds the password column once; harmless if it already exists
     .catch(e => { ready = null; throw e; });
   return ready;
 }
@@ -238,5 +240,7 @@ export async function addLessonRequest(env, userId, email, year, topic, details)
   await env.DB.prepare('INSERT INTO lesson_requests (user_id, email, year, topic, details, created_at) VALUES (?, ?, ?, ?, ?, ?)').bind(userId, email, year, topic, details, new Date().toISOString()).run();
 }
 export async function recentLessonRequests(env) {
-  return (await env.DB.prepare('SELECT email, year, topic, details, created_at FROM lesson_requests ORDER BY id DESC LIMIT 200').all()).results || [];
+  return (await env.DB.prepare('SELECT id, email, year, topic, details, created_at, replied_at, reply FROM lesson_requests ORDER BY (replied_at IS NOT NULL), id DESC LIMIT 200').all()).results || [];
 }
+export async function lessonRequest(env, id) { return await env.DB.prepare('SELECT id, email, year, topic, details FROM lesson_requests WHERE id = ?').bind(id).first(); }
+export async function markLessonReplied(env, id, reply) { await env.DB.prepare('UPDATE lesson_requests SET replied_at = ?, reply = ? WHERE id = ?').bind(new Date().toISOString(), reply, id).run(); }
