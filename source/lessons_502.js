@@ -240,6 +240,15 @@
     ]
   };
 
+  /* the four parts of a division, named */
+  function divParts(hl) {   /* 17 ÷ 5 = 3 r 2 with each part named underneath; hl = the parts to stand out */
+    var P = [['17', 'dividend', 'the number being divided'], ['÷'], ['5', 'divisor', 'the number you divide by'], ['='], ['3', 'quotient', 'the answer'], ['r'], ['2', 'remainder', 'what is left over']];
+    return '<div style="display:flex;flex-wrap:nowrap;justify-content:center;align-items:flex-start;gap:6px 10px;font-weight:800;color:var(--fg)">' + P.map(function (p) {
+      if (p.length === 1) return '<div style="font-size:2rem;line-height:1;padding-top:10px">' + p[0] + '</div>';
+      var on = !hl || hl.indexOf(p[1]) > -1;
+      return '<div style="display:grid;justify-items:center;gap:4px;opacity:' + (on ? 1 : 0.35) + '"><div style="font-size:2rem;line-height:1;background:var(--surface,#fff);border:3px solid ' + (on ? 'var(--accent,#2b5fd9)' : 'var(--line,#c9cfe0)') + ';border-radius:12px;padding:6px 14px">' + p[0] + '</div><div style="font-size:1rem;color:var(--accent,#2b5fd9)">' + p[1] + '</div><div style="font-size:.8rem;font-weight:600;max-width:8.5em;text-align:center;color:var(--muted,#555)">' + p[2] + '</div></div>';
+    }).join('') + '</div>';
+  }
   /* ---------- How do you work out division with remainders? ---------- */
   var remainders = {
     title: 'How do you work out division with remainders?', goal: 'what a remainder is, how to find one, and what to do with it in real life.',
@@ -251,6 +260,9 @@
         st("Seventeen sweets shared between five friends. Each friend gets three sweets. That uses fifteen sweets.", V.dots(5, 3, 'var(--accent)') + V.eq('5 × 3 = 15', 'b')),
         st("Two sweets are left over. There are not enough to give everyone another one. So the remainder is two.", V.dots(1, 2, 'var(--bad)') + V.eq('17 − 15 = 2 left over', 'r')),
         st("We write this as seventeen divided by five equals three, remainder two. The little r means remainder.", V.eq('17 ÷ 5 = 3 r 2', 'g'))]),
+      SC('The parts of a division', 'Dividend, divisor, quotient, remainder', [
+        st("Each number in a division has a name. Seventeen is the dividend: the number being divided. Five is the divisor: the number we divide by. Three is the quotient: the answer. Two is the remainder: what is left over.", divParts()),
+        st("They always fit together like this: the divisor times the quotient, add the remainder, gives the dividend. Five times three is fifteen, add two is seventeen.", V.eq('divisor × quotient + remainder = dividend', 'b') + V.eq('5 × 3 + 2 = 17 ✓', 'g'))]),
       SC('Use your times tables', '29 ÷ 4', [
         st("Times tables make this quicker. Twenty-nine divided by four. Which number in the four times table is closest to twenty-nine, without going over?", V.cards(['24', '28', '32'], ['b', 'g', 'r'], true)),
         st("Four times seven is twenty-eight. Four times eight is thirty-two, which is too big. So four goes into twenty-nine seven times.", V.eq('4 × 7 = 28', 'g')),
@@ -270,8 +282,8 @@
         st("Five times seven is thirty-five. Thirty-eight take away thirty-five is three. The answer is seven, remainder three.", V.eq('38 ÷ 5 = 7 r 3', 'g')),
         st("Check: five times seven is thirty-five, plus three is thirty-eight.", V.eq('5 × 7 + 3 = 38 ✓', 'g'))]),
       SC('Let’s recap', 'How do you work out division with remainders?', [
-        st("Well done! When a number doesn't share equally, the amount left over is the remainder. Use your times tables to find the closest multiple without going over. The remainder must be smaller than the number you divide by. In real life, decide whether to round up or down.",
-          V.list(['Remainder = what is left over', 'Find the closest times-table fact', 'Remainder < the number you divide by', 'Check: multiply back, add the remainder', 'Real life: round up or round down']))])
+        st("Well done! The number we divide is the dividend, we divide by the divisor, the answer is the quotient. When a number doesn't share equally, the amount left over is the remainder. Use your times tables to find the closest multiple without going over. The remainder must be smaller than the number you divide by. In real life, decide whether to round up or down.",
+          V.list(['dividend ÷ divisor = quotient r remainder', 'Remainder = what is left over', 'Find the closest times-table fact', 'Remainder < the number you divide by', 'Check: multiply back, add the remainder', 'Real life: round up or round down']))])
     ]
   };
 

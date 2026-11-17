@@ -837,6 +837,7 @@ var SLIDE_MORE = {"1.learn1": [{"more": ["Our number system uses only ten digits
     if (q.kind === 'text') return normText(val) === normText(q.answer);
     if (q.kind === 'coord') return String(val).replace(/\u2212/g, '-').replace(/[()\s]/g, '') === String(q.answer).replace(/\u2212/g, '-').replace(/[()\s]/g, '');
     if (q.kind === 'time') return normTime(val) === normTime(q.answer);
+    if (q.kind === 'divr') { var dv = function (t) { var m = /^(\d+)\s*(?:(?:r|rem|remainder)\s*(\d+))?$/i.exec(String(t).replace(/,/g, '').trim()); return m ? [Number(m[1]), Number(m[2] || 0)] : null; }, u = dv(val), w = dv(q.answer); return !!u && !!w && u[0] === w[0] && u[1] === w[1]; }
     return sameNum(val, q.answer);
   }
   S.h.sameNum = sameNum; S.h.matches = matches;

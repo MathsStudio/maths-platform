@@ -136,7 +136,7 @@
 
   ep('How do you use written methods for short division?', 'how to divide a large number by a single digit with the bus stop method.', [
     SC('Short division', 'The bus stop method', [
-      st("Short division is a written way to divide a big number by a small one. We write it like a bus stop: the number we divide goes inside, and the divisor waits outside.", V.eq('4 ) 852', 'b'))]),
+      st("Short division is a written way to divide a big number by a small one. We write it like a bus stop: the number we divide, the dividend, goes inside, and the divisor, the number we divide by, waits outside. The answer on top is the quotient.", V.eq('4 ) 852', 'b') + V.list(['852 is the dividend (inside)', '4 is the divisor (outside)', 'The answer on top is the quotient']))]),
     SC('Step 1: the hundreds', '852 ÷ 4', [
       st("Start on the left. How many fours in eight? Two. Write two on top, above the eight.", V.eq('8 ÷ 4 = 2', 'g'))]),
     SC('Step 2: the tens', 'Five tens', [
