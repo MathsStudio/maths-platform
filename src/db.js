@@ -25,6 +25,7 @@ const SCHEMA = [
   `CREATE TABLE IF NOT EXISTS learners (id INTEGER PRIMARY KEY AUTOINCREMENT, user_id INTEGER NOT NULL, name TEXT NOT NULL, avatar TEXT NOT NULL, created_at TEXT NOT NULL)`,
   `CREATE INDEX IF NOT EXISTS learners_user ON learners (user_id)`,
   `CREATE TABLE IF NOT EXISTS learner_progress (learner_id INTEGER PRIMARY KEY, user_id INTEGER NOT NULL, data TEXT NOT NULL, updated_at TEXT NOT NULL)`,
+  `CREATE TABLE IF NOT EXISTS lesson_requests (id INTEGER PRIMARY KEY AUTOINCREMENT, user_id INTEGER NOT NULL, email TEXT NOT NULL, year TEXT NOT NULL, topic TEXT NOT NULL, details TEXT NOT NULL DEFAULT '', created_at TEXT NOT NULL)`,
   `CREATE TABLE IF NOT EXISTS purchases (
     user_id INTEGER NOT NULL, year TEXT NOT NULL, until INTEGER NOT NULL, created_at TEXT NOT NULL, PRIMARY KEY (user_id, year)
   )`
@@ -89,6 +90,7 @@ export async function deleteUser(env, id) {
     env.DB.prepare('DELETE FROM progress WHERE user_id = ?').bind(id),
     env.DB.prepare('DELETE FROM learner_progress WHERE user_id = ?').bind(id),
     env.DB.prepare('DELETE FROM learners WHERE user_id = ?').bind(id),
+    env.DB.prepare('DELETE FROM lesson_requests WHERE user_id = ?').bind(id),
     env.DB.prepare('DELETE FROM users WHERE id = ?').bind(id)
   ]);
 }
@@ -230,3 +232,11 @@ export async function getLearnerProgress(env, id) {
 export const putLearnerProgress = (env, userId, id, obj) =>
   env.DB.prepare('INSERT INTO learner_progress (learner_id, user_id, data, updated_at) VALUES (?, ?, ?, ?) ON CONFLICT(learner_id) DO UPDATE SET data = excluded.data, updated_at = excluded.updated_at')
     .bind(id, userId, JSON.stringify(obj), now()).run();
+
+/* lesson requests from subscribers (the Request a lesson page) */
+export async function addLessonRequest(env, userId, email, year, topic, details) {
+  await env.DB.prepare('INSERT INTO lesson_requests (user_id, email, year, topic, details, created_at) VALUES (?, ?, ?, ?, ?, ?)').bind(userId, email, year, topic, details, new Date().toISOString()).run();
+}
+export async function recentLessonRequests(env) {
+  return (await env.DB.prepare('SELECT email, year, topic, details, created_at FROM lesson_requests ORDER BY id DESC LIMIT 200').all()).results || [];
+}

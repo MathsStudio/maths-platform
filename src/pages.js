@@ -105,6 +105,19 @@ export function admin(rows, o) {
     '<div style="display:grid;gap:16px;min-width:0"><section class="card nl"><h2>Give access</h2><p class="note">Gives an existing account access to one year group, or all of them, without payment. Extends access if they already have it.</p><form method="post" action="/admin/grant"><label>Account email<input name="email" type="email" required></label><label>Year<select name="year"><option value="ALL">All paid years (P4 to S3)</option>' + PAID.map(y => '<option>' + y + '</option>').join('') + '</select></label><label>For<select name="months"><option value="1">1 month</option><option value="3">3 months</option><option value="12" selected>12 months</option><option value="60">5 years</option></select></label><button class="btn" type="submit">Give access</button></form></section>' +
     '<section class="card nl"><h2>Remove a paid year</h2><p class="note">Takes away paid access for one year group. Refund the payment in Stripe first, and cancel a monthly plan there too.</p><form method="post" action="/admin/revoke"><label>Account email<input name="email" type="email" required></label><label>Year<select name="year">' + PAID.map(y => '<option>' + y + '</option>').join('') + '</select></label><button class="btn alt" type="submit">Remove access</button></form></section></div></div>' +
     emailCard(rows, o) +
+    reqCard(o.reqs) +
     '<h2 class="admh" id="people">People who signed up</h2>' + (o.note && o.hl ? '<p class="nlnote" role="status">' + esc(o.note) + ' The changed account is highlighted below.</p>' : '') + '<p class="note">Only email people with "OK to email with news" = Yes. Every email you send must include an unsubscribe link.</p>' +
     '<div class="tablewrap"><table><thead><tr><th>Email</th><th>Role</th><th>Access</th><th>Verified</th><th>OK to email</th><th>Signed up</th><th>Last sign-in</th></tr></thead><tbody>' + (tr || '<tr><td colspan="7">Nobody yet.</td></tr>') + '</tbody></table></div></main></body></html>';
+}
+
+/* the Lesson requests list: most-asked topics first, then every request, newest first */
+function reqCard(reqs) {
+  if (!reqs) return '';
+  const n = {}; reqs.forEach(r => { const k = r.year + ' · ' + String(r.topic).toLowerCase(); n[k] = (n[k] || 0) + 1; });
+  const top = Object.keys(n).sort((a, b) => n[b] - n[a]).slice(0, 10);
+  return '<h2 class="admh" id="requests">Lesson requests</h2><p class="note">From subscribers on the Request a lesson page. Each one is also emailed to you; reply to that email to answer the parent.</p>' +
+    (top.length ? '<p class="note"><b>Most asked:</b> ' + top.map(k => esc(k) + ' (' + n[k] + ')').join(', ') + '</p>' : '') +
+    '<div class="tablewrap"><table><thead><tr><th>Date</th><th>Year</th><th>Topic</th><th>Details</th><th>Email</th></tr></thead><tbody>' +
+    (reqs.length ? reqs.map(r => '<tr><td>' + esc(String(r.created_at || '').slice(0, 10)) + '</td><td>' + esc(r.year) + '</td><td>' + esc(r.topic) + '</td><td>' + esc(r.details || '') + '</td><td>' + esc(r.email) + '</td></tr>').join('') : '<tr><td colspan="5">No requests yet.</td></tr>') +
+    '</tbody></table></div>';
 }

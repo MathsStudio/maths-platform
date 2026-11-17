@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Request a lesson · MathsStudio</title><meta name="robots" content="noindex"><link rel="icon" href="/favicon.svg" type="image/svg+xml"><link rel="icon" href="/favicon.ico" sizes="48x48"><link rel="icon" href="/favicon-96.png" type="image/png" sizes="96x96"><link rel="icon" href="/icon-192.png" type="image/png" sizes="192x192"><link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/site.css?v=3"></head><body class="plain">
+<header class="nav"><a class="brand" href="/"><svg class="mark" width="40" height="40" viewBox="0 0 64 64" role="img" aria-label="MathsStudio logo"><rect width="64" height="64" rx="16" fill="#2b5fd9"/><path d="M16 47V21L32 39L48 21V47" fill="none" stroke="#ffffff" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/><circle cx="32" cy="15" r="4.5" fill="#ffd166"/></svg><span class="word"><span>Maths</span><span class="st">Studio</span></span></a><nav class="links"><a class="pill" href="/signup/">Sign up</a></nav></header>
+<main class="narrow"><div class="card" id="rq">
+<p class="note" style="margin:0 0 6px"><a href="/">← Back to home</a></p>
+<h1>Request a lesson</h1>
+<div id="rqBody"><p>Loading…</p></div>
+</div></main>
+<script>
+(function () {
+  var box = document.getElementById('rqBody');
+  function esc(t) { return String(t).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
+  var YEARS = ['P2', 'P3', 'P4', 'P5', 'P6', 'P7', 'S1', 'S2', 'S3'];
+  function form(me) {
+    var ys = me.owner ? YEARS : me.years;
+    box.innerHTML = '<p>Tell me which topic your child needs help with. I will reply by email, and may add a lesson for it.</p>' +
+      '<p class="note" style="margin:0 0 4px">I will reply to <b>' + esc(me.email) + '</b></p>' +
+      '<form id="rqForm" novalidate><label for="rqYear">Year</label><select id="rqYear" style="width:100%;min-height:48px;border:2px solid #b8c4e6;border-radius:12px;padding:0 12px;font:inherit;font-weight:700;color:#14213d;background:#fff;box-sizing:border-box">' + ys.map(function (y) { return '<option' + (y === me.year ? ' selected' : '') + '>' + y + '</option>'; }).join('') + '</select>' +
+      '<label for="rqTopic">Topic</label><input id="rqTopic" type="text" maxlength="100" required placeholder="e.g. long division, fractions" style="width:100%;min-height:48px;border:2px solid #b8c4e6;border-radius:12px;padding:0 12px;font:inherit;font-weight:700;color:#14213d;background:#fff;box-sizing:border-box">' +
+      '<label for="rqDet">Details <span style="font-weight:600;color:#6b7894">(optional)</span></label><textarea id="rqDet" rows="5" maxlength="500" placeholder="What does your child find hard? For example: she can divide, but gets stuck when there is a remainder." style="width:100%;min-height:48px;border:2px solid #b8c4e6;border-radius:12px;padding:0 12px;font:inherit;font-weight:700;color:#14213d;background:#fff;box-sizing:border-box;min-height:120px;padding:10px 12px;font-weight:600;line-height:1.45;resize:vertical"></textarea>' +
+      '<div class="note" id="rqCount" style="text-align:right;margin:2px 0 10px">0 / 500</div>' +
+      '<button class="btn block" type="submit">Send request</button><div class="msg" hidden role="status"></div>' +
+      '<p class="note" style="margin-top:12px">Please do not include your child\u2019s full name or other private details.</p></form>';
+    var f = document.getElementById('rqForm'), det = document.getElementById('rqDet'), cnt = document.getElementById('rqCount'), msg = f.querySelector('.msg'), btn = f.querySelector('button');
+    det.addEventListener('input', function () { cnt.textContent = det.value.length + ' / 500'; });
+    f.addEventListener('submit', function (e) {
+      e.preventDefault(); msg.hidden = true;
+      var topic = document.getElementById('rqTopic').value.trim();
+      if (topic.length < 2) { msg.className = 'msg err'; msg.textContent = 'Please write the topic you need help with.'; msg.hidden = false; return; }
+      btn.disabled = true;
+      fetch('/api/request', { method: 'POST', credentials: 'same-origin', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ year: document.getElementById('rqYear').value, topic: topic, details: det.value }) })
+        .then(function (r) { return r.json().catch(function () { return {}; }).then(function (j) { return { ok: r.ok, j: j }; }); })
+        .catch(function () { return { ok: false, j: { error: 'No connection. Please check your internet and try again.' } }; })
+        .then(function (res) {
+          btn.disabled = false;
+          if (!res.ok) { msg.className = 'msg err'; msg.textContent = res.j.error || 'Something went wrong. Please try again.'; msg.hidden = false; return; }
+          document.querySelector('#rq h1').textContent = 'Request sent \u2713';
+          box.innerHTML = '<p>Thank you. I will reply to <b>' + esc(res.j.email) + '</b> about <b>' + esc(res.j.year + ' \u00b7 ' + res.j.topic) + '</b> within a few days.</p>' +
+            '<p style="display:flex;gap:10px;flex-wrap:wrap;margin-top:16px"><a class="btn" href="/">Back to home</a><button type="button" class="btn" id="rqMore" style="background:#fff;color:#14213d;border:2px solid #b8c4e6">Ask about another topic</button></p>';
+          document.getElementById('rqMore').addEventListener('click', function () { document.querySelector('#rq h1').textContent = 'Request a lesson'; form(me); });
+        });
+    });
+  }
+  fetch('/api/me', { credentials: 'same-origin' }).then(function (r) { return r.json(); }).then(function (me) {
+    if (me && me.signedIn) document.querySelectorAll('a[href="/signup/"]').forEach(function (a) { a.textContent = 'My account'; a.setAttribute('href', '/account/'); });
+    if (!me || !me.signedIn) { box.innerHTML = '<p>Please <a href="/login/">sign in</a> to request a lesson.</p>'; return; }
+    if (!me.owner && !(me.years && me.years.length)) { box.innerHTML = '<p>\ud83d\udd12 Request a lesson is for subscribers. Unlock a year to ask for extra help with any topic.</p><p><a class="btn" href="/#pricing">See prices</a></p>'; return; }
+    form(me);
+  }).catch(function () { box.innerHTML = '<p>We could not load this page. Please refresh it.</p>'; });
+})();
+</script></body></html>

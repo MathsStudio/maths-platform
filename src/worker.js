@@ -195,6 +195,24 @@ async function verifyPost(request, env) {
 }
 
 /* sign-ups plus the paid or gifted years each person can open right now (owners get everything) */
+/* Request a lesson: subscribers (anyone with a paid or gifted year) ask for help with a topic.
+   Saved for the admin page and emailed to the support inbox, with Reply going straight to the parent. */
+async function lessonRequest(request, env, user) {
+  if (!user) return json({ error: 'Please sign in first.' }, 401);
+  const years = (await passesOf(env, user)).map(x => x.year), owner = user.plan === 'owner';
+  if (!years.length && !owner) return json({ error: 'Request a lesson is for subscribers. Unlock a year to use it.' }, 403);
+  const b = await readForm(request), clean = v => String(v || '').replace(/[\u0000-\u0008\u000b\u000c\u000e-\u001f]/g, '').trim();
+  const year = clean(b.year).slice(0, 3), topic = clean(b.topic).replace(/\s+/g, ' ').slice(0, 100), details = clean(b.details).slice(0, 500);
+  if (!(owner ? pg.YEARS.includes(year) : years.includes(year))) return json({ error: 'Please choose one of your year groups.' }, 400);
+  if (topic.length < 2) return json({ error: 'Please write the topic you need help with.' }, 400);
+  if (!(await db.rateOk(env, 'lessonreq:' + user.id, 5, 86400))) return json({ error: 'You have sent a few requests today already. Please try again tomorrow, or email info@mathsstudio.co.uk.' }, 429);
+  await db.addLessonRequest(env, user.id, user.email, year, topic, details);
+  const to = env.SUPPORT_EMAIL || 'info@mathsstudio.co.uk';
+  const body = 'Lesson request from the Request a lesson page.\n\nAccount email: ' + user.email + '\nYear group: ' + year + '\nTopic: ' + topic + '\nPaid years: ' + (years.join(', ') || (owner ? 'owner' : 'none')) + '\n\nDetails:\n' + (details || '(none)') + '\n\nReply to this email to write to them. All requests are listed on the admin page.';
+  try { await sendMail(env, to, 'Lesson request: ' + year + ' · ' + topic, body, undefined, user.email); } catch (e) { /* saved already; it still shows on the admin page */ }
+  return json({ ok: true, email: user.email, year, topic });
+}
+
 async function adminRows(env) { return (await db.adminList(env)).map(r => Object.assign(r, { owner: isOwner(env, r.email) })); }
 
 async function admin(request, env, url) {
@@ -211,7 +229,7 @@ async function admin(request, env, url) {
   const rows = await adminRows(env);
   if (url.pathname === '/admin/export.csv')
     return withHeaders(new Response(pg.csv(rows), { headers: { 'Content-Type': 'text/csv; charset=utf-8', 'Content-Disposition': 'attachment; filename="mathsstudio-signups.csv"', 'Cache-Control': 'no-store', 'X-Robots-Tag': 'noindex' } }));
-  return page(pg.admin(rows, { note: String(url.searchParams.get('note') || '').slice(0, 300), hl: String(url.searchParams.get('hl') || '').slice(0, 200), log: await db.recentNewsletters(env) }));
+  return page(pg.admin(rows, { note: String(url.searchParams.get('note') || '').slice(0, 300), hl: String(url.searchParams.get('hl') || '').slice(0, 200), log: await db.recentNewsletters(env), reqs: await db.recentLessonRequests(env) }));
 }
 
 
@@ -429,6 +447,7 @@ export default {
       if (p === '/api/learners' && (m === 'GET' || m === 'POST')) return await learnersApi(request, env, user);
       if (p === '/api/confirm' && m === 'POST') return await confirmPay(request, env, user);
       if (p === '/api/checkout' && m === 'POST') return await checkout(request, env, user);
+      if (p === '/api/request' && m === 'POST') return await lessonRequest(request, env, user);
       if (p === '/logout' && m === 'POST') {
         const t = parseCookies(request).ms_session; if (t) await db.dropSession(env, await sha256(t));
         return redirect('/', { 'Set-Cookie': cookie('ms_session', '', request, 0) });

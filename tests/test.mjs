@@ -211,6 +211,20 @@ r = await call('/account/portal', { method: 'POST', body: {} }); ok(r.status ===
   ok(r.status === 200 && sent.length === 2 && sent[0].to[0] === 'info@mathsstudio.co.uk' && sent[0].reply_to === em && /Within 14 days: yes/.test(sent[0].text) && /Not right for us/.test(sent[0].text) && sent[1].to[0] === em, 'refund request emails the owner (reply goes to the customer) and confirms to the customer');
   await call('/account/refund', { method: 'POST', body: { year: 'S2' } }); r = await call('/account/refund', { method: 'POST', body: { year: 'S2' } }); ok(r.status === 429, 'refund requests are limited to two a day');
   const keep = cookieJar; cookieJar = ''; r = await call('/account/refund', { method: 'POST', body: { year: 'S2' } }); ok(r.status === 303 && r.loc === '/login/', 'refund request needs sign-in'); cookieJar = keep; }
+// Request a lesson (subscribers only)
+{ const em = sqlite.prepare('SELECT email FROM users WHERE id=?').get(uid).email;
+  const keep = cookieJar; cookieJar = ''; r = await call('/api/request', { method: 'POST', json: { year: 'S2', topic: 'Fractions' } }); ok(r.status === 401, 'request a lesson needs sign-in'); cookieJar = keep;
+  sqlite.prepare('UPDATE purchases SET user_id = -user_id WHERE user_id=?').run(uid);
+  r = await call('/api/request', { method: 'POST', json: { year: 'S2', topic: 'Fractions' } }); ok(r.status === 403, 'request a lesson is locked without a paid year');
+  sqlite.prepare('UPDATE purchases SET user_id = -user_id WHERE user_id=?').run(-uid);
+  r = await call('/api/request', { method: 'POST', json: { year: 'P5', topic: 'Fractions' } }); ok(r.status === 400, 'request a lesson only for a paid year');
+  r = await call('/api/request', { method: 'POST', json: { year: 'S2', topic: ' ' } }); ok(r.status === 400, 'request a lesson needs a topic');
+  r = await call('/api/request', { method: 'POST', headers: { Origin: 'https://evil.test' }, json: { year: 'S2', topic: 'Fractions' } }); ok(r.status === 403, 'request a lesson blocks other sites');
+  sent.length = 0; r = await call('/api/request', { method: 'POST', json: { year: 'S2', topic: 'Long division', details: 'Gets stuck with remainders <b>' } });
+  ok(r.status === 200 && JSON.parse(r.text).ok && sent.length === 1 && sent[0].to[0] === 'info@mathsstudio.co.uk' && sent[0].reply_to === em && /Lesson request: S2 · Long division/.test(sent[0].subject) && /Gets stuck with remainders/.test(sent[0].text), 'request a lesson emails the owner with reply-to the parent');
+  r = await call('/admin', { auth: 'pw' }); ok(/Lesson requests/.test(r.text) && /Long division/.test(r.text) && /&lt;b&gt;/.test(r.text) && /Most asked:/.test(r.text), 'admin lists lesson requests safely');
+  for (let i = 0; i < 4; i++) await call('/api/request', { method: 'POST', json: { year: 'S2', topic: 'Topic ' + i } });
+  r = await call('/api/request', { method: 'POST', json: { year: 'S2', topic: 'One more' } }); ok(r.status === 429, 'lesson requests are limited to five a day'); }
 // renewal is picked up near the end of the period
 sqlite.prepare("UPDATE purchases SET until=?, synced_at=NULL WHERE user_id=? AND year='S2'").run(nowS() + 86400, uid);
 subState.current_period_end = nowS() + 30 * 86400;

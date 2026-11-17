@@ -3,6 +3,7 @@ Allow: /
 Disallow: /app/
 Disallow: /learn
 Disallow: /account
+Disallow: /request/
 Disallow: /api/
 Disallow: /login/
 Disallow: /signup/
