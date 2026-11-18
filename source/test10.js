@@ -79,7 +79,7 @@
   function draw() {
     var host = document.getElementById('tenOverlay'); if (!host || !T) return;
     var q = T.qs[T.i], a = T.ans[T.i], dots = T.qs.map(function (x, k) {
-      return '<button type="button" data-go="' + k + '" aria-label="Question ' + (k + 1) + (T.ans[k] != null ? ', answered' : '') + '" style="width:30px;height:30px;border-radius:50%;border:2px solid var(--accent,#1f7a52);margin:2px;font:700 13px system-ui;cursor:pointer;color:var(--fg,#111);background:' + (k === T.i ? 'var(--accent,#1f7a52);color:#fff' : T.ans[k] != null ? 'rgba(31,122,82,.25)' : 'transparent') + '">' + (k + 1) + '</button>';
+      return '<button type="button" data-go="' + k + '" aria-label="Question ' + (k + 1) + (T.ans[k] != null ? ', answered' : '') + '" style="width:40px;height:40px;border-radius:50%;border:2px solid var(--accent,#1f7a52);margin:3px;font:700 15px system-ui;cursor:pointer;color:var(--fg,#111);background:' + (k === T.i ? 'var(--accent,#1f7a52);color:#fff' : T.ans[k] != null ? 'rgba(31,122,82,.25)' : 'transparent') + '">' + (k + 1) + '</button>';
     }).join('');
     var body;
     if (q.type === 'mc') body = '<div role="radiogroup" aria-label="Answers" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px;margin-top:12px">' + (q.options || []).map(function (o, k) {
