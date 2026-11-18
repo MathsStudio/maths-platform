@@ -22,7 +22,7 @@
     var q = new URLSearchParams(location.search), y = q.get('year'), em = q.get('email'); if (em) s.email.value = em;
     if (y && s.year.querySelector('option[value="' + y + '"]')) s.year.value = y;
     wire(s, '/api/signup', function (f) { return { email: f.email.value, role: f.role.value, year: f.year.value, marketing: f.marketing.checked, website: f.website.value }; },
-      function (f) { f.innerHTML = '<h2>Check your email</h2><p>We sent a link to <b></b>. Open it to confirm your address and choose your password. It can take a minute, so check your junk folder too.</p>'; f.querySelector('b').textContent = f.dataset.email || ''; });
+      function (f) { f.innerHTML = '<h2>Check your email</h2><p>We sent a link to <b></b>. Open it to confirm your address and choose your password. It can take a minute, so check your junk folder too.</p><p>While you wait, read the <a href="/guide/">parent guide</a> to see how MathsStudio works.</p>'; f.querySelector('b').textContent = f.dataset.email || ''; });
     s.addEventListener('submit', function () { s.dataset.email = s.email ? s.email.value : ''; }, true);
   }
   function go(f, msg, res) { location.href = (res && res.j && res.j.next) || '/account/'; }
