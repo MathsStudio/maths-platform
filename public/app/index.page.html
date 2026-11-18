@@ -842,6 +842,12 @@ var SLIDE_MORE = {"1.learn1": [{"more": ["Our number system uses only ten digits
   S.h.sameNum = sameNum; S.h.matches = matches;
 
   /* ================= quiz engine ================= */
+  /* the value of an answer button, taken from the question's own option list so that fractions drawn stacked (1/4) still match the stored answer */
+  function optVal(q, b) {
+    var raw = q.options[Number(b.getAttribute('data-o'))];
+    if (raw !== undefined && String(raw) === String(q.answer)) return q.answer;
+    return window.origText ? window.origText(b) : b.textContent;
+  }
   function numOnly(q) { return q.type !== 'mc' && q.kind !== 'text' && !/[A-Za-z]/.test(String(q.answer)); }
   function mountQuiz(host, qs, cfg) {
     var qi = 0, score = 0, results = [], given = [], answered = false, hintIdx = 0, drawnOnce = false;
@@ -896,7 +902,7 @@ var SLIDE_MORE = {"1.learn1": [{"more": ["Our number system uses only ten digits
         this.textContent = hintIdx >= q.hints.length ? 'No more hints' : 'Another hint';
         this.disabled = hintIdx >= q.hints.length;
       });
-      if (q.type === 'mc') host.querySelectorAll('.opt').forEach(function (b) { b.addEventListener('click', function () { if (!answered) grade(b.textContent, b); }); });
+      if (q.type === 'mc') host.querySelectorAll('.opt').forEach(function (b) { b.addEventListener('click', function () { if (!answered) grade(optVal(q, b), b); }); });
       else { var ai = $('ansIn'); if (numOnly(q) && ai) ai.addEventListener('input', function () { var c = ai.value.replace(/[A-Za-z]/g, ''); if (c !== ai.value) ai.value = c; }); }
       if (q.type !== 'mc') $('ansForm').addEventListener('submit', function (e) { e.preventDefault(); if (!answered && $('ansIn').value.trim() !== '') grade($('ansIn').value, null); });
       if ($('qPrev')) $('qPrev').addEventListener('click', function () { if (qi > 0) { qi--; draw(); } });
@@ -918,7 +924,7 @@ var SLIDE_MORE = {"1.learn1": [{"more": ["Our number system uses only ten digits
     /* an answered question: its answer is locked in, with the feedback and a button on to the next question still to do */
     function showDone(q, btn) {
       var ok = results[qi], val = given[qi]; answered = true;
-      if (q.type === 'mc') host.querySelectorAll('.opt').forEach(function (b) { b.disabled = true; if (b.textContent === q.answer) b.classList.add('ok'); else if (b === btn || (!btn && b.textContent === val)) b.classList.add('no'); });
+      if (q.type === 'mc') host.querySelectorAll('.opt').forEach(function (b) { b.disabled = true; var ov = optVal(q, b); if (ov === q.answer) b.classList.add('ok'); else if (b === btn || (!btn && ov === val)) b.classList.add('no'); });
       else { $('ansIn').value = val; $('ansIn').disabled = true; $('check').disabled = true; }
       $('hintBtn').disabled = true;
       var to = nextOpen(qi), shown = q.show || (q.type === 'mc' ? q.answer : (isNaN(Number(q.answer)) ? q.answer : fmtInt(Number(q.answer))));
@@ -1600,7 +1606,7 @@ var SLIDE_MORE = {"1.learn1": [{"more": ["Our number system uses only ten digits
   /* The bank is built with a fixed seed, so building more sets later gives the same earlier sets:
      only the sets up to the one opened are built, which keeps it quick on phones. */
   function setBank(t, step, lv) {
-    var sets = step.id === 'practise' ? 10 : 5, key = t.n + '|' + lv + '|' + step.id;
+    var sets = step.sets || (step.id === 'practise' ? 10 : 5), key = t.n + '|' + lv + '|' + step.id;
     return { key: key, sets: sets, upto: function (i) {
       var need = Math.min(sets, i + 1) * SET_SIZE, have = bankCache[key];
       if (!have || have.length < need) {
@@ -1615,11 +1621,11 @@ var SLIDE_MORE = {"1.learn1": [{"more": ["Our number system uses only ten digits
     var b = setBank(t, step, lv);
     store.settings.setPos = store.settings.setPos || {}; store.settings.setDone = store.settings.setDone || {};
     var done = store.settings.setDone[b.key] || [], cur = Math.min(store.settings.setPos[b.key] || 0, b.sets - 1);
-    var lead = pane.querySelector('.lead'); if (lead) lead.textContent = String(step.lead).replace(/\b\d{2,3} (\w+ )?(questions|problems)/, '20 $1$2 in each set');
+    var lead = pane.querySelector('.lead'); if (lead && !step.sets) lead.textContent = String(step.lead).replace(/\b\d{2,3} (\w+ )?(questions|problems)/, '20 $1$2 in each set');
     var bar = document.createElement('div'); bar.className = 'setbar';
     $('quizHost').parentNode.insertBefore(bar, $('quizHost'));
     function drawBar() {
-      bar.innerHTML = '<span class="setbar-l">Set ' + (cur + 1) + ' of ' + b.sets + ' \u00b7 20 ' + (step.id === 'practise' ? 'questions' : 'problems') + '</span>' +
+      bar.innerHTML = '<span class="setbar-l">Set ' + (cur + 1) + ' of ' + b.sets + ' \u00b7 ' + (step.sets ? qsFor(cur).length : 20) + ' ' + (step.id === 'practise' ? 'questions' : 'problems') + '</span>' +
         Array.apply(null, Array(b.sets)).map(function (_, i) { return '<button type="button" class="setchip' + (i === cur ? ' on' : '') + (done.indexOf(i) > -1 ? ' ok' : '') + '" data-set="' + i + '" aria-pressed="' + (i === cur) + '" aria-label="Set ' + (i + 1) + (done.indexOf(i) > -1 ? ', done' : '') + '">' + (done.indexOf(i) > -1 ? '\u2713' : i + 1) + '</button>'; }).join('');
       bar.querySelectorAll('[data-set]').forEach(function (x) { x.addEventListener('click', function () { keepPlace('.setbar', function () { open(Number(x.getAttribute('data-set'))); }); }); });
     }
@@ -2788,6 +2794,7 @@ function genAddSub() {
   var f1 = a + '/' + d, f2 = (c % 2 === 0 && c > 0 ? c : c) + '/' + D, num1 = a * k;
   if (add) { var tot = num1 + c; return Q({ tag: 'Adding fractions', kind: 'frac', simplest: true, form: 'mixed', placeholder: 'e.g. 3/4', text: 'Work out <b>' + f1 + ' + ' + f2 + '</b>. Give your answer in its simplest form.', answer: mixedStr(tot, D),
       hints: ['The denominators are ' + d + ' and ' + D + '. Change ' + f1 + ' into ' + D + 'ths first.', f1 + ' = ' + num1 + '/' + D + ' because you multiply top and bottom by ' + k + '. Now add the tops, ' + num1 + ' and ' + c + ', and simplify if you can.'], explain: f1 + ' = ' + num1 + '/' + D + '. ' + num1 + '/' + D + ' + ' + c + '/' + D + ' = ' + tot + '/' + D + ' = ' + mixedStr(tot, D) + '.' }); }
+  if (num1 === c) { c = c > 1 ? c - 1 : c + 1; f2 = c + '/' + D; }   /* two equal fractions would make the difference 0, not what the answer says */
   var big = Math.max(num1, c), small = Math.min(num1, c); if (big === small) big++;
   var bigF = (big === num1 ? f1 : f2), smallF = (big === num1 ? f2 : f1), bigS = big, smallS = small;
   return Q({ tag: 'Subtracting fractions', kind: 'frac', simplest: true, placeholder: 'e.g. 3/4', text: 'Work out <b>' + (big === num1 ? f1 : f2) + ' − ' + (big === num1 ? f2 : f1) + '</b>. Give your answer in its simplest form.', answer: simpl(big - small, D),
@@ -8806,7 +8813,7 @@ S.storyFor = function (n) {
 
   function warmQ(c) {
     var q = makeQ(c);
-    return { tag: 'Mental maths', text: q.text, answer: q.answer, kind: 'frac', form: q.form, type: 'input', hints: q.hints, explain: q.explain };
+    return { tag: 'Mental maths', text: q.text, answer: q.answer, kind: 'frac', form: q.form, show: q.show, type: 'input', hints: q.hints, explain: q.explain };
   }
 
   /* ---------- install ---------- */
@@ -16296,7 +16303,7 @@ S.spatialExtra = S.extraMakers;
     var tries = 0, answered = false, PRAISE = ['Yes! You are right!', 'Brilliant! Well done!', 'That’s right! Super thinking!', 'Yes! Clever you!'], NUDGE = ['Not quite. Have another go!', 'Ooh, nearly! Try again.'];
     function pick(el) {
       var c = chunks[lastI]; if (!c || !c.think || answered || el.classList.contains('no')) return;
-      var ok = String(el.textContent).trim() === String(c.answer).trim();
+      var ok = String(window.origText ? window.origText(el) : el.textContent).trim() === String(c.answer).trim();
       token++; clearTimeout(timer); try { speechSynthesis.cancel(); } catch (e) { /* ignore */ }
       var th = stage.querySelector('.flx-think'); if (th) th.classList.remove('on');
       if (ok) { answered = true; el.classList.add('ok'); } else { tries++; el.classList.add('no'); }
@@ -23858,6 +23865,18 @@ S.extraMakers = function (n, level) {
   css.textContent = '.fr{display:inline-block;white-space:nowrap;vertical-align:middle;margin:0 .08em}.fr .katex{font-size:1.1em;font-family:inherit}.fr .katex .mord,.fr .katex .mathnormal,.fr .katex .mathrm{font-family:inherit;font-style:normal;font-weight:800}.fr .katex .mfrac .frac-line{border-bottom-width:.07em}';
   document.head.appendChild(css);
 
+  /* the text of an element as originally written ("1/4"), even after its fractions have been drawn stacked: used when marking answers */
+  window.origText = function (el) {
+    if (!el) return '';
+    var fr = el.querySelectorAll ? el.querySelectorAll('.fr') : [];
+    if (!fr.length) return el.textContent;
+    var c = el.cloneNode(true), list = c.querySelectorAll('.fr');
+    for (var i = 0; i < list.length; i++) {
+      var m = /^(?:(\d+) and )?(.+) over (.+)$/.exec(list[i].getAttribute('aria-label') || '');
+      list[i].parentNode.replaceChild(document.createTextNode(m ? (m[1] ? m[1] + ' ' : '') + m[2] + '/' + m[3] : list[i].textContent), list[i]);
+    }
+    return c.textContent;
+  };
   function load() {
     if (state) return; state = 1;
     var l = document.createElement('link'); l.rel = 'stylesheet'; l.href = '/vendor/katex/katex.min.css'; document.head.appendChild(l);
@@ -25160,7 +25179,7 @@ S.extraMakers = function (n, level) {
   /* P4 follows the P5 format: a 4-question warm-up and 30 real-life problems, all at First level depth */
   function warmStep(gens) { return { id: 'warm', label: 'Warm-up', type: 'quiz', tag: 'Warm-up', title: 'Mental maths warm-up', lead: 'Four quick questions to wake up your number brain.', doneLabel: 'On to the practice',
     make: function () { var fs = shuffle((gens.low || []).slice()), out = []; for (var i = 0; out.length < 4 && i < 12; i++) out.push(fs[i % fs.length]()); return out; } }; }
-  function lifeStep(life, lead) { return { id: 'practical', label: 'Real-life problem', type: 'quiz', tag: 'Real-life problems', title: 'Real-life problems', lead: '30 situation questions on ' + lead + '. Think about which skill from this topic the problem needs. Low, Medium and High change how many steps each problem has.',
+  function lifeStep(life, lead) { return { id: 'practical', label: 'Real-life problem', type: 'quiz', sets: 2, tag: 'Real-life problems', title: 'Real-life problems', lead: '30 situation questions on ' + lead + '. Think about which skill from this topic the problem needs. Low, Medium and High change how many steps each problem has.',
     make: function () { var lv = (S.app && S.app.store.settings.difficulty) || 'medium', list = life[lv] || life.medium, out = [], seen = {}, tries = 0;
       while (out.length < 30 && tries < 900) { tries++; var q = pick(list)(), key = q.text + '|' + q.answer; if (seen[key] && tries < 600) continue; seen[key] = 1; out.push(q); } return out; } }; }
   FL.LS = function (title, year, goal, o) {

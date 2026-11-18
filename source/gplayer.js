@@ -326,7 +326,7 @@
     var tries = 0, answered = false, PRAISE = ['Yes! You are right!', 'Brilliant! Well done!', 'That’s right! Super thinking!', 'Yes! Clever you!'], NUDGE = ['Not quite. Have another go!', 'Ooh, nearly! Try again.'];
     function pick(el) {
       var c = chunks[lastI]; if (!c || !c.think || answered || el.classList.contains('no')) return;
-      var ok = String(el.textContent).trim() === String(c.answer).trim();
+      var ok = String(window.origText ? window.origText(el) : el.textContent).trim() === String(c.answer).trim();
       token++; clearTimeout(timer); try { speechSynthesis.cancel(); } catch (e) { /* ignore */ }
       var th = stage.querySelector('.flx-think'); if (th) th.classList.remove('on');
       if (ok) { answered = true; el.classList.add('ok'); } else { tries++; el.classList.add('no'); }

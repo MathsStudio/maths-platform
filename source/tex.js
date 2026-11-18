@@ -9,6 +9,18 @@
   css.textContent = '.fr{display:inline-block;white-space:nowrap;vertical-align:middle;margin:0 .08em}.fr .katex{font-size:1.1em;font-family:inherit}.fr .katex .mord,.fr .katex .mathnormal,.fr .katex .mathrm{font-family:inherit;font-style:normal;font-weight:800}.fr .katex .mfrac .frac-line{border-bottom-width:.07em}';
   document.head.appendChild(css);
 
+  /* the text of an element as originally written ("1/4"), even after its fractions have been drawn stacked: used when marking answers */
+  window.origText = function (el) {
+    if (!el) return '';
+    var fr = el.querySelectorAll ? el.querySelectorAll('.fr') : [];
+    if (!fr.length) return el.textContent;
+    var c = el.cloneNode(true), list = c.querySelectorAll('.fr');
+    for (var i = 0; i < list.length; i++) {
+      var m = /^(?:(\d+) and )?(.+) over (.+)$/.exec(list[i].getAttribute('aria-label') || '');
+      list[i].parentNode.replaceChild(document.createTextNode(m ? (m[1] ? m[1] + ' ' : '') + m[2] + '/' + m[3] : list[i].textContent), list[i]);
+    }
+    return c.textContent;
+  };
   function load() {
     if (state) return; state = 1;
     var l = document.createElement('link'); l.rel = 'stylesheet'; l.href = '/vendor/katex/katex.min.css'; document.head.appendChild(l);

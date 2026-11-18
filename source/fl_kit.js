@@ -270,7 +270,7 @@
   /* P4 follows the P5 format: a 4-question warm-up and 30 real-life problems, all at First level depth */
   function warmStep(gens) { return { id: 'warm', label: 'Warm-up', type: 'quiz', tag: 'Warm-up', title: 'Mental maths warm-up', lead: 'Four quick questions to wake up your number brain.', doneLabel: 'On to the practice',
     make: function () { var fs = shuffle((gens.low || []).slice()), out = []; for (var i = 0; out.length < 4 && i < 12; i++) out.push(fs[i % fs.length]()); return out; } }; }
-  function lifeStep(life, lead) { return { id: 'practical', label: 'Real-life problem', type: 'quiz', tag: 'Real-life problems', title: 'Real-life problems', lead: '30 situation questions on ' + lead + '. Think about which skill from this topic the problem needs. Low, Medium and High change how many steps each problem has.',
+  function lifeStep(life, lead) { return { id: 'practical', label: 'Real-life problem', type: 'quiz', sets: 2, tag: 'Real-life problems', title: 'Real-life problems', lead: '30 situation questions on ' + lead + '. Think about which skill from this topic the problem needs. Low, Medium and High change how many steps each problem has.',
     make: function () { var lv = (S.app && S.app.store.settings.difficulty) || 'medium', list = life[lv] || life.medium, out = [], seen = {}, tries = 0;
       while (out.length < 30 && tries < 900) { tries++; var q = pick(list)(), key = q.text + '|' + q.answer; if (seen[key] && tries < 600) continue; seen[key] = 1; out.push(q); } return out; } }; }
   FL.LS = function (title, year, goal, o) {

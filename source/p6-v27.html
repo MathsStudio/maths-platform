@@ -844,6 +844,12 @@ var SLIDE_MORE = {"1.learn1": [{"more": ["Our number system uses only ten digits
   S.h.sameNum = sameNum; S.h.matches = matches;
 
   /* ================= quiz engine ================= */
+  /* the value of an answer button, taken from the question's own option list so that fractions drawn stacked (1/4) still match the stored answer */
+  function optVal(q, b) {
+    var raw = q.options[Number(b.getAttribute('data-o'))];
+    if (raw !== undefined && String(raw) === String(q.answer)) return q.answer;
+    return window.origText ? window.origText(b) : b.textContent;
+  }
   function numOnly(q) { return q.type !== 'mc' && q.kind !== 'text' && !/[A-Za-z]/.test(String(q.answer)); }
   function mountQuiz(host, qs, cfg) {
     var qi = 0, score = 0, results = [], given = [], answered = false, hintIdx = 0, drawnOnce = false;
@@ -898,7 +904,7 @@ var SLIDE_MORE = {"1.learn1": [{"more": ["Our number system uses only ten digits
         this.textContent = hintIdx >= q.hints.length ? 'No more hints' : 'Another hint';
         this.disabled = hintIdx >= q.hints.length;
       });
-      if (q.type === 'mc') host.querySelectorAll('.opt').forEach(function (b) { b.addEventListener('click', function () { if (!answered) grade(b.textContent, b); }); });
+      if (q.type === 'mc') host.querySelectorAll('.opt').forEach(function (b) { b.addEventListener('click', function () { if (!answered) grade(optVal(q, b), b); }); });
       else { var ai = $('ansIn'); if (numOnly(q) && ai) ai.addEventListener('input', function () { var c = ai.value.replace(/[A-Za-z]/g, ''); if (c !== ai.value) ai.value = c; }); }
       if (q.type !== 'mc') $('ansForm').addEventListener('submit', function (e) { e.preventDefault(); if (!answered && $('ansIn').value.trim() !== '') grade($('ansIn').value, null); });
       if ($('qPrev')) $('qPrev').addEventListener('click', function () { if (qi > 0) { qi--; draw(); } });
@@ -920,7 +926,7 @@ var SLIDE_MORE = {"1.learn1": [{"more": ["Our number system uses only ten digits
     /* an answered question: its answer is locked in, with the feedback and a button on to the next question still to do */
     function showDone(q, btn) {
       var ok = results[qi], val = given[qi]; answered = true;
-      if (q.type === 'mc') host.querySelectorAll('.opt').forEach(function (b) { b.disabled = true; if (b.textContent === q.answer) b.classList.add('ok'); else if (b === btn || (!btn && b.textContent === val)) b.classList.add('no'); });
+      if (q.type === 'mc') host.querySelectorAll('.opt').forEach(function (b) { b.disabled = true; var ov = optVal(q, b); if (ov === q.answer) b.classList.add('ok'); else if (b === btn || (!btn && ov === val)) b.classList.add('no'); });
       else { $('ansIn').value = val; $('ansIn').disabled = true; $('check').disabled = true; }
       $('hintBtn').disabled = true;
       var to = nextOpen(qi), shown = q.show || (q.type === 'mc' ? q.answer : (isNaN(Number(q.answer)) ? q.answer : fmtInt(Number(q.answer))));
@@ -1602,7 +1608,7 @@ var SLIDE_MORE = {"1.learn1": [{"more": ["Our number system uses only ten digits
   /* The bank is built with a fixed seed, so building more sets later gives the same earlier sets:
      only the sets up to the one opened are built, which keeps it quick on phones. */
   function setBank(t, step, lv) {
-    var sets = step.id === 'practise' ? 10 : 5, key = t.n + '|' + lv + '|' + step.id;
+    var sets = step.sets || (step.id === 'practise' ? 10 : 5), key = t.n + '|' + lv + '|' + step.id;
     return { key: key, sets: sets, upto: function (i) {
       var need = Math.min(sets, i + 1) * SET_SIZE, have = bankCache[key];
       if (!have || have.length < need) {
@@ -1617,11 +1623,11 @@ var SLIDE_MORE = {"1.learn1": [{"more": ["Our number system uses only ten digits
     var b = setBank(t, step, lv);
     store.settings.setPos = store.settings.setPos || {}; store.settings.setDone = store.settings.setDone || {};
     var done = store.settings.setDone[b.key] || [], cur = Math.min(store.settings.setPos[b.key] || 0, b.sets - 1);
-    var lead = pane.querySelector('.lead'); if (lead) lead.textContent = String(step.lead).replace(/\b\d{2,3} (\w+ )?(questions|problems)/, '20 $1$2 in each set');
+    var lead = pane.querySelector('.lead'); if (lead && !step.sets) lead.textContent = String(step.lead).replace(/\b\d{2,3} (\w+ )?(questions|problems)/, '20 $1$2 in each set');
     var bar = document.createElement('div'); bar.className = 'setbar';
     $('quizHost').parentNode.insertBefore(bar, $('quizHost'));
     function drawBar() {
-      bar.innerHTML = '<span class="setbar-l">Set ' + (cur + 1) + ' of ' + b.sets + ' \u00b7 20 ' + (step.id === 'practise' ? 'questions' : 'problems') + '</span>' +
+      bar.innerHTML = '<span class="setbar-l">Set ' + (cur + 1) + ' of ' + b.sets + ' \u00b7 ' + (step.sets ? qsFor(cur).length : 20) + ' ' + (step.id === 'practise' ? 'questions' : 'problems') + '</span>' +
         Array.apply(null, Array(b.sets)).map(function (_, i) { return '<button type="button" class="setchip' + (i === cur ? ' on' : '') + (done.indexOf(i) > -1 ? ' ok' : '') + '" data-set="' + i + '" aria-pressed="' + (i === cur) + '" aria-label="Set ' + (i + 1) + (done.indexOf(i) > -1 ? ', done' : '') + '">' + (done.indexOf(i) > -1 ? '\u2713' : i + 1) + '</button>'; }).join('');
       bar.querySelectorAll('[data-set]').forEach(function (x) { x.addEventListener('click', function () { keepPlace('.setbar', function () { open(Number(x.getAttribute('data-set'))); }); }); });
     }
@@ -2622,6 +2628,7 @@ function genAddSub() {
   var f1 = a + '/' + d, f2 = (c % 2 === 0 && c > 0 ? c : c) + '/' + D, num1 = a * k;
   if (add) { var tot = num1 + c; return Q({ tag: 'Adding fractions', kind: 'frac', simplest: true, form: 'mixed', placeholder: 'e.g. 3/4', text: 'Work out <b>' + f1 + ' + ' + f2 + '</b>. Give your answer in its simplest form.', answer: mixedStr(tot, D),
       hints: ['The denominators are ' + d + ' and ' + D + '. Change ' + f1 + ' into ' + D + 'ths first.', f1 + ' = ' + num1 + '/' + D + ' because you multiply top and bottom by ' + k + '. Now add the tops, ' + num1 + ' and ' + c + ', and simplify if you can.'], explain: f1 + ' = ' + num1 + '/' + D + '. ' + num1 + '/' + D + ' + ' + c + '/' + D + ' = ' + tot + '/' + D + ' = ' + mixedStr(tot, D) + '.' }); }
+  if (num1 === c) { c = c > 1 ? c - 1 : c + 1; f2 = c + '/' + D; }   /* two equal fractions would make the difference 0, not what the answer says */
   var big = Math.max(num1, c), small = Math.min(num1, c); if (big === small) big++;
   var bigF = (big === num1 ? f1 : f2), smallF = (big === num1 ? f2 : f1), bigS = big, smallS = small;
   return Q({ tag: 'Subtracting fractions', kind: 'frac', simplest: true, placeholder: 'e.g. 3/4', text: 'Work out <b>' + (big === num1 ? f1 : f2) + ' − ' + (big === num1 ? f2 : f1) + '</b>. Give your answer in its simplest form.', answer: simpl(big - small, D),

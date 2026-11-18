@@ -206,7 +206,7 @@
 
   function warmQ(c) {
     var q = makeQ(c);
-    return { tag: 'Mental maths', text: q.text, answer: q.answer, kind: 'frac', form: q.form, type: 'input', hints: q.hints, explain: q.explain };
+    return { tag: 'Mental maths', text: q.text, answer: q.answer, kind: 'frac', form: q.form, show: q.show, type: 'input', hints: q.hints, explain: q.explain };
   }
 
   /* ---------- install ---------- */
