@@ -270,9 +270,12 @@
   /* P4 follows the P5 format: a 4-question warm-up and 30 real-life problems, all at First level depth */
   function warmStep(gens) { return { id: 'warm', label: 'Warm-up', type: 'quiz', tag: 'Warm-up', title: 'Mental maths warm-up', lead: 'Four quick questions to wake up your number brain.', doneLabel: 'On to the practice',
     make: function () { var fs = shuffle((gens.low || []).slice()), out = []; for (var i = 0; out.length < 4 && i < 12; i++) out.push(fs[i % fs.length]()); return out; } }; }
-  function lifeStep(life, lead) { return { id: 'practical', label: 'Real-life problem', type: 'quiz', sets: 2, tag: 'Real-life problems', title: 'Real-life problems', lead: '30 situation questions on ' + lead + '. Think about which skill from this topic the problem needs. Low, Medium and High change how many steps each problem has.',
-    make: function () { var lv = (S.app && S.app.store.settings.difficulty) || 'medium', list = life[lv] || life.medium, out = [], seen = {}, tries = 0;
-      while (out.length < 30 && tries < 900) { tries++; var q = pick(list)(), key = q.text + '|' + q.answer; if (seen[key] && tries < 600) continue; seen[key] = 1; out.push(q); } return out; } }; }
+  function lifeStep(life, lead, n) { return { id: 'practical', label: 'Real-life problem', type: 'quiz', tag: 'Real-life problems', title: 'Real-life problems', lead: '30 situation questions on ' + lead + '. Think about which skill from this topic the problem needs. Low, Medium and High change how many steps each problem has.',
+    make: function () { var lv = (S.app && S.app.store.settings.difficulty) || 'medium', list = life[lv] || life.medium, out = [], seen = {}, tries = 0, want = Math.max(30, S.__wantCount || 30);
+      while (out.length < 30 && tries < 900) { tries++; var q = pick(list)(), key = q.text + '|' + q.answer; if (seen[key]) continue; seen[key] = 1; out.push(q); }
+      if (out.length < want) { var ex = (FL.lifeExtra && FL.lifeExtra[n] && FL.lifeExtra[n][lv]) || [], all = list.concat(ex); tries = 0;
+        while (out.length < want && tries < 6000) { tries++; var q2 = pick(all)(), k2 = q2.text + '|' + q2.answer; if (seen[k2]) continue; seen[k2] = 1; out.push(q2); } }
+      return out; } }; }
   FL.LS = function (title, year, goal, o) {
     var id = title + ' \u00b7 ' + year; BT.QT = BT.QT || {}; BT.QT[id] = title;
     var ep = BT.L.lesson(id, goal, o);
@@ -284,7 +287,7 @@
   FL.topic = function (o) {
     if (S.topics[o.n]) return;
     FL.GENS = FL.GENS || {}; if (o.gens) FL.GENS[o.n] = o.gens;
-    S.addTopic({ n: o.n, base: o.n, year: o.year, short: o.short, title: o.title, blurb: o.blurb, gens: {}, steps: o.gens && o.year !== 'P3' ? (o.life ? [warmStep(o.gens), practiseStep(o.gens), lifeStep(o.life, o.lifeLead || 'this topic')] : [practiseStep(o.gens)]) : [] });   /* P3 has no practice, only lessons and activities */
+    S.addTopic({ n: o.n, base: o.n, year: o.year, short: o.short, title: o.title, blurb: o.blurb, gens: {}, steps: o.gens && o.year !== 'P3' ? (o.life ? [warmStep(o.gens), practiseStep(o.gens), lifeStep(o.life, o.lifeLead || 'this topic', o.n)] : [practiseStep(o.gens)]) : [] });   /* P3 has no practice, only lessons and activities */
     if (o.lessons) BT.L.use(o.n, o.lessons);
     /* First level: the story and story-based lessons play in the Watch player, like P5 to P7 (see fl_story.js) */
     if (o.story) FL.toWatch(o.n, o.story, o.learn);
