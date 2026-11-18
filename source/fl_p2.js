@@ -171,7 +171,7 @@
         ex: [['Two fives', '5p + 5p', [["Five pence and five pence make ten pence.", FL.coins([5, 5])]]],
           ['Lots of coins', '5p + 2p + 2p + 1p', [["Five, seven, nine, ten. These coins make ten pence too.", FL.coins([5, 2, 2, 1])]]],
           ['Twenty pence', 'Different ways', [["Twenty pence can be one 20p coin, two 10p coins, or a 10p and two 5p coins.", FL.coins([10, 5, 5])]]]],
-        real: ['Paying for a toy', "A toy car costs fifteen pence. Molly's friend pays with a ten pence and a five pence coin.", FL.coins([10, 5])],
+        real: ['Paying for a toy', "A lolly costs fifteen pence. Molly's friend pays with a ten pence and a five pence coin.", FL.coins([10, 5])],
         turn: ["Your turn! Can a five pence and two two pence coins make nine pence? Pause and try it.", FL.coins([5, 2, 2]), "Five, seven, nine. Yes!", E('5p + 2p + 2p = 9p', 'g')],
         rec: ["The same total can be made with different coins. Count on from the biggest coin.", ['Start with the biggest coin', 'Count on the others', 'Many ways to make a total', 'Fewer coins is easier to carry']],
         deep: ['Shops give change in different coins, but the total is what matters.', 'Count the value of each coin, not the number of coins.']

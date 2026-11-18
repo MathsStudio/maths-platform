@@ -141,9 +141,9 @@
     ['Lots of ways to make the same total.', pair(COIN([10]), COIN([5, 5]), COIN([5, 2, 2, 1]))]]);
 
   LI(203, 'learn3', ['Paying', 'How can adding coins help me pay for something?',
-    'To pay, add your coins until they make the price.', SAY('mouse', 'The car costs 8p.'),
+    'To pay, add your coins until they make the price.', SAY('mouse', 'The lolly costs 8p.'),
     [['price', 'how much it costs', '🏷️'], ['pay', 'give money', '👛'], ['add', 'put together', '➕'], ['enough', 'the right amount or more', '✅']],
-    [['A toy car costs 8p.', C(['🚗 8p'])],
+    [['A lolly costs 8p.', C(['🍭 8p'])],
       ['Use a 5p, a 2p and a 1p.', COIN([5, 2, 1])],
       ['5p + 2p + 1p = 8p.', B('5p + 2p + 1p = 8p')]],
     [['A ball costs 12p. Which coins?', ['Start with 10p.', '2p more makes 12p.'], '10p + 2p', COIN([10, 2])],

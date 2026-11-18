@@ -75,7 +75,7 @@
         pg(P('shop', 'mouse', C([1, 2, 5, 10, 20, 50, 100, 200], 8)), 'These are our coins: one penny, two pence, five pence, ten pence, twenty pence, fifty pence, one pound and two pounds.'),
         pg(P('shop', 'mouse', C([500, 1000, 2000, 5000, 10000])), 'Notes are paper money for bigger amounts. Here are the notes: five pounds, ten pounds, twenty pounds, fifty pounds and one hundred pounds.', null, [['here are the notes', 'Notes: £5, £10, £20, £50, £100']]),
         pg(P('shop', 'owl', C([2, 2, 1])), 'Ollie the owl wants a ball for five pence. He pays with two pence, two pence and one penny.', Q('Do 2p, 2p and 1p make <b>5p</b>?', ['Yes', 'No'], 'Yes', 'Two, four, five. Yes!')),
-        pg(P('shop', 'owl', C([5, 2, 1])), 'Next Ollie wants a toy car. He pays with five pence, two pence and one penny.', Q('How much does Ollie pay?', ['7p', '8p', '9p'], '8p', 'Five, seven, eight. Eight pence.')),
+        pg(P('shop', 'owl', C([5, 2, 1])), 'Next Ollie wants a lolly. He pays with five pence, two pence and one penny.', Q('How much does Ollie pay?', ['7p', '8p', '9p'], '8p', 'Five, seven, eight. Eight pence.')),
         pg(P('shop', 'frog', C([20])), 'Frankie the frog wants a kite for fifteen pence. He only has a twenty pence coin.', null, [['fifteen pence', 'Kite: 15p'], ['twenty pence', 'Frankie has 20p']]),
         pg(P('shop', 'mouse', FL.trackP(15, 20, [15, 20], [[15, 16], [16, 17], [17, 18], [18, 19], [19, 20]])), 'Molly counts on from fifteen to twenty: sixteen, seventeen, eighteen, nineteen, twenty.', Q('How much change does Frankie get?', ['4p', '5p', '6p'], '5p', 'Five jumps, so five pence change.'))
       ] },

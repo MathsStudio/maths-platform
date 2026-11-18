@@ -172,7 +172,7 @@
     '202|Which order should I add numbers in?': 'For <b>2 + 9</b>, start at the bigger number, <b>9</b>. Count on 2: <b>10, 11</b>. So 2 + 9 = <b>11</b>.',
     '202|How can using near doubles help me add numbers?': 'Look at <b>4 + 5</b>. Double 4 is <b>8</b>. 5 is one more than 4, so 4 + 5 is 8 and 1 more: <b>9</b>.',
     '203|What coins and notes do we use?': 'Here are the coins: <b>1p, 2p, 5p, 10p, 20p</b> and <b>50p</b>.',
-    '203|How can adding coins help me pay for something?': 'The car costs <b>8p</b>. A <b>5p</b> coin and a <b>2p</b> coin make 7p. Add a <b>1p</b> coin to make <b>8p</b>. Now we can pay.',
+    '203|How can adding coins help me pay for something?': 'The lolly costs <b>8p</b>. A <b>5p</b> coin and a <b>2p</b> coin make 7p. Add a <b>1p</b> coin to make <b>8p</b>. Now we can pay.',
     '203|How can counting on help me find change from 20p?': 'Something costs <b>15p</b> and we pay <b>20p</b>. Count on from 15p: <b>16p, 17p, 18p, 19p, 20p</b>. That is 5 jumps, so the change is <b>5p</b>.',
     '204|How to tell the time': 'Look at the clock. The long hand points to <b>12</b> and the short hand points to <b>3</b>. It is <b>3 o’clock</b>.',
     '204|What are the days of the week and the months of the year?': 'The days go <b>Monday, Tuesday, Wednesday, Thursday, Friday, Saturday</b> and <b>Sunday</b>.',
