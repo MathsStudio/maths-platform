@@ -1164,7 +1164,7 @@ var SLIDE_MORE = {"1.learn1": [{"more": ["Our number system uses only ten digits
   /* P2 and P3 are free for everyone: no locks, no payment */
   function freeYear(y) { return y === 'P2' || y === 'P3'; } S.freeYear = freeYear;
   function isLocked(base) { if (!LOCK_TOPICS) return false; var y = yearOf(); if (freeYear(y)) return false; if (y === 'all') y = 'P6'; return !access.owner && access.years.indexOf(y) < 0 && visibleOrder()[0] !== base; }
-  var PRICE = '£15', PRICE_M = '£2.99';
+  var PRICE = '£20', PRICE_M = '£2.99';
   function renderLocked(v, what, keep) {
     var t = topic(), y = yearOf() === 'all' ? 'P6' : yearOf(), plan = 'year';
     if (!keep) v.innerHTML = '';
@@ -1172,7 +1172,7 @@ var SLIDE_MORE = {"1.learn1": [{"more": ["Our number system uses only ten digits
     o.style.cssText = 'position:fixed;inset:0;z-index:9999;background:rgba(20,30,60,.5);display:flex;align-items:center;justify-content:center;padding:16px;overflow:auto';
     var opt = 'display:block;width:100%;text-align:left;border:2px solid #dbe3f7;border-radius:14px;padding:12px 14px;background:#fff;color:inherit;font:inherit;cursor:pointer;margin:0 0 10px';
     var plans = '<div id="lockPlans" role="radiogroup" aria-label="Choose a plan">' +
-      '<button type="button" role="radio" data-plan="year" style="' + opt + '"><b>Yearly · ' + PRICE + '</b> <span class="tag" style="margin-left:6px">Best value</span><br><span class="note" style="margin:0">One payment for 12 months. Save £20.88 a year.</span></button>' +
+      '<button type="button" role="radio" data-plan="year" style="' + opt + '"><b>Yearly · ' + PRICE + '</b> <span class="tag" style="margin-left:6px">Best value</span><br><span class="note" style="margin:0">One payment for 12 months. Save £15.88 a year.</span></button>' +
       '<button type="button" role="radio" data-plan="month" style="' + opt + '"><b>Monthly · ' + PRICE_M + ' a month</b><br><span class="note" style="margin:0">Cancel any time from your account.</span></button></div>';
     var step = access.signedIn
       ? '<p class="lead" style="margin:0 0 10px">You are signed in as <b>' + (access.email || 'your account') + '</b>.</p>' + plans + (access.pay
