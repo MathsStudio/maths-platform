@@ -456,6 +456,15 @@ export default {
       if (p === '/admin' || p === '/admin/' || p === '/admin/export.csv' || p === '/admin/newsletter' || p === '/admin/email' || p === '/admin/revoke' || p === '/admin/grant' || p === '/admin/reply' || p === '/admin/login') { await db.init(env); return await admin(request, env, url); }
       const dynamic = p.startsWith('/api/') || p.startsWith('/auth/') || p === '/logout' || p === '/unsubscribe' || p === '/account' || p.startsWith('/account/') || p === '/app' || p.startsWith('/app/') || p === '/learn' || p.startsWith('/learn/');
       if (!dynamic) return withHeaders(await env.ASSETS.fetch(request));
+      /* the lessons themselves do not need the database: if it has a hiccup, a child can still open them (the database is only for sign-in and saved progress) */
+      if (p.startsWith('/app') || p === '/learn' || p.startsWith('/learn/')) {
+        let who = null;
+        if (env.REQUIRE_LOGIN === '1') { await db.init(env); who = await currentUser(env, request); if (!who) return redirect('/login/'); }
+        else { try { await db.init(env); } catch (e) { console.error('db.init failed on ' + p, e && e.stack || e); } }
+        const isL = p === '/learn' || p.startsWith('/learn/'), req = isL ? new Request(new URL('/app/' + url.search, url), request) : request;
+        let res; try { res = await env.ASSETS.fetch(req); } catch (e) { console.error('assets fetch failed on ' + p + ', trying again', e && e.stack || e); res = await env.ASSETS.fetch(req); }
+        return withHeaders(res, { 'Cache-Control': 'private, no-store, no-transform', 'X-Robots-Tag': 'noindex' });
+      }
       await db.init(env);
       if (p === '/api/stripe-webhook' && m === 'POST') return await stripeWebhook(request, env);
       if (m === 'POST' && !sameOrigin(request)) return json({ error: 'Not allowed' }, 403);
@@ -518,6 +527,7 @@ export default {
       }
       return page(pg.message('Page not found', 'We could not find that page. <a href="/">Go to the home page</a>.'), 404);
     } catch (e) {
+      console.error('worker error on ' + request.method + ' ' + p, e && e.stack || e);
       return page(pg.message('Something went wrong', 'Please try again in a minute.'), 500);
     }
   }
