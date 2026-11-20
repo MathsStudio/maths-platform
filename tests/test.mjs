@@ -133,7 +133,7 @@ await call('/api/login', { method: 'POST', json: { email: 'parent@example.com', 
 r = await call('/api/checkout', { method: 'POST', json: { year: 'P6' } }); ok(r.status === 503, 'checkout closed until Stripe key is set');
 env.STRIPE_SECRET_KEY = 'sk_test_x'; env.STRIPE_WEBHOOK_SECRET = 'whsec_x';
 r = await call('/api/checkout', { method: 'POST', json: { year: 'XX' } }); ok(r.status === 400, 'checkout rejects unknown year');
-r = await call('/api/checkout', { method: 'POST', json: { year: 'P6' } }); ok(r.status === 200 && JSON.parse(r.text).url.startsWith('https://checkout.stripe.test') && /unit_amount%5D=1500/.test(stripeBody) && /gbp/.test(stripeBody) && /metadata%5Byear%5D=P6/.test(stripeBody), 'checkout makes a 15 GBP Stripe session for the year');
+r = await call('/api/checkout', { method: 'POST', json: { year: 'P6' } }); ok(r.status === 200 && JSON.parse(r.text).url.startsWith('https://checkout.stripe.test') && /unit_amount%5D=2000/.test(stripeBody) && /gbp/.test(stripeBody) && /metadata%5Byear%5D=P6/.test(stripeBody), 'checkout makes a 15 GBP Stripe session for the year');
 const uid = sqlite.prepare("SELECT id FROM users WHERE email='parent@example.com'").get().id;
 const evt = { id: 'evt_1', type: 'checkout.session.completed', data: { object: { payment_status: 'paid', metadata: { user_id: String(uid), year: 'P6' } } } };
 async function hook(e, secret = 'whsec_x', t = Math.floor(Date.now() / 1000)) { const raw = JSON.stringify(e); const sig = createHmac('sha256', secret).update(t + '.' + raw).digest('hex'); return worker.fetch(new Request(B + '/api/stripe-webhook', { method: 'POST', headers: { 'Stripe-Signature': 't=' + t + ',v1=' + sig }, body: raw }), env); }
@@ -204,7 +204,7 @@ globalThis.fetch = async (u, o) => {
 env.STRIPE_SECRET_KEY = 'sk_test_x';
 r = await call('/api/checkout', { method: 'POST', json: { year: 'S2', plan: 'month' } });
 ok(r.status === 200 && /mode=subscription/.test(stripeBody) && /unit_amount%5D=299/.test(stripeBody) && /recurring%5D%5Binterval%5D=month/.test(stripeBody) && /subscription_data%5Bmetadata%5D%5Byear%5D=S2/.test(stripeBody), 'monthly checkout is a 2.99 GBP monthly subscription');
-r = await call('/api/checkout', { method: 'POST', json: { year: 'S2' } }); ok(/mode=payment/.test(stripeBody) && /unit_amount%5D=1500/.test(stripeBody), 'yearly checkout is still the 15 GBP one-off');
+r = await call('/api/checkout', { method: 'POST', json: { year: 'S2' } }); ok(/mode=payment/.test(stripeBody) && /unit_amount%5D=2000/.test(stripeBody), 'yearly checkout is still the 20 GBP one-off');
 Object.assign(sess, { id: 'cs_test_sub1234567890', mode: 'subscription', subscription: 'sub_test_1', customer: 'cus_test_1', payment_status: 'paid', metadata: { user_id: String(uid), year: 'S2' } });
 r = await call('/api/confirm', { method: 'POST', json: { session_id: 'cs_test_sub1234567890' } }); ok(JSON.parse(r.text).ok === true, 'confirm grants the monthly plan');
 let row = sqlite.prepare("SELECT until, sub_id, cust_id FROM purchases WHERE user_id=? AND year='S2'").get(uid);

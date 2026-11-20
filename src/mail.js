@@ -74,7 +74,7 @@ export async function sendBatch(env, items) {
 export function purchaseMail(o) {
   const site = o.site, learn = site + '/learn/?year=' + o.year, acct = site + '/account/';
   const when = d => new Date(d * 1000).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' });
-  const plan = o.monthly ? '£2.99 a month (renews monthly until you cancel)' : '£15 for 12 months (does not renew by itself)';
+  const plan = o.monthly ? '£2.99 a month (renews monthly until you cancel)' : '£20 for 12 months (does not renew by itself)';
   const access = o.monthly ? 'Your plan renews each month. Cancel any time from your account.' : 'Your access lasts until ' + when(o.until) + '.';
   return {
     subject: 'Payment received: you now have full access to MathsStudio ' + o.year,
