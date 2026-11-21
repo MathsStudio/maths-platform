@@ -32,10 +32,23 @@ function cleanSk(v) {
   for (const k of Object.keys(v)) { const x = v[k]; if (k.length > 60 || ++n > 400 || !Array.isArray(x) || x.length !== 2) continue; const a = Math.max(0, Math.min(1e6, Math.floor(+x[0] || 0))), b = Math.max(0, Math.min(1e6, Math.floor(+x[1] || 0))); o[k] = [Math.min(a, b), b]; }
   return o;
 }
+/* answers of finished sets (key "rv"): { "t404|medium|practise|2": { u: time, h: fingerprint of the questions, r: "1011…" right/wrong, a: [what was answered] } }.
+   Only the newest 60 sets are kept so the saved progress stays small. */
+function cleanRv(v) {
+  if (!v || typeof v !== 'object' || Array.isArray(v)) return undefined; const o = {};
+  for (const k of Object.keys(v)) {
+    const x = v[k]; if (!/^t\d{1,4}\|(low|medium|high)\|(practise|practical)\|\d{1,2}$/.test(k) || !x || typeof x !== 'object' || !Array.isArray(x.a)) continue;
+    if (typeof x.r !== 'string' || !/^[01]{1,20}$/.test(x.r) || !Number.isInteger(x.h) || !Number.isFinite(x.u)) continue;
+    o[k] = { u: Math.floor(x.u), h: x.h, r: x.r, a: x.a.slice(0, 20).map(i => Number.isInteger(i) && i >= 0 && i < 12 ? i : String(i).slice(0, 30)) };
+  }
+  return pruneRv(o);
+}
+function pruneRv(o) { const ks = Object.keys(o).sort((a, b) => o[b].u - o[a].u); for (const k of ks.slice(60)) delete o[k]; return o; }
 function cleanProgress(p) {
   const out = {}; if (!p || typeof p !== 'object') return out; let n = 0;
   if (p.sc !== undefined) { const c = cleanSc(p.sc); if (c) out.sc = c; }
   if (p.sk !== undefined) { const c = cleanSk(p.sk); if (c) out.sk = c; }
+  if (p.rv !== undefined) { const c = cleanRv(p.rv); if (c && Object.keys(c).length) out.rv = c; }
   for (const k of Object.keys(p)) {
     if (!/^t\d{1,4}$/.test(k) || ++n > 400) continue;
     const v = p[k]; if (!v || typeof v !== 'object') continue;
@@ -58,6 +71,7 @@ function mergeProgress(a, b) {
   const out = cleanProgress(a);
   for (const [k, v] of Object.entries(cleanProgress(b))) {
     if (k === 'sc') { if (!out.sc || !((out.sc.u || 0) > (v.u || 0))) out.sc = v; continue; }   /* the newer save wins */
+    if (k === 'rv') { out.rv = out.rv || {}; for (const [q, x] of Object.entries(v)) if (!out.rv[q] || out.rv[q].u <= x.u) out.rv[q] = x; pruneRv(out.rv); continue; }   /* the latest attempt of a set wins */
     if (k === 'sk') { out.sk = out.sk || {}; for (const [t, x] of Object.entries(v)) if (!out.sk[t] || out.sk[t][1] <= x[1]) out.sk[t] = x; continue; }
     const o = out[k] = out[k] || { steps: {} }; Object.assign(o.steps, v.steps);
     if (v.sets) { o.sets = o.sets || {}; for (const [key, arr] of Object.entries(v.sets)) o.sets[key] = [...new Set([...(o.sets[key] || []), ...arr])].sort((x, y) => x - y); }

@@ -159,6 +159,16 @@ button:focus-visible, input:focus-visible, select:focus-visible, summary:focus-v
 .setchip.on { border-color: var(--accent); background: var(--accent); color: var(--accent-fg); }
 .setchip.ok { border-color: var(--good); background: var(--good); color: #fff; }
 .setchip.ok.on { outline: 3px solid var(--accent); outline-offset: 2px; }
+.rv-head { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; justify-content: space-between; margin: 6px 0 12px; }
+.rv-head .row { margin: 0; display: flex; flex-wrap: wrap; gap: 8px; }
+.rv-i { border: 2px solid var(--line); border-left-width: 8px; border-radius: 12px; background: var(--surface); padding: 12px 14px; margin: 0 0 12px; min-width: 0; overflow-wrap: anywhere; }
+.rv-i.ok { border-left-color: var(--good); }
+.rv-i.no { border-left-color: var(--bad); background: var(--bad-bg); }
+.rv-n { font-weight: 800; margin-bottom: 6px; }
+.rv-i.ok .rv-n { color: var(--good); }
+.rv-i.no .rv-n { color: var(--bad); }
+.rv-a, .rv-c, .rv-e { margin-top: 8px; }
+.rv-e { color: var(--muted); font-size: 0.95em; }
 .topic { display: flex; flex-direction: column; gap: 8px; min-height: 150px; }
 .topic.soon { opacity: .65; }
 .tn { font-family: var(--font-display); font-weight: 700; color: var(--accent); font-size: 1.1rem; }
@@ -577,6 +587,7 @@ var SLIDE_MORE = {"1.learn1": [{"more": ["Our number system uses only ten digits
     Object.keys(from || {}).forEach(function (k) {
       var f = from[k]; if (!f || typeof f !== 'object') return;
       if (k === 'sc') { if (!into.sc || (f.u || 0) > (into.sc.u || 0)) { into.sc = f; changed = true; } return; }   /* Strengths Check: the newer save wins */
+      if (k === 'rv') { into.rv = into.rv || {}; Object.keys(f).forEach(function (g) { if (!into.rv[g] || into.rv[g].u < f[g].u) { into.rv[g] = f[g]; changed = true; } }); return; }   /* the latest attempt of a set wins */
       if (k === 'sk') { into.sk = into.sk || {}; Object.keys(f).forEach(function (g) { if (!into.sk[g] || into.sk[g][1] < f[g][1]) { into.sk[g] = f[g]; changed = true; } }); return; }
       var t = into[k] = into[k] || { steps: {} }; if (!t.steps) t.steps = {};
       Object.keys(f.steps || {}).forEach(function (id) { if (f.steps[id] && !t.steps[id]) { t.steps[id] = true; changed = true; } });
@@ -901,7 +912,7 @@ var SLIDE_MORE = {"1.learn1": [{"more": ["Our number system uses only ten digits
         host.innerHTML = prog + '<div class="score"><div class="stars" aria-label="' + stars + ' out of 5 stars">' + s + '</div><div class="big">' + score + ' out of ' + qs.length + '</div><p class="say">' + msg + '</p><div class="row"><button class="btn" id="qDone" type="button">' + cfg.doneLabel + '</button><button class="btn ghost" id="qAgain" type="button">Try new questions</button></div></div>';
         $('qDone').addEventListener('click', function () { cfg.onDone(score); });
         $('qAgain').addEventListener('click', function () { qs = cfg.make(); qi = 0; score = 0; results = []; given = []; draw(); });
-        if (cfg.onFinish) cfg.onFinish(score, qs.length);
+        if (cfg.onFinish) cfg.onFinish(score, qs.length, results, given);
         if ((store.settings.auto || store.settings.readMode) && Nar.ok) narPlay(true, readRoot);
         return;
       }
@@ -1651,14 +1662,47 @@ var SLIDE_MORE = {"1.learn1": [{"more": ["Our number system uses only ten digits
     function drawBar() {
       bar.innerHTML = '<span class="setbar-l">Set ' + (cur + 1) + ' of ' + b.sets + ' \u00b7 ' + (step.sets ? qsFor(cur).length : 20) + ' ' + (step.id === 'practise' ? 'questions' : 'problems') + '</span>' +
         Array.apply(null, Array(b.sets)).map(function (_, i) { return '<button type="button" class="setchip' + (i === cur ? ' on' : '') + (done.indexOf(i) > -1 ? ' ok' : '') + '" data-set="' + i + '" aria-pressed="' + (i === cur) + '" aria-label="Set ' + (i + 1) + (done.indexOf(i) > -1 ? ', done' : '') + '">' + (done.indexOf(i) > -1 ? '\u2713' : i + 1) + '</button>'; }).join('');
-      bar.querySelectorAll('[data-set]').forEach(function (x) { x.addEventListener('click', function () { keepPlace('.setbar', function () { open(Number(x.getAttribute('data-set'))); }); }); });
+      bar.querySelectorAll('[data-set]').forEach(function (x) { x.addEventListener('click', function () { keepPlace('.setbar', function () { var i = Number(x.getAttribute('data-set')); if (done.indexOf(i) > -1 && reviewOf(i)) showReview(i); else open(i); }); }); });
+    }
+    /* the answers of a finished set are kept (latest attempt), so a child can look back at what they got right and wrong */
+    function rvKey(i) { return 't' + t.n + '|' + sk + '|' + i; }
+    function fingerprint(list) { var z = ''; list.forEach(function (q) { z += String(q.text) + '|' + String(q.answer) + ';'; }); return hashStr(z); }
+    function reviewOf(i) { var r = (store.progress.rv || {})[rvKey(i)]; return r && r.h === fingerprint(qsFor(i)) ? r : null; }
+    function saveReview(i, list, results, given) {
+      var rv = store.progress.rv = store.progress.rv || {};
+      rv[rvKey(i)] = { u: Date.now(), h: fingerprint(list), r: list.map(function (_, j) { return results[j] ? '1' : '0'; }).join(''), a: list.map(function (q, j) { var g = given[j], ix = q.type === 'mc' ? (q.options || []).map(String).indexOf(String(g)) : -1; return ix > -1 && ix < 12 ? ix : String(g === undefined ? '' : g).slice(0, 30); }) };
+      Object.keys(rv).sort(function (a, b) { return rv[b].u - rv[a].u; }).slice(60).forEach(function (k) { delete rv[k]; });
+    }
+    function plain(x) { return String(x).replace(/&/g, '&amp;').replace(/</g, '&lt;'); }
+    function showReview(i) {
+      var rec = reviewOf(i); if (!rec) { open(i); return; }
+      cur = i; drawBar(); narStop();
+      var list = qsFor(i), right = rec.r.split('').filter(function (c) { return c === '1'; }).length, only = false, host = $('quizHost');
+      function paint() {
+        host.innerHTML = '<div class="rv-head"><strong>Set ' + (i + 1) + ': ' + right + ' out of ' + list.length + ' right</strong><div class="row">' +
+          (right < list.length ? '<button class="btn ghost" id="rvOnly" type="button">' + (only ? 'Show all questions' : 'Show only the ones I missed') + '</button>' : '') +
+          '<button class="btn" id="rvAgain" type="button">Do this set again</button></div></div>' +
+          list.map(function (q, j) {
+            var ok = rec.r.charAt(j) === '1', a = rec.a[j]; if (only && ok) return '';
+            var mine = q.type === 'mc' ? (typeof a === 'number' ? q.options[a] : plain(a)) : plain(a),
+                shown = q.show || (q.type === 'mc' ? q.answer : (isNaN(Number(q.answer)) ? q.answer : fmtInt(Number(q.answer))));
+            return '<div class="rv-i ' + (ok ? 'ok' : 'no') + '"><div class="rv-n">Question ' + (j + 1) + (ok ? ' \u2713 Right' : ' \u2717 Missed') + '</div>' +
+              (q.ctx ? '<div class="qctx">' + q.ctx + '</div>' : '') + (q.pic ? '<div class="visual">' + q.pic + '</div>' : '') + '<div class="qtext">' + q.text + '</div>' +
+              '<div class="rv-a">Your answer: <strong>' + (mine === '' ? 'no answer' : mine) + '</strong></div>' +
+              (ok ? '' : '<div class="rv-c">Correct answer: <strong>' + shown + '</strong></div><div class="rv-e">' + q.explain + '</div>') + '</div>';
+          }).join('');
+        if ($('rvOnly')) $('rvOnly').addEventListener('click', function () { only = !only; paint(); });
+        $('rvAgain').addEventListener('click', function () { keepPlace('.setbar', function () { open(i); }); });
+      }
+      paint();
     }
     function qsFor(i) { return b.upto(i).slice(i * SET_SIZE, i * SET_SIZE + SET_SIZE); }
     function open(i) {
       cur = i; drawBar(); narStop();
       mountQuiz($('quizHost'), qsFor(i), {
         make: function () { return qsFor(cur); }, doneLabel: step.doneLabel || (isLast ? 'Finish topic' : 'Next step'),
-        onFinish: function (sc) {
+        onFinish: function (sc, n, results, given) {
+          if (results && given) saveReview(cur, qsFor(cur), results, given);
           if (done.indexOf(cur) < 0) { done.push(cur); var o = setsOf(t.n, true), a = o[sk] = o[sk] || []; if (a.indexOf(cur) < 0) a.push(cur); save(); }
           var all = true; for (var q = 0; q < b.sets; q++) if (done.indexOf(q) < 0) all = false;
           if (all) markDone(t.n, step.id);
@@ -1668,6 +1712,7 @@ var SLIDE_MORE = {"1.learn1": [{"more": ["Our number system uses only ten digits
           nb.className = 'btn'; nb.type = 'button'; nb.textContent = 'Try a new set (Set ' + (nx + 1) + ')';
           nb.addEventListener('click', function () { open(nx); });
           if (again && again.parentNode) again.parentNode.insertBefore(nb, again);
+          if (results && given && again && again.parentNode) { var rb = document.createElement('button'); rb.className = 'btn ghost'; rb.type = 'button'; rb.textContent = 'See my answers'; rb.addEventListener('click', function () { showReview(cur); }); again.parentNode.insertBefore(rb, again); }
         },
         onDone: function () { go(t.n, state.step + 1); }
       });
