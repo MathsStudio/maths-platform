@@ -296,6 +296,19 @@ r = await call('/api/progress?learner=' + amira); pj = JSON.parse(r.text).progre
 r = await call('/api/learners', { method: 'POST', json: { action: 'add', name: 'Zayn', avatar: 'rocket' } }); const zayn = JSON.parse(r.text).learners[1].id;
 r = await call('/api/progress?learner=' + zayn); ok(Object.keys(JSON.parse(r.text).progress).length === 0, 'a second child starts with no progress');
 r = await call('/api/progress?learner=' + zayn, { method: 'POST', json: { progress: { t9: { steps: { warm: true } } } } }); ok(r.status === 200 && JSON.parse(r.text).progress.t9.steps.warm, 'progress is saved to the chosen child');
+// cancelling or letting a plan lapse keeps the child's progress; coming back later carries on from the same place
+r = await call('/api/progress?learner=' + zayn, { method: 'POST', json: { progress: { t404: { steps: {}, sets: { 'medium|practical': [0, 1] } } } } });
+sqlite.prepare('UPDATE purchases SET until = ? WHERE user_id = ?').run(Math.floor(Date.now() / 1000) - 86400, uid);
+ok(sqlite.prepare('SELECT until FROM purchases WHERE user_id=?').get(uid).until < Math.floor(Date.now() / 1000), 'plan has run out (cancelled)');
+r = await call('/api/progress?learner=' + zayn); { const pr = JSON.parse(r.text).progress; ok(r.status === 200 && JSON.stringify(pr.t404.sets['medium|practical']) === '[0,1]' && pr.t9.steps.warm, 'after cancelling, the saved progress is still there'); }
+sqlite.prepare('DELETE FROM purchases WHERE user_id = ?').run(uid);
+sqlite.prepare('DELETE FROM rate').run(); cookieJar = ''; r = await call('/api/progress?learner=' + zayn); ok(r.status === 401, 'signed out with no plan: progress is private');
+r = await call('/api/login', { method: 'POST', json: { email: 'parent@example.com', password: 'NewPassw0rd!y' } }); ok(r.status === 200, 'same email signs in again later');
+r = await call('/api/progress?learner=' + zayn); { const pr = JSON.parse(r.text).progress; ok(JSON.stringify(pr.t404.sets['medium|practical']) === '[0,1]' && pr.t9.steps.warm, 'signed back in with no plan: progress is still there'); }
+env.STRIPE_SECRET_KEY = 'sk_test_x'; env.STRIPE_WEBHOOK_SECRET = 'whsec_x';
+r = await hook({ id: 'evt_resub', type: 'checkout.session.completed', data: { object: { id: 'cs_test_resub1234', payment_status: 'paid', metadata: { user_id: String(uid), year: 'P6' } } } }); ok(r.status === 200 && sqlite.prepare('SELECT until FROM purchases WHERE user_id=?').get(uid).until > Math.floor(Date.now() / 1000), 'subscribing again gives access');
+r = await call('/api/progress?learner=' + zayn); { const pr = JSON.parse(r.text).progress; ok(JSON.stringify(pr.t404.sets['medium|practical']) === '[0,1]' && pr.t9.steps.warm, 'after subscribing again, the child carries on where they left off'); }
+
 r = await call('/api/progress?learner=' + amira); pj = JSON.parse(r.text).progress; ok(!pj.t9 && pj.t6, 'one child\'s progress does not appear on the other');
 r = await call('/api/progress'); pj = JSON.parse(r.text).progress; ok(!pj.t9, 'account-level progress is untouched by a child profile');
 r = await call('/api/learners', { method: 'POST', json: { action: 'add', name: '<script>', avatar: 'fox' } }); ok(r.status === 400, 'odd characters in a name are refused');
