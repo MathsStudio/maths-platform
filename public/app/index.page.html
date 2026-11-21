@@ -157,7 +157,8 @@ button:focus-visible, input:focus-visible, select:focus-visible, summary:focus-v
 .setbar-l { font-weight: 800; margin-right: 6px; }
 .setchip { min-width: 40px; min-height: 40px; border-radius: 10px; border: 2px solid var(--line); background: var(--surface); color: var(--fg); font: inherit; font-weight: 800; cursor: pointer; }
 .setchip.on { border-color: var(--accent); background: var(--accent); color: var(--accent-fg); }
-.setchip.ok:not(.on) { border-color: var(--good); color: var(--good); }
+.setchip.ok { border-color: var(--good); background: var(--good); color: #fff; }
+.setchip.ok.on { outline: 3px solid var(--accent); outline-offset: 2px; }
 .topic { display: flex; flex-direction: column; gap: 8px; min-height: 150px; }
 .topic.soon { opacity: .65; }
 .tn { font-family: var(--font-display); font-weight: 700; color: var(--accent); font-size: 1.1rem; }
@@ -579,6 +580,7 @@ var SLIDE_MORE = {"1.learn1": [{"more": ["Our number system uses only ten digits
       if (k === 'sk') { into.sk = into.sk || {}; Object.keys(f).forEach(function (g) { if (!into.sk[g] || into.sk[g][1] < f[g][1]) { into.sk[g] = f[g]; changed = true; } }); return; }
       var t = into[k] = into[k] || { steps: {} }; if (!t.steps) t.steps = {};
       Object.keys(f.steps || {}).forEach(function (id) { if (f.steps[id] && !t.steps[id]) { t.steps[id] = true; changed = true; } });
+      Object.keys(f.sets || {}).forEach(function (key) { var a = (t.sets = t.sets || {})[key] = t.sets[key] || []; (f.sets[key] || []).forEach(function (i) { if (a.indexOf(i) < 0) { a.push(i); changed = true; } }); });
       if (typeof f.best === 'number' && !(t.best >= f.best)) { t.best = f.best; changed = true; }
     });
     return changed;
@@ -608,7 +610,27 @@ var SLIDE_MORE = {"1.learn1": [{"more": ["Our number system uses only ten digits
   }
   function pkey(n) { return 't' + n; }
   function markDone(n, step) { var p = store.progress[pkey(n)] = store.progress[pkey(n)] || { steps: {} }; if (!p.steps) p.steps = {}; if (!p.steps[step]) { p.steps[step] = true; save(); } }
-  function isDone(n, step) { var p = store.progress[pkey(n)]; return !!(p && p.steps && p.steps[step]); }
+  /* Practice and Real-life are made of sets of 20. Each finished set is saved with the child's progress (progress.tN.sets['level|step'] = [set numbers]); the step is ticked only when every set at one level is finished. */
+  function setsNeeded(st) { return st.sets || (st.id === 'practise' ? 10 : 5); }
+  function setsOf(n, create) { var p = store.progress[pkey(n)]; if (!p) { if (!create) return null; p = store.progress[pkey(n)] = { steps: {} }; } if (!p.sets) { if (!create) return null; p.sets = {}; } return p.sets; }
+  function migrateSets(n) {   /* sets finished before this change were kept only on this device: bring them in once */
+    var sd = store.settings && store.settings.setDone; if (!sd) return;
+    Object.keys(sd).forEach(function (k) {
+      var m = /^(\d+)\|(low|medium|high)\|(practise|practical)$/.exec(k); if (!m || Number(m[1]) !== Number(n)) return;
+      var o = setsOf(n, true), key = m[2] + '|' + m[3], a = o[key] = o[key] || [];
+      (sd[k] || []).forEach(function (i) { if (a.indexOf(i) < 0) a.push(i); }); delete sd[k];
+    });
+  }
+  function setStepDone(n, id) {
+    var t = S.topics[n], st = t && t.steps.filter(function (x) { return x.id === id; })[0];
+    if (!st || st.type !== 'quiz') return null;
+    migrateSets(n); var o = setsOf(n, false); if (!o) return false; var need = setsNeeded(st);
+    return ['low', 'medium', 'high'].some(function (lv) { var a = o[lv + '|' + id] || []; for (var i = 0; i < need; i++) if (a.indexOf(i) < 0) return false; return true; });
+  }
+  function isDone(n, step) {
+    if (step === 'practise' || step === 'practical') { var sd = setStepDone(n, step); if (sd !== null) return sd; }
+    var p = store.progress[pkey(n)]; return !!(p && p.steps && p.steps[step]);
+  }
   function best(n) { var p = store.progress[pkey(n)]; return (p && p.best) || 0; }
   function setBest(n, sc) { var p = store.progress[pkey(n)] = store.progress[pkey(n)] || { steps: {} }; if (!p.best || sc > p.best) { p.best = sc; save(); } }
   S.h.markDone = markDone; S.h.isDone = isDone;
@@ -1619,8 +1641,10 @@ var SLIDE_MORE = {"1.learn1": [{"more": ["Our number system uses only ten digits
   }
   function mountSetQuiz(pane, t, step, lv, isLast) {
     var b = setBank(t, step, lv);
-    store.settings.setPos = store.settings.setPos || {}; store.settings.setDone = store.settings.setDone || {};
-    var done = store.settings.setDone[b.key] || [], cur = Math.min(store.settings.setPos[b.key] || 0, b.sets - 1);
+    var sk = lv + '|' + step.id; migrateSets(t.n);
+    var done = ((setsOf(t.n, false) || {})[sk] || []).slice(), cur = 0;
+    while (cur < b.sets && done.indexOf(cur) > -1) cur++;   /* start at the first set not finished yet */
+    if (cur >= b.sets) cur = 0;
     var lead = pane.querySelector('.lead'); if (lead && !step.sets) lead.textContent = String(step.lead).replace(/\b\d{2,3} (\w+ )?(questions|problems)/, '20 $1$2 in each set');
     var bar = document.createElement('div'); bar.className = 'setbar';
     $('quizHost').parentNode.insertBefore(bar, $('quizHost'));
@@ -1631,12 +1655,14 @@ var SLIDE_MORE = {"1.learn1": [{"more": ["Our number system uses only ten digits
     }
     function qsFor(i) { return b.upto(i).slice(i * SET_SIZE, i * SET_SIZE + SET_SIZE); }
     function open(i) {
-      cur = i; store.settings.setPos[b.key] = i; save(); drawBar(); narStop();
+      cur = i; drawBar(); narStop();
       mountQuiz($('quizHost'), qsFor(i), {
         make: function () { return qsFor(cur); }, doneLabel: step.doneLabel || (isLast ? 'Finish topic' : 'Next step'),
         onFinish: function (sc) {
-          if (done.indexOf(cur) < 0) { done.push(cur); store.settings.setDone[b.key] = done; save(); }
-          markDone(t.n, step.id); if (step.best) setBest(t.n, sc); renderStepper(); drawBar();
+          if (done.indexOf(cur) < 0) { done.push(cur); var o = setsOf(t.n, true), a = o[sk] = o[sk] || []; if (a.indexOf(cur) < 0) a.push(cur); save(); }
+          var all = true; for (var q = 0; q < b.sets; q++) if (done.indexOf(q) < 0) all = false;
+          if (all) markDone(t.n, step.id);
+          if (step.best) setBest(t.n, sc); save(); renderStepper(); drawBar();
           var again = $('qAgain'); if (again) again.textContent = 'Do this set again';
           var nx = (cur + 1) % b.sets, nb = document.createElement('button');
           nb.className = 'btn'; nb.type = 'button'; nb.textContent = 'Try a new set (Set ' + (nx + 1) + ')';

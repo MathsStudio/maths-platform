@@ -42,6 +42,14 @@ function cleanProgress(p) {
     const steps = {}; let c = 0;
     if (v.steps && typeof v.steps === 'object') for (const s of Object.keys(v.steps)) { if (++c > 80) break; if (v.steps[s] === true && /^[\w:.\-]{1,40}$/.test(s)) steps[s] = true; }
     const o = { steps }; if (typeof v.best === 'number' && isFinite(v.best)) o.best = Math.max(0, Math.min(100000, v.best));
+    if (v.sets && typeof v.sets === 'object') {   /* finished sets of Practice and Real-life: { 'level|step': [set numbers] } */
+      const sets = {}; let kc = 0;
+      for (const key of Object.keys(v.sets)) {
+        if (++kc > 12 || !/^(low|medium|high)\|(practise|practical)$/.test(key) || !Array.isArray(v.sets[key])) continue;
+        sets[key] = [...new Set(v.sets[key].filter(i => Number.isInteger(i) && i >= 0 && i < 20))].sort((x, y) => x - y);
+      }
+      if (Object.keys(sets).length) o.sets = sets;
+    }
     out[k] = o;
   }
   return out;
@@ -52,6 +60,7 @@ function mergeProgress(a, b) {
     if (k === 'sc') { if (!out.sc || !((out.sc.u || 0) > (v.u || 0))) out.sc = v; continue; }   /* the newer save wins */
     if (k === 'sk') { out.sk = out.sk || {}; for (const [t, x] of Object.entries(v)) if (!out.sk[t] || out.sk[t][1] <= x[1]) out.sk[t] = x; continue; }
     const o = out[k] = out[k] || { steps: {} }; Object.assign(o.steps, v.steps);
+    if (v.sets) { o.sets = o.sets || {}; for (const [key, arr] of Object.entries(v.sets)) o.sets[key] = [...new Set([...(o.sets[key] || []), ...arr])].sort((x, y) => x - y); }
     if (typeof v.best === 'number' && !(o.best >= v.best)) o.best = v.best;
   }
   return out;
