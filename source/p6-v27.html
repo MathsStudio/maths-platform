@@ -776,7 +776,7 @@ var SLIDE_MORE = {"1.learn1": [{"more": ["Our number system uses only ten digits
     if (!Nar.ok) return false;
     freshStart(); Nar.token++; Nar.playing = false; Nar.units = []; Nar.at = 0; unmarkAll();
     try { speechSynthesis.cancel(); } catch (e) { /* ignore */ }
-    var ut = new SpeechSynthesisUtterance(speakable(text)); ut.lang = 'en-GB'; ut.rate = Math.min(1.1, (Number(store.settings.rate) || 1) * 0.94); ut.pitch = 1.02;
+    var ut = new SpeechSynthesisUtterance(speakable(text)); ut.lang = 'en-GB'; ut.rate = Math.min(1.1, (Number(store.settings.rate) || 1) * 0.82); ut.pitch = 1.02;
     var v = pickVoice(); if (v) { ut.voice = v; ut.lang = v.lang; }
     ut.onstart = function () { if (onstart) onstart(); }; ut.onend = function () { cb(true); }; ut.onerror = function () { cb(false); };
     speechSynthesis.speak(ut); return true;

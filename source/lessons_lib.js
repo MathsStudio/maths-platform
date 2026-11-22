@@ -15,7 +15,10 @@
     if (!qhtml || qhtml === BT.sv.eq('?')) qhtml = BT.sv.note(q.replace(/^Your turn!\s*/, '').replace(/\s*Pause[^.]*\.\s*$/, ''));
     return L.SC('Your turn', 'Pause, think, then listen', [L.st(q, qhtml), L.st(a, ahtml)]);
   };
-  L.ep = function (title, goal, scenes) { var e = { title: title, goal: goal, scenes: scenes }; BT.EP = BT.EP || {}; BT.EP[title] = e; return e; };
+  /* the fuller question-by-question lessons (lessons_full_*.js) are stored by title and replace the shorter first versions */
+  BT.FULL = BT.FULL || {};
+  L.full = function (title, scenes) { BT.FULL[title] = scenes; };
+  L.ep = function (title, goal, scenes) { if (BT.FULL[title]) scenes = BT.FULL[title]; var e = { title: title, goal: goal, scenes: scenes }; BT.EP = BT.EP || {}; BT.EP[title] = e; return e; };
   L.get = function (title) { var e = BT.EP && BT.EP[title]; if (!e && window.console) console.warn('lesson not found: ' + title); return e; };
   L.use = function (n, items) { BT.lessons(n, 'Watch lesson', items.map(function (x) { return typeof x === 'string' ? L.get(x) : x; })); };
 
