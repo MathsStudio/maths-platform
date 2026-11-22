@@ -17,7 +17,31 @@
   };
   /* the fuller question-by-question lessons (lessons_full_*.js) are stored by title and replace the shorter first versions */
   BT.FULL = BT.FULL || {};
-  L.full = function (title, scenes) { BT.FULL[title] = scenes; };
+  /* a slide has room for about 300px of pictures. A step that would not fit replaces the block before it (swap) instead of being stacked under it. */
+  function est(h) {
+    if (!h) return 0;
+    var n = 0, c = function (re) { return (h.match(re) || []).length; };
+    h.split('class="sv-eq').slice(1).forEach(function (seg) { var t = seg.split('</div>')[0].replace(/<[^>]*>/g, ''); n += (/\d+\s*\/\s*\d+/.test(t) ? 110 : t.length > 30 ? 92 : 56); });
+    n += c(/class="sv-rule/g) * 64 + c(/class="sv-note/g) * 64 + c(/class="sv-row/g) * 84 + c(/class="sv-cols/g) * 90 + c(/class="sv-list/g) * 110 + c(/class="sv-big/g) * 60;
+    n += c(/<tr/g) * 34 + c(/class="lk-col/g) * 150;
+    var svgs = c(/<svg/g); n += svgs * 150;
+    return n || 50;
+  }
+  function fit(scenes) {
+    scenes.forEach(function (sc) {
+      var groups = [], total = 0;
+      sc.steps.forEach(function (st, k) {
+        if (!st.html) return;
+        var e = est(st.html), raw = st.html.replace('<!--swap-->', '');
+        if (!groups.length) { groups.push([e]); total = e; st.html = raw; return; }
+        var last = groups[groups.length - 1], lastMax = Math.max.apply(null, last);
+        if (st.html.indexOf('<!--swap-->') === 0 || total + e > 270) { last.push(e); total = total - lastMax + Math.max(lastMax, e); st.html = '<!--swap-->' + raw; }
+        else { groups.push([e]); total += e; st.html = raw; }
+      });
+    });
+    return scenes;
+  }
+  L.full = function (title, scenes) { BT.FULL[title] = fit(scenes); };
   L.ep = function (title, goal, scenes) { if (BT.FULL[title]) scenes = BT.FULL[title]; var e = { title: title, goal: goal, scenes: scenes }; BT.EP = BT.EP || {}; BT.EP[title] = e; return e; };
   L.get = function (title) { var e = BT.EP && BT.EP[title]; if (!e && window.console) console.warn('lesson not found: ' + title); return e; };
   L.use = function (n, items) { BT.lessons(n, 'Watch lesson', items.map(function (x) { return typeof x === 'string' ? L.get(x) : x; })); };

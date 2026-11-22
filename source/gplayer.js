@@ -89,7 +89,7 @@
     '.gp.narrow .gp-frame{aspect-ratio:520/470}.gp.narrow .gp-body{top:64px;bottom:44px;left:20px;right:20px}',
     '@media (max-width:600px){.card:has(.gp){padding-left:10px;padding-right:10px}.live:has(.gp){padding-left:0;padding-right:0}}',
     '.gp.full .gp-frame{position:fixed;inset:0;z-index:9999;border-radius:0;aspect-ratio:auto;background:#111}',
-    '.gp.full .gp-close{display:flex}.gp-close{display:none;position:absolute;right:max(12px,env(safe-area-inset-right));top:max(12px,env(safe-area-inset-top));z-index:2;width:44px;height:44px;border-radius:50%;border:0;background:#fff;color:#221a3a;font-size:22px;align-items:center;justify-content:center;box-shadow:0 2px 10px rgba(0,0,0,.3)}',
+    '.gp.full .gp-close,.gp.full .gp-fpp{display:flex}.gp-fpp{display:none;position:absolute;right:calc(max(12px,env(safe-area-inset-right)) + 56px);top:max(12px,env(safe-area-inset-top));z-index:2;height:44px;min-width:44px;padding:0 16px;gap:8px;border-radius:22px;border:0;background:#fff;color:#221a3a;font:700 16px system-ui,sans-serif;align-items:center;justify-content:center;box-shadow:0 2px 10px rgba(0,0,0,.3);cursor:pointer}.gp-close{display:none;position:absolute;right:max(12px,env(safe-area-inset-right));top:max(12px,env(safe-area-inset-top));z-index:2;width:44px;height:44px;border-radius:50%;border:0;background:#fff;color:#221a3a;font-size:22px;align-items:center;justify-content:center;box-shadow:0 2px 10px rgba(0,0,0,.3)}',
     '.gp-vs{display:flex;flex-wrap:wrap;gap:8px 16px;align-items:center}.gp-vs label{display:flex;gap:6px;align-items:center;font-weight:700;font-size:15px}.gp-vs select{min-height:40px;max-width:min(260px,60vw);font:inherit;font-weight:600;border:2px solid var(--line);border-radius:10px;padding:4px 8px;background:var(--surface);color:var(--fg)}',
     '.gp-body.gp-turn{animation:gpTurn .7s ease both}@keyframes gpTurn{0%{opacity:0;transform:translateX(40px) rotate(1deg)}100%{opacity:1;transform:none}}',
     '.gp-cap .now{background:#fff2a8;border-radius:6px;box-shadow:0 0 0 3px #fff2a8}.gp-cap .think{display:inline-flex;gap:6px;align-items:center;font-weight:800;color:#881cd6}',
@@ -169,7 +169,7 @@
 
     var list = (meta.titles && meta.titles.length > 1) ? '<details class="gp-list"' + (window.innerWidth > 700 ? ' open' : '') + '><summary class="gp-list-h">Questions in this Watch lesson</summary><ul>' +
       meta.titles.map(function (tt, j) { return '<li><button type="button" class="gp-q' + (j === meta.q ? ' on' : '') + (seen(j) ? ' seen' : '') + '" data-q="' + j + '"' + (j === meta.q ? ' aria-current="true"' : '') + '><span class="gp-dot" aria-hidden="true">' + (seen(j) ? '✓' : j === meta.q ? '▶' : '') + '</span>' + (seen(j) ? '<span class="sr-only">Watched: </span>' : '') + tt + '</button></li>'; }).join('') + '</ul></details>' : '';
-    host.innerHTML = list + '<div class="gp"><div class="gp-frame"><div class="gp-stage"></div><button class="gp-close" type="button" aria-label="Close full screen">✕</button></div>' +
+    host.innerHTML = list + '<div class="gp"><div class="gp-frame"><div class="gp-stage"></div><button class="gp-fpp" type="button" aria-label="Pause"></button><button class="gp-close" type="button" aria-label="Close full screen">✕</button></div>' +
       '<div class="gp-cap" aria-live="polite"></div>' +
       '<div class="gp-ctl"><button class="btn" type="button" data-p></button>' +
       '<button class="btn ghost" type="button" data-b aria-label="Back one step"><span class="gp-ic" aria-hidden="true">◀</span><span class="gp-tx">◀ Back</span></button>' +
@@ -183,8 +183,9 @@
     var root = host.querySelector('.gp'), frame0 = FLM && root.classList.add('gp-fl'), frame = root.querySelector('.gp-frame'), stage = root.querySelector('.gp-stage'), cap = root.querySelector('.gp-cap');
     var pb = root.querySelector('[data-p]'), bar = root.querySelector('.gp-prog i'), cnt = root.querySelector('.gp-cnt'), note = root.querySelector('[data-note]');
     var idx = 0, playing = false, token = 0, timer = null, shown = -1;
-    function setPb(t) { pb.setAttribute('aria-label', t); pb.innerHTML = '<span class="gp-ic" aria-hidden="true">' + (t === 'Pause' ? '❚❚' : '▶') + '</span><span class="gp-tx">' + t + '</span><span class="gp-sh">' + (t === 'Pause' ? ' Pause' : ' Play') + '</span>'; }
+    function setPb(t) { var fp = root.querySelector('.gp-fpp'); if (fp) { var on = t === 'Pause'; fp.setAttribute('aria-label', on ? 'Pause' : 'Play'); fp.innerHTML = '<span aria-hidden="true">' + (on ? '❚❚' : '▶') + '</span> ' + (on ? 'Pause' : 'Play'); } pb.setAttribute('aria-label', t); pb.innerHTML = '<span class="gp-ic" aria-hidden="true">' + (t === 'Pause' ? '❚❚' : '▶') + '</span><span class="gp-tx">' + t + '</span><span class="gp-sh">' + (t === 'Pause' ? ' Pause' : ' Play') + '</span>'; }
     setPb('Play the lesson');
+    root.querySelector('.gp-fpp').addEventListener('click', function () { pb.click(); });
     var okVoice = H.voiceOk && H.voiceOk();
     note.textContent = okVoice ? (FLM ? '🔊 Turn the sound on: this story is read aloud. Choose a voice and a speed that suit your child.' : 'Your device reads this aloud. Choose the voice and reading speed above.') : 'The voice is not available here, so the lesson plays with words only.';
     /* First level stories are listened to, not read: without a voice, say so clearly */
