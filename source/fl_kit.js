@@ -147,7 +147,8 @@
   FL.picto = function (rows) {
     var s = '', w = 0;
     rows.forEach(function (r, i) { var y = 30 + i * 42; s += tx(70, y + 6, r[0], 16, null, 800, 'end'); for (var k = 0; k < r[1]; k++) s += THING[r[2] || 'apple'](100 + k * 34, y); w = Math.max(w, 100 + r[1] * 34); });
-    return svg(w + 10, rows.length * 42 + 14, 'A pictogram', s, Math.min((w + 10) * 1.3, 620));
+    s += tx(10, rows.length * 42 + 36, 'Key: each picture stands for 1', 13, null, 700, 'start');
+    return svg(w + 10, rows.length * 42 + 44, 'A pictogram', s, Math.min((w + 10) * 1.3, 620));
   };
 
   /* ---------- activities for young children ---------- */
