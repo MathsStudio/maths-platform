@@ -138,6 +138,11 @@
           if (turn) return;
           if ((isQ || (x.length < 150 && FACT.test(x))) && !onScreen(st.html, x)) add.push(x);
         });
+        /* a worked example writes out the whole problem, not just its last question */
+        if (!turn && k === 0 && /^Example/.test(sc.sub || '')) {
+          var qe = -1, i2; for (i2 = 0; i2 < Math.min(sents.length, 5); i2++) { var t2 = sents[i2].trim(); if (/\?$/.test(t2) || /^(work out|find|calculate|solve|simplify|write|expand|factorise|factorize|round|estimate|show|convert|express|draw|measure|describe|give|name|state|list|use|complete|plot|sketch|construct|compare|change|multiply|divide|add|subtract|put)\b/i.test(t2)) qe = i2; if (qe >= 0 && /\?$/.test(t2)) break; }
+          if (qe >= 0) { var full = sents.slice(0, qe + 1).map(function (z) { return z.trim(); }).join(' '); if (!onScreen(st.html, sents[0].trim()) || !onScreen(st.html, sents[qe].trim())) add = [full]; }
+        }
         if (!turn && !add.length && st.html && st.html.indexOf('sv-work') < 0 && answerOnly(st.html)) {
           var cl = calcLines(st.say).slice(0, 3), w = (reaches(cl, st.html) ? cl.filter(function (c) { return plain(st.html).indexOf(plain(c)) < 0; }).map(function (c) { return BT.sv.eq(c); }).join('') : ''), r0 = String(st.html), sw = r0.indexOf('<!--swap-->') === 0; if (sw) r0 = r0.replace('<!--swap-->', '');
           if (w) st.html = (sw ? '<!--swap-->' : '') + w + r0;
@@ -163,7 +168,7 @@
       var per0 = (hasFig && i === 0 ? 1 : per), chunk = lines.slice(i, i + per0), steps = [], pend = '', fg = figs[Math.min(N - 1, i + per0 - 1)];
       chunk.forEach(function (ln, j) {
         var li = i + j, a = Math.floor(li * S.length / N), b = Math.floor((li + 1) * S.length / N), h = BT.sv.eq(ln);
-        if (j === 0) h = (li === 0 ? BT.sv.note('<b>' + qt + '</b>') : '') + (fg || '') + h;
+        if (j === 0) h = BT.sv.note('<b>' + qt + '</b>') + (fg || '') + h;
         if (a >= b) { pend += h; return; }
         steps.push(L.st(S.slice(a, b).join(' '), pend + h)); pend = '';
       });
@@ -207,7 +212,7 @@
   }
   L.use = function (n, items) {
     var list = items.map(function (x) { return typeof x === 'string' ? L.get(x) : x; });
-    if (n >= 841 && n <= 853) list.forEach(function (it) { if (it && it.scenes) { splitTurns(it); extraCalc(it); showWords(it.scenes); fit(it.scenes); } });
+    if (n >= 801 && n <= 853) list.forEach(function (it) { if (it && it.scenes) { splitTurns(it); extraCalc(it); showWords(it.scenes); fit(it.scenes); } });
     BT.lessons(n, 'Watch lesson', list);
   };
 

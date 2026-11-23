@@ -18355,6 +18355,11 @@ S.spatialExtra = S.extraMakers;
           if (turn) return;
           if ((isQ || (x.length < 150 && FACT.test(x))) && !onScreen(st.html, x)) add.push(x);
         });
+        /* a worked example writes out the whole problem, not just its last question */
+        if (!turn && k === 0 && /^Example/.test(sc.sub || '')) {
+          var qe = -1, i2; for (i2 = 0; i2 < Math.min(sents.length, 5); i2++) { var t2 = sents[i2].trim(); if (/\?$/.test(t2) || /^(work out|find|calculate|solve|simplify|write|expand|factorise|factorize|round|estimate|show|convert|express|draw|measure|describe|give|name|state|list|use|complete|plot|sketch|construct|compare|change|multiply|divide|add|subtract|put)\b/i.test(t2)) qe = i2; if (qe >= 0 && /\?$/.test(t2)) break; }
+          if (qe >= 0) { var full = sents.slice(0, qe + 1).map(function (z) { return z.trim(); }).join(' '); if (!onScreen(st.html, sents[0].trim()) || !onScreen(st.html, sents[qe].trim())) add = [full]; }
+        }
         if (!turn && !add.length && st.html && st.html.indexOf('sv-work') < 0 && answerOnly(st.html)) {
           var cl = calcLines(st.say).slice(0, 3), w = (reaches(cl, st.html) ? cl.filter(function (c) { return plain(st.html).indexOf(plain(c)) < 0; }).map(function (c) { return BT.sv.eq(c); }).join('') : ''), r0 = String(st.html), sw = r0.indexOf('<!--swap-->') === 0; if (sw) r0 = r0.replace('<!--swap-->', '');
           if (w) st.html = (sw ? '<!--swap-->' : '') + w + r0;
@@ -18380,7 +18385,7 @@ S.spatialExtra = S.extraMakers;
       var per0 = (hasFig && i === 0 ? 1 : per), chunk = lines.slice(i, i + per0), steps = [], pend = '', fg = figs[Math.min(N - 1, i + per0 - 1)];
       chunk.forEach(function (ln, j) {
         var li = i + j, a = Math.floor(li * S.length / N), b = Math.floor((li + 1) * S.length / N), h = BT.sv.eq(ln);
-        if (j === 0) h = (li === 0 ? BT.sv.note('<b>' + qt + '</b>') : '') + (fg || '') + h;
+        if (j === 0) h = BT.sv.note('<b>' + qt + '</b>') + (fg || '') + h;
         if (a >= b) { pend += h; return; }
         steps.push(L.st(S.slice(a, b).join(' '), pend + h)); pend = '';
       });
@@ -18424,7 +18429,7 @@ S.spatialExtra = S.extraMakers;
   }
   L.use = function (n, items) {
     var list = items.map(function (x) { return typeof x === 'string' ? L.get(x) : x; });
-    if (n >= 841 && n <= 853) list.forEach(function (it) { if (it && it.scenes) { splitTurns(it); extraCalc(it); showWords(it.scenes); fit(it.scenes); } });
+    if (n >= 801 && n <= 853) list.forEach(function (it) { if (it && it.scenes) { splitTurns(it); extraCalc(it); showWords(it.scenes); fit(it.scenes); } });
     BT.lessons(n, 'Watch lesson', list);
   };
 
@@ -18601,6 +18606,16 @@ S.spatialExtra = S.extraMakers;
   F.cdia = function (d, r) { var c = [130, 80], rr = 60, s = ci(c[0], c[1], rr, SOFT) + ln(c[0] - rr, c[1], c[0] + rr, c[1], !r, false, 5) + dot(c[0], c[1]); if (r) s = ci(c[0], c[1], rr, SOFT) + ln(c[0], c[1], c[0] + rr, c[1], true, false, 5) + dot(c[0], c[1]) + tx(c[0] + rr / 2, c[1] - 8, r, true); else s += tx(c[0], c[1] + 28, d, true); return svg(260, 160, s, 'A circle'); };
   /* shadows: a pole and a tree with the sun's ray */
   F.shadow = function (hp, sp, ht, st) { var s = ln(10, 140, 250, 140) + ln(40, 140, 40, 100, true, false, 6) + ln(40, 100, 90, 140, false, true) + ln(150, 140, 150, 40, true, false, 6) + ln(150, 40, 250, 140, false, true) + tx(24, 122, hp, false, 'end', 19) + tx(65, 158, sp, false, 'middle', 19) + tx(136, 92, ht, true, 'end', 19) + tx(200, 158, st, true, 'middle', 19); return svg(260, 170, s, 'A pole and a tree with shadows'); };
+
+  /* a number line from lo to hi with a jump from a to b (a, b optional): the start is dark, the arrival orange */
+  F.numline = function (lo, hi, a, b) {
+    var w = 230, x0 = 15, n = hi - lo, st = w / n, s = ln(x0, 90, x0 + w, 90, false, false, 3), i;
+    function X(v) { return x0 + (v - lo) * st; }
+    for (i = lo; i <= hi; i++) s += ln(X(i), 82, X(i), 98, false, false, 2) + tx(X(i), 120, '' + i, i === 0, 'middle', n > 10 ? 14 : 17);
+    if (a != null && b != null) { var mid = (X(a) + X(b)) / 2, h = Math.min(60, Math.abs(X(b) - X(a)) / 2 + 12);
+      s += '<path d="M' + X(a) + ' 84 Q' + mid + ' ' + (84 - h * 1.4) + ' ' + X(b) + ' 84" style="fill:none;stroke:' + HI + ';stroke-width:4"/>' + dot(X(a), 90, false) + dot(X(b), 90, true) + tx(X(a), 62, '' + a, false, 'middle', 19) + tx(X(b), 62, '' + b, true, 'middle', 19); }
+    return svg(260, 140, s, 'A number line');
+  };
 })();
 </script>
 <script>
@@ -19181,6 +19196,49 @@ S.spatialExtra = S.extraMakers;
 0
 ]
 ]; })();
+</script>
+<script>
+/* fxlib.js: L.fx writes a full Watch lesson from plain data, in the same fuller style as the S3 lessons:
+   basics, slow worked examples, "Your turn" (question, pause, answer, step-by-step working, optional figure), common mistakes, real life, recap.
+   Line codes: "text" = calculation, "g|text" green, "r|text" red, "n|text" a sentence on screen, "h|<html>" a picture, "f|..." is not used. */
+(function () {
+  'use strict';
+  var BT = window.BT; if (!BT || !BT.L || !BT.sv) return;
+  var L = BT.L, V = BT.sv, E = function (t, c) { return V.eq(t, c); };
+  function html(spec) {
+    if (spec == null) return '';
+    if (typeof spec === 'string') spec = [spec];
+    return spec.map(function (x) {
+      if (typeof x !== 'string') return '';
+      var m = /^([grnbh])\|/.exec(x), t = m ? x.slice(2) : x, c = m ? m[1] : '';
+      if (c === 'g') return E(t, 'g'); if (c === 'r') return E(t, 'r'); if (c === 'b') return E(t, 'b'); if (c === 'n') return V.note('<b>' + t + '</b>'); if (c === 'h') return t;
+      return E(t);
+    }).join('');
+  }
+  function steps(list) { return list.map(function (s) { return L.st(s[0], html(s[1])); }); }
+  L.fx = function (title, goal, o) {
+    var sc = [], H = o.head || 'Let us learn', k;
+    (o.basics || []).forEach(function (b) { sc.push(L.SC(H, b[0], steps(b[1]))); });
+    var turns = o.turns || [], used = 0;
+    function turn(i) {
+      var t = turns[i], qs = 'Your turn! ' + t.q + ' Pause and try it.';
+      return L.turn(qs, t.task ? E(t.task) : '', t.say, html(t.ans));
+    }
+    (o.ex || []).forEach(function (e, i) {
+      sc.push(L.SC('Example ' + (i + 1), e[0], steps(e[1])));
+      if (i >= 1 && used < turns.length && (i - 1) % 1 === 0 && i < (o.ex || []).length) { sc.push(turn(used++)); }
+    });
+    (o.mist || []).forEach(function (m) { sc.push(L.SC('Watch out!', m[0], [L.st(m[1], html(m[2]))])); });
+    if (o.real) sc.push(L.SC('In real life', o.real[0], [L.st(o.real[1], html(o.real[2]))]));
+    while (used < turns.length) sc.push(turn(used++));
+    if (o.rec) sc.push(L.rec(title, o.rec[0], o.rec[1]));
+    /* the written step-by-step working of each Your turn */
+    BT.W3(title, turns.map(function (t) { var w = (t.work || []).slice(); if (t.fig && w.length) w[0] = [w[0], String(t.fig).replace(/^h\|/, '')]; return w; }));
+    if (o.deep) { BT.DEEP = BT.DEEP || {}; BT.DEEP[title] = o.deep; }
+    L.full(title, sc);
+    return L.ep(title, goal, []);
+  };
+})();
 </script>
 <script>
 (function () { var BT = window.BT; if (!BT || !BT.W3) return; var W = BT.W3;
@@ -25636,6 +25694,531 @@ W('How do you solve ordering and logic puzzles?', [
   L.use(851, ['How do you construct triangles?', 'What are angles in triangles and quadrilaterals?', 'What is a linear scale factor?', 'Similar triangles', 'Angles of elevation', 'Circles, similarity and solids', 'Polygon angles, bearings and coordinates']);
   L.use(852, ['How do you interpret and describe data?', 'Standard deviation', 'Quartiles and box plots', 'Two-way tables, Venn diagrams and pie charts', 'Quartiles and probability']);
   L.use(853, ['What is symmetry in 2D shapes?', 'Vectors as journeys', 'The magnitude of a vector', 'Painted cubes and stacks']);
+})();
+</script>
+<script>
+/* lessons_new_s2a.js: S2 Watch lessons for topic 821 (number), written in full with L.fx */
+(function () {
+  'use strict';
+  var BT = window.BT; if (!BT || !BT.L || !BT.L.fx) return;
+  var L = BT.L, F = BT.F, fx = L.fx;
+
+  fx('How do you round to three decimal places?', 'how to round a number to three decimal places.', {
+    head: 'Rounding',
+    basics: [['What are decimal places?', [
+      ["Decimal places are the digits after the decimal point. To round to three decimal places, we keep exactly three digits after the point. The third digit is the last one we keep.", ['4.3726', 'n|3 decimal places = 3 digits after the point']],
+      ["Then we look at the next digit, the fourth one. It is the decider. If the decider is five or more, we round the last digit up. If it is four or less, the last digit stays the same.", ['n|Decider 5 or more: round up', 'n|Decider 4 or less: stay the same']]]]],
+    ex: [
+      ['4.3726 to three decimal places', [
+        ["Count three digits after the point: three, seven, two. That gives four point three seven two. The next digit is six. That is the decider.", ['4.3726', '4.372 | 6', 'n|Decider = 6']],
+        ["Six is five or more, so the two goes up by one to a three. We stop after the third digit.", ['2 → 3', 'g|4.3726 ≈ 4.373 (3 d.p.)']]]],
+      ['0.04519 to three decimal places', [
+        ["Count the digits after the point: zero, four, five. That is zero point zero four five. The next digit is one, so the decider is one.", ['0.04519', '0.045 | 19', 'n|Decider = 1']],
+        ["One is less than five, so the five stays the same. The zero at the start counts as a place, so we must not skip it.", ['g|0.04519 ≈ 0.045 (3 d.p.)']]]],
+      ['7.0996 to three decimal places', [
+        ["Keep three digits: zero, nine, nine. The decider is six, so we round up. The last nine goes up to ten, so we write zero and carry one.", ['7.0996', '7.099 | 6', '9 + 1 = 10: write 0, carry 1']],
+        ["The carry changes the nine before it as well. Nine plus one is ten again. We write zero and carry again. Seven point one zero zero. We keep the zeros, because we need three decimal places.", ['0.099 + 0.001 = 0.100', 'g|7.0996 ≈ 7.100 (3 d.p.)']]]]],
+    mist: [
+      ['Not carrying', "Mistake one: forgetting to carry. Round seven point zero nine nine six to three decimal places. Wrong: seven point zero nine ten. You cannot write ten in one place. Carry it. The answer is seven point one zero zero.", ['r|7.0996 ≈ 7.0910 ✗', 'g|7.0996 ≈ 7.100 ✓']],
+      ['Losing the zeros', "Mistake two: dropping the trailing zeros. The question asks for three decimal places, so seven point one zero zero must keep its zeros. Seven point one is a different level of accuracy.", ['r|7.1 ✗ (only 1 d.p.)', 'g|7.100 ✓ (3 d.p.)']]],
+    real: ['In real life', "A laboratory balance reads twelve point three four five six seven grams. A scientist writes it to three decimal places, to match the precision of the scales. The fourth digit is five, so we round up. Twelve point three four six grams.", ['12.34567 g', 'g|≈ 12.346 g (3 d.p.)']],
+    turns: [
+      { q: 'Round eight point two six five four to three decimal places.', say: "Eight point two six five four. We keep three digits after the point, so eight point two six five. The decider is the next digit, which is four. Four is less than five, so the five stays the same. The answer is eight point two six five.", work: ['8.2654', '8.265 | 4', 'Decider = 4', '4 is less than 5: stay the same'], ans: ['g|8.265'] },
+      { q: 'Round zero point nine nine nine six to three decimal places.', say: "Keep three digits: zero point nine nine nine. The decider is six, so we round up. Nine plus one is ten, and the carry runs along. Zero point nine nine nine plus zero point zero zero one is one point zero zero zero. The answer is one point zero zero zero.", work: ['0.9996', '0.999 | 6', 'Decider = 6: round up', '0.999 + 0.001 = 1.000'], ans: ['g|1.000'] },
+      { q: 'A runner takes twelve point zero four five seven seconds. Write the time to three decimal places.', say: "Twelve point zero four five seven. Keep three digits after the point, twelve point zero four five. The decider is seven, which is five or more. So the five goes up to a six. The time is twelve point zero four six seconds.", work: ['12.0457 s', '12.045 | 7', 'Decider = 7: round up', '5 → 6'], ans: ['g|12.046 s'] }],
+    rec: ["Three decimal places means three digits after the point. Look at the fourth digit to decide.", ['Count three digits after the point', 'Decider 5 or more: round up', 'Decider 4 or less: stay the same', 'Carry if a digit reaches ten', 'Keep trailing zeros']]
+  });
+
+  fx('Significant figures', 'how to count and round to a number of significant figures.', {
+    head: 'Significant figures',
+    basics: [['What is a significant figure?', [
+      ["Significant figures are the digits that really matter in a number. We start counting at the first digit that is not zero. That first non-zero digit is the first significant figure.", ['4 5 3 0', 'n|Start at the first digit that is not zero']],
+      ["Zeros at the very start of a decimal do not count. They only show where the point is. Zeros between other digits do count. Look at zero point zero zero six three. The six is the first significant figure, and the three is the second.", ['0.0063', 'n|Leading zeros: not significant', '6 and 3: 2 significant figures']]]]],
+    ex: [
+      ['Counting significant figures', [
+        ["Count the significant figures in four thousand and five. The four is the first. The zeros in the middle are between digits, so they count. The five is the last. That is four significant figures.", ['4005', '4  0  0  5', 'g|4 significant figures']],
+        ["Now zero point zero zero eight zero. The first non-zero digit is eight. The zero after the eight counts, because it is after a significant digit in a decimal. So two significant figures.", ['0.0080', '8  0', 'g|2 significant figures']]]],
+      ['Round 46,382 to two significant figures', [
+        ["The first two significant figures are four and six. The next digit is three, the decider. Three is less than five, so the six stays. Now the number has five digits, so we must fill the other places with zeros.", ['46382', '46 | 382', 'Decider = 3: stay the same']],
+        ["Forty-six thousand, because the place values must stay right. If we wrote forty-six, the number would be completely wrong.", ['g|46,382 ≈ 46,000 (2 s.f.)']]]],
+      ['Round 0.007382 to two significant figures', [
+        ["The first significant figure is the seven, after the zeros. The two significant figures are seven and three. The decider is eight, so the three goes up to four.", ['0.007382', '0.0073 | 82', 'Decider = 8: round up']],
+        ["Zero point zero zero seven four. The leading zeros stay, because they hold the place.", ['3 → 4', 'g|0.007382 ≈ 0.0074 (2 s.f.)']]]]],
+    mist: [
+      ['Counting the leading zeros', "Mistake one: counting the zeros at the start. Round zero point zero zero four seven to one significant figure. Wrong: zero point zero zero zero, as if the zeros were the figures. The first significant figure is the four. The decider is seven, so round up. Zero point zero zero five.", ['r|0.0047 ≈ 0.000 ✗', 'g|0.0047 ≈ 0.005 ✓ (1 s.f.)']],
+      ['Dropping the place-holding zeros', "Mistake two: forgetting to put zeros back in a big number. Round seven thousand eight hundred and fifty to two significant figures. Wrong: seventy-nine. The size is wrong. The answer is seven thousand nine hundred.", ['r|7850 ≈ 79 ✗', 'g|7850 ≈ 7900 ✓ (2 s.f.)']]],
+    real: ['In real life', "Scientists and engineers use significant figures to show how precise a measurement is. The distance from the Earth to the Sun is one hundred and forty-nine million, six hundred thousand kilometres. To two significant figures, that is one hundred and fifty million kilometres.", ['149,600,000 km', 'g|≈ 150,000,000 km (2 s.f.)']],
+    turns: [
+      { q: 'Round three thousand, nine hundred and sixty-one to two significant figures.', say: "The first two significant figures are three and nine. The next digit is six, so the decider is six. Six is five or more, so the nine goes up to ten. That carries, and three becomes four. Four thousand, with zeros to hold the places.", work: ['3961', '39 | 61', 'Decider = 6: round up', '39 + 1 = 40', 'Put the zeros back: 4000'], ans: ['g|4000 (2 s.f.)'] },
+      { q: 'Round zero point zero zero five six two to two significant figures.', say: "The first significant figure is the five. The second is six. The next digit is two, which is the decider. Two is less than five, so the six stays. The leading zeros stay as well, so zero point zero zero five six.", work: ['0.00562', '0.0056 | 2', 'Decider = 2: stay the same'], ans: ['g|0.0056 (2 s.f.)'] },
+      { q: 'A stadium holds eighty-two thousand, seven hundred and forty-nine people. Round this to one significant figure.', say: "The first significant figure is eight. The next digit is two, which is the decider. Two is less than five, so the eight stays. We fill the rest with zeros. The stadium holds about eighty thousand people.", work: ['82,749', '8 | 2,749', 'Decider = 2: stay the same', 'Fill with zeros: 80,000'], ans: ['g|≈ 80,000 people'] }],
+    rec: ["Count from the first digit that is not zero.", ['First significant figure: first non-zero digit', 'Leading zeros do not count', 'Zeros between digits count', 'Look at the next digit to decide', 'Put zeros back to hold the place value']]
+  });
+
+  fx('Estimating by rounding to 1 significant figure', 'how to estimate an answer by rounding each number to one significant figure.', {
+    head: 'Estimating',
+    basics: [['Why estimate?', [
+      ["An estimate is a quick answer that is close to the real one. We find it by rounding every number first, then doing an easy calculation. Estimating helps us check that an answer from a calculator is sensible.", ['n|Estimate: round first, then calculate']],
+      ["The usual rule is to round each number to one significant figure. Look at the first digit that is not zero, and use the next digit to decide. Four thousand eight hundred and fifty becomes five thousand. Zero point zero three seven becomes zero point zero four.", ['4850 ≈ 5000', '0.037 ≈ 0.04']]]]],
+    ex: [
+      ['Estimate 4.8 × 21', [
+        ["Round each number to one significant figure. Four point eight rounds to five. Twenty-one rounds to twenty.", ['4.8 ≈ 5', '21 ≈ 20']],
+        ["Now multiply the rounded numbers. Five times twenty is one hundred. The exact answer is just over one hundred, so the estimate is very close.", ['5 × 20 = 100', 'g|4.8 × 21 ≈ 100']]]],
+      ['Estimate 592 ÷ 19.8', [
+        ["Round to one significant figure. Five hundred and ninety-two is about six hundred. Nineteen point eight is about twenty.", ['592 ≈ 600', '19.8 ≈ 20']],
+        ["Six hundred divided by twenty is thirty. Divide both numbers by ten to make it easier, sixty divided by two, which is thirty.", ['600 ÷ 20 = 60 ÷ 2 = 30', 'g|592 ÷ 19.8 ≈ 30']]]],
+      ['Estimate 38.6 × 0.52 ÷ 0.0098', [
+        ["Round each number to one significant figure. Thirty-eight point six is forty. Zero point five two is zero point five. Zero point zero zero nine eight is zero point zero one.", ['38.6 ≈ 40', '0.52 ≈ 0.5', '0.0098 ≈ 0.01']],
+        ["Forty times zero point five is twenty. Then twenty divided by zero point zero one is two thousand, because dividing by a hundredth is the same as multiplying by one hundred.", ['40 × 0.5 = 20', '20 ÷ 0.01 = 2000', 'g|≈ 2000']]]]],
+    mist: [
+      ['Rounding to the wrong place', "Mistake one: rounding to the nearest ten when the question wants one significant figure. Estimate three hundred and eighty-four times twelve. Wrong: round to three hundred and eighty and ten. One significant figure means four hundred and ten.", ['r|380 × 10 = 3800 ✗ (not 1 s.f.)', 'g|400 × 10 = 4000 ✓']],
+      ['Not checking', "Mistake two: not using the estimate to check. If a calculator gives four thousand six hundred and eight for forty-six times ten point two, the estimate fifty times ten is five hundred. They are very different. Something went wrong, perhaps a decimal point.", ['46 × 10.2 ≈ 50 × 10 = 500', 'r|Calculator: 4608 ✗ (decimal point?)', 'g|46 × 10.2 = 469.2 ✓']]],
+    real: ['In real life', "At a supermarket, you buy items costing one pound ninety-nine, three pounds ninety-five and two pounds ten. Round each to the nearest pound: two, four and two. The total is about eight pounds, which helps you check the receipt.", ['£1.99 + £3.95 + £2.10', '2 + 4 + 2 = 8', 'g|≈ £8']],
+    turns: [
+      { q: 'Estimate thirty-eight times fifty-two by rounding to one significant figure.', say: "Round each number. Thirty-eight is about forty. Fifty-two is about fifty. Forty times fifty is two thousand. So the estimate is two thousand.", work: ['38 ≈ 40', '52 ≈ 50', '40 × 50 = 2000'], ans: ['g|≈ 2000'] },
+      { q: 'Estimate seven hundred and eight divided by thirty-one point two.', say: "Round to one significant figure. Seven hundred and eight is about seven hundred. Thirty-one point two is about thirty. Seven hundred divided by thirty is the same as seventy divided by three. That is about twenty-three.", work: ['708 ≈ 700', '31.2 ≈ 30', '700 ÷ 30 = 70 ÷ 3', '70 ÷ 3 ≈ 23'], ans: ['g|≈ 23'] },
+      { q: 'A bag of rice costs one pound eighty-nine. Estimate the cost of nineteen bags by rounding.', say: "Round the price to two pounds and the number of bags to twenty. Two pounds times twenty is forty pounds. The exact cost is a little less than that, because we rounded the price up. About forty pounds.", work: ['£1.89 ≈ £2', '19 ≈ 20', '2 × 20 = 40'], ans: ['g|≈ £40'] }],
+    rec: ["An estimate is a quick, sensible answer. Round each number to one significant figure and calculate.", ['Round every number to 1 s.f.', 'Calculate with the rounded numbers', 'Use it to check your answer', 'The estimate should be close to the exact answer']]
+  });
+
+})();
+</script>
+<script>
+/* lessons_new_s2b.js: S2 topic 821, negatives and decimals */
+(function () {
+  'use strict';
+  var BT = window.BT; if (!BT || !BT.L || !BT.L.fx) return;
+  var L = BT.L, F = BT.F, fx = L.fx, nl = function (a, b, c, d) { return 'h|' + F.numline(a, b, c, d); };
+
+  fx('How do you add and subtract positive and negative numbers?', 'how to add and subtract positive and negative numbers using the number line and the signs.', {
+    head: 'Positive and negative numbers',
+    basics: [['The number line', [
+      ["Negative numbers are the numbers below zero. On a number line, positive numbers are to the right of zero and negative numbers are to the left. The further left, the smaller the number.", [nl(-6, 6), 'n|Right = bigger, left = smaller']],
+      ["Adding a positive number moves us right. Taking away a positive number moves us left. And there is a surprise: taking away a negative number moves us right, because two minus signs make a plus.", ['+ positive: move right', '− positive: move left', '− negative: move right (− − = +)']]]]],
+    ex: [
+      ['Three add negative five', [
+        ["Start at three on the number line. Adding a negative number is the same as taking away. So we move five steps to the left.", [nl(-6, 6, 3, -2), '3 + (−5) = 3 − 5']],
+        ["Three take away five lands on minus two. We pass through zero on the way.", ['3 − 5 = −2', 'g|3 + (−5) = −2']]]],
+      ['Minus four take away three', [
+        ["Start at minus four. We take away three, so we move three steps left.", [nl(-8, 2, -4, -7), '−4 − 3']],
+        ["Minus four then three more to the left is minus seven. When both numbers are negative, we add the sizes and keep the minus sign.", ['4 + 3 = 7', 'g|−4 − 3 = −7']]]],
+      ['Five take away negative two', [
+        ["Take away a negative is the same as add a positive. The two minus signs next to each other turn into a plus. So five minus negative two is five plus two.", ['5 − (−2)', '− (−2) becomes + 2']],
+        ["Five plus two is seven. We moved right, not left.", ['5 + 2 = 7', 'g|5 − (−2) = 7']]]],
+      ['Minus six take away negative nine', [
+        ["Two minus signs together make a plus. So this is minus six plus nine.", ['−6 − (−9)', '= −6 + 9']],
+        ["From minus six, move nine steps right. We pass zero and land on three. Nine take away six gives the size, and the answer is positive because nine is bigger.", ['9 − 6 = 3', 'g|−6 − (−9) = 3']]]]],
+    mist: [
+      ['Ignoring the double sign', "Mistake one: treating two minus signs as one. Work out five minus negative two. Wrong: five minus two is three. But minus negative two is plus two. The answer is seven.", ['r|5 − (−2) = 3 ✗', 'g|5 − (−2) = 5 + 2 = 7 ✓']],
+      ['Adding the sizes when signs differ', "Mistake two: adding all the digits. Work out minus three plus eight. Wrong: minus eleven. Start at minus three and move eight right. That is plus five.", ['r|−3 + 8 = −11 ✗', 'g|−3 + 8 = 5 ✓']]],
+    real: ['In real life', "At night the temperature is minus three degrees. By midday it has risen by eight degrees. Minus three plus eight is five degrees. In a bank account, an overdraft of forty pounds is minus forty. Paying in twenty-five pounds gives minus fifteen.", ['−3 + 8 = 5 °C', '−40 + 25 = −15 (£)']],
+    turns: [
+      { q: 'Work out minus seven plus four.', task: '−7 + 4', say: "Start at minus seven. Adding four moves us four steps to the right. Minus seven plus four lands on minus three. We are still below zero.", work: ['−7 + 4', '7 − 4 = 3 (the sizes)', 'The bigger size is negative, so the answer is −3'], fig: nl(-8, 2, -7, -3), ans: ['g|−7 + 4 = −3'] },
+      { q: 'Work out three minus negative six.', task: '3 − (−6)', say: "Two minus signs make a plus. So three minus negative six is three plus six. That is nine.", work: ['3 − (−6)', '− (−6) becomes + 6', '3 + 6 = 9'], ans: ['g|3 − (−6) = 9'] },
+      { q: 'The temperature falls from four degrees to minus six degrees. By how many degrees did it fall?', say: "We want the difference between four and minus six. That is four minus negative six. Two minus signs make a plus, so four plus six. The temperature fell by ten degrees.", work: ['4 − (−6)', '= 4 + 6', '= 10'], fig: nl(-8, 6, 4, -6), ans: ['g|It fell by 10 °C'] }],
+    rec: ["Use the number line, and watch the signs.", ['Right = bigger, left = smaller', 'Add a positive: move right', 'Take away a positive: move left', 'Take away a negative = add a positive', 'Different signs: subtract the sizes']]
+  });
+
+  fx('How do you multiply and divide positive and negative numbers?', 'the sign rules for multiplying and dividing positive and negative numbers.', {
+    head: 'Multiplying and dividing negatives',
+    basics: [['The sign rules', [
+      ["Multiplying and dividing follow the same simple rules. First ignore the signs and do the calculation. Then decide the sign of the answer.", ['n|1. Calculate with the sizes', 'n|2. Decide the sign']],
+      ["If the two signs are the same, the answer is positive. If the two signs are different, the answer is negative. This works for multiplication and for division.", ['same signs: positive', 'different signs: negative', '(+)(+) = +   (−)(−) = +', '(+)(−) = −   (−)(+) = −']]]]],
+    ex: [
+      ['Six times negative four', [
+        ["Ignore the signs. Six times four is twenty-four. The signs are different, a positive and a negative, so the answer is negative.", ['6 × 4 = 24', 'signs different: negative']],
+        ["Six times negative four is minus twenty-four.", ['g|6 × (−4) = −24']]]],
+      ['Negative five times negative seven', [
+        ["Ignore the signs. Five times seven is thirty-five. Both numbers are negative. The signs are the same, so the answer is positive.", ['5 × 7 = 35', 'signs the same: positive']],
+        ["Negative five times negative seven is plus thirty-five.", ['g|(−5) × (−7) = 35']]]],
+      ['Division', [
+        ["Minus thirty-six divided by nine. Thirty-six divided by nine is four. The signs are different, so the answer is negative.", ['−36 ÷ 9', '36 ÷ 9 = 4', 'g|−36 ÷ 9 = −4']],
+        ["Minus forty-eight divided by minus six. Forty-eight divided by six is eight. The signs are the same, so the answer is positive.", ['−48 ÷ (−6)', '48 ÷ 6 = 8', 'g|−48 ÷ (−6) = 8']]]],
+      ['More than two numbers', [
+        ["Work out negative two times three times negative five. Do it in order. Negative two times three is minus six. Then minus six times minus five is plus thirty.", ['(−2) × 3 = −6', '(−6) × (−5) = 30', 'g|(−2) × 3 × (−5) = 30']]]]],
+    mist: [
+      ['Negative times negative', "Mistake one: thinking negative times negative is negative. Work out negative three times negative four. Wrong: minus twelve. The signs are the same, so the answer is plus twelve.", ['r|(−3) × (−4) = −12 ✗', 'g|(−3) × (−4) = 12 ✓']],
+      ['Squaring a negative', "Mistake two: a negative number squared. Negative five squared means negative five times negative five. That is plus twenty-five. A square is never negative.", ['r|(−5)² = −25 ✗', 'g|(−5)² = (−5) × (−5) = 25 ✓']]],
+    real: ['In real life', "You owe your friend fifteen pounds each week for four weeks. Each week is minus fifteen, so four weeks is four times minus fifteen, which is minus sixty. The temperature on a mountain falls three degrees every hour. After five hours, the change is five times minus three, which is minus fifteen degrees.", ['4 × (−15) = −60 (£)', '5 × (−3) = −15 (°C)']],
+    turns: [
+      { q: 'Work out negative eight times five.', task: '(−8) × 5', say: "Ignore the signs. Eight times five is forty. The signs are different, so the answer is negative. The answer is minus forty.", work: ['8 × 5 = 40', 'Different signs: negative'], ans: ['g|(−8) × 5 = −40'] },
+      { q: 'Work out negative twelve divided by negative three.', task: '(−12) ÷ (−3)', say: "Ignore the signs. Twelve divided by three is four. Both numbers are negative, so the signs are the same. The answer is positive four.", work: ['12 ÷ 3 = 4', 'Same signs: positive'], ans: ['g|(−12) ÷ (−3) = 4'] },
+      { q: 'Work out negative four times negative two times negative three.', task: '(−4) × (−2) × (−3)', say: "Take it in two steps. Negative four times negative two is plus eight. Then plus eight times negative three is minus twenty-four. Three negative signs make a negative answer.", work: ['(−4) × (−2) = 8', '8 × (−3) = −24'], ans: ['g|−24'] }],
+    rec: ["Calculate with the sizes, then decide the sign.", ['Same signs: positive answer', 'Different signs: negative answer', 'Works for × and ÷', '(−5)² = 25, never −25', 'Do more than two numbers in steps']]
+  });
+
+  fx('How do you multiply to three decimal places?', 'how to multiply decimals with up to three decimal places.', {
+    head: 'Multiplying decimals',
+    basics: [['The method', [
+      ["To multiply decimals, first ignore the decimal points and multiply the numbers as if they were whole numbers. Then count how many digits are after the decimal points in the question, altogether.", ['n|1. Ignore the points: multiply', 'n|2. Count the decimal places in the question', 'n|3. Put that many in the answer']],
+      ["Finally put the same number of decimal places in the answer. Check with a quick estimate. If you multiply zero point six by zero point four, six times four is twenty-four, and there are two decimal places in total. So zero point two four.", ['0.6 × 0.4', '6 × 4 = 24', '2 decimal places', 'g|0.24']]]]],
+    ex: [
+      ['Two point five times zero point one two', [
+        ["Ignore the points. Twenty-five times twelve. Twenty-five times ten is two hundred and fifty. Twenty-five times two is fifty. Together that is three hundred.", ['25 × 12', '25 × 10 = 250', '25 × 2 = 50', '250 + 50 = 300']],
+        ["Count the decimal places in the question: one in two point five, two in zero point one two. That is three altogether. So the answer has three decimal places: zero point three zero zero. That is zero point three.", ['1 + 2 = 3 decimal places', '300 → 0.300', 'g|2.5 × 0.12 = 0.3']]]],
+      ['Four point seven times two point three', [
+        ["Ignore the points. Forty-seven times twenty-three. Forty-seven times three is one hundred and forty-one. Forty-seven times twenty is nine hundred and forty. Add them.", ['47 × 3 = 141', '47 × 20 = 940', '141 + 940 = 1081']],
+        ["There is one decimal place in each number, so two in total. One thousand and eighty-one becomes ten point eight one. Estimate: five times two is ten, so the answer is sensible.", ['1 + 1 = 2 decimal places', '1081 → 10.81', 'g|4.7 × 2.3 = 10.81']]]],
+      ['Zero point zero four five times zero point two', [
+        ["Ignore the points. Forty-five times two is ninety. There are three decimal places in zero point zero four five and one in zero point two. That is four places altogether.", ['45 × 2 = 90', '3 + 1 = 4 decimal places']],
+        ["Ninety needs four decimal places. We add zeros in front: zero point zero zero nine zero. That is zero point zero zero nine.", ['90 → 0.0090', 'g|0.045 × 0.2 = 0.009']]]]],
+    mist: [
+      ['Counting the places wrongly', "Mistake one: not counting the decimal places. Work out zero point three times zero point two. Wrong: zero point six. Three times two is six, but there are two decimal places in total. So the answer is zero point zero six.", ['r|0.3 × 0.2 = 0.6 ✗', 'g|0.3 × 0.2 = 0.06 ✓']],
+      ['Lining the points up', "Mistake two: lining up the decimal points, as in addition. For multiplying, the points do not need to line up. Multiply as whole numbers, then count the places.", ['n|Adding: line up the points', 'n|Multiplying: do not line up the points']]],
+    real: ['In real life', "Fabric costs two pounds thirty-five a metre. You need one point six metres. Multiply two point three five by one point six. Two hundred and thirty-five times sixteen is three thousand, seven hundred and sixty. Three decimal places gives three point seven six. So the fabric costs three pounds seventy-six.", ['2.35 × 1.6', '235 × 16 = 3760', 'g|£3.76']],
+    turns: [
+      { q: 'Work out zero point seven times zero point eight.', task: '0.7 × 0.8', say: "Ignore the points. Seven times eight is fifty-six. There is one decimal place in each number, two altogether. Fifty-six with two decimal places is zero point five six.", work: ['7 × 8 = 56', '1 + 1 = 2 decimal places', '56 → 0.56'], ans: ['g|0.56'] },
+      { q: 'Work out one point two times zero point three five.', task: '1.2 × 0.35', say: "Ignore the points. Twelve times thirty-five. Twelve times thirty is three hundred and sixty. Twelve times five is sixty. Together that is four hundred and twenty. There are three decimal places in the question. So zero point four two zero, which is zero point four two.", work: ['12 × 35', '12 × 30 = 360', '12 × 5 = 60', '360 + 60 = 420', '1 + 2 = 3 decimal places: 0.420'], ans: ['g|0.42'] },
+      { q: 'Ribbon costs two pounds thirty-five a metre. How much is one point six metres?', say: "Multiply two point three five by one point six. Ignore the points: two hundred and thirty-five times sixteen. Two hundred and thirty-five times ten is two thousand three hundred and fifty. Two hundred and thirty-five times six is one thousand four hundred and ten. Add them to get three thousand seven hundred and sixty. There are three decimal places, so three point seven six. The ribbon costs three pounds seventy-six.", work: ['2.35 × 1.6', '235 × 10 = 2350', '235 × 6 = 1410', '2350 + 1410 = 3760', '3 decimal places: 3.760'], ans: ['g|£3.76'] }],
+    rec: ["Multiply as whole numbers, then count the decimal places.", ['Ignore the decimal points', 'Multiply the whole numbers', 'Count the decimal places in the question', 'Put that many in the answer', 'Check with an estimate']]
+  });
+
+  fx('How do you divide to three decimal places?', 'how to divide with decimals and round the answer to three decimal places.', {
+    head: 'Dividing decimals',
+    basics: [['Make the divisor a whole number', [
+      ["Dividing by a decimal is awkward. So we make the number we are dividing by a whole number. We do this by multiplying both numbers by ten, or a hundred, or a thousand. Both numbers must be multiplied by the same amount.", ['4.8 ÷ 0.6', '× 10 both: 48 ÷ 6', 'n|Multiply BOTH by the same power of 10']],
+      ["The answer does not change, because we scaled both numbers the same way. Forty-eight divided by six is easy: eight.", ['48 ÷ 6 = 8', 'g|4.8 ÷ 0.6 = 8']]]]],
+    ex: [
+      ['Seven point two divided by zero point zero four', [
+        ["Zero point zero four needs multiplying by one hundred to become four. So multiply both numbers by one hundred. Seven point two becomes seven hundred and twenty.", ['7.2 ÷ 0.04', '× 100 both', '720 ÷ 4']],
+        ["Seven hundred and twenty divided by four is one hundred and eighty. Check: zero point zero four goes into seven point two many times, because it is so small.", ['720 ÷ 4 = 180', 'g|7.2 ÷ 0.04 = 180']]]],
+      ['Five divided by seven, to three decimal places', [
+        ["Seven goes into five zero times. Put a decimal point and add zeros. Seven goes into fifty seven times, which makes forty-nine, remainder one. Then ten: once, remainder three. Then thirty: four times, remainder two. Then twenty: twice, remainder six.", ['5 ÷ 7', '50 ÷ 7 = 7 r 1', '10 ÷ 7 = 1 r 3', '30 ÷ 7 = 4 r 2', '20 ÷ 7 = 2 r 6']],
+        ["So far zero point seven one four two. For three decimal places we need the fourth digit as the decider. The fourth digit is two, which is less than five. So the third digit stays: zero point seven one four.", ['0.7142…', 'Decider = 2: stay the same', 'g|5 ÷ 7 ≈ 0.714 (3 d.p.)']]]],
+      ['Two point five divided by zero point three', [
+        ["Multiply both by ten. Two point five becomes twenty-five, and zero point three becomes three. Twenty-five divided by three.", ['2.5 ÷ 0.3', '× 10 both: 25 ÷ 3']],
+        ["Three goes into twenty-five eight times, making twenty-four, remainder one. Then ten: three times, remainder one. The threes go on forever: eight point three three three three. To three decimal places, the decider is three, so it stays.", ['25 ÷ 3 = 8 r 1', '10 ÷ 3 = 3 r 1', 'g|≈ 8.333 (3 d.p.)']]]]],
+    mist: [
+      ['Moving the point in one number only', "Mistake one: changing only one of the numbers. Work out four point eight divided by zero point six. Wrong: four point eight divided by six, which is zero point eight. You must multiply both numbers by ten. Forty-eight divided by six is eight.", ['r|4.8 ÷ 0.6 = 4.8 ÷ 6 = 0.8 ✗', 'g|48 ÷ 6 = 8 ✓']],
+      ['Thinking division makes smaller', "Mistake two: expecting the answer to be smaller. Dividing by a number smaller than one makes the answer bigger. Six divided by zero point five is twelve, because there are twelve halves in six.", ['6 ÷ 0.5 = 12', 'n|Dividing by less than 1 gives a bigger answer']]],
+    real: ['In real life', "A jug holds seven point five litres of juice. Each glass holds zero point two five litres. How many glasses can be filled? Multiply both numbers by one hundred: seven hundred and fifty divided by twenty-five is thirty glasses.", ['7.5 ÷ 0.25', '750 ÷ 25 = 30', 'g|30 glasses']],
+    turns: [
+      { q: 'Work out nine point six divided by zero point eight.', task: '9.6 ÷ 0.8', say: "Multiply both numbers by ten. Nine point six becomes ninety-six, zero point eight becomes eight. Ninety-six divided by eight is twelve.", work: ['× 10 both: 96 ÷ 8', '96 ÷ 8 = 12'], ans: ['g|12'] },
+      { q: 'Work out three divided by zero point zero seven, to three decimal places.', task: '3 ÷ 0.07', say: "Multiply both numbers by one hundred. Three becomes three hundred, zero point zero seven becomes seven. Three hundred divided by seven is forty-two, remainder six. Then sixty divided by seven is eight, remainder four. Then forty divided by seven is five, remainder five. Then fifty divided by seven is seven. The next digit is one, so the decider is one, and the answer is forty-two point eight five seven.", work: ['× 100 both: 300 ÷ 7', '300 ÷ 7 = 42 r 6', '60 ÷ 7 = 8 r 4', '40 ÷ 7 = 5 r 5', '50 ÷ 7 = 7 r 1: 42.857…'], ans: ['g|≈ 42.857 (3 d.p.)'] },
+      { q: 'Work out four point two divided by zero point one five.', task: '4.2 ÷ 0.15', say: "Multiply both numbers by one hundred. Four point two becomes four hundred and twenty. Zero point one five becomes fifteen. Four hundred and twenty divided by fifteen. Fifteen times twenty is three hundred, leaving one hundred and twenty. Fifteen times eight is one hundred and twenty. So twenty-eight.", work: ['× 100 both: 420 ÷ 15', '15 × 20 = 300', '420 − 300 = 120', '15 × 8 = 120'], ans: ['g|28'] }],
+    rec: ["Make the divisor a whole number by multiplying both numbers by the same power of ten.", ['Multiply both numbers by 10, 100 or 1000', 'Divide as normal', 'Add zeros to carry on after the point', 'Look at the 4th digit to round to 3 d.p.', 'Dividing by less than 1 gives a bigger answer']]
+  });
+})();
+</script>
+<script>
+/* lessons_new_s2c.js: S2 topic 821, primes, factors, sets, powers and roots */
+(function () {
+  'use strict';
+  var BT = window.BT; if (!BT || !BT.L || !BT.L.fx) return;
+  var L = BT.L, F = BT.F, fx = L.fx;
+
+  fx('What are prime numbers?', 'what prime numbers are, how to test for them, and how to write a number as a product of prime factors.', {
+    head: 'Prime numbers',
+    basics: [['What is a prime number?', [
+      ["A prime number has exactly two factors: one, and itself. Seven is prime, because only one and seven divide into it exactly. Nine is not prime, because three divides into it as well.", ['7: factors 1, 7', '9: factors 1, 3, 9', 'n|Prime = exactly two factors']],
+      ["The number one is not prime, because it has only one factor. Two is the only even prime number, because every other even number can be divided by two. The first primes are two, three, five, seven, eleven, thirteen, seventeen, nineteen, twenty-three and twenty-nine.", ['n|1 is not prime', 'n|2 is the only even prime', '2, 3, 5, 7, 11, 13, 17, 19, 23, 29']]]]],
+    ex: [
+      ['Is twenty-nine prime?', [
+        ["To test a number, try dividing it by the small primes. Two does not go into twenty-nine, because it is odd. Three does not, because the digits two and nine add to eleven. Five does not, because it does not end in zero or five.", ['29 ÷ 2: odd, no', '2 + 9 = 11: not in the 3 times table', '29 does not end in 0 or 5']],
+        ["We can stop here. The next prime is seven, and seven times seven is forty-nine, which is bigger than twenty-nine. So twenty-nine has no factors except one and itself. It is prime.", ['7 × 7 = 49 > 29: stop', 'g|29 is prime']]]],
+      ['Is fifty-one prime?', [
+        ["Try three. The digits five and one add to six, and six is in the three times table. So fifty-one divides by three.", ['5 + 1 = 6', '51 ÷ 3 = 17']],
+        ["Fifty-one is three times seventeen. It has a factor other than one and itself, so it is not prime. It only looks prime because it is odd.", ['51 = 3 × 17', 'g|51 is not prime']]]],
+      ['Sixty as a product of prime factors', [
+        ["We can break a number down with a factor tree. Sixty is six times ten. Six is two times three. Ten is two times five.", ['60 = 6 × 10', '6 = 2 × 3', '10 = 2 × 5']],
+        ["The numbers at the ends of the branches are all prime. So sixty is two times two times three times five. We write repeated factors with a power.", ['60 = 2 × 2 × 3 × 5', 'g|60 = 2² × 3 × 5']]]]],
+    mist: [
+      ['One is prime', "Mistake one: saying one is a prime number. Prime numbers have exactly two factors. One has only one factor, itself. So one is not prime.", ['r|1 is prime ✗', 'g|1 has one factor: not prime ✓']],
+      ['All odd numbers are prime', "Mistake two: thinking every odd number is prime. Nine is odd, but nine is three times three. Twenty-one is three times seven. Always test.", ['r|9 is prime ✗', 'g|9 = 3 × 3: not prime ✓']]],
+    real: ['In real life', "Prime numbers protect your information online. Banking and messaging apps use huge prime numbers. It is easy to multiply two big primes, but extremely hard to work out which two primes were multiplied together.", ['7 × 13 = 91', '91 = ? × ?  (hard to reverse for huge numbers)']],
+    turns: [
+      { q: 'Is thirty-seven a prime number?', say: "Thirty-seven is odd, so two does not go in. Three plus seven is ten, which is not in the three times table. It does not end in five or zero. The next prime is seven, and seven times seven is forty-nine, bigger than thirty-seven. So we can stop. Thirty-seven is prime.", work: ['37 is odd: not ÷ 2', '3 + 7 = 10: not ÷ 3', 'Does not end in 0 or 5', '7 × 7 = 49 > 37: stop'], ans: ['g|Yes, 37 is prime'] },
+      { q: 'List all the prime numbers between twenty and forty.', say: "Check each number from twenty-one to thirty-nine. Twenty-three is prime. Twenty-nine is prime. Thirty-one is prime. Thirty-seven is prime. The others are divisible by two, three or five, or are seven times something. Twenty-one is three times seven, twenty-seven is three times nine, thirty-three is three times eleven, and thirty-five is five times seven.", work: ['23, 29, 31, 37 are prime', '21 = 3 × 7', '27 = 3 × 9', '33 = 3 × 11', '35 = 5 × 7'], ans: ['g|23, 29, 31, 37'] },
+      { q: 'Write eighty-four as a product of prime factors.', say: "Eighty-four is two times forty-two. Forty-two is two times twenty-one. Twenty-one is three times seven. All of these are prime. So eighty-four is two times two times three times seven. We write the two twice as two squared.", work: ['84 = 2 × 42', '42 = 2 × 21', '21 = 3 × 7', '84 = 2 × 2 × 3 × 7'], ans: ['g|84 = 2² × 3 × 7'] }],
+    rec: ["A prime number has exactly two factors.", ['Prime: only 1 and itself divide in', '1 is not prime; 2 is the only even prime', 'Test with small primes, and stop when p × p is too big', 'Break numbers down with a factor tree', 'Write repeats using powers']]
+  });
+
+  fx('How do you solve problems using multiples and factors?', 'how to use the highest common factor and the lowest common multiple to solve problems.', {
+    head: 'Multiples and factors',
+    basics: [['HCF and LCM', [
+      ["A factor divides into a number exactly. The highest common factor, or HCF, is the biggest number that divides into both numbers. A multiple is in the times table. The lowest common multiple, or LCM, is the smallest number that both numbers divide into.", ['HCF: biggest number that goes INTO both', 'LCM: smallest number that BOTH go into']],
+      ["Use HCF for splitting things into equal groups or cutting into the biggest pieces. Use LCM for things that repeat and meet again. The HCF is never bigger than the numbers. The LCM is never smaller.", ['HCF: sharing, cutting, grouping', 'LCM: repeating, meeting again']]]]],
+    ex: [
+      ['HCF and LCM of twelve and eighteen', [
+        ["Write each number as a product of prime factors. Twelve is two times two times three. Eighteen is two times three times three.", ['12 = 2² × 3', '18 = 2 × 3²']],
+        ["For the HCF, take only what they share: one two and one three. That is six. For the LCM, take the most of each prime: two squared and three squared. Four times nine is thirty-six.", ['HCF = 2 × 3 = 6', 'LCM = 2² × 3² = 4 × 9 = 36']]]],
+      ['Two flashing lights', [
+        ["A red light flashes every twelve seconds and a blue light every twenty seconds. They flash together now. When will they flash together again? Things that repeat and meet again use the LCM.", ['Multiples of 12: 12, 24, 36, 48, 60', 'Multiples of 20: 20, 40, 60']],
+        ["The first multiple in both lists is sixty. So the lights flash together again after sixty seconds.", ['g|LCM = 60', 'g|After 60 seconds']]]],
+      ['Square tiles', [
+        ["A floor is forty-eight centimetres by thirty-six centimetres. What is the biggest square tile that fits exactly? Cutting into the biggest equal pieces uses the HCF. The factors of forty-eight include twelve, and the factors of thirty-six include twelve.", ['Factors of 48: 1, 2, 3, 4, 6, 8, 12, 16, 24, 48', 'Factors of 36: 1, 2, 3, 4, 6, 9, 12, 18, 36']],
+        ["The highest number in both lists is twelve. The tiles are twelve by twelve. There are four rows of three: twelve tiles in all.", ['HCF = 12', '48 ÷ 12 = 4', '36 ÷ 12 = 3', 'g|12 cm tiles, 4 × 3 = 12 tiles']]]]],
+    mist: [
+      ['Mixing them up', "Mistake one: using the HCF when the question needs the LCM. Two buses leave at nine, every ten minutes and every fifteen minutes. When do they leave together again? Wrong: the HCF, five, so five minutes later. They cannot leave together after five minutes. Use the LCM: thirty minutes.", ['r|HCF = 5: after 5 min ✗', 'g|LCM = 30: after 30 min ✓']],
+      ['An LCM smaller than a number', "Mistake two: not checking the answer. The LCM must be at least as big as the biggest number. If you get an LCM of six for eight and twelve, something is wrong. The LCM of eight and twelve is twenty-four.", ['r|LCM of 8 and 12 = 4 ✗', 'g|LCM of 8 and 12 = 24 ✓']]],
+    real: ['In real life', "Bus timetables use the LCM. If one bus comes every twenty minutes and another every thirty, they arrive together every sixty minutes. Builders use the HCF to cut a long board into equal pieces with nothing left over.", ['LCM(20, 30) = 60 min', 'HCF(48, 36) = 12 cm']],
+    turns: [
+      { q: 'Find the highest common factor of twenty-four and thirty-six.', say: "Write the factors of each. Twenty-four has one, two, three, four, six, eight, twelve and twenty-four. Thirty-six has one, two, three, four, six, nine, twelve, eighteen and thirty-six. The biggest number in both lists is twelve.", work: ['24: 1, 2, 3, 4, 6, 8, 12, 24', '36: 1, 2, 3, 4, 6, 9, 12, 18, 36', 'Common: 1, 2, 3, 4, 6, 12'], ans: ['g|HCF = 12'] },
+      { q: 'Find the lowest common multiple of eight and twelve.', say: "List the multiples of each. Eight: eight, sixteen, twenty-four, thirty-two. Twelve: twelve, twenty-four, thirty-six. The first number in both lists is twenty-four.", work: ['8: 8, 16, 24, 32', '12: 12, 24, 36'], ans: ['g|LCM = 24'] },
+      { q: 'Two buses leave the station at nine o\'clock. One leaves every ten minutes and the other every twenty-five minutes. When do they next leave together?', say: "Things that repeat and meet again use the lowest common multiple. The multiples of ten are ten, twenty, thirty, forty, fifty. The multiples of twenty-five are twenty-five, fifty. The first multiple they share is fifty. Fifty minutes after nine o'clock is ten minutes to ten.", work: ['10: 10, 20, 30, 40, 50', '25: 25, 50', 'LCM = 50 minutes', '9:00 + 50 minutes = 9:50'], ans: ['g|At 9:50'] }],
+    rec: ["HCF is for sharing and cutting. LCM is for repeating and meeting.", ['HCF: biggest number that goes into both', 'LCM: smallest number both go into', 'Prime factors: HCF = shared, LCM = most of each', 'HCF ≤ the numbers, LCM ≥ the numbers']]
+  });
+
+  fx('Sets of numbers', 'the names of the main sets of numbers, and how to write and use a set.', {
+    head: 'Sets of numbers',
+    basics: [['What is a set?', [
+      ["A set is a collection of things, written inside curly brackets. The things in the set are called its members. We write the members separated by commas. The set of even numbers up to ten is two, four, six, eight, ten.", ['{2, 4, 6, 8, 10}', 'n|A set: members inside { }']],
+      ["The symbol that looks like a curved E means is a member of. Four belongs to the set of even numbers, so we write four is a member of the set. Seven is not a member, so we cross out the symbol.", ['4 ∈ {2, 4, 6, 8, 10}', '7 ∉ {2, 4, 6, 8, 10}']]]],
+      ['Important sets of numbers', [
+      ["Whole numbers start at zero and go up: zero, one, two, three and so on. Integers include the negatives as well: minus two, minus one, zero, one, two. Rational numbers are numbers that can be written as a fraction, like a half or zero point seven five.", ['Whole: 0, 1, 2, 3, …', 'Integers: …, −2, −1, 0, 1, 2, …', 'Rational: fractions and decimals that end or repeat']],
+      ["Some sets have special rules. Square numbers are one, four, nine, sixteen and so on. Cube numbers are one, eight, twenty-seven, sixty-four. Prime numbers have exactly two factors. Multiples of three are three, six, nine.", ['Squares: 1, 4, 9, 16, 25', 'Cubes: 1, 8, 27, 64, 125', 'Primes: 2, 3, 5, 7, 11']]]]],
+    ex: [
+      ['Listing members', [
+        ["List the set of square numbers between ten and fifty. Squares are one, four, nine, sixteen, twenty-five, thirty-six, forty-nine, sixty-four. Only those bigger than ten and less than fifty count.", ['Squares: 1, 4, 9, 16, 25, 36, 49, 64', '16, 25, 36, 49']],
+        ["So the set is sixteen, twenty-five, thirty-six, forty-nine.", ['g|{16, 25, 36, 49}']]]],
+      ['Which set does it belong to?', [
+        ["Is minus three a whole number? No, whole numbers start at zero. Is it an integer? Yes. Is it rational? Yes, because minus three is minus three over one.", ['−3: not whole', '−3: integer ✓', '−3 = −3/1: rational ✓']],
+        ["What about zero point four? It is not an integer, because it lies between zero and one. It is rational, because it is four tenths, or two fifths.", ['0.4: not an integer', '0.4 = 2/5: rational ✓']]]],
+      ['Two sets together', [
+        ["Let set A be the primes less than ten: two, three, five, seven. Let set B be the odd numbers less than ten: one, three, five, seven, nine. The numbers in both sets are three, five and seven.", ['A = {2, 3, 5, 7}', 'B = {1, 3, 5, 7, 9}', 'In both: {3, 5, 7}']],
+        ["The numbers in A or B or both are one, two, three, five, seven, nine. Note that two is the only member of A that is not in B.", ['In A or B: {1, 2, 3, 5, 7, 9}']]]]],
+    mist: [
+      ['Forgetting zero and negatives', "Mistake one: thinking zero is not a whole number, or leaving out negatives from the integers. Whole numbers start at zero. Integers go on both sides of zero.", ['r|Integers: 1, 2, 3 ✗', 'g|Integers: …, −1, 0, 1, 2, … ✓']],
+      ['Listing too many', "Mistake two: not reading the limits. Multiples of four between ten and twenty. Wrong: four, eight, twelve, sixteen, twenty. Four and eight are below ten. The set is twelve and sixteen. Whether twenty is included depends on the wording.", ['r|{4, 8, 12, 16, 20} ✗', 'g|{12, 16} ✓']]],
+    real: ['In real life', "Sets help us sort things. A shop has a set of products on sale and a set of products in stock. The products in both sets are the ones you can buy at the sale price.", ['On sale ∩ in stock = can buy now']],
+    turns: [
+      { q: 'List the set of prime numbers less than twenty.', say: "Go through the numbers. Two, three, five, seven. Then eleven, thirteen, seventeen, nineteen. The others are divisible by something. That gives eight primes.", work: ['2, 3, 5, 7', '11, 13, 17, 19'], ans: ['g|{2, 3, 5, 7, 11, 13, 17, 19}'] },
+      { q: 'Is minus five a member of the whole numbers? Is it a member of the integers?', say: "Whole numbers start at zero, so minus five is not a whole number. Integers include the negative numbers, so minus five is an integer.", work: ['Whole numbers: 0, 1, 2, … so −5 ∉ whole numbers', 'Integers: …, −2, −1, 0, 1, … so −5 ∈ integers'], ans: ['g|Not whole; it is an integer'] },
+      { q: 'Set A is the even numbers less than ten. Set B is the multiples of three less than ten. List the numbers in both sets.', say: "Set A is two, four, six, eight. Set B is three, six, nine. The only number in both lists is six.", work: ['A = {2, 4, 6, 8}', 'B = {3, 6, 9}', 'Both: 6'], ans: ['g|{6}'] }],
+    rec: ["A set is a collection, listed in curly brackets.", ['{ } hold the members', '∈ means is a member of', 'Whole numbers start at 0; integers include negatives', 'Rational numbers can be written as fractions', 'Squares, cubes and primes are special sets']]
+  });
+
+  fx('What are powers and roots?', 'what powers and roots mean and how to work with squares, cubes and their roots.', {
+    head: 'Powers and roots',
+    basics: [['Powers', [
+      ["A power is a short way to write repeated multiplication. Three to the power four means four threes multiplied together. The three is the base and the four is the index, or power.", ['3⁴ = 3 × 3 × 3 × 3', '3 × 3 = 9', '9 × 3 = 27', '27 × 3 = 81']],
+      ["A power of two is a square and a power of three is a cube. Five squared is twenty-five. Four cubed is sixty-four. These are used for the area of a square and the volume of a cube.", ['5² = 5 × 5 = 25', '4³ = 4 × 4 × 4 = 64']]]],
+      ['Roots', [
+      ["A root undoes a power. The square root of twenty-five is five, because five squared is twenty-five. The cube root of twenty-seven is three, because three cubed is twenty-seven. We write them with this sign.", ['√25 = 5, because 5² = 25', '∛27 = 3, because 3³ = 27']],
+      ["Learn the square numbers up to fifteen squared, and the first few cubes. They help you spot roots quickly.", ['1, 4, 9, 16, 25, 36, 49, 64, 81, 100, 121, 144, 169, 196, 225', '1, 8, 27, 64, 125']]]]],
+    ex: [
+      ['Evaluating powers', [
+        ["Two to the power five. Multiply five twos. Two times two is four, times two is eight, times two is sixteen, times two is thirty-two.", ['2⁵ = 2 × 2 × 2 × 2 × 2', '2 × 2 = 4, × 2 = 8, × 2 = 16, × 2 = 32', 'g|2⁵ = 32']],
+        ["The power only applies to the number next to it. Two times three squared is two times nine, which is eighteen. It is not six squared.", ['2 × 3² = 2 × 9', 'g|= 18']]]],
+      ['Square root with a calculation inside', [
+        ["The square root of nine plus sixteen. First work out the sum under the root. Nine plus sixteen is twenty-five. The square root of twenty-five is five.", ['√(9 + 16)', '= √25', 'g|= 5']],
+        ["Now compare. The square root of nine plus the square root of sixteen is three plus four, which is seven. These two are not the same. We cannot split a square root over an addition.", ['√9 + √16 = 3 + 4 = 7', 'n|√(9 + 16) ≠ √9 + √16']]]],
+      ['Real life: a square and a cube', [
+        ["A square patio has an area of one hundred and forty-four square metres. The side is the square root of one hundred and forty-four. Twelve times twelve is one hundred and forty-four. So the side is twelve metres.", ['Area = side²', '√144 = 12', 'g|Side = 12 m']],
+        ["A cube has sides of four centimetres. Its volume is four cubed. Four times four is sixteen. Sixteen times four is sixty-four cubic centimetres.", ['4³ = 4 × 4 × 4', '16 × 4 = 64', 'g|Volume = 64 cm³']]]]],
+    mist: [
+      ['Multiplying the index', "Mistake one: multiplying the base by the power. Two cubed is not two times three, which is six. It is two times two times two, which is eight.", ['r|2³ = 2 × 3 = 6 ✗', 'g|2³ = 2 × 2 × 2 = 8 ✓']],
+      ['Splitting a root over a sum', "Mistake two: splitting a square root over an addition. The square root of sixteen plus nine is the square root of twenty-five, which is five. It is not four plus three.", ['r|√(16 + 9) = 4 + 3 = 7 ✗', 'g|√(16 + 9) = √25 = 5 ✓']]],
+    real: ['In real life', "Floor tiles are measured in squares. A square room has an area of eighty-one square metres, so each wall is nine metres. A storage cube with an edge of five metres holds one hundred and twenty-five cubic metres.", ['√81 = 9 m', '5³ = 125 m³']],
+    turns: [
+      { q: 'Work out five cubed.', task: '5³', say: "Five cubed means five times five times five. Five times five is twenty-five. Twenty-five times five is one hundred and twenty-five.", work: ['5³ = 5 × 5 × 5', '5 × 5 = 25', '25 × 5 = 125'], ans: ['g|125'] },
+      { q: 'Work out the cube root of sixty-four.', task: '∛64', say: "We need a number that, multiplied by itself three times, makes sixty-four. Try three: three cubed is twenty-seven, too small. Try four: four times four is sixteen, times four is sixty-four. So the cube root is four.", work: ['3³ = 27: too small', '4³ = 4 × 4 × 4 = 16 × 4 = 64 ✓'], ans: ['g|∛64 = 4'] },
+      { q: 'A square garden has an area of one hundred and sixty-nine square metres. How long is each side?', say: "The area of a square is the side times the side. So the side is the square root of one hundred and sixty-nine. Twelve times twelve is one hundred and forty-four, too small. Thirteen times thirteen is one hundred and sixty-nine. Each side is thirteen metres.", work: ['Area = side × side = 169', '12 × 12 = 144: too small', '13 × 13 = 169 ✓'], ans: ['g|Side = 13 m'] }],
+    rec: ["A power is repeated multiplication. A root undoes a power.", ['3⁴ = 3 × 3 × 3 × 3', 'Squares and cubes: know the first ones', '√25 = 5 and ∛27 = 3', 'Work out the sum under a root first', '√(a + b) is not √a + √b']]
+  });
+})();
+</script>
+<script>
+/* lessons_new_s2d.js: S2 topic 821, fractions, standard form, indices, tolerance */
+(function () {
+  'use strict';
+  var BT = window.BT; if (!BT || !BT.L || !BT.L.fx) return;
+  var L = BT.L, F = BT.F, fx = L.fx;
+
+  fx('How do you add and subtract fractions?', 'how to add and subtract fractions and mixed numbers with different denominators.', {
+    head: 'Adding and subtracting fractions',
+    basics: [['Same denominator first', [
+      ["The denominator tells us the size of the pieces. We can only add or subtract pieces that are the same size. So first we change the fractions so they have the same denominator. This is called a common denominator.", ['n|Same size pieces first', '1/2 + 1/3: halves and thirds are different sizes']],
+      ["Find the lowest common multiple of the denominators. Change each fraction to an equivalent one with that denominator. Then add or subtract the numerators only, and keep the denominator the same.", ['1. Common denominator (LCM)', '2. Make equivalent fractions', '3. Add or subtract the tops', '4. Simplify']]]]],
+    ex: [
+      ['One half add one third', [
+        ["The denominators are two and three. The lowest common multiple is six. One half is three sixths, because we multiply the top and the bottom by three. One third is two sixths, because we multiply top and bottom by two.", ['LCM of 2 and 3 = 6', '1/2 = 3/6', '1/3 = 2/6']],
+        ["Now the pieces are the same size, so add the tops. Three plus two is five. The answer is five sixths.", ['3/6 + 2/6 = 5/6', 'g|1/2 + 1/3 = 5/6']]]],
+      ['Three quarters take away one sixth', [
+        ["The lowest common multiple of four and six is twelve. Three quarters is nine twelfths. One sixth is two twelfths.", ['LCM of 4 and 6 = 12', '3/4 = 9/12', '1/6 = 2/12']],
+        ["Subtract the tops. Nine minus two is seven. The answer is seven twelfths. It cannot be simplified.", ['9/12 − 2/12 = 7/12', 'g|3/4 − 1/6 = 7/12']]]],
+      ['Mixed numbers', [
+        ["Two and a half plus one and three quarters. Add the whole numbers first: two plus one is three. Then add the fractions. A half is two quarters. Two quarters plus three quarters is five quarters, which is one and one quarter.", ['2 + 1 = 3', '1/2 + 3/4 = 2/4 + 3/4 = 5/4 = 1 1/4']],
+        ["Put them together. Three plus one and a quarter is four and a quarter.", ['3 + 1 1/4', 'g|= 4 1/4']]]],
+      ['Subtracting mixed numbers', [
+        ["Three and one fifth take away one and three fifths. The fraction part of the first number is smaller, so change both to improper fractions. Three and one fifth is sixteen fifths. One and three fifths is eight fifths.", ['3 1/5 = 16/5', '1 3/5 = 8/5']],
+        ["Sixteen fifths take away eight fifths is eight fifths. As a mixed number, that is one and three fifths.", ['16/5 − 8/5 = 8/5', 'g|= 1 3/5']]]]],
+    mist: [
+      ['Adding the tops and the bottoms', "Mistake one: adding the numerators and the denominators. One half plus one third is not two fifths. Two fifths is smaller than a half, which cannot be right. Find a common denominator first. The answer is five sixths.", ['r|1/2 + 1/3 = 2/5 ✗', 'g|1/2 + 1/3 = 3/6 + 2/6 = 5/6 ✓']],
+      ['Forgetting to simplify', "Mistake two: leaving the answer unsimplified. One sixth plus one third is one sixth plus two sixths, which is three sixths. That simplifies to a half.", ['1/6 + 2/6 = 3/6', 'g|3/6 = 1/2 ✓']]],
+    real: ['In real life', "A recipe needs three quarters of a cup of flour for the cake and two thirds of a cup for the topping. Three quarters is nine twelfths and two thirds is eight twelfths. Together that is seventeen twelfths, which is one and five twelfths cups.", ['3/4 + 2/3 = 9/12 + 8/12', '= 17/12 = 1 5/12 cups']],
+    turns: [
+      { q: 'Work out two thirds plus one quarter.', task: '2/3 + 1/4', say: "The lowest common multiple of three and four is twelve. Two thirds is eight twelfths. One quarter is three twelfths. Eight plus three is eleven. The answer is eleven twelfths.", work: ['LCM of 3 and 4 = 12', '2/3 = 8/12 and 1/4 = 3/12', '8/12 + 3/12 = 11/12'], ans: ['g|11/12'] },
+      { q: 'Work out five sixths minus three eighths.', task: '5/6 − 3/8', say: "The lowest common multiple of six and eight is twenty-four. Five sixths is twenty twenty-fourths. Three eighths is nine twenty-fourths. Twenty minus nine is eleven. The answer is eleven twenty-fourths.", work: ['LCM of 6 and 8 = 24', '5/6 = 20/24 and 3/8 = 9/24', '20/24 − 9/24 = 11/24'], ans: ['g|11/24'] },
+      { q: 'Work out one and two thirds plus two and three quarters.', task: '1 2/3 + 2 3/4', say: "Add the whole numbers first. One plus two is three. Then the fractions. The common denominator is twelve. Two thirds is eight twelfths, and three quarters is nine twelfths. Eight plus nine is seventeen twelfths, which is one and five twelfths. Three plus one and five twelfths is four and five twelfths.", work: ['1 + 2 = 3', '2/3 + 3/4 = 8/12 + 9/12', '= 17/12 = 1 5/12', '3 + 1 5/12 = 4 5/12'], ans: ['g|4 5/12'] }],
+    rec: ["Same denominator first, then add or subtract the tops.", ['Find the LCM of the denominators', 'Make equivalent fractions', 'Add or subtract the numerators only', 'Simplify the answer', 'Mixed numbers: whole numbers and fractions, or improper fractions']]
+  });
+
+  fx('How do you multiply and divide fractions?', 'how to multiply and divide fractions and mixed numbers.', {
+    head: 'Multiplying and dividing fractions',
+    basics: [['Multiplying', [
+      ["To multiply fractions, multiply the numerators together and multiply the denominators together. Two thirds times three quarters is two times three over three times four. That is six twelfths, which simplifies to a half.", ['2/3 × 3/4 = (2 × 3)/(3 × 4)', '= 6/12 = 1/2']],
+      ["We can often make it easier by cancelling first. The three on the top and the three on the bottom cancel. That leaves two over four, which is a half.", ['2/3 × 3/4 → cancel the 3s', '= 2/4 = 1/2']]]],
+      ['Dividing', [
+      ["To divide by a fraction, we flip the second fraction upside down and multiply. This is the reciprocal. Two thirds divided by four fifths becomes two thirds times five quarters.", ['2/3 ÷ 4/5', '= 2/3 × 5/4']],
+      ["Multiply across: two times five is ten, and three times four is twelve. Ten twelfths simplifies to five sixths. We flip only the second fraction, the one we divide by.", ['= 10/12', 'g|= 5/6']]]]],
+    ex: [
+      ['A fraction of an amount', [
+        ["Three fifths of forty. The word of means multiply. Forty is forty over one. Three fifths times forty over one is one hundred and twenty over five.", ['3/5 × 40 = 3/5 × 40/1', '= 120/5']],
+        ["One hundred and twenty divided by five is twenty-four.", ['120 ÷ 5 = 24', 'g|3/5 of 40 = 24']]]],
+      ['Mixed numbers', [
+        ["One and a half times two and two thirds. First change both to improper fractions. One and a half is three halves. Two and two thirds is eight thirds.", ['1 1/2 = 3/2', '2 2/3 = 8/3']],
+        ["Multiply: three halves times eight thirds is twenty-four sixths. The threes cancel, and eight halves is four. Twenty-four divided by six is four.", ['3/2 × 8/3 = 24/6', 'g|= 4']]]],
+      ['Dividing mixed numbers', [
+        ["Two and a quarter divided by one and a half. Change to improper fractions: nine quarters divided by three halves. Flip the second fraction and multiply.", ['2 1/4 = 9/4', '1 1/2 = 3/2', '9/4 ÷ 3/2 = 9/4 × 2/3']],
+        ["Nine times two is eighteen. Four times three is twelve. Eighteen twelfths simplifies to three halves, which is one and a half.", ['= 18/12 = 3/2', 'g|= 1 1/2']]]]],
+    mist: [
+      ['Flipping the wrong fraction', "Mistake one: flipping the first fraction, or both. Two thirds divided by four fifths. Wrong: three halves times four fifths. We only flip the second fraction. The first stays the same.", ['r|2/3 ÷ 4/5 = 3/2 × 4/5 ✗', 'g|2/3 ÷ 4/5 = 2/3 × 5/4 ✓']],
+      ['Multiplying mixed numbers part by part', "Mistake two: multiplying the whole numbers and fractions separately. One and a half times two and two thirds is not one times two plus a half times two thirds. Change to improper fractions first.", ['r|1 1/2 × 2 2/3 = (1 × 2) + (1/2 × 2/3) ✗', 'g|3/2 × 8/3 = 4 ✓']]],
+    real: ['In real life', "You have three and a half litres of juice. Each glass holds a quarter of a litre. How many glasses? Three and a half is seven halves. Seven halves divided by a quarter is seven halves times four. That is twenty-eight halves, which is fourteen glasses.", ['3 1/2 ÷ 1/4 = 7/2 × 4/1', '= 28/2 = 14 glasses']],
+    turns: [
+      { q: 'Work out three quarters times two fifths.', task: '3/4 × 2/5', say: "Multiply the numerators: three times two is six. Multiply the denominators: four times five is twenty. Six twentieths. Divide the top and the bottom by two to get three tenths.", work: ['3 × 2 = 6', '4 × 5 = 20', '6/20 = 3/10'], ans: ['g|3/10'] },
+      { q: 'Work out five sixths divided by two thirds.', task: '5/6 ÷ 2/3', say: "Flip the second fraction and multiply. Five sixths times three halves. Five times three is fifteen. Six times two is twelve. Fifteen twelfths simplifies to five quarters, which is one and a quarter.", work: ['5/6 ÷ 2/3 = 5/6 × 3/2', '5 × 3 = 15 and 6 × 2 = 12', '15/12 = 5/4 = 1 1/4'], ans: ['g|1 1/4'] },
+      { q: 'A batch of biscuits needs two thirds of a cup of sugar. You have four and a half cups. How many batches can you make?', say: "We divide four and a half by two thirds. Four and a half is nine halves. Nine halves divided by two thirds is nine halves times three halves. Nine times three is twenty-seven. Two times two is four. Twenty-seven quarters is six and three quarters. So six full batches, and three quarters of another.", work: ['4 1/2 = 9/2', '9/2 ÷ 2/3 = 9/2 × 3/2', '= 27/4', '= 6 3/4'], ans: ['g|6 full batches (6 3/4)'] }],
+    rec: ["Multiply across. To divide, flip the second fraction and multiply.", ['Multiply the tops and the bottoms', 'Cancel before multiplying if you can', 'Divide: flip the second fraction, then multiply', 'Mixed numbers: change to improper fractions first', 'Simplify the answer']]
+  });
+
+  fx('Fraction problems with what is left', 'how to solve fraction problems where each fraction is taken from what is left.', {
+    head: 'What is left',
+    basics: [['Take it from what is left', [
+      ["Some problems take a fraction of an amount, and then take another fraction of what is left. The key is that the second fraction is of the remainder, not of the original amount.", ['n|Second fraction: of what is LEFT']],
+      ["Work in steps. Find the first part. Take it away to find what is left. Then find the second fraction of that. Write down the amount at each step.", ['1. First part', '2. What is left', '3. Fraction of what is left', '4. What remains']]]]],
+    ex: [
+      ['Spending money', [
+        ["Aisha has sixty pounds. She spends one third on a coat. Then she spends one quarter of what is left on lunch. One third of sixty is twenty. So she has forty pounds left.", ['1/3 of 60 = 20', '60 − 20 = 40 left']],
+        ["Now one quarter of the forty pounds left. Forty divided by four is ten. She spends ten pounds on lunch, and has thirty pounds left.", ['1/4 of 40 = 10', '40 − 10 = 30', 'g|£30 left']]]],
+      ['Reading a book', [
+        ["Tom reads two fifths of a book on Monday. What fraction is left? One whole is five fifths. Five fifths minus two fifths is three fifths left.", ['1 − 2/5 = 3/5 left']],
+        ["On Tuesday he reads one third of what is left. One third of three fifths is three fifteenths, which is one fifth. So altogether he has read two fifths plus one fifth, which is three fifths. Two fifths of the book is still left.", ['1/3 × 3/5 = 1/5', '2/5 + 1/5 = 3/5 read', 'g|2/5 left']]]],
+      ['Getting to school', [
+        ["In a class, three eighths walk to school. One quarter of the rest cycle. The rest take the bus. What fraction take the bus? The rest after the walkers is one minus three eighths, which is five eighths.", ['1 − 3/8 = 5/8 are not walking']],
+        ["The cyclists are one quarter of five eighths. That is five thirty-seconds. Bus riders are five eighths minus five thirty-seconds: twenty thirty-seconds minus five thirty-seconds, which is fifteen thirty-seconds.", ['1/4 × 5/8 = 5/32', '5/8 − 5/32 = 20/32 − 5/32', 'g|15/32 take the bus']]]]],
+    mist: [
+      ['Taking the second fraction of the original', "Mistake one: taking the second fraction of the whole amount. Aisha had sixty pounds and spent a third. She then spends a quarter of what is left. Wrong: a quarter of sixty is fifteen. A quarter of the forty pounds left is ten.", ['r|1/4 of 60 = 15 ✗', 'g|1/4 of 40 = 10 ✓']],
+      ['Adding the fractions to find what is left', "Mistake two: adding one third and one quarter and saying the rest is five twelfths. The second fraction is a fraction of a smaller amount, so you cannot add the fractions directly.", ['r|1/3 + 1/4 = 7/12 spent ✗', 'n|1/4 is of what is left, not of the whole']]],
+    real: ['In real life', "Budgeting uses this idea. You spend a third of your wages on rent. Then you save a quarter of what is left. The savings are one quarter of two thirds of your wages, which is one sixth of your wages.", ['2/3 × 1/4 = 2/12 = 1/6']],
+    turns: [
+      { q: 'Sam has forty-eight pounds. He spends one quarter on lunch, then one third of what is left on a book. How much does he have left?', say: "One quarter of forty-eight is twelve. So thirty-six pounds are left. One third of thirty-six is twelve for the book. Thirty-six minus twelve leaves twenty-four pounds.", work: ['1/4 of 48 = 12', '48 − 12 = 36 left', '1/3 of 36 = 12', '36 − 12 = 24'], ans: ['g|£24'] },
+      { q: 'A tank is two fifths used in the morning. In the afternoon one quarter of what is left is used. What fraction of the tank is left?', say: "After the morning, three fifths are left. One quarter of three fifths is three twentieths used in the afternoon. Three fifths is twelve twentieths. Twelve twentieths minus three twentieths is nine twentieths.", work: ['1 − 2/5 = 3/5 left', '1/4 × 3/5 = 3/20 used', '3/5 = 12/20', '12/20 − 3/20 = 9/20'], ans: ['g|9/20 left'] },
+      { q: 'A bag has seventy-two sweets. One third are red. Three eighths of the rest are green. How many are green?', say: "One third of seventy-two is twenty-four red sweets. That leaves forty-eight. Three eighths of forty-eight: forty-eight divided by eight is six, and six times three is eighteen. So eighteen sweets are green.", work: ['1/3 of 72 = 24 red', '72 − 24 = 48 left', '48 ÷ 8 = 6', '6 × 3 = 18'], ans: ['g|18 green'] }],
+    rec: ["Each new fraction is taken from what is left.", ['Find the first part', 'Subtract to find what is left', 'Take the next fraction of what is left', 'Do not add fractions of different wholes']]
+  });
+
+  fx('Standard form', 'how to write very large and very small numbers in standard form and change them back.', {
+    head: 'Standard form',
+    basics: [['What is standard form?', [
+      ["Standard form is a way to write very big or very small numbers neatly. It is a number between one and ten, times a power of ten. We write a times ten to the power n, where a is at least one and less than ten.", ['a × 10ⁿ', 'n|1 ≤ a < 10, n is a whole number']],
+      ["Big numbers have a positive power. Small numbers, less than one, have a negative power. The power tells us how many places the decimal point has moved.", ['Big: positive power', 'Small: negative power']]]]],
+    ex: [
+      ['A large number', [
+        ["Write four million five hundred thousand in standard form. Put the point to make a number between one and ten: four point five. The point has moved six places to the left. So the power is positive six.", ['4,500,000', '4.5 | 000000: moved 6 places']],
+        ["Four point five times ten to the six.", ['g|4,500,000 = 4.5 × 10⁶']]]],
+      ['A small number', [
+        ["Write zero point zero zero zero seven two in standard form. The first number must be between one and ten, so we want seven point two. The point moves four places to the right. Moving right for a small number gives a negative power.", ['0.00072', 'Point moves 4 places right']],
+        ["Seven point two times ten to the minus four.", ['g|0.00072 = 7.2 × 10⁻⁴']]]],
+      ['Back to an ordinary number', [
+        ["Write three point zero eight times ten to the five as an ordinary number. The power is five, so move the point five places to the right. Add zeros to fill the places.", ['3.08 × 10⁵', '3.08 → 308000.']],
+        ["The answer is three hundred and eight thousand.", ['g|308,000']]]],
+      ['Which is bigger?', [
+        ["Compare three times ten to the five and eight times ten to the four. Look at the powers first. Five is bigger than four, so the first number is bigger. Check: three hundred thousand against eighty thousand.", ['3 × 10⁵ = 300,000', '8 × 10⁴ = 80,000', 'g|3 × 10⁵ is bigger']]]]],
+    mist: [
+      ['The first number is not between one and ten', "Mistake one: a number like forty-five times ten to the five. The first number must be between one and ten. Four point five times ten to the six is correct.", ['r|45 × 10⁵ ✗', 'g|4.5 × 10⁶ ✓']],
+      ['Wrong sign on the power', "Mistake two: using a positive power for a small number. Zero point zero zero four is four times ten to the minus three, not ten to the three.", ['r|0.004 = 4 × 10³ ✗', 'g|0.004 = 4 × 10⁻³ ✓']]],
+    real: ['In real life', "Scientists use standard form all the time. The Sun is about one hundred and fifty million kilometres from the Earth: one point five times ten to the eight. A red blood cell is about seven times ten to the minus six metres across.", ['1.5 × 10⁸ km', '7 × 10⁻⁶ m']],
+    turns: [
+      { q: 'Write sixty-two thousand in standard form.', task: '62,000', say: "Put the point to make a number between one and ten: six point two. The point moves four places to the left. So the power is four. The answer is six point two times ten to the four.", work: ['62,000 → 6.2', 'The point moved 4 places left', 'Power = 4'], ans: ['g|6.2 × 10⁴'] },
+      { q: 'Write zero point zero zero three five in standard form.', task: '0.0035', say: "We want a number between one and ten: three point five. The point moves three places to the right. For a small number, that is a negative power. Three point five times ten to the minus three.", work: ['0.0035 → 3.5', 'The point moved 3 places right', 'Power = −3'], ans: ['g|3.5 × 10⁻³'] },
+      { q: 'Write two point nine times ten to the minus two as an ordinary number.', task: '2.9 × 10⁻²', say: "A negative power means a small number. Move the point two places to the left. Two point nine becomes zero point zero two nine.", work: ['Power −2: move the point 2 places left', '2.9 → 0.029'], ans: ['g|0.029'] }],
+    rec: ["Standard form: a number from one up to ten, times a power of ten.", ['a × 10ⁿ with 1 ≤ a < 10', 'Big numbers: positive power', 'Small numbers: negative power', 'The power counts the places the point moves']]
+  });
+
+  fx('Calculating in standard form', 'how to multiply and divide numbers in standard form.', {
+    head: 'Calculating in standard form',
+    basics: [['The two rules', [
+      ["To multiply numbers in standard form, multiply the front numbers, and add the powers of ten. To divide, divide the front numbers, and subtract the powers.", ['× : multiply fronts, ADD powers', '÷ : divide fronts, SUBTRACT powers']],
+      ["Check the answer. If the front number is not between one and ten, change it to standard form and adjust the power.", ['n|Front number must be from 1 up to 10']]]]],
+    ex: [
+      ['Multiplying', [
+        ["Two times ten to the three, multiplied by four times ten to the five. Multiply the front numbers: two times four is eight. Add the powers: three plus five is eight.", ['(2 × 10³) × (4 × 10⁵)', '2 × 4 = 8', '3 + 5 = 8']],
+        ["The answer is eight times ten to the eight.", ['g|8 × 10⁸']]]],
+      ['Multiplying with a tidy-up', [
+        ["Three times ten to the four, times five times ten to the three. Three times five is fifteen. Four plus three is seven. That gives fifteen times ten to the seven.", ['3 × 5 = 15', '4 + 3 = 7', '15 × 10⁷']],
+        ["Fifteen is not between one and ten. Fifteen is one point five times ten. So the power goes up by one. The answer is one point five times ten to the eight.", ['15 = 1.5 × 10', '1.5 × 10 × 10⁷', 'g|1.5 × 10⁸']]]],
+      ['Dividing', [
+        ["Eight times ten to the six, divided by two times ten to the two. Eight divided by two is four. Six minus two is four.", ['(8 × 10⁶) ÷ (2 × 10²)', '8 ÷ 2 = 4', '6 − 2 = 4']],
+        ["The answer is four times ten to the four.", ['g|4 × 10⁴']]]],
+      ['Adding', [
+        ["Add three times ten to the four and five times ten to the three. We cannot just add the front numbers when the powers are different. Write them as ordinary numbers. Thirty thousand and five thousand.", ['3 × 10⁴ = 30,000', '5 × 10³ = 5,000']],
+        ["Thirty-five thousand. In standard form, that is three point five times ten to the four.", ['30,000 + 5,000 = 35,000', 'g|3.5 × 10⁴']]]]],
+    mist: [
+      ['Multiplying the powers', "Mistake one: multiplying the powers. Ten to the three times ten to the five is ten to the eight. Add the powers, do not multiply them.", ['r|10³ × 10⁵ = 10¹⁵ ✗', 'g|10³ × 10⁵ = 10⁸ ✓']],
+      ['Leaving the answer untidy', "Mistake two: leaving fifteen times ten to the seven. It looks right, but the front number is bigger than ten. Change it to one point five times ten to the eight.", ['r|15 × 10⁷ (not standard form) ✗', 'g|1.5 × 10⁸ ✓']]],
+    real: ['In real life', "Light travels at three times ten to the five kilometres each second. In five hundred seconds, which is five times ten to the two, it travels three times five, which is fifteen, times ten to the seven kilometres. That is one point five times ten to the eight kilometres, the distance to the Sun.", ['(3 × 10⁵) × (5 × 10²) = 15 × 10⁷', 'g|= 1.5 × 10⁸ km']],
+    turns: [
+      { q: 'Work out four times ten to the three, multiplied by two times ten to the four.', task: '(4 × 10³) × (2 × 10⁴)', say: "Multiply the front numbers: four times two is eight. Add the powers: three plus four is seven. The answer is eight times ten to the seven.", work: ['4 × 2 = 8', '3 + 4 = 7'], ans: ['g|8 × 10⁷'] },
+      { q: 'Work out five times ten to the six, multiplied by four times ten to the two. Give the answer in standard form.', task: '(5 × 10⁶) × (4 × 10²)', say: "Multiply the front numbers: five times four is twenty. Add the powers: six plus two is eight. That gives twenty times ten to the eight. Twenty is two times ten, so the power goes up by one. Two times ten to the nine.", work: ['5 × 4 = 20', '6 + 2 = 8', '20 × 10⁸', '20 = 2 × 10, so 2 × 10⁹'], ans: ['g|2 × 10⁹'] },
+      { q: 'Work out nine times ten to the eight, divided by three times ten to the three.', task: '(9 × 10⁸) ÷ (3 × 10³)', say: "Divide the front numbers: nine divided by three is three. Subtract the powers: eight minus three is five. The answer is three times ten to the five.", work: ['9 ÷ 3 = 3', '8 − 3 = 5'], ans: ['g|3 × 10⁵'] }],
+    rec: ["Multiply: multiply the fronts and add the powers. Divide: divide the fronts and subtract the powers.", ['× : fronts multiply, powers add', '÷ : fronts divide, powers subtract', 'Tidy so the front is from 1 up to 10', 'Adding: write as ordinary numbers first']]
+  });
+
+  fx('Index laws and negative indices', 'the laws for multiplying and dividing powers, and what zero and negative powers mean.', {
+    head: 'Index laws',
+    basics: [['The laws', [
+      ["The index, or power, tells us how many times to multiply. When we multiply powers with the same base, we add the indices. When we divide powers with the same base, we subtract the indices. When we raise a power to a power, we multiply the indices.", ['aᵐ × aⁿ = aᵐ⁺ⁿ', 'aᵐ ÷ aⁿ = aᵐ⁻ⁿ', '(aᵐ)ⁿ = aᵐⁿ']],
+      ["Two special cases. Any number to the power zero is one. A negative power means one over the positive power.", ['a⁰ = 1', 'a⁻ⁿ = 1/aⁿ']]]]],
+    ex: [
+      ['Multiplying and dividing', [
+        ["Two to the five times two to the three. The bases are the same, so add the indices: five plus three is eight. Two to the eight is two hundred and fifty-six.", ['2⁵ × 2³ = 2⁵⁺³', '= 2⁸', 'g|= 256']],
+        ["Five to the seven divided by five to the four. Subtract the indices: seven minus four is three. Five cubed is one hundred and twenty-five.", ['5⁷ ÷ 5⁴ = 5⁷⁻⁴', '= 5³', 'g|= 125']]]],
+      ['A power of a power', [
+        ["Three squared, all cubed. That means three squared times three squared times three squared. Multiply the indices: two times three is six.", ['(3²)³ = 3²ˣ³', '= 3⁶', 'g|= 729']]]],
+      ['Zero and negative indices', [
+        ["Seven to the zero is one. Any number to the power zero is one. Two to the minus three is one over two cubed. Two cubed is eight, so it is one eighth.", ['7⁰ = 1', '2⁻³ = 1/2³ = 1/8']],
+        ["Ten to the minus two is one over ten squared, which is one over one hundred. That is zero point zero one. Negative powers give small numbers, not negative numbers.", ['10⁻² = 1/10² = 1/100', 'g|= 0.01']]]],
+      ['With letters', [
+        ["Simplify three x squared times four x cubed. Multiply the numbers: three times four is twelve. Add the powers of x: two plus three is five.", ['3x² × 4x³', '3 × 4 = 12', 'x² × x³ = x⁵', 'g|12x⁵']]]]],
+    mist: [
+      ['Multiplying the bases', "Mistake one: multiplying the bases. Two cubed times two to the four is not four to the seven. The base stays two. The answer is two to the seven.", ['r|2³ × 2⁴ = 4⁷ ✗', 'g|2³ × 2⁴ = 2⁷ ✓']],
+      ['Negative index means negative number', "Mistake two: thinking a negative index gives a negative answer. Two to the minus three is one eighth. It is a small positive number.", ['r|2⁻³ = −8 ✗', 'g|2⁻³ = 1/8 ✓']]],
+    real: ['In real life', "Computers store data in powers of two. One kilobyte is two to the ten bytes, which is one thousand and twenty-four. Two to the ten times two to the ten is two to the twenty, which is about one million bytes, or one megabyte.", ['2¹⁰ = 1024', '2¹⁰ × 2¹⁰ = 2²⁰ ≈ 1,000,000']],
+    turns: [
+      { q: 'Work out three to the four times three squared.', task: '3⁴ × 3²', say: "The bases are the same, so add the indices. Four plus two is six. Three to the six is seven hundred and twenty-nine.", work: ['3⁴ × 3² = 3⁴⁺²', '= 3⁶', '3⁶ = 729'], ans: ['g|729'] },
+      { q: 'Work out six to the nine divided by six to the seven.', task: '6⁹ ÷ 6⁷', say: "The bases are the same, so subtract the indices. Nine minus seven is two. Six squared is thirty-six.", work: ['6⁹ ÷ 6⁷ = 6⁹⁻⁷', '= 6²', '6² = 36'], ans: ['g|36'] },
+      { q: 'Work out four to the minus two, as a fraction.', task: '4⁻²', say: "A negative index means one over the positive power. So it is one over four squared. Four squared is sixteen. The answer is one sixteenth.", work: ['4⁻² = 1/4²', '4² = 16', '= 1/16'], ans: ['g|1/16'] }],
+    rec: ["Same base: add when multiplying, subtract when dividing.", ['aᵐ × aⁿ = aᵐ⁺ⁿ', 'aᵐ ÷ aⁿ = aᵐ⁻ⁿ', '(aᵐ)ⁿ = aᵐⁿ', 'a⁰ = 1', 'a⁻ⁿ = 1/aⁿ']]
+  });
+
+  fx('Tolerance', 'what tolerance means and how to find the smallest and largest acceptable values.', {
+    head: 'Tolerance',
+    basics: [['What is tolerance?', [
+      ["Nothing can be made or measured perfectly. Tolerance tells us how far a size is allowed to be above or below the target. We write it with a plus or minus sign. A rod of fifty centimetres, plus or minus two, can be between forty-eight and fifty-two centimetres.", ['50 ± 2 cm', 'Smallest: 50 − 2 = 48', 'Largest: 50 + 2 = 52']],
+      ["The smallest allowed value is the target minus the tolerance. The largest allowed value is the target plus the tolerance. Anything outside that range is rejected.", ['Smallest = target − tolerance', 'Largest = target + tolerance']]]]],
+    ex: [
+      ['A pipe', [
+        ["A pipe is two hundred and fifty millimetres, plus or minus five. The smallest allowed length is two hundred and fifty minus five, which is two hundred and forty-five.", ['250 ± 5 mm', '250 − 5 = 245']],
+        ["The largest is two hundred and fifty plus five, which is two hundred and fifty-five. Any pipe from two hundred and forty-five to two hundred and fifty-five millimetres is accepted.", ['250 + 5 = 255', 'g|245 mm to 255 mm']]]],
+      ['Is it acceptable?', [
+        ["A bolt should be twenty-five millimetres, plus or minus zero point two. The range is from twenty-four point eight to twenty-five point two. Is a bolt of twenty-four point seven acceptable?", ['25 − 0.2 = 24.8', '25 + 0.2 = 25.2']],
+        ["Twenty-four point seven is less than twenty-four point eight, so it is outside the range. The bolt is rejected.", ['24.7 < 24.8', 'g|Rejected']]]],
+      ['How big is the range?', [
+        ["The total range is the largest minus the smallest. For fifty plus or minus two, that is fifty-two minus forty-eight, which is four. It is twice the tolerance.", ['52 − 48 = 4', 'Range = 2 × tolerance', 'g|Range = 4']]]]],
+    mist: [
+      ['Using the tolerance one way only', "Mistake one: adding the tolerance but forgetting to subtract it. Fifty plus or minus two goes both ways. The range is forty-eight to fifty-two, not fifty to fifty-two.", ['r|50 to 52 ✗', 'g|48 to 52 ✓']],
+      ['Mixing up the target and the range', "Mistake two: reading the range as the tolerance. The tolerance is how far from the target. The whole range is twice that.", ['Tolerance = 2', 'Range = 48 to 52 = 4 wide']]],
+    real: ['In real life', "Factories use tolerance for every part. A phone case that is slightly too big will not fit. In medicine, a tablet must contain the right dose, plus or minus a very small tolerance.", ['Part length 80 ± 0.1 mm', '79.9 mm to 80.1 mm']],
+    turns: [
+      { q: 'A plank is forty centimetres, plus or minus zero point three. Find the smallest and largest acceptable lengths.', say: "The smallest length is forty minus zero point three, which is thirty-nine point seven. The largest length is forty plus zero point three, which is forty point three.", work: ['40 − 0.3 = 39.7', '40 + 0.3 = 40.3'], ans: ['g|39.7 cm to 40.3 cm'] },
+      { q: 'A shaft should be twelve millimetres, plus or minus zero point one five. Is a shaft of twelve point one eight acceptable?', say: "The smallest allowed is twelve minus zero point one five, which is eleven point eight five. The largest allowed is twelve plus zero point one five, which is twelve point one five. Twelve point one eight is bigger than twelve point one five, so it is outside the range.", work: ['12 − 0.15 = 11.85', '12 + 0.15 = 12.15', '12.18 > 12.15: outside the range'], ans: ['g|No, it is rejected'] },
+      { q: 'A rod is one hundred and fifty millimetres with a tolerance of two millimetres. How wide is the range of acceptable lengths?', say: "The smallest is one hundred and fifty minus two, which is one hundred and forty-eight. The largest is one hundred and fifty plus two, which is one hundred and fifty-two. The range is the difference: four millimetres.", work: ['150 − 2 = 148', '150 + 2 = 152', '152 − 148 = 4'], ans: ['g|4 mm'] }],
+    rec: ["Tolerance is how far a value can be above or below the target.", ['Smallest = target − tolerance', 'Largest = target + tolerance', 'Outside the range: rejected', 'Range = 2 × tolerance']]
+  });
+
+  L.use(821, ['How do you round to three decimal places?', 'Significant figures', 'Estimating by rounding to 1 significant figure', 'How do you add and subtract positive and negative numbers?', 'How do you multiply and divide positive and negative numbers?', 'How do you multiply to three decimal places?', 'How do you divide to three decimal places?', 'Tolerance', 'What are prime numbers?', 'How do you solve problems using multiples and factors?', 'Sets of numbers', 'What are powers and roots?', 'Standard form', 'Calculating in standard form', 'Index laws and negative indices', 'How do you add and subtract fractions?', 'How do you multiply and divide fractions?', 'Fraction problems with what is left']);
 })();
 </script>
 <script>

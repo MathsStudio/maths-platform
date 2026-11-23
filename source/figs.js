@@ -154,4 +154,14 @@
   F.cdia = function (d, r) { var c = [130, 80], rr = 60, s = ci(c[0], c[1], rr, SOFT) + ln(c[0] - rr, c[1], c[0] + rr, c[1], !r, false, 5) + dot(c[0], c[1]); if (r) s = ci(c[0], c[1], rr, SOFT) + ln(c[0], c[1], c[0] + rr, c[1], true, false, 5) + dot(c[0], c[1]) + tx(c[0] + rr / 2, c[1] - 8, r, true); else s += tx(c[0], c[1] + 28, d, true); return svg(260, 160, s, 'A circle'); };
   /* shadows: a pole and a tree with the sun's ray */
   F.shadow = function (hp, sp, ht, st) { var s = ln(10, 140, 250, 140) + ln(40, 140, 40, 100, true, false, 6) + ln(40, 100, 90, 140, false, true) + ln(150, 140, 150, 40, true, false, 6) + ln(150, 40, 250, 140, false, true) + tx(24, 122, hp, false, 'end', 19) + tx(65, 158, sp, false, 'middle', 19) + tx(136, 92, ht, true, 'end', 19) + tx(200, 158, st, true, 'middle', 19); return svg(260, 170, s, 'A pole and a tree with shadows'); };
+
+  /* a number line from lo to hi with a jump from a to b (a, b optional): the start is dark, the arrival orange */
+  F.numline = function (lo, hi, a, b) {
+    var w = 230, x0 = 15, n = hi - lo, st = w / n, s = ln(x0, 90, x0 + w, 90, false, false, 3), i;
+    function X(v) { return x0 + (v - lo) * st; }
+    for (i = lo; i <= hi; i++) s += ln(X(i), 82, X(i), 98, false, false, 2) + tx(X(i), 120, '' + i, i === 0, 'middle', n > 10 ? 14 : 17);
+    if (a != null && b != null) { var mid = (X(a) + X(b)) / 2, h = Math.min(60, Math.abs(X(b) - X(a)) / 2 + 12);
+      s += '<path d="M' + X(a) + ' 84 Q' + mid + ' ' + (84 - h * 1.4) + ' ' + X(b) + ' 84" style="fill:none;stroke:' + HI + ';stroke-width:4"/>' + dot(X(a), 90, false) + dot(X(b), 90, true) + tx(X(a), 62, '' + a, false, 'middle', 19) + tx(X(b), 62, '' + b, true, 'middle', 19); }
+    return svg(260, 140, s, 'A number line');
+  };
 })();
