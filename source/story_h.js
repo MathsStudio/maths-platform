@@ -45,8 +45,9 @@
   };
   /* general graph: axes from x0..x1, y0..y1; items: {l:[[x,y],...],c,d}, {p:[x,y,label,c]}, {poly:[[x,y],...],c}; o: {tx,ty,xl,yl} */
   V.plot = function (x0, x1, y0, y1, items, o) {
-    o = o || {}; var W = 320, H = 260, L = 36, B = 28, T = 10, R = 12, ux = (W - L - R) / (x1 - x0), uy = (H - B - T) / (y1 - y0), tx = o.tx || 1, ty = o.ty || 1, s = '';
+    o = o || {}; var xl = o.xl || 'x', yl = o.yl || 'y', W = 330, H = o.title ? 296 : 276, L = 50, B = 44, T = o.title ? 32 : 12, R = 14, ux = (W - L - R) / (x1 - x0), uy = (H - B - T) / (y1 - y0), tx = o.tx || 1, ty = o.ty || 1, s = '';
     var X = function (x) { return L + (x - x0) * ux; }, Y = function (y) { return H - B - (y - y0) * uy; };
+    if (o.title) s += V.t(W / 2, 20, o.title, 'middle', 'var(--fg)');
     for (var x = Math.ceil(x0 / tx) * tx; x <= x1 + 1e-9; x += tx) { s += '<line x1="' + X(x) + '" y1="' + T + '" x2="' + X(x) + '" y2="' + (H - B) + '" style="stroke:var(--line);stroke-width:1.2"/>' + V.t(X(x), H - B + 16, +x.toFixed(2), 'middle', 'var(--muted)'); }
     for (var y = Math.ceil(y0 / ty) * ty; y <= y1 + 1e-9; y += ty) { s += '<line x1="' + L + '" y1="' + Y(y) + '" x2="' + (W - R) + '" y2="' + Y(y) + '" style="stroke:var(--line);stroke-width:1.2"/>' + V.t(L - 5, Y(y) + 5, +y.toFixed(2), 'end', 'var(--muted)'); }
     if (y0 <= 0 && y1 >= 0) s += '<line x1="' + L + '" y1="' + Y(0) + '" x2="' + (W - R) + '" y2="' + Y(0) + '" style="stroke:var(--fg);stroke-width:2.5"/>';
@@ -56,9 +57,9 @@
       if (it.poly) s += '<polygon points="' + it.poly.map(function (q) { return X(q[0]) + ',' + Y(q[1]); }).join(' ') + '" style="fill:' + (it.c || 'var(--accent)') + ';fill-opacity:.4;stroke:var(--fg);stroke-width:3;stroke-linejoin:round"/>';
       if (it.p) s += '<circle cx="' + X(it.p[0]) + '" cy="' + Y(it.p[1]) + '" r="5.5" style="fill:' + (it.p[3] || 'var(--bad)') + ';stroke:var(--fg);stroke-width:2"/>' + (it.p[2] ? V.t(X(it.p[0]) + 9, Y(it.p[1]) - 8, it.p[2], 'start', it.p[3] || 'var(--bad)') : '');
     });
-    if (o.xl) s += V.t(W - R, H - 2, o.xl, 'end', 'var(--muted)');
-    if (o.yl) s += V.t(L + 4, T + 12, o.yl, 'start', 'var(--muted)');
-    return V.svg(W, H, s, o.alt || 'A graph', 340);
+    s += V.t(L + (W - L - R) / 2, H - 6, xl, 'middle', 'var(--fg)');
+    s += '<g transform="translate(13 ' + (T + (H - B - T) / 2) + ') rotate(-90)">' + V.t(0, 0, yl, 'middle', 'var(--fg)') + '</g>';
+    return V.svg(W, H, s, o.alt || o.title || 'A graph', 360);
   };
   /* right-angled triangle, right angle bottom-left; labels {a: bottom, b: left, c: hypotenuse, ang: angle at bottom-right} */
   V.rt = function (lab) {

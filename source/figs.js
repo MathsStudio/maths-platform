@@ -111,7 +111,9 @@
     s += ln(X(x0), Y(0), X(x1), Y(0), false, false, 2) + ln(X(0), Y(y0), X(0), Y(y1), false, false, 2);
     (segs || []).forEach(function (g) { s += ln(X(g[0]), Y(g[1]), X(g[2]), Y(g[3]), !!g[4], !!g[5]); });
     (pts || []).forEach(function (p) { s += dot(X(p[0]), Y(p[1]), !!p[3]) + tx(X(p[0]) + 7, Y(p[1]) - 8, p[2] || '', !!p[3], 'start', 17); });
-    return svg(260, 160, s, 'A coordinate grid');
+    o = o || {};
+    s += tx(X(x1) - 3, Y(0) - 5, o.xt || 'x', false, 'end', 14) + tx(X(0) + 6, Y(y1) + 11, o.yt || 'y', false, 'start', 14);
+    return svg(260, 160, s, o.title || 'A coordinate grid');
   };
 
   /* two similar triangles side by side: sa, sb = [base, height-side, slanted] labels, hi = which labels to highlight (indices 0..2 of the second triangle) */

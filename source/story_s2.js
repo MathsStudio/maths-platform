@@ -54,7 +54,7 @@
       REC("To combine ratios, make the shared part the same number in both, then join them.", ['Find the shared part', 'Make it equal using the LCM', 'Join the ratios'])] },
     { title: 'Direct and inverse proportion', goal: 'the difference between direct and inverse proportion.', scenes: [
       SC('Direct proportion', 'y = kx', [
-        st("In direct proportion, when one quantity doubles, so does the other. The graph is a straight line through the origin. The rule is y equals k x, where k is the constant of proportionality.", V.plot(0, 5, 0, 10, [{ l: [[0, 0], [5, 10]] }], { tx: 1, ty: 2, xl: 'x', yl: 'y' }) + V.eq('y = kx', 'b'))]),
+        st("In direct proportion, when one quantity doubles, so does the other. The graph is a straight line through the origin. The rule is y equals k x, where k is the constant of proportionality.", V.plot(0, 5, 0, 10, [{ l: [[0, 0], [5, 10]] }], { tx: 1, ty: 2, xl: 'x', yl: 'y', title: 'Direct proportion: y = kx' }) + V.eq('y = kx', 'b'))]),
       SC('Inverse proportion', 'More workers, less time', [
         st("In inverse proportion, when one doubles the other halves. Six workers take ten days. Their total work is sixty worker-days. Four workers need sixty divided by four, fifteen days.", V.eq('6 × 10 = 60') + V.eq('60 ÷ 4 = 15 days', 'g') + V.rule('Direct: ÷ and ×. Inverse: x × y stays the same.'))]),
       REC("Direct proportion: y over x stays the same. Inverse: x times y stays the same.", ['Direct: y = kx', 'Inverse: y = k/x', 'Find k first'])] }
@@ -86,8 +86,8 @@
       REC("Never average the speeds. Divide the total distance by the total time.", ['Total distance', 'Total time', 'Divide'])] },
     { title: 'Distance–time graphs with a return', goal: 'how to read speeds from a graph with several stages.', scenes: [
       SC('Out, rest and back', 'A cycle ride', [
-        st("A cyclist rides out for two hours to eighty kilometres. That is forty kilometres an hour.", V.plot(0, 5, 0, 100, [{ l: [[0, 0], [2, 80]] }], { tx: 1, ty: 20, xl: 'hours', yl: 'km' })),
-        st("Then she rests for an hour. The line is flat. Then she rides home, and the line goes back down to zero over two hours. The speed is still forty, but the gradient is negative because she is coming back.", V.plot(0, 5, 0, 100, [{ l: [[0, 0], [2, 80], [3, 80], [5, 0]] }], { tx: 1, ty: 20, xl: 'hours', yl: 'km' }) + V.eq('80 ÷ 2 = 40 km/h each way', 'g'))]),
+        st("A cyclist rides out for two hours to eighty kilometres. That is forty kilometres an hour.", V.plot(0, 5, 0, 100, [{ l: [[0, 0], [2, 80]] }], { tx: 1, ty: 20, xl: 'Time (hours)', yl: 'Distance from home (km)', title: 'A cycle ride' })),
+        st("Then she rests for an hour. The line is flat. Then she rides home, and the line goes back down to zero over two hours. The speed is still forty, but the gradient is negative because she is coming back.", V.plot(0, 5, 0, 100, [{ l: [[0, 0], [2, 80], [3, 80], [5, 0]] }], { tx: 1, ty: 20, xl: 'Time (hours)', yl: 'Distance from home (km)', title: 'A cycle ride' }) + V.eq('80 ÷ 2 = 40 km/h each way', 'g'))]),
       REC("Gradient is speed. Flat is stopped. A line coming down is moving back towards the start.", ['Gradient = speed', 'Flat = rest', 'Downward = coming back'])] }
   ]);
 
@@ -127,7 +127,7 @@
   BT.story(828, 'Watch lesson', [
     { title: 'The equation y = mx + c', goal: 'what the gradient and intercept tell you about a line.', scenes: [
       SC('Gradient and intercept', 'y = 2x + 1', [
-        st("A straight line has the equation y equals m x plus c. The m is the gradient, how steep the line is. The c is the y-intercept, where it crosses the y axis. For y equals two x plus one, the gradient is two and the intercept is one.", V.plot(-2, 4, -3, 9, [{ l: [[-2, -3], [4, 9]] }, { p: [0, 1, '(0, 1)'] }], { tx: 1, ty: 1, xl: 'x', yl: 'y' })),
+        st("A straight line has the equation y equals m x plus c. The m is the gradient, how steep the line is. The c is the y-intercept, where it crosses the y axis. For y equals two x plus one, the gradient is two and the intercept is one.", V.plot(-2, 4, -3, 9, [{ l: [[-2, -3], [4, 9]] }, { p: [0, 1, '(0, 1)'] }], { tx: 1, ty: 1, xl: 'x', yl: 'y', title: 'A straight line graph' })),
         st("To draw it, make a table of values. When x is zero, y is one. When x is two, y is five. Plot and join with a straight line.", V.tbl([['0', '1'], ['1', '3'], ['2', '5']], ['x', 'y']))]),
       REC("In y equals m x plus c, m is the gradient and c is where it cuts the y axis.", ['m = gradient', 'c = y-intercept', 'Table of values to plot'])] },
     { title: 'Finding a line from two points', goal: 'how to find the gradient and equation of a line.', scenes: [
@@ -179,7 +179,7 @@
       REC("Lengths scale by k, areas by k squared, volumes by k cubed.", ['Length × k', 'Area × k²', 'Volume × k³'])] },
     { title: 'Enlargement', goal: 'how to enlarge a shape from a centre.', scenes: [
       SC('From the origin', 'Scale factor 2', [
-        st("To enlarge from the origin with scale factor two, double each coordinate. The triangle with corners one, one; three, one; and one, two becomes two, two; six, two; and two, four.", V.plot(0, 7, 0, 5, [{ poly: [[1, 1], [3, 1], [1, 2]] }, { poly: [[2, 2], [6, 2], [2, 4]], c: 'var(--good)' }], { tx: 1, ty: 1 })),
+        st("To enlarge from the origin with scale factor two, double each coordinate. The triangle with corners one, one; three, one; and one, two becomes two, two; six, two; and two, four.", V.plot(0, 7, 0, 5, [{ poly: [[1, 1], [3, 1], [1, 2]] }, { poly: [[2, 2], [6, 2], [2, 4]], c: 'var(--good)' }], { tx: 1, ty: 1 , title: 'Enlarging a triangle by scale factor 2' })),
         st("The new shape is twice as wide and twice as tall, but has the same angles. Its area is four times bigger.", V.eq('area × 2² = × 4', 'g'))]),
       REC("Multiply each coordinate by the scale factor to enlarge from the origin.", ['Multiply coordinates', 'Same angles', 'Area × k²'])] }
   ]);
@@ -188,8 +188,8 @@
   BT.story(832, 'Watch lesson', [
     { title: 'Scatter graphs', goal: 'how to describe correlation and use a line of best fit.', scenes: [
       SC('Correlation', 'Revision time and test score', [
-        st("A scatter graph shows two sets of data at once. Here, students who revised longer scored higher. The points trend upwards: positive correlation.", V.plot(0, 6, 0, 100, [{ p: [1, 25, '', 'var(--accent)'] }, { p: [2, 40, '', 'var(--accent)'] }, { p: [2.5, 50, '', 'var(--accent)'] }, { p: [3, 55, '', 'var(--accent)'] }, { p: [4, 70, '', 'var(--accent)'] }, { p: [5, 85, '', 'var(--accent)'] }], { tx: 1, ty: 20, xl: 'hours', yl: 'score' })),
-        st("Draw a line of best fit through the middle of the points, with about as many points on each side. Then you can estimate: for four and a half hours of revision, the score is about seventy-eight.", V.plot(0, 6, 0, 100, [{ l: [[0.5, 15], [5.5, 92]], d: true }, { p: [1, 25, '', 'var(--accent)'] }, { p: [2, 40, '', 'var(--accent)'] }, { p: [2.5, 50, '', 'var(--accent)'] }, { p: [3, 55, '', 'var(--accent)'] }, { p: [4, 70, '', 'var(--accent)'] }, { p: [5, 85, '', 'var(--accent)'] }], { tx: 1, ty: 20, xl: 'hours', yl: 'score' }) + V.rule('Correlation is not the same as cause.'))]),
+        st("A scatter graph shows two sets of data at once. Here, students who revised longer scored higher. The points trend upwards: positive correlation.", V.plot(0, 6, 0, 100, [{ p: [1, 25, '', 'var(--accent)'] }, { p: [2, 40, '', 'var(--accent)'] }, { p: [2.5, 50, '', 'var(--accent)'] }, { p: [3, 55, '', 'var(--accent)'] }, { p: [4, 70, '', 'var(--accent)'] }, { p: [5, 85, '', 'var(--accent)'] }], { tx: 1, ty: 20, xl: 'Revision time (hours)', yl: 'Test score (marks)', title: 'Revision and test score' })),
+        st("Draw a line of best fit through the middle of the points, with about as many points on each side. Then you can estimate: for four and a half hours of revision, the score is about seventy-eight.", V.plot(0, 6, 0, 100, [{ l: [[0.5, 15], [5.5, 92]], d: true }, { p: [1, 25, '', 'var(--accent)'] }, { p: [2, 40, '', 'var(--accent)'] }, { p: [2.5, 50, '', 'var(--accent)'] }, { p: [3, 55, '', 'var(--accent)'] }, { p: [4, 70, '', 'var(--accent)'] }, { p: [5, 85, '', 'var(--accent)'] }], { tx: 1, ty: 20, xl: 'Revision time (hours)', yl: 'Test score (marks)', title: 'Revision and test score' }) + V.rule('Correlation is not the same as cause.'))]),
       REC("Describe the correlation, draw a line of best fit through the middle, and only estimate inside the range of the data.", ['Positive, negative or none', 'Best fit through the middle', 'Estimate within the data'])] },
     { title: 'Tree diagrams', goal: 'how to find probabilities of combined events.', scenes: [
       SC('Without replacement', '3 red and 7 blue counters', [
@@ -204,7 +204,7 @@
     { title: 'Rotation on a grid', goal: 'how to rotate a shape about the origin.', scenes: [
       SC('A quarter turn anticlockwise', 'About the origin', [
         st("To rotate you need three things: a centre, an angle and a direction. Here we turn a triangle ninety degrees anticlockwise about the origin. The point x, y goes to minus y, x.", V.eq('(x, y) → (−y, x)', 'b')),
-        st("The corner at one, one goes to minus one, one. The corner at three, one goes to minus one, three. And one, two goes to minus two, one.", V.plot(-4, 4, -1, 4, [{ poly: [[1, 1], [3, 1], [1, 2]] }, { poly: [[-1, 1], [-1, 3], [-2, 1]], c: 'var(--good)' }], { tx: 1, ty: 1 }))]),
+        st("The corner at one, one goes to minus one, one. The corner at three, one goes to minus one, three. And one, two goes to minus two, one.", V.plot(-4, 4, -1, 4, [{ poly: [[1, 1], [3, 1], [1, 2]] }, { poly: [[-1, 1], [-1, 3], [-2, 1]], c: 'var(--good)' }], { tx: 1, ty: 1 , title: 'Rotating a triangle 90° anticlockwise about the origin' }))]),
       REC("Rotation needs a centre, an angle and a direction. The shape stays the same size.", ['Centre', 'Angle', 'Direction'])] },
     { title: 'Views of solids', goal: 'how to draw and read plans and elevations of solids.', scenes: [
       SC('Plan and elevations', 'Prisms and pyramids', [

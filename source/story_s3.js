@@ -115,14 +115,14 @@
   BT.story(847, 'Watch lesson', [
     { title: 'Parallel and perpendicular lines', goal: 'how gradients show whether lines are parallel or perpendicular.', scenes: [
       SC('Parallel', 'The same gradient', [
-        st("Parallel lines never meet. They have exactly the same gradient. The lines y equals two x plus one, and y equals two x minus three are parallel, because both have gradient two.", V.plot(-2, 4, -5, 7, [{ l: [[-2, -3], [3, 7]] }, { l: [[-1, -5], [4, 5]], c: 'var(--good)' }], { tx: 1, ty: 2 }) + V.eq('y = 2x + 1   y = 2x − 3', 'g'))]),
+        st("Parallel lines never meet. They have exactly the same gradient. The lines y equals two x plus one, and y equals two x minus three are parallel, because both have gradient two.", V.plot(-2, 4, -5, 7, [{ l: [[-2, -3], [3, 7]] }, { l: [[-1, -5], [4, 5]], c: 'var(--good)' }], { tx: 1, ty: 2 , title: 'Parallel lines y = 2x + 1 and y = 2x − 3' }) + V.eq('y = 2x + 1   y = 2x − 3', 'g'))]),
       SC('Perpendicular', 'Gradients multiply to −1', [
         st("Perpendicular lines meet at a right angle. Their gradients multiply to minus one. A line with gradient two is perpendicular to a line with gradient minus a half, because two times minus a half is minus one.", V.eq('m₁ × m₂ = −1') + V.eq('2 × (−½) = −1 ✓', 'g'))]),
       REC("Parallel: equal gradients. Perpendicular: gradients multiply to minus one.", ['Parallel: m₁ = m₂', 'Perpendicular: m₁m₂ = −1', 'Write gradients first'])] },
     { title: 'Lines in the form ax + by = c', goal: 'how to sketch a line from its intercepts.', scenes: [
       SC('Using intercepts', '2x + 3y = 12', [
         st("To sketch two x plus three y equals twelve, find where it crosses each axis. When x is zero, three y is twelve, so y is four. When y is zero, two x is twelve, so x is six.", V.eq('x = 0: y = 4') + V.eq('y = 0: x = 6')),
-        st("Plot the points zero, four and six, zero, and join them with a straight line.", V.plot(-1, 7, -1, 5, [{ l: [[0, 4], [6, 0]] }, { p: [0, 4, '(0, 4)'] }, { p: [6, 0, '(6, 0)'] }], { tx: 1, ty: 1, xl: 'x', yl: 'y' }))]),
+        st("Plot the points zero, four and six, zero, and join them with a straight line.", V.plot(-1, 7, -1, 5, [{ l: [[0, 4], [6, 0]] }, { p: [0, 4, '(0, 4)'] }, { p: [6, 0, '(6, 0)'] }], { tx: 1, ty: 1, xl: 'x', yl: 'y', title: 'Two points joined by a line' }))]),
       REC("Set x to zero and y to zero to find the two intercepts, then join them.", ['x = 0 → y-intercept', 'y = 0 → x-intercept', 'Join with a straight line'])] }
   ]);
 
@@ -130,7 +130,7 @@
   BT.story(848, 'Watch lesson', [
     { title: 'Solving by graph', goal: 'how the intersection of two lines solves two equations at once.', scenes: [
       SC('Where the lines cross', 'y = x + 1 and y = −x + 5', [
-        st("Simultaneous equations ask for values of x and y that satisfy two equations at once. If we draw both lines, the solution is the point where they cross.", V.plot(0, 6, 0, 6, [{ l: [[0, 1], [5, 6]] }, { l: [[0, 5], [5, 0]], c: 'var(--good)' }, { p: [2, 3, '(2, 3)'] }], { tx: 1, ty: 1, xl: 'x', yl: 'y' })),
+        st("Simultaneous equations ask for values of x and y that satisfy two equations at once. If we draw both lines, the solution is the point where they cross.", V.plot(0, 6, 0, 6, [{ l: [[0, 1], [5, 6]] }, { l: [[0, 5], [5, 0]], c: 'var(--good)' }, { p: [2, 3, '(2, 3)'] }], { tx: 1, ty: 1, xl: 'x', yl: 'y', title: 'Where two lines cross' })),
         st("The lines cross at two, three. Check in both: three equals two plus one, and three equals minus two plus five. Both work, so x is two and y is three.", V.eq('3 = 2 + 1 ✓') + V.eq('3 = −2 + 5 ✓') + V.eq('x = 2, y = 3', 'g'))]),
       REC("The solution is where the two lines cross. Always check in both equations.", ['Plot both lines', 'Read the crossing point', 'Check in both'])] },
     { title: 'Solving by elimination', goal: 'how to eliminate a variable to solve simultaneous equations.', scenes: [
@@ -205,7 +205,7 @@
   BT.story(853, 'Watch lesson', [
     { title: 'Vectors as journeys', goal: 'how to describe a movement with a vector.', scenes: [
       SC('Column vectors', 'Right and up', [
-        st("A vector describes a journey. The top number is how far right, and the bottom number is how far up. Negative means left or down. The vector three, two is three right and two up.", V.plot(0, 5, 0, 4, [{ l: [[1, 1], [4, 3]] }, { p: [1, 1, 'A', 'var(--accent)'] }, { p: [4, 3, 'B', 'var(--good)'] }], { tx: 1, ty: 1 }) + V.eq('AB = (3, 2)', 'g')),
+        st("A vector describes a journey. The top number is how far right, and the bottom number is how far up. Negative means left or down. The vector three, two is three right and two up.", V.plot(0, 5, 0, 4, [{ l: [[1, 1], [4, 3]] }, { p: [1, 1, 'A', 'var(--accent)'] }, { p: [4, 3, 'B', 'var(--good)'] }], { tx: 1, ty: 1 , title: 'A vector journey from A to B' }) + V.eq('AB = (3, 2)', 'g')),
         st("To add vectors, add the tops and add the bottoms. Three, two plus one, minus four gives four, minus two. To double a vector, double both numbers.", V.eq('(3, 2) + (1, −4) = (4, −2)') + V.eq('2(3, 2) = (6, 4)', 'g'))]),
       REC("Top is across, bottom is up. Add vectors component by component.", ['Top: across, bottom: up', 'Add tops and bottoms', 'Multiply both numbers'])] },
     { title: 'The magnitude of a vector', goal: 'how to find the length of a vector.', scenes: [

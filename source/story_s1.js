@@ -90,7 +90,7 @@
       SC('The unitary method', '3 kg costs £4.50', [
         st("Three kilograms of apples cost four pounds fifty. How much for five kilograms? Find the cost of one kilogram: four fifty divided by three is one pound fifty.", V.eq('£4.50 ÷ 3 = £1.50 per kg')),
         st("Now multiply by five. Five times one pound fifty is seven pounds fifty.", V.eq('5 × £1.50 = £7.50', 'g')),
-        st("This is direct proportion: double the apples, double the cost. The graph of cost against mass is a straight line through the origin.", V.plot(0, 6, 0, 9, [{ l: [[0, 0], [6, 9]] }, { p: [5, 7.5, '£7.50'] }], { tx: 1, ty: 1, xl: 'kg', yl: '£' }))]),
+        st("This is direct proportion: double the apples, double the cost. The graph of cost against mass is a straight line through the origin.", V.plot(0, 6, 0, 9, [{ l: [[0, 0], [6, 9]] }, { p: [5, 7.5, '£7.50'] }], { tx: 1, ty: 1, xl: 'Mass of apples (kg)', yl: 'Cost (£)', title: 'Cost of apples' }))]),
       REC("Find one unit first, then multiply. In direct proportion the graph is a straight line through the origin.", ['Find the cost of one', 'Multiply', 'Straight line through the origin'])] }
   ]);
 
@@ -123,9 +123,9 @@
       REC("Speed is distance over time. Change minutes into hours by dividing by sixty before you use the formula.", ['S = D ÷ T', 'D = S × T', 'T = D ÷ S', 'Minutes ÷ 60'])] },
     { title: 'Distance–time graphs', goal: 'how to read a distance–time graph.', scenes: [
       SC('A journey', 'Three stages', [
-        st("This graph shows a journey. Time is along the bottom, distance from home up the side. For the first hour the line goes up steadily to sixty kilometres.", V.plot(0, 4, 0, 180, [{ l: [[0, 0], [1, 60]] }], { tx: 1, ty: 60, xl: 'hours', yl: 'km' })),
-        st("Then the line is flat for an hour. The distance is not changing, so the traveller has stopped.", V.plot(0, 4, 0, 180, [{ l: [[0, 0], [1, 60], [2, 60]] }], { tx: 1, ty: 60, xl: 'hours', yl: 'km' })),
-        st("In the last two hours the line climbs from sixty to a hundred and eighty. That is a hundred and twenty kilometres in two hours, sixty kilometres an hour. The steeper the line, the faster the speed.", V.plot(0, 4, 0, 180, [{ l: [[0, 0], [1, 60], [2, 60], [4, 180]] }], { tx: 1, ty: 60, xl: 'hours', yl: 'km' }) + V.eq('gradient = 120 ÷ 2 = 60 km/h', 'g'))]),
+        st("This graph shows a journey. Time is along the bottom, distance from home up the side. For the first hour the line goes up steadily to sixty kilometres.", V.plot(0, 4, 0, 180, [{ l: [[0, 0], [1, 60]] }], { tx: 1, ty: 60, xl: 'Time (hours)', yl: 'Distance from home (km)', title: 'A journey' })),
+        st("Then the line is flat for an hour. The distance is not changing, so the traveller has stopped.", V.plot(0, 4, 0, 180, [{ l: [[0, 0], [1, 60], [2, 60]] }], { tx: 1, ty: 60, xl: 'Time (hours)', yl: 'Distance from home (km)', title: 'A journey' })),
+        st("In the last two hours the line climbs from sixty to a hundred and eighty. That is a hundred and twenty kilometres in two hours, sixty kilometres an hour. The steeper the line, the faster the speed.", V.plot(0, 4, 0, 180, [{ l: [[0, 0], [1, 60], [2, 60], [4, 180]] }], { tx: 1, ty: 60, xl: 'Time (hours)', yl: 'Distance from home (km)', title: 'A journey' }) + V.eq('gradient = 120 ÷ 2 = 60 km/h', 'g'))]),
       REC("The gradient of a distance–time graph is the speed. A flat line means stopped.", ['Steeper = faster', 'Flat = stopped', 'Gradient = speed'])] }
   ]);
 
@@ -183,7 +183,7 @@
   BT.story(811, 'Watch lesson', [
     { title: 'Four-quadrant coordinates and reflection', goal: 'how to plot points in all four quadrants and reflect shapes.', scenes: [
       SC('The four quadrants', 'x first, then y', [
-        st("Coordinates tell us where a point is. The first number is along, the x direction. The second is up or down, the y direction. Negative numbers go left and down.", V.plot(-4, 4, -4, 4, [{ p: [3, 2, '(3, 2)', 'var(--accent)'] }, { p: [-3, 2, '(−3, 2)'] }, { p: [-3, -2, '(−3, −2)', 'var(--good)'] }], { tx: 1, ty: 1 })),
+        st("Coordinates tell us where a point is. The first number is along, the x direction. The second is up or down, the y direction. Negative numbers go left and down.", V.plot(-4, 4, -4, 4, [{ p: [3, 2, '(3, 2)', 'var(--accent)'] }, { p: [-3, 2, '(−3, 2)'] }, { p: [-3, -2, '(−3, −2)', 'var(--good)'] }], { tx: 1, ty: 1 , title: 'Points on a coordinate grid' })),
         st("Reflect the point three, two in the y axis. It flips to the other side, to minus three, two. The y value stays the same, and the x value changes sign.", V.eq('(3, 2) → (−3, 2)', 'g') + V.rule('Reflect in the y-axis: x changes sign.'))]),
       REC("Along then up. Reflecting in the y-axis changes the sign of x. Reflecting in the x-axis changes the sign of y.", ['(x, y): along, then up', 'y-axis: x changes sign', 'x-axis: y changes sign'])] },
     { title: 'Symmetry and scale drawings', goal: 'rotational symmetry and scale factors.', scenes: [

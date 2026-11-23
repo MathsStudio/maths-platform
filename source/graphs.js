@@ -43,7 +43,7 @@
       s += '<circle cx="' + g.px(p.x) + '" cy="' + g.py(p.y) + '" r="' + (p.ring ? 7 : 5) + '" style="fill:' + (p.ring ? 'none' : (p.color || '#d62d2d')) + ';stroke:' + (p.color || '#d62d2d') + ';stroke-width:2"/>';
       if (p.label) { var right = g.px(p.x) > W - R - 28; s += '<text x="' + (g.px(p.x) + (right ? -8 : 8)) + '" y="' + (g.py(p.y) - 7) + '" text-anchor="' + (right ? 'end' : 'start') + '" style="font-size:13px;font-weight:800;fill:var(--fg)">' + p.label + '</text>'; }
     });
-    return s + '</svg>';
+    var ttl = c.title || (c.yt && c.xt ? c.yt.replace(/ \(.*/, '') + ' against ' + c.xt.replace(/ \(.*/, '') : ''); return (ttl ? '<div style="text-align:center;font-weight:800;font-size:.9rem;margin:2px 0 -2px">' + ttl + '</div>' : '') + s + '</svg>';
   }
   function liveTag(a) { return a; }
 
@@ -56,7 +56,7 @@
     var unit = pick([['temperature', '°C', 'Temperature (°C)'], ['plants sold', '', 'Plants sold'], ['visitors', '', 'Visitors']]), vals = [], i;
     for (i = 0; i < n; i++) vals.push(rnd(1, ymax - 1) - (lv === 2 ? rnd(0, 0) : 0));
     var line = vals.map(function (v, k) { return [k, v]; }), pts = vals.map(function (v, k) { return { x: k, y: v, color: '#2b62d9' }; });
-    var pic = gridSvg({ x0: 0, x1: n - 1, y0: 0, y1: ymax, xs: 1, ys: ys, xlabels: labels, pts: pts, line: line, yt: unit[2], aria: 'Line graph of ' + unit[0] + ': ' + vals.map(function (v, k) { return labels[k] + ' ' + v; }).join(', ') });
+    var pic = gridSvg({ x0: 0, x1: n - 1, y0: 0, y1: ymax, xs: 1, ys: ys, xlabels: labels, pts: pts, line: line, xt: /^(Mon|Tue|Wed|Thu|Fri|Sat|Sun)/.test(labels[0]) ? 'Day of the week' : /^(Jan|Feb|J)/.test(labels[0]) ? 'Month' : 'Time', yt: unit[2], aria: 'Line graph of ' + unit[0] + ': ' + vals.map(function (v, k) { return labels[k] + ' ' + v; }).join(', ') });
     var data = 'Line graph of ' + unit[0] + ': ' + vals.map(function (v, k) { return labels[k] + ' ' + v; }).join(', ') + '.', k = rnd(0, 2), a = rnd(0, n - 1);
     var u = unit[1] ? ' ' + unit[1] : '';
     if (k === 0) return Q({ tag: 'Reading a line graph', pic: pic, data: data, text: 'What is the value for <b>' + labels[a] + '</b> on the line graph?', answer: String(vals[a]), hints: ['Find ' + labels[a] + ' along the bottom.', 'Go straight up to the dot, then look across to the scale on the left.'], explain: 'The dot above ' + labels[a] + ' is level with ' + vals[a] + u + '.' });
@@ -99,7 +99,7 @@
   function rdCoords(l) {
     var lv = lvl(l), pos = lv === 0, x0 = pos ? 0 : -6, x1 = pos ? 8 : 6, y0 = x0, y1 = x1, n = pos ? 3 : 4, used = {}, pts = [], L2 = ['A', 'B', 'C', 'D'];
     while (pts.length < n) { var x = rnd(x0 + (pos ? 1 : 0), x1), y = rnd(y0 + (pos ? 1 : 0), y1), key = x + ',' + y; if (!used[key] && (pos || (x !== 0 && y !== 0))) { used[key] = 1; pts.push({ x: x, y: y, label: L2[pts.length], color: '#d62d2d' }); } }
-    var pic = gridSvg({ x0: x0, x1: x1, y0: y0, y1: y1, xs: 1, ys: 1, pts: pts, aria: 'Grid with points ' + pts.map(function (p) { return p.label; }).join(', ') });
+    var pic = gridSvg({ x0: x0, x1: x1, y0: y0, y1: y1, xs: 1, ys: 1, pts: pts, xt: 'x', yt: 'y', aria: 'Grid with points ' + pts.map(function (p) { return p.label; }).join(', ') });
     var data = 'A coordinate grid with points ' + pts.map(function (p) { return p.label + ' at (' + sg(p.x) + ', ' + sg(p.y) + ')'; }).join(', ') + '.', p = pick(pts);
     return Q({ tag: 'Reading coordinates', kind: 'coord', pic: pic, data: data, text: 'What are the coordinates of point <b>' + p.label + '</b>? Write them as x, y.', placeholder: 'for example 3, 4', answer: '(' + sg(p.x) + ',' + sg(p.y) + ')', show: '(' + sg(p.x) + ', ' + sg(p.y) + ')', hints: ['Always go along first (x), then up or down (y).', 'Read the x value on the bottom scale, then the y value on the side scale.'], explain: 'Point ' + p.label + ' is ' + sg(p.x) + ' across and ' + sg(p.y) + ' up, so it is (' + sg(p.x) + ', ' + sg(p.y) + ').' });
   }
