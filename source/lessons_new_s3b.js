@@ -54,10 +54,10 @@
       S("Now equations with brackets, which are not quadratics. Expand both sides first. Four x minus eight, equals three x plus three.", E('4x − 8 = 3x + 3')),
       S("Take three x from both sides. x minus eight equals three. Add eight. x equals eleven. Check. Four times nine is thirty-six. Three times twelve is thirty-six. Equal.", E('x − 8 = 3') + g('x = 11'))
     ]),
-    SC('Watch out!', 'Three common mistakes', [
-      S("Mistake one: not taking out the highest common factor. Six x plus nine is three bracket two x plus three, not one bracket six x plus nine.", V.rule('Take out the highest factor.')),
-      S("Mistake two: finding two numbers that add to the right total but do not multiply to the last number. You need both.", r('2 + 3 = 5, but 2 × 3 = 6 needed too') + V.rule('Both tests: multiply and add.')),
-      S("Mistake three: forgetting that a quadratic equation usually has two answers, and forgetting to set it equal to zero first.", V.rule('Equal to zero. Two answers.'))
+    SC('Watch out!', 'Common mistakes, with examples', [
+      S("Mistake one. Not taking out the highest common factor. Factorise twelve x plus eighteen. Wrong: two bracket six x plus nine. That is correct as far as it goes, but six x plus nine still has a common factor, three. Take out six. Six bracket two x plus three.", r('2(6x + 9)  not fully factorised  ✗') + g('6(2x + 3)  ✓')),
+      S("Mistake two. Finding two numbers that multiply correctly but add wrongly. Factorise x squared plus five x plus six. Wrong: one and six multiply to six, so x plus one times x plus six. But one plus six is seven, not five. Two and three. Check by expanding.", r('(x + 1)(x + 6) = x² + 7x + 6  ✗') + g('(x + 2)(x + 3) = x² + 5x + 6  ✓')),
+      S("Mistake three. Giving one answer to a quadratic, or the wrong signs. Solve x squared plus five x plus six equals zero. The brackets are x plus two and x plus three. Wrong: x equals two. Set each bracket to zero. x plus two is zero gives minus two. x plus three is zero gives minus three.", r('x + 2 = 0 → x = 2  ✗') + g('x = −2 or x = −3  ✓'))
     ]),
     SC('In real life', 'Areas', [
       S("A rectangular garden has area x squared plus five x plus six square metres. Factorising gives x plus two, times x plus three. So its sides are x plus two metres and x plus three metres. Factorising lets us find the dimensions from the area.", g('Sides: (x + 2) m and (x + 3) m'))
@@ -161,10 +161,10 @@
       S("Step one, First. Three x times x is three x squared. Step two, Outside. Three x times four is twelve x. Step three, Inside. Minus two times x is minus two x. Step four, Last. Minus two times four is minus eight.", E('3x² + 12x − 2x − 8')),
       S("Step five. Collect the middle terms. Twelve x minus two x is ten x. The answer is three x squared plus ten x minus eight.", g('= 3x² + 10x − 8'))
     ]),
-    SC('Watch out!', 'Three common mistakes', [
-      S("Mistake one: squaring each term. x plus four squared is not x squared plus sixteen.", r('(x + 4)² = x² + 16  ✗') + g('= x² + 8x + 16  ✓')),
-      S("Mistake two: forgetting one of the four products.", V.rule('Four products, always.')),
-      S("Mistake three: sign errors, especially minus times minus.", V.rule('Check each sign.'))
+    SC('Watch out!', 'Common mistakes, with examples', [
+      S("Mistake one. Squaring each term. Expand x plus four, all squared. Wrong: x squared plus sixteen. The middle term has gone. Write it as two brackets. x squared plus four x plus four x plus sixteen. x squared plus eight x plus sixteen.", r('(x + 4)² = x² + 16  ✗') + g('(x + 4)² = x² + 8x + 16  ✓')),
+      S("Mistake two. Missing one of the four products. Expand x plus two, times x plus three. Wrong: x squared plus six. That only multiplies first by first, and last by last. We also need the outside and inside. x squared plus three x plus two x plus six. x squared plus five x plus six.", r('(x + 2)(x + 3) = x² + 6  ✗') + g('= x² + 3x + 2x + 6 = x² + 5x + 6  ✓')),
+      S("Mistake three. Sign errors. Expand x minus three, times x minus two. Wrong: the last term is minus six. Minus three times minus two is plus six. And the middle is minus two x minus three x, minus five x.", r('x² − 5x − 6  ✗') + g('x² − 5x + 6  ✓'))
     ]),
     SC('In real life', 'Areas', [
       S("A rectangular garden is x plus two metres by x plus three metres. Its area is the product of the two. Expanding gives x squared plus five x plus six square metres.", g('Area = x² + 5x + 6'))
@@ -213,10 +213,10 @@
       S("There is no common factor except one. But look. Four x squared is two x, all squared. Forty-nine is seven squared. A square minus a square. It factorises into two x minus seven, times two x plus seven.", E('4x² − 49 = (2x)² − 7²') + g('= (2x − 7)(2x + 7)')),
       S("Check by expanding. Two x times two x is four x squared. The middle terms cancel. Minus seven times seven is minus forty-nine. Correct.", V.rule('a² − b² = (a − b)(a + b)'))
     ]),
-    SC('Watch out!', 'Three common mistakes', [
-      S("Mistake one: not taking out the highest common factor.", V.rule('Highest common factor.')),
-      S("Mistake two: forgetting the one. Factorising x squared plus x gives x bracket x plus one.", r('x(x)  ✗') + g('x(x + 1)  ✓')),
-      S("Mistake three: not checking. Always expand your answer to see if you get back to the start.", V.rule('Expand to check.'))
+    SC('Watch out!', 'Common mistakes, with examples', [
+      S("Mistake one. Not taking out the highest common factor. Factorise eight x squared plus twelve x. Wrong: two x bracket four x plus six. Inside the bracket, four x plus six still has a common factor, two. Take out four x. Four x bracket two x plus three.", r('2x(4x + 6)  not fully  ✗') + g('4x(2x + 3)  ✓')),
+      S("Mistake two. Forgetting the one. Factorise x squared plus x. Wrong: x bracket x. Expand to check. That is only x squared. When x is taken out of x, one is left. x bracket x plus one.", r('x² + x = x(x)  ✗') + g('x² + x = x(x + 1)  ✓')),
+      S("Mistake three. Not checking by expanding. Factorise ten y minus fifteen. Wrong: five bracket two y plus three. Expand. Ten y plus fifteen. The sign is wrong. Five bracket two y minus three. Expand. Ten y minus fifteen.", r('5(2y + 3) = 10y + 15  ✗') + g('5(2y − 3) = 10y − 15  ✓'))
     ]),
     SC('In real life', 'Splitting a bill', [
       S("A bill is six x plus twelve pounds. Written as six bracket x plus two, it shows that six people each pay x plus two.", g('6(x + 2)'))
@@ -265,10 +265,10 @@
     SC('Adding fractions', 'Example 10: the LCM as a common denominator', [
       S("The LCM gives the best common denominator. To add a sixth and a quarter, the lowest common multiple of six and four is twelve. A sixth is two twelfths. A quarter is three twelfths. Add. Five twelfths.", E('1/6 + 1/4 = 2/12 + 3/12') + g('= 5/12'))
     ]),
-    SC('Watch out!', 'Three common mistakes', [
-      S("Mistake one: mixing up HCF and LCM. HCF is never bigger than the smaller number. LCM is never smaller than the bigger number.", V.rule('HCF small. LCM big.')),
-      S("Mistake two: just multiplying the two numbers. That gives a common multiple, but not always the lowest.", V.rule('Not always the lowest.')),
-      S("Mistake three: missing a prime when using prime factors. Write them all out.", V.rule('List all the primes.'))
+    SC('Watch out!', 'Common mistakes, with examples', [
+      S("Mistake one. Mixing up HCF and LCM. Six and eight. Wrong: the highest common factor is twenty-four. A common factor can never be bigger than the smaller number. The HCF is two. The lowest common multiple is twenty-four.", r('HCF(6, 8) = 24  ✗') + g('HCF = 2 and LCM = 24  ✓')),
+      S("Mistake two. Multiplying the numbers to find the LCM. Four and six. Wrong: four times six, twenty-four. That is a common multiple, but not the lowest. Twelve is in both times tables.", r('LCM(4, 6) = 24  ✗') + g('LCM(4, 6) = 12  ✓')),
+      S("Mistake three. Missing a prime factor. Write twelve as a product of primes. Wrong: two times three, which is six. Twelve is two times two times three. Write every prime.", r('12 = 2 × 3  ✗') + g('12 = 2 × 2 × 3  ✓'))
     ]),
     L.turn("Your turn! Number one. Find the HCF of eight and twelve. Pause and try it.", E('HCF(8, 12)'), "Four.", g('4')),
     L.turn("Your turn! Number two. Find the LCM of six and eight. Pause and try it.", E('LCM(6, 8)'), "Twenty-four.", g('24')),

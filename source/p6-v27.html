@@ -700,18 +700,33 @@ var SLIDE_MORE = {"1.learn1": [{"more": ["Our number system uses only ten digits
     });
     return out;
   }
+  /* quiet gaps while reading a page: a short breath between parts, time to think after a question, a longer break before the deeper part */
+  function pauseAfter(i) {
+    try {
+      var cur = Nar.units[i] && Nar.units[i].el, nx = Nar.units[i + 1] && Nar.units[i + 1].el;
+      if (!cur || !nx) return 0;
+      if (cur.matches('.wq')) return 3500;                                   /* a worked-example question: wait, then explain */
+      if (cur.matches('.goal')) return 1800;                                 /* "In this slide we will learn ...": then begin */
+      if (nx.closest('.more') && !cur.closest('.more')) return 2500;         /* going on to the deeper part */
+      if (cur.matches('h2')) return 900;
+      return 700;
+    } catch (e) { return 600; }
+  }
   function run(i, tk) {
     if (tk !== Nar.token) return;
     Nar.at = i; unmarkAll();
     if (i >= Nar.units.length) { Nar.playing = false; Nar.at = 0; setPlayerUI(); return; }
     var u = Nar.units[i];
-    if (!(S.firstLevel && S.firstLevel())) u.el.classList.add('on');   /* P2 to P4: read naturally, no highlight */
+    /* no highlight at any level: the page is read aloud without marking the text */
     try { var rc = u.el.getBoundingClientRect(), vh = window.innerHeight || 700; if (rc.top < 60 || rc.bottom > vh - 90) u.el.scrollIntoView({ block: 'nearest', behavior: 'auto' }); } catch (e) { /* ignore */ }
     var ut = new SpeechSynthesisUtterance(speakable(u.text)), started = false;
     ut.lang = 'en-GB'; ut.rate = Number(store.settings.rate) || 1;
     var v = pickVoice(); if (v) { ut.voice = v; ut.lang = v.lang; }
     ut.onstart = function () { started = true; Nar.err = ''; setPlayerUI(); };
-    ut.onend = function () { run(i + 1, tk); };
+    ut.onend = function () {
+      var d = pauseAfter(i);
+      if (d > 0) setTimeout(function () { if (tk === Nar.token && Nar.playing) run(i + 1, tk); }, d); else run(i + 1, tk);
+    };
     ut.onerror = function (ev) {
       if (tk === Nar.token) { Nar.playing = false; Nar.err = 'The voice stopped (' + ((ev && ev.error) || 'unknown') + '). Try Settings, then Test the voice.'; unmarkAll(); setPlayerUI(); }
     };

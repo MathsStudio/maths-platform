@@ -42,10 +42,10 @@
       S("Divide all three parts by two. Minus two is less than x, which is at most four. x is bigger than minus two, and no bigger than four.", g('−2 < x ≤ 4')),
       S("The whole numbers that fit are minus one, zero, one, two, three and four. Minus two is not included, because of the less than sign. Four is included, because of the less than or equal sign.", g('−1, 0, 1, 2, 3, 4'))
     ]),
-    SC('Watch out!', 'Three common mistakes', [
-      S("Mistake one: forgetting to flip the sign when dividing by a negative.", r('−2x < 10 → x < −5  ✗') + g('x > −5  ✓')),
-      S("Mistake two: using the wrong circle on the number line.", V.rule('Hollow: not included.')),
-      S("Mistake three: writing an answer like an equation. The answer is a range, not one value.", V.rule('x < 4, not x = 4'))
+    SC('Watch out!', 'Common mistakes, with examples', [
+      S("Mistake one. Forgetting to flip the sign. Solve minus two x is less than ten. Wrong: x is less than minus five. We divided by a negative number, so the sign must turn round. x is greater than minus five. Check with zero. Minus two times zero is zero, which is less than ten.", r('−2x < 10 → x < −5  ✗') + g('x > −5  ✓')),
+      S("Mistake two. Writing the answer as an equation. Solve x plus three is less than seven. Wrong: x equals four. The answer is a range of values. x is less than four. Check with five. Five plus three is eight, which is not less than seven.", r('x = 4  ✗') + g('x < 4  ✓')),
+      S("Mistake three. Using the wrong circle on the number line. Show x is at least two. Wrong: a hollow circle at two. At least means two is included. Use a filled circle.", r('x ≥ 2 with a hollow circle  ✗') + g('x ≥ 2 with a filled circle  ✓'))
     ]),
     SC('In real life', 'Speed limits', [
       S("A lift can carry at most eight hundred kilograms. If each person weighs about eighty kilograms, then eighty times n is at most eight hundred, so n is at most ten.", g('80n ≤ 800 → n ≤ 10'))
@@ -89,10 +89,10 @@
       S("This is a physics formula. Step one. Subtract two a s from both sides. v squared minus two a s equals u squared.", E('v² = u² + 2as') + E('v² − 2as = u²')),
       S("Step two. Square root both sides. u equals the square root of v squared minus two a s. Notice we cannot split the root across the minus.", g('u = √(v² − 2as)'))
     ]),
-    SC('Watch out!', 'Three common mistakes', [
-      S("Mistake one: taking the square root of only one term. You must square root the whole side.", r('a = √c² − √b²  ✗') + g('a = √(c² − b²)  ✓')),
-      S("Mistake two: doing the steps in the wrong order. Undo the last operation first.", V.rule('Undo in reverse.')),
-      S("Mistake three: forgetting to square root at the end.", V.rule('r² is not r.'))
+    SC('Watch out!', 'Common mistakes, with examples', [
+      S("Mistake one. Taking away instead of using the square root. Pythagoras says c squared equals a squared plus b squared. Make a the subject. Wrong: a equals c minus b. Test with c equal five and b equal three. Five minus three is two. The real answer is four. Subtract b squared, then take the square root.", r('a = c − b = 2  ✗') + g('a = √(c² − b²) = 4  ✓')),
+      S("Mistake two. Doing the steps in the wrong order. A equals pi r squared. Make r the subject. Wrong: take the square root of A, then divide by pi. Test with A equal twenty-eight point three. Root of twenty-eight point three over pi is one point seven. The right answer is three. Divide by pi first. Then take the square root.", r('r = √A ÷ π ≈ 1.7  ✗') + g('r = √(A ÷ π) = 3  ✓')),
+      S("Mistake three. Leaving r squared. r squared equals forty-nine. Wrong: r equals forty-nine. The square root is needed to get r. r equals seven.", r('r = 49  ✗') + g('r = √49 = 7  ✓'))
     ]),
     SC('In real life', 'Falling objects', [
       S("The distance an object falls is d equals five t squared. If you know the depth of a well, rearrange to find how long a stone takes to fall. t equals the square root of d over five.", g('t = √(d/5)'))
@@ -137,10 +137,10 @@
       S("Step four. Factorise the left side. x bracket y minus two equals one plus three y. Step five. Divide. x equals one plus three y, over y minus two.", E('x(y − 2) = 1 + 3y') + g('x = (1 + 3y)/(y − 2)')),
       S("Check with y equals five. Then x would be sixteen over three. Put x equals sixteen thirds into the original. Two times sixteen thirds plus one is thirty-five thirds. Sixteen thirds minus three is seven thirds. Thirty-five thirds divided by seven thirds is five. It matches.", V.rule('Check with a number.'))
     ]),
-    SC('Watch out!', 'Three common mistakes', [
-      S("Mistake one: trying to divide before factorising. You cannot divide by x when it is in two places.", V.rule('Factorise first.')),
-      S("Mistake two: sign errors when moving terms. Remember to change the sign.", V.rule('Move: change the sign.')),
-      S("Mistake three: forgetting to expand brackets at the start.", V.rule('Expand first.'))
+    SC('Watch out!', 'Common mistakes, with examples', [
+      S("Mistake one. Trying to divide before factorising. Five x minus two x equals nine. Wrong: divide the five x by five and say x minus two x equals nine over five. Instead, factorise. x bracket five minus two equals nine. x times three is nine. x equals three.", r('5x − 2x = 9 → x − 2x = 9/5  ✗') + g('x(5 − 2) = 9 → x = 3  ✓')),
+      S("Mistake two. Sign errors when moving terms. a x plus b equals c x plus d. Wrong: a x plus c x equals d minus b. Moving c x across the equals sign changes its sign. a x minus c x equals d minus b.", r('ax + cx = d − b  ✗') + g('ax − cx = d − b  ✓')),
+      S("Mistake three. Forgetting to expand the bracket. y bracket x minus three. Wrong: y x minus three. The y multiplies both terms. y x minus three y.", r('y(x − 3) = yx − 3  ✗') + g('y(x − 3) = yx − 3y  ✓'))
     ]),
     SC('In real life', 'Lens formulae', [
       S("Many science formulae have the same letter twice. Rearranging them with this method lets a scientist find any unknown, whichever one they have not measured.", V.note('Rearranging is a science skill'))

@@ -39,10 +39,10 @@
       S("The rise is eleven minus three, eight. The run is four minus zero, four. The gradient is eight over four, which is two.", g('m = 8 ÷ 4 = 2')),
       S("What does it mean? Each extra day costs two pounds more. The gradient is the rate of change, here two pounds per day. The three pounds is the fixed charge.", V.rule('Gradient = rate of change.'))
     ]),
-    SC('Watch out!', 'Three common mistakes', [
-      S("Mistake one: dividing run by rise. It is rise over run.", r('run ÷ rise  ✗') + g('rise ÷ run  ✓')),
-      S("Mistake two: mixing the order of the points. Top and bottom must match.", V.rule('Same order on top and bottom.')),
-      S("Mistake three: dropping the negative sign.", V.rule('Down to the right: negative.'))
+    SC('Watch out!', 'Common mistakes, with examples', [
+      S("Mistake one. Dividing run by rise. The points are zero, two and three, eight. Wrong: three over six, a half. Gradient is rise over run. Six over three. Two.", r('run ÷ rise = 3 ÷ 6  ✗') + g('rise ÷ run = 6 ÷ 3 = 2  ✓')),
+      S("Mistake two. Using a different order on the top and the bottom. The points are one, five and four, two. Wrong: two minus five on top, one minus four on the bottom, which gives plus one. Use the same order. Two minus five over four minus one. Minus three over three. Minus one.", r('(2 − 5) ÷ (1 − 4) = 1  ✗') + g('(2 − 5) ÷ (4 − 1) = −1  ✓')),
+      S("Mistake three. Dropping the negative sign. The points are two, seven and six, three. The line goes down. Wrong: four over four, one. Three minus seven is minus four. The gradient is minus one.", r('m = 4 ÷ 4 = 1  ✗') + g('m = (3 − 7) ÷ (6 − 2) = −1  ✓'))
     ]),
     SC('In real life', 'Roads and ramps', [
       S("A road sign saying ten per cent means a gradient of one in ten. For every ten metres across, you climb one metre. A wheelchair ramp is made with a gentle gradient for safety.", V.note('Gradient: steepness'))
@@ -84,10 +84,10 @@
       S("You can sketch a line from y equals m x plus c without a table. Take y equals a half x plus one. Step one. Plot the y-intercept, zero, one. Step two. The gradient is a half. That means across two, up one. From zero, one, go across two and up one, to two, two. Step three. Join the points and extend.", E('y = ½x + 1') + V.rule('Start at c. Then rise over run.')),
       S("Check with the equation. At x equals two, y is a half times two plus one, which is two. The point is on the line.", E('x = 2: y = 2 ✓'))
     ]),
-    SC('Watch out!', 'Three common mistakes', [
-      S("Mistake one: not rearranging to y equals first. In two y equals six x plus four, the gradient is three, not six.", r('m = 6  ✗') + g('y = 3x + 2, m = 3  ✓')),
-      S("Mistake two: mixing up m and c.", V.rule('m is the slope. c is the start.')),
-      S("Mistake three: forgetting the sign of c.", V.rule('y = x − 4: c is −4.'))
+    SC('Watch out!', 'Common mistakes, with examples', [
+      S("Mistake one. Not rearranging first. Two y equals six x plus four. Wrong: the gradient is six. Divide every term by two. y equals three x plus two. The gradient is three.", r('2y = 6x + 4 → m = 6  ✗') + g('y = 3x + 2 → m = 3  ✓')),
+      S("Mistake two. Swapping m and c. y equals five x minus two. Wrong: gradient minus two, and crossing at five. The gradient is the number multiplying x. The line crosses the y axis at the number on its own.", r('m = −2, c = 5  ✗') + g('m = 5, c = −2  ✓')),
+      S("Mistake three. Losing the sign of c. y equals x minus four. Wrong: crosses the y axis at four. It is minus four. The line crosses below the origin.", r('c = 4  ✗') + g('c = −4  ✓'))
     ]),
     SC('In real life', 'Phone plans', [
       S("A phone plan costs fifteen pounds a month plus ten pence per minute. The equation is C equals zero point one m plus fifteen. The graph starts at fifteen and rises slowly.", g('C = 0.1m + 15'))
@@ -130,10 +130,10 @@
       S("Parallel lines have the same gradient. The line y equals two x minus one has gradient two. So our line also has gradient two. y equals two x plus c.", V.rule('Parallel: same gradient.')),
       S("Put in two, seven. Seven equals four plus c. So c is three. The equation is y equals two x plus three. Check the point. Two times two plus three is seven. Correct.", g('y = 2x + 3'))
     ]),
-    SC('Watch out!', 'Three common mistakes', [
-      S("Mistake one: putting x and y the wrong way round.", V.rule('Point (x, y): x first.')),
-      S("Mistake two: finding c with the wrong sign.", V.rule('Solve for c carefully.')),
-      S("Mistake three: skipping the check.", V.rule('Check with the other point.'))
+    SC('Watch out!', 'Common mistakes, with examples', [
+      S("Mistake one. Putting x and y the wrong way round. A line has gradient two and goes through one, five. Wrong: x is five and y is one. That gives one equals ten plus c, so c is minus nine. The point is x equals one, y equals five. Five equals two plus c. c is three.", r('1 = 2(5) + c → c = −9  ✗') + g('5 = 2(1) + c → c = 3  ✓')),
+      S("Mistake two. Getting the sign wrong when solving for c. The gradient is three, through two, seven. Seven equals six plus c. Wrong: c is thirteen. Subtract six from both sides. c is one.", r('c = 7 + 6 = 13  ✗') + g('c = 7 − 6 = 1  ✓')),
+      S("Mistake three. Skipping the check. A line goes through zero, one and two, seven. Wrong: the gradient is two, so y equals two x plus one. Test the other point. When x is two, y is five, not seven. The gradient is six over two, three. y equals three x plus one. When x is two, y is seven.", r('y = 2x + 1: at x = 2, y = 5 ≠ 7  ✗') + g('y = 3x + 1: at x = 2, y = 7  ✓'))
     ]),
     SC('In real life', 'Predicting', [
       S("A plant is ten centimetres tall after two weeks, and sixteen after four. The gradient is three centimetres a week. We can write an equation and predict the height at any week.", g('h = 3w + 4'))
@@ -174,10 +174,10 @@
       S("Two points are enough to draw a line. But we use three, or more. If all three are in a straight line, we know our calculations are right. If one is off the line, we have made a mistake, and we can find it.", V.rule('Three points: one is a check.')),
       S("Also choose a good range of x values, spread out, including negative ones. A longer line is easier to draw accurately and read from.", V.note('Spread the points out'))
     ]),
-    SC('Watch out!', 'Three common mistakes', [
-      S("Mistake one: arithmetic mistakes with negative x values.", V.rule('Take care with negatives.')),
-      S("Mistake two: joining points with a wobbly freehand line.", V.rule('Use a ruler.')),
-      S("Mistake three: plotting x and y the wrong way round.", V.rule('Along first, then up.'))
+    SC('Watch out!', 'Common mistakes, with examples', [
+      S("Mistake one. Arithmetic slips with negative x. y equals two x plus one, and x is minus two. Wrong: two times minus two is plus four, so y is five. A positive times a negative is negative. Minus four plus one is minus three.", r('y = 2(−2) + 1 = 5  ✗') + g('y = −4 + 1 = −3  ✓')),
+      S("Mistake two. Drawing a bendy line through a wrong point. The table for y equals two x plus one gives eight when x is three. Wrong: draw a wavy line through it. A straight line equation has points in a straight line. Check. Two times three plus one is seven. The point is three, seven.", r('(3, 8) → wavy line  ✗') + g('(3, 7) → straight line  ✓')),
+      S("Mistake three. Plotting x and y the wrong way round. The point is four, one. Wrong: one across and four up. The first number is across. Four across and one up.", r('(4, 1) plotted at 1 across, 4 up  ✗') + g('4 across, 1 up  ✓'))
     ]),
     SC('In real life', 'Conversion graphs', [
       S("A conversion graph from pounds to euros is a straight line through zero. Choose a few pounds, convert, plot, and join. Then read any amount from the line.", V.note('Conversion graph'))

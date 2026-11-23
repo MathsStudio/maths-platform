@@ -180,10 +180,10 @@
       S("A speed is distance over time. A distance is one hundred metres and a time is ten seconds, both to the nearest whole number. For the largest speed, use the biggest distance and the smallest time. One hundred point five over nine point five. For the smallest speed, use the smallest distance over the biggest time.", E('Max speed = 100.5 ÷ 9.5') + E('Min speed = 99.5 ÷ 10.5')),
       S("This is the key idea. To make a division as big as possible, make the top as big as possible, and the bottom as small as possible.", V.rule('Max ÷: biggest ÷ smallest.'))
     ]),
-    SC('Watch out!', 'Three common mistakes', [
-      S("Mistake one: adding the whole unit, instead of half. For the nearest ten, the bounds are plus and minus five, not ten.", r('80 ± 10  ✗') + g('80 ± 5  ✓')),
-      S("Mistake two: using the wrong bounds in a calculation. For a subtraction, the largest answer uses the biggest first number and the smallest second number.", V.rule('Think about which bound makes it largest.')),
-      S("Mistake three: mixing up the order of the inequality. The lower bound goes on the left.", V.rule('lower ≤ value < upper'))
+    SC('Watch out!', 'Common mistakes, with examples', [
+      S("Mistake one. Rounding the bound the wrong way. A length is seven centimetres, to the nearest centimetre. Wrong: the upper bound is seven point four. The bounds are half a unit either side. The lower bound is six point five and the upper bound is seven point five.", r('upper bound = 7.4  ✗') + g('upper bound = 7.5  ✓')),
+      S("Mistake two. Using lower bounds for everything. A rectangle is six by four, each to the nearest unit. Wrong: for the greatest area, use the lower bounds, five point five times three point five, nineteen point two five. The greatest area needs both upper bounds. Six point five times four point five, twenty-nine point two five.", r('5.5 × 3.5 = 19.25 (greatest)  ✗') + g('6.5 × 4.5 = 29.25  ✓')),
+      S("Mistake three. Using the wrong bounds for a division. The greatest value of twelve divided by four, each to the nearest whole number. Wrong: upper over upper, twelve point five over four point five, two point seven eight. To make a fraction as big as possible, make the top as big as possible and the bottom as small as possible. Twelve point five over three point five, three point five seven.", r('12.5 ÷ 4.5 ≈ 2.78  ✗') + g('12.5 ÷ 3.5 ≈ 3.57  ✓'))
     ]),
     SC('In real life', 'Weighing', [
       S("A parcel weighs two point three kilograms, to one decimal place. A courier charges extra above two point four kilograms. Could the parcel really be over? The upper bound is two point three five. That is less than two point four. So no extra charge.", E('Upper bound 2.35 < 2.4') + g('No extra charge'))
@@ -263,10 +263,10 @@
       S("Sometimes we are asked if the estimate is bigger or smaller than the real answer. In forty-eight times nineteen, we rounded forty-eight up to fifty, and nineteen up to twenty. We rounded both up, and we multiplied, so the estimate is bigger than the real answer.", E('Both rounded up, so the estimate is an over-estimate', 'g')),
       S("But for a division, rounding the top up makes the answer bigger, while rounding the bottom up makes the answer smaller. Think about each number.", V.rule('Think about each number separately.'))
     ]),
-    SC('Watch out!', 'Three common mistakes', [
-      S("Mistake one: counting the zeros at the start of a decimal as significant. In zero point zero zero three six eight, the first significant figure is the three.", r('0.00368 → 0.0  ✗') + g('0.00368 → 0.004  ✓')),
-      S("Mistake two: rounding to one decimal place instead. One significant figure is about the first digit that matters, not the place after the point.", V.rule('Significant figures ≠ decimal places.')),
-      S("Mistake three: rounding to something awkward. Nineteen point eight rounds to twenty, not nineteen. Pick numbers that make the sum easy.", V.rule('Round to make the sum easy.'))
+    SC('Watch out!', 'Common mistakes, with examples', [
+      S("Mistake one. Rounding a small number wrongly. Round zero point zero three eight six to one significant figure. Wrong: zero point zero three. The next digit is an eight, so round up. Zero point zero four.", r('0.0386 ≈ 0.03  ✗') + g('0.0386 ≈ 0.04  ✓')),
+      S("Mistake two. Rounding to the wrong place. Round four hundred and seventy-three to one significant figure. Wrong: four hundred and seventy, which keeps two digits. One significant figure means one digit, then zeros. The next digit is a seven, so round up. Five hundred.", r('473 ≈ 470  ✗') + g('473 ≈ 500  ✓')),
+      S("Mistake three. Using the exact numbers, not rounded ones. Estimate four point eight times nineteen point six, divided by zero point five two. Wrong: use a calculator, one hundred and eighty point nine, and call it an estimate. An estimate rounds first. Five times twenty, divided by zero point five. Two hundred.", r('exact 180.9, not an estimate  ✗') + g('5 × 20 ÷ 0.5 = 200  ✓'))
     ]),
     SC('In real life', 'Shopping', [
       S("You buy eleven items at two pounds ninety-nine each. Estimate the cost. Round to ten items at three pounds. About thirty pounds. The shop assistant says thirty-two pounds eighty-nine. Close enough to your estimate, so it seems right.", E('11 × 2.99 ≈ 10 × 3 = 30') + g('Exact: £32.89'))
@@ -302,10 +302,10 @@
     SC('A decrease again', 'Example 5: a population', [
       S("A population fell by fifteen per cent, to seventeen thousand. What was it before? After a fall of fifteen per cent, the multiplier is zero point eight five. Divide. Seventeen thousand divided by zero point eight five is twenty thousand.", E('17,000 ÷ 0.85') + g('= 20,000'))
     ]),
-    SC('Watch out!', 'Three common mistakes', [
-      S("Mistake one: adding the percentage back on. Eighty plus twenty per cent of eighty is ninety-six, not one hundred.", r('80 + 20% of 80 = 96  ✗') + g('80 ÷ 0.8 = 100  ✓')),
-      S("Mistake two: using the wrong multiplier. After a decrease, we use one minus the rate. After an increase, one plus the rate.", V.cols([V.card('Decrease: 1 − r', 'b', true), V.card('Increase: 1 + r', 'g', true)], 2)),
-      S("Mistake three: multiplying instead of dividing. To find the original, always divide.", V.rule('Reverse: divide.'))
+    SC('Watch out!', 'Common mistakes, with examples', [
+      S("Mistake one. Taking the percentage off the sale price. A coat costs sixty pounds after a twenty per cent discount. Wrong: twenty per cent of sixty is twelve, so the original was seventy-two. The sixty pounds is eighty per cent of the original. Divide by zero point eight. Seventy-five pounds.", r('60 + 12 = 72  ✗') + g('60 ÷ 0.8 = 75  ✓')),
+      S("Mistake two. Multiplying instead of dividing. A price is one hundred and twenty pounds after a twenty per cent increase. Wrong: one twenty times one point two, one hundred and forty-four. That would be a bigger original price, which cannot be right. Divide by one point two. One hundred pounds.", r('120 × 1.2 = 144  ✗') + g('120 ÷ 1.2 = 100  ✓')),
+      S("Mistake three. Using the wrong multiplier. After a fifteen per cent decrease the price is sixty-eight pounds. Wrong: divide by zero point one five. The multiplier for a fifteen per cent decrease is zero point eight five. Sixty-eight divided by zero point eight five is eighty pounds.", r('68 ÷ 0.15 ≈ 453  ✗') + g('68 ÷ 0.85 = 80  ✓'))
     ]),
     SC('In real life', 'Sales', [
       S("A pair of trainers is reduced by thirty per cent to fifty-six pounds. What was the original price? The multiplier is zero point seven. Fifty-six divided by zero point seven is eighty pounds. A real saving of twenty-four pounds.", g('56 ÷ 0.7 = £80'))
@@ -383,10 +383,10 @@
       S("A set can have no elements at all. The set of even prime numbers bigger than two. There are none. We call this the empty set, and write it with an empty pair of brackets, or a circle with a line through it.", E('{ }  or  ∅', 'b')),
       S("Another example. Integers that are both even and odd. None. Empty set.", g('n(∅) = 0'))
     ]),
-    SC('Watch out!', 'Three common mistakes', [
-      S("Mistake one: repeating an element. A set lists each element once.", r('{2, 2, 3}  ✗') + g('{2, 3}  ✓')),
-      S("Mistake two: mixing up intersection and union. Intersection is the overlap, the elements in both. Union is everything together.", V.cols([V.card('∩: in both', 'b', true), V.card('∪: in either', 'g', true)], 2)),
-      S("Mistake three: forgetting the brackets. Use curly brackets for sets.", V.rule('{ }'))
+    SC('Watch out!', 'Common mistakes, with examples', [
+      S("Mistake one. Calling a fraction an integer. Is three quarters an integer? Wrong: yes, because it is made from whole numbers. An integer is a whole number, with no fractional part. Three quarters is a rational number, but not an integer.", r('3/4 is an integer  ✗') + g('3/4 is rational, not an integer  ✓')),
+      S("Mistake two. Thinking a recurring decimal is irrational. Zero point three three three, recurring. Wrong: it goes on forever, so it is irrational. It equals one third, which is a fraction, so it is rational. Irrational numbers like pi never repeat.", r('0.333… is irrational  ✗') + g('0.333… = 1/3, rational  ✓')),
+      S("Mistake three. Thinking every square root is irrational. Root sixteen. Wrong: irrational, because it has a root sign. Root sixteen is four, a whole number, so it is rational. Root seventeen is not a whole number, and it is irrational.", r('√16 is irrational  ✗') + g('√16 = 4 rational; √17 irrational  ✓'))
     ]),
     SC('In real life', 'Groups', [
       S("A school has a set of pupils who play football, and a set who play chess. Some play both. The intersection is the pupils who do both. The union is everyone in at least one club. Sets help us count people without counting anyone twice.", V.note('Sets keep counting tidy'))
@@ -533,10 +533,10 @@
     SC('Compared with compound', 'Example 5: which is better for savers?', [
       S("Compare simple and compound for one thousand pounds at five per cent for three years. Simple interest gives one hundred and fifty pounds, so the total is one thousand, one hundred and fifty. Compound gives one thousand, one hundred and fifty-seven pounds sixty-three. Compound is a bit more, because the interest earns interest.", E('Simple: £1,150') + E('Compound: £1,157.63', 'g'))
     ]),
-    SC('Watch out!', 'Three common mistakes', [
-      S("Mistake one: forgetting to divide by one hundred. The rate is a percentage.", r('800 × 3 × 5  ✗') + g('800 × 3 × 5 ÷ 100  ✓')),
-      S("Mistake two: giving only the interest when the question asks for the total. Read the question.", V.rule('Interest or total?')),
-      S("Mistake three: using months as years. Convert months to a fraction of a year.", V.rule('6 months = 0.5 years'))
+    SC('Watch out!', 'Common mistakes, with examples', [
+      S("Mistake one. Forgetting to turn the percentage into a decimal. Two hundred pounds at three per cent for a year. Wrong: two hundred times three, six hundred pounds. Three per cent is zero point zero three. Two hundred times zero point zero three is six pounds.", r('200 × 3 = £600  ✗') + g('200 × 0.03 = £6  ✓')),
+      S("Mistake two. Using one year for several years. Five hundred pounds at four per cent for three years. Wrong: twenty pounds, which is one year. Three years gives three times as much. Sixty pounds.", r('500 × 0.04 = £20  ✗') + g('500 × 0.04 × 3 = £60  ✓')),
+      S("Mistake three. Giving only the interest when asked for the total. One thousand pounds at two per cent for two years. The interest is forty pounds. Wrong: the account now holds forty pounds. The total includes the original money. One thousand and forty pounds.", r('total = £40  ✗') + g('total = 1000 + 40 = £1040  ✓'))
     ]),
     SC('In real life', 'Short loans', [
       S("Simple interest is often used for short term loans, like borrowing money from a friend or a family member. Because it does not compound, it is easier to work out, and it never surprises you with a bigger bill.", V.note('Simple: the same amount each year'))
@@ -570,10 +570,10 @@
     SC('Monthly', 'Example 5: per month', [
       S("Most people are paid monthly. Divide the yearly amount by twelve. Twenty-three thousand six hundred divided by twelve is one thousand, nine hundred and sixty-six pounds sixty-seven. About one thousand, nine hundred and sixty-seven pounds a month.", E('23,600 ÷ 12') + g('≈ £1,966.67 a month'))
     ]),
-    SC('Watch out!', 'Three common mistakes', [
-      S("Mistake one: charging tax on the whole salary. The personal allowance is tax free.", r('20% × 30,000  ✗') + g('20% × 17,500  ✓')),
-      S("Mistake two: forgetting a deduction. Check what the question lists, and subtract all of them.", V.rule('Subtract every deduction.')),
-      S("Mistake three: mixing yearly and monthly amounts. Keep the same time period all the way through.", V.rule('Year with year, month with month.'))
+    SC('Watch out!', 'Common mistakes, with examples', [
+      S("Mistake one. Taxing all the pay. A salary of twenty-eight thousand, a personal allowance of twelve thousand five hundred, and tax at twenty per cent. Wrong: twenty per cent of twenty-eight thousand, five thousand six hundred. Tax is only paid on the pay above the allowance. Fifteen thousand five hundred times zero point two, three thousand one hundred.", r('tax = 20% of 28 000 = 5600  ✗') + g('tax = 20% of 15 500 = 3100  ✓')),
+      S("Mistake two. Adding the deductions instead of subtracting. Gross pay is two thousand pounds a month, and the deductions are five hundred. Wrong: take-home pay is two thousand five hundred. Take-home pay is what is left. One thousand five hundred.", r('2000 + 500 = 2500  ✗') + g('2000 − 500 = 1500  ✓')),
+      S("Mistake three. Mixing yearly and monthly amounts. Yearly tax is three thousand one hundred. Wrong: take that off a monthly pay of two thousand. Divide the tax by twelve first. About two hundred and fifty-eight pounds a month.", r('2000 − 3100 < 0  ✗') + g('3100 ÷ 12 ≈ 258 a month  ✓'))
     ]),
     SC('In real life', 'Reading a payslip', [
       S("A payslip lists the gross pay and each deduction, and then the net pay at the bottom. Learning to check a payslip helps you spot mistakes, and understand where your money goes.", V.note('Gross − deductions = net'))
@@ -607,10 +607,10 @@
     SC('Changing the plan', 'Example 5: what if income changes?', [
       S("Income goes up by ten per cent, from two thousand four hundred to two thousand six hundred and forty pounds. With the same percentages, every part of the budget rises by ten per cent. That is the power of using percentages. Savings go from four hundred and eighty to five hundred and twenty-eight.", E('2,640 × 20% = £528', 'g'))
     ]),
-    SC('Watch out!', 'Three common mistakes', [
-      S("Mistake one: forgetting the yearly bills. Divide them by twelve and include them.", V.rule('Annual bills ÷ 12.')),
-      S("Mistake two: percentages that do not add to one hundred. Check the total.", V.rule('Total = 100%.')),
-      S("Mistake three: forgetting to save. Pay yourself first. Put the savings aside before spending on wants.", V.rule('Savings first.'))
+    SC('Watch out!', 'Common mistakes, with examples', [
+      S("Mistake one. Percentages that do not add to one hundred. Rent forty per cent, food twenty-five, travel fifteen, savings ten, fun fifteen. Wrong: it looks fine. Add them. A hundred and five per cent. That is more than the income. Change fun to ten per cent.", r('40 + 25 + 15 + 10 + 15 = 105%  ✗') + g('… + 10 = 100%  ✓')),
+      S("Mistake two. Taking the percentage of the wrong amount. Income is one thousand eight hundred pounds a month, and rent is thirty per cent. Wrong: thirty per cent of one thousand, three hundred. Use the income. Thirty per cent of one thousand eight hundred is five hundred and forty.", r('30% of 1000 = 300  ✗') + g('30% of 1800 = 540  ✓')),
+      S("Mistake three. Forgetting a yearly cost. A subscription is twelve pounds a month. Wrong: put twelve pounds in the yearly plan. There are twelve months. Twelve times twelve is a hundred and forty-four pounds.", r('£12 a year  ✗') + g('12 × 12 = £144 a year  ✓'))
     ]),
     SC('In real life', 'Setting a goal', [
       S("You want to save six hundred pounds for a trip in ten months. Six hundred divided by ten is sixty pounds a month. That is your savings target. A budget helps you reach it.", g('600 ÷ 10 = £60 a month'))
@@ -646,10 +646,10 @@
     SC('Paying it off', 'Example 5: paying in full', [
       S("The best way to use a credit card is to pay the whole balance every month. Then you pay no interest at all. If you only pay the minimum, the debt can last years and cost far more.", V.note('Pay in full to avoid interest'))
     ]),
-    SC('Watch out!', 'Three common mistakes', [
-      S("Mistake one: forgetting the deposit when finding the total. Always add the deposit.", V.rule('Total = deposit + instalments.')),
-      S("Mistake two: comparing monthly payments rather than totals. A small monthly payment can hide a big total.", V.rule('Compare totals.')),
-      S("Mistake three: adding the interest rates. Monthly interest is compound, so use a power.", r('12 × 2% = 24%  ✗') + g('1.02¹² → 26.8%  ✓'))
+    SC('Watch out!', 'Common mistakes, with examples', [
+      S("Mistake one. Comparing only the monthly payment. A sofa costs six hundred pounds in cash. Hire purchase is twenty-five pounds a month for thirty months. Wrong: twenty-five pounds sounds cheap. Multiply. Seven hundred and fifty pounds. That is a hundred and fifty more.", r('only £25  ✗') + g('25 × 30 = £750 in total  ✓')),
+      S("Mistake two. Forgetting the deposit. A deposit of fifty pounds, then twelve payments of forty. Wrong: twelve times forty, four hundred and eighty. Add the deposit. Five hundred and thirty pounds.", r('12 × 40 = £480  ✗') + g('50 + 480 = £530  ✓')),
+      S("Mistake three. Calling the extra cost the interest rate. The cash price is four hundred pounds, and the credit price is four hundred and fifty. Wrong: the interest is fifty per cent. The extra is fifty pounds. As a fraction of four hundred it is twelve and a half per cent.", r('£50 extra = 50%  ✗') + g('50 ÷ 400 = 12.5%  ✓'))
     ]),
     SC('In real life', 'Buy now, pay later', [
       S("Shops often say interest free for twelve months. That can be fine if you pay on time. But if you miss the deadline, interest may be added back to the whole amount. Always read the details.", V.note('Read the small print'))
@@ -684,10 +684,10 @@
     SC('Best value', 'Example 5: a price abroad', [
       S("A guidebook costs twenty-four euros in Paris, and nineteen pounds in London. Rate: one point one five. Twenty-four euros divided by one point one five is twenty pounds eighty-seven. The London price is cheaper. Change both prices to the same currency to compare.", E('24 ÷ 1.15 ≈ £20.87') + g('£19 is cheaper'))
     ]),
-    SC('Watch out!', 'Three common mistakes', [
-      S("Mistake one: comparing only the rates. A better rate with a big fee may give less money.", V.rule('Include the fees.')),
-      S("Mistake two: multiplying when you should divide. To go back to pounds, divide by the rate.", V.cols([V.card('£ → €: ×', 'g', true), V.card('€ → £: ÷', 'b', true)], 2)),
-      S("Mistake three: taking commission off the wrong amount. Work out the commission as a percentage of the pounds you are changing.", V.rule('Commission is on the £ amount.'))
+    SC('Watch out!', 'Common mistakes, with examples', [
+      S("Mistake one. Multiplying when you should divide. Change two hundred and twenty euros into pounds, when one pound is one point one euros. Wrong: two twenty times one point one, two hundred and forty-two pounds. A euro is worth less than a pound, so the answer must be smaller. Divide. Two hundred pounds.", r('220 × 1.1 = £242  ✗') + g('220 ÷ 1.1 = £200  ✓')),
+      S("Mistake two. Ignoring the fee. Shop A gives one point one euros per pound with no fee. Shop B gives one point one two, but takes a five pound fee. For two hundred pounds. Wrong: B has the better rate, so B is better. A gives two hundred and twenty euros. B gives one hundred and ninety-five times one point one two, two hundred and eighteen point four. A is better.", r('B has a better rate, so B  ✗') + g('A: 220 euros.  B: 218.4 euros  ✓')),
+      S("Mistake three. Comparing different amounts. Offer one gives two hundred and twenty euros for two hundred pounds. Offer two gives three hundred and twenty-four euros for three hundred pounds. Wrong: three twenty-four is bigger, so offer two is better. Compare euros per pound. One point one zero against one point zero eight. Offer one is better.", r('324 > 220, so offer 2  ✗') + g('1.10 against 1.08 per £: offer 1  ✓'))
     ]),
     SC('In real life', 'Airport or bank?', [
       S("Airport exchange desks often have worse rates and bigger fees. Comparing offers before you travel can save you a good deal of money.", V.note('Compare before you travel'))
@@ -727,10 +727,10 @@
     SC('Ratio to fraction', 'Example 6: finding fractions', [
       S("If the ratio of red to blue is two to three, then red is two out of five parts. That is two fifths. Blue is three fifths. This helps us find percentages. Two fifths is forty per cent.", E('Red = 2/5 = 40%') + E('Blue = 3/5 = 60%'))
     ]),
-    SC('Watch out!', 'Three common mistakes', [
-      S("Mistake one: dividing by the ratio numbers instead of the total number of parts. Sharing sixty in two to three, divide by five, not by two or three.", r('60 ÷ 2 or 60 ÷ 3  ✗') + g('60 ÷ 5  ✓')),
-      S("Mistake two: getting the order wrong. If the ratio is boys to girls, keep boys first.", V.rule('Keep the order.')),
-      S("Mistake three: not checking. Add up the shares. They must make the total.", V.rule('Shares add to the total.'))
+    SC('Watch out!', 'Common mistakes, with examples', [
+      S("Mistake one. Dividing by one of the ratio numbers. Share sixty pounds in the ratio two to three. Wrong: sixty divided by two is thirty, and sixty divided by three is twenty. They only add to fifty. Add the parts first. Five. Sixty divided by five is twelve. Then twenty-four and thirty-six.", r('60 ÷ 2 = 30 and 60 ÷ 3 = 20  ✗') + g('60 ÷ 5 = 12 → 24 and 36  ✓')),
+      S("Mistake two. Using the wrong part for one part. Boys to girls is three to two, and there are fifteen boys. Wrong: one part is fifteen divided by two. Boys are three parts. One part is fifteen divided by three, five. Girls are two parts. Ten.", r('one part = 15 ÷ 2  ✗') + g('one part = 15 ÷ 3 = 5 → 10 girls  ✓')),
+      S("Mistake three. Not checking that the shares add up. Share seventy-two in the ratio five to four. Wrong: forty-five and thirty-six. They add to eighty-one. That is not seventy-two. One part is eight. Forty and thirty-two.", r('45 + 36 = 81 ≠ 72  ✗') + g('40 + 32 = 72  ✓'))
     ]),
     SC('In real life', 'Mixing paint', [
       S("A painter mixes blue and white paint in the ratio three to seven to make a light blue. For ten litres of paint, three parts blue is three litres and seven parts white is seven litres. The same ratio gives the same colour every time.", g('3 L blue + 7 L white'))
@@ -765,10 +765,10 @@
     SC('Not proportional', 'Example 5: spotting the difference', [
       S("Not everything is proportional. A taxi charges a three pound start fee, and two pounds a mile. For two miles, seven pounds. For four miles, eleven pounds. Double the distance does not double the cost, because of the fixed fee. This is not direct proportion.", E('2 mi: £7  ·  4 mi: £11') + r('11 ≠ 2 × 7  → not proportional'))
     ]),
-    SC('Watch out!', 'Three common mistakes', [
-      S("Mistake one: adding instead of multiplying. If three items cost nine pounds, six items cost eighteen, not twelve.", r('9 + 3 = 12  ✗') + g('9 × 2 = 18  ✓')),
-      S("Mistake two: using direct proportion when there is a fixed charge. Check that zero gives zero.", V.rule('Zero in, zero out.')),
-      S("Mistake three: forgetting units in the constant. Say what k means, like pounds per book.", V.rule('k has units.'))
+    SC('Watch out!', 'Common mistakes, with examples', [
+      S("Mistake one. Adding instead of multiplying. Three items cost nine pounds. Wrong: six items cost nine plus three, twelve pounds. Double the items, double the cost. Eighteen pounds.", r('9 + 3 = 12  ✗') + g('9 × 2 = 18  ✓')),
+      S("Mistake two. Using direct proportion with a fixed charge. A taxi costs three pounds plus two pounds a mile. Two miles cost seven pounds. Wrong: four miles cost twice that, fourteen pounds. The three pound charge is not doubled. Three plus eight, eleven pounds.", r('2 × 7 = 14  ✗') + g('3 + 2 × 4 = 11  ✓')),
+      S("Mistake three. Finding k upside down. y is twelve when x is four. Wrong: k is four divided by twelve. k is y divided by x. Twelve divided by four is three.", r('k = 4 ÷ 12  ✗') + g('k = 12 ÷ 4 = 3  ✓'))
     ]),
     SC('In real life', 'Currency and fuel', [
       S("Exchange rates are direct proportion. Double the pounds gives double the euros. Fuel is too. If ten litres cost fifteen pounds, thirty litres cost forty-five pounds. The constant is one pound fifty a litre.", g('C = 1.5L'))
@@ -805,10 +805,10 @@
     SC('The graph', 'Example 6: the shape', [
       S("The graph of inverse proportion is not a straight line. It is a curve that falls steeply and then flattens. It never touches either axis. As x gets bigger, y gets closer and closer to zero.", V.note('A falling curve, not a line'))
     ]),
-    SC('Watch out!', 'Three common mistakes', [
-      S("Mistake one: using direct proportion. If more workers means less time, it is inverse.", r('8 workers: 4 × 8  ✗') + g('8 workers: 24 ÷ 8  ✓')),
-      S("Mistake two: dividing when finding k. In inverse proportion, k equals x times y.", V.rule('Inverse: multiply to find k.')),
-      S("Mistake three: believing the answer should go up. More workers means fewer days. Check the answer makes sense.", V.rule('Check it makes sense.'))
+    SC('Watch out!', 'Common mistakes, with examples', [
+      S("Mistake one. Using direct proportion. Six workers take four days. Wrong: eight workers take four times eight over six, five point three days. More workers should take less time, not more. The total work is twenty-four worker days. Divided by eight. Three days.", r('4 × 8 ÷ 6 ≈ 5.3 days  ✗') + g('24 ÷ 8 = 3 days  ✓')),
+      S("Mistake two. Dividing to find k. y is six when x is four, in inverse proportion. Wrong: k is four divided by six. In inverse proportion we multiply. Four times six is twenty-four.", r('k = 4 ÷ 6  ✗') + g('k = 4 × 6 = 24  ✓')),
+      S("Mistake three. Not checking the answer makes sense. y is forty over x, and x is ten. Wrong: forty times ten, four hundred. As x grows, y should shrink. Forty divided by ten is four.", r('40 × 10 = 400  ✗') + g('40 ÷ 10 = 4  ✓'))
     ]),
     SC('In real life', 'Sharing the work', [
       S("Ten people clean a hall in six hours. If twenty people help, it takes three hours. That assumes everyone works equally well. In real life, too many people can get in each other's way.", V.note('Inverse proportion assumes equal work'))
@@ -842,10 +842,10 @@
     SC('Out and back', 'Example 5: a return journey', [
       S("A girl cycles to school at twelve kilometres per hour and returns at eight. The distance is six kilometres each way. Time there is half an hour. Time back is three quarters of an hour. Total distance is twelve kilometres. Total time is one and a quarter hours. Average speed is nine point six kilometres per hour.", E('6 ÷ 12 = 0.5 h') + E('6 ÷ 8 = 0.75 h') + g('12 ÷ 1.25 = 9.6 km/h'))
     ]),
-    SC('Watch out!', 'Three common mistakes', [
-      S("Mistake one: averaging the speeds. Always use total distance over total time.", r('(80 + 30) ÷ 2  ✗') + g('Total D ÷ total T  ✓')),
-      S("Mistake two: mixing minutes and hours. Convert so that time is in the same unit as the speed.", V.rule('45 min = 0.75 h')),
-      S("Mistake three: forgetting a stop. If a driver stops for half an hour, that time counts in the total.", V.rule('Include stops in the time.'))
+    SC('Watch out!', 'Common mistakes, with examples', [
+      S("Mistake one. Averaging the speeds. Eighty kilometres per hour for one hour, then thirty for two hours. Wrong: eighty plus thirty, over two, fifty-five. Use the total distance and total time. One hundred and forty kilometres in three hours. About forty-six point seven.", r('(80 + 30) ÷ 2 = 55  ✗') + g('140 ÷ 3 ≈ 46.7  ✓')),
+      S("Mistake two. Using minutes as hours. Fifteen kilometres in forty-five minutes. Wrong: fifteen divided by forty-five. Change the time to hours first. Forty-five minutes is zero point seven five hours. Twenty kilometres per hour.", r('15 ÷ 45 = 0.33 km/h  ✗') + g('15 ÷ 0.75 = 20 km/h  ✓')),
+      S("Mistake three. Leaving out a stop. A driver goes one hundred kilometres. The driving takes one hour, and there is a half hour stop. Wrong: one hundred kilometres per hour. The whole journey took one and a half hours. About sixty-six point seven.", r('100 ÷ 1 = 100 km/h  ✗') + g('100 ÷ 1.5 ≈ 66.7 km/h  ✓'))
     ]),
     SC('In real life', 'Journey planning', [
       S("Sat navs use average speed to estimate arrival times. A two hundred and forty kilometre trip at an average of eighty kilometres per hour takes three hours. Heavy traffic lowers the average, and so the arrival time is later.", g('240 ÷ 80 = 3 h'))
@@ -881,10 +881,10 @@
     SC('Special offers', 'Example 5: three for two', [
       S("A shop offers three for the price of two on tins that cost eighty pence each. Three tins cost one pound sixty. That is about fifty-three pence per tin. A normal price is eighty pence. So the offer is the better buy, if you need three tins.", E('2 × 80p = £1.60 for 3') + g('≈ 53p each'))
     ]),
-    SC('Watch out!', 'Three common mistakes', [
-      S("Mistake one: comparing prices for different amounts. Always compare the same amount.", V.rule('Same amount.')),
-      S("Mistake two: mixing units. Change kilograms to grams, or litres to millilitres, before comparing.", V.rule('Same units.')),
-      S("Mistake three: forgetting the quality or whether you can use it. The cheapest per unit is no bargain if it goes off before you use it.", V.rule('Will you use it all?'))
+    SC('Watch out!', 'Common mistakes, with examples', [
+      S("Mistake one. Comparing the total prices. Cheese costs two pounds fifty for two hundred and fifty grams, or four fifty for five hundred. Wrong: two fifty is cheaper, so buy that. But it is less cheese. Price per hundred grams. One pound against ninety pence. The large block is better.", r('£2.50 < £4.50, so small  ✗') + g('100p against 90p per 100 g: large  ✓')),
+      S("Mistake two. Mixing units. Pasta is one pound for five hundred grams, or one pound eighty for one point five kilograms. Wrong: compare five hundred and one point five. Change to grams. One thousand five hundred. Twenty pence against twelve pence per hundred grams.", r('500 against 1.5  ✗') + g('20p against 12p per 100 g  ✓')),
+      S("Mistake three. Thinking the bigger pack is always cheaper. Pasta is one pound for five hundred grams, or three fifty for one point five kilograms. Wrong: the family pack must be cheaper. Twenty pence against twenty-three point three pence per hundred grams. The small pack wins.", r('big pack must be cheaper  ✗') + g('20p against 23.3p per 100 g: small  ✓'))
     ]),
     SC('In real life', 'Supermarkets', [
       S("Shops often show the unit price on the shelf label, like pence per hundred grams. Reading it makes comparing easy. Now you also know how it is worked out.", V.note('Check the shelf label'))
@@ -922,10 +922,10 @@
     SC('Meeting', 'Example 6: when lines cross', [
       S("If two journeys are drawn on the same graph, the point where the lines cross is where the two travellers meet. Read the time on the bottom, and the distance up the side.", V.note('Crossing point: they meet'))
     ]),
-    SC('Watch out!', 'Three common mistakes', [
-      S("Mistake one: thinking a flat line means moving slowly. A flat line means stopped. Distance is not changing.", r('Flat = slow  ✗') + g('Flat = stopped  ✓')),
-      S("Mistake two: thinking a line going down means slowing down. It means coming back toward the start.", V.rule('Down: returning.')),
-      S("Mistake three: reading a graph as a picture of the route. It shows distance against time, not the shape of the road.", V.rule('It is not a map.'))
+    SC('Watch out!', 'Common mistakes, with examples', [
+      S("Mistake one. Thinking a flat line means slow. The line is flat between one hour and two hours, at six kilometres. Wrong: she walks slowly. The distance is not changing, so she is still at six kilometres. She has stopped.", r('flat = moving slowly  ✗') + g('flat = stopped at 6 km  ✓')),
+      S("Mistake two. Reading a falling line as going downhill. The line falls from six kilometres to zero. Wrong: she is walking downhill. The graph shows distance from the start, not the shape of the ground. The distance is getting smaller, so she is coming back.", r('falling line = downhill  ✗') + g('distance falls = returning  ✓')),
+      S("Mistake three. Forgetting to use hours for the speed. A line goes from zero to twelve kilometres in thirty minutes. Wrong: twelve divided by thirty, zero point four. Thirty minutes is half an hour. Twelve divided by zero point five is twenty-four kilometres per hour.", r('12 ÷ 30 = 0.4 km/h  ✗') + g('12 ÷ 0.5 = 24 km/h  ✓'))
     ]),
     SC('In real life', 'Trains', [
       S("Train timetables can be drawn as distance-time graphs. Where the lines of two trains cross, they pass each other. Railway planners use these to avoid collisions.", V.note('Where lines cross, trains pass'))
@@ -960,10 +960,10 @@
       S("Now the perimeter. The outside edge is the rectangle's other three sides, plus the curved edge of the semicircle. The ten side where the semicircle sits is not part of the perimeter any more. Three sides: six plus ten plus six is twenty-two. The curve is half the circumference. Half of pi times ten is fifteen point seven.", E('6 + 10 + 6 = 22') + E('½ × π × 10 ≈ 15.7')),
       S("Add. Thirty-seven point seven centimetres.", g('≈ 37.7 cm'))
     ]),
-    SC('Watch out!', 'Three common mistakes', [
-      S("Mistake one: using the diameter as the radius. Halve it first.", r('r = 10  ✗') + g('r = 5  ✓')),
-      S("Mistake two: including the inside edge in the perimeter. Only count the outside.", V.rule('Perimeter: outside edge only.')),
-      S("Mistake three: using the slanted side as the height of a trapezium.", V.rule('Height is perpendicular.'))
+    SC('Watch out!', 'Common mistakes, with examples', [
+      S("Mistake one. Using the diameter as the radius. A semicircle sits on a side of length ten. Wrong: half of pi times ten squared, one hundred and fifty-seven. The radius is half of ten, five. Half of pi times twenty-five is thirty-nine point three.", r('½ × π × 10² ≈ 157  ✗') + g('½ × π × 5² ≈ 39.3  ✓')),
+      S("Mistake two. Counting the inside edge in the perimeter. A rectangle ten by six has a semicircle on the ten side. Wrong: add all four sides of the rectangle, thirty-two, and the curve. The ten side where the semicircle sits is not on the outside. Six plus ten plus six, plus fifteen point seven.", r('10 + 6 + 10 + 6 + 15.7 = 47.7  ✗') + g('6 + 10 + 6 + 15.7 = 37.7  ✓')),
+      S("Mistake three. Using the slanted side as the height. A trapezium has parallel sides four and eight, a vertical height of five, and a slanted side of six. Wrong: half times twelve times six, thirty-six. The height is the straight distance between the parallel sides. Half times twelve times five, thirty.", r('½(4 + 8) × 6 = 36  ✗') + g('½(4 + 8) × 5 = 30  ✓'))
     ]),
     SC('In real life', 'Tracks and windows', [
       S("A running track is a rectangle with a semicircle at each end. A window with an arch is a rectangle with a semicircle. Builders use exactly these calculations to buy glass and fencing.", V.note('Rectangle + semicircle'))
@@ -995,10 +995,10 @@
     SC('Capacity', 'Example 5: litres', [
       S("One litre is one thousand cubic centimetres. A tank has volume twelve thousand cubic centimetres. Divide by one thousand. Twelve litres.", E('12 000 ÷ 1000 = 12 litres', 'g'))
     ]),
-    SC('Watch out!', 'Three common mistakes', [
-      S("Mistake one: using diameter in pi r squared. Halve it to get the radius.", r('d = 6 → r = 6  ✗') + g('r = 3  ✓')),
-      S("Mistake two: forgetting half in the triangle area.", V.rule('Triangle: ½ × b × h')),
-      S("Mistake three: wrong units. Volume is cubed, so write cm cubed.", V.rule('Volume: cm³'))
+    SC('Watch out!', 'Common mistakes, with examples', [
+      S("Mistake one. Using the diameter in pi r squared. A cylinder has diameter six and height ten. Wrong: pi times six squared times ten, one thousand one hundred and thirty-one. The radius is three. Pi times nine times ten, two hundred and eighty-three.", r('π × 6² × 10 ≈ 1131  ✗') + g('π × 3² × 10 ≈ 283  ✓')),
+      S("Mistake two. Forgetting the half in the triangle area. A triangular prism has a triangle with base six and height four, and a length of ten. Wrong: six times four times ten, two hundred and forty. The triangle area is half of six times four. One hundred and twenty.", r('6 × 4 × 10 = 240  ✗') + g('½ × 6 × 4 × 10 = 120  ✓')),
+      S("Mistake three. Writing the wrong units. A box is two by three by four. Wrong: twenty-four centimetres. Volume is measured in cubic units. Twenty-four cubic centimetres.", r('24 cm  ✗') + g('24 cm³  ✓'))
     ]),
     SC('In real life', 'Pipes and packaging', [
       S("Engineers work out how much water fits in a pipe using the cylinder formula. A pipe of radius five centimetres and length one metre holds about seven point eight five litres.", V.note('Cylinders everywhere'))
@@ -1033,10 +1033,10 @@
       S("A cup is an open cylinder with one circle for the base only. A radius of four and height of nine. One circle is pi times sixteen, about fifty point three. The curved part is two pi times four times nine, about two hundred and twenty-six point two. Add. Two hundred and seventy-six point five.", E('π r² ≈ 50.3') + E('2π r h ≈ 226.2') + g('≈ 276.5 cm²')),
       S("Always check how many faces the solid has.", V.rule('Count the faces.'))
     ]),
-    SC('Watch out!', 'Three common mistakes', [
-      S("Mistake one: forgetting the second circle in a closed cylinder.", r('1 circle  ✗') + g('2 circles  ✓')),
-      S("Mistake two: mixing up area and volume. Surface area uses squared units.", V.rule('Surface area: cm²')),
-      S("Mistake three: using the diameter instead of the radius in the formula.", V.rule('Halve the diameter.'))
+    SC('Watch out!', 'Common mistakes, with examples', [
+      S("Mistake one. Forgetting the second circle. A closed cylinder has radius two and height five. Wrong: one circle plus the curved surface, twelve point six plus sixty-two point eight, seventy-five point four. A closed cylinder has two circles. Twenty-five point one plus sixty-two point eight. About eighty-eight.", r('12.6 + 62.8 = 75.4  ✗') + g('25.1 + 62.8 ≈ 88  ✓')),
+      S("Mistake two. Mixing up area and volume. A cube has side five. Wrong: five cubed, one hundred and twenty-five. That is the volume. The surface area is six faces, each twenty-five. One hundred and fifty square centimetres.", r('5³ = 125 cm²  ✗') + g('6 × 25 = 150 cm²  ✓')),
+      S("Mistake three. Using the diameter. A cylinder has diameter ten and height four. Wrong: the curved area is two pi times ten times four, two hundred and fifty-one. Use the radius, five. Two pi times five times four, about one hundred and twenty-six.", r('2π × 10 × 4 ≈ 251  ✗') + g('2π × 5 × 4 ≈ 126  ✓'))
     ]),
     SC('In real life', 'Labels and paint', [
       S("A can label covers only the curved surface. Paint for a tank covers everything. Knowing which faces you need saves money.", V.note('Which faces do you need?'))
@@ -1069,10 +1069,10 @@
       S("The cone has slant height of ten. Its curved area is pi r l. Pi times three times ten, about ninety-four point two. Add. About one hundred and fifty point eight.", E('π r l ≈ 94.2') + g('≈ 150.8 cm²')),
       S("The flat circle where they join is hidden inside, so it is not counted.", V.rule('Do not count joined faces.'))
     ]),
-    SC('Watch out!', 'Three common mistakes', [
-      S("Mistake one: using the wrong height. The cone's height is just the cone, not the whole solid.", V.rule('Use each part\'s own height.')),
-      S("Mistake two: counting joined faces in the surface area. They are inside.", V.rule('Hidden faces are not counted.')),
-      S("Mistake three: forgetting that a hemisphere is half a sphere.", r('Hemisphere = ⁴⁄₃π r³  ✗') + g('Hemisphere = ⅔π r³  ✓'))
+    SC('Watch out!', 'Common mistakes, with examples', [
+      S("Mistake one. Using the whole height for the cone. A cylinder of height eight has a cone of height four on top, with radius three. Wrong: the cone has height twelve, one third pi times nine times twelve, one hundred and thirteen. The cone is only four tall. One third pi times nine times four, thirty-seven point seven.", r('⅓ × π × 9 × 12 ≈ 113.1  ✗') + g('⅓ × π × 9 × 4 ≈ 37.7  ✓')),
+      S("Mistake two. Counting faces that are joined. Two cubes of side two are stuck together, face to face. Wrong: twelve faces, each of area four, forty-eight. The two touching faces are hidden. Ten faces. Forty.", r('12 × 4 = 48  ✗') + g('10 × 4 = 40  ✓')),
+      S("Mistake three. Treating a hemisphere as a whole sphere. A hemisphere has radius three. Wrong: four thirds pi times twenty-seven, one hundred and thirteen. A hemisphere is half a sphere. Fifty-six point five.", r('⁴⁄₃π × 27 ≈ 113.1  ✗') + g('½ × ⁴⁄₃π × 27 ≈ 56.5  ✓'))
     ]),
     SC('In real life', 'Silos and rockets', [
       S("A grain silo is a cylinder with a cone or dome on top. Engineers add the volumes to know how much grain it can hold.", V.note('Silo: cylinder + dome'))
@@ -1141,10 +1141,10 @@
     SC('From circumference', 'Example 5: the diameter', [
       S("A circle has circumference thirty-one point four. The circumference is pi times the diameter. So the diameter is thirty-one point four divided by pi. Ten.", E('C = π d') + E('d = 31.4 ÷ π') + g('d = 10, r = 5'))
     ]),
-    SC('Watch out!', 'Three common mistakes', [
-      S("Mistake one: forgetting the square root when finding a radius.", r('r = 20  ✗') + g('r = √20 ≈ 4.5  ✓')),
-      S("Mistake two: dividing by pi at the wrong time. Use brackets or keep pi until the end.", V.rule('Keep π to the end.')),
-      S("Mistake three: leaving out one of the values in the formula.", V.rule('Check every term.'))
+    SC('Watch out!', 'Common mistakes, with examples', [
+      S("Mistake one. Forgetting the square root. A cylinder of height five has volume three hundred and fourteen. Then r squared is twenty. Wrong: the radius is twenty. Take the square root. About four point five.", r('r = 20  ✗') + g('r = √20 ≈ 4.5  ✓')),
+      S("Mistake two. Forgetting to divide by pi. A circle has area fifty. Wrong: r squared is fifty, so r is seven point one. Divide by pi first. Fifty divided by pi is fifteen point nine. Square root, four.", r('r² = 50 → r ≈ 7.1  ✗') + g('r² = 50 ÷ π ≈ 15.9 → r ≈ 4  ✓')),
+      S("Mistake three. Leaving out one of the values. A cuboid has volume one hundred and twenty, length six and width five. Wrong: the height is one twenty divided by six, twenty. Divide by both. One twenty divided by thirty is four.", r('120 ÷ 6 = 20  ✗') + g('120 ÷ (6 × 5) = 4  ✓'))
     ]),
     SC('In real life', 'Tanks', [
       S("An engineer needs a tank to hold five thousand litres, with a set radius. She works backwards from the volume to find how tall to make it.", V.note('Volume known, height needed'))

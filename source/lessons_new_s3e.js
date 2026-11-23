@@ -46,10 +46,10 @@
       S("Sometimes two lines never cross. They are parallel. For example, y equals two x plus one, and y equals two x plus five, have the same gradient. There is no pair that fits both. Such equations have no solution.", E('y = 2x + 1') + E('y = 2x + 5') + r('Parallel: no solution')),
       S("In this course, the questions will almost always have exactly one solution. But it is good to know why.", V.rule('Parallel lines never meet.'))
     ]),
-    SC('Watch out!', 'Three common mistakes', [
-      S("Mistake one: checking only one equation. A pair must fit both.", V.rule('Check both.')),
-      S("Mistake two: giving only x. A solution has two values, x and y.", V.rule('Give x and y.')),
-      S("Mistake three: thinking the lines cross at the origin. They cross wherever the solution is.", V.rule('Crossing point = solution.'))
+    SC('Watch out!', 'Common mistakes, with examples', [
+      S("Mistake one. Checking only one equation. Is x equals three, y equals two a solution of x plus y equals five and two x minus y equals three? The first works. Wrong: so it is a solution. Check the second too. Six minus two is four, not three. It fails, so it is not a solution.", r('3 + 2 = 5 ✓ so solution  ✗') + g('2(3) − 2 = 4 ≠ 3, not a solution  ✓')),
+      S("Mistake two. Giving only x. Solve x plus y equals ten and x minus y equals two. Wrong: x equals six. A solution has two values. y is four.", r('x = 6  ✗  (incomplete)') + g('x = 6 and y = 4  ✓')),
+      S("Mistake three. Treating one equation as if it gave the answer. x plus y equals ten on its own has many pairs, like five and five. Wrong: x equals five and y equals five. That fails the second equation, five minus five is zero, not two. The pair must fit both. Six and four.", r('x = 5, y = 5  ✗') + g('x = 6, y = 4 fits both  ✓'))
     ]),
     L.turn("Your turn! Number one. Is x equals four, y equals one a solution of x plus y equals five, and x minus y equals three? Pause and try it.", E('x + y = 5, x − y = 3'), "Four plus one is five. Four minus one is three. Yes, it is a solution.", g('Yes ✓')),
     L.turn("Your turn! Number two. Find the pair that fits x plus y equals eight, and x minus y equals two. Pause and try it.", E('x + y = 8, x − y = 2'), "Five and three. Five plus three is eight, five minus three is two.", g('x = 5, y = 3')),
@@ -110,10 +110,10 @@
       S("A helpful tip. Choose the letter that has no number in front of it, or just a one. In x plus three y equals seven, x has just a one in front. So write x equals seven minus three y. That avoids fractions.", E('x + 3y = 7 → x = 7 − 3y', 'g')),
       S("If every letter has a number, you can still do it, but fractions appear. In that case, the elimination method, which comes next, is usually easier.", V.note('Next: elimination'))
     ]),
-    SC('Watch out!', 'Three common mistakes', [
-      S("Mistake one: forgetting brackets when substituting an expression. Replace y with a bracket.", r('2x − 7 − x  ✗') + g('2x − (7 − x)  ✓')),
-      S("Mistake two: finding x and stopping. You must find y too.", V.rule('Find both letters.')),
-      S("Mistake three: substituting back into the same equation you rearranged from. That is fine, but check both original equations at the end.", V.rule('Check both.'))
+    SC('Watch out!', 'Common mistakes, with examples', [
+      S("Mistake one. Forgetting the brackets. y equals seven minus x goes into two x minus y equals five. Wrong: two x minus seven minus x. The minus sign applies to the whole of seven minus x. Two x minus bracket seven minus x. That is two x minus seven plus x.", r('2x − 7 − x = 5  ✗') + g('2x − (7 − x) = 2x − 7 + x = 5  ✓')),
+      S("Mistake two. Stopping after finding x. Five x equals ten gives x equals two. Wrong: the answer is x equals two. We also need y. y equals two x plus one, five.", r('x = 2 only  ✗') + g('x = 2 and y = 5  ✓')),
+      S("Mistake three. Not checking both equations. A student says x equals four and y equals two for two x plus y equals nine and three x minus two y equals ten. Check the first. Eight plus two is ten, not nine. It fails. The correct answer is y equals one. Eight plus one is nine. Twelve minus two is ten.", r('2(4) + 2 = 10 ≠ 9  ✗') + g('(4, 1): 8 + 1 = 9 and 12 − 2 = 10  ✓'))
     ]),
     SC('In real life', 'Comparing plans', [
       S("Two phone plans can be written as two equations. Substituting one into the other finds the number of minutes where they cost the same.", V.note('Where do the costs match?'))
