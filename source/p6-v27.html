@@ -1658,7 +1658,7 @@ var SLIDE_MORE = {"1.learn1": [{"more": ["Our number system uses only ten digits
   function setBank(t, step, lv) {
     var sets = step.sets || (step.id === 'practise' ? 10 : 5), key = t.n + '|' + lv + '|' + step.id;
     return { key: key, sets: sets, upto: function (i) {
-      var need = Math.min(sets, i + 1) * SET_SIZE, have = bankCache[key];
+      var need = Math.min(sets, i + 1) * (step.size || SET_SIZE), have = bankCache[key];
       if (!have || have.length < need) {
         var keepRand = Math.random; Math.random = seeded(hashStr(key));
         S.__wantCount = need;
@@ -1673,11 +1673,11 @@ var SLIDE_MORE = {"1.learn1": [{"more": ["Our number system uses only ten digits
     var done = ((setsOf(t.n, false) || {})[sk] || []).slice(), cur = 0;
     while (cur < b.sets && done.indexOf(cur) > -1) cur++;   /* start at the first set not finished yet */
     if (cur >= b.sets) cur = 0;
-    var lead = pane.querySelector('.lead'); if (lead && !step.sets) lead.textContent = String(step.lead).replace(/\b\d{2,3} (\w+ )?(questions|problems)/, '20 $1$2 in each set');
+    var lead = pane.querySelector('.lead'); if (lead && !step.sets && !step.size) lead.textContent = String(step.lead).replace(/\b\d{2,3} (\w+ )?(questions|problems)/, '20 $1$2 in each set');
     var bar = document.createElement('div'); bar.className = 'setbar';
     $('quizHost').parentNode.insertBefore(bar, $('quizHost'));
     function drawBar() {
-      bar.innerHTML = '<span class="setbar-l">Set ' + (cur + 1) + ' of ' + b.sets + ' \u00b7 ' + (step.sets ? qsFor(cur).length : 20) + ' ' + (step.id === 'practise' ? 'questions' : 'problems') + '</span>' +
+      bar.innerHTML = '<span class="setbar-l">Set ' + (cur + 1) + ' of ' + b.sets + ' \u00b7 ' + qsFor(cur).length + ' ' + (step.id === 'practise' ? 'questions' : 'problems') + '</span>' +
         Array.apply(null, Array(b.sets)).map(function (_, i) { return '<button type="button" class="setchip' + (i === cur ? ' on' : '') + (done.indexOf(i) > -1 ? ' ok' : '') + '" data-set="' + i + '" aria-pressed="' + (i === cur) + '" aria-label="Set ' + (i + 1) + (done.indexOf(i) > -1 ? ', done' : '') + '">' + (done.indexOf(i) > -1 ? '\u2713' : i + 1) + '</button>'; }).join('');
       bar.querySelectorAll('[data-set]').forEach(function (x) { x.addEventListener('click', function () { keepPlace('.setbar', function () { var i = Number(x.getAttribute('data-set')); if (done.indexOf(i) > -1 && reviewOf(i)) showReview(i); else open(i); }); }); });
     }
@@ -1713,7 +1713,7 @@ var SLIDE_MORE = {"1.learn1": [{"more": ["Our number system uses only ten digits
       }
       paint();
     }
-    function qsFor(i) { return b.upto(i).slice(i * SET_SIZE, i * SET_SIZE + SET_SIZE); }
+    function qsFor(i) { var z = step.size || SET_SIZE; return b.upto(i).slice(i * z, i * z + z); }
     function open(i) {
       cur = i; drawBar(); narStop();
       mountQuiz($('quizHost'), qsFor(i), {

@@ -4,8 +4,8 @@
   'use strict';
   var S = window.Studio; if (!S) return;
   var H = S.h, NQ = 18, SECS = 600, timer = null, T;
-  /* P4 (age 7 to 8): a shorter, gentler test, 12 questions at Low and Medium only */
-  function young() { return S.app && S.app.yearOf && S.app.yearOf() === 'P4'; }
+  /* every year gets the same test: 18 questions at the chosen level, Low, Medium or High */
+  function young() { return false; }
   function nq() { return young() ? 12 : 18; }
   function esc(x) { return String(x == null ? '' : x); }
   function plain(h) { return String(h).replace(/<svg[\s\S]*?<\/svg>/g, ' [picture] ').replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim(); }
