@@ -259,9 +259,9 @@
   };
   /* gens: { low: [makers], medium: [...], high: [...] }; each set is 20 questions at the chosen level */
   function practiseStep(gens) {
-    return { id: 'practise', label: 'Practise', type: 'quiz', best: true, tag: 'Your turn', title: 'Practise', lead: '20 questions in each set at your level. Use the hints one at a time.',
+    return { id: 'practise', label: 'Practise', type: 'quiz', best: true, tag: 'Your turn', title: 'Practise', lead: '100 questions in each set at your level. Use the hints one at a time.',
       make: function () {
-        var lv = (S.app && S.app.store.settings.difficulty) || 'medium', list = gens[lv] || gens.medium, want = S.__wantCount || 20, out = [], seen = {}, tries = 0;
+        var lv = (S.app && S.app.store.settings.difficulty) || 'medium', list = gens[lv] || gens.medium, want = S.__wantCount || 100, out = [], seen = {}, tries = 0;
         while (out.length < want && tries < want * 40) { tries++; var q = pick(list)(), key = q.text + '|' + q.answer; if (seen[key] && tries < want * 30) continue; seen[key] = 1; out.push(q); }
         return out;
       } };

@@ -39052,7 +39052,7 @@ S.extraMakers = function (n, level) {
 })();
 </script>
 <script>
-/* strengths.js: the Strengths Check. Three rounds of questions (20 each, 15 for P4) that mix every topic of the year and
+/* strengths.js: the Strengths Check. Three rounds of questions (20 each) that mix every topic of the year and
    all three levels, a score and a colour for each topic, a short plan built from the site's own lessons,
    quick re-checks, a progress page and a report to save as PDF or print. Subscribers only: it opens for
    the years an account has paid for. Results are saved with the child's progress (key "sc"); everyday
@@ -39062,8 +39062,8 @@ S.extraMakers = function (n, level) {
   var S = window.Studio, A = S && S.app, H = S && S.h, BT = window.BT;
   if (!A || !H) return;
   var LV = ['low', 'medium', 'high'], LVN = ['Low', 'Medium', 'High'], WT = [1, 1.5, 2], ROUNDS = 3, PER = 20, KEEP = 10;
-  /* younger children get shorter rounds: P4 (age 7 to 8) 15 questions, everyone else 20 */
-  function per() { var y = S.app && S.app.yearOf ? S.app.yearOf() : ''; return y === 'P3' ? 12 : y === 'P4' ? 15 : 20; }
+  /* younger children get shorter rounds: every year has 20 questions per round */
+  function per() { var y = S.app && S.app.yearOf ? S.app.yearOf() : ''; return y === 'P3' ? 12 : y === 'P4' ? 20 : 20; }
   function mins() { var p = per(); return p <= 12 ? 10 : p <= 15 ? 12 : 15; }
   var view = null, review = [], roundAns = [];
 
@@ -39729,9 +39729,9 @@ S.extraMakers = function (n, level) {
   };
   /* gens: { low: [makers], medium: [...], high: [...] }; each set is 20 questions at the chosen level */
   function practiseStep(gens) {
-    return { id: 'practise', label: 'Practise', type: 'quiz', best: true, tag: 'Your turn', title: 'Practise', lead: '20 questions in each set at your level. Use the hints one at a time.',
+    return { id: 'practise', label: 'Practise', type: 'quiz', best: true, tag: 'Your turn', title: 'Practise', lead: '100 questions in each set at your level. Use the hints one at a time.',
       make: function () {
-        var lv = (S.app && S.app.store.settings.difficulty) || 'medium', list = gens[lv] || gens.medium, want = S.__wantCount || 20, out = [], seen = {}, tries = 0;
+        var lv = (S.app && S.app.store.settings.difficulty) || 'medium', list = gens[lv] || gens.medium, want = S.__wantCount || 100, out = [], seen = {}, tries = 0;
         while (out.length < want && tries < want * 40) { tries++; var q = pick(list)(), key = q.text + '|' + q.answer; if (seen[key] && tries < want * 30) continue; seen[key] = 1; out.push(q); }
         return out;
       } };
@@ -44488,6 +44488,34 @@ S.extraMakers = function (n, level) {
     ['Impossible, unlikely, even chance, likely, certain.', C(['🚫', '🤏', '⚖️', '👍', '✅'])]]);
 
   [401, 402, 403, 404, 405, 406, 407, 408, 409].forEach(function (n) { if (FL.GENS && FL.GENS[n]) FL.wexGens(n, FL.GENS[n]); });
+})();
+</script>
+<script>
+/* uni.js: one fixed size for every question set, in every year and topic.
+   Practise = 100, Real-life problems = 30 (the Strengths Check is 3 rounds of 20, the 10-minute quiz is 18: see strengths.js and test10.js).
+   Questions are never removed from the banks. Each set is only trimmed to size, or topped up from the same maker. */
+(function () {
+  'use strict';
+  var S = Studio, SIZE = { practise: 100, practical: 30 };
+  function sig(q) { return String(q && q.text) + '|' + String(q && q.answer); }
+  function fit(step, want) {
+    var orig = step.make; if (!orig || orig.__uni) return;
+    step.make = function () {
+      var out = orig.apply(this, arguments) || [], seen = {}, uniq = [];
+      out.forEach(function (q) { var k = sig(q); if (!seen[k]) { seen[k] = 1; uniq.push(q); } });
+      out = uniq;
+      for (var r = 0; r < 12 && out.length < want; r++) {
+        (orig.apply(this, arguments) || []).forEach(function (q) { var k = sig(q); if (out.length < want && !seen[k]) { seen[k] = 1; out.push(q); } });
+      }
+      /* a few small banks have fewer distinct questions than the set size: repeat the earlier ones so the count is still exact */
+      for (var i = 0; out.length && out.length < want; i++) out.push(out[i % uniq.length]);
+      return out.length > want ? out.slice(0, want) : out;
+    };
+    step.make.__uni = 1;
+  }
+  Object.keys(S.topics).forEach(function (k) {
+    (S.topics[k].steps || []).forEach(function (s) { if (SIZE[s.id] && s.type === 'quiz') fit(s, SIZE[s.id]); });
+  });
 })();
 </script>
 <script>Studio.start();</script>

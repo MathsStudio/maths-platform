@@ -1,4 +1,4 @@
-/* strengths.js: the Strengths Check. Three rounds of questions (20 each, 15 for P4) that mix every topic of the year and
+/* strengths.js: the Strengths Check. Three rounds of questions (20 each) that mix every topic of the year and
    all three levels, a score and a colour for each topic, a short plan built from the site's own lessons,
    quick re-checks, a progress page and a report to save as PDF or print. Subscribers only: it opens for
    the years an account has paid for. Results are saved with the child's progress (key "sc"); everyday
@@ -8,8 +8,8 @@
   var S = window.Studio, A = S && S.app, H = S && S.h, BT = window.BT;
   if (!A || !H) return;
   var LV = ['low', 'medium', 'high'], LVN = ['Low', 'Medium', 'High'], WT = [1, 1.5, 2], ROUNDS = 3, PER = 20, KEEP = 10;
-  /* younger children get shorter rounds: P4 (age 7 to 8) 15 questions, everyone else 20 */
-  function per() { var y = S.app && S.app.yearOf ? S.app.yearOf() : ''; return y === 'P3' ? 12 : y === 'P4' ? 15 : 20; }
+  /* younger children get shorter rounds: every year has 20 questions per round */
+  function per() { var y = S.app && S.app.yearOf ? S.app.yearOf() : ''; return y === 'P3' ? 12 : y === 'P4' ? 20 : 20; }
   function mins() { var p = per(); return p <= 12 ? 10 : p <= 15 ? 12 : 15; }
   var view = null, review = [], roundAns = [];
 
