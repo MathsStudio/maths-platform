@@ -212,7 +212,7 @@
 
   /* add each new lesson after the topic's existing questions */
   Object.keys(ADD).forEach(function (k) {
-    var n = Number(k); if ((n >= 501 && n <= 513) || (n >= 401 && n <= 409)) return; /* rebuilt topics already have full lessons */
+    var n = Number(k); if ((n >= 501 && n <= 513) || (n >= 1 && n <= 13) || (n >= 401 && n <= 409)) return; /* rebuilt topics already have full lessons */
     var had = (BT.EP_BY_TOPIC[n] || []).map(function (t) { return BT.EP && BT.EP[t]; }).filter(Boolean);
     if (had.length !== (BT.EP_BY_TOPIC[n] || []).length && window.console) console.warn('lessons_four: a lesson in topic ' + n + ' was not found');
     L.use(n, had.concat(ADD[n]));

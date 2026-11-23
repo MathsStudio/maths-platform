@@ -1,0 +1,208 @@
+/* P6 topics 4 Decimals and percentages, 5 Money time measurement, 6 Patterns and algebra */
+(function () {
+  'use strict';
+  var BT = window.BT; if (!BT || !BT.px) return;
+  var X = BT.px.X, tbl = BT.px.tbl, rect = BT.px.rect, nl = BT.px.nl, shape = BT.px.shape, L = BT.L;
+
+  X('Calculating with decimals', 'how to add, subtract, multiply and divide decimals.', 'Decimal calculations',
+    ['Line up, then calculate', "To add or subtract decimals, line up the decimal points. To multiply a decimal by a whole number, multiply as if there were no point, then put the point back. To divide a decimal by a whole number, divide digit by digit and keep the point in line.", ['5.6 + 2.45', '2.4 × 3', '7.5 ÷ 5']],
+    [['Adding', "Work out 5.6 + 2.45. Write 5.60 + 2.45 = 8.05.", ['5.60 + 2.45', 'g|8.05']],
+     ['Subtracting', "Work out 12 − 4.375. Write 12.000 − 4.375 = 7.625.", ['12.000 − 4.375', 'g|7.625']],
+     ['Multiplying', "Work out 2.4 × 3. 24 × 3 = 72. 2.4 has one decimal place, so 7.2.", ['24 × 3 = 72', 'g|7.2']],
+     ['Dividing', "Work out 9.6 ÷ 4. 9 ÷ 4 = 2 remainder 1. 16 ÷ 4 = 4. 2.4.", ['9.6 ÷ 4', 'g|2.4']]],
+    [['Points not aligned', "Mistake one: not lining up the digits.", '12 − 4.375 = 8.375 ✗', '12.000 − 4.375 = 7.625 ✓'],
+     ['Wrong place for the point', "Mistake two: losing the decimal point.", '2.4 × 3 = 72 ✗', '2.4 × 3 = 7.2 ✓']],
+    ["Three friends share a £9.60 bill equally. 9.60 ÷ 3 = £3.20 each.", ['9.60 ÷ 3']],
+    [['Work out 4.7 + 3.85.', "4.70 + 3.85.", ['4.70 + 3.85'], '8.55'],
+     ['Work out 1.35 × 4.', "135 × 4 = 540.", ['1.35 × 4'], '5.4'],
+     ['Work out 12.6 ÷ 6.', "12 ÷ 6 = 2, 0.6 ÷ 6 = 0.1.", ['12.6 ÷ 6'], '2.1']],
+    ["Line up. Keep the point.", ['Check by estimating']]);
+
+  X('Percentages of amounts', 'how to find a percentage of a number using 10%, 5% and 1% as building blocks.', 'Percentages',
+    ['Building blocks', "Percent means out of 100. Find 10% by dividing by 10, 1% by dividing by 100, 50% by halving, 25% by dividing by 4. Build any other percentage from these.", ['10% = ÷ 10', '1% = ÷ 100', '50% = ÷ 2']],
+    [['Simple', "Find 25% of 80. 80 ÷ 4 = 20.", ['80 ÷ 4', 'g|20']],
+     ['Building', "Find 15% of 60. 10% is 6. 5% is 3. 6 + 3 = 9.", ['6 + 3', 'g|9']],
+     ['Larger', "Find 35% of 200. 10% is 20, so 30% is 60. 5% is 10. 60 + 10 = 70.", ['60 + 10', 'g|70']],
+     ['Set and measure', "Find 40% of 2 kg. 2 kg = 2,000 g. 10% = 200 g. 40% = 800 g.", ['4 × 200', 'g|800 g']]],
+    [['Dividing by the percent', "Mistake one: dividing by the percentage number.", '25% of 80 = 80 ÷ 25 ✗', '80 ÷ 4 = 20 ✓'],
+     ['Wrong units', "Mistake two: forgetting the unit.", '40% of 2 kg = 800 ✗', '800 g ✓']],
+    ["A class of 30 has 20% absent. 10% is 3, so 20% is 6 pupils.", ['3 × 2']],
+    [['Find 10% of 450.', "÷ 10.", ['450 ÷ 10'], '45'],
+     ['Find 15% of 80.', "10% 8, 5% 4.", ['8 + 4'], '12'],
+     ['Find 30% of 90 pupils.', "10% 9, × 3.", ['9 × 3'], '27 pupils']],
+    ["10%, 5%, 1% blocks.", ['Half of 10% is 5%']]);
+
+  X('Percentage discounts and increases', 'how to work out a sale price and a price after an increase.', 'Discounts and increases',
+    ['Find the amount, then add or subtract', "To find a price after a discount, find the percentage of the price, then subtract. For an increase, find the percentage, then add.", ['Sale = price − discount', 'New = price + increase']],
+    [['Discount', "A coat costs £60 with 25% off. 25% of 60 = 15. 60 − 15 = £45.", ['60 − 15', 'g|£45']],
+     ['Increase', "A ticket costs £50 and goes up by 10%. 10% of 50 = 5. 50 + 5 = £55.", ['50 + 5', 'g|£55']],
+     ['Saving', "A game costs £40 and is 20% off. 20% = 8. The saving is £8.", ['20% of 40', 'g|£8']],
+     ['A multi-step', "A bike costs £200. First 10% off, then you buy it. 10% = 20. 200 − 20 = £180.", ['200 − 20', 'g|£180']]],
+    [['Giving the discount as the price', "Mistake one: stopping at the discount.", 'Price = £15 ✗', 'Price = £45 ✓'],
+     ['Adding on a discount', "Mistake two: adding instead of subtracting.", '60 + 15 = 75 ✗', '60 − 15 = 45 ✓']],
+    ["Shops have sales every January with 20% or 30% off.", ['Sale signs']],
+    [['A top costs £30. It has 10% off. What is the price?', "10% = 3.", ['30 − 3'], '£27'],
+     ['A phone costs £400 and goes up by 5%. New price?', "5% = 20.", ['400 + 20'], '£420'],
+     ['Shoes cost £80 with 25% off. How much do you save?', "80 ÷ 4.", ['80 ÷ 4'], '£20']],
+    ["Find the amount, then add or take away.", ['Sale: −', 'Increase: +']]);
+
+  X('Comparing fractions, decimals and percentages', 'how to change between fractions, decimals and percentages and order them.', 'F D P',
+    ['One amount, three forms', "To compare, write everything as decimals or percentages. A fraction becomes a decimal by dividing. A decimal becomes a percentage by multiplying by 100.", ['3/8 = 0.375 = 37.5%']],
+    [['Fraction to percentage', "Write 3/8 as a percentage. 3 ÷ 8 = 0.375. × 100 = 37.5%.", ['0.375 × 100', 'g|37.5%']],
+     ['Ordering', "Order 0.4, 35% and 3/8. 35% = 0.35. 3/8 = 0.375. Smallest: 35%, 3/8, 0.4.", ['0.35 < 0.375 < 0.4', 'g|35%, 3/8, 0.4']],
+     ['Test marks', "Amy scores 17/20 and Ben scores 80%. 17/20 = 85%. Amy did better.", ['17/20 = 85%', 'g|Amy']],
+     ['Percentage to fraction', "Write 45% as a fraction. 45/100 = 9/20.", ['45/100 ÷ 5', 'g|9/20']]],
+    [['Comparing different forms', "Mistake one: comparing a fraction and a percentage without changing.", '3/8 > 35 ✗', 'Change to the same form ✓'],
+     ['Forgetting × 100', "Mistake two: forgetting to multiply.", '0.375 = 0.375% ✗', '0.375 = 37.5% ✓']],
+    ["Football stats show pass completion as a percentage; a coach compares 36/40 = 90%.", ['36/40 = 90%']],
+    [['Write 3/5 as a percentage.', "0.6 = 60%.", ['3 ÷ 5'], '60%'],
+     ['Which is bigger, 0.7 or 65%?', "0.65 < 0.7.", ['0.7 > 0.65'], '0.7'],
+     ['Write 12.5% as a fraction.', "12.5/100 = 1/8.", ['1/8'], '1/8']],
+    ["Same form, then compare.", ['÷ for decimals', '× 100 for percent']]);
+
+  L.usePri(4, ['Calculating with decimals', 'Percentages of amounts', 'Percentage discounts and increases', 'Comparing fractions, decimals and percentages']);
+
+  X('Currency and exchange rates', 'how to convert money between currencies using an exchange rate.', 'Currency',
+    ['Exchange rate', "An exchange rate says how much of one currency you get for another. If £1 = €1.20, multiply pounds by 1.2 to get euros. To go back, divide.", ['£ → €: × 1.2', '€ → £: ÷ 1.2']],
+    [['Pounds to euros', "£1 = €1.20. How many euros for £50? 50 × 1.2 = €60.", ['50 × 1.2', 'g|€60']],
+     ['Euros to pounds', "How many pounds for €96? 96 ÷ 1.2 = £80.", ['96 ÷ 1.2', 'g|£80']],
+     ['Dollars', "£1 = $1.25. £40 is 40 × 1.25 = $50.", ['40 × 1.25', 'g|$50']],
+     ['Comparing prices', "A souvenir is €24 abroad or £18 at home. €24 ÷ 1.2 = £20. It is cheaper at home.", ['24 ÷ 1.2 = 20', 'g|Home']]],
+    [['Multiplying the wrong way', "Mistake one: multiplying when converting back.", '€96 → £: 96 × 1.2 ✗', '96 ÷ 1.2 ✓'],
+     ['Forgetting the symbol', "Mistake two: forgetting the currency symbol.", '60 ✗', '€60 ✓']],
+    ["Holiday-makers check exchange rates before a trip.", ['Airport rates']],
+    [['£1 = €1.20. Convert £30 to euros.', "30 × 1.2.", ['30 × 1.2'], '€36'],
+     ['£1 = $1.25. Convert $75 to pounds.', "75 ÷ 1.25.", ['75 ÷ 1.25'], '£60'],
+     ['£1 = €1.20. A meal costs €18. How much in pounds?', "18 ÷ 1.2.", ['18 ÷ 1.2'], '£15']],
+    ["Pounds × rate. Back ÷ rate.", ['Check the direction']]);
+
+  X('Imperial and metric units', 'how to convert between common imperial and metric units.', 'Imperial and metric',
+    ['Approximate conversions', "We use metric units (cm, m, km, g, kg, ml, l) and some imperial units (inch, foot, mile, pound, pint). 1 inch ≈ 2.5 cm. 1 mile ≈ 1.6 km. 1 kg ≈ 2.2 lb. 1 litre ≈ 1.75 pints.", [tbl([['Imperial', 'Metric (approx)'], ['1 inch', '2.5 cm'], ['1 mile', '1.6 km'], ['1 kg', '2.2 lb']])]],
+    [['Miles to km', "5 miles is about 5 × 1.6 = 8 km.", ['5 × 1.6', 'g|8 km']],
+     ['Inches to cm', "A 12-inch ruler is about 12 × 2.5 = 30 cm.", ['12 × 2.5', 'g|30 cm']],
+     ['kg to pounds', "10 kg is about 10 × 2.2 = 22 lb.", ['10 × 2.2', 'g|22 lb']],
+     ['Which is longer?', "Which is longer, 10 km or 8 miles? 8 miles ≈ 12.8 km. 8 miles is longer.", ['8 × 1.6 = 12.8', 'g|8 miles']]],
+    [['Wrong direction', "Mistake one: multiplying to go from km to miles.", '16 km = 16 × 1.6 miles ✗', '16 ÷ 1.6 = 10 miles ✓'],
+     ['Treating ≈ as exact', "Mistake two: treating approximations as exact.", '1 mile = 1.6 km exactly ✗', '1 mile ≈ 1.6 km ✓']],
+    ["UK road signs show distances in miles, but many other countries use kilometres.", ['Road signs']],
+    [['Change 20 miles to km (1 mile ≈ 1.6 km).', "20 × 1.6.", ['20 × 1.6'], '32 km'],
+     ['Change 50 cm to inches (1 inch ≈ 2.5 cm).', "50 ÷ 2.5.", ['50 ÷ 2.5'], '20 inches'],
+     ['Change 5 kg to pounds (1 kg ≈ 2.2 lb).', "5 × 2.2.", ['5 × 2.2'], '11 lb']],
+    ["Multiply to the smaller unit.", ['≈ means approximately']]);
+
+  X('Area of rectangles and triangles', 'how to find the area of a rectangle and a triangle.', 'Area',
+    ['Formulas', "Area of a rectangle = base × height. A triangle is half of a rectangle with the same base and height, so area of a triangle = 1/2 × base × height. The height is measured at a right angle to the base.", ['Rectangle: b × h', 'Triangle: 1/2 × b × h']],
+    [['Rectangle', "A rectangle is 9 cm by 4 cm. Area = 9 × 4 = 36 cm².", [rect(9, 4, '9 cm', '4 cm'), 'g|36 cm²']],
+     ['Triangle', "A triangle has base 8 cm and height 5 cm. 8 × 5 = 40, half of 40 is 20 cm².", ['1/2 × 8 × 5', 'g|20 cm²']],
+     ['Missing height', "A triangle has area 30 cm² and base 10 cm. 30 × 2 = 60. 60 ÷ 10 = 6 cm.", ['60 ÷ 10', 'g|6 cm']],
+     ['Compound shape', "An L-shape is a 6 by 3 rectangle with a 2 by 2 square added. 18 + 4 = 22 cm².", ['6 × 3 + 2 × 2', 'g|22 cm²']]],
+    [['Forgetting half', "Mistake one: forgetting to halve for a triangle.", 'Area = 8 × 5 = 40 ✗', 'Area = 20 ✓'],
+     ['Using the slant side', "Mistake two: using the slanted side as the height.", 'Height = slant side ✗', 'Height is at a right angle ✓']],
+    ["Sails are triangles. The sailmaker finds the area to order cloth.", ['Triangular sails']],
+    [['A triangle has base 12 cm and height 5 cm. Find its area.', "1/2 × 12 × 5.", ['60 ÷ 2'], '30 cm²'],
+     ['A rectangle is 15 m by 8 m. Find its area.', "15 × 8.", ['15 × 8'], '120 m²'],
+     ['A triangle has area 24 cm² and height 6 cm. Find its base.', "24 × 2 ÷ 6.", ['48 ÷ 6'], '8 cm']],
+    ["Triangle = half rectangle.", ['Height at a right angle']]);
+
+  X('Volume and capacity', 'how to find the volume of a cuboid and link it to capacity.', 'Volume',
+    ['Counting cubes', "Volume is the amount of space inside a 3D shape. It is measured in cubic centimetres (cm³). For a cuboid, volume = length × width × height. 1 cm³ holds 1 ml, so 1,000 cm³ is 1 litre.", ['V = l × w × h', '1,000 cm³ = 1 l']],
+    [['Cuboid', "A cuboid is 5 cm long, 4 cm wide and 3 cm high. 5 × 4 × 3 = 60 cm³.", ['5 × 4 × 3', 'g|60 cm³']],
+     ['Capacity', "A tank is 20 cm by 10 cm by 10 cm. Volume = 2,000 cm³ = 2,000 ml = 2 litres.", ['20 × 10 × 10', 'g|2 litres']],
+     ['Missing side', "A cuboid has volume 72 cm³, length 6 and width 4. Height = 72 ÷ 24 = 3 cm.", ['6 × 4 = 24', '72 ÷ 24', 'g|3 cm']],
+     ['A problem', "A fish tank 50 cm by 30 cm by 40 cm: 50 × 30 × 40 = 60,000 cm³ = 60 litres.", ['60,000 ÷ 1,000', 'g|60 l']]],
+    [['Adding sides', "Mistake one: adding the sides.", '5 + 4 + 3 = 12 cm³ ✗', '5 × 4 × 3 = 60 cm³ ✓'],
+     ['cm² and cm³', "Mistake two: writing volume in cm².", '60 cm² ✗', '60 cm³ ✓']],
+    ["Swimming pools are cuboids. The volume tells how much water is needed.", ['Pool volume']],
+    [['A cuboid is 4 cm by 3 cm by 2 cm. Find the volume.', "4 × 3 × 2.", ['12 × 2'], '24 cm³'],
+     ['How many litres in 3,000 cm³?', "÷ 1,000.", ['3,000 ÷ 1,000'], '3 litres'],
+     ['A box has volume 90 cm³, length 5 and width 3. Find the height.', "90 ÷ 15.", ['5 × 3 = 15'], '6 cm']],
+    ["Length × width × height.", ['1,000 cm³ = 1 l']]);
+
+  X('Timetables and time calculations', 'how to read timetables, work out durations and plan journeys using 12-hour and 24-hour time.', 'Time',
+    ['Durations', "To find how long between two times, count up to the next hour and add the rest. In a 24-hour timetable, 13:00 is 1 pm. To change from 24-hour to 12-hour time, subtract 12.", [tbl([['Stop', 'Depart'], ['Glasgow', '08:15'], ['Stirling', '08:50'], ['Perth', '09:35']])]],
+    [['Journey time', "How long from Glasgow to Stirling? 08:15 to 08:50 is 35 minutes.", ['50 − 15', 'g|35 min']],
+     ['Across the hour', "How long from Stirling to Perth? 08:50 to 09:00 is 10 minutes, then 35 more. 45 minutes.", ['10 + 35', 'g|45 min']],
+     ['24-hour to 12-hour', "A train leaves at 15:40. 15 − 12 = 3. So 3:40 pm.", ['15 − 12', 'g|3:40 pm']],
+     ['Plan', "You must be in Perth by 9:45 am. The 09:35 train arrives in time. Leave Glasgow at 08:15.", ['09:35 < 09:45', 'g|Yes']]],
+    [['Decimal hours', "Mistake one: subtracting times as decimals.", '9.35 − 8.50 = 0.85 ✗', '45 minutes ✓'],
+     ['pm', "Mistake two: forgetting to add 12.", '3:40 pm = 03:40 ✗', '3:40 pm = 15:40 ✓']],
+    ["Airline pilots use the 24-hour clock to avoid confusion.", ['24-hour clock']],
+    [['How long from 10:25 to 11:10?', "35 + 10.", ['35 + 10'], '45 minutes'],
+     ['Write 20:15 as a 12-hour time.', "20 − 12.", ['20 − 12'], '8:15 pm'],
+     ['A film starts at 18:40 and lasts 1 hour 35 minutes. When does it end?', "19:40, then 35 more.", ['19:40 + 35'], '20:15']],
+    ["Count up through the hour.", ['60 minutes in an hour']]);
+
+  X('Calendars and time zones', 'how to use a calendar and work out the time in other places.', 'Calendars and time zones',
+    ['Days and zones', "There are 365 days in a year, 366 in a leap year. A week has 7 days. Places east of us are ahead in time. Places west are behind.", ['East = ahead', 'West = behind']],
+    [['Days between', "How many days from 20 May to 10 June? 11 days to 31 May, then 10 more. 21 days.", ['11 + 10', 'g|21 days']],
+     ['Weeks', "21 days is 3 weeks.", ['21 ÷ 7', 'g|3 weeks']],
+     ['Time zone ahead', "Dubai is 4 hours ahead of Scotland in winter. When it is 2 pm in Scotland it is 6 pm in Dubai.", ['2 + 4', 'g|6 pm']],
+     ['Time zone behind', "New York is 5 hours behind. When it is 2 pm in Scotland it is 9 am in New York.", ['14 − 5', 'g|9 am']]],
+    [['Wrong direction', "Mistake one: subtracting for a place that is ahead.", 'Dubai: 2 pm − 4 ✗', 'Dubai: 2 pm + 4 = 6 pm ✓'],
+     ['Counting the first day', "Mistake two: counting the start day.", '20 May to 10 June: 22 days ✗', '21 days ✓']],
+    ["A video call between Glasgow and New York is best at 2 pm in Glasgow, which is 9 am in New York.", ['9 am NY']],
+    [['How many days from 3 March to 1 April?', "28 + 1.", ['28 + 1'], '29 days'],
+     ['Sydney is 10 hours ahead. When it is 8 am in Scotland, what time is it in Sydney?', "8 + 10.", ['8 + 10'], '6 pm'],
+     ['Cairo is 2 hours ahead. When it is noon in Scotland, what time in Cairo?', "12 + 2.", ['12 + 2'], '2 pm']],
+    ["East ahead. West behind.", ['Count carefully']]);
+
+  L.usePri(5, ['Currency and exchange rates', 'Imperial and metric units', 'Area of rectangles and triangles', 'Volume and capacity', 'Timetables and time calculations', 'Calendars and time zones']);
+
+  X('Sequences and rules', 'how to find the rule of a sequence and continue it, including sequences that multiply or have a second step.', 'Sequences',
+    ['Term-to-term rule', "A term-to-term rule tells you how to get the next term from the one before. Rules can add, subtract, multiply or divide. Check the rule works for every pair of terms.", ['3, 6, 12, 24: × 2']],
+    [['Adding', "Continue 7, 12, 17, 22. The rule is + 5. Next: 27, 32.", ['22 + 5', 'g|27, 32']],
+     ['Multiplying', "Continue 3, 6, 12, 24. The rule is × 2. Next: 48, 96.", ['24 × 2', 'g|48, 96']],
+     ['Decreasing', "Continue 100, 93, 86. The rule is − 7. Next: 79.", ['86 − 7', 'g|79']],
+     ['Missing term', "The sequence is 5, 11, 17, ?, 29. The rule is + 6. The missing term is 23.", ['17 + 6', 'g|23']]],
+    [['Using one jump', "Mistake one: checking only one pair.", '2, 5, 9: + 3 ✗', 'Jumps are +3 then +4: not constant ✓'],
+     ['Wrong rule', "Mistake two: mixing + and ×.", '3, 6, 12: + 3 ✗', '× 2 ✓']],
+    ["Savings of £5 each week form a sequence 5, 10, 15, ...", ['+ 5']],
+    [['Continue 4, 9, 14, 19.', "+ 5.", ['19 + 5'], '24, 29'],
+     ['Continue 2, 6, 18, 54.', "× 3.", ['54 × 3'], '162, 486'],
+     ['Find the missing term: 50, 42, ?, 26.', "− 8.", ['42 − 8'], '34']],
+    ["Find the same jump every time.", ['+, −, ×, ÷']]);
+
+  X('Equations and missing numbers', 'how to solve simple equations and missing number problems.', 'Equations',
+    ['Balance both sides', "An equation says two things are equal. Do the same to both sides to keep it balanced. Use opposite operations to find the unknown.", ['n + 8 = 20']],
+    [['One step', "n + 8 = 20. Subtract 8 from both sides. n = 12.", ['20 − 8', 'g|n = 12']],
+     ['Multiplication', "4n = 28. Divide both sides by 4. n = 7.", ['28 ÷ 4', 'g|n = 7']],
+     ['Two steps', "3n + 2 = 23. Subtract 2: 3n = 21. Divide by 3: n = 7.", ['23 − 2 = 21', '21 ÷ 3', 'g|n = 7']],
+     ['Check', "Check n = 7: 3 × 7 + 2 = 23.", ['21 + 2 = 23', 'g|✓']]],
+    [['Same operation', "Mistake one: adding 8 to undo + 8.", 'n = 20 + 8 ✗', 'n = 20 − 8 ✓'],
+     ['Wrong order', "Mistake two: dividing first in two-step equations.", '3n + 2 = 23: 23 ÷ 3 first ✗', 'Subtract 2 first ✓']],
+    ["A taxi charges £3 plus £2 a mile. A £15 fare means 3 + 2m = 15, so m = 6 miles.", ['2m = 12']],
+    [['Solve n − 5 = 12.', "Add 5.", ['12 + 5'], 'n = 17'],
+     ['Solve 6n = 54.', "÷ 6.", ['54 ÷ 6'], 'n = 9'],
+     ['Solve 2n + 7 = 25.', "25 − 7 = 18, ÷ 2.", ['18 ÷ 2'], 'n = 9']],
+    ["Opposite operation on both sides.", ['Check by substituting']]);
+
+  X('Expressions from words and shapes', 'how to write algebraic expressions from words, patterns and shapes.', 'Expressions',
+    ['Letters for numbers', "A letter stands for a number. n + 3 means a number plus 3. 5n means 5 times n. We write the number before the letter. An expression has no equals sign.", ['n + 3', '5n', 'n ÷ 2']],
+    [['From words', "Write 'five more than n'. n + 5.", ['n + 5', 'g|n + 5']],
+     ['Times', "Write 'four times n'. 4n.", ['4 × n', 'g|4n']],
+     ['A shape', "A rectangle has length l and width w. The perimeter is 2l + 2w. If l = 6 and w = 3, then 12 + 6 = 18.", ['2 × 6 + 2 × 3', 'g|18']],
+     ['A pattern', "A row of n tables seats 4 people on each side plus 2 at the ends. The rule 4n + 2: for 5 tables, 22 people.", ['4 × 5 + 2', 'g|22']]],
+    [['Joining digits', "Mistake one: reading 4n as 4 and n joined.", 'n = 6: 4n = 46 ✗', '4n = 24 ✓'],
+     ['Order of subtraction', "Mistake two: writing 3 less than n as 3 − n.", '3 − n ✗', 'n − 3 ✓']],
+    ["Mobile phone plans: £10 plus 5p a minute is 10 + 0.05m pounds.", ['10 + 0.05m']],
+    [['Write "n divided by 4".', "n ÷ 4.", ['n/4'], 'n/4'],
+     ['Find 3n + 1 when n = 8.', "24 + 1.", ['3 × 8 + 1'], '25'],
+     ['A square has side s. Write its perimeter.', "4 × s.", ['4s'], '4s']],
+    ["Letters stand for numbers.", ['4n means 4 × n']]);
+
+  X('Substituting into formulae', 'how to use a formula by replacing letters with numbers.', 'Formulae',
+    ['Formula and substitution', "A formula is a rule written with letters. To use it, replace each letter with its number and calculate, following the order of operations.", ['C = 5 + 2n']],
+    [['Cost formula', "A taxi costs C = 5 + 2n pounds for n miles. For 8 miles: C = 5 + 2 × 8 = 5 + 16 = £21.", ['5 + 2 × 8', 'g|£21']],
+     ['Area formula', "A = l × w. If l = 7 and w = 4, A = 28.", ['7 × 4', 'g|28']],
+     ['Speed formula', "d = s × t. If s = 60 km/h and t = 3 h, d = 180 km.", ['60 × 3', 'g|180 km']],
+     ['Find the letter', "C = 5 + 2n and C = 17. 2n = 12. n = 6 miles.", ['17 − 5', '12 ÷ 2', 'g|6 miles']]],
+    [['Ignoring order', "Mistake one: adding before multiplying.", '5 + 2 × 8 = 7 × 8 = 56 ✗', '5 + 16 = 21 ✓'],
+     ['Missing units', "Mistake two: omitting the units.", '21 ✗', '£21 ✓']],
+    ["Scientists and engineers use formulae all the time.", ['Formulae']],
+    [['A = l × w. Find A when l = 9, w = 5.', "9 × 5.", ['9 × 5'], '45'],
+     ['C = 3 + 4n. Find C when n = 5.', "3 + 20.", ['3 + 4 × 5'], '23'],
+     ['d = s × t. Find d when s = 40, t = 2.', "40 × 2.", ['40 × 2'], '80']],
+    ["Replace letters. Follow BIDMAS.", ['Write the units']]);
+
+  L.usePri(6, ['Sequences and rules', 'Equations and missing numbers', 'Expressions from words and shapes', 'Substituting into formulae']);
+})();

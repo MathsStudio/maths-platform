@@ -30544,7 +30544,10 @@ W('How do you solve ordering and logic puzzles?', [
       turns.map(function (t) { return T(t[0], t[1], t[2], t[3], t[4]); }),
       [rec[0], rec[1]]);
   };
-  BT.px = { X: X, tbl: tbl, bar: bar, nl: nl, rect: rect, grid: grid, h: h };
+  var shape = function (pts, labels, title) { var s = '<svg viewBox="0 0 200 130" style="width:100%;max-width:220px"><title>' + title + '</title><polygon points="' + pts.map(function (p) { return p.join(','); }).join(' ') + '" style="fill:none;stroke:currentColor;stroke-width:2.5"/>'; (labels || []).forEach(function (l) { s += '<text x="' + l[0] + '" y="' + l[1] + '" font-size="14" font-weight="bold" fill="currentColor" text-anchor="middle">' + l[2] + '</text>'; }); return h(s + '</svg>'); };
+  var pie = function (parts, title) { var cx = 70, cy = 70, r = 60, a0 = -Math.PI / 2, s = '<svg viewBox="0 0 280 140" style="width:100%;max-width:280px"><title>' + title + '</title>', cols = ['#2b62d9', '#d9362b', '#1f9d55', '#e0a800']; parts.forEach(function (p, i) { var a1 = a0 + 2 * Math.PI * p[1]; var x0 = cx + r * Math.cos(a0), y0 = cy + r * Math.sin(a0), x1 = cx + r * Math.cos(a1), y1 = cy + r * Math.sin(a1); s += '<path d="M' + cx + ',' + cy + ' L' + x0 + ',' + y0 + ' A' + r + ',' + r + ' 0 ' + (p[1] > 0.5 ? 1 : 0) + ',1 ' + x1 + ',' + y1 + ' Z" fill="' + cols[i] + '" stroke="#fff" stroke-width="2"/><rect x="160" y="' + (20 + i * 26) + '" width="14" height="14" fill="' + cols[i] + '"/><text x="182" y="' + (32 + i * 26) + '" font-size="14" fill="currentColor">' + p[0] + '</text>'; a0 = a1; }); return h(s + '</svg>'); };
+  var barm = function (parts, total, title) { var w = 280, s = '<svg viewBox="0 0 300 70" style="width:100%;max-width:300px"><title>' + title + '</title>', x = 10; parts.forEach(function (p, i) { var pw = w * p[1] / total; s += '<rect x="' + x + '" y="20" width="' + pw + '" height="28" style="fill:' + (i % 2 ? '#d6e4ff' : '#bfe3cc') + ';stroke:currentColor;stroke-width:2"/><text x="' + (x + pw / 2) + '" y="39" text-anchor="middle" font-size="13" fill="currentColor">' + p[0] + '</text>'; x += pw; }); s += '<text x="150" y="12" text-anchor="middle" font-size="12" fill="currentColor">Total ' + total + '</text>'; return h(s + '</svg>'); };
+  BT.px = {  shape: shape, pie: pie, barm: barm, X: X, tbl: tbl, bar: bar, nl: nl, rect: rect, grid: grid, h: h };
 })();
 </script>
 <script>
@@ -31478,6 +31481,790 @@ W('How do you solve ordering and logic puzzles?', [
     ["Corners 3, edges 2, faces 1, middle 0.", ['Add to check']]);
 
   L.usePri(513, ['Grid references on a map', 'Turns and mirror images', 'Building with cubes and nets', 'Painted cubes and stacks']);
+})();
+</script>
+<script>
+/* P6 topics 1 Place value, 2 Four operations, 3 Fractions */
+(function () {
+  'use strict';
+  var BT = window.BT; if (!BT || !BT.px) return;
+  var X = BT.px.X, tbl = BT.px.tbl, bar = BT.px.bar, nl = BT.px.nl, L = BT.L;
+
+  X('Reading and writing numbers to ten million', 'how to read, write and compare numbers up to ten million.', 'Big numbers',
+    ['Groups of three', "Big numbers are easier to read in groups of three digits. Each group has its own name: ones, thousands, millions. In 4,305,090 the first group is 4 million, the next group is 305 thousand and the last group is 90.", [tbl([['Millions', 'Thousands', 'Ones'], ['4', '305', '090']])]],
+    [['Writing in words', "Write 4,305,090 in words. Four million, three hundred and five thousand and ninety.", ['4 million | 305 thousand | 90', 'g|Four million, three hundred and five thousand and ninety']],
+     ['Value of a digit', "What is the 3 worth in 4,305,090? It is in the hundred thousands column. 3 × 100,000 = 300,000.", ['3 in the hundred thousands', 'g|300,000']],
+     ['Comparing', "Which is bigger, 2,450,000 or 2,405,000? Both have 2 million. Compare the next digit: 4 and 4 are equal. Then 5 is more than 0. So 2,450,000 is bigger.", ['2,450,000 > 2,405,000', 'g|2,450,000']],
+     ['Ten million', "Ten million is 10,000,000: a 1 followed by seven zeros. It is 10 times one million.", ['10 × 1,000,000', 'g|10,000,000']]],
+    [['Dropping a zero', "Mistake one: leaving out zeros when writing in digits.", 'Three million and forty thousand = 3,40,000 ✗', 'Three million and forty thousand = 3,040,000 ✓'],
+     ['Comparing the first digit only', "Mistake two: comparing numbers with different lengths by the first digit.", '9,500 > 12,000 because 9 > 1 ✗', '9,500 < 12,000 (fewer digits) ✓']],
+    ["The population of a big city can be 8,982,000. We say about nine million.", ['8,982,000 ≈ 9 million']],
+    [['Write 7,060,200 in words.', "Seven million, sixty thousand, two hundred.", ['7 | 060 | 200'], 'Seven million, sixty thousand, two hundred'],
+     ['What is the 5 worth in 2,540,000?', "Hundred thousands.", ['5 × 100,000'], '500,000'],
+     ['Which is bigger, 3,099,999 or 3,100,000?', "Compare the hundred thousands: 0 and 1.", ['3,100,000 > 3,099,999'], '3,100,000']],
+    ["Groups of three. Mind the zeros.", ['Millions, thousands, ones']]);
+
+  X('Decimals up to three places', 'how to read and compare decimals with thousandths.', 'Thousandths',
+    ['Tenths, hundredths, thousandths', "After the decimal point the columns are tenths, hundredths and thousandths. In 4.562 the 5 is 5 tenths, the 6 is 6 hundredths and the 2 is 2 thousandths. Each column is ten times smaller than the one to its left.", [tbl([['O', '.', 'Tenths', 'Hundredths', 'Thousandths'], ['4', '.', '5', '6', '2']])]],
+    [['Value', "What is the 2 worth in 4.562? It is in the thousandths column: 0.002.", ['2 thousandths', 'g|0.002']],
+     ['Comparing', "Which is bigger, 0.45 or 0.405? Write 0.45 as 0.450. Compare tenths: 4 and 4. Hundredths: 5 and 0. So 0.45 is bigger.", ['0.450 > 0.405', 'g|0.45']],
+     ['Ordering', "Order 0.305, 0.35 and 0.3 from smallest. Write them as 0.305, 0.350, 0.300. Smallest first: 0.3, 0.305, 0.35.", ['0.300 < 0.305 < 0.350', 'g|0.3, 0.305, 0.35']],
+     ['Measurements', "A sprinter runs 100 metres in 10.234 seconds. 0.234 is 234 thousandths of a second.", ['10.234 s']]],
+    [['More digits is bigger', "Mistake one: thinking a longer decimal is bigger.", '0.405 > 0.45 ✗', '0.45 > 0.405 ✓'],
+     ['Misplacing the 2', "Mistake two: reading the 2 as hundredths.", '4.562: 2 hundredths ✗', '4.562: 2 thousandths ✓']],
+    ["Science uses thousandths. A fine measurement may be 1.250 kg.", ['1.250 kg = 1.25 kg']],
+    [['What is the 7 worth in 3.072?', "Hundredths: 0.07.", ['7 hundredths'], '0.07'],
+     ['Which is bigger, 0.6 or 0.599?', "0.600 > 0.599.", ['0.600'], '0.6'],
+     ['Order 1.2, 1.02, 1.002 from smallest.', "1.002, 1.02, 1.2.", ['1.002 < 1.020 < 1.200'], '1.002, 1.02, 1.2']],
+    ["Add zeros to compare.", ['Thousandths: third place']]);
+
+  X('Rounding large numbers and decimals', 'how to round to the nearest 10, 100, 1,000, 10,000 and to decimal places.', 'Rounding',
+    ['Round to the place asked', "To round, find the digit in the place you are rounding to. Look at the digit to its right. 5 or more: round up. 4 or less: round down. For decimal places, count the places after the point.", ['Look right', '5+ up, 4− down']],
+    [['Nearest 10 000', "Round 45,672 to the nearest 10,000. The ten thousands digit is 4. The thousands digit is 5, so round up. 50,000.", ['45,672 → 50,000', 'g|50,000']],
+     ['Nearest 1 000', "Round 45,672 to the nearest 1,000. The hundreds digit is 6, so round up. 46,000.", ['45,672 → 46,000', 'g|46,000']],
+     ['Millions', "Round 1,250,000 to the nearest million. The hundred thousands digit is 2, so round down. 1,000,000.", ['250,000 < 500,000', 'g|1,000,000']],
+     ['Decimal places', "Round 3.846 to 2 decimal places. The third digit is 6, so round up. 3.85. To 1 decimal place, 3.8. To the nearest whole number, 4.", ['3.846 → 3.85', 'g|3.85']]],
+    [['Wrong digit', "Mistake one: looking at the wrong digit.", '45,672 to nearest 10,000: look at 4 → 40,000 ✗', 'Look at 5 → 50,000 ✓'],
+     ['Dropping the zero', "Mistake two: rounding 2.996 to 2 d.p. as 2.99.", '2.996 → 2.99 ✗', '2.996 → 3.00 ✓']],
+    ["News reports round: a stadium with 59,872 seats is called a 60,000-seat stadium.", ['59,872 ≈ 60,000']],
+    [['Round 83,419 to the nearest 1,000.', "Hundreds digit 4: round down.", ['83,419 → 83,000'], '83,000'],
+     ['Round 5.678 to 2 decimal places.', "Third digit 8.", ['5.678 → 5.68'], '5.68'],
+     ['Round 2,500,000 to the nearest million.', "Hundred thousands digit 5.", ['500,000 rounds up'], '3,000,000']],
+    ["Find the place. Look right.", ['5 rule']]);
+
+  X('Estimating and sensible answers', 'how to estimate a calculation and check that an answer makes sense, with units.', 'Estimating',
+    ['Round to one big digit', "Round each number to one significant digit, calculate, and compare. An estimate is not exact, but it shows if an answer is sensible. With units, round the quantities sensibly too.", ['≈ means about equal']],
+    [['Adding', "Estimate 4,987 + 3,012. 5,000 + 3,000 = 8,000. The exact answer is 7,999.", ['5,000 + 3,000', 'g|≈ 8,000']],
+     ['Multiplying', "Estimate 48 × 21. 50 × 20 = 1,000. The exact answer is 1,008.", ['50 × 20', 'g|≈ 1,000']],
+     ['With decimals', "Estimate 7.8 × 4.1. 8 × 4 = 32. The exact answer is 31.98.", ['8 × 4', 'g|≈ 32']],
+     ['Sensible units', "A length is 3 m 98 cm. About how many metres? 98 cm is nearly 1 m, so about 4 m.", ['3.98 ≈ 4', 'g|≈ 4 m']]],
+    [['Not rounding both', "Mistake one: rounding only one number.", '48 × 21 ≈ 50 × 21 ✗', '≈ 50 × 20 ✓'],
+     ['Accepting a silly answer', "Mistake two: not checking if the answer is sensible.", '48 × 21 = 100.8 ✗', '1,000 is expected, so 100.8 is wrong ✓']],
+    ["Before you buy 12 items at £4.95, estimate: 12 × 5 = £60.", ['12 × 5']],
+    [['Estimate 6,012 − 1,988.', "6,000 − 2,000.", ['6,000 − 2,000'], '≈ 4,000'],
+     ['Estimate 39 × 11.', "40 × 10.", ['40 × 10'], '≈ 400'],
+     ['Estimate 9.8 ÷ 2.', "10 ÷ 2.", ['10 ÷ 2'], '≈ 5']],
+    ["Round, calculate, check.", ['Is it sensible?']]);
+
+  X('Negative numbers in real life', 'how to use negative numbers for temperatures, heights and floors.', 'Negative numbers',
+    ['Above and below zero', "Negative numbers show amounts below zero: temperatures below freezing, floors below the ground, places below sea level. To find the difference between a positive and a negative number, count up through zero.", [nl(-6, 6, 1, [{ v: -4, l: '-4' }], 'Number line from -6 to 6')]],
+    [['Temperature change', "The temperature is 6 °C and falls to −4 °C. Count down 6 to reach 0, then 4 more. A fall of 10 degrees.", ['6 + 4', 'g|10 °C']],
+     ['Difference', "What is the difference between −5 °C and 3 °C? 5 up to 0, then 3 more. 8 degrees.", ['5 + 3', 'g|8']],
+     ['Lifts', "A lift is at floor −2 (two floors below ground) and goes up 5 floors. −2 + 5 = 3. It is on floor 3.", ['−2 + 5', 'g|3']],
+     ['Ordering', "Order −8, 3, −1, 0 from smallest: −8, −1, 0, 3.", ['−8 < −1 < 0 < 3', 'g|−8, −1, 0, 3']]],
+    [['Subtracting the numbers', "Mistake one: finding the difference between −5 and 3 as 2.", '5 − 3 = 2 ✗', '5 + 3 = 8 ✓'],
+     ['Ordering by size of digit', "Mistake two: thinking −8 is bigger than −1.", '−8 > −1 ✗', '−8 < −1 ✓']],
+    ["The Dead Sea shore is about 430 metres below sea level. We write −430 m.", ['−430 m']],
+    [['The temperature goes from −3 °C to 5 °C. How much did it rise?', "3 + 5.", ['3 + 5'], '8 °C'],
+     ['Start at −7 and add 4.', "−7 + 4.", ['−7 + 4'], '−3'],
+     ['Put in order from smallest: −2, −9, 4, 0.', "−9, −2, 0, 4.", ['−9 < −2 < 0 < 4'], '−9, −2, 0, 4']],
+    ["Count through zero.", ['Further left is smaller']]);
+
+  L.usePri(1, ['Reading and writing numbers to ten million', 'Decimals up to three places', 'Rounding large numbers and decimals', 'Estimating and sensible answers', 'Negative numbers in real life']);
+
+  X('Adding and subtracting large numbers', 'how to add and subtract numbers with five and six digits and add three or four numbers.', 'Column methods',
+    ['Columns', "Line up the digits by place value. Add or subtract from the right. Carry when a column makes ten or more. Exchange when you cannot subtract.", ['Ones under ones', 'Right to left']],
+    [['Adding', "Work out 45,678 + 23,945. Ones: 8 + 5 = 13, write 3 carry 1. Tens: 7 + 4 + 1 = 12, write 2 carry 1. Hundreds: 6 + 9 + 1 = 16, write 6 carry 1. Thousands: 5 + 3 + 1 = 9. Ten thousands: 4 + 2 = 6. 69,623.", ['45,678 + 23,945', 'g|69,623']],
+     ['Subtracting', "Work out 90,000 − 37,486. Exchange across the zeros to get 52,514.", ['90,000 − 37,486', 'g|52,514']],
+     ['Three numbers', "Work out 3,450 + 2,875 + 1,690. 3,450 + 2,875 = 6,325. 6,325 + 1,690 = 8,015.", ['6,325 + 1,690', 'g|8,015']],
+     ['Check', "Check 52,514 + 37,486 = 90,000.", ['52,514 + 37,486', 'g|✓']]],
+    [['Not carrying', "Mistake one: forgetting to carry.", '8 + 5 = 13, write 13 ✗', 'Write 3, carry 1 ✓'],
+     ['Smaller from bigger', "Mistake two: subtracting the smaller digit from the bigger.", '90,000 − 37,486: 6 − 0 ✗', 'Exchange first ✓']],
+    ["A company adds sales for three months: £34,500, £28,750 and £16,900 total £80,150.", ['34,500 + 28,750 + 16,900']],
+    [['Work out 56,789 + 34,567.', "91,356.", ['56,789 + 34,567'], '91,356'],
+     ['Work out 100,000 − 45,678.', "54,322.", ['100,000 − 45,678'], '54,322'],
+     ['Work out 2,345 + 1,678 + 905.', "2,345 + 1,678 = 4,023. 4,023 + 905 = 4,928.", ['4,023 + 905'], '4,928']],
+    ["Line up. Carry. Check.", ['Add to check subtraction']]);
+
+  X('Mental calculation tricks', 'how to multiply and divide in your head by doubling, halving and using friendly numbers.', 'Mental maths',
+    ['Friendly numbers', "Change a calculation into an easier one. To multiply by 9, multiply by 10 and subtract one lot. To multiply by 25, multiply by 100 and divide by 4. Double one number and halve the other.", ['× 9 = × 10 − × 1', 'Double and halve']],
+    [['Times 19', "Work out 19 × 6. 20 × 6 = 120. Take away 6. 114.", ['120 − 6', 'g|114']],
+     ['Double and halve', "Work out 35 × 12. Halve 12 to 6 and double 35 to 70. 70 × 6 = 420.", ['70 × 6', 'g|420']],
+     ['Times 25', "Work out 25 × 16. 25 × 4 = 100, and 16 is 4 × 4. 100 × 4 = 400.", ['100 × 4', 'g|400']],
+     ['Partition', "Work out 47 × 6. 40 × 6 = 240. 7 × 6 = 42. 282.", ['240 + 42', 'g|282']]],
+    [['Forgetting to take away', "Mistake one: forgetting the take-away step.", '19 × 6 = 120 ✗', '19 × 6 = 114 ✓'],
+     ['Only doubling', "Mistake two: doubling without halving.", '35 × 12 = 70 × 12 ✗', '70 × 6 ✓']],
+    ["A shopkeeper works out 9 pencils at 12p: 10 × 12 − 12 = 108p.", ['120 − 12']],
+    [['Work out 29 × 4.', "30 × 4 − 4.", ['120 − 4'], '116'],
+     ['Work out 45 × 12 by doubling and halving.', "90 × 6.", ['90 × 6'], '540'],
+     ['Work out 25 × 12.', "25 × 4 × 3.", ['100 × 3'], '300']],
+    ["Make it friendly.", ['Double and halve', 'Near multiples']]);
+
+  X('Long multiplication', 'how to multiply by a two-digit number using the grid and column methods.', 'Long multiplication',
+    ['Multiply by tens and ones', "To multiply by a two-digit number, multiply by the tens and by the ones separately, then add. 36 × 24 is 36 × 20 plus 36 × 4.", ['36 × 24 = 36 × 20 + 36 × 4']],
+    [['Two digits', "Work out 36 × 24. 36 × 20 = 720. 36 × 4 = 144. 720 + 144 = 864.", ['720 + 144', 'g|864']],
+     ['Grid method', "Work out 124 × 13. 124 × 10 = 1,240. 124 × 3 = 372. 1,240 + 372 = 1,612.", [tbl([['×', '100', '20', '4'], ['10', '1,000', '200', '40'], ['3', '300', '60', '12']]), 'g|1,612']],
+     ['Check', "Estimate 124 × 13 ≈ 125 × 13. 125 × 13 = 1,625. 1,612 is close, so the answer is sensible.", ['≈ 1,625', 'g|✓']],
+     ['A problem', "A coach has 48 seats. 27 coaches are needed. 48 × 27 = 960 + 336 = 1,296 seats.", ['48 × 20 = 960', '48 × 7 = 336', 'g|1,296']]],
+    [['Forgetting the zero', "Mistake one: forgetting the zero when multiplying by tens.", '36 × 20 = 72 ✗', '36 × 20 = 720 ✓'],
+     ['Missing a box', "Mistake two: leaving out a box in the grid.", '1,000 + 200 + 40 + 300 + 60 ✗', 'All six boxes ✓']],
+    ["A cinema with 24 rows of 36 seats has 864 seats.", ['24 × 36 = 864']],
+    [['Work out 45 × 23.', "900 + 135.", ['45 × 20 + 45 × 3'], '1,035'],
+     ['Work out 132 × 12.', "1,320 + 264.", ['132 × 10 + 132 × 2'], '1,584'],
+     ['A box holds 36 eggs. How many in 25 boxes?', "36 × 25.", ['900'], '900']],
+    ["Tens first, then ones.", ['Add the parts']]);
+
+  X('Short and long division', 'how to divide by one-digit and two-digit numbers and deal with remainders.', 'Division',
+    ['Bus stop and long division', "Short division is for dividing by a one-digit number. Long division can be used for two-digit divisors. Work from the left. Carry remainders to the next digit.", ['756 ÷ 6']],
+    [['Short division', "Work out 756 ÷ 6. 6 into 7 goes 1, remainder 1. 6 into 15 goes 2, remainder 3. 6 into 36 goes 6. 126.", ['756 ÷ 6', 'g|126']],
+     ['Two-digit divisor', "Work out 952 ÷ 14. 14 into 95 goes 6 times (84), remainder 11. 14 into 112 goes 8 times. 68.", ['14 × 6 = 84', '14 × 8 = 112', 'g|68']],
+     ['Remainder', "Work out 3,509 ÷ 8. 8 × 438 = 3,504. The remainder is 5. 438 remainder 5.", ['3,509 − 3,504', 'g|438 r 5']],
+     ['A real problem', "250 pupils go on a trip. A bus takes 48. 250 ÷ 48 = 5 remainder 10. 6 buses are needed.", ['250 ÷ 48', 'g|6 buses']]],
+    [['Ignoring the remainder', "Mistake one: not rounding up when people need seats.", '5 buses ✗', '6 buses ✓'],
+     ['Zero as a placeholder', "Mistake two: forgetting to write 0 in the answer.", '618 ÷ 6 = 13 ✗', '618 ÷ 6 = 103 ✓']],
+    ["Sharing £952 between 14 people gives £68 each.", ['952 ÷ 14 = 68']],
+    [['Work out 864 ÷ 6.', "6 into 8: 1 r 2; 6 into 26: 4 r 2; 6 into 24: 4.", ['864 ÷ 6'], '144'],
+     ['Work out 612 ÷ 12.', "12 × 50 = 600, plus 12 × 1.", ['50 + 1'], '51'],
+     ['How many 15-seat minibuses are needed for 100 people?', "100 ÷ 15 = 6 r 10. Round up.", ['100 ÷ 15'], '7 minibuses']],
+    ["Divide. Carry. Check remainders.", ['Think about the story']]);
+
+  X('Order of operations and word problems', 'how to use brackets, indices and the correct order in calculations and word problems.', 'Order of operations',
+    ['BIDMAS', "Brackets first, then indices (powers), then division and multiplication, then addition and subtraction, working left to right. 3² means 3 × 3.", ['B', 'I', 'D M', 'A S']],
+    [['Multiplication first', "Work out 4 + 6 × 3. 6 × 3 = 18. 4 + 18 = 22.", ['4 + 18', 'g|22']],
+     ['Brackets first', "Work out (4 + 6) × 3. 10 × 3 = 30.", ['10 × 3', 'g|30']],
+     ['Indices', "Work out 2 × 3². 3² = 9. 2 × 9 = 18.", ['2 × 9', 'g|18']],
+     ['A word problem', "Ben buys 3 packs of pens at £2.50 and a ruler for £1.20. The cost is 3 × 2.50 + 1.20 = 7.50 + 1.20 = £8.70.", ['3 × 2.50 + 1.20', 'g|£8.70']]],
+    [['Left to right', "Mistake one: working left to right.", '4 + 6 × 3 = 30 ✗', '4 + 6 × 3 = 22 ✓'],
+     ['Indices as times', "Mistake two: 3² = 6.", '3² = 3 × 2 = 6 ✗', '3² = 3 × 3 = 9 ✓']],
+    ["Calculators and spreadsheets follow the same order.", ['Same rules']],
+    [['Work out 36 ÷ (3 + 3) + 2.', "36 ÷ 6 + 2.", ['6 + 2'], '8'],
+     ['Work out 5² − 4 × 3.', "25 − 12.", ['25 − 12'], '13'],
+     ['Work out 20 − 2 × (3 + 2).', "20 − 2 × 5.", ['20 − 10'], '10']],
+    ["Brackets, indices, ÷ ×, + −.", ['Left to right']]);
+
+  L.usePri(2, ['Adding and subtracting large numbers', 'Mental calculation tricks', 'Long multiplication', 'Short and long division', 'Order of operations and word problems']);
+
+  X('Simplifying and comparing fractions', 'how to simplify fractions and compare fractions with different denominators.', 'Equivalent fractions',
+    ['Common factors and common denominators', "To simplify a fraction, divide the top and bottom by a common factor. To compare fractions, change them to the same denominator.", ['12/18 ÷ 6 = 2/3']],
+    [['Simplify', "Simplify 18/24. The highest common factor of 18 and 24 is 6. 18 ÷ 6 = 3, 24 ÷ 6 = 4. 3/4.", ['18/24 ÷ 6', 'g|3/4']],
+     ['Compare', "Which is bigger, 5/6 or 7/9? Use eighteenths: 5/6 = 15/18, 7/9 = 14/18. 5/6 is bigger.", ['15/18 > 14/18', 'g|5/6']],
+     ['Order', "Order 2/3, 3/4 and 5/8. Use twenty-fourths: 16/24, 18/24, 15/24. Smallest first: 5/8, 2/3, 3/4.", ['15/24 < 16/24 < 18/24', 'g|5/8, 2/3, 3/4']],
+     ['Check equal', "Is 14/21 equal to 2/3? Divide by 7: 2/3. Yes.", ['14/21 ÷ 7', 'g|Yes']]],
+    [['Dividing only one number', "Mistake one: dividing only the top.", '18/24 = 3/24 ✗', '18/24 = 3/4 ✓'],
+     ['Comparing the tops only', "Mistake two: comparing numerators only.", '5/6 < 7/9 since 5 < 7 ✗', '5/6 > 7/9 ✓']],
+    ["A recipe calls for 3/4 of a cup but your cup only shows eighths: 6/8.", ['3/4 = 6/8']],
+    [['Simplify 20/30.', "Divide by 10.", ['20/30 ÷ 10'], '2/3'],
+     ['Which is bigger, 3/5 or 5/8?', "24/40 and 25/40.", ['24/40 < 25/40'], '5/8'],
+     ['Order 1/2, 3/5 and 4/10.', "Tenths: 5, 6, 4.", ['4/10 < 5/10 < 6/10'], '4/10, 1/2, 3/5']],
+    ["HCF to simplify. Same denominator to compare.", ['÷ or × both numbers']]);
+
+  X('Adding and subtracting fractions with different denominators', 'how to add and subtract fractions that have different denominators.', 'Fraction addition and subtraction',
+    ['Same denominator first', "To add or subtract fractions with different denominators, change them to equivalent fractions with the same denominator. Then add or subtract the numerators.", ['2/3 + 1/4 → 8/12 + 3/12']],
+    [['Adding', "Work out 2/3 + 1/4. The common denominator is 12. 2/3 = 8/12, 1/4 = 3/12. 8/12 + 3/12 = 11/12.", ['8/12 + 3/12', 'g|11/12']],
+     ['Subtracting', "Work out 5/6 − 1/4. Use twelfths: 10/12 − 3/12 = 7/12.", ['10/12 − 3/12', 'g|7/12']],
+     ['Over one', "Work out 3/4 + 5/8. 6/8 + 5/8 = 11/8 = 1 3/8.", ['11/8', 'g|1 3/8']],
+     ['A problem', "Mia drinks 1/2 of a bottle and Sam drinks 1/3. Together 3/6 + 2/6 = 5/6. 1/6 is left.", ['5/6', 'g|1/6 left']]],
+    [['Adding both numbers', "Mistake one: adding tops and bottoms.", '2/3 + 1/4 = 3/7 ✗', '2/3 + 1/4 = 11/12 ✓'],
+     ['Changing only one fraction', "Mistake two: changing only one fraction wrongly.", '2/3 + 1/4 = 2/12 + 1/12 ✗', '8/12 + 3/12 ✓']],
+    ["Cooking: 1/2 cup and 1/3 cup together make 5/6 of a cup.", ['3/6 + 2/6']],
+    [['Work out 1/2 + 1/5.', "5/10 + 2/10.", ['7/10'], '7/10'],
+     ['Work out 3/4 − 2/3.', "9/12 − 8/12.", ['1/12'], '1/12'],
+     ['Work out 7/8 + 1/2.', "7/8 + 4/8 = 11/8.", ['11/8'], '1 3/8']],
+    ["Same denominator, then add.", ['Simplify at the end']]);
+
+  X('Adding and subtracting mixed numbers', 'how to add and subtract mixed numbers.', 'Mixed numbers',
+    ['Wholes and fractions', "Add the whole numbers and the fractions separately. If the fraction part is more than one, carry a whole. For subtraction, you can change to improper fractions.", ['2 1/2 + 1 3/4']],
+    [['Adding', "Work out 2 1/2 + 1 3/4. Wholes: 2 + 1 = 3. Fractions: 2/4 + 3/4 = 5/4 = 1 1/4. 3 + 1 1/4 = 4 1/4.", ['3 + 1 1/4', 'g|4 1/4']],
+     ['Subtracting', "Work out 3 1/4 − 1 1/2. Improper fractions: 13/4 − 6/4 = 7/4 = 1 3/4.", ['13/4 − 6/4', 'g|1 3/4']],
+     ['Changing a mixed number', "Change 2 3/5 to an improper fraction. 2 × 5 + 3 = 13. 13/5.", ['2 × 5 + 3', 'g|13/5']],
+     ['A problem', "A plank is 3 1/2 m. Cut off 1 3/4 m. 7/2 − 7/4 = 14/4 − 7/4 = 7/4 = 1 3/4 m left.", ['14/4 − 7/4', 'g|1 3/4 m']]],
+    [['Forgetting to carry', "Mistake one: not carrying the whole.", '1 1/2 + 1 3/4 = 2 5/4 ✗', '= 3 1/4 ✓'],
+     ['Subtracting the smaller', "Mistake two: swapping small and large fractions.", '3 1/4 − 1 1/2: 1/2 − 1/4 ✗', 'Change to improper ✓']],
+    ["Carpenters add and subtract lengths with fractions of inches or metres.", ['Mixed lengths']],
+    [['Work out 1 1/2 + 2 3/4.', "3 + 5/4.", ['4 1/4'], '4 1/4'],
+     ['Work out 4 1/3 − 1 2/3.', "13/3 − 5/3 = 8/3.", ['8/3'], '2 2/3'],
+     ['Change 7/3 to a mixed number.', "2 r 1.", ['7 ÷ 3'], '2 1/3']],
+    ["Wholes, then fractions. Carry.", ['Or improper fractions']]);
+
+  X('Multiplying fractions and whole numbers', 'how to multiply a fraction by a whole number and find a fraction of an amount.', 'Fraction multiplication',
+    ['Multiply the numerator', "To multiply a fraction by a whole number, multiply the numerator by the whole number. 3 × 2/5 = 6/5 = 1 1/5. A fraction of an amount is the same: divide by the denominator, multiply by the numerator.", ['3 × 2/5 = 6/5']],
+    [['Fraction times whole', "Work out 3 × 2/5. 3 × 2 = 6. 6/5 = 1 1/5.", ['6/5', 'g|1 1/5']],
+     ['Of an amount', "Find 3/8 of 64. 64 ÷ 8 = 8. 8 × 3 = 24.", ['8 × 3', 'g|24']],
+     ['Unit fraction', "Work out 1/4 × 12. 12 ÷ 4 = 3.", ['12 ÷ 4', 'g|3']],
+     ['A problem', "A book has 240 pages. Ali read 3/5. 240 ÷ 5 = 48. 48 × 3 = 144 pages.", ['48 × 3', 'g|144 pages']]],
+    [['Multiplying the denominator', "Mistake one: multiplying the bottom too.", '3 × 2/5 = 6/15 ✗', '3 × 2/5 = 6/5 ✓'],
+     ['Stopping after dividing', "Mistake two: stopping after dividing by the denominator.", '3/8 of 64 = 8 ✗', '= 24 ✓']],
+    ["A recipe uses 3/4 cup of flour per batch. 4 batches need 4 × 3/4 = 3 cups.", ['4 × 3/4 = 12/4 = 3']],
+    [['Work out 5 × 3/10.', "15/10.", ['15/10'], '1 1/2'],
+     ['Find 5/6 of 48.', "48 ÷ 6 = 8, × 5.", ['8 × 5'], '40'],
+     ['Work out 1/5 × 35.', "35 ÷ 5.", ['35 ÷ 5'], '7']],
+    ["× the top. ÷ the bottom.", ['Simplify the answer']]);
+
+  X('Fractions and decimals', 'how to change fractions to decimals and decimals to fractions, including thousandths.', 'Fractions and decimals',
+    ['Divide top by bottom', "A fraction is a division. 3/8 means 3 ÷ 8. To change a decimal to a fraction, use the place value of the last digit.", ['3/8 = 3 ÷ 8 = 0.375']],
+    [['Fraction to decimal', "Write 3/8 as a decimal. 3 ÷ 8 = 0.375.", ['3 ÷ 8', 'g|0.375']],
+     ['Hundredths', "Write 7/25 as a decimal. 25 × 4 = 100, so 28/100 = 0.28.", ['7 × 4 = 28', 'g|0.28']],
+     ['Decimal to fraction', "Write 0.125 as a fraction. 125/1,000 simplifies by 125 to 1/8.", ['125/1,000 ÷ 125', 'g|1/8']],
+     ['Ordering', "Order 0.4, 3/8 and 0.35. 3/8 = 0.375. Smallest: 0.35, 0.375, 0.4.", ['0.35 < 0.375 < 0.4', 'g|0.35, 3/8, 0.4']]],
+    [['Using the wrong division', "Mistake one: dividing the bottom by the top.", '3/8 = 8 ÷ 3 ✗', '3/8 = 3 ÷ 8 ✓'],
+     ['Place value', "Mistake two: writing 7/100 as 0.7.", '7/100 = 0.7 ✗', '7/100 = 0.07 ✓']],
+    ["Money in decimals: a quarter of £1 is £0.25.", ['1/4 = 0.25']],
+    [['Write 1/8 as a decimal.', "1 ÷ 8.", ['1 ÷ 8'], '0.125'],
+     ['Write 0.6 as a fraction in its simplest form.', "6/10.", ['6/10'], '3/5'],
+     ['Write 9/20 as a decimal.', "45/100.", ['9 × 5'], '0.45']],
+    ["Top ÷ bottom.", ['Place value for decimals']]);
+
+  L.usePri(3, ['Simplifying and comparing fractions', 'Adding and subtracting fractions with different denominators', 'Adding and subtracting mixed numbers', 'Multiplying fractions and whole numbers', 'Fractions and decimals']);
+})();
+</script>
+<script>
+/* P6 topics 4 Decimals and percentages, 5 Money time measurement, 6 Patterns and algebra */
+(function () {
+  'use strict';
+  var BT = window.BT; if (!BT || !BT.px) return;
+  var X = BT.px.X, tbl = BT.px.tbl, rect = BT.px.rect, nl = BT.px.nl, shape = BT.px.shape, L = BT.L;
+
+  X('Calculating with decimals', 'how to add, subtract, multiply and divide decimals.', 'Decimal calculations',
+    ['Line up, then calculate', "To add or subtract decimals, line up the decimal points. To multiply a decimal by a whole number, multiply as if there were no point, then put the point back. To divide a decimal by a whole number, divide digit by digit and keep the point in line.", ['5.6 + 2.45', '2.4 × 3', '7.5 ÷ 5']],
+    [['Adding', "Work out 5.6 + 2.45. Write 5.60 + 2.45 = 8.05.", ['5.60 + 2.45', 'g|8.05']],
+     ['Subtracting', "Work out 12 − 4.375. Write 12.000 − 4.375 = 7.625.", ['12.000 − 4.375', 'g|7.625']],
+     ['Multiplying', "Work out 2.4 × 3. 24 × 3 = 72. 2.4 has one decimal place, so 7.2.", ['24 × 3 = 72', 'g|7.2']],
+     ['Dividing', "Work out 9.6 ÷ 4. 9 ÷ 4 = 2 remainder 1. 16 ÷ 4 = 4. 2.4.", ['9.6 ÷ 4', 'g|2.4']]],
+    [['Points not aligned', "Mistake one: not lining up the digits.", '12 − 4.375 = 8.375 ✗', '12.000 − 4.375 = 7.625 ✓'],
+     ['Wrong place for the point', "Mistake two: losing the decimal point.", '2.4 × 3 = 72 ✗', '2.4 × 3 = 7.2 ✓']],
+    ["Three friends share a £9.60 bill equally. 9.60 ÷ 3 = £3.20 each.", ['9.60 ÷ 3']],
+    [['Work out 4.7 + 3.85.', "4.70 + 3.85.", ['4.70 + 3.85'], '8.55'],
+     ['Work out 1.35 × 4.', "135 × 4 = 540.", ['1.35 × 4'], '5.4'],
+     ['Work out 12.6 ÷ 6.', "12 ÷ 6 = 2, 0.6 ÷ 6 = 0.1.", ['12.6 ÷ 6'], '2.1']],
+    ["Line up. Keep the point.", ['Check by estimating']]);
+
+  X('Percentages of amounts', 'how to find a percentage of a number using 10%, 5% and 1% as building blocks.', 'Percentages',
+    ['Building blocks', "Percent means out of 100. Find 10% by dividing by 10, 1% by dividing by 100, 50% by halving, 25% by dividing by 4. Build any other percentage from these.", ['10% = ÷ 10', '1% = ÷ 100', '50% = ÷ 2']],
+    [['Simple', "Find 25% of 80. 80 ÷ 4 = 20.", ['80 ÷ 4', 'g|20']],
+     ['Building', "Find 15% of 60. 10% is 6. 5% is 3. 6 + 3 = 9.", ['6 + 3', 'g|9']],
+     ['Larger', "Find 35% of 200. 10% is 20, so 30% is 60. 5% is 10. 60 + 10 = 70.", ['60 + 10', 'g|70']],
+     ['Set and measure', "Find 40% of 2 kg. 2 kg = 2,000 g. 10% = 200 g. 40% = 800 g.", ['4 × 200', 'g|800 g']]],
+    [['Dividing by the percent', "Mistake one: dividing by the percentage number.", '25% of 80 = 80 ÷ 25 ✗', '80 ÷ 4 = 20 ✓'],
+     ['Wrong units', "Mistake two: forgetting the unit.", '40% of 2 kg = 800 ✗', '800 g ✓']],
+    ["A class of 30 has 20% absent. 10% is 3, so 20% is 6 pupils.", ['3 × 2']],
+    [['Find 10% of 450.', "÷ 10.", ['450 ÷ 10'], '45'],
+     ['Find 15% of 80.', "10% 8, 5% 4.", ['8 + 4'], '12'],
+     ['Find 30% of 90 pupils.', "10% 9, × 3.", ['9 × 3'], '27 pupils']],
+    ["10%, 5%, 1% blocks.", ['Half of 10% is 5%']]);
+
+  X('Percentage discounts and increases', 'how to work out a sale price and a price after an increase.', 'Discounts and increases',
+    ['Find the amount, then add or subtract', "To find a price after a discount, find the percentage of the price, then subtract. For an increase, find the percentage, then add.", ['Sale = price − discount', 'New = price + increase']],
+    [['Discount', "A coat costs £60 with 25% off. 25% of 60 = 15. 60 − 15 = £45.", ['60 − 15', 'g|£45']],
+     ['Increase', "A ticket costs £50 and goes up by 10%. 10% of 50 = 5. 50 + 5 = £55.", ['50 + 5', 'g|£55']],
+     ['Saving', "A game costs £40 and is 20% off. 20% = 8. The saving is £8.", ['20% of 40', 'g|£8']],
+     ['A multi-step', "A bike costs £200. First 10% off, then you buy it. 10% = 20. 200 − 20 = £180.", ['200 − 20', 'g|£180']]],
+    [['Giving the discount as the price', "Mistake one: stopping at the discount.", 'Price = £15 ✗', 'Price = £45 ✓'],
+     ['Adding on a discount', "Mistake two: adding instead of subtracting.", '60 + 15 = 75 ✗', '60 − 15 = 45 ✓']],
+    ["Shops have sales every January with 20% or 30% off.", ['Sale signs']],
+    [['A top costs £30. It has 10% off. What is the price?', "10% = 3.", ['30 − 3'], '£27'],
+     ['A phone costs £400 and goes up by 5%. New price?', "5% = 20.", ['400 + 20'], '£420'],
+     ['Shoes cost £80 with 25% off. How much do you save?', "80 ÷ 4.", ['80 ÷ 4'], '£20']],
+    ["Find the amount, then add or take away.", ['Sale: −', 'Increase: +']]);
+
+  X('Comparing fractions, decimals and percentages', 'how to change between fractions, decimals and percentages and order them.', 'F D P',
+    ['One amount, three forms', "To compare, write everything as decimals or percentages. A fraction becomes a decimal by dividing. A decimal becomes a percentage by multiplying by 100.", ['3/8 = 0.375 = 37.5%']],
+    [['Fraction to percentage', "Write 3/8 as a percentage. 3 ÷ 8 = 0.375. × 100 = 37.5%.", ['0.375 × 100', 'g|37.5%']],
+     ['Ordering', "Order 0.4, 35% and 3/8. 35% = 0.35. 3/8 = 0.375. Smallest: 35%, 3/8, 0.4.", ['0.35 < 0.375 < 0.4', 'g|35%, 3/8, 0.4']],
+     ['Test marks', "Amy scores 17/20 and Ben scores 80%. 17/20 = 85%. Amy did better.", ['17/20 = 85%', 'g|Amy']],
+     ['Percentage to fraction', "Write 45% as a fraction. 45/100 = 9/20.", ['45/100 ÷ 5', 'g|9/20']]],
+    [['Comparing different forms', "Mistake one: comparing a fraction and a percentage without changing.", '3/8 > 35 ✗', 'Change to the same form ✓'],
+     ['Forgetting × 100', "Mistake two: forgetting to multiply.", '0.375 = 0.375% ✗', '0.375 = 37.5% ✓']],
+    ["Football stats show pass completion as a percentage; a coach compares 36/40 = 90%.", ['36/40 = 90%']],
+    [['Write 3/5 as a percentage.', "0.6 = 60%.", ['3 ÷ 5'], '60%'],
+     ['Which is bigger, 0.7 or 65%?', "0.65 < 0.7.", ['0.7 > 0.65'], '0.7'],
+     ['Write 12.5% as a fraction.', "12.5/100 = 1/8.", ['1/8'], '1/8']],
+    ["Same form, then compare.", ['÷ for decimals', '× 100 for percent']]);
+
+  L.usePri(4, ['Calculating with decimals', 'Percentages of amounts', 'Percentage discounts and increases', 'Comparing fractions, decimals and percentages']);
+
+  X('Currency and exchange rates', 'how to convert money between currencies using an exchange rate.', 'Currency',
+    ['Exchange rate', "An exchange rate says how much of one currency you get for another. If £1 = €1.20, multiply pounds by 1.2 to get euros. To go back, divide.", ['£ → €: × 1.2', '€ → £: ÷ 1.2']],
+    [['Pounds to euros', "£1 = €1.20. How many euros for £50? 50 × 1.2 = €60.", ['50 × 1.2', 'g|€60']],
+     ['Euros to pounds', "How many pounds for €96? 96 ÷ 1.2 = £80.", ['96 ÷ 1.2', 'g|£80']],
+     ['Dollars', "£1 = $1.25. £40 is 40 × 1.25 = $50.", ['40 × 1.25', 'g|$50']],
+     ['Comparing prices', "A souvenir is €24 abroad or £18 at home. €24 ÷ 1.2 = £20. It is cheaper at home.", ['24 ÷ 1.2 = 20', 'g|Home']]],
+    [['Multiplying the wrong way', "Mistake one: multiplying when converting back.", '€96 → £: 96 × 1.2 ✗', '96 ÷ 1.2 ✓'],
+     ['Forgetting the symbol', "Mistake two: forgetting the currency symbol.", '60 ✗', '€60 ✓']],
+    ["Holiday-makers check exchange rates before a trip.", ['Airport rates']],
+    [['£1 = €1.20. Convert £30 to euros.', "30 × 1.2.", ['30 × 1.2'], '€36'],
+     ['£1 = $1.25. Convert $75 to pounds.', "75 ÷ 1.25.", ['75 ÷ 1.25'], '£60'],
+     ['£1 = €1.20. A meal costs €18. How much in pounds?', "18 ÷ 1.2.", ['18 ÷ 1.2'], '£15']],
+    ["Pounds × rate. Back ÷ rate.", ['Check the direction']]);
+
+  X('Imperial and metric units', 'how to convert between common imperial and metric units.', 'Imperial and metric',
+    ['Approximate conversions', "We use metric units (cm, m, km, g, kg, ml, l) and some imperial units (inch, foot, mile, pound, pint). 1 inch ≈ 2.5 cm. 1 mile ≈ 1.6 km. 1 kg ≈ 2.2 lb. 1 litre ≈ 1.75 pints.", [tbl([['Imperial', 'Metric (approx)'], ['1 inch', '2.5 cm'], ['1 mile', '1.6 km'], ['1 kg', '2.2 lb']])]],
+    [['Miles to km', "5 miles is about 5 × 1.6 = 8 km.", ['5 × 1.6', 'g|8 km']],
+     ['Inches to cm', "A 12-inch ruler is about 12 × 2.5 = 30 cm.", ['12 × 2.5', 'g|30 cm']],
+     ['kg to pounds', "10 kg is about 10 × 2.2 = 22 lb.", ['10 × 2.2', 'g|22 lb']],
+     ['Which is longer?', "Which is longer, 10 km or 8 miles? 8 miles ≈ 12.8 km. 8 miles is longer.", ['8 × 1.6 = 12.8', 'g|8 miles']]],
+    [['Wrong direction', "Mistake one: multiplying to go from km to miles.", '16 km = 16 × 1.6 miles ✗', '16 ÷ 1.6 = 10 miles ✓'],
+     ['Treating ≈ as exact', "Mistake two: treating approximations as exact.", '1 mile = 1.6 km exactly ✗', '1 mile ≈ 1.6 km ✓']],
+    ["UK road signs show distances in miles, but many other countries use kilometres.", ['Road signs']],
+    [['Change 20 miles to km (1 mile ≈ 1.6 km).', "20 × 1.6.", ['20 × 1.6'], '32 km'],
+     ['Change 50 cm to inches (1 inch ≈ 2.5 cm).', "50 ÷ 2.5.", ['50 ÷ 2.5'], '20 inches'],
+     ['Change 5 kg to pounds (1 kg ≈ 2.2 lb).', "5 × 2.2.", ['5 × 2.2'], '11 lb']],
+    ["Multiply to the smaller unit.", ['≈ means approximately']]);
+
+  X('Area of rectangles and triangles', 'how to find the area of a rectangle and a triangle.', 'Area',
+    ['Formulas', "Area of a rectangle = base × height. A triangle is half of a rectangle with the same base and height, so area of a triangle = 1/2 × base × height. The height is measured at a right angle to the base.", ['Rectangle: b × h', 'Triangle: 1/2 × b × h']],
+    [['Rectangle', "A rectangle is 9 cm by 4 cm. Area = 9 × 4 = 36 cm².", [rect(9, 4, '9 cm', '4 cm'), 'g|36 cm²']],
+     ['Triangle', "A triangle has base 8 cm and height 5 cm. 8 × 5 = 40, half of 40 is 20 cm².", ['1/2 × 8 × 5', 'g|20 cm²']],
+     ['Missing height', "A triangle has area 30 cm² and base 10 cm. 30 × 2 = 60. 60 ÷ 10 = 6 cm.", ['60 ÷ 10', 'g|6 cm']],
+     ['Compound shape', "An L-shape is a 6 by 3 rectangle with a 2 by 2 square added. 18 + 4 = 22 cm².", ['6 × 3 + 2 × 2', 'g|22 cm²']]],
+    [['Forgetting half', "Mistake one: forgetting to halve for a triangle.", 'Area = 8 × 5 = 40 ✗', 'Area = 20 ✓'],
+     ['Using the slant side', "Mistake two: using the slanted side as the height.", 'Height = slant side ✗', 'Height is at a right angle ✓']],
+    ["Sails are triangles. The sailmaker finds the area to order cloth.", ['Triangular sails']],
+    [['A triangle has base 12 cm and height 5 cm. Find its area.', "1/2 × 12 × 5.", ['60 ÷ 2'], '30 cm²'],
+     ['A rectangle is 15 m by 8 m. Find its area.', "15 × 8.", ['15 × 8'], '120 m²'],
+     ['A triangle has area 24 cm² and height 6 cm. Find its base.', "24 × 2 ÷ 6.", ['48 ÷ 6'], '8 cm']],
+    ["Triangle = half rectangle.", ['Height at a right angle']]);
+
+  X('Volume and capacity', 'how to find the volume of a cuboid and link it to capacity.', 'Volume',
+    ['Counting cubes', "Volume is the amount of space inside a 3D shape. It is measured in cubic centimetres (cm³). For a cuboid, volume = length × width × height. 1 cm³ holds 1 ml, so 1,000 cm³ is 1 litre.", ['V = l × w × h', '1,000 cm³ = 1 l']],
+    [['Cuboid', "A cuboid is 5 cm long, 4 cm wide and 3 cm high. 5 × 4 × 3 = 60 cm³.", ['5 × 4 × 3', 'g|60 cm³']],
+     ['Capacity', "A tank is 20 cm by 10 cm by 10 cm. Volume = 2,000 cm³ = 2,000 ml = 2 litres.", ['20 × 10 × 10', 'g|2 litres']],
+     ['Missing side', "A cuboid has volume 72 cm³, length 6 and width 4. Height = 72 ÷ 24 = 3 cm.", ['6 × 4 = 24', '72 ÷ 24', 'g|3 cm']],
+     ['A problem', "A fish tank 50 cm by 30 cm by 40 cm: 50 × 30 × 40 = 60,000 cm³ = 60 litres.", ['60,000 ÷ 1,000', 'g|60 l']]],
+    [['Adding sides', "Mistake one: adding the sides.", '5 + 4 + 3 = 12 cm³ ✗', '5 × 4 × 3 = 60 cm³ ✓'],
+     ['cm² and cm³', "Mistake two: writing volume in cm².", '60 cm² ✗', '60 cm³ ✓']],
+    ["Swimming pools are cuboids. The volume tells how much water is needed.", ['Pool volume']],
+    [['A cuboid is 4 cm by 3 cm by 2 cm. Find the volume.', "4 × 3 × 2.", ['12 × 2'], '24 cm³'],
+     ['How many litres in 3,000 cm³?', "÷ 1,000.", ['3,000 ÷ 1,000'], '3 litres'],
+     ['A box has volume 90 cm³, length 5 and width 3. Find the height.', "90 ÷ 15.", ['5 × 3 = 15'], '6 cm']],
+    ["Length × width × height.", ['1,000 cm³ = 1 l']]);
+
+  X('Timetables and time calculations', 'how to read timetables, work out durations and plan journeys using 12-hour and 24-hour time.', 'Time',
+    ['Durations', "To find how long between two times, count up to the next hour and add the rest. In a 24-hour timetable, 13:00 is 1 pm. To change from 24-hour to 12-hour time, subtract 12.", [tbl([['Stop', 'Depart'], ['Glasgow', '08:15'], ['Stirling', '08:50'], ['Perth', '09:35']])]],
+    [['Journey time', "How long from Glasgow to Stirling? 08:15 to 08:50 is 35 minutes.", ['50 − 15', 'g|35 min']],
+     ['Across the hour', "How long from Stirling to Perth? 08:50 to 09:00 is 10 minutes, then 35 more. 45 minutes.", ['10 + 35', 'g|45 min']],
+     ['24-hour to 12-hour', "A train leaves at 15:40. 15 − 12 = 3. So 3:40 pm.", ['15 − 12', 'g|3:40 pm']],
+     ['Plan', "You must be in Perth by 9:45 am. The 09:35 train arrives in time. Leave Glasgow at 08:15.", ['09:35 < 09:45', 'g|Yes']]],
+    [['Decimal hours', "Mistake one: subtracting times as decimals.", '9.35 − 8.50 = 0.85 ✗', '45 minutes ✓'],
+     ['pm', "Mistake two: forgetting to add 12.", '3:40 pm = 03:40 ✗', '3:40 pm = 15:40 ✓']],
+    ["Airline pilots use the 24-hour clock to avoid confusion.", ['24-hour clock']],
+    [['How long from 10:25 to 11:10?', "35 + 10.", ['35 + 10'], '45 minutes'],
+     ['Write 20:15 as a 12-hour time.', "20 − 12.", ['20 − 12'], '8:15 pm'],
+     ['A film starts at 18:40 and lasts 1 hour 35 minutes. When does it end?', "19:40, then 35 more.", ['19:40 + 35'], '20:15']],
+    ["Count up through the hour.", ['60 minutes in an hour']]);
+
+  X('Calendars and time zones', 'how to use a calendar and work out the time in other places.', 'Calendars and time zones',
+    ['Days and zones', "There are 365 days in a year, 366 in a leap year. A week has 7 days. Places east of us are ahead in time. Places west are behind.", ['East = ahead', 'West = behind']],
+    [['Days between', "How many days from 20 May to 10 June? 11 days to 31 May, then 10 more. 21 days.", ['11 + 10', 'g|21 days']],
+     ['Weeks', "21 days is 3 weeks.", ['21 ÷ 7', 'g|3 weeks']],
+     ['Time zone ahead', "Dubai is 4 hours ahead of Scotland in winter. When it is 2 pm in Scotland it is 6 pm in Dubai.", ['2 + 4', 'g|6 pm']],
+     ['Time zone behind', "New York is 5 hours behind. When it is 2 pm in Scotland it is 9 am in New York.", ['14 − 5', 'g|9 am']]],
+    [['Wrong direction', "Mistake one: subtracting for a place that is ahead.", 'Dubai: 2 pm − 4 ✗', 'Dubai: 2 pm + 4 = 6 pm ✓'],
+     ['Counting the first day', "Mistake two: counting the start day.", '20 May to 10 June: 22 days ✗', '21 days ✓']],
+    ["A video call between Glasgow and New York is best at 2 pm in Glasgow, which is 9 am in New York.", ['9 am NY']],
+    [['How many days from 3 March to 1 April?', "28 + 1.", ['28 + 1'], '29 days'],
+     ['Sydney is 10 hours ahead. When it is 8 am in Scotland, what time is it in Sydney?', "8 + 10.", ['8 + 10'], '6 pm'],
+     ['Cairo is 2 hours ahead. When it is noon in Scotland, what time in Cairo?', "12 + 2.", ['12 + 2'], '2 pm']],
+    ["East ahead. West behind.", ['Count carefully']]);
+
+  L.usePri(5, ['Currency and exchange rates', 'Imperial and metric units', 'Area of rectangles and triangles', 'Volume and capacity', 'Timetables and time calculations', 'Calendars and time zones']);
+
+  X('Sequences and rules', 'how to find the rule of a sequence and continue it, including sequences that multiply or have a second step.', 'Sequences',
+    ['Term-to-term rule', "A term-to-term rule tells you how to get the next term from the one before. Rules can add, subtract, multiply or divide. Check the rule works for every pair of terms.", ['3, 6, 12, 24: × 2']],
+    [['Adding', "Continue 7, 12, 17, 22. The rule is + 5. Next: 27, 32.", ['22 + 5', 'g|27, 32']],
+     ['Multiplying', "Continue 3, 6, 12, 24. The rule is × 2. Next: 48, 96.", ['24 × 2', 'g|48, 96']],
+     ['Decreasing', "Continue 100, 93, 86. The rule is − 7. Next: 79.", ['86 − 7', 'g|79']],
+     ['Missing term', "The sequence is 5, 11, 17, ?, 29. The rule is + 6. The missing term is 23.", ['17 + 6', 'g|23']]],
+    [['Using one jump', "Mistake one: checking only one pair.", '2, 5, 9: + 3 ✗', 'Jumps are +3 then +4: not constant ✓'],
+     ['Wrong rule', "Mistake two: mixing + and ×.", '3, 6, 12: + 3 ✗', '× 2 ✓']],
+    ["Savings of £5 each week form a sequence 5, 10, 15, ...", ['+ 5']],
+    [['Continue 4, 9, 14, 19.', "+ 5.", ['19 + 5'], '24, 29'],
+     ['Continue 2, 6, 18, 54.', "× 3.", ['54 × 3'], '162, 486'],
+     ['Find the missing term: 50, 42, ?, 26.', "− 8.", ['42 − 8'], '34']],
+    ["Find the same jump every time.", ['+, −, ×, ÷']]);
+
+  X('Equations and missing numbers', 'how to solve simple equations and missing number problems.', 'Equations',
+    ['Balance both sides', "An equation says two things are equal. Do the same to both sides to keep it balanced. Use opposite operations to find the unknown.", ['n + 8 = 20']],
+    [['One step', "n + 8 = 20. Subtract 8 from both sides. n = 12.", ['20 − 8', 'g|n = 12']],
+     ['Multiplication', "4n = 28. Divide both sides by 4. n = 7.", ['28 ÷ 4', 'g|n = 7']],
+     ['Two steps', "3n + 2 = 23. Subtract 2: 3n = 21. Divide by 3: n = 7.", ['23 − 2 = 21', '21 ÷ 3', 'g|n = 7']],
+     ['Check', "Check n = 7: 3 × 7 + 2 = 23.", ['21 + 2 = 23', 'g|✓']]],
+    [['Same operation', "Mistake one: adding 8 to undo + 8.", 'n = 20 + 8 ✗', 'n = 20 − 8 ✓'],
+     ['Wrong order', "Mistake two: dividing first in two-step equations.", '3n + 2 = 23: 23 ÷ 3 first ✗', 'Subtract 2 first ✓']],
+    ["A taxi charges £3 plus £2 a mile. A £15 fare means 3 + 2m = 15, so m = 6 miles.", ['2m = 12']],
+    [['Solve n − 5 = 12.', "Add 5.", ['12 + 5'], 'n = 17'],
+     ['Solve 6n = 54.', "÷ 6.", ['54 ÷ 6'], 'n = 9'],
+     ['Solve 2n + 7 = 25.', "25 − 7 = 18, ÷ 2.", ['18 ÷ 2'], 'n = 9']],
+    ["Opposite operation on both sides.", ['Check by substituting']]);
+
+  X('Expressions from words and shapes', 'how to write algebraic expressions from words, patterns and shapes.', 'Expressions',
+    ['Letters for numbers', "A letter stands for a number. n + 3 means a number plus 3. 5n means 5 times n. We write the number before the letter. An expression has no equals sign.", ['n + 3', '5n', 'n ÷ 2']],
+    [['From words', "Write 'five more than n'. n + 5.", ['n + 5', 'g|n + 5']],
+     ['Times', "Write 'four times n'. 4n.", ['4 × n', 'g|4n']],
+     ['A shape', "A rectangle has length l and width w. The perimeter is 2l + 2w. If l = 6 and w = 3, then 12 + 6 = 18.", ['2 × 6 + 2 × 3', 'g|18']],
+     ['A pattern', "A row of n tables seats 4 people on each side plus 2 at the ends. The rule 4n + 2: for 5 tables, 22 people.", ['4 × 5 + 2', 'g|22']]],
+    [['Joining digits', "Mistake one: reading 4n as 4 and n joined.", 'n = 6: 4n = 46 ✗', '4n = 24 ✓'],
+     ['Order of subtraction', "Mistake two: writing 3 less than n as 3 − n.", '3 − n ✗', 'n − 3 ✓']],
+    ["Mobile phone plans: £10 plus 5p a minute is 10 + 0.05m pounds.", ['10 + 0.05m']],
+    [['Write "n divided by 4".', "n ÷ 4.", ['n/4'], 'n/4'],
+     ['Find 3n + 1 when n = 8.', "24 + 1.", ['3 × 8 + 1'], '25'],
+     ['A square has side s. Write its perimeter.', "4 × s.", ['4s'], '4s']],
+    ["Letters stand for numbers.", ['4n means 4 × n']]);
+
+  X('Substituting into formulae', 'how to use a formula by replacing letters with numbers.', 'Formulae',
+    ['Formula and substitution', "A formula is a rule written with letters. To use it, replace each letter with its number and calculate, following the order of operations.", ['C = 5 + 2n']],
+    [['Cost formula', "A taxi costs C = 5 + 2n pounds for n miles. For 8 miles: C = 5 + 2 × 8 = 5 + 16 = £21.", ['5 + 2 × 8', 'g|£21']],
+     ['Area formula', "A = l × w. If l = 7 and w = 4, A = 28.", ['7 × 4', 'g|28']],
+     ['Speed formula', "d = s × t. If s = 60 km/h and t = 3 h, d = 180 km.", ['60 × 3', 'g|180 km']],
+     ['Find the letter', "C = 5 + 2n and C = 17. 2n = 12. n = 6 miles.", ['17 − 5', '12 ÷ 2', 'g|6 miles']]],
+    [['Ignoring order', "Mistake one: adding before multiplying.", '5 + 2 × 8 = 7 × 8 = 56 ✗', '5 + 16 = 21 ✓'],
+     ['Missing units', "Mistake two: omitting the units.", '21 ✗', '£21 ✓']],
+    ["Scientists and engineers use formulae all the time.", ['Formulae']],
+    [['A = l × w. Find A when l = 9, w = 5.', "9 × 5.", ['9 × 5'], '45'],
+     ['C = 3 + 4n. Find C when n = 5.', "3 + 20.", ['3 + 4 × 5'], '23'],
+     ['d = s × t. Find d when s = 40, t = 2.', "40 × 2.", ['40 × 2'], '80']],
+    ["Replace letters. Follow BIDMAS.", ['Write the units']]);
+
+  L.usePri(6, ['Sequences and rules', 'Equations and missing numbers', 'Expressions from words and shapes', 'Substituting into formulae']);
+})();
+</script>
+<script>
+/* P6 topics 7 Shape angles symmetry, 8 Data and chance */
+(function () {
+  'use strict';
+  var BT = window.BT; if (!BT || !BT.px) return;
+  var X = BT.px.X, tbl = BT.px.tbl, shape = BT.px.shape, pie = BT.px.pie, nl = BT.px.nl, L = BT.L;
+
+  X('Classifying 2D shapes', 'how to classify polygons, triangles and quadrilaterals by their sides and angles.', '2D shapes',
+    ['Properties', "Polygons are named by their number of sides. Triangles are classified by sides (equilateral, isosceles, scalene) and by angles (right-angled). Quadrilaterals include squares, rectangles, rhombuses, parallelograms, trapeziums and kites. Regular polygons have equal sides and angles.", [tbl([['Shape', 'Properties'], ['Square', '4 equal sides, 4 right angles'], ['Rhombus', '4 equal sides, opposite angles equal'], ['Parallelogram', 'Opposite sides equal and parallel'], ['Trapezium', '1 pair of parallel sides']])]],
+    [['Triangle', "A triangle has two equal sides. It is isosceles.", ['2 equal sides', 'g|Isosceles']],
+     ['Quadrilateral', "A shape has 4 equal sides but no right angles. It is a rhombus.", ['4 equal sides', 'g|Rhombus']],
+     ['Angle sum', "Three angles of a quadrilateral are 90°, 80° and 100°. 90 + 80 + 100 = 270. 360 − 270 = 90°.", ['360 − 270', 'g|90°']],
+     ['Regular polygon', "A regular hexagon has 6 equal sides and 6 equal angles.", ['6 equal sides', 'g|Regular hexagon']]],
+    [['Square is not a rectangle', "Mistake one: saying a square is not a rectangle.", 'Square is not a rectangle ✗', 'A square is a rectangle with equal sides ✓'],
+     ['Wrong angle total', "Mistake two: using 180 for a quadrilateral.", '180 − 270 ✗', '360 − 270 ✓']],
+    ["Floor tiles are often squares or hexagons because they fit together.", ['Tessellations']],
+    [['How many sides has a heptagon?', "Seven.", ['hepta = 7'], '7'],
+     ['A triangle has angles 60°, 60°, 60°. What type is it?', "All equal.", ['3 equal angles'], 'Equilateral'],
+     ['Three angles of a quadrilateral are 70°, 110° and 80°. Find the fourth.', "360 − 260.", ['70 + 110 + 80 = 260'], '100°']],
+    ["Sides and angles name the shape.", ['Triangle 180°', 'Quadrilateral 360°']]);
+
+  X('Circles and their parts', 'how to name the parts of a circle and use radius, diameter and circumference.', 'Circles',
+    ['Parts of a circle', "The centre is the middle point. The radius goes from the centre to the edge. The diameter goes across the circle through the centre and is twice the radius. The circumference is the distance around the circle. About 3 times the diameter.", ['d = 2r', 'C ≈ 3 × d']],
+    [['Radius and diameter', "A circle has radius 7 cm. The diameter is 14 cm.", ['2 × 7', 'g|14 cm']],
+     ['Finding the radius', "A circle has diameter 18 cm. The radius is 9 cm.", ['18 ÷ 2', 'g|9 cm']],
+     ['Estimating the circumference', "A circle has diameter 10 cm. The circumference is about 3 × 10 = 30 cm (more exactly 31.4 cm).", ['3 × 10', 'g|≈ 30 cm']],
+     ['Chord and arc', "A chord is a straight line joining two points on the circle. An arc is part of the circumference.", ['Chord', 'Arc']]],
+    [['Radius and diameter', "Mistake one: confusing radius and diameter.", 'r = 14 when d = 7 ✗', 'r = 7 when d = 14 ✓'],
+     ['Circumference as area', "Mistake two: mixing circumference with area.", 'Circumference in cm² ✗', 'Circumference in cm ✓']],
+    ["A wheel with diameter 60 cm rolls about 3 × 60 = 180 cm in one turn.", ['≈ 180 cm']],
+    [['A circle has radius 4 cm. What is the diameter?', "2 × 4.", ['2 × 4'], '8 cm'],
+     ['A circle has diameter 22 cm. What is the radius?', "÷ 2.", ['22 ÷ 2'], '11 cm'],
+     ['Estimate the circumference of a circle with diameter 20 cm.', "3 × 20.", ['3 × 20'], '≈ 60 cm']],
+    ["d = 2r. C ≈ 3d.", ['Radius to the edge']]);
+
+  X('Angle facts', 'how to measure angles and use facts about angles on a line, around a point and vertically opposite.', 'Angles',
+    ['Angle rules', "Angles on a straight line add to 180°. Angles around a point add to 360°. Vertically opposite angles are equal. Angles in a triangle add to 180°.", ['Line 180°', 'Point 360°', 'Opposite angles equal']],
+    [['Straight line', "Angles on a line: 125° and ?. 180 − 125 = 55°.", ['180 − 125', 'g|55°']],
+     ['Around a point', "Angles 90°, 120° and 100° and ? meet at a point. 90 + 120 + 100 = 310. 360 − 310 = 50°.", ['360 − 310', 'g|50°']],
+     ['Vertically opposite', "Two lines cross. One angle is 65°. The opposite angle is also 65°. The angles next to it are 180 − 65 = 115°.", ['65° and 65°', 'g|115°']],
+     ['Triangle', "Two angles of a triangle are 50° and 70°. 180 − 120 = 60°.", ['180 − 120', 'g|60°']]],
+    [['Wrong total', "Mistake one: using 360 on a line.", '360 − 125 ✗', '180 − 125 ✓'],
+     ['Opposite angles', "Mistake two: thinking opposite angles add to 180.", 'Opposite angles add to 180 ✗', 'Opposite angles are equal ✓']],
+    ["Scissors, signposts and road junctions all make angles.", ['Junction angles']],
+    [['Angles on a straight line: 40° and ?. Find ?', "140°.", ['180 − 40'], '140°'],
+     ['Angles around a point: 100°, 150° and ?. Find ?', "360 − 250.", ['360 − 250'], '110°'],
+     ['Two lines cross and make an angle of 72°. Find the vertically opposite angle.', "Equal.", ['72°'], '72°']],
+    ["Line 180. Point 360. Opposite equal.", ['Triangle 180']]);
+
+  X('Symmetry', 'how to find lines of symmetry and the order of rotational symmetry.', 'Symmetry',
+    ['Line and rotational symmetry', "A line of symmetry splits a shape into two matching halves. A shape has rotational symmetry if it looks the same after a turn of less than 360°. The order is the number of times it fits in one full turn.", ['Square: 4 lines, order 4']],
+    [['Lines', "A rectangle has 2 lines of symmetry.", ['Vertical, horizontal', 'g|2']],
+     ['Rotational', "A rectangle fits onto itself twice in a full turn. Order 2.", ['Half turn', 'g|Order 2']],
+     ['Equilateral triangle', "An equilateral triangle has 3 lines of symmetry and order 3.", ['3 lines, order 3']],
+     ['None', "A scalene triangle has no lines of symmetry and no rotational symmetry (order 1).", ['0 lines', 'Order 1']]],
+    [['Diagonals of a rectangle', "Mistake one: diagonals as lines of symmetry in a rectangle.", 'Rectangle 4 lines ✗', 'Rectangle 2 lines ✓'],
+     ['Order of a parallelogram', "Mistake two: lines of symmetry for a parallelogram.", 'Parallelogram has 2 lines ✗', 'No lines, order 2 ✓']],
+    ["Logos, flags and snowflakes are often symmetrical.", ['Logos']],
+    [['How many lines of symmetry has a regular pentagon?', "5.", ['5 sides'], '5'],
+     ['What is the order of rotational symmetry of a square?', "4.", ['4 quarter turns'], '4'],
+     ['Does a scalene triangle have a line of symmetry?', "No.", ['No matching halves'], 'No']],
+    ["Lines: matching halves. Order: fits in one turn.", ['Regular n-gon: n lines, order n']]);
+
+  X('3D shapes and their nets', 'how to describe 3D shapes and match nets to solids.', '3D shapes',
+    ['Faces, edges, vertices', "A prism has the same cross-section all along its length. A pyramid has a base and triangular faces meeting at a point. A cube has 6 faces, 12 edges and 8 vertices. A net is a flat pattern that folds into a solid.", [tbl([['Solid', 'Faces', 'Edges', 'Vertices'], ['Cube', '6', '12', '8'], ['Triangular prism', '5', '9', '6'], ['Square-based pyramid', '5', '8', '5']])]],
+    [['Describing', "A triangular prism has 2 triangle faces and 3 rectangle faces. 5 faces, 9 edges and 6 vertices.", ['2 + 3 = 5', 'g|5, 9, 6']],
+     ['Net', "The net of a cube has 6 squares. The net of a triangular prism has 2 triangles and 3 rectangles.", ['6 squares']],
+     ['Euler', "For any solid: faces + vertices − edges = 2. For a cube: 6 + 8 − 12 = 2.", ['6 + 8 − 12', 'g|2']],
+     ['Cylinder', "A cylinder has 2 circular faces and 1 curved surface. Its net is 2 circles and a rectangle.", ['2 circles + rectangle']]],
+    [['Edges and vertices', "Mistake one: swapping edges and vertices.", 'Cube: 8 edges ✗', 'Cube: 12 edges, 8 vertices ✓'],
+     ['Wrong net', "Mistake two: a net that overlaps.", 'Six squares in a line fold to a cube ✗', 'They overlap ✓']],
+    ["Cereal boxes are cuboids. The cardboard cut-out is a net.", ['Box nets']],
+    [['How many vertices has a square-based pyramid?', "5.", ['4 + 1'], '5'],
+     ['Check Euler for a triangular prism: faces + vertices − edges.', "5 + 6 − 9.", ['5 + 6 − 9'], '2'],
+     ['What 2D shapes make the net of a cylinder?', "2 circles and a rectangle.", ['Circles + rectangle'], '2 circles and a rectangle']],
+    ["Faces, edges, vertices.", ['F + V − E = 2']]);
+
+  L.usePri(7, ['Classifying 2D shapes', 'Circles and their parts', 'Angle facts', 'Symmetry', '3D shapes and their nets']);
+
+  X('Collecting and organising data', 'how to collect data and record it in tally charts and frequency tables.', 'Data',
+    ['Tally and frequency', "Data is information. A survey asks questions to collect data. A tally chart records data. A frequency table shows the total for each group. Grouped data puts values in ranges such as 0 to 9 and 10 to 19.", [tbl([['Shoe size', 'Tally', 'Frequency'], ['3', '|||| |', '6'], ['4', '|||| ||||', '9'], ['5', '|||', '3']])]],
+    [['Total', "How many pupils? 6 + 9 + 3 = 18.", ['6 + 9 + 3', 'g|18']],
+     ['Most common', "The mode is the size with the highest frequency: 4.", ['9 is highest', 'g|4']],
+     ['Grouped', "Heights: 128, 133, 140, 135, 142. Groups 125 to 134: 2, 135 to 144: 3.", ['128 and 133', '135, 140, 142']],
+     ['Fair survey', "To get a fair result, ask a sample from different groups, not just your friends.", ['Fair sample']]],
+    [['Counting a group of five', "Mistake one: counting five as four.", 'Group of five = 4 ✗', 'Group of five = 5 ✓'],
+     ['Biased sample', "Mistake two: asking only friends.", 'Ask 5 friends ✗', 'Ask a mixed group ✓']],
+    ["Councils survey residents before making decisions.", ['Resident survey']],
+    [['A tally shows |||| |||| ||. What is the frequency?', "5 + 5 + 2.", ['12'], '12'],
+     ['Using the table, how many wear size 5?', "3.", ['Size 5'], '3'],
+     ['How many more wear size 4 than size 5?', "9 − 3.", ['9 − 3'], '6']],
+    ["Tally in fives. Total at the end.", ['Frequency']]);
+
+  X('Reading and choosing graphs', 'how to read and choose bar charts, line graphs and pie charts.', 'Graphs',
+    ['Which graph', "Bar charts compare categories. Line graphs show change over time. Pie charts show parts of a whole. Always check the title, axis labels, units and scale.", ['Bar: compare', 'Line: change over time', 'Pie: parts of a whole']],
+    [['Bar chart', "A bar chart shows 18 pupils like football and 12 like netball. The difference is 18 − 12 = 6.", ['18 − 12', 'g|6']],
+     ['Line graph', "A line graph shows the temperature at 9 am as 8 °C and at 3 pm as 16 °C. The rise is 8 °C.", ['16 − 8', 'g|8 °C']],
+     ['Pie chart', "A pie chart of 60 pupils has a half-circle for walking. 60 ÷ 2 = 30 pupils walk.", [pie([['Walk', 0.5], ['Bus', 0.25], ['Car', 0.25]], 'Pie chart of how 60 pupils travel'), 'g|30']],
+     ['Which graph?', "To show how a plant grows each week, use a line graph.", ['Change over time', 'g|Line graph']]],
+    [['Reading the label', "Mistake one: ignoring the scale.", 'Each step is 1, reading 6 as 3 ✗', 'Check the scale ✓'],
+     ['Wrong graph', "Mistake two: using a pie chart for change over time.", 'Pie for growth ✗', 'Line for growth ✓']],
+    ["Newspapers use all three types of graph.", ['Graph choice']],
+    [['A half of a pie chart of 40 pupils is "walk". How many walk?', "20.", ['40 ÷ 2'], '20'],
+     ['A line graph rises from 10 °C to 22 °C. By how much?', "12.", ['22 − 10'], '12 °C'],
+     ['Which graph shows rainfall each month?', "Bar chart (or line).", ['Categories'], 'Bar chart']],
+    ["Title. Labels. Scale.", ['Pick the right graph']]);
+
+  X('Mean, median, mode and range with larger sets', 'how to calculate averages and range, including finding a missing value.', 'Averages',
+    ['Averages', "The mean is the total divided by the number of values. The median is the middle value when ordered. The mode is the most common. The range is the biggest minus the smallest.", ['Mean = total ÷ count']],
+    [['Mean', "Find the mean of 8, 5, 9, 6, 7. Total 35. 35 ÷ 5 = 7.", ['35 ÷ 5', 'g|7']],
+     ['Median', "Median of 12, 3, 9, 5, 7: order 3, 5, 7, 9, 12. The middle is 7.", ['3, 5, 7, 9, 12', 'g|7']],
+     ['Missing value', "The mean of 4 numbers is 6. Three are 5, 6, 8. The total is 24. 5 + 6 + 8 = 19. The fourth is 5.", ['24 − 19', 'g|5']],
+     ['Range', "Range of 3, 9, 12, 5, 7 is 12 − 3 = 9.", ['12 − 3', 'g|9']]],
+    [['Dividing by the wrong number', "Mistake one: dividing by the wrong count.", '35 ÷ 4 ✗', '35 ÷ 5 ✓'],
+     ['Not ordering', "Mistake two: choosing the middle without ordering.", '12, 3, 9, 5, 7: middle 9 ✗', 'Order first: median 7 ✓']],
+    ["Teachers use the mean to compare class results.", ['Mean score']],
+    [['Find the mean of 10, 12, 14, 8.', "44 ÷ 4.", ['44 ÷ 4'], '11'],
+     ['Find the median of 4, 9, 2, 7, 5.', "2, 4, 5, 7, 9.", ['5'], '5'],
+     ['The mean of 5 numbers is 8. Four are 6, 7, 9, 10. Find the fifth.', "40 − 32.", ['40 − 32'], '8']],
+    ["Mean: share equally.", ['Order for median']]);
+
+  X('Probability as a fraction', 'how to use the probability scale and write probabilities as fractions.', 'Probability',
+    ['The scale from 0 to 1', "Probability is a number from 0 (impossible) to 1 (certain). For equally likely outcomes, probability = number of ways ÷ total outcomes. Probabilities of all outcomes add to 1.", [nl(0, 1, 0.5, [], 'Probability scale from 0 to 1')]],
+    [['A dice', "Probability of rolling a 4 on a fair dice: 1/6.", ['1 ÷ 6', 'g|1/6']],
+     ['Even', "Probability of an even number: 3/6 = 1/2.", ['2, 4, 6', 'g|1/2']],
+     ['Counters', "A bag has 5 red, 3 blue and 2 green. P(red) = 5/10 = 1/2. P(not red) = 1/2.", ['5/10', 'g|1/2']],
+     ['Total is 1', "P(blue) + P(not blue) = 1. P(blue) = 3/10, so P(not blue) = 7/10.", ['1 − 3/10', 'g|7/10']]],
+    [['Using the number of colours', "Mistake one: using 3 as the total.", 'P(red) = 1/3 ✗', 'P(red) = 5/10 ✓'],
+     ['Not adding to 1', "Mistake two: probabilities that do not add to 1.", '1/2 + 1/3 = 1 ✗', 'Check they sum to 1 ✓']],
+    ["Weather forecasts give probabilities such as a 30% chance of rain.", ['3/10']],
+    [['A bag has 4 red and 6 blue counters. P(blue)?', "6/10.", ['6/10'], '3/5'],
+     ['P(a number greater than 4 on a dice)?', "5 or 6.", ['2/6'], '1/3'],
+     ['P(rain) = 0.3. P(no rain)?', "1 − 0.3.", ['1 − 0.3'], '0.7']],
+    ["Ways ÷ total. Sum is 1.", ['0 to 1']]);
+
+  X('Venn diagrams and two-way tables', 'how to read and complete Venn diagrams and two-way tables.', 'Sorting data',
+    ['Two sets', "A Venn diagram uses overlapping circles. The overlap holds things in both sets. A two-way table sorts by two features at once and has totals for rows and columns.", [tbl([['', 'Cat', 'No cat', 'Total'], ['Dog', '5', '8', '13'], ['No dog', '7', '10', '17'], ['Total', '12', '18', '30']])]],
+    [['Reading', "How many have both a dog and a cat? Row Dog, column Cat: 5.", ['Dog, Cat', 'g|5']],
+     ['Missing', "Row No dog: total 17, 7 have a cat. 17 − 7 = 10 have no cat.", ['17 − 7', 'g|10']],
+     ['Venn', "20 like football, 15 like netball, 6 like both. Football only: 14. Netball only: 9. Either: 14 + 6 + 9 = 29.", ['14 + 6 + 9', 'g|29']],
+     ['Total check', "12 + 18 = 30 = 13 + 17.", ['30', 'g|✓']]],
+    [['Counting the overlap twice', "Mistake one: adding 20 and 15.", '20 + 15 = 35 ✗', '14 + 6 + 9 = 29 ✓'],
+     ['Wrong row', "Mistake two: reading the wrong row.", 'No dog, cat: 5 ✗', 'No dog, cat: 7 ✓']],
+    ["Surveys of favourite things are often shown in Venn diagrams.", ['Survey Venn']],
+    [['In the table, how many have a dog?', "13.", ['5 + 8'], '13'],
+     ['In a Venn diagram 12 like tea, 8 like coffee, 3 like both. How many like only tea?', "12 − 3.", ['12 − 3'], '9'],
+     ['How many pupils in the table altogether?', "30.", ['13 + 17'], '30']],
+    ["Count the overlap once.", ['Totals check']]);
+
+  L.usePri(8, ['Collecting and organising data', 'Reading and choosing graphs', 'Mean, median, mode and range with larger sets', 'Probability as a fraction', 'Venn diagrams and two-way tables']);
+})();
+</script>
+<script>
+/* P6 topics 9 Mixed reasoning, 10 Factors multiples primes, 11 Ratio, 13 Spatial */
+(function () {
+  'use strict';
+  var BT = window.BT; if (!BT || !BT.px) return;
+  var X = BT.px.X, tbl = BT.px.tbl, grid = BT.px.grid, barm = BT.px.barm, L = BT.L;
+
+  X('Solving multi-step problems', 'how to break a problem into steps, choose the operations and check the answer.', 'Multi-step problems',
+    ['Break it down', "Read the problem twice. Underline the question. Work out what you need first. Do one step at a time and write each result. Check that the final answer makes sense.", ['Understand', 'Plan', 'Do', 'Check']],
+    [['Shopping', "Ali buys 4 notebooks at £1.75 and 2 pens at 85p. Notebooks: 4 × 1.75 = £7. Pens: 2 × 0.85 = £1.70. Total £8.70. Change from £10: £1.30.", ['7.00 + 1.70 = 8.70', '10 − 8.70', 'g|£1.30']],
+     ['Time', "A film starts at 6:45 pm and lasts 2 h 20 min. 6:45 + 2 h = 8:45. 8:45 + 20 min = 9:05. It ends at 9:05 pm.", ['8:45 + 20', 'g|9:05 pm']],
+     ['Measures', "A rope of 12 m is cut into pieces of 75 cm. 12 m = 1,200 cm. 1,200 ÷ 75 = 16 pieces.", ['1,200 ÷ 75', 'g|16 pieces']],
+     ['Check', "Check: 16 × 75 = 1,200.", ['16 × 75 = 1,200', 'g|✓']]],
+    [['Skipping a step', "Mistake one: stopping before the final step.", 'Total £8.70 is the change ✗', 'Change = 10 − 8.70 = £1.30 ✓'],
+     ['Mixed units', "Mistake two: mixing metres and centimetres.", '12 ÷ 75 ✗', '1,200 ÷ 75 ✓']],
+    ["Planning a party needs many steps: cost, time and numbers of guests.", ['Party planning']],
+    [['Tom saves £3.50 a week for 6 weeks and spends £8. How much is left?', "6 × 3.50 = 21. 21 − 8.", ['21 − 8'], '£13'],
+     ['A bus journey starts at 8:50 and takes 1 h 25 min. When does it arrive?', "8:50 + 1 h = 9:50. 9:50 + 25 min = 10:15.", ['9:50 + 25'], '10:15'],
+     ['A tank holds 60 litres. It is 3/5 full. How many more litres to fill it?', "60 ÷ 5 = 12, × 3 = 36 full. 60 − 36.", ['60 − 36'], '24 litres']],
+    ["One step at a time.", ['Check units', 'Check the answer']]);
+
+  X('Bar models for sums and differences', 'how to draw a bar model to solve problems with a total and a difference or a ratio.', 'Bar models',
+    ['Draw the bars', "A bar model draws each quantity as a bar. If two quantities differ by a known amount, remove the difference to make equal bars, then share.", [barm([['small', 40], ['large', 52]], 92, 'Bar model of 92 with a difference of 12')]],
+    [['Total and difference', "Two numbers add to 92 and differ by 12. 92 − 12 = 80. 80 ÷ 2 = 40. The numbers are 40 and 52.", ['92 − 12', '80 ÷ 2', 'g|40 and 52']],
+     ['Times as many', "Sam has 3 times as many cards as Zak. Together they have 64. 4 equal parts. 64 ÷ 4 = 16. Zak 16, Sam 48.", ['64 ÷ 4', 'g|Zak 16, Sam 48']],
+     ['Fractions', "A jar has 120 sweets. 2/5 are red. 120 ÷ 5 = 24. 24 × 2 = 48 red.", ['24 × 2', 'g|48 red']],
+     ['Check', "40 + 52 = 92. 52 − 40 = 12.", ['✓']]],
+    [['Splitting equally', "Mistake one: dividing the total equally when there is a difference.", '92 ÷ 2 = 46 each ✗', 'Remove 12 first ✓'],
+     ['Wrong number of parts', "Mistake two: dividing by 3 instead of 4.", '64 ÷ 3 ✗', '64 ÷ 4 ✓']],
+    ["Teachers around the world use bar models to teach problem solving.", ['Bar model method']],
+    [['Two numbers add to 70 and differ by 10. Find them.', "60 ÷ 2 = 30, 40.", ['70 − 10 = 60'], '30 and 40'],
+     ['Ali has twice as many marbles as Bo. Together 90. How many has Bo?', "90 ÷ 3.", ['90 ÷ 3'], '30'],
+     ['A class of 32 has 3/8 who walk. How many walk?', "32 ÷ 8 × 3.", ['4 × 3'], '12']],
+    ["Draw it. Make equal bars.", ['Remove the difference']]);
+
+  X('Testing statements: always, sometimes or never', 'how to test a statement with examples and counter-examples.', 'Reasoning',
+    ['Counter-examples', "A statement is always true only if it works for every case. One counter-example shows it is not always true. To show it is sometimes true, give one example that works and one that does not.", ['One counter-example breaks always']],
+    [['Always', "The sum of two even numbers is even. 4 + 6 = 10, 8 + 2 = 10. Always true.", ['Even + even', 'g|Always']],
+     ['Sometimes', "Multiples of 3 are odd. 9 is odd, 6 is even. Sometimes.", ['9, 6', 'g|Sometimes']],
+     ['Never', "A prime number greater than 2 is even. Even numbers greater than 2 are divisible by 2. Never true.", ['Divisible by 2', 'g|Never']],
+     ['Counter-example', "All squares are multiples of 4? 9 = 3 × 3 is not. Counter-example 9.", ['9 is a square, not a multiple of 4', 'g|Not always']]],
+    [['Examples as proof', "Mistake one: using examples to prove always.", '3 + 5 = 8, so always even ✗', 'Odd + odd is always even, with a reason ✓'],
+     ['Ignoring 2', "Mistake two: forgetting 2 is prime.", 'All primes are odd ✗', '2 is prime and even ✓']],
+    ["Scientists look for counter-examples to test ideas.", ['Test claims']],
+    [['Always, sometimes or never: the sum of two odd numbers is even.', "Odd + odd.", ['3 + 5 = 8'], 'Always'],
+     ['Always, sometimes or never: a multiple of 5 ends in 5.', "10 ends in 0.", ['10'], 'Sometimes'],
+     ['Always, sometimes or never: a square number is even.', "9 is odd.", ['4 and 9'], 'Sometimes']],
+    ["Find a counter-example.", ['Always needs a reason']]);
+
+  X('Working backwards from the answer', 'how to solve problems by undoing steps in reverse order.', 'Working backwards from the answer',
+    ['Undo in reverse', "When the end is known, start from the answer and undo each step in reverse order using opposite operations.", ['×3, −4, = 14']],
+    [['A number puzzle', "I think of a number, multiply by 3 and take away 4. The answer is 14. 14 + 4 = 18. 18 ÷ 3 = 6.", ['14 + 4', '18 ÷ 3', 'g|6']],
+     ['Money', "Amy spent 1/4 of her money, then £2. She has £7 left. 7 + 2 = 9 is 3/4. 9 ÷ 3 = 3 is 1/4. Total £12.", ['9 ÷ 3 × 4', 'g|£12']],
+     ['Time', "A bus arrives at 3:40 pm after a 55-minute journey. 3:40 − 55 min = 2:45 pm.", ['3:40 − 55 min', 'g|2:45 pm']],
+     ['Check', "12 − 3 = 9, 9 − 2 = 7.", ['✓']]],
+    [['Same operation', "Mistake one: using the same operation to go back.", '14 − 4 ✗', '14 + 4 ✓'],
+     ['Wrong order', "Mistake two: undoing the first step first.", '14 ÷ 3 first ✗', '14 + 4 first ✓']],
+    ["Detectives work backwards from clues.", ['End to start']],
+    [['I think of a number, double it and add 5. The answer is 21. What is it?', "21 − 5 = 16, ÷ 2.", ['16 ÷ 2'], '8'],
+     ['After spending half his money and then £4, Ben has £6. How much at the start?', "6 + 4 = 10, × 2.", ['10 × 2'], '£20'],
+     ['A film ends at 9:10 pm and is 1 h 40 min long. When did it start?', "9:10 − 1:40.", ['9:10 − 1:40'], '7:30 pm']],
+    ["Start at the end. Undo in reverse.", ['Opposite operations']]);
+
+  L.usePri(9, ['Solving multi-step problems', 'Bar models for sums and differences', 'Testing statements: always, sometimes or never', 'Working backwards from the answer']);
+
+  X('Factors, factor pairs and primes', 'how to find factors and recognise prime numbers.', 'Factors and primes',
+    ['Divide exactly', "A factor divides a number exactly. Factors come in pairs. A prime number has exactly two factors: 1 and itself. A composite number has more than two factors.", ['36 = 1×36 = 2×18 = 3×12 = 4×9 = 6×6']],
+    [['Listing', "Factors of 36: 1, 2, 3, 4, 6, 9, 12, 18, 36.", ['4 pairs + 6', 'g|1, 2, 3, 4, 6, 9, 12, 18, 36']],
+     ['Prime?', "Is 29 prime? Not divisible by 2, 3 or 5. Yes, prime.", ['Test 2, 3, 5', 'g|Prime']],
+     ['Composite', "Is 51 prime? 5 + 1 = 6, so divisible by 3: 51 = 3 × 17. Not prime.", ['3 × 17', 'g|Composite']],
+     ['Primes to 30', "The primes up to 30 are 2, 3, 5, 7, 11, 13, 17, 19, 23, 29.", ['10 primes']]],
+    [['Is 1 prime?', "Mistake one: calling 1 a prime.", '1 is prime ✗', '1 has only one factor ✓'],
+     ['Missing a pair', "Mistake two: missing factors.", 'Factors of 36: 1, 2, 3, 4, 6, 12, 36 ✗', 'Also 9 and 18 ✓']],
+    ["Secret codes use huge prime numbers.", ['Cryptography']],
+    [['List the factors of 30.', "1×30, 2×15, 3×10, 5×6.", ['4 pairs'], '1, 2, 3, 5, 6, 10, 15, 30'],
+     ['Is 57 prime?', "5 + 7 = 12, divisible by 3.", ['57 = 3 × 19'], 'No'],
+     ['Is 31 prime?', "Not divisible by 2, 3 or 5.", ['No pair found'], 'Yes']],
+    ["Pairs that multiply. Prime = 2 factors.", ['1 is not prime']]);
+
+  X('Common factors and multiples', 'how to find the highest common factor and lowest common multiple.', 'HCF and LCM',
+    ['HCF and LCM', "The highest common factor (HCF) is the biggest number that divides both numbers. The lowest common multiple (LCM) is the smallest number that both divide into.", ['HCF: biggest shared factor', 'LCM: smallest shared multiple']],
+    [['HCF', "Factors of 12: 1, 2, 3, 4, 6, 12. Factors of 18: 1, 2, 3, 6, 9, 18. HCF = 6.", ['Common: 1, 2, 3, 6', 'g|HCF 6']],
+     ['LCM', "Multiples of 4: 4, 8, 12, 16, 20, 24. Multiples of 6: 6, 12, 18, 24. LCM = 12.", ['12, 24', 'g|LCM 12']],
+     ['Buses', "Buses leave every 8 minutes and every 12 minutes. They leave together every 24 minutes.", ['LCM of 8 and 12 = 24', 'g|24 min']],
+     ['Sharing', "30 pencils and 45 rubbers are shared equally into the most groups with nothing left. HCF = 15 groups.", ['HCF of 30 and 45', 'g|15 groups']]],
+    [['HCF and LCM swap', "Mistake one: confusing them.", 'LCM of 4 and 6 = 2 ✗', 'LCM = 12, HCF = 2 ✓'],
+     ['Stopping early', "Mistake two: stopping the multiples too soon.", 'No LCM of 4 and 6 ✗', 'Keep going: 12 ✓']],
+    ["Timetables repeat at the LCM.", ['Bus timetables']],
+    [['Find the HCF of 16 and 24.', "Common: 1, 2, 4, 8.", ['8'], '8'],
+     ['Find the LCM of 3 and 5.', "15.", ['15'], '15'],
+     ['Find the LCM of 6 and 8.', "24.", ['6, 12, 18, 24', '8, 16, 24'], '24']],
+    ["HCF: shared factor. LCM: shared multiple.", ['List both']]);
+
+  X('Prime factors', 'how to write a number as a product of prime factors using a factor tree.', 'Prime factors',
+    ['Factor trees', "Every number greater than 1 is a prime or a product of primes. A factor tree splits a number into factors until all are prime. Write the answer with indices: 2 × 2 × 3 = 2² × 3.", ['12 = 2 × 2 × 3']],
+    [['A factor tree', "Split 60 into 6 × 10. 6 = 2 × 3. 10 = 2 × 5. So 60 = 2 × 2 × 3 × 5.", ['2 × 2 × 3 × 5', 'g|2² × 3 × 5']],
+     ['Another', "Write 36 as a product of primes. 36 = 4 × 9 = 2 × 2 × 3 × 3 = 2² × 3².", ['2² × 3²', 'g|2² × 3²']],
+     ['Check', "2 × 2 × 3 × 3 = 36.", ['4 × 9 = 36', 'g|✓']],
+     ['Use for HCF', "36 = 2² × 3². 60 = 2² × 3 × 5. Common: 2² × 3 = 12. HCF 12.", ['2 × 2 × 3', 'g|12']]],
+    [['Leaving composites', "Mistake one: stopping before all factors are prime.", '60 = 6 × 10 ✗', '60 = 2 × 2 × 3 × 5 ✓'],
+     ['Adding', "Mistake two: adding instead of multiplying.", '2 + 2 + 3 + 5 ✗', '2 × 2 × 3 × 5 ✓']],
+    ["Prime factors are the building blocks of numbers.", ['Number building blocks']],
+    [['Write 20 as a product of prime factors.', "20 = 4 × 5.", ['2 × 2 × 5'], '2² × 5'],
+     ['Write 45 as a product of prime factors.', "45 = 5 × 9.", ['3 × 3 × 5'], '3² × 5'],
+     ['Write 100 as a product of prime factors.', "100 = 10 × 10.", ['2 × 5 × 2 × 5'], '2² × 5²']],
+    ["Split until prime.", ['Check by multiplying']]);
+
+  L.usePri(10, ['Factors, factor pairs and primes', 'Common factors and multiples', 'Prime factors']);
+
+  X('What a ratio tells us', 'what a ratio is and how to write and simplify one.', 'Ratio',
+    ['Comparing parts', "A ratio compares quantities. If there are 3 red counters for every 2 blue, the ratio of red to blue is 3 : 2. Simplify by dividing both parts by a common factor.", ['3 : 2', '12 : 8 = 3 : 2']],
+    [['Writing', "A bag has 6 red and 4 blue counters. The ratio of red to blue is 6 : 4, which simplifies to 3 : 2.", ['6 : 4 ÷ 2', 'g|3 : 2']],
+     ['Order matters', "The ratio of blue to red is 2 : 3.", ['blue : red', 'g|2 : 3']],
+     ['Fractions', "In 3 : 2 there are 5 parts. Red is 3/5 of the counters.", ['3 + 2 = 5', 'g|3/5']],
+     ['Equivalent ratios', "3 : 2 = 6 : 4 = 9 : 6 = 12 : 8.", ['× 2', '× 3', '× 4']]],
+    [['Wrong order', "Mistake one: writing the ratio the wrong way.", 'red : blue = 4 : 6 ✗', 'red : blue = 6 : 4 = 3 : 2 ✓'],
+     ['Not simplified', "Mistake two: leaving it unsimplified.", '6 : 4 ✗', '3 : 2 ✓']],
+    ["A drink mix of 1 part juice to 4 parts water is the ratio 1 : 4.", ['1 : 4']],
+    [['A class has 12 girls and 18 boys. Write girls : boys in its simplest form.', "12 : 18 ÷ 6.", ['2 : 3'], '2 : 3'],
+     ['In the ratio 2 : 3, what fraction is the first part?', "2 out of 5.", ['2/5'], '2/5'],
+     ['Write 15 : 20 in its simplest form.', "÷ 5.", ['3 : 4'], '3 : 4']],
+    ["Compare parts. Simplify.", ['Keep the order']]);
+
+  X('Sharing in a ratio', 'how to share an amount in a given ratio.', 'Sharing in a ratio',
+    ['Find one part', "To share in a ratio, add the parts, divide the total by the number of parts to find one part, then multiply.", ['Total ÷ parts = one part']],
+    [['Sharing money', "Share £40 in the ratio 3 : 2. 3 + 2 = 5 parts. £40 ÷ 5 = £8. 3 × 8 = £24, 2 × 8 = £16.", ['40 ÷ 5 = 8', 'g|£24 and £16']],
+     ['Check', "24 + 16 = 40.", ['✓']],
+     ['Three parts', "Share 60 sweets in the ratio 1 : 2 : 3. 6 parts. 60 ÷ 6 = 10. 10, 20, 30.", ['60 ÷ 6', 'g|10, 20, 30']],
+     ['Finding the total', "Red : blue = 2 : 5. There are 14 red. One part is 7. Blue = 35. Total 49.", ['14 ÷ 2 = 7', 'g|35 blue']]],
+    [['Dividing by the wrong number', "Mistake one: dividing by 2 or 3.", '40 ÷ 2 = 20 ✗', '40 ÷ 5 = 8 ✓'],
+     ['Not multiplying', "Mistake two: giving one part as the answer.", '3 : 2 gives £8 each ✗', '£24 and £16 ✓']],
+    ["Business partners share profits in a ratio matching their investment.", ['Profit shares']],
+    [['Share £60 in the ratio 1 : 2.', "3 parts, £20.", ['60 ÷ 3'], '£20 and £40'],
+     ['Share 45 marbles in the ratio 4 : 5.', "9 parts, 5 each.", ['45 ÷ 9 = 5'], '20 and 25'],
+     ['Boys : girls = 3 : 4 and there are 12 boys. How many girls?', "One part is 4.", ['12 ÷ 3 = 4'], '16']],
+    ["Add parts. Divide. Multiply.", ['Check the total']]);
+
+  X('Ratios with different units and unit prices', 'how to compare quantities in different units and use unit prices to find the best buy.', 'Ratio and units',
+    ['Same unit first', "To write a ratio of quantities in different units, change to the same unit first. For unit prices, divide the price by the quantity to find the cost of one.", ['Same units', 'Cost of one']],
+    [['Different units', "Write 50 cm : 2 m as a ratio. 2 m = 200 cm. 50 : 200 = 1 : 4.", ['50 : 200 ÷ 50', 'g|1 : 4']],
+     ['Time', "Write 30 minutes : 2 hours. 2 h = 120 minutes. 30 : 120 = 1 : 4.", ['30 : 120', 'g|1 : 4']],
+     ['Best buy', "6 cans for £2.70 or 10 cans for £4.20. 270 ÷ 6 = 45p. 420 ÷ 10 = 42p. The 10 pack is cheaper per can.", ['45p', '42p', 'g|10 cans']],
+     ['Recipe', "A recipe for 4 uses 300 g flour. For 6: 300 ÷ 4 = 75 g each. 75 × 6 = 450 g.", ['75 × 6', 'g|450 g']]],
+    [['Ignoring units', "Mistake one: 50 : 2 without converting.", '50 : 2 = 25 : 1 ✗', '50 : 200 = 1 : 4 ✓'],
+     ['Cheapest price', "Mistake two: choosing the lower price without comparing amounts.", '£2.70 < £4.20 so best ✗', '42p < 45p each ✓']],
+    ["Supermarkets show unit prices so you can compare quickly.", ['Price per 100 g']],
+    [['Write 20 cm : 1 m as a ratio.', "1 m = 100 cm.", ['20 : 100'], '1 : 5'],
+     ['4 pens cost £1.60. What is one pen?', "160 ÷ 4.", ['160 ÷ 4'], '40p'],
+     ['A recipe for 3 uses 150 g butter. How much for 5?', "50 × 5.", ['150 ÷ 3 = 50'], '250 g']],
+    ["Same units. Cost of one.", ['Compare per unit']]);
+
+  L.usePri(11, ['What a ratio tells us', 'Sharing in a ratio', 'Ratios with different units and unit prices']);
+
+  X('Coordinates and grid references', 'how to read and plot coordinates in the first quadrant and find positions on a map.', 'Coordinates',
+    ['x then y', "A coordinate pair (x, y) gives the position across (x) then up (y). Plot by going along the x-axis first, then up.", [grid(6, 5, [[4, 3, 'A'], [1, 4, 'B']], 'Coordinate grid with points A and B')]],
+    [['Reading', "A is at (4, 3). B is at (1, 4).", ['A (4, 3)', 'B (1, 4)']],
+     ['Plotting', "Plot C at (5, 1): 5 across, 1 up.", ['(5, 1)', 'g|5 across, 1 up']],
+     ['Fourth corner', "Three corners of a rectangle are (1, 1), (4, 1) and (4, 3). The fourth is (1, 3).", ['x = 1, y = 3', 'g|(1, 3)']],
+     ['Distance', "From (1, 4) to (4, 4) the distance is 4 − 1 = 3 units.", ['4 − 1', 'g|3 units']]],
+    [['y first', "Mistake one: giving y first.", 'A is (3, 4) ✗', 'A is (4, 3) ✓'],
+     ['Axis labels', "Mistake two: reading off the grid line number wrongly.", 'Counting squares from 1 ✗', 'Count from 0 ✓']],
+    ["Maps and games use coordinates. Chess squares use a letter and a number.", ['Map grid']],
+    [['Write the coordinates of a point 3 across and 5 up.', "(3, 5).", ['(x, y)'], '(3, 5)'],
+     ['Three corners of a rectangle are (2, 1), (6, 1) and (6, 4). Find the fourth.', "(2, 4).", ['x = 2, y = 4'], '(2, 4)'],
+     ['Find the distance from (1, 2) to (6, 2).', "6 − 1.", ['6 − 1'], '5 units']],
+    ["Along, then up.", ['(x, y)']]);
+
+  X('Reflecting and translating on a grid', 'how to reflect a shape in a mirror line and translate it on a grid.', 'Transformations',
+    ['Reflect and translate', "Reflecting flips a shape over a mirror line. Each point is the same distance from the line on the other side. Translating slides a shape without turning it.", ['Reflection: same distance', 'Translation: slide']],
+    [['Reflect a point', "Reflect (2, 3) in the line x = 4. It is 2 left of the line, so its image is 2 right: (6, 3).", ['4 − 2 = 2', '4 + 2 = 6', 'g|(6, 3)']],
+     ['Reflect in the y-axis', "Reflect (3, 2) in the y-axis. x changes sign: (−3, 2).", ['x → −x', 'g|(−3, 2)']],
+     ['Translate', "Translate (1, 2) by 3 right and 2 up. (1 + 3, 2 + 2) = (4, 4).", ['(4, 4)', 'g|(4, 4)']],
+     ['Shape stays', "Reflection and translation keep the size and shape the same (congruent).", ['Same size', 'Same shape']]],
+    [['Wrong distance', "Mistake one: reflecting at the wrong distance.", '(2, 3) in x = 4 → (5, 3) ✗', '→ (6, 3) ✓'],
+     ['Turning in a translation', "Mistake two: turning the shape in a translation.", 'Shape turned ✗', 'Shape only slides ✓']],
+    ["Logos reflect and repeat shapes to make patterns.", ['Patterns']],
+    [['Reflect (1, 4) in the line x = 3.', "1 is 2 left of 3, so the image is 2 right of 3.", ['3 + 2'], '(5, 4)'],
+     ['Translate (2, 5) by 4 right and 3 down.', "(6, 2).", ['2 + 4, 5 − 3'], '(6, 2)'],
+     ['A shape is translated. Is its size the same?', "Yes.", ['Slides only'], 'Yes']],
+    ["Mirror: same distance. Translate: slide.", ['Same size']]);
+
+  X('Nets, painted cubes and stacks', 'how to match nets to solids and count cubes in stacks and painted cubes.', 'Cubes and nets',
+    ['Counting cubes', "A 3 by 3 by 3 cube is painted outside and cut into 27 small cubes. Corners have 3 painted faces (8). Edges 2 (12). Face centres 1 (6). The middle 0 (1). A stack of cubes is counted by adding the heights.", [tbl([['Painted faces', '3', '2', '1', '0'], ['Cubes', '8', '12', '6', '1']])]],
+    [['Check total', "8 + 12 + 6 + 1 = 27.", ['27 cubes', 'g|✓']],
+     ['4 by 4 by 4', "A 4 by 4 by 4 cube has 64 small cubes. 8 corners with 3 faces, 24 edge cubes with 2 faces, 24 face cubes with 1 face and 8 inside.", ['8 + 24 + 24 + 8 = 64', 'g|64']],
+     ['A stack', "A 2 by 2 stack has heights 3, 2, 1 and 4. 3 + 2 + 1 + 4 = 10 cubes.", ['3 + 2 + 1 + 4', 'g|10']],
+     ['A net', "A net of a cube has 6 squares and must fold without overlap.", ['6 squares']]],
+    [['Forgetting the middle', "Mistake one: forgetting the hidden cube.", '8 + 12 + 6 = 26 ✗', '8 + 12 + 6 + 1 = 27 ✓'],
+     ['Counting only visible cubes', "Mistake two: counting only visible cubes.", 'Visible = all ✗', 'Count hidden layers ✓']],
+    ["Builders count bricks in stacks.", ['Brick stacks']],
+    [['How many small cubes have 2 painted faces in a painted 3 by 3 by 3 cube?', "12 edges.", ['12'], '12'],
+     ['A stack has heights 2, 4, 3, 1. How many cubes?', "10.", ['2 + 4 + 3 + 1'], '10'],
+     ['How many small cubes in a 5 by 5 by 5 cube?', "125.", ['5 × 5 × 5'], '125']],
+    ["Corners 3, edges 2, faces 1, middle 0.", ['Add all heights']]);
+
+  L.usePri(13, ['Coordinates and grid references', 'Reflecting and translating on a grid', 'Nets, painted cubes and stacks']);
 })();
 </script>
 <script>
@@ -34820,7 +35607,7 @@ W('How do you solve ordering and logic puzzles?', [
 
   /* add each new lesson after the topic's existing questions */
   Object.keys(ADD).forEach(function (k) {
-    var n = Number(k); if ((n >= 501 && n <= 513) || (n >= 401 && n <= 409)) return; /* rebuilt topics already have full lessons */
+    var n = Number(k); if ((n >= 501 && n <= 513) || (n >= 1 && n <= 13) || (n >= 401 && n <= 409)) return; /* rebuilt topics already have full lessons */
     var had = (BT.EP_BY_TOPIC[n] || []).map(function (t) { return BT.EP && BT.EP[t]; }).filter(Boolean);
     if (had.length !== (BT.EP_BY_TOPIC[n] || []).length && window.console) console.warn('lessons_four: a lesson in topic ' + n + ' was not found');
     L.use(n, had.concat(ADD[n]));
