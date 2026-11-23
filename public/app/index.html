@@ -16205,7 +16205,7 @@ S.spatialExtra = S.extraMakers;
     var TT = D(ep.title), FLM = !!ep.fl, slides = [{ title: true, steps: [{ say: FLM ? (ep.intro || ('Today we are going to learn: ' + TT)) : TT + ' In this lesson, we will learn ' + (ep.goal || '') }] }];
     ep.scenes.forEach(function (sc) { slides.push(sc); });
     var chunks = [];
-    slides.forEach(function (sl, si) { sl.steps.forEach(function (st, k) { chunks.push({ si: si, k: k, say: st.say, think: !!st.think, answer: st.answer, facts: st.facts, last: k === sl.steps.length - 1 }); }); });
+    slides.forEach(function (sl, si) { sl.steps.forEach(function (st, k) { chunks.push({ si: si, k: k, say: st.say, think: !!st.think, answer: st.answer, facts: st.facts, last: k === sl.steps.length - 1, turnQ: sl.h === 'Your turn' && k === 0 && sl.steps.length > 1 }); }); });
     var dashes = ''; for (var d = 0; d < meta.of; d++) dashes += '<i class="' + (d <= meta.q ? 'on' : '') + '"></i>';
     var short = TT;   /* the lesson's question, with its question mark, stays in the purple label at the top */
     function same(a, b) { var n = function (x) { return String(x || '').replace(/<[^>]+>/g, '').toLowerCase().replace(/[^a-z0-9]+/g, ' ').trim(); }; return n(a) === n(b); }
@@ -16436,7 +16436,7 @@ S.spatialExtra = S.extraMakers;
       }
       function next() {
         if (my !== token || !playing || !root.isConnected) return;
-        if (i + 1 < chunks.length) { idx = i + 1; timer = setTimeout(function () { if (my === token && playing && root.isConnected) say(idx); }, 600); }
+        if (i + 1 < chunks.length) { idx = i + 1; timer = setTimeout(function () { if (my === token && playing && root.isConnected) say(idx); }, chunks[i].turnQ ? 3500 : chunks[i + 1].si !== chunks[i].si ? 1800 : 900); }   /* silence in the narration, the video keeps playing: 3.5 seconds after a Your turn question so the child can think; about 2 seconds when a new slide comes up; a short breath between steps */
         else { playing = false; idx = 0; setPb('Watch again'); endCard(); }
       }
       if (FLM && H.flTell) {
