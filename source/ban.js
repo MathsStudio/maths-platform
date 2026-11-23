@@ -21,6 +21,7 @@
   });
   BT.banFor = function (n, tag) { return !!(BAN[Number(n)] && BAN[Number(n)][tag]); };
 
+  H.isBanned = function (n, q) { var bn = BAN[Number(n)]; return !!(bn && q && bn[q.tag]); };
   var orig = H.buildPracticeSet;
   function sig(q) { return String(q && q.text) + '|' + String(q && q.answer); }
   H.buildPracticeSet = function (makers, count) {
@@ -29,7 +30,8 @@
     if (!ban || makers.storyMode) return out;
     var want = out.length;
     var bad = function (q) { return q && ban[q.tag]; };
-    for (var round = 0; round < 12 && out.some(bad); round++) {
+    var tb = Date.now();
+    for (var round = 0; round < 12 && out.some(bad) && Date.now() - tb < 1500; round++) {
       var keep = out.filter(function (q) { return !bad(q); }), seen = {}; keep.forEach(function (q) { seen[sig(q)] = 1; });
       var need = want - keep.length, batch = orig.call(this, makers, Math.max(need * 3, 30));
       batch.forEach(function (q) { if (keep.length < want && !bad(q) && !seen[sig(q)]) { seen[sig(q)] = 1; keep.push(q); } });
