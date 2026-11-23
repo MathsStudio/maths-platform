@@ -45077,7 +45077,7 @@ S.extraMakers = function (n, level) {
     /* the activity for a new lesson */
     (FL._mg = FL._mg || []).push([n, sp.id, sp.gen, qs]);
     var gen = sp.gen ? function () { return sp.gen(pick([0, 1, 2])); } : fromQs(sp);
-    if (sp.li) { var lb = sp.lab || [sp.li[0], 'Choose the answer.']; BT.addLab(n, 'flm' + sp.id, lb[0], lb[1], FL.genAct(gen, ch)); }
+    if (sp.li) { var lb = sp.lab || [sp.li[0], 'Choose the answer.']; BT.addLab(n, 'flm' + sp.id, lb[0], lb[1], FL.genAct(gen, (THEME[n] || [])[0] || ch)); }
     /* P4: the practice questions cover the lesson as well */
     if (t.year === 'P4' && FL.GENS && FL.GENS[n]) { var g = FL.GENS[n]; [0, 1, 2].forEach(function (lv) { var f = function () { return sp.gen ? sp.gen(lv) : fromQs(sp)(); }; (g[['low', 'medium', 'high'][lv]] = g[['low', 'medium', 'high'][lv]] || []).push(f); });
       (window.__addQ = window.__addQ || {})[n] = (window.__addQ[n] || []).concat([function () { return sp.gen ? sp.gen(pick([0, 1, 2])) : fromQs(sp)(); }]); }
@@ -47249,6 +47249,22 @@ S.extraMakers = function (n, level) {
 })();
 </script>
 <script>
+/* take out lessons that do not belong in the main topic (counting forwards and back, counting in steps, carrying on a pattern) */
+(function () {
+  var S = window.Studio, BT = window.BT; if (!S || !BT) return;
+  var DROP = { 201: ['learnm1', 'learnm2'], 301: ['learnm1'], 205: ['learnm3'] };
+  Object.keys(DROP).forEach(function (n) {
+    var t = S.topics[n]; if (!t) return;
+    DROP[n].forEach(function (id) {
+      var st = t.steps.filter(function (x) { return x.id === id; })[0]; if (!st) return;
+      var title = st.slides && st.slides[0] && st.slides[0].title;
+      t.steps = t.steps.filter(function (x) { return x.id !== id && x.id !== 'flm' + id; });
+      if (BT.EP_BY_TOPIC && BT.EP_BY_TOPIC[n]) BT.EP_BY_TOPIC[n] = BT.EP_BY_TOPIC[n].filter(function (x) { return (typeof x === 'string' ? x : x.title) !== title; });
+      if (window.FL && FL._mg) FL._mg = FL._mg.filter(function (m) { return !(String(m[0]) === String(n) && m[1] === id); });
+    });
+    if (S.arrange) S.arrange(t);
+  });
+})();
 (function () {
   if (window.FL && FL.wexLast) FL.wexLast();
   /* no word-and-meaning cards in First level lessons: ideas are explained through examples instead */

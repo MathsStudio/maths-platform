@@ -1,3 +1,19 @@
+/* take out lessons that do not belong in the main topic (counting forwards and back, counting in steps, carrying on a pattern) */
+(function () {
+  var S = window.Studio, BT = window.BT; if (!S || !BT) return;
+  var DROP = { 201: ['learnm1', 'learnm2'], 301: ['learnm1'], 205: ['learnm3'] };
+  Object.keys(DROP).forEach(function (n) {
+    var t = S.topics[n]; if (!t) return;
+    DROP[n].forEach(function (id) {
+      var st = t.steps.filter(function (x) { return x.id === id; })[0]; if (!st) return;
+      var title = st.slides && st.slides[0] && st.slides[0].title;
+      t.steps = t.steps.filter(function (x) { return x.id !== id && x.id !== 'flm' + id; });
+      if (BT.EP_BY_TOPIC && BT.EP_BY_TOPIC[n]) BT.EP_BY_TOPIC[n] = BT.EP_BY_TOPIC[n].filter(function (x) { return (typeof x === 'string' ? x : x.title) !== title; });
+      if (window.FL && FL._mg) FL._mg = FL._mg.filter(function (m) { return !(String(m[0]) === String(n) && m[1] === id); });
+    });
+    if (S.arrange) S.arrange(t);
+  });
+})();
 (function () {
   if (window.FL && FL.wexLast) FL.wexLast();
   /* no word-and-meaning cards in First level lessons: ideas are explained through examples instead */

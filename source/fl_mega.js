@@ -64,7 +64,7 @@
     /* the activity for a new lesson */
     (FL._mg = FL._mg || []).push([n, sp.id, sp.gen, qs]);
     var gen = sp.gen ? function () { return sp.gen(pick([0, 1, 2])); } : fromQs(sp);
-    if (sp.li) { var lb = sp.lab || [sp.li[0], 'Choose the answer.']; BT.addLab(n, 'flm' + sp.id, lb[0], lb[1], FL.genAct(gen, ch)); }
+    if (sp.li) { var lb = sp.lab || [sp.li[0], 'Choose the answer.']; BT.addLab(n, 'flm' + sp.id, lb[0], lb[1], FL.genAct(gen, (THEME[n] || [])[0] || ch)); }
     /* P4: the practice questions cover the lesson as well */
     if (t.year === 'P4' && FL.GENS && FL.GENS[n]) { var g = FL.GENS[n]; [0, 1, 2].forEach(function (lv) { var f = function () { return sp.gen ? sp.gen(lv) : fromQs(sp)(); }; (g[['low', 'medium', 'high'][lv]] = g[['low', 'medium', 'high'][lv]] || []).push(f); });
       (window.__addQ = window.__addQ || {})[n] = (window.__addQ[n] || []).concat([function () { return sp.gen ? sp.gen(pick([0, 1, 2])) : fromQs(sp)(); }]); }
