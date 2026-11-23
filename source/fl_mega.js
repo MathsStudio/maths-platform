@@ -48,7 +48,7 @@
     sl.splice.apply(sl, [ic, 0].concat(add));
     /* the Watch lesson */
     var th = THEME[n] || [], bg = th[1] || sp.bg || BG[(S.topics[n].year || '').replace('P', '')] || 'day', ch = th[0] || sp.ch || 'owl';
-    function pn(h) { return P(bg, '', h || ''); }
+    function pn(h) { return P(bg, '', h || '').replace('<div class="flp ', '<div data-wq="1" class="flp '); }
     var scr = [];
     if (sp.li) { scr.push({ mode: 'watch', say: sp.li[2], pic: pn(sp.li[3]) }); (sp.li[5] || []).forEach(function (s) { scr.push({ mode: 'watch', say: strip(s[0]), pic: pn(s[1]) }); }); }
     if (sp.way) scr.push({ mode: 'watch', say: strip(sp.way[0]), pic: pn(sp.way[1]) });
