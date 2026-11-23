@@ -76,7 +76,13 @@
       return c; });
     BT.lessons(k, 'Watch lesson', eps);
     BT.EP_BY_TOPIC[k] = eps;
-    t.steps.forEach(function (s) { (s.slides || []).forEach(function (sl) { if (typeof sl.v === 'string') sl.v = re(sl.v, th); }); });
+    t.steps.forEach(function (s) { (s.slides || []).forEach(function (sl) { if (typeof sl.v === 'string') sl.v = re(sl.v, th); });
+      /* See it: the picture sits in the topic's own scene, with its character, and says what to notice (the first idea of the lesson) */
+      var sl0 = (s.slides || [])[0], see = (s.slides || []).filter(function (x) { return x.title === 'See it'; })[0];
+      if (see && sl0 && /^learn/.test(s.id) && !see.__themed) { see.__themed = 1;
+        if (typeof see.v === 'string' && see.v.indexOf('class="flp ') < 0) see.v = FL.panel(th[1], th[0], see.v);
+        var idea = String((sl0.say && sl0.say[0]) || '').replace(/<[^>]+>/g, '').replace(/\s+/g, ' ').trim(), cut = idea.search(/[.!?](\s|$)/);
+        if (idea) { idea = cut > 0 ? idea.slice(0, cut + 1) : idea; if (see.say && see.say.length && idea.length < 160) see.say = see.say.concat(['Look closely: ' + idea]); } } });
   });
   if (FL.wexLast) FL.wexLast();
 })();

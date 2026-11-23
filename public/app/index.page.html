@@ -43019,6 +43019,20 @@ S.extraMakers = function (n, level) {
   /* Draw it: the child draws something NEW, not a copy of the picture already on screen.
      Number lines with jumps: the pad shows the same line without the jumps, and the child draws the jumps.
      Tens and ones: the child builds a new number by tapping ten sticks and ones. */
+  /* Draw it on a number line: the line is already printed on the scribble pad, the child circles or marks numbers on it */
+  function nlSvg(labels) {
+    var n = labels.length, w = 640, x0 = 40, gap = (w - 2 * x0) / (n - 1), o = '<svg viewBox="0 0 640 110" role="img" aria-label="A number line" style="width:100%;max-width:640px;height:auto"><line x1="22" y1="55" x2="618" y2="55" stroke="#2b2340" stroke-width="3"/>';
+    labels.forEach(function (t, i) { var x = x0 + i * gap; o += '<line x1="' + x + '" y1="44" x2="' + x + '" y2="66" stroke="#2b2340" stroke-width="3"/><text x="' + x + '" y="92" font-size="20" font-weight="800" text-anchor="middle" style="fill:#2b2340">' + t + '</text>'; });
+    return o + '</svg>';
+  }
+  function seq(a, b, st) { var r = []; for (var v = a; v <= b + 1e-9; v += st) r.push(String(Math.round(v * 100) / 100).replace('-', '\u2212')); return r; }
+  var DRAWNL = {
+    'Find them on the number line.': [seq(0, 10, 1), 'Your turn: here is a number line from 0 to 10. Circle 2, 6 and 9.'],
+    'Start at 35. Jump ten to 45, ten to 55, then 4 ones to 59.': [seq(20, 60, 10), 'Your turn: start at 24. Draw a jump of ten to 34, then another ten to 44.'],
+    '362 is past the halfway point, 350. It is nearer 400.': [seq(200, 300, 20), 'Your turn: here is a number line from 200 to 300. Circle 280. Is it nearer 200 or 300?'],
+    'On a number line, \u22123 is 3 steps to the left of 0.': [seq(-5, 5, 1), 'Your turn: here is a number line from \u22125 to 5. Circle \u22122 and 4.'],
+    'One step is 1/4. Three steps is 3/4.': [['0', '1/4', '2/4', '3/4', '1'], 'Your turn: here is a number line from 0 to 1 in quarters. Circle 2/4.']
+  };
   var DRAWT = {
     'Find them on the number line.': 'Your turn: draw a number line from 0 to 10. Circle 3 and 8.',
     'Turn it round: 5 apples and 3 apples. Still 8.': 'Your turn: draw 2 apples and 6 apples. Then turn it round: 6 and 2. Still 8.',
@@ -43206,8 +43220,9 @@ S.extraMakers = function (n, level) {
       if (i === 1 && BUILD[s[0]]) { var bt = BUILD[s[0]]; o.say = [s[0], 'Your turn: make ' + (bt[0] * 10 + bt[1]) + '. Tap to add ten sticks and ones.']; o.live = function (host) { build(host, bt[0], bt[1]); }; }
       else if (i > 0) { var hops = i === 1 && /marker-end="url\(#flA\)"/.test(s[1]);
         /* Draw it: a number line with jumps goes on the pad without its jumps, so the child draws them; anything else gets a new thing to draw */
-        var pad = { open: true, bg: hops ? noHops(s[1]) : '' };
-        o.say = [s[0], i === 1 ? (hops ? 'Your turn: draw the jumps on the number line.' : DRAWT[s[0]] || 'Your turn: draw your own on the scribble pad.') : 'Your turn: write it on the scribble pad.']; o.live = function (host) { var H = S.h; if (H && H.scribble) H.scribble(host, pad); }; }
+        var nlq = i === 1 && DRAWNL[s[0]];
+        var pad = { open: true, bg: hops ? noHops(s[1]) : nlq ? nlSvg(nlq[0]) : '' };
+        o.say = [s[0], i === 1 ? (hops ? 'Your turn: draw the jumps on the number line.' : nlq ? nlq[1] : DRAWT[s[0]] || 'Your turn: draw your own on the scribble pad.') : 'Your turn: write it on the scribble pad.']; o.live = function (host) { var H = S.h; if (H && H.scribble) H.scribble(host, pad); }; }
       sl.push(o); });
     d.ex.forEach(function (w, i) { sl.push({ title: 'Worked example ' + (i + 1), say: [], ex: worked(w), kind: 'Step by step', noMore: true }); });
     sl.push({ title: 'Watch out!', say: [d.mistake[0]], v: d.mistake[1], kind: 'A common mistake', noMore: true });
@@ -47332,7 +47347,13 @@ S.extraMakers = function (n, level) {
       return c; });
     BT.lessons(k, 'Watch lesson', eps);
     BT.EP_BY_TOPIC[k] = eps;
-    t.steps.forEach(function (s) { (s.slides || []).forEach(function (sl) { if (typeof sl.v === 'string') sl.v = re(sl.v, th); }); });
+    t.steps.forEach(function (s) { (s.slides || []).forEach(function (sl) { if (typeof sl.v === 'string') sl.v = re(sl.v, th); });
+      /* See it: the picture sits in the topic's own scene, with its character, and says what to notice (the first idea of the lesson) */
+      var sl0 = (s.slides || [])[0], see = (s.slides || []).filter(function (x) { return x.title === 'See it'; })[0];
+      if (see && sl0 && /^learn/.test(s.id) && !see.__themed) { see.__themed = 1;
+        if (typeof see.v === 'string' && see.v.indexOf('class="flp ') < 0) see.v = FL.panel(th[1], th[0], see.v);
+        var idea = String((sl0.say && sl0.say[0]) || '').replace(/<[^>]+>/g, '').replace(/\s+/g, ' ').trim(), cut = idea.search(/[.!?](\s|$)/);
+        if (idea) { idea = cut > 0 ? idea.slice(0, cut + 1) : idea; if (see.say && see.say.length && idea.length < 160) see.say = see.say.concat(['Look closely: ' + idea]); } } });
   });
   if (FL.wexLast) FL.wexLast();
 })();
