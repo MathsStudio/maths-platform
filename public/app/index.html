@@ -45679,6 +45679,793 @@ S.extraMakers = function (n, level) {
 })();
 </script>
 <script>
+/* fl_m3a.js: P3 Numbers to 100 and beyond (301) and Adding and subtracting (302) */
+(function () {
+  'use strict';
+  var FL = window.FL, S = window.Studio; if (!FL || !FL.MEGA) return;
+  var B = FL.big, C = FL.cards, TH = FL.things, M = FL.MEGA, r = FL.r, pick = FL.pick, T = FL.track, G = FL.groups;
+  function mc(tag, q, a, w, h, e, p) { return FL.MC(tag, q, a, w, [h], e, p || ''); }
+  function nl(lo, hi, mark, hops) { return T(lo, hi, mark, hops); }
+  var W = ['zero', 'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine', 'ten', 'eleven', 'twelve', 'thirteen', 'fourteen', 'fifteen', 'sixteen', 'seventeen', 'eighteen', 'nineteen'], TY = ['', '', 'twenty', 'thirty', 'forty', 'fifty', 'sixty', 'seventy', 'eighty', 'ninety'];
+  function words(n) { if (n < 20) return W[n]; if (n < 100) return TY[Math.floor(n / 10)] + (n % 10 ? '-' + W[n % 10] : ''); if (n < 1000) return W[Math.floor(n / 100)] + ' hundred' + (n % 100 ? ' and ' + words(n % 100) : ''); return String(n); }
+  FL.words = words;
+  function hto(h, t, o) { return C([h + ' hundreds', t + ' tens', o + ' ones']); }
+
+  /* ---------- 301 ---------- */
+  M(301, { id: 'learn1', ch: 'pirate', bg: 'sea',
+    way: ['A pattern has a rule. Find the rule by looking at the gap between each pair of numbers.', C(['5', '10', '15', '20', '+5 each time'])],
+    ex: [['What comes next? 30, 40, 50, 60, …', ['Gaps: 10, 10, 10.', 'The rule is add 10.', '60 + 10 = 70.'], 'The next number is 70.', C(['30', '40', '50', '60', '?'])], ['What comes next? 18, 15, 12, 9, …', ['Gaps: 3 less each time.', '9 − 3 = 6.'], 'The next number is 6.', C(['18', '15', '12', '9', '?'])]],
+    mist: ['Check every gap. 2, 5, 8, 12 changes from +3 to +4, so it is not a pattern.', C(['+3', '+3', '+4 ✗'])],
+    real: ['Pip saves 20p, 40p, 60p, … each week. How much in week 4?', '80p', ['70p', '100p', '60p'], 'Add 20 each week.', C(['20p', '40p', '60p', '?'])],
+    qs: [['What comes next? 4, 8, 12, 16, …', '20', ['18', '24', '19'], '+4.', ''], ['What comes next? 100, 90, 80, 70, …', '60', ['50', '65', '71'], '−10.', ''], ['What is the rule? 7, 14, 21, 28', 'add 7', ['add 5', 'add 14', 'add 8'], 'Gap is 7.', ''], ['What is missing? 15, 20, ?, 30', '25', ['24', '26', '35'], '+5.', ''],
+         ['What comes next? 3, 6, 9, 12, …', '15', ['14', '18', '13'], '+3.', ''], ['What comes next? 50, 45, 40, 35, …', '30', ['25', '36', '32'], '−5.', ''], ['What is the rule? 1, 3, 5, 7', 'add 2', ['add 1', 'add 3', 'add 7'], '+2.', ''], ['What is missing? 2, ?, 6, 8, 10', '4', ['3', '5', '12'], '+2.', '']],
+    gen: function (lv) { var st = pick(lv ? [3, 4, 6, 7, 8, 9] : [2, 3, 4, 5, 10]), s = r(1, 9) * (lv ? 1 : 2), down = lv === 2 && r(0, 1), a = [0, 1, 2, 3].map(function (i) { return down ? s + 40 - st * i : s + st * i; }), n = down ? s + 40 - st * 4 : s + st * 4; return mc('Number patterns', 'What comes next? <b>' + a.join(', ') + ', …</b>', n, [n + 1, n - 1, n + st], 'Find the gap between the numbers.', 'The rule is ' + (down ? 'take away ' : 'add ') + st + ', so the next number is ' + n + '.'); } });
+
+  M(301, { id: 'learn2', ch: 'pirate', bg: 'sea',
+    way: ['Think of money: 100 is a pound, 10 is a 10p coin and 1 is a penny. 245 is 2 hundreds, 4 tens and 5 ones.', hto(2, 4, 5)],
+    ex: [['What is the value of the 6 in 463?', ['463 is 4 hundreds, 6 tens, 3 ones.', 'The 6 is in the tens place.'], 'The 6 is worth 60.', hto(4, 6, 3)], ['Write 3 hundreds, 0 tens and 8 ones.', ['300 and 0 and 8.', 'The 0 holds the tens place.'], '308', hto(3, 0, 8)]],
+    mist: ['Do not skip the zero. 3 hundreds and 5 ones is 305, not 35.', C(['305 ✓', '35 ✗'])],
+    real: ['A shop has 2 boxes of 100 pens, 3 packs of 10 and 7 loose. How many pens?', '237', ['327', '2037', '23'], '200 + 30 + 7.', hto(2, 3, 7)],
+    qs: [['How many hundreds in 573?', '5', ['7', '3', '57'], 'First digit.', hto(5, 7, 3)], ['What is the value of 4 in 248?', '40', ['4', '400', '8'], 'Tens place.', hto(2, 4, 8)], ['What number is 6 hundreds, 2 tens, 1 one?', '621', ['126', '6021', '612'], '600 + 20 + 1.', ''], ['What number is 7 hundreds and 9 ones?', '709', ['79', '790', '7009'], 'Zero tens.', ''],
+         ['What is 400 + 50 + 2?', '452', ['4502', '542', '45'], 'Put them together.', ''], ['What is the value of 9 in 912?', '900', ['90', '9', '12'], 'Hundreds place.', ''], ['Which number has 3 tens?', '534', ['354', '345', '3'], 'Tens is the middle digit.', ''], ['How many tens in 380?', '8', ['3', '80', '0'], 'Middle digit.', '']],
+    gen: function (lv) { var h = r(1, 9), t = r(0, 9), o = r(0, 9), n = h * 100 + t * 10 + o, k = r(0, 2); return k === 0 ? mc('Hundreds, tens and ones', 'What is the value of the <b>' + [h, t, o][k = r(0, 2)] + '</b> in ' + n + '? (' + ['hundreds', 'tens', 'ones'][k] + ' place)', [h * 100, t * 10, o][k], [[h * 100, t * 10, o][k] * 10 + 1, [h, t, o][k], [h * 100, t * 10, o][k] + 100].filter(function (x) { return x !== [h * 100, t * 10, o][k]; }), 'Look at the place of the digit.', 'The digit is in the ' + ['hundreds', 'tens', 'ones'][k] + ' place.') : k === 1 ? mc('Hundreds, tens and ones', 'What number is <b>' + h + ' hundreds, ' + t + ' tens and ' + o + ' ones</b>?', n, [o * 100 + t * 10 + h, h * 10 + t + o, n + 100], 'Hundreds, then tens, then ones.', h * 100 + ' + ' + t * 10 + ' + ' + o + ' = ' + n + '.', hto(h, t, o)) : mc('Hundreds, tens and ones', 'How many <b>tens</b> are in the digit place of <b>' + n + '</b>?', t, [h, o, t + 1], 'The tens digit is in the middle.', n + ' has ' + t + ' tens.'); } });
+
+  M(301, { id: 'learn3', ch: 'pirate', bg: 'sea',
+    way: ['Line the numbers up in columns. Start with the hundreds, then tens, then ones. The first difference decides.', C(['4 2 7', '4 5 1', '← 2 tens < 5 tens'])],
+    ex: [['Which is bigger: 618 or 681?', ['Hundreds: 6 and 6, the same.', 'Tens: 1 and 8. 8 is more.'], '681 is bigger.', C(['618', '681'])], ['Put in order, smallest first: 352, 325, 532.', ['Hundreds: 3, 3, 5. 532 is biggest.', 'Tens: 5 and 2. 325 is smaller.'], '325, 352, 532.', C(['352', '325', '532'])]],
+    mist: ['Compare the hundreds first, not the ones. 199 is smaller than 201.', C(['199 < 201'])],
+    real: ['A bag holds 450 sweets, another 405. Which holds more?', '450', ['405', 'the same'], 'Tens: 5 is more than 0.', C(['450', '405'])],
+    qs: [['Which is bigger: 345 or 354?', '354', ['345'], 'Tens: 5 > 4.', ''], ['Which is smaller: 702 or 720?', '702', ['720'], 'Tens: 0 < 2.', ''], ['Which is the biggest: 289, 298, 829?', '829', ['289', '298'], 'Hundreds.', ''], ['Which is the smallest: 505, 550, 55?', '55', ['505', '550'], '55 has no hundreds.', ''],
+         ['Put in order, biggest first: 120, 210, 102', '210, 120, 102', ['102, 120, 210', '120, 210, 102'], 'Largest first.', ''], ['Which sign fits: 456 ◯ 465?', '<', ['>', '='], '5 tens < 6 tens.', ''], ['Which sign fits: 800 ◯ 799?', '>', ['<', '='], '8 hundreds > 7.', ''], ['Which is bigger: 999 or 1000?', '1000', ['999'], '1000 is one more.', '']],
+    gen: function (lv) { var a = r(100, lv ? 999 : 500), b = a + r(1, lv ? 90 : 300) * (r(0, 1) ? 1 : -1); if (b < 100) b = a + 12; var big = Math.max(a, b), sm = Math.min(a, b), o = r(0, 1); return mc('Comparing numbers', 'Which is <b>' + (o ? 'bigger' : 'smaller') + '</b>: ' + a + ' or ' + b + '?', o ? big : sm, [o ? sm : big], 'Compare the hundreds, then the tens, then the ones.', big + ' is bigger than ' + sm + '.'); } });
+
+  M(301, { id: 'learn4', ch: 'pirate', bg: 'sea',
+    way: ['On a number line, find the two tens either side. Round to the nearer one. Halfway (5) goes up.', nl(30, 40, [34, 30, 40])],
+    ex: [['Round 47 to the nearest 10.', ['47 is between 40 and 50.', 'The ones digit is 7, so go up.'], '47 rounds to 50.', nl(40, 50, [47, 50])], ['Round 82 to the nearest 10.', ['82 is between 80 and 90.', 'The ones digit is 2, so stay down.'], '82 rounds to 80.', nl(80, 90, [82, 80])]],
+    mist: ['5 rounds UP. 35 rounds to 40, not 30.', nl(30, 40, [35, 40])],
+    real: ['A shop has 63 apples. About how many tens is that?', '60', ['70', '63', '50'], '3 is less than 5, round down.', ''],
+    qs: [['Round 23 to the nearest 10.', '20', ['30', '25', '10'], '3 < 5.', ''], ['Round 68 to the nearest 10.', '70', ['60', '80', '68'], '8 ≥ 5.', ''], ['Round 45 to the nearest 10.', '50', ['40', '45', '55'], '5 goes up.', ''], ['Round 91 to the nearest 10.', '90', ['100', '91', '80'], '1 is small.', ''],
+         ['Round 99 to the nearest 10.', '100', ['90', '99', '110'], '9 goes up.', ''], ['Round 14 to the nearest 10.', '10', ['20', '14', '15'], '4 < 5.', ''], ['Which rounds to 60?', '57', ['52', '67', '64'], '57 is closest to 60.', ''], ['Round 75 to the nearest 10.', '80', ['70', '75', '85'], 'Halfway goes up.', '']],
+    gen: function (lv) { var n = r(11, lv ? 199 : 99), rd = Math.round(n / 10) * 10; return mc('Rounding', 'Round <b>' + n + '</b> to the nearest 10.', rd, [rd + 10, rd - 10, n], 'Look at the ones digit: 5 or more goes up.', n + ' rounds to ' + rd + '.', nl(Math.floor(n / 10) * 10, Math.floor(n / 10) * 10 + 10, [n, rd])); } });
+
+  M(301, { id: 'learn5', ch: 'pirate', bg: 'sea',
+    way: ['Odd and even alternate. Even numbers end in 0, 2, 4, 6, 8; odd numbers end in 1, 3, 5, 7, 9. Bigger numbers follow the same rule.', C(['10 even', '11 odd', '12 even', '13 odd'])],
+    ex: [['Is 86 odd or even?', ['Look at the ones digit, 6.', '6 is even.'], '86 is even.', B('86')], ['Is 275 odd or even?', ['The ones digit is 5.', '5 is odd.'], '275 is odd.', B('275')]],
+    mist: ['Only the last digit matters. 98 is even; 89 is odd.', C(['98 even', '89 odd'])],
+    real: ['23 children go to a trip. Can they all stand in pairs?', 'No', ['Yes'], '23 is odd.', B('23')],
+    qs: [['Is 48 odd or even?', 'even', ['odd'], 'Ends in 8.', ''], ['Is 91 odd or even?', 'odd', ['even'], 'Ends in 1.', ''], ['Is 130 odd or even?', 'even', ['odd'], 'Ends in 0.', ''], ['Which is odd?', '57', ['56', '58', '60'], 'Ends in 7.', ''],
+         ['Which is even?', '84', ['83', '85', '87'], 'Ends in 4.', ''], ['Odd + odd is…', 'even', ['odd'], '3 + 5 = 8.', ''], ['Even + even is…', 'even', ['odd'], '4 + 6 = 10.', ''], ['Odd + even is…', 'odd', ['even'], '3 + 4 = 7.', '']],
+    gen: function (lv) { var n = r(10, lv ? 999 : 99); return mc('Odd and even', 'Is <b>' + n + '</b> odd or even?', n % 2 ? 'odd' : 'even', [n % 2 ? 'even' : 'odd'], 'Look at the last digit.', n + ' is ' + (n % 2 ? 'odd' : 'even') + '.'); } });
+
+  M(301, { id: 'learn6', ch: 'pirate', bg: 'sea',
+    way: ['We write ordinal numbers with a short ending: 1st, 2nd, 3rd, then th: 4th, 5th, 11th, 12th, 20th, 21st.', C(['1st', '2nd', '3rd', '4th', '21st'])],
+    ex: [['Zoe is 4th in the queue. How many are in front?', ['4th means 3 before her.'], '3 people.', C(['1st', '2nd', '3rd', '4th'])], ['What comes after 9th?', ['9th, 10th.'], '10th', C(['9th', '10th'])]],
+    mist: ['Ordinal numbers use position, not amount. 3rd is a place, 3 is how many.', C(['3rd place', '3 medals'])],
+    real: ['You finish a race in 2nd place. Who finished first?', 'someone else', ['you'], '1st is before 2nd.', C(['🥇', '🥈'])],
+    qs: [['What comes after 6th?', '7th', ['5th', '8th', '6'], 'Next.', ''], ['What comes before 3rd?', '2nd', ['4th', '1st'], 'Before.', ''], ['Which is the 5th letter in A B C D E F?', 'E', ['D', 'F'], 'Count to 5.', ''], ['What is the ordinal for 11?', '11th', ['11st', '11nd'], 'Teen numbers end th.', ''],
+         ['What is the ordinal for 22?', '22nd', ['22th', '22rd'], '2nd ending.', ''], ['Which place is after 2nd?', '3rd', ['1st', '4th'], 'Order.', ''], ['Dev is 8th. How many people are in front?', '7', ['8', '9'], '1st to 7th.', ''], ['What is the ordinal for 20?', '20th', ['20nd', '20st'], 'Ends th.', '']],
+    gen: function (lv) { var n = r(1, lv ? 30 : 12); function o(k) { var t = k % 100; return k + (t > 10 && t < 14 ? 'th' : k % 10 === 1 ? 'st' : k % 10 === 2 ? 'nd' : k % 10 === 3 ? 'rd' : 'th'); } return mc('Ordinal numbers', 'What comes <b>after ' + o(n) + '</b>?', o(n + 1), [o(n - 1 || 3), o(n + 2), n + 1 + ''], 'Add one place.', o(n + 1) + ' comes after ' + o(n) + '.'); } });
+
+  /* new 301 lessons */
+  M(301, { id: 'learnm1', ch: 'pirate', bg: 'sea',
+    li: ['Counting in steps', 'How do I count in steps of 2, 3, 4, 5 and 10?', 'Counting in steps is skip counting. Each jump is the same size. It helps with times tables later.', C(['2s', '3s', '4s', '5s', '10s']),
+      [['step', 'the size of each jump', '👣'], ['multiple', 'a number in a counting list', '🔢'], ['forwards', 'going up', '⬆️'], ['backwards', 'going down', '⬇️']],
+      [['In 2s: 2, 4, 6, 8, 10, 12.', C(['2', '4', '6', '8', '10', '12'])], ['In 5s: 5, 10, 15, 20, 25, 30.', C(['5', '10', '15', '20', '25', '30'])], ['In 3s: 3, 6, 9, 12, 15, 18.', C(['3', '6', '9', '12', '15', '18'])]],
+      [['Count in 4s from 0: 0, 4, 8, ?', ['4 more than 8.'], '12', nl(0, 16, [0, 4, 8, 12])], ['Count back in 10s from 70: 70, 60, ?', ['10 less than 60.'], '50', C(['70', '60', '?'])], ['Which number is in the 3s list: 10, 12 or 14?', ['3, 6, 9, 12.'], '12', C(['3', '6', '9', '12'])]],
+      ['Keep the step the same. 5, 10, 14 changes the step.', C(['5, 10, 15 ✓'])],
+      ['Count in 3s: 12, 15, 18, ?', '', ['20', '21', '22'], '21', '18 + 3 = 21.', 'Add 3.'],
+      ['Skip count: keep the jump the same size every time.', C(['same step', 'forwards or backwards'])]],
+    ex: [['Count in 5s from 35: 35, 40, 45, ?', ['+5.'], '50', C(['35', '40', '45', '?'])], ['Count in 2s back from 20: 20, 18, 16, ?', ['−2.'], '14', C(['20', '18', '16', '?'])]],
+    way: ['Colour the multiples on a hundred square and look at the pattern.', C(['2s: all even', '5s: end in 0 or 5', '10s: end in 0'])],
+    mist: ['Start counting from the start number, not zero, if the question says so.', C(['start at 35'])],
+    real: ['Each box holds 4 eggs. How many in 5 boxes? Count in 4s.', '20', ['9', '16', '24'], '4, 8, 12, 16, 20.', TH(8, 'star')],
+    qs: [['Count in 3s: 3, 6, 9, …', '12', ['10', '11', '13'], '+3.', ''], ['Count in 4s: 4, 8, 12, …', '16', ['14', '15', '18'], '+4.', ''], ['Count in 5s: 25, 30, 35, …', '40', ['38', '45', '36'], '+5.', ''], ['Count back in 10s: 90, 80, 70, …', '60', ['50', '65', '71'], '−10.', ''],
+         ['Count in 2s: 14, 16, 18, …', '20', ['19', '22', '21'], '+2.', ''], ['Which is in the 4s: 18, 20 or 22?', '20', ['18', '22'], '4, 8, 12, 16, 20.', ''], ['Count back in 5s: 40, 35, 30, …', '25', ['20', '26', '24'], '−5.', ''], ['Count in 3s from 0 to 12. How many numbers (not counting 0)?', '4', ['3', '5', '12'], '3, 6, 9, 12.', '']],
+    gen: function (lv) { var st = pick(lv ? [3, 4, 6, 7] : [2, 3, 4, 5, 10]), s = st * r(0, 3), n = s + 3 * st; return mc('Counting in steps', 'Count in ' + st + 's: <b>' + s + ', ' + (s + st) + ', ' + (s + 2 * st) + ', …</b> What comes next?', n, [n + 1, n - 1, n + st], 'Add ' + st + ' each time.', 'Next is ' + n + '.'); } });
+
+  M(301, { id: 'learnm2', ch: 'pirate', bg: 'sea',
+    li: ['Number lines to 100', 'How do I find numbers on a number line to 100?', 'A number line to 100 goes in tens. Find the two tens either side of your number, then count on in ones.', nl(0, 10, [0, 5, 10]),
+      [['tens', '10, 20, 30 …', '🔟'], ['between', 'in the middle of two', '↔️'], ['halfway', 'exactly in the middle', '🎯'], ['place', 'put in the right spot', '📍']],
+      [['The line goes 0, 10, 20, 30 … 100. Each big step is 10.', C(['0', '10', '20', '30', '…', '100'])], ['Where is 47? Between 40 and 50. It is 7 after 40.', C(['40', '47', '50'])], ['Halfway between 40 and 50 is 45.', C(['40', '45', '50'])]],
+      [['Which tens is 63 between?', ['60 is below, 70 above.'], '60 and 70.', C(['60', '63', '70'])], ['What number is halfway between 20 and 30?', ['25.'], '25', C(['20', '25', '30'])], ['Is 38 closer to 30 or 40?', ['8 ones is more than halfway.'], '40', C(['30', '38', '40'])]],
+      ['A number line is not drawn to scale. Use the tens markers to guide you.', C(['0', '10', '20'])],
+      ['Which tens does 72 lie between?', C(['70', '72', '80']), ['60 and 70', '70 and 80', '80 and 90'], '70 and 80', '72 is 2 more than 70.', 'Find the tens either side.'],
+      ['Find the tens either side of the number, then count the ones.', C(['tens', 'ones'])]],
+    ex: [['What is halfway between 60 and 70?', ['Halfway means 5 more than 60.'], '65', C(['60', '65', '70'])], ['Is 91 closer to 90 or 100?', ['1 more than 90.'], '90', C(['90', '91', '100'])]],
+    way: ['Draw a line from 0 to 100 and mark every 10. Then mark your number with an arrow.', C(['0', '50', '100'])],
+    mist: ['Count the ones from the tens marker, not from 0.', C(['7 after 40 = 47'])],
+    real: ['A thermometer climbs to 83 degrees. Which tens is it between?', '80 and 90', ['70 and 80', '90 and 100'], '83 is 3 above 80.', C(['80', '83', '90'])],
+    qs: [['Which tens is 56 between?', '50 and 60', ['40 and 50', '60 and 70'], 'Tens either side.', ''], ['What is halfway between 10 and 20?', '15', ['12', '14', '25'], 'Add 5 to 10.', ''], ['What is halfway between 70 and 80?', '75', ['72', '74', '85'], 'Add 5.', ''], ['Is 24 closer to 20 or 30?', '20', ['30'], '4 < 5.', ''],
+         ['Is 67 closer to 60 or 70?', '70', ['60'], '7 > 5.', ''], ['What number is 2 after 40?', '42', ['38', '24', '40'], 'Count on 2.', ''], ['What number is 3 before 50?', '47', ['53', '43', '50'], 'Count back 3.', ''], ['Which is nearest 100: 89, 95 or 79?', '95', ['89', '79'], 'Closest.', '']],
+    gen: function (lv) { var t = r(1, 8) * 10, o = r(1, 9), n = t + o; return mc('Number lines', 'Which two tens is <b>' + n + '</b> between?', t + ' and ' + (t + 10), [t - 10 + ' and ' + t, t + 10 + ' and ' + (t + 20), t + 5 + ' and ' + (t + 15)], 'Find the tens either side.', n + ' is between ' + t + ' and ' + (t + 10) + '.', nl(t, t + 10, [n])); } });
+
+  M(301, { id: 'learnm3', ch: 'pirate', bg: 'sea',
+    li: ['Writing numbers in words', 'How do I read and write numbers in words?', 'We write 21 as twenty-one and 100 as one hundred. Tens words go with a hyphen and the ones word.', C(['21', 'twenty-one']),
+      [['hyphen', 'the little dash - in twenty-one', '➖'], ['hundred', 'ten tens', '💯'], ['twenty', '20', '2️⃣'], ['thirty', '30', '3️⃣']],
+      [['20 twenty, 30 thirty, 40 forty, 50 fifty, 60 sixty, 70 seventy, 80 eighty, 90 ninety.', C(['20 twenty', '30 thirty', '40 forty', '50 fifty'])], ['Put the tens and ones together: 34 is thirty-four.', C(['30', '4', 'thirty-four'])], ['100 is one hundred. 245 is two hundred and forty-five.', C(['100', 'one hundred', '245', 'two hundred and forty-five'])]],
+      [['Write 47 in words.', ['40 is forty.', '7 is seven.'], 'forty-seven', B('47 → forty-seven')], ['What number is “sixty-two”?', ['sixty is 60, two is 2.'], '62', B('sixty-two → 62')], ['Write 150 in words.', ['One hundred and fifty.'], 'one hundred and fifty', B('150')]],
+      ['Spell carefully: forty has no u. Fifty is not fivety.', C(['forty', 'fifty'])],
+      ['Which is 56 in words?', B('56'), ['fifty-six', 'sixty-five', 'five-six'], 'fifty-six', '50 and 6.', 'Tens word, then ones.'],
+      ['Number words: tens word, hyphen, ones word.', C(['thirty-five'])]],
+    ex: [['Write 83 in words.', ['eighty-three.'], 'eighty-three', B('83')], ['What is “ninety-nine” in digits?', ['90 and 9.'], '99', B('ninety-nine')]],
+    way: ['Make number cards: put a digit card next to its word card and match them.', C(['58', 'fifty-eight'])],
+    mist: ['Do not mix teens and tens: 13 is thirteen, 30 is thirty.', C(['13 thirteen', '30 thirty'])],
+    real: ['The cheque says “seventy-five pounds”. How much is it?', '£75', ['£57', '£705', '£7'], '70 and 5.', B('seventy-five')],
+    qs: [['What is 25 in words?', 'twenty-five', ['fifty-two', 'twenty-fifty'], '20 and 5.', ''], ['What number is “forty-one”?', '41', ['14', '401', '40'], '40 and 1.', ''], ['What is 90 in words?', 'ninety', ['nineteen', 'nine'], '90.', ''], ['What number is “eighty-eight”?', '88', ['808', '80', '18'], 'Eighty and eight.', ''],
+         ['What is 100 in words?', 'one hundred', ['ten', 'one thousand'], '100.', ''], ['What number is “thirty”?', '30', ['13', '3'], 'Thirty.', ''], ['What is 66 in words?', 'sixty-six', ['six-six', 'sixteen-six'], '60 and 6.', ''], ['What number is “seventeen”?', '17', ['70', '71', '7'], 'Teen.', '']],
+    gen: function (lv) { var n = r(21, lv ? 199 : 99); return r(0, 1) ? mc('Number words', 'How do you write <b>' + n + '</b> in words?', words(n), [words(n + 1), words(n + 10), words(n - 10 < 1 ? n + 20 : n - 10)], 'Say it out loud.', n + ' is ' + words(n) + '.') : mc('Number words', 'What number is “<b>' + words(n) + '</b>”?', n, [n + 1, n + 10, n - 10 < 1 ? n + 20 : n - 10], 'Read the tens word and the ones word.', words(n) + ' is ' + n + '.'); } });
+
+  /* ---------- 302 ---------- */
+  M(302, { id: 'learn1', ch: 'frog', bg: 'pond',
+    way: ['You can add in any order. Spot pairs that make 10, 20 or 100 first.', C(['6 + 4 = 10', '+ 3 = 13'])],
+    ex: [['What is 4 + 9 + 6?', ['4 and 6 make 10.', '10 + 9 = 19.'], '19', C(['4 + 6 = 10', '10 + 9'])], ['What is 8 + 5 + 2?', ['8 and 2 make 10.', '10 + 5 = 15.'], '15', C(['8 + 2 = 10', '10 + 5'])]],
+    mist: ['Reordering works for adding, but not for taking away.', C(['3 + 5 + 7 ✓ any order', '9 − 4 ✗'])],
+    real: ['Dev has 7 red, 8 blue and 3 green marbles. How many?', '18', ['17', '19', '15'], '7 + 3 = 10, 10 + 8 = 18.', G(7, 8, 'star', '+')],
+    qs: [['What is 3 + 8 + 7?', '18', ['17', '19', '15'], '3 + 7 = 10.', ''], ['What is 6 + 9 + 4?', '19', ['18', '20', '10'], '6 + 4 = 10.', ''], ['What is 5 + 7 + 5?', '17', ['16', '18', '15'], '5 + 5 = 10.', ''], ['What is 2 + 8 + 9?', '19', ['18', '20', '11'], '2 + 8 = 10.', ''],
+         ['What is 12 + 5 + 8?', '25', ['24', '26', '20'], '12 + 8 = 20.', ''], ['What is 14 + 9 + 6?', '29', ['28', '30', '20'], '14 + 6 = 20.', ''], ['Which pair makes 10?', '3 and 7', ['3 and 8', '4 and 5'], '3 + 7.', ''], ['What is 25 + 17 + 5?', '47', ['46', '42', '30'], '25 + 5 = 30.', '']],
+    gen: function (lv) { var a = r(1, 9), c = 10 - a, b = r(2, lv ? 19 : 9); return mc('Reordering', 'What is <b>' + a + ' + ' + b + ' + ' + c + '</b>?', 10 + b, [10 + b + 1, 10 + b - 1, a + b], 'Spot the pair that makes 10 first.', a + ' + ' + c + ' = 10, then 10 + ' + b + ' = ' + (10 + b) + '.'); } });
+
+  M(302, { id: 'learn2', ch: 'frog', bg: 'pond',
+    way: ['Bridging through 10: make the next ten first, then add what is left.', nl(5, 16, [8, 10, 15], [[8, 10], [10, 15]])],
+    ex: [['What is 8 + 6?', ['8 + 2 = 10.', '6 − 2 = 4 left.', '10 + 4 = 14.'], '14', nl(7, 15, [8, 10, 14], [[8, 10], [10, 14]])], ['What is 15 − 7?', ['15 − 5 = 10.', '7 − 5 = 2 left.', '10 − 2 = 8.'], '8', nl(6, 16, [15, 10, 8], [[15, 10], [10, 8]])]],
+    mist: ['Split the number to make the 10, and remember the rest. 9 + 6: 9 + 1 = 10, then 5 more.', C(['9 + 1 + 5'])],
+    real: ['A bus has 9 passengers and 7 get on. How many now?', '16', ['15', '17', '2'], '9 + 1 = 10, then 6 more.', TH(9, 'car')],
+    qs: [['What is 9 + 5?', '14', ['13', '15', '4'], '9 + 1 = 10, +4.', ''], ['What is 7 + 6?', '13', ['12', '14', '1'], '7 + 3 = 10, +3.', ''], ['What is 8 + 7?', '15', ['14', '16', '1'], '8 + 2 = 10, +5.', ''], ['What is 6 + 8?', '14', ['13', '15', '2'], '6 + 4 = 10, +4.', ''],
+         ['What is 13 − 5?', '8', ['7', '9', '18'], '13 − 3 = 10, −2.', ''], ['What is 12 − 4?', '8', ['7', '9', '16'], '12 − 2 = 10, −2.', ''], ['What is 16 − 8?', '8', ['7', '9', '24'], '16 − 6 = 10, −2.', ''], ['What is 14 − 6?', '8', ['7', '9', '20'], '14 − 4 = 10, −2.', '']],
+    gen: function (lv) { var a = r(6, 9), b = r(a === 9 ? 2 : 11 - a, lv ? 9 : 8), add = r(0, 1); if (add) return mc('Bridging through 10', 'What is <b>' + a + ' + ' + b + '</b>? Make 10 first.', a + b, [a + b + 1, a + b - 1, a + b + 10], 'Add to make 10, then add the rest.', a + ' + ' + (10 - a) + ' = 10, then ' + (b - (10 - a)) + ' more makes ' + (a + b) + '.'); var x = r(11, 18), y = r(x - 10 + 1, 9); return mc('Bridging through 10', 'What is <b>' + x + ' − ' + y + '</b>? Go back to 10 first.', x - y, [x - y + 1, x - y - 1, x + y], 'Take away to 10, then take away the rest.', x + ' − ' + (x - 10) + ' = 10, then ' + (y - (x - 10)) + ' less gives ' + (x - y) + '.'); } });
+
+  M(302, { id: 'learn3', ch: 'frog', bg: 'pond',
+    way: ['Count on in tens first, then in ones. 35 + 24: 35, 45, 55, then 56, 57, 58, 59.', nl(30, 60, [35, 55, 59], [[35, 55], [55, 59]])],
+    ex: [['What is 42 + 31?', ['Add the tens: 42, 52, 62, 72.', 'Add the ones: 73.'], '73', nl(40, 75, [42, 72, 73])], ['What is 58 + 17?', ['Add the tens: 68.', 'Add 7: 75.'], '75', nl(55, 80, [58, 68, 75])]],
+    mist: ['Count the tens first, then the ones. Do not count the start number again.', C(['start at 35, not 34'])],
+    real: ['A farm has 45 hens and 23 ducks. How many birds?', '68', ['67', '78', '22'], '45 + 20 = 65, + 3 = 68.', TH(10, 'duck')],
+    qs: [['What is 34 + 25?', '59', ['58', '69', '9'], '34 + 20 = 54, + 5.', ''], ['What is 47 + 30?', '77', ['78', '17', '71'], '+3 tens.', ''], ['What is 52 + 36?', '88', ['87', '78', '16'], '+30, +6.', ''], ['What is 26 + 43?', '69', ['68', '79', '17'], '+40, +3.', ''],
+         ['What is 61 + 28?', '89', ['88', '79', '33'], '+20, +8.', ''], ['What is 15 + 54?', '69', ['68', '79', '39'], '+50, +4.', ''], ['What is 70 + 19?', '89', ['88', '79', '51'], '+10, +9.', ''], ['What is 38 + 41?', '79', ['78', '89', '3'], '+40, +1.', '']],
+    gen: function (lv) { var a = r(11, lv ? 70 : 50), b = r(11, lv ? 29 : 39); return mc('Counting on', 'What is <b>' + a + ' + ' + b + '</b>? Count on the tens, then the ones.', a + b, [a + b + 1, a + b - 1, a + b + 10], 'Add the tens first.', a + ' + ' + Math.floor(b / 10) * 10 + ' = ' + (a + Math.floor(b / 10) * 10) + ', then ' + b % 10 + ' more is ' + (a + b) + '.'); } });
+
+  M(302, { id: 'learn4', ch: 'frog', bg: 'pond',
+    way: ['Split each number into tens and ones, add the tens, add the ones, then put them back.', C(['30 + 4', '20 + 5', '50 + 9'])],
+    ex: [['What is 46 + 23?', ['40 + 6 and 20 + 3.', '40 + 20 = 60. 6 + 3 = 9.', '60 + 9 = 69.'], '69', C(['40+6', '20+3', '69'])], ['What is 57 − 24?', ['50 + 7 and 20 + 4.', '50 − 20 = 30. 7 − 4 = 3.', '30 + 3 = 33.'], '33', C(['50+7', '20+4', '33'])]],
+    mist: ['Keep tens with tens and ones with ones. 40 + 3 is 43, not 7.', C(['40 + 3 = 43'])],
+    real: ['Mia has 34 beads and Sam has 25. How many in total?', '59', ['58', '69', '9'], '30+20, 4+5.', TH(10, 'sweet')],
+    qs: [['What is 32 + 45?', '77', ['67', '78', '7'], '30+40, 2+5.', ''], ['What is 53 + 26?', '79', ['78', '89', '29'], '50+20, 3+6.', ''], ['What is 68 − 35?', '33', ['32', '43', '103'], '60−30, 8−5.', ''], ['What is 74 − 23?', '51', ['50', '41', '97'], '70−20, 4−3.', ''],
+         ['What is 41 + 57?', '98', ['97', '88', '16'], '40+50, 1+7.', ''], ['What is 89 − 46?', '43', ['42', '53', '135'], '80−40, 9−6.', ''], ['What is 25 + 63?', '88', ['87', '78', '38'], '20+60, 5+3.', ''], ['What is 96 − 52?', '44', ['43', '54', '148'], '90−50, 6−2.', '']],
+    gen: function (lv) { var a = r(11, lv ? 89 : 59), b = r(11, 40), sub = r(0, 1); if (sub && a > b) return mc('Partitioning', 'What is <b>' + a + ' − ' + b + '</b>? Split into tens and ones.', a - b, [a - b + 1, a - b - 1, a - b + 10], 'Take away the tens, then the ones.', a + ' − ' + b + ' = ' + (a - b) + '.'); return mc('Partitioning', 'What is <b>' + a + ' + ' + b + '</b>? Split into tens and ones.', a + b, [a + b + 1, a + b - 1, a + b + 10], 'Add the tens, then the ones.', a + ' + ' + b + ' = ' + (a + b) + '.'); } });
+
+  M(302, { id: 'learnm1', ch: 'frog', bg: 'pond',
+    li: ['Number bonds to 20', 'Which pairs of numbers make 20?', 'Number bonds to 20 are pairs that add to 20. Knowing them helps to add and take away quickly.', C(['10 + 10', '12 + 8', '15 + 5', '17 + 3']),
+      [['bond', 'a pair that makes a total', '🔗'], ['twenty', '2 tens', '2️⃣'], ['partner', 'the number that goes with another', '🤝'], ['complement', 'the number that completes the total', '✅']],
+      [['If you know 7 + 3 = 10, then 17 + 3 = 20.', C(['7 + 3 = 10', '17 + 3 = 20'])], ['The partner of 12 is 8 because 12 + 8 = 20.', C(['12 + 8 = 20'])], ['Learn them: 1+19, 2+18, 3+17, 4+16, 5+15, 6+14, 7+13, 8+12, 9+11, 10+10.', C(['1+19', '5+15', '10+10'])]],
+      [['What goes with 13 to make 20?', ['Count on from 13 to 20.', '7 jumps.'], '7', nl(12, 20, [13, 20])], ['What goes with 16 to make 20?', ['16 + 4 = 20.'], '4', nl(15, 20, [16, 20])], ['What is 20 − 8?', ['Think 8 + 12 = 20.'], '12', C(['8 + 12 = 20'])]],
+      ['Check by adding. If 14 + 5 = 19, it is not a bond to 20.', C(['14 + 6 = 20 ✓'])],
+      ['What goes with 11 to make 20?', '', ['8', '9', '10'], '9', '11 + 9 = 20.', 'Count on from 11 to 20.'],
+      ['Number bonds to 20: pairs of numbers that make 20.', C(['10+10', '12+8', '15+5'])]],
+    ex: [['What goes with 14 to make 20?', ['14 + 6 = 20.'], '6', nl(13, 20, [14, 20])], ['What is 20 − 15?', ['15 + 5 = 20.'], '5', C(['15 + 5 = 20'])]],
+    way: ['Use two ten-frames: one full frame is 10, the second shows the partner.', FL.frame(10, 0, 10)],
+    mist: ['Make sure the pair adds to 20, not 10. 12 + 8 = 20.', C(['12 + 8 ✓', '12 + 3 ✗'])],
+    real: ['You need 20 stickers. You have 13. How many more?', '7', ['6', '8', '33'], '13 + 7 = 20.', TH(13, 'star')],
+    qs: [['What goes with 8 to make 20?', '12', ['11', '13', '28'], '8 + 12.', ''], ['What goes with 15 to make 20?', '5', ['4', '6', '35'], '15 + 5.', ''], ['What goes with 17 to make 20?', '3', ['2', '4', '37'], '17 + 3.', ''], ['What goes with 11 to make 20?', '9', ['8', '10', '31'], '11 + 9.', ''],
+         ['What goes with 4 to make 20?', '16', ['15', '17', '24'], '4 + 16.', ''], ['What is 20 − 7?', '13', ['12', '14', '27'], '7 + 13.', ''], ['What is 20 − 12?', '8', ['7', '9', '32'], '12 + 8.', ''], ['What is 20 − 18?', '2', ['1', '3', '38'], '18 + 2.', '']],
+    gen: function () { var a = r(1, 19), b = 20 - a; return r(0, 1) ? mc('Number bonds to 20', a + ' + <b>?</b> = 20', b, [b + 1, b - 1 || 2, a], 'Count on from ' + a + ' to 20.', a + ' + ' + b + ' = 20.') : mc('Number bonds to 20', 'What is <b>20 − ' + a + '</b>?', b, [b + 1, b - 1 || 2, 20 + a], 'Think what goes with ' + a + ' to make 20.', '20 − ' + a + ' = ' + b + '.'); } });
+
+  M(302, { id: 'learnm2', ch: 'frog', bg: 'pond',
+    li: ['Number bonds to 100', 'Which tens make 100?', 'Number bonds to 100 use tens: 30 + 70 = 100. Use the bonds to 10 and make them ten times bigger.', C(['10 + 90', '30 + 70', '50 + 50']),
+      [['hundred', '10 tens', '💯'], ['tens bond', 'a pair of tens that make 100', '🔗'], ['partner', 'the number that completes 100', '🤝'], ['ten times', 'tens instead of ones', '✖️']],
+      [['3 + 7 = 10, so 30 + 70 = 100.', C(['3 + 7 = 10', '30 + 70 = 100'])], ['The partner of 40 is 60 because 40 + 60 = 100.', C(['40 + 60 = 100'])], ['Learn them: 10+90, 20+80, 30+70, 40+60, 50+50.', C(['10+90', '20+80', '30+70', '40+60', '50+50'])]],
+      [['What goes with 20 to make 100?', ['2 + 8 = 10, so 20 + 80 = 100.'], '80', C(['20 + 80 = 100'])], ['What goes with 60 to make 100?', ['6 + 4 = 10, so 60 + 40.'], '40', C(['60 + 40 = 100'])], ['What is 100 − 70?', ['70 + 30 = 100.'], '30', C(['70 + 30'])]],
+      ['The partners are tens. 100 − 70 is 30, not 3.', C(['100 − 70 = 30'])],
+      ['What goes with 90 to make 100?', '', ['1', '10', '9'], '10', '90 + 10 = 100.', 'Think of 9 + 1 = 10.'],
+      ['Bonds to 100: use the bonds to 10 and think in tens.', C(['30 + 70', '40 + 60'])]],
+    ex: [['What is 100 − 40?', ['4 + 6 = 10, so 40 + 60 = 100.'], '60', C(['40 + 60'])], ['What goes with 80 to make 100?', ['8 + 2 = 10.'], '20', C(['80 + 20'])]],
+    way: ['Put ten rods of ten in a frame: take some away and count what is left.', C(['100', '− 30', '= 70'])],
+    mist: ['Do not forget the zero. 100 − 30 = 70, not 7.', C(['70 ✓', '7 ✗'])],
+    real: ['A pound is 100p. You spend 60p. How much is left?', '40p', ['4p', '60p', '160p'], '60 + 40 = 100.', FL.coins([20, 20])],
+    qs: [['What goes with 30 to make 100?', '70', ['60', '7', '130'], '3 + 7 = 10.', ''], ['What goes with 50 to make 100?', '50', ['40', '5', '150'], '5 + 5 = 10.', ''], ['What goes with 10 to make 100?', '90', ['80', '9', '110'], '1 + 9 = 10.', ''], ['What is 100 − 20?', '80', ['8', '70', '120'], '2 + 8 = 10.', ''],
+         ['What is 100 − 60?', '40', ['4', '50', '160'], '6 + 4 = 10.', ''], ['What is 100 − 90?', '10', ['1', '9', '190'], '9 + 1 = 10.', ''], ['What is 100 − 45?', '55', ['65', '54', '145'], '45 + 55 = 100.', ''], ['What goes with 25 to make 100?', '75', ['85', '65', '125'], '25 + 75 = 100.', '']],
+    gen: function (lv) { var a = r(1, 9) * 10, k = lv ? r(0, 1) : 0, x = k ? a + r(1, 9) : a, y = 100 - x; return mc('Number bonds to 100', x + ' + <b>?</b> = 100', y, [y + 10, y - 10 < 1 ? y + 20 : y - 10, y + 1], k ? 'Make the tens, then the ones.' : 'Use the bonds to 10.', x + ' + ' + y + ' = 100.'); } });
+
+  M(302, { id: 'learnm3', ch: 'frog', bg: 'pond',
+    li: ['Finding the difference', 'How do I find the difference between two numbers?', 'The difference is how far apart two numbers are. Count on from the smaller to the bigger, or take away.', nl(12, 20, [14, 19], [[14, 19]]),
+      [['difference', 'how far apart', '↔️'], ['smaller', 'the lesser number', '⬇️'], ['bigger', 'the greater number', '⬆️'], ['count on', 'jump up from the small number', '🦘']],
+      [['The difference between 14 and 19. Jump from 14 to 19.', nl(12, 20, [14, 19], [[14, 19]])], ['14, 15, 16, 17, 18, 19. That is 5 jumps. The difference is 5.', C(['14', '→', '19', '= 5'])], ['Or take away: 19 − 14 = 5.', B('19 − 14 = 5')]],
+      [['What is the difference between 8 and 15?', ['Count on from 8 to 15.', '7 jumps.'], '7', nl(7, 16, [8, 15], [[8, 15]])], ['Max has 32 stickers. Zoe has 27. How many more has Max?', ['Count on from 27 to 32.', '5 jumps.'], '5', nl(26, 33, [27, 32], [[27, 32]])], ['What is the difference between 45 and 70?', ['45 to 50 is 5.', '50 to 70 is 20.', '5 + 20 = 25.'], '25', nl(45, 70, [45, 50, 70], [[45, 50], [50, 70]])]],
+      ['The difference is always positive. 19 − 14 and 14 − 19 both mean “5 apart”.', C(['5 apart'])],
+      ['What is the difference between 23 and 31?', nl(22, 32, [23, 31]), ['7', '8', '9'], '8', '23 + 8 = 31.', 'Count on from 23.'],
+      ['Difference: count on from the smaller number to the bigger one.', C(['small → big', 'count the jumps'])]],
+    ex: [['A rope is 48 cm. Another is 63 cm. What is the difference?', ['48 to 50 is 2.', '50 to 63 is 13.', '2 + 13 = 15.'], '15 cm', nl(47, 64, [48, 50, 63])], ['A pencil costs 65p and a pen costs 90p. How much more is the pen?', ['65 to 70 is 5.', '70 to 90 is 20.', '25.'], '25p', C(['65p', '90p'])]],
+    way: ['Draw two bars. The gap between the ends is the difference.', C(['bar A', 'bar B', 'gap = difference'])],
+    mist: ['Do not add the numbers. “How many more” means find the gap.', C(['23 and 31: 8 apart ✓', '23 + 31 ✗'])],
+    real: ['Ruby scored 56 and Ben scored 71. How many points more did Ben score?', '15', ['127', '14', '25'], '56 to 60 is 4, 60 to 71 is 11. 4 + 11.', nl(55, 72, [56, 71])],
+    qs: [['What is the difference between 12 and 20?', '8', ['7', '32', '9'], '12 to 20.', ''], ['What is the difference between 30 and 55?', '25', ['35', '15', '85'], '30 to 55.', ''], ['What is the difference between 47 and 52?', '5', ['4', '99', '6'], '47 to 52.', ''], ['Dev has 18, Eve has 31. How many more has Eve?', '13', ['14', '49', '12'], '18 to 31.', ''],
+         ['What is the difference between 64 and 90?', '26', ['36', '154', '16'], '64 to 90.', ''], ['What is the difference between 100 and 63?', '37', ['47', '163', '27'], '63 to 100.', ''], ['What is the difference between 25 and 25?', '0', ['25', '50', '1'], 'The same.', ''], ['The bus costs 75p, the train costs 90p. How much more is the train?', '15p', ['25p', '165p', '10p'], '75 to 90.', '']],
+    gen: function (lv) { var a = r(5, lv ? 70 : 40), d = r(2, lv ? 40 : 15); return mc('Finding the difference', 'What is the <b>difference</b> between <b>' + a + '</b> and <b>' + (a + d) + '</b>?', d, [d + 1, d - 1, a + a + d], 'Count on from ' + a + ' to ' + (a + d) + '.', (a + d) + ' − ' + a + ' = ' + d + '.'); } });
+
+  M(302, { id: 'learnm4', ch: 'frog', bg: 'pond',
+    li: ['Checking my answer', 'How can I check my addition and subtraction?', 'Adding and taking away are opposites. We can use one to check the other.', C(['35 + 24 = 59', '59 − 24 = 35']),
+      [['inverse', 'the opposite operation', '🔄'], ['check', 'make sure it is right', '✅'], ['opposite', 'does the reverse', '↔️'], ['estimate', 'a quick sensible guess', '🎯']],
+      [['35 + 24 = 59. Check: 59 − 24 should be 35.', C(['35 + 24 = 59', '59 − 24 = 35 ✓'])], ['72 − 28 = 44. Check: 44 + 28 should be 72.', C(['72 − 28 = 44', '44 + 28 = 72 ✓'])], ['Estimate first: 38 + 41 is about 40 + 40 = 80.', C(['38 → 40', '41 → 40', '≈ 80'])]],
+      [['Ben says 46 + 17 = 63. Check with subtraction.', ['63 − 17 = 46.', 'It is correct.'], 'Yes, 63 is right.', C(['46 + 17 = 63', '63 − 17 = 46'])], ['Mia says 81 − 35 = 54. Check with adding.', ['54 + 35 = 89, not 81.', 'So it is wrong.'], 'No. 81 − 35 = 46.', C(['54 + 35 = 89 ✗'])], ['Estimate 59 + 22.', ['60 + 20 = 80.'], 'About 80.', C(['59 ≈ 60', '22 ≈ 20'])]],
+      ['Check the whole answer, not only the ones digit.', C(['check everything'])],
+      ['Which check proves 27 + 15 = 42?', C(['27 + 15 = 42']), ['42 − 15 = 27', '42 + 15 = 57', '27 − 15 = 12'], '42 − 15 = 27', 'Take away one number from the total.', 'Use the opposite.'],
+      ['Check with the opposite: add ↔ take away.', C(['+ ↔ −'])]],
+    ex: [['Check 53 + 28 = 81 using subtraction.', ['81 − 28 = 53.'], 'Correct.', C(['81 − 28 = 53 ✓'])], ['Check 70 − 24 = 46 using adding.', ['46 + 24 = 70.'], 'Correct.', C(['46 + 24 = 70 ✓'])]],
+    way: ['Draw a number triangle: the total on top, the two parts below. It shows all four sums.', C(['total 59', 'parts 35 and 24'])],
+    mist: ['If the check does not give the first number, you made a mistake. Try again.', C(['check ✗ → try again'])],
+    real: ['The shop till says 38p + 27p = 55p. Is that right?', 'No', ['Yes'], '38 + 27 = 65, not 55.', C(['38p', '27p'])],
+    qs: [['Which check proves 25 + 17 = 42?', '42 − 17 = 25', ['42 + 17 = 59', '25 − 17 = 8'], 'Take away.', ''], ['Which check proves 60 − 24 = 36?', '36 + 24 = 60', ['36 − 24 = 12', '60 + 24 = 84'], 'Add back.', ''], ['Is 45 + 38 = 73 correct?', 'No', ['Yes'], '45 + 38 = 83.', ''], ['Is 90 − 47 = 43 correct?', 'Yes', ['No'], '43 + 47 = 90.', ''],
+         ['Estimate 49 + 31', 'about 80', ['about 70', 'about 90', 'about 100'], '50 + 30.', ''], ['Estimate 62 − 19', 'about 40', ['about 50', 'about 30', 'about 80'], '60 − 20.', ''], ['If 18 + 26 = 44, then 44 − 26 = ?', '18', ['26', '70', '8'], 'Take away.', ''], ['If 100 − 36 = 64, then 64 + 36 = ?', '100', ['28', '64', '36'], 'Add back.', '']],
+    gen: function (lv) { var a = r(11, lv ? 70 : 50), b = r(11, lv ? 29 : 39), wrong = r(0, 1), ans = a + b + (wrong ? pick([1, -1, 10, -10]) : 0); return mc('Checking', 'Ben says <b>' + a + ' + ' + b + ' = ' + ans + '</b>. Is he right?', ans === a + b ? 'Yes' : 'No', [ans === a + b ? 'No' : 'Yes'], 'Check with the opposite: ' + ans + ' − ' + b + '.', a + ' + ' + b + ' = ' + (a + b) + '.'); } });
+})();
+</script>
+<script>
+/* fl_m3b.js: P3 Multiplication (303), Division (304) and Fractions (305) */
+(function () {
+  'use strict';
+  var FL = window.FL, S = window.Studio; if (!FL || !FL.MEGA) return;
+  var B = FL.big, C = FL.cards, TH = FL.things, M = FL.MEGA, r = FL.r, pick = FL.pick, T = FL.track, G = FL.groups;
+  function mc(tag, q, a, w, h, e, p) { return FL.MC(tag, q, a, w, [h], e, p || ''); }
+  function arr(rw, cl, kind) { return TH(rw * cl, kind || 'apple', cl); }
+  function pie(p, s) { return '<div style="display:inline-block;text-align:center;font-weight:800;margin:0 8px">' + FL.pie(p, s) + '<div>' + s + '/' + p + '</div></div>'; }
+  function pies(l) { return '<div style="display:flex;justify-content:center;flex-wrap:wrap">' + l.map(function (x) { return pie(x[0], x[1]); }).join('') + '</div>'; }
+  function sharing(n, g, kind) { var o = []; for (var i = 0; i < g; i++) o.push('<div style="border:3px dashed #2b2340;border-radius:12px;padding:4px;background:#fff">' + TH(n / g, kind || 'apple', 5) + '</div>'); return '<div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap">' + o.join('') + '</div>'; }
+
+  /* ---------- 303 Multiplication ---------- */
+  M(303, { id: 'learn1', ch: 'bear', bg: 'kitchen',
+    way: ['Repeated adding is multiplying. 4 + 4 + 4 is 3 groups of 4, written 3 × 4.', C(['4 + 4 + 4', '= 3 × 4', '= 12'])],
+    ex: [['What is 5 + 5 + 5 + 5 as a multiplication?', ['4 groups of 5.', '4 × 5 = 20.'], '4 × 5 = 20', sharing(20, 4)], ['Write 2 + 2 + 2 as a multiplication.', ['3 groups of 2.'], '3 × 2 = 6', sharing(6, 3)]],
+    mist: ['× means “groups of”. 3 × 4 is 3 groups of 4, not 3 + 4.', C(['3 × 4 = 12', '3 + 4 = 7 ✗'])],
+    real: ['4 plates have 3 buns each. How many buns?', '12', ['7', '10', '9'], '3 + 3 + 3 + 3.', sharing(12, 4, 'apple')],
+    qs: [['What is 2 + 2 + 2 + 2?', '8', ['6', '4', '10'], '4 × 2.', ''], ['3 groups of 5 is…', '15', ['8', '10', '53'], '5 + 5 + 5.', ''], ['Write 5 + 5 as a multiplication.', '2 × 5', ['5 × 5', '2 + 5', '5 × 2 × 2'], '2 groups of 5.', ''], ['What is 10 + 10 + 10?', '30', ['20', '3', '100'], '3 × 10.', ''],
+         ['4 × 2 means…', '4 groups of 2', ['4 + 2', '2 groups of 4 and 2'], 'Groups of.', ''], ['2 groups of 10 is…', '20', ['12', '10', '210'], '10 + 10.', ''], ['What is 5 + 5 + 5?', '15', ['10', '20', '555'], '3 × 5.', ''], ['6 × 2 is the same as…', '2 + 2 + 2 + 2 + 2 + 2', ['6 + 2', '2 + 6'], 'Six groups of 2.', '']],
+    gen: function (lv) { var g = r(2, lv ? 6 : 4), n = pick(lv ? [2, 3, 4, 5, 10] : [2, 5, 10]); return mc('Adding to multiply', 'What is <b>' + new Array(g + 1).join(n + ' + ').slice(0, -3) + '</b>?', g * n, [g * n + n, g * n - n, g + n], 'Count the groups, then multiply.', g + ' × ' + n + ' = ' + g * n + '.'); } });
+
+  M(303, { id: 'learn2', ch: 'bear', bg: 'kitchen',
+    way: ['An array has rows going across and columns going down. 3 rows of 4 is 3 × 4 = 12.', arr(3, 4)],
+    ex: [['What multiplication does this array show? 2 rows of 5.', ['2 rows, 5 in each row.', '2 × 5 = 10.'], '2 × 5 = 10', arr(2, 5)], ['How many in 4 rows of 3?', ['3 + 3 + 3 + 3.'], '12', arr(4, 3)]],
+    mist: ['Rows go across, columns go down. 3 rows of 4 is not 4 rows of 3 (but both make 12).', arr(3, 4)],
+    real: ['Chairs are in 5 rows with 4 in each row. How many chairs?', '20', ['9', '16', '25'], '5 × 4.', arr(5, 4, 'star')],
+    qs: [['2 rows of 6. How many?', '12', ['8', '26', '10'], '2 × 6.', arr(2, 6)], ['3 rows of 5. How many?', '15', ['8', '35', '10'], '3 × 5.', arr(3, 5)], ['4 rows of 4. How many?', '16', ['8', '12', '20'], '4 × 4.', arr(4, 4)], ['5 rows of 2. How many?', '10', ['7', '25', '12'], '5 × 2.', arr(5, 2)],
+         ['An array has 3 rows of 3. How many?', '9', ['6', '12', '33'], '3 × 3.', arr(3, 3)], ['Which multiplication is shown? 2 rows of 4', '2 × 4', ['4 × 4', '2 + 4', '2 × 2'], '2 groups of 4.', arr(2, 4)], ['Add the rows: 5 + 5 + 5 is…', '15', ['10', '55', '8'], '3 rows of 5.', ''], ['How many columns? 3 rows of 7', '7', ['3', '21', '10'], '7 in each row.', arr(3, 7)]],
+    gen: function (lv) { var a = r(2, lv ? 6 : 4), b = r(2, lv ? 8 : 6); return mc('Arrays', 'An array has <b>' + a + ' rows</b> of <b>' + b + '</b>. How many are there?', a * b, [a + b, a * b + a, a * b - b], 'Multiply the rows by the number in each row.', a + ' × ' + b + ' = ' + a * b + '.', arr(a, b)); } });
+
+  M(303, { id: 'learn3', ch: 'bear', bg: 'kitchen',
+    way: ['Turn the array on its side. 3 rows of 5 becomes 5 rows of 3. Same number of dots.', arr(3, 5)],
+    ex: [['If 4 × 6 = 24, what is 6 × 4?', ['Turn it round.'], '24', arr(4, 6)], ['If 7 × 5 = 35, what is 5 × 7?', ['Turn it round.'], '35', arr(5, 7)]],
+    mist: ['Turnaround works for multiplication too, but not for division. 12 ÷ 3 is not 3 ÷ 12.', C(['3 × 4 = 4 × 3 ✓', '12 ÷ 3 ≠ 3 ÷ 12'])],
+    real: ['2 rows of 10 stamps. Turn it round. How many rows of 2?', '10', ['2', '20', '12'], 'Same stamps.', arr(2, 10, 'star')],
+    qs: [['3 × 2 = 6. What is 2 × 3?', '6', ['5', '9', '32'], 'Turn it round.', ''], ['5 × 4 = 20. What is 4 × 5?', '20', ['9', '54', '25'], 'Turn it round.', ''], ['Which equals 6 × 5?', '5 × 6', ['6 + 5', '5 + 6', '6 × 6'], 'Swap.', ''], ['10 × 3 = 30. What is 3 × 10?', '30', ['13', '103', '3'], 'Turn round.', ''],
+         ['2 × 8 = 16. 8 × 2 = ?', '16', ['10', '82', '6'], 'Turn round.', ''], ['4 × 3 = 12. 3 × 4 = ?', '12', ['7', '34', '43'], 'Turn round.', ''], ['Fill the gap: 5 × 9 = 9 × ?', '5', ['4', '45', '14'], 'Swap.', ''], ['Does 6 ÷ 2 equal 2 ÷ 6?', 'No', ['Yes'], 'Not for division.', '']],
+    gen: function (lv) { var a = r(2, lv ? 10 : 6), b = r(2, lv ? 10 : 6); return mc('Turnaround facts', 'If <b>' + a + ' × ' + b + ' = ' + a * b + '</b>, what is <b>' + b + ' × ' + a + '</b>?', a * b, [a * b + a, a * b - b, a + b], 'Turn it round: the answer is the same.', 'Turnaround: ' + b + ' × ' + a + ' = ' + a * b + '.'); } });
+
+  M(303, { id: 'learn4', ch: 'bear', bg: 'kitchen',
+    way: ['2s are even numbers. 5s end in 5 or 0. 10s end in 0. Learn the patterns to recall the tables.', C(['2: 2 4 6 8 10', '5: 5 10 15 20', '10: 10 20 30 40'])],
+    ex: [['What is 6 × 5?', ['Count in 5s six times: 5, 10, 15, 20, 25, 30.'], '30', C(['5', '10', '15', '20', '25', '30'])], ['What is 7 × 2?', ['Double 7.', '7 + 7 = 14.'], '14', C(['7 + 7', '14'])]],
+    mist: ['The 5 times table always ends in 5 or 0. If you get 23, check again.', C(['5, 10, 15, 20, 25'])],
+    real: ['A bag of 10 sweets. How many sweets in 6 bags?', '60', ['16', '50', '600'], '6 × 10.', C(['6 × 10 = 60'])],
+    qs: [['5 × 3 = ?', '15', ['8', '53', '10'], '5, 10, 15.', ''], ['10 × 7 = ?', '70', ['17', '7', '700'], 'Add a zero.', ''], ['2 × 9 = ?', '18', ['11', '29', '16'], 'Double 9.', ''], ['5 × 8 = ?', '40', ['13', '45', '35'], '5s: 40.', ''],
+         ['10 × 4 = ?', '40', ['14', '4', '400'], 'Four tens.', ''], ['2 × 6 = ?', '12', ['8', '26', '14'], 'Double 6.', ''], ['5 × 6 = ?', '30', ['11', '35', '25'], '5s: 30.', ''], ['10 × 10 = ?', '100', ['20', '1000', '10'], 'Ten tens.', '']],
+    gen: function (lv) { var t = pick([2, 5, 10]), n = r(1, lv ? 12 : 10); return mc('2, 5 and 10 times tables', 'What is <b>' + n + ' × ' + t + '</b>?', n * t, [n * t + t, n * t - t < 0 ? n * t + 2 * t : n * t - t, n + t], 'Count in ' + t + 's.', n + ' × ' + t + ' = ' + n * t + '.'); } });
+
+  M(303, { id: 'learnm1', ch: 'bear', bg: 'kitchen',
+    li: ['Multiplication stories', 'How do I solve a multiplication story?', 'In a story, “each” and “groups of” tell you to multiply. Find the number of groups and the number in each.', sharing(12, 4),
+      [['each', 'every one has the same', '👉'], ['groups of', 'equal sets', '🧺'], ['altogether', 'all together', '➕'], ['multiply', 'groups of', '✖️']],
+      [['4 plates with 3 buns on each plate.', sharing(12, 4)], ['4 groups of 3 is 4 × 3.', B('4 × 3')], ['4 × 3 = 12. There are 12 buns altogether.', B('4 × 3 = 12')]],
+      [['5 bags with 2 apples in each bag. How many?', ['5 groups of 2.', '5 × 2 = 10.'], '10 apples.', sharing(10, 5)], ['Each car has 4 wheels. 3 cars. How many wheels?', ['3 groups of 4.', '3 × 4 = 12.'], '12 wheels.', C(['3 cars', '4 wheels each'])], ['A pack has 10 pencils. 6 packs. How many?', ['6 × 10 = 60.'], '60 pencils.', C(['6 × 10'])]],
+      ['Pick the right numbers. “3 bags of 5” is 3 × 5, not 3 + 5.', C(['3 × 5 = 15'])],
+      ['Each box has 5 pens. There are 4 boxes. How many pens?', TH(20, 'star'), ['9', '20', '45'], '20', '4 × 5 = 20.', 'Groups of: multiply.'],
+      ['In a story: groups × number in each group = total.', C(['groups × each = total'])]],
+    ex: [['6 pots with 2 flowers in each. How many flowers?', ['6 × 2.'], '12 flowers.', sharing(12, 6, 'flower')], ['Each spider has 8 legs. 2 spiders. How many legs?', ['2 × 8 = 16.'], '16 legs.', C(['2 × 8'])]],
+    way: ['Draw the story: a box for each group and dots inside.', sharing(8, 4)],
+    mist: ['Check which is the group and which is the amount in each. 2 bags of 5 is 10; 5 bags of 2 is also 10.', sharing(10, 2)],
+    real: ['A bus has 10 seats in each row. There are 4 rows. How many seats?', '40', ['14', '30', '104'], '4 × 10.', arr(4, 10, 'star')],
+    qs: [['3 plates with 5 cakes each. How many cakes?', '15', ['8', '35', '10'], '3 × 5.', ''], ['4 bikes. Each has 2 wheels. How many wheels?', '8', ['6', '24', '4'], '4 × 2.', ''], ['Each box holds 10. 5 boxes. How many?', '50', ['15', '510', '5'], '5 × 10.', ''], ['2 hands each have 5 fingers. How many fingers?', '10', ['7', '25', '12'], '2 × 5.', ''],
+         ['6 bags with 3 sweets in each. How many sweets?', '18', ['9', '63', '12'], '6 × 3.', ''], ['4 spiders with 8 legs each. How many legs?', '32', ['12', '48', '24'], '4 × 8.', ''], ['5 rows of 5 chairs. How many chairs?', '25', ['10', '55', '20'], '5 × 5.', ''], ['3 packs of 10 biscuits. How many?', '30', ['13', '310', '3'], '3 × 10.', '']],
+    gen: function (lv) { var g = r(2, lv ? 9 : 6), n = pick(lv ? [2, 3, 4, 5, 10] : [2, 5, 10]), it = pick([['bags', 'sweets'], ['boxes', 'pens'], ['plates', 'buns'], ['pots', 'flowers']]); return mc('Multiplication stories', g + ' ' + it[0] + ' with <b>' + n + '</b> ' + it[1] + ' in each. How many ' + it[1] + ' altogether?', g * n, [g + n, g * n + n, g * n - n < 1 ? g * n + 2 : g * n - n], 'Groups times the number in each group.', g + ' × ' + n + ' = ' + g * n + '.', sharing(Math.min(g * n, 30), g)); } });
+
+  M(303, { id: 'learnm2', ch: 'bear', bg: 'kitchen',
+    li: ['The 3 and 4 times tables', 'How can I learn the 3 and 4 times tables?', 'The 3s go 3, 6, 9, 12 and the 4s go 4, 8, 12, 16. The 4 times table is double the 2 times table doubled.', C(['3: 3 6 9 12 15', '4: 4 8 12 16 20']),
+      [['times table', 'a list of multiples', '📋'], ['multiple', 'a number in a times table', '🔢'], ['double', 'times 2', '2️⃣'], ['product', 'the answer to a times sum', '✖️']],
+      [['3 × 1 = 3, 3 × 2 = 6, 3 × 3 = 9, 3 × 4 = 12, 3 × 5 = 15.', C(['3', '6', '9', '12', '15'])], ['4 × 1 = 4, 4 × 2 = 8, 4 × 3 = 12, 4 × 4 = 16, 4 × 5 = 20.', C(['4', '8', '12', '16', '20'])], ['To get the 4s, double the 2s. 2 × 6 = 12, so 4 × 6 = 24.', C(['2 × 6 = 12', 'double → 24'])]],
+      [['What is 3 × 6?', ['Count in 3s: 3, 6, 9, 12, 15, 18.'], '18', T(0, 18, [0, 3, 6, 9, 12, 15, 18])], ['What is 4 × 5?', ['Double 2 × 5 = 10.', '10 + 10 = 20.'], '20', C(['2 × 5 = 10', '4 × 5 = 20'])], ['What is 4 × 7?', ['Double 7 is 14.', 'Double 14 is 28.'], '28', C(['7 → 14 → 28'])]],
+      ['Do not mix the tables up. 3 × 4 is 12 and 4 × 4 is 16.', C(['3 × 4 = 12', '4 × 4 = 16'])],
+      ['What is 3 × 8?', '', ['21', '24', '28'], '24', '3, 6, 9, 12, 15, 18, 21, 24.', 'Count in 3s.'],
+      ['3s: 3 6 9 12 15. 4s: double and double again.', C(['3s', '4s'])]],
+    ex: [['What is 3 × 9?', ['3 × 10 = 30.', '30 − 3 = 27.'], '27', C(['30 − 3'])], ['What is 4 × 9?', ['4 × 10 = 40.', '40 − 4 = 36.'], '36', C(['40 − 4'])]],
+    way: ['Use arrays: 3 rows of 4 is 12 and 4 rows of 3 is 12. The 3s and 4s are linked.', arr(3, 4)],
+    mist: ['Count in the right step. 3, 6, 9, 12: do not forget a number.', C(['3', '6', '9', '12'])],
+    real: ['A table has 4 legs. How many legs have 6 tables?', '24', ['10', '20', '64'], '6 × 4.', C(['6 × 4 = 24'])],
+    qs: [['3 × 4 = ?', '12', ['7', '34', '16'], '3, 6, 9, 12.', ''], ['4 × 3 = ?', '12', ['7', '43', '16'], 'Turn round.', ''], ['3 × 7 = ?', '21', ['10', '24', '37'], '3s: 21.', ''], ['4 × 6 = ?', '24', ['10', '20', '28'], 'Double 12.', ''],
+         ['4 × 8 = ?', '32', ['12', '36', '28'], 'Double 16.', ''], ['3 × 5 = ?', '15', ['8', '12', '35'], '3s: 15.', ''], ['4 × 9 = ?', '36', ['13', '40', '32'], '4s: 36.', ''], ['3 × 10 = ?', '30', ['13', '300', '3'], '3 tens.', '']],
+    gen: function (lv) { var t = pick([3, 4]), n = r(1, lv ? 12 : 10); return mc('3 and 4 times tables', 'What is <b>' + n + ' × ' + t + '</b>?', n * t, [n * t + t, n * t - t < 1 ? n * t + 2 : n * t - t, n * t + 1], 'Count in ' + t + 's.', n + ' × ' + t + ' = ' + n * t + '.'); } });
+
+  M(303, { id: 'learnm3', ch: 'bear', bg: 'kitchen',
+    li: ['Multiplying by 10', 'What happens when I multiply by 10?', 'When you multiply by 10, each digit moves one place to the left and a zero fills the ones place. 6 × 10 = 60.', C(['6', '× 10', '60']),
+      [['times 10', 'ten times bigger', '🔟'], ['place', 'where a digit sits', '📍'], ['shift', 'move to the left', '⬅️'], ['zero', 'the placeholder digit 0', '0️⃣']],
+      [['5 × 10 = 50. Five tens make 50.', C(['5', '× 10', '= 50'])], ['23 × 10 = 230. The digits move to the left and a 0 goes on the end.', C(['23', '→', '230'])], ['10 × 8 = 80. Turn it round: 8 × 10 = 80.', C(['10 × 8', '8 × 10', '80'])]],
+      [['What is 7 × 10?', ['7 tens.', 'Add a zero.'], '70', C(['7', '70'])], ['What is 34 × 10?', ['Move the digits left.', 'Put a zero in the ones.'], '340', C(['34', '340'])], ['What is 10 × 15?', ['15 tens = 150.'], '150', C(['15', '150'])]],
+      ['Do not just add a zero to numbers with decimals. Here we use whole numbers.', C(['23 × 10 = 230'])],
+      ['What is 9 × 10?', '', ['19', '90', '900'], '90', 'Nine tens make 90.', 'Add a zero.'],
+      ['Times 10: digits move left, put 0 in the ones.', C(['× 10 → add a 0'])]],
+    ex: [['What is 4 × 10?', ['4 tens = 40.'], '40', C(['4', '40'])], ['What is 52 × 10?', ['Move digits left. 520.'], '520', C(['52', '520'])]],
+    way: ['Place value chart: put 6 in the ones. Times 10, it moves to the tens: 60.', C(['T O', '0 6', '6 0'])],
+    mist: ['Zero placeholders matter: 40 is not 4. Do not lose the zero.', C(['4 × 10 = 40 ✓'])],
+    real: ['A box has 10 pencils. How many pencils in 12 boxes?', '120', ['22', '102', '1200'], '12 × 10.', C(['12 × 10 = 120'])],
+    qs: [['3 × 10 = ?', '30', ['13', '300', '3'], 'Add 0.', ''], ['10 × 9 = ?', '90', ['19', '900', '9'], 'Add 0.', ''], ['25 × 10 = ?', '250', ['35', '2500', '205'], 'Add 0.', ''], ['10 × 14 = ?', '140', ['24', '1400', '104'], 'Add 0.', ''],
+         ['What do you add to the end of a number to multiply by 10?', 'a zero', ['a one', 'nothing'], 'A zero.', ''], ['6 × 10 = ?', '60', ['16', '600', '6'], 'Add 0.', ''], ['10 × 20 = ?', '200', ['30', '2000', '120'], '20 tens.', ''], ['30 × 10 = ?', '300', ['40', '3000', '33'], '30 tens.', '']],
+    gen: function (lv) { var n = r(2, lv ? 99 : 19); return mc('Multiplying by 10', 'What is <b>' + n + ' × 10</b>?', n * 10, [n * 10 + 10, n + 10, n * 100], 'Move the digits one place to the left.', n + ' × 10 = ' + n * 10 + '.'); } });
+
+  /* ---------- 304 Division ---------- */
+  M(304, { id: 'learn1', ch: 'mouse', bg: 'farm',
+    way: ['Share one at a time, like dealing cards, until none are left. Then count one group.', sharing(12, 3)],
+    ex: [['Share 12 sweets between 3 friends.', ['Deal one at a time.', '4 each.'], '12 ÷ 3 = 4', sharing(12, 3, 'sweet')], ['Share 10 apples between 2 baskets.', ['5 each.'], '10 ÷ 2 = 5', sharing(10, 2)]],
+    mist: ['Share fairly. Every group must have the same number.', C(['equal shares'])],
+    real: ['20 stickers are shared between 4 children. How many each?', '5', ['4', '16', '80'], '20 ÷ 4.', sharing(20, 4, 'star')],
+    qs: [['Share 8 between 2. How many each?', '4', ['6', '16', '10'], '8 ÷ 2.', sharing(8, 2)], ['Share 15 between 3. How many each?', '5', ['12', '18', '45'], '15 ÷ 3.', sharing(15, 3)], ['Share 20 between 4. How many each?', '5', ['16', '24', '80'], '20 ÷ 4.', sharing(20, 4)], ['Share 12 between 4. How many each?', '3', ['8', '16', '48'], '12 ÷ 4.', sharing(12, 4)],
+         ['Share 18 between 3. How many each?', '6', ['15', '21', '54'], '18 ÷ 3.', ''], ['Share 10 between 5. How many each?', '2', ['5', '15', '50'], '10 ÷ 5.', ''], ['Share 14 between 2. How many each?', '7', ['12', '16', '28'], '14 ÷ 2.', ''], ['Share 30 between 10. How many each?', '3', ['20', '40', '300'], '30 ÷ 10.', '']],
+    gen: function (lv) { var g = pick(lv ? [2, 3, 4, 5, 10] : [2, 5, 10]), e = r(1, lv ? 9 : 6); return mc('Sharing equally', e * g + ' sweets are shared equally between <b>' + g + '</b> friends. How many does each get?', e, [e + 1, e - 1 || 2, e * g], 'Share one at a time.', e * g + ' ÷ ' + g + ' = ' + e + '.', sharing(e * g > 30 ? g * 3 : e * g, g)); } });
+
+  M(304, { id: 'learn2', ch: 'mouse', bg: 'farm',
+    way: ['How many groups of 4 can you make from 12? Take away 4 each time: 12, 8, 4, 0. That is 3 groups.', T(0, 12, [12, 8, 4, 0], [[12, 8], [8, 4], [4, 0]])],
+    ex: [['How many groups of 5 in 20?', ['20 − 5 = 15.', '15 − 5 = 10.', '10 − 5 = 5.', '5 − 5 = 0.'], '4 groups', T(0, 20, [20, 15, 10, 5, 0])], ['How many groups of 3 in 9?', ['9, 6, 3, 0.'], '3 groups', T(0, 9, [9, 6, 3, 0])]],
+    mist: ['Stop when you reach zero. Count the jumps, not the numbers you land on.', C(['count the jumps'])],
+    real: ['A bus holds 10 children. 30 children go on a trip. How many buses?', '3', ['2', '4', '20'], '30 ÷ 10.', C(['30 → 20 → 10 → 0'])],
+    qs: [['How many groups of 2 in 10?', '5', ['4', '8', '20'], '10 ÷ 2.', ''], ['How many groups of 5 in 15?', '3', ['4', '10', '75'], '15 ÷ 5.', ''], ['How many groups of 4 in 16?', '4', ['3', '12', '64'], '16 ÷ 4.', ''], ['How many groups of 10 in 50?', '5', ['4', '40', '500'], '50 ÷ 10.', ''],
+         ['How many groups of 3 in 12?', '4', ['3', '9', '36'], '12 ÷ 3.', ''], ['How many groups of 2 in 14?', '7', ['6', '12', '28'], '14 ÷ 2.', ''], ['How many groups of 5 in 30?', '6', ['5', '25', '150'], '30 ÷ 5.', ''], ['How many groups of 4 in 20?', '5', ['4', '16', '80'], '20 ÷ 4.', '']],
+    gen: function (lv) { var g = pick(lv ? [2, 3, 4, 5, 10] : [2, 5, 10]), n = r(2, lv ? 9 : 6); return mc('Taking away groups', 'How many groups of <b>' + g + '</b> can you make from <b>' + g * n + '</b>?', n, [n + 1, n - 1 || 2, g], 'Take away ' + g + ' again and again.', g * n + ' ÷ ' + g + ' = ' + n + '.'); } });
+
+  M(304, { id: 'learn3', ch: 'mouse', bg: 'farm',
+    way: ['Read an array to divide. 12 in 3 rows: each row has 4. 12 in rows of 4: there are 3 rows.', arr(3, 4)],
+    ex: [['15 stars in 3 equal rows. How many in each row?', ['3 rows.', '15 ÷ 3 = 5.'], '5 in each row', arr(3, 5, 'star')], ['20 chairs in rows of 5. How many rows?', ['20 ÷ 5 = 4.'], '4 rows', arr(4, 5, 'star')]],
+    mist: ['Rows and columns swap. Check which number is the rows.', arr(2, 5)],
+    real: ['24 eggs are in a tray with 4 rows. How many eggs in each row?', '6', ['20', '28', '4'], '24 ÷ 4.', arr(4, 6)],
+    qs: [['12 in 2 rows. How many in each row?', '6', ['10', '14', '24'], '12 ÷ 2.', arr(2, 6)], ['15 in 3 rows. How many in each row?', '5', ['12', '18', '45'], '15 ÷ 3.', arr(3, 5)], ['20 in rows of 5. How many rows?', '4', ['5', '15', '100'], '20 ÷ 5.', arr(4, 5)], ['18 in rows of 3. How many rows?', '6', ['3', '15', '54'], '18 ÷ 3.', arr(6, 3)],
+         ['8 in 2 rows. How many in each row?', '4', ['6', '10', '16'], '8 ÷ 2.', arr(2, 4)], ['16 in 4 rows. How many in each?', '4', ['12', '20', '64'], '16 ÷ 4.', arr(4, 4)], ['30 in rows of 10. How many rows?', '3', ['20', '40', '300'], '30 ÷ 10.', ''], ['10 in 5 rows. How many in each row?', '2', ['5', '15', '50'], '10 ÷ 5.', arr(5, 2)]],
+    gen: function (lv) { var a = r(2, lv ? 7 : 5), b = r(2, lv ? 8 : 6); return mc('Arrays for dividing', a * b + ' counters are in <b>' + a + ' equal rows</b>. How many are in each row?', b, [b + 1, b - 1 || 2, a], 'Divide by the number of rows.', a * b + ' ÷ ' + a + ' = ' + b + '.', arr(a, b)); } });
+
+  M(304, { id: 'learn4', ch: 'mouse', bg: 'farm',
+    way: ['Half means 2 equal parts. To halve a number, share it between 2.', sharing(8, 2)],
+    ex: [['What is half of 12?', ['12 ÷ 2.', '6 + 6 = 12.'], '6', sharing(12, 2)], ['What is half of 30?', ['Half of 20 is 10.', 'Half of 10 is 5.', '10 + 5 = 15.'], '15', C(['20 → 10', '10 → 5', '15'])]],
+    mist: ['Half is not the same as a half-way mark. Split into 2 EQUAL parts.', pies([[2, 1]])],
+    real: ['You share 14 sweets between 2 friends. How many each?', '7', ['12', '16', '28'], 'Half of 14.', sharing(14, 2, 'sweet')],
+    qs: [['What is half of 10?', '5', ['20', '8', '2'], '10 ÷ 2.', ''], ['What is half of 18?', '9', ['36', '8', '16'], '18 ÷ 2.', ''], ['What is half of 50?', '25', ['100', '20', '52'], '50 ÷ 2.', ''], ['What is half of 16?', '8', ['32', '9', '14'], '16 ÷ 2.', ''],
+         ['What is half of 40?', '20', ['80', '10', '42'], '40 ÷ 2.', ''], ['What is half of 24?', '12', ['48', '11', '22'], '24 ÷ 2.', ''], ['What is double 7?', '14', ['3', '77', '21'], 'The opposite of half.', ''], ['Half of ? is 6. What is ?', '12', ['3', '6', '8'], 'Double 6.', '']],
+    gen: function (lv) { var n = r(1, lv ? 50 : 20) * 2; return mc('Halving', 'What is <b>half of ' + n + '</b>?', n / 2, [n / 2 + 1, n / 2 - 1 || 3, n * 2], 'Share it between 2.', n + ' ÷ 2 = ' + n / 2 + '.', ''); } });
+
+  M(304, { id: 'learnm1', ch: 'mouse', bg: 'farm',
+    li: ['Dividing by 2, 5 and 10', 'How can I divide by 2, 5 and 10?', 'The 2, 5 and 10 times tables help us divide. If 5 × 4 = 20, then 20 ÷ 5 = 4.', C(['5 × 4 = 20', '20 ÷ 5 = 4']),
+      [['divide', 'share or group equally', '➗'], ['÷', 'the divide sign', '➗'], ['fact', 'a number sentence we know', '📋'], ['times table', 'multiples list', '📃']],
+      [['10 ÷ 2: think 2 × ? = 10. 2 × 5 = 10, so 10 ÷ 2 = 5.', C(['2 × 5 = 10', '10 ÷ 2 = 5'])], ['30 ÷ 5: think 5 × ? = 30. 5 × 6 = 30, so 30 ÷ 5 = 6.', C(['5 × 6 = 30', '30 ÷ 5 = 6'])], ['40 ÷ 10 = 4 because 10 × 4 = 40.', C(['10 × 4 = 40', '40 ÷ 10 = 4'])]],
+      [['What is 18 ÷ 2?', ['2 × 9 = 18.'], '9', C(['2 × 9 = 18'])], ['What is 35 ÷ 5?', ['5 × 7 = 35.'], '7', C(['5 × 7 = 35'])], ['What is 80 ÷ 10?', ['10 × 8 = 80.'], '8', C(['10 × 8 = 80'])]],
+      ['Division is not turnaround. 12 ÷ 2 = 6 but 2 ÷ 12 is not 6.', C(['12 ÷ 2 = 6'])],
+      ['What is 45 ÷ 5?', '', ['8', '9', '10'], '9', '5 × 9 = 45.', 'Think of the 5 times table.'],
+      ['Use the times table backwards to divide.', C(['× ↔ ÷'])]],
+    ex: [['What is 14 ÷ 2?', ['2 × 7 = 14.'], '7', C(['2 × 7'])], ['What is 25 ÷ 5?', ['5 × 5 = 25.'], '5', C(['5 × 5'])]],
+    way: ['Counting up in 5s until you reach the number tells you how many fives: 5, 10, 15, 20: 4 fives.', C(['5', '10', '15', '20'])],
+    mist: ['Check the answer by multiplying back. 20 ÷ 5 = 4, so 4 × 5 = 20.', C(['4 × 5 = 20 ✓'])],
+    real: ['You have 50p in 10p coins. How many coins?', '5', ['40', '60', '500'], '50 ÷ 10.', FL.coins([10, 10, 10, 10, 10])],
+    qs: [['16 ÷ 2 = ?', '8', ['14', '18', '32'], '2 × 8 = 16.', ''], ['40 ÷ 5 = ?', '8', ['35', '45', '200'], '5 × 8 = 40.', ''], ['70 ÷ 10 = ?', '7', ['60', '80', '700'], '10 × 7.', ''], ['12 ÷ 2 = ?', '6', ['10', '14', '24'], '2 × 6.', ''],
+         ['25 ÷ 5 = ?', '5', ['20', '30', '125'], '5 × 5.', ''], ['90 ÷ 10 = ?', '9', ['80', '100', '900'], '10 × 9.', ''], ['10 ÷ 5 = ?', '2', ['5', '15', '50'], '5 × 2.', ''], ['20 ÷ 2 = ?', '10', ['18', '22', '40'], '2 × 10.', '']],
+    gen: function (lv) { var d = pick([2, 5, 10]), q = r(1, lv ? 12 : 10); return mc('Dividing by 2, 5 and 10', 'What is <b>' + q * d + ' ÷ ' + d + '</b>?', q, [q + 1, q - 1 || 3, q * d], 'Think ' + d + ' × ? = ' + q * d + '.', d + ' × ' + q + ' = ' + q * d + ', so ' + q * d + ' ÷ ' + d + ' = ' + q + '.'); } });
+
+  M(304, { id: 'learnm2', ch: 'mouse', bg: 'farm',
+    li: ['Sharing or grouping stories', 'How do I solve a division story?', 'A division story either shares into equal groups (how many in each?) or groups a total (how many groups?). Both use ÷.', sharing(12, 3),
+      [['share', 'split into equal groups', '🔀'], ['group', 'make sets of the same size', '🧺'], ['each', 'every group', '👉'], ['left over', 'what remains', '🧩']],
+      [['Sharing: 12 sweets between 3 children. How many each? 12 ÷ 3 = 4.', sharing(12, 3, 'sweet')], ['Grouping: 12 sweets in bags of 3. How many bags? 12 ÷ 3 = 4.', sharing(12, 4, 'sweet')], ['Same sum, different story: both are 12 ÷ 3.', B('12 ÷ 3 = 4')]],
+      [['20 pencils shared between 5. How many each?', ['20 ÷ 5 = 4.'], '4 each', sharing(20, 5)], ['20 pencils in packs of 5. How many packs?', ['20 ÷ 5 = 4.'], '4 packs', sharing(20, 4)], ['18 children make teams of 3. How many teams?', ['18 ÷ 3 = 6.'], '6 teams', C(['18 ÷ 3 = 6'])]],
+      ['Read the question twice. Is it “each” or “how many groups”?', C(['each', 'groups'])],
+      ['24 cakes in boxes of 4. How many boxes?', TH(24, 'sweet', 6), ['5', '6', '8'], '6', '24 ÷ 4 = 6.', 'Groups of 4.'],
+      ['Division stories: share equally or make equal groups.', C(['share', 'group'])]],
+    ex: [['15 stickers shared between 3. How many each?', ['15 ÷ 3.'], '5', sharing(15, 3)], ['16 apples in bags of 4. How many bags?', ['16 ÷ 4.'], '4', sharing(16, 4)]],
+    way: ['Draw boxes for the groups and put counters in them until the total is used.', sharing(10, 2)],
+    mist: ['The answer is a number of groups or a number in each, not the total.', C(['12 ÷ 3 = 4, not 12'])],
+    real: ['30 children make 5 equal teams. How many in each team?', '6', ['25', '35', '150'], '30 ÷ 5.', C(['30 ÷ 5 = 6'])],
+    qs: [['12 balloons shared by 4. How many each?', '3', ['8', '16', '48'], '12 ÷ 4.', ''], ['12 balloons in bags of 4. How many bags?', '3', ['8', '16', '48'], '12 ÷ 4.', ''], ['40 stickers in packs of 10. How many packs?', '4', ['30', '50', '400'], '40 ÷ 10.', ''], ['35 pencils shared by 5. How many each?', '7', ['30', '40', '175'], '35 ÷ 5.', ''],
+         ['18 sweets shared by 3. How many each?', '6', ['15', '21', '54'], '18 ÷ 3.', ''], ['50p in 5p coins. How many coins?', '10', ['45', '55', '250'], '50 ÷ 5.', ''], ['16 cars in rows of 2. How many rows?', '8', ['14', '18', '32'], '16 ÷ 2.', ''], ['24 eggs in boxes of 6. How many boxes?', '4', ['18', '30', '144'], '24 ÷ 6.', '']],
+    gen: function (lv) { var d = pick(lv ? [2, 3, 4, 5, 10] : [2, 5, 10]), q = r(2, lv ? 9 : 6), share = r(0, 1); return share ? mc('Division stories', q * d + ' sweets are shared between <b>' + d + '</b> children. How many does each get?', q, [q + 1, q - 1 || 3, q * d], 'Divide the total by ' + d + '.', q * d + ' ÷ ' + d + ' = ' + q + '.') : mc('Division stories', q * d + ' sweets are put in bags of <b>' + d + '</b>. How many bags?', q, [q + 1, q - 1 || 3, q * d], 'How many groups of ' + d + '?', q * d + ' ÷ ' + d + ' = ' + q + '.'); } });
+
+  M(304, { id: 'learnm3', ch: 'mouse', bg: 'farm',
+    li: ['Fact families', 'How are multiplying and dividing linked?', 'Multiplication and division are opposites. One array gives a whole family of four facts.', arr(3, 4),
+      [['fact family', 'linked number sentences', '👨‍👩‍👧'], ['inverse', 'the opposite', '🔄'], ['array', 'rows and columns', '🔳'], ['product', 'the answer to a multiplication', '✖️']],
+      [['3 rows of 4: 3 × 4 = 12 and 4 × 3 = 12.', C(['3 × 4 = 12', '4 × 3 = 12'])], ['Share 12 into 3 rows: 12 ÷ 3 = 4. Into 4 rows: 12 ÷ 4 = 3.', C(['12 ÷ 3 = 4', '12 ÷ 4 = 3'])], ['One array makes a family of four: 3 × 4, 4 × 3, 12 ÷ 3, 12 ÷ 4.', C(['3 × 4', '4 × 3', '12 ÷ 3', '12 ÷ 4'])]],
+      [['5 × 6 = 30. Write the other 3 facts.', ['6 × 5 = 30.', '30 ÷ 5 = 6.', '30 ÷ 6 = 5.'], '6 × 5, 30 ÷ 5, 30 ÷ 6', C(['5 × 6', '6 × 5', '30 ÷ 5', '30 ÷ 6'])], ['If 4 × 7 = 28, what is 28 ÷ 4?', ['Opposite.'], '7', C(['28 ÷ 4 = 7'])], ['If 24 ÷ 3 = 8, what is 8 × 3?', ['Opposite.'], '24', C(['8 × 3 = 24'])]],
+      ['The total (product) is the biggest number. It is the start of a division sum.', C(['12 ÷ 3 ✓', '3 ÷ 12 ✗'])],
+      ['2 × 9 = 18. What is 18 ÷ 9?', C(['2 × 9 = 18']), ['2', '9', '16'], '2', '18 ÷ 9 = 2.', 'Use the fact family.'],
+      ['Fact family: two multiplications and two divisions.', C(['× ×', '÷ ÷'])]],
+    ex: [['3 × 8 = 24. Find 24 ÷ 8.', ['24 ÷ 8 = 3.'], '3', C(['3', '8', '24'])], ['10 × 4 = 40. Find 40 ÷ 4.', ['40 ÷ 4 = 10.'], '10', C(['10', '4', '40'])]],
+    way: ['Draw a fact triangle: product at the top, the two numbers at the bottom.', C(['top 12', 'bottom 3 and 4'])],
+    mist: ['Use the same three numbers. 3, 4 and 12 are a family; 3, 4 and 13 are not.', C(['3 4 12 ✓'])],
+    real: ['You know 5 × 5 = 25. How many 5s are in 25?', '5', ['4', '20', '125'], '25 ÷ 5 = 5.', arr(5, 5, 'star')],
+    qs: [['If 4 × 5 = 20, then 20 ÷ 5 = ?', '4', ['5', '16', '25'], 'Fact family.', ''], ['If 6 × 3 = 18, then 18 ÷ 3 = ?', '6', ['3', '15', '21'], 'Fact family.', ''], ['If 7 × 2 = 14, then 14 ÷ 7 = ?', '2', ['7', '12', '21'], 'Fact family.', ''], ['If 30 ÷ 5 = 6, then 6 × 5 = ?', '30', ['25', '11', '35'], 'Fact family.', ''],
+         ['Which belongs to 3, 4, 12?', '12 ÷ 3 = 4', ['12 ÷ 5 = 4', '3 + 4 = 12'], 'Same three numbers.', ''], ['If 8 × 5 = 40, then 40 ÷ 8 = ?', '5', ['8', '35', '45'], 'Fact family.', ''], ['If 9 × 2 = 18, then 18 ÷ 2 = ?', '9', ['2', '16', '20'], 'Fact family.', ''], ['If 20 ÷ 4 = 5, then 4 × 5 = ?', '20', ['9', '16', '24'], 'Fact family.', '']],
+    gen: function (lv) { var a = r(2, lv ? 10 : 6), b = r(2, lv ? 10 : 6), k = r(0, 2); return k === 0 ? mc('Fact families', 'If <b>' + a + ' × ' + b + ' = ' + a * b + '</b>, what is <b>' + a * b + ' ÷ ' + b + '</b>?', a, [b, a + 1, a * b - a], 'Use the fact family.', a * b + ' ÷ ' + b + ' = ' + a + '.') : k === 1 ? mc('Fact families', 'If <b>' + a * b + ' ÷ ' + a + ' = ' + b + '</b>, what is <b>' + b + ' × ' + a + '</b>?', a * b, [a * b + a, a + b, a * b - b], 'Use the fact family.', b + ' × ' + a + ' = ' + a * b + '.') : mc('Fact families', 'Which number sentence belongs to <b>' + a + ', ' + b + ' and ' + a * b + '</b>?', a * b + ' ÷ ' + a + ' = ' + b, [a * b + ' ÷ ' + (a + 1) + ' = ' + b, a + ' + ' + b + ' = ' + a * b, a * b + ' ÷ ' + b + ' = ' + (b)].filter(function (x) { return x !== a * b + ' ÷ ' + a + ' = ' + b; }), 'Use the same three numbers.', 'These three numbers make a fact family.'); } });
+
+  /* ---------- 305 Fractions ---------- */
+  M(305, { id: 'learn1', ch: 'fox', bg: 'kitchen',
+    way: ['A fraction is an equal part of a whole. Shared into 4 equal parts, each part is one quarter.', pies([[4, 1]])],
+    ex: [['A cake is cut into 2 equal parts. What is each part?', ['2 equal parts is halves.'], 'one half', pies([[2, 1]])], ['A pizza is cut into 4 equal parts. 1 part is eaten. What fraction is eaten?', ['1 out of 4.'], 'one quarter', pies([[4, 1]])]],
+    mist: ['The parts must be EQUAL. If they are different sizes it is not halves or quarters.', C(['equal ✓', 'unequal ✗'])],
+    real: ['You share a sandwich fairly between 2 people. What fraction does each get?', 'one half', ['one quarter', 'one third'], '2 equal parts.', pies([[2, 1]])],
+    qs: [['A shape is cut into 2 equal parts. Each part is…', 'a half', ['a quarter', 'a third'], 'Halves.', pies([[2, 1]])], ['A shape is cut into 4 equal parts. Each part is…', 'a quarter', ['a half', 'a third'], 'Quarters.', pies([[4, 1]])], ['How many quarters make a whole?', '4', ['2', '3', '8'], '4 quarters.', pies([[4, 4]])], ['How many halves make a whole?', '2', ['1', '4', '3'], '2 halves.', pies([[2, 2]])],
+         ['Which is bigger: a half or a quarter?', 'a half', ['a quarter'], 'Fewer parts = bigger parts.', pies([[2, 1], [4, 1]])], ['Is this cut into equal parts? (3 equal parts)', 'Yes', ['No'], 'They match.', pies([[3, 1]])], ['One of 3 equal parts is…', 'a third', ['a half', 'a quarter'], 'Thirds.', pies([[3, 1]])], ['What fraction is the whole?', '1', ['1/2', '2'], 'All the parts.', '']],
+    gen: function (lv) { var p = pick(lv ? [2, 3, 4, 5, 6, 8] : [2, 3, 4]), nm = { 2: 'a half', 3: 'a third', 4: 'a quarter', 5: 'a fifth', 6: 'a sixth', 8: 'an eighth' }; return mc('What is a fraction', 'The shape is cut into <b>' + p + ' equal parts</b>. Each part is…', nm[p], Object.keys(nm).filter(function (k) { return +k !== p; }).slice(0, 3).map(function (k) { return nm[k]; }), 'Name the part by how many equal parts there are.', 'One of ' + p + ' equal parts is ' + nm[p] + '.', pies([[p, 1]])); } });
+
+  M(305, { id: 'learn2', ch: 'fox', bg: 'kitchen',
+    way: ['In 3/4, the bottom number (denominator) says how many equal parts. The top number (numerator) says how many we have.', pies([[4, 3]])],
+    ex: [['Write the fraction: 2 of 5 equal parts shaded.', ['2 shaded, 5 parts.'], '2/5', pies([[5, 2]])], ['How do you say 3/8?', ['3 out of 8 equal parts.'], 'three eighths', pies([[8, 3]])]],
+    mist: ['The bottom number is the TOTAL number of parts, not the shaded parts.', C(['3/4: 4 parts, 3 shaded'])],
+    real: ['A bar of chocolate has 8 squares. You eat 3. What fraction did you eat?', '3/8', ['5/8', '8/3'], '3 out of 8.', pies([[8, 3]])],
+    qs: [['What fraction is shaded? (1 of 4)', '1/4', ['4/1', '1/3', '3/4'], '1 out of 4.', pies([[4, 1]])], ['What fraction is shaded? (3 of 4)', '3/4', ['1/4', '4/3', '3/1'], '3 out of 4.', pies([[4, 3]])], ['What fraction is shaded? (2 of 3)', '2/3', ['3/2', '1/3', '2/4'], '2 out of 3.', pies([[3, 2]])], ['What fraction is not shaded? (1 of 4 shaded)', '3/4', ['1/4', '4/4'], '3 left.', pies([[4, 1]])],
+         ['Which fraction is 1 out of 5?', '1/5', ['5/1', '1/4'], '1 shaded of 5.', ''], ['What is the bottom number called?', 'denominator', ['numerator', 'total'], 'Denominator.', ''], ['What is the top number called?', 'numerator', ['denominator', 'whole'], 'Numerator.', ''], ['What fraction is shaded? (5 of 6)', '5/6', ['6/5', '1/6'], '5 out of 6.', pies([[6, 5]])]],
+    gen: function (lv) { var d = r(2, lv ? 10 : 6), n = r(1, d - 1); return mc('Writing fractions', 'What fraction is shaded?', n + '/' + d, [d + '/' + n, (n === 1 ? 2 : n - 1) + '/' + d, n + '/' + (d + 1)], 'Top: shaded. Bottom: all the equal parts.', n + ' of ' + d + ' parts: ' + n + '/' + d + '.', pies([[d, n]])); } });
+
+  M(305, { id: 'learn3', ch: 'fox', bg: 'kitchen',
+    way: ['Half of a number: share by 2. A quarter: halve, then halve again.', C(['half of 12 = 6', 'quarter of 12 = 3'])],
+    ex: [['What is half of 16?', ['16 ÷ 2.'], '8', sharing(16, 2)], ['What is a quarter of 20?', ['Half of 20 is 10.', 'Half of 10 is 5.'], '5', sharing(20, 4)]],
+    mist: ['A quarter is smaller than a half. A quarter of 20 is 5, not 10.', C(['½ of 20 = 10', '¼ of 20 = 5'])],
+    real: ['There are 24 children. Half go to the park. How many go?', '12', ['6', '24', '48'], 'Half of 24.', sharing(24, 2, 'star')],
+    qs: [['Half of 14 = ?', '7', ['28', '12', '6'], '14 ÷ 2.', ''], ['Half of 30 = ?', '15', ['60', '10', '14'], '30 ÷ 2.', ''], ['A quarter of 8 = ?', '2', ['4', '32', '1'], '8 ÷ 4.', ''], ['A quarter of 40 = ?', '10', ['20', '160', '4'], '40 ÷ 4.', ''],
+         ['Half of 100 = ?', '50', ['200', '10', '25'], '100 ÷ 2.', ''], ['A quarter of 12 = ?', '3', ['6', '48', '4'], '12 ÷ 4.', ''], ['Half of 50p is…', '25p', ['100p', '20p', '5p'], '50 ÷ 2.', ''], ['A quarter of 100 = ?', '25', ['50', '10', '400'], '100 ÷ 4.', '']],
+    gen: function (lv) { var q = r(1, lv ? 15 : 8), h = r(0, 1), n = h ? q * 2 : q * 4; return mc('Half and quarter of', 'What is <b>' + (h ? 'half' : 'a quarter') + ' of ' + n + '</b>?', q, [q * 2, q + 1, n], 'Share by ' + (h ? 2 : 4) + '.', n + ' ÷ ' + (h ? 2 : 4) + ' = ' + q + '.'); } });
+
+  M(305, { id: 'learn4', ch: 'fox', bg: 'kitchen',
+    way: ['To find a fraction of a shape, count the equal parts and how many are shaded.', pies([[8, 3]])],
+    ex: [['A rectangle has 6 equal squares. 2 are red. What fraction is red?', ['2 of 6.'], '2/6', pies([[6, 2]])], ['What fraction of the flag is blue? (4 of 5 equal parts)', ['4 of 5.'], '4/5', pies([[5, 4]])]],
+    mist: ['Only count equal parts. If one part is bigger the fraction is not correct.', C(['equal parts only'])],
+    real: ['A pizza has 8 slices. You eat 3. What fraction is left?', '5/8', ['3/8', '8/5'], '5 slices left.', pies([[8, 5]])],
+    qs: [['4 equal parts, 3 shaded. Fraction shaded?', '3/4', ['1/4', '4/3'], '3 of 4.', pies([[4, 3]])], ['6 equal parts, 1 shaded. Fraction shaded?', '1/6', ['6/1', '5/6'], '1 of 6.', pies([[6, 1]])], ['8 equal parts, 5 shaded. Fraction not shaded?', '3/8', ['5/8', '8/3'], '3 left.', pies([[8, 5]])], ['5 equal parts, 2 shaded. Fraction shaded?', '2/5', ['3/5', '5/2'], '2 of 5.', pies([[5, 2]])],
+         ['10 equal parts, 7 shaded. Fraction shaded?', '7/10', ['3/10', '10/7'], '7 of 10.', pies([[10, 7]])], ['3 equal parts, 2 shaded. Fraction not shaded?', '1/3', ['2/3', '3/1'], '1 left.', pies([[3, 2]])], ['2 equal parts, 1 shaded. Fraction shaded?', '1/2', ['2/1', '2/2'], '1 of 2.', pies([[2, 1]])], ['4 equal parts, all shaded. Fraction shaded?', '4/4', ['1/4', '0/4'], 'All of them.', pies([[4, 4]])]],
+    gen: function (lv) { var d = r(2, lv ? 10 : 6), n = r(1, d - 1), s = r(0, 1); return mc('Fraction of a shape', 'A shape has <b>' + d + '</b> equal parts and <b>' + n + '</b> are shaded. What fraction is <b>' + (s ? 'not ' : '') + 'shaded</b>?', (s ? d - n : n) + '/' + d, [(s ? n : d - n) + '/' + d, d + '/' + (s ? d - n : n), (s ? d - n : n) + '/' + (d + 1)], 'Top: how many. Bottom: all the equal parts.', (s ? d - n : n) + ' of ' + d + '.', pies([[d, n]])); } });
+
+  M(305, { id: 'learnm1', ch: 'fox', bg: 'kitchen',
+    li: ['Equivalent fractions', 'How can different fractions be equal?', 'Fractions that name the same amount are equivalent. One half is the same as two quarters.', pies([[2, 1], [4, 2]]),
+      [['equivalent', 'equal in value', '🟰'], ['half', '1 of 2 equal parts', '🌗'], ['quarter', '1 of 4 equal parts', '🍰'], ['same amount', 'covers the same area', '📐']],
+      [['1/2 of a pizza. Cut every half into 2: it is now 2/4 of the pizza.', pies([[2, 1], [4, 2]])], ['2/4 is the same as 1/2. They cover the same area.', pies([[2, 1], [4, 2]])], ['1/2 = 2/4 = 4/8.', pies([[2, 1], [4, 2], [8, 4]])]],
+      [['Is 2/4 equal to 1/2?', ['Same amount shaded.'], 'Yes', pies([[2, 1], [4, 2]])], ['How many quarters make a half?', ['2 quarters = 1 half.'], '2', pies([[4, 2], [2, 1]])], ['1/2 = ?/8', ['Double top and bottom twice.'], '4', pies([[2, 1], [8, 4]])]],
+      ['Multiply or divide top and bottom by the same number. 1/2 = 3/6.', C(['1/2 = 3/6', '×3 top and bottom'])],
+      ['Which is the same as 1/2?', pies([[2, 1]]), ['1/4', '2/4', '3/4'], '2/4', '2/4 is the same as 1/2.', 'Double both numbers.'],
+      ['Equivalent fractions name the same amount in different ways.', C(['1/2 = 2/4 = 4/8'])]],
+    ex: [['1/3 = ?/6', ['Double the top and bottom.', '1×2, 3×2.'], '2/6', pies([[3, 1], [6, 2]])], ['3/6 = ?/2', ['Divide top and bottom by 3.'], '1/2', pies([[6, 3], [2, 1]])]],
+    way: ['Fold a paper strip into halves, then quarters, then eighths and compare shaded parts.', pies([[2, 1], [4, 2], [8, 4]])],
+    mist: ['Change the top AND the bottom. 1/2 = 2/3 is wrong.', C(['1/2 = 2/4 ✓', '1/2 = 2/3 ✗'])],
+    real: ['You eat 2/4 of a cake. Your friend eats 1/2. Who ate more?', 'the same', ['you', 'your friend'], '2/4 = 1/2.', pies([[4, 2], [2, 1]])],
+    qs: [['1/2 = ?/4', '2', ['1', '3', '4'], 'Double both.', pies([[2, 1], [4, 2]])], ['2/4 = ?/2', '1', ['2', '3', '4'], 'Halve both.', pies([[4, 2], [2, 1]])], ['1/4 = ?/8', '2', ['1', '4', '3'], 'Double both.', pies([[4, 1], [8, 2]])], ['Which is equal to 1/2?', '4/8', ['1/8', '3/8', '2/8'], 'Half of 8 is 4.', ''],
+         ['Which is equal to 1/3?', '2/6', ['1/6', '3/6', '2/3'], 'Double both.', ''], ['3/6 = ?/2', '1', ['3', '2', '6'], 'Halve both.', ''], ['Is 2/8 equal to 1/4?', 'Yes', ['No'], '2/8 ÷ 2 = 1/4.', ''], ['Is 1/2 equal to 1/3?', 'No', ['Yes'], 'Different amount.', '']],
+    gen: function (lv) { var d = pick(lv ? [2, 3, 4, 5] : [2, 3, 4]), n = 1, m = pick(lv ? [2, 3, 4, 5] : [2, 3]); return mc('Equivalent fractions', n + '/' + d + ' = <b>?</b>/' + d * m, m, [m + 1, m - 1 || 5, d], 'Multiply the top by ' + m + ' too.', n + '/' + d + ' = ' + m + '/' + d * m + '.', pies([[d, n], [d * m, m]])); } });
+
+  M(305, { id: 'learnm2', ch: 'fox', bg: 'kitchen',
+    li: ['Thirds, fifths and tenths', 'What are thirds, fifths and tenths?', 'We can cut wholes into other equal parts too: 3 equal parts are thirds, 5 are fifths and 10 are tenths.', pies([[3, 1], [5, 1], [10, 1]]),
+      [['third', '1 of 3 equal parts', '3️⃣'], ['fifth', '1 of 5 equal parts', '5️⃣'], ['tenth', '1 of 10 equal parts', '🔟'], ['unit fraction', 'a fraction with 1 on top', '1️⃣']],
+      [['3 equal parts: each part is one third, 1/3.', pies([[3, 1]])], ['5 equal parts: each part is one fifth, 1/5.', pies([[5, 1]])], ['10 equal parts: each part is one tenth, 1/10.', pies([[10, 1]])]],
+      [['What fraction is shaded? (2 of 5)', ['2 of 5 equal parts.'], '2/5', pies([[5, 2]])], ['What fraction is shaded? (3 of 10)', ['3 of 10 equal parts.'], '3/10', pies([[10, 3]])], ['How many thirds make a whole?', ['3 thirds.'], '3', pies([[3, 3]])]],
+      ['More parts means smaller parts. A tenth is smaller than a fifth.', C(['1/10 < 1/5'])],
+      ['How many fifths make a whole?', pies([[5, 5]]), ['3', '5', '10'], '5', '5 fifths make 1.', 'Same as the bottom number.'],
+      ['Thirds, fifths, tenths: the bottom number says how many equal parts.', C(['3 → thirds', '5 → fifths', '10 → tenths'])]],
+    ex: [['What is 1/10 of 30?', ['30 ÷ 10 = 3.'], '3', C(['30 ÷ 10'])], ['What is 1/5 of 20?', ['20 ÷ 5 = 4.'], '4', C(['20 ÷ 5'])]],
+    way: ['A tenth is easy to find in money: 1/10 of £1 is 10p.', FL.coins([10])],
+    mist: ['Thirds are not the same as three parts of any size. They must be equal.', C(['equal parts'])],
+    real: ['A pizza is cut into 10 equal slices. You eat 3. What fraction did you eat?', '3/10', ['10/3', '3/7'], '3 of 10.', pies([[10, 3]])],
+    qs: [['One of 5 equal parts is…', 'one fifth', ['one third', 'one tenth'], 'Fifths.', pies([[5, 1]])], ['One of 10 equal parts is…', 'one tenth', ['one fifth', 'one third'], 'Tenths.', pies([[10, 1]])], ['How many tenths make a whole?', '10', ['5', '3'], '10 tenths.', pies([[10, 10]])], ['What is 1/3 of 12?', '4', ['3', '6', '9'], '12 ÷ 3.', ''],
+         ['What is 1/5 of 10?', '2', ['5', '1', '10'], '10 ÷ 5.', ''], ['What is 1/10 of 50?', '5', ['10', '40', '500'], '50 ÷ 10.', ''], ['Which is smaller: 1/3 or 1/5?', '1/5', ['1/3'], 'More parts, smaller.', ''], ['What fraction is shaded? (7 of 10)', '7/10', ['3/10', '10/7'], '7 of 10.', pies([[10, 7]])]],
+    gen: function (lv) { var d = pick([3, 5, 10]), q = r(1, lv ? 10 : 6); return mc('Thirds, fifths and tenths', 'What is <b>1/' + d + ' of ' + q * d + '</b>?', q, [q + 1, q - 1 || 3, q * d], 'Divide by ' + d + '.', q * d + ' ÷ ' + d + ' = ' + q + '.'); } });
+
+  M(305, { id: 'learnm3', ch: 'fox', bg: 'kitchen',
+    li: ['Comparing fractions', 'How do I compare and order fractions?', 'Fractions with the same bottom number: the bigger top number is bigger. Unit fractions: the smaller bottom number is bigger.', pies([[4, 1], [4, 3]]),
+      [['compare', 'say which is bigger', '⚖️'], ['order', 'put in a line', '📋'], ['bigger', 'greater', '⬆️'], ['smaller', 'less', '⬇️']],
+      [['Same bottom number: 3/4 is bigger than 1/4 because 3 parts is more than 1 part.', pies([[4, 1], [4, 3]])], ['Same top number: 1/2 is bigger than 1/4 because halves are bigger pieces.', pies([[2, 1], [4, 1]])], ['On a number line, bigger fractions are further to the right.', C(['0', '1/4', '1/2', '3/4', '1'])]],
+      [['Which is bigger: 2/5 or 4/5?', ['Same bottom. 4 > 2.'], '4/5', pies([[5, 2], [5, 4]])], ['Which is bigger: 1/3 or 1/6?', ['Thirds are bigger pieces.'], '1/3', pies([[3, 1], [6, 1]])], ['Put in order, smallest first: 3/4, 1/4, 1/2.', ['1/4 < 1/2 < 3/4.'], '1/4, 1/2, 3/4', pies([[4, 1], [2, 1], [4, 3]])]],
+      ['A bigger bottom number does not mean a bigger fraction. 1/8 is smaller than 1/4.', C(['1/8 < 1/4'])],
+      ['Which is bigger: 1/2 or 1/3?', pies([[2, 1], [3, 1]]), ['1/2', '1/3', 'the same'], '1/2', 'Halves are bigger than thirds.', 'Fewer parts, bigger pieces.'],
+      ['Compare fractions by looking at the parts: same bottom → compare tops; same top → bigger bottom is smaller.', C(['same bottom', 'same top'])]],
+    ex: [['Which is smaller: 3/8 or 5/8?', ['Same bottom. 3 < 5.'], '3/8', pies([[8, 3], [8, 5]])], ['Which is bigger: 1/4 or 1/10?', ['Fourths are bigger pieces.'], '1/4', pies([[4, 1], [10, 1]])]],
+    way: ['Draw fraction bars of the same length and shade. Compare the shaded parts.', pies([[3, 1], [3, 2]])],
+    mist: ['Compare the whole fraction, not just one number.', C(['2/3 vs 3/4: use pictures'])],
+    real: ['You eat 1/2 of a pizza. Your friend eats 1/4. Who ate more?', 'you', ['your friend', 'the same'], '1/2 > 1/4.', pies([[2, 1], [4, 1]])],
+    qs: [['Which is bigger: 3/5 or 2/5?', '3/5', ['2/5'], 'Same bottom.', ''], ['Which is bigger: 1/2 or 1/5?', '1/2', ['1/5'], 'Fewer parts.', ''], ['Which is smaller: 1/4 or 1/8?', '1/8', ['1/4'], 'More parts.', ''], ['Which is biggest: 1/3, 1/6, 1/2?', '1/2', ['1/3', '1/6'], 'Halves are biggest.', ''],
+         ['Order smallest first: 1/2, 1/4, 1/8', '1/8, 1/4, 1/2', ['1/2, 1/4, 1/8', '1/4, 1/8, 1/2'], 'More parts = smaller.', ''], ['Which is bigger: 3/4 or 1/4?', '3/4', ['1/4'], 'Same bottom.', ''], ['Which sign fits: 2/3 ◯ 1/3?', '>', ['<', '='], '2 > 1.', ''], ['Which sign fits: 1/10 ◯ 1/5?', '<', ['>', '='], 'More parts.', '']],
+    gen: function (lv) { var d = pick(lv ? [3, 4, 5, 6, 8, 10] : [3, 4, 5, 8]), a = r(1, d - 1), b = r(1, d - 1); if (a === b) b = a === 1 ? 2 : a - 1; var big = Math.max(a, b); return mc('Comparing fractions', 'Which is <b>bigger</b>: ' + a + '/' + d + ' or ' + b + '/' + d + '?', big + '/' + d, [Math.min(a, b) + '/' + d], 'Same bottom number: compare the tops.', big + ' parts is more than ' + Math.min(a, b) + ' parts.', pies([[d, a], [d, b]])); } });
+})();
+</script>
+<script>
+/* fl_m3c.js: P3 Money and time (306), Measurement (307), Shape, movement and data (308) */
+(function () {
+  'use strict';
+  var FL = window.FL, BT = window.BT, S = window.Studio; if (!FL || !FL.MEGA) return;
+  var B = FL.big, C = FL.cards, TH = FL.things, M = FL.MEGA, r = FL.r, pick = FL.pick, T = FL.track, SH = FL.shapeRow, MN = FL.money;
+  function mc(tag, q, a, w, h, e, p) { return FL.MC(tag, q, a, w, [h], e, p || ''); }
+  function CK(h, m) { return '<div style="max-width:190px;margin:auto">' + BT.sv.clock(h, m || 0) + '</div>'; }
+  function bars(items) { return '<div style="display:grid;gap:6px;justify-items:start;margin:auto;max-width:320px">' + items.map(function (x) { var s = ''; for (var i = 0; i < x[1]; i++) s += '<span style="display:inline-block;width:22px;height:22px;background:' + (x[2] || '#ffb703') + ';border:2px solid #2b2340;margin-right:-2px"></span>'; return '<div style="display:flex;align-items:center;gap:8px"><b style="min-width:62px;text-align:right">' + x[0] + '</b><span>' + s + '</span></div>'; }).join('') + '</div>'; }
+  function rule(lo, hi, at) { var w = 300, s = '', n = hi - lo; for (var i = 0; i <= n; i++) { var x = 10 + i * (w - 20) / n; s += '<line x1="' + x + '" y1="20" x2="' + x + '" y2="' + (i % 5 === 0 ? 40 : 32) + '" stroke="#2b2340" stroke-width="2"/>' + (i % 5 === 0 ? '<text x="' + x + '" y="56" font-size="12" font-weight="800" text-anchor="middle" fill="#2b2340">' + (lo + i) + '</text>' : ''); } var ax = 10 + (at - lo) * (w - 20) / n;
+    return '<svg viewBox="0 0 300 70" role="img" aria-label="A ruler pointing at ' + at + '" style="width:300px;max-width:100%;height:auto"><rect x="6" y="14" width="288" height="30" rx="4" fill="#ffe08a" stroke="#2b2340" stroke-width="2"/>' + s + '<path d="M' + ax + ' 4 l-6 -4 h12z" fill="#e63946"/><rect x="' + (ax - 1.5) + '" y="0" width="3" height="14" fill="#e63946"/></svg>'; }
+
+  /* ---------- 306 Money and time ---------- */
+  M(306, { id: 'learn1', ch: 'owl', bg: 'day',
+    way: ['Change is what you get back. Pay with a bigger coin and count on from the price.', FL.coins([100])],
+    ex: [['A comic costs 45p. You pay with £1. What is the change?', ['Count on from 45p to 50p: 5p.', '50p to £1: 50p.', '5p + 50p = 55p.'], '55p', FL.coins([100])], ['A toy costs 72p. You pay 80p. What is the change?', ['72p to 80p is 8p.'], '8p', FL.coins([50, 20, 10])]],
+    mist: ['Change is not the price. £1 − 45p is 55p, not 45p.', FL.coins([100])],
+    real: ['A drink costs 65p. You pay with £1. How much change?', '35p', ['45p', '65p', '165p'], '65 to 100.', FL.coins([100])],
+    qs: [['Pay 50p for 35p. Change?', '15p', ['25p', '85p', '5p'], '35 + 15 = 50.', ''], ['Pay £1 for 60p. Change?', '40p', ['60p', '160p', '50p'], '60 + 40.', ''], ['Pay £1 for 85p. Change?', '15p', ['25p', '185p', '5p'], '85 + 15.', ''], ['Pay 20p for 13p. Change?', '7p', ['17p', '33p', '6p'], '13 + 7.', ''],
+         ['Pay £1 for 29p. Change?', '71p', ['61p', '129p', '81p'], '29 + 71.', ''], ['Pay 50p for 28p. Change?', '22p', ['32p', '78p', '12p'], '28 + 22.', ''], ['Pay £2 for £1.50. Change?', '50p', ['£1', '£3.50', '30p'], '£1.50 + 50p.', ''], ['Pay £5 for £3.20. Change?', '£1.80', ['£2.80', '£1.20', '£8.20'], '£3.20 + £1.80.', '']],
+    gen: function (lv) { var pay = pick(lv ? [50, 100, 200] : [20, 50, 100]), p = r(2, pay - 1); if (pay >= 100 && p < 10) p += 11; return mc('Working out change', 'You pay <b>' + MN(pay) + '</b> for something that costs <b>' + MN(p) + '</b>. How much change?', MN(pay - p), [MN(pay - p + 10), MN(pay - p - 1 < 1 ? pay - p + 2 : pay - p - 1), MN(p)], 'Count on from the price to what you paid.', MN(p) + ' + ' + MN(pay - p) + ' = ' + MN(pay) + '.', FL.coins([pay >= 100 ? 100 : pay])); } });
+
+  M(306, { id: 'learn2', ch: 'owl', bg: 'day',
+    way: ['Add the coins starting with the biggest. Group the 10s and 5s then add the 1s.', FL.coins([50, 20, 10, 5])],
+    ex: [['How much is 50p + 20p + 5p?', ['50 + 20 = 70.', '70 + 5 = 75.'], '75p', FL.coins([50, 20, 5])], ['How much is £1 + 50p + 20p?', ['£1 + 50p = £1.50.', '+ 20p = £1.70.'], '£1.70', FL.coins([100, 50, 20])]],
+    mist: ['Write pounds and pence carefully. £1.05 is not £1.5.', C(['£1.05', '£1.50'])],
+    real: ['You have a 50p, a 20p and a 10p coin. Can you buy a 75p toy?', 'Yes, with 5p to spare', ['No', 'Yes, with 10p to spare'], '80p is more than 75p.', FL.coins([50, 20, 10])],
+    qs: [['50p + 20p = ?', '70p', ['5p', '700p', '60p'], '5 + 2 = 7 tens.', ''], ['20p + 20p + 10p = ?', '50p', ['40p', '60p', '30p'], '20 + 20 + 10.', ''], ['£1 + 50p = ?', '£1.50', ['£1.05', '£5', '£15'], '£1 and 50p.', ''], ['50p + 50p = ?', '£1', ['50p', '100', '£10'], '100p.', ''],
+         ['20p + 5p + 2p = ?', '27p', ['25p', '29p', '7p'], '20 + 5 + 2.', ''], ['£2 + 20p = ?', '£2.20', ['£2.02', '£22', '£2.2'], 'Pounds and pence.', ''], ['10p + 10p + 5p = ?', '25p', ['20p', '30p', '15p'], '10 + 10 + 5.', ''], ['How many 10p coins make £1?', '10', ['5', '100', '20'], '10 × 10p = 100p.', '']],
+    gen: function (lv) { var cs = [50, 20, 10, 5, 2, 1].slice(0, lv ? 6 : 4), a = pick(cs), b = pick(cs), c = pick(cs); return mc('Making totals', 'How much is <b>' + [a, b, c].map(function (v) { return v + 'p'; }).join(' + ') + '</b>?', MN(a + b + c), [MN(a + b + c + 5), MN(a + b + c - 1), MN(a + b)], 'Add the biggest first.', [a, b, c].join(' + ') + ' = ' + (a + b + c) + '.', FL.coins([a, b, c])); } });
+
+  M(306, { id: 'learn3', ch: 'owl', bg: 'day',
+    way: ['Count minutes round the clock in fives: 5, 10, 15, 20 … each number is 5 more minutes.', CK(4, 20)],
+    ex: [['What time is it?', ['Long hand at 4 is 20 minutes.', 'Short hand just past 3.'], '20 past 3', CK(3, 20)], ['What time is it?', ['Long hand at 8 is 40, which is 20 to.', 'Next hour is 7.'], '20 to 7', CK(6, 40)]],
+    mist: ['After half past, say “to” the next hour. 6:40 is 20 to 7.', CK(6, 40)],
+    real: ['Your class starts at 10 past 9. Where is the long hand?', 'on 2', ['on 10', 'on 9', 'on 3'], '2 × 5 = 10.', ''],
+    qs: [['The long hand is on 2. How many minutes past?', '10', ['2', '20', '5'], '2 × 5.', ''], ['The long hand is on 4. How many minutes past?', '20', ['4', '40', '10'], '4 × 5.', ''], ['The long hand is on 7. How many minutes past?', '35', ['7', '70', '25'], '7 × 5.', ''], ['The long hand is on 10. How many minutes to the next hour?', '10', ['50', '5', '20'], '60 − 50.', ''],
+         ['What time? Long hand on 5, short hand just past 2.', '25 past 2', ['5 past 2', '25 to 2', '25 to 3'], '5 × 5.', CK(2, 25)], ['What time? Long hand on 10, short hand almost at 5.', '10 to 5', ['10 past 4', '50 past 4', '10 past 5'], '10 × 5 = 50 = 10 to.', CK(4, 50)], ['What time is it?', '5 past 8', ['5 to 8', '25 past 8', '8 o’clock'], 'Long hand on 1.', CK(8, 5)], ['What time is it?', '5 to 11', ['5 past 11', '55 past 12', '11 o’clock'], 'Long hand on 11.', CK(10, 55)]],
+    gen: function (lv) { var h = r(1, 12), m = pick(lv ? [5, 10, 20, 25, 35, 40, 50, 55] : [5, 10, 20, 25]), nx = h % 12 + 1, to = m > 30, nm = to ? (60 - m) + ' to ' + nx : m + ' past ' + h; return mc('Telling the time', 'What time does the clock show?', nm, [to ? (60 - m) + ' past ' + h : (60 - m) + ' to ' + nx, (to ? m + ' past ' + h : m + ' to ' + nx), h + ' o’clock'], 'Count in 5s from 12 to the long hand.', 'It is ' + nm + '.', CK(h, m)); } });
+
+  M(306, { id: 'learn4', ch: 'owl', bg: 'day',
+    way: ['To find how long something takes, count on from the start time to the end time, hour by hour then minutes.', C(['3:00', '→ 1 h →', '4:00', '→ 20 min →', '4:20'])],
+    ex: [['A film starts at 2:00 and ends at 4:00. How long?', ['2:00 to 3:00 is 1 hour.', '3:00 to 4:00 is 1 hour.'], '2 hours', C(['2:00', '3:00', '4:00'])], ['A walk starts at 3:15 and ends at 3:45. How long?', ['15 to 45 is 30 minutes.'], '30 minutes', C(['3:15', '3:45'])]],
+    mist: ['Minutes go up to 60, not 100. 3:50 to 4:10 is 20 minutes.', C(['3:50 → 4:00 = 10', '4:00 → 4:10 = 10'])],
+    real: ['School starts at 9:00 and lunch is at 12:00. How many hours?', '3 hours', ['2 hours', '4 hours', '12 hours'], '9, 10, 11, 12.', C(['9:00', '12:00'])],
+    qs: [['From 1:00 to 4:00 is how many hours?', '3', ['4', '2', '5'], 'Count on.', ''], ['From 5:15 to 5:45 is how many minutes?', '30', ['3', '45', '15'], '15 to 45.', ''], ['From 7:30 to 8:30 is…', '1 hour', ['30 minutes', '2 hours'], 'Same minutes.', ''], ['From 10:00 to 10:20 is…', '20 minutes', ['2 hours', '10 minutes'], 'Count on.', ''],
+         ['A bus leaves at 2:10 and arrives at 2:40. How long?', '30 minutes', ['40 minutes', '10 minutes'], '10 to 40.', ''], ['A game starts at 3:00 and ends at 5:00. How long?', '2 hours', ['5 hours', '3 hours'], '3 to 5.', ''], ['From 8:45 to 9:15 is…', '30 minutes', ['1 hour', '15 minutes'], '15 + 15.', ''], ['How many minutes in half an hour?', '30', ['15', '60', '45'], 'Half of 60.', '']],
+    gen: function (lv) { var h = r(1, 9), d = r(1, lv ? 4 : 3), mn = pick([0, 15, 30]); return r(0, 1) ? mc('How long', 'A film starts at <b>' + h + ':00</b> and ends at <b>' + (h + d) + ':00</b>. How many hours long is it?', d, [d + 1, d - 1 || 5, h + d], 'Count the hours from start to end.', (h + d) + ' − ' + h + ' = ' + d + ' hours.') : mc('How long', 'A walk starts at <b>' + h + ':' + (mn || '00') + '</b> and ends at <b>' + h + ':' + (mn + 15 < 60 ? mn + 15 : '00') + '</b>. How many minutes?', 15, [10, 30, 45], 'Count on in minutes.', 'It takes 15 minutes.'); } });
+
+  M(306, { id: 'learnm1', ch: 'owl', bg: 'day',
+    li: ['Pounds and pence', 'How do I write pounds and pence?', 'We write pounds with a £ sign and pence with a p. £1 is the same as 100p. £2.45 is 2 pounds and 45 pence.', FL.coins([100, 20, 20, 5]),
+      [['pound', '£1 = 100p', '💷'], ['pence', 'the small money unit', '🪙'], ['decimal point', 'the dot between pounds and pence', '⚫'], ['£', 'the pound sign', '£']],
+      [['£1 = 100p. £2 = 200p.', C(['£1 = 100p', '£2 = 200p'])], ['£3.45 is 3 pounds and 45p. The dot separates them.', C(['£3', '.', '45p'])], ['Write 65p as £0.65. Write 5p as £0.05.', C(['65p = £0.65', '5p = £0.05'])]],
+      [['Write 250p in pounds.', ['100p = £1.', '250p = £2.50.'], '£2.50', FL.coins([100, 100, 50])], ['Write £1.35 in pence.', ['£1 = 100p.', '100p + 35p = 135p.'], '135p', C(['£1.35', '135p'])], ['Which is more: £1.20 or 95p?', ['£1.20 = 120p.', '120p is more than 95p.'], '£1.20', C(['£1.20', '95p'])]],
+      ['Always use the same unit to compare. £1.20 and 95p: change one so they match.', C(['120p vs 95p'])],
+      ['Write 175p in pounds.', C(['175p']), ['£17.5', '£1.75', '£175'], '£1.75', '100p + 75p = £1.75.', 'Pounds first, then pence.'],
+      ['£1 = 100p. Pounds and pence are separated by a dot.', C(['£1.50 = 150p'])]],
+    ex: [['Write £0.40 in pence.', ['£0.40 = 40p.'], '40p', C(['£0.40 = 40p'])], ['Write 305p in pounds.', ['300p = £3, then 5p.', '£3.05.'], '£3.05', C(['305p = £3.05'])]],
+    way: ['Think of 100 pennies in a pound. Show £1.35 as one pound coin and 35p.', FL.coins([100, 20, 10, 5])],
+    mist: ['£1.05 is not £1.5. The pence has two digits: 05.', C(['£1.05 = 105p', '£1.50 = 150p'])],
+    real: ['A drink costs £1.25. How many pence is that?', '125p', ['25p', '1250p', '12.5p'], '100 + 25.', FL.coins([100, 20, 5])],
+    qs: [['£2 = ?p', '200p', ['20p', '2p', '2000p'], '2 × 100.', ''], ['£1.50 = ?p', '150p', ['15p', '1.5p', '1500p'], '100 + 50.', ''], ['350p = £?', '£3.50', ['£35', '£3.05', '£350'], '300 + 50.', ''], ['£0.75 = ?p', '75p', ['7.5p', '750p', '0.75p'], 'Pence only.', ''],
+         ['Which is more: £1.50 or 120p?', '£1.50', ['120p'], '150p > 120p.', ''], ['£4.05 = ?p', '405p', ['45p', '450p', '40.5p'], '400 + 5.', ''], ['205p = £?', '£2.05', ['£2.50', '£20.5', '£205'], '200 + 5.', ''], ['How many pence in £5?', '500', ['50', '5', '5000'], '5 × 100.', '']],
+    gen: function (lv) { var p = r(1, lv ? 9 : 4) * 100 + pick([0, 5, 10, 20, 25, 30, 45, 50, 75]), toP = r(0, 1); return toP ? mc('Pounds and pence', 'How many pence is <b>' + MN(p) + '</b>?', p + 'p', [(p + 100) + 'p', Math.round(p / 10) + 'p', (p * 10) + 'p'], '£1 = 100p.', MN(p) + ' = ' + p + 'p.') : mc('Pounds and pence', 'Write <b>' + p + 'p</b> in pounds.', MN(p), [MN(p + 50), '£' + p, MN(p - 5)], '100p = £1.', p + 'p = ' + MN(p) + '.'); } });
+
+  M(306, { id: 'learnm2', ch: 'owl', bg: 'day',
+    li: ['am and pm', 'What do am and pm mean?', 'The clock goes round twice a day. am is from midnight to noon. pm is from noon to midnight.', C(['am: morning', 'pm: afternoon and night']),
+      [['am', 'from midnight to noon', '🌅'], ['pm', 'from noon to midnight', '🌆'], ['noon', '12 o’clock in the day', '☀️'], ['midnight', '12 o’clock at night', '🌙']],
+      [['7:30 am is in the morning, when you eat breakfast.', C(['7:30 am', '🥣'])], ['3:00 pm is in the afternoon, when school finishes.', C(['3:00 pm', '🏫'])], ['9:00 pm is at night, near bedtime.', C(['9:00 pm', '🛏️'])]],
+      [['You wake up at 7:00. Is it am or pm?', ['Morning.'], 'am', C(['7:00 am'])], ['You have dinner at 6:00. Is it am or pm?', ['Evening.'], 'pm', C(['6:00 pm'])], ['What time is noon?', ['Middle of the day.'], '12:00 pm', C(['12:00'])]],
+      ['12 pm is noon, 12 am is midnight. The twelve is the tricky one.', C(['12 pm noon', '12 am midnight'])],
+      ['School starts at 9:00 in the morning. Is it am or pm?', C(['9:00']), ['am', 'pm'], 'am', 'Morning is am.', 'Think of the sun.'],
+      ['am: morning. pm: afternoon and evening.', C(['am', 'pm'])]],
+    ex: [['Your lunch is at 12:30. Is it am or pm?', ['Just after noon.'], 'pm', C(['12:30 pm'])], ['You go to bed at 8:00 at night. am or pm?', ['Evening.'], 'pm', C(['8:00 pm'])]],
+    way: ['A day has 24 hours. The clock face shows 12, so we need am and pm to say which half.', C(['12 hours am', '12 hours pm'])],
+    mist: ['Do not say am for the afternoon. 3:00 in the afternoon is pm.', C(['3:00 pm'])],
+    real: ['The film starts at 7:00 in the evening. Is that am or pm?', 'pm', ['am'], 'Evening is pm.', C(['7:00'])],
+    qs: [['Breakfast at 8:00. am or pm?', 'am', ['pm'], 'Morning.', ''], ['Dinner at 6:00. am or pm?', 'pm', ['am'], 'Evening.', ''], ['Bedtime at 8:30. am or pm?', 'pm', ['am'], 'Night.', ''], ['Wake up at 6:30. am or pm?', 'am', ['pm'], 'Morning.', ''],
+         ['School ends at 3:15. am or pm?', 'pm', ['am'], 'Afternoon.', ''], ['Which is later: 10:00 am or 10:00 pm?', '10:00 pm', ['10:00 am'], 'pm is later in the day.', ''], ['What time is noon?', '12:00 pm', ['12:00 am', '1:00 pm'], 'Middle of the day.', ''], ['What time is midnight?', '12:00 am', ['12:00 pm', '1:00 am'], 'Middle of the night.', '']],
+    gen: function () { var P = [['wake up', 'am', 7], ['eat breakfast', 'am', 8], ['go to school', 'am', 9], ['eat lunch', 'pm', 12], ['finish school', 'pm', 3], ['eat dinner', 'pm', 6], ['go to bed', 'pm', 8]], p = pick(P); return mc('am and pm', 'You ' + p[0] + ' at <b>' + p[2] + ':00</b>. Is that <b>am</b> or <b>pm</b>?', p[1], [p[1] === 'am' ? 'pm' : 'am'], 'Morning is am, afternoon and evening are pm.', 'It is ' + p[2] + ':00 ' + p[1] + '.'); } });
+
+  M(306, { id: 'learnm3', ch: 'owl', bg: 'day',
+    li: ['Calendars and dates', 'How do I read a calendar?', 'A calendar shows the days of each month in weeks. We write a date with the day, month and year.', C(['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']),
+      [['date', 'the day, month and year', '🗓️'], ['month', 'one of the 12 parts of a year', '📆'], ['week', '7 days', '7️⃣'], ['leap year', 'a year with 366 days', '🐸']],
+      [['A week has 7 days: Mon, Tue, Wed, Thu, Fri, Sat, Sun.', C(['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'])], ['Months have 30 or 31 days. February has 28 (29 in a leap year).', C(['30: Apr Jun Sep Nov', '31: the rest', '28: Feb'])], ['A date: 14 March 2027.', C(['14', 'March', '2027'])]],
+      [['How many days in April?', ['April has 30.'], '30', C(['April 30'])], ['What is the 3rd month?', ['Jan, Feb, Mar.'], 'March', C(['1 Jan', '2 Feb', '3 Mar'])], ['Today is Monday 5th. What is the date next Monday?', ['Add 7 days.'], '12th', C(['5', '12'])]],
+      ['Thirty days hath September, April, June and November. All the rest have 31, except February.', C(['30 days: Sep Apr Jun Nov'])],
+      ['How many days are in a week?', C(['Mon ... Sun']), ['5', '7', '10'], '7', '7 days.', 'Say them in order.'],
+      ['A calendar shows weeks, months and dates.', C(['7 days', '12 months'])]],
+    ex: [['It is 3rd May. What is the date in 1 week?', ['3 + 7 = 10.'], '10th May', C(['3 May', '10 May'])], ['How many months are in a year?', ['Jan to Dec.'], '12', C(['12 months'])]],
+    way: ['Make your own calendar: write the days across and put the dates in rows of 7.', C(['1 2 3 4 5 6 7', '8 9 10 11 12 13 14'])],
+    mist: ['A week is always 7 days. Months can have 30 or 31 days; February is different.', C(['7 days', '30/31 days'])],
+    real: ['Your birthday is 18th June. Today is 11th June. How many days to wait?', '7', ['6', '8', '18'], '18 − 11.', C(['11 June', '18 June'])],
+    qs: [['How many days in a week?', '7', ['5', '6', '10'], '7.', ''], ['How many months in a year?', '12', ['10', '11', '13'], '12.', ''], ['Which month has 28 days?', 'February', ['April', 'July', 'June'], 'Feb.', ''], ['Which has 30 days?', 'April', ['January', 'March', 'August'], 'Apr.', ''],
+         ['Which has 31 days?', 'July', ['April', 'June', 'September'], 'Jul.', ''], ['What month comes after September?', 'October', ['November', 'August', 'December'], 'Oct.', ''], ['4 weeks is how many days?', '28', ['24', '30', '14'], '4 × 7.', ''], ['It is the 9th. What is the date in 1 week?', '16th', ['10th', '15th', '17th'], '9 + 7.', '']],
+    gen: function () { var Mo = [['January', 31], ['February', 28], ['March', 31], ['April', 30], ['May', 31], ['June', 30], ['July', 31], ['August', 31], ['September', 30], ['October', 31], ['November', 30], ['December', 31]], m = pick(Mo); return mc('Calendars', 'How many days are in <b>' + m[0] + '</b>? (not a leap year)', m[1], [m[1] === 31 ? 30 : 31, m[1] === 28 ? 29 : 28, 29].filter(function (x) { return x !== m[1]; }), 'Remember the rhyme: 30 days hath September.', m[0] + ' has ' + m[1] + ' days.'); } });
+
+  /* ---------- 307 Measurement ---------- */
+  M(307, { id: 'learn1', ch: 'frog', bg: 'pond',
+    way: ['Length tells how long something is. Longer means more length. Use cm for small things and m for big things.', rule(0, 10, 7)],
+    ex: [['A ribbon is 12 cm and a string is 20 cm. Which is longer?', ['20 is more than 12.'], 'The string.', C(['12 cm', '20 cm'])], ['How much longer is the string?', ['20 − 12 = 8.'], '8 cm', C(['20 − 12 = 8'])]],
+    mist: ['Measure from 0, not from the end of the ruler.', rule(0, 10, 5)],
+    real: ['A pencil is 15 cm. A pen is 12 cm. How much shorter is the pen?', '3 cm', ['27 cm', '2 cm', '4 cm'], '15 − 12.', C(['15 cm', '12 cm'])],
+    qs: [['A is 8 cm and B is 14 cm. Which is longer?', 'B', ['A'], '14 > 8.', ''], ['A snake is 30 cm. A worm is 12 cm. How much longer is the snake?', '18 cm', ['42 cm', '12 cm', '17 cm'], '30 − 12.', ''], ['Which unit measures a classroom: cm or m?', 'm', ['cm'], 'Big.', ''], ['Which unit measures a pencil: cm or m?', 'cm', ['m'], 'Small.', ''],
+         ['Order shortest first: 12 cm, 8 cm, 20 cm', '8, 12, 20', ['20, 12, 8', '12, 8, 20'], 'Smallest first.', ''], ['A rope is 50 cm. 15 cm is cut off. How long now?', '35 cm', ['65 cm', '45 cm', '15 cm'], '50 − 15.', ''], ['Two ropes: 20 cm and 20 cm. Which is longer?', 'neither', ['the first'], 'Same.', ''], ['How long is 2 ropes of 10 cm joined?', '20 cm', ['12 cm', '10 cm'], '10 + 10.', '']],
+    gen: function (lv) { var a = r(5, lv ? 60 : 30), d = r(2, lv ? 30 : 15); return mc('Length', 'A string is <b>' + (a + d) + ' cm</b> and a ribbon is <b>' + a + ' cm</b>. How much longer is the string?', d + ' cm', [d + 1 + ' cm', d - 1 + ' cm', a + d + a + ' cm'], 'Subtract the lengths.', (a + d) + ' − ' + a + ' = ' + d + '.'); } });
+
+  M(307, { id: 'learn2', ch: 'frog', bg: 'pond',
+    way: ['Put the 0 at the start of the object. Read the number at the other end.', rule(0, 15, 9)],
+    ex: [['What does the ruler show?', ['Start at 0.', 'The pencil ends at 12.'], '12 cm', rule(0, 15, 12)], ['A line starts at 3 and ends at 11. How long?', ['11 − 3 = 8.'], '8 cm', rule(0, 15, 11)]],
+    mist: ['Start at 0. If an object starts at 2, take that away from the end number.', rule(0, 15, 8)],
+    real: ['A bean plant is 7 cm tall. It grows 4 cm. How tall?', '11 cm', ['3 cm', '10 cm', '74 cm'], '7 + 4.', rule(0, 15, 11)],
+    qs: [['The pencil ends at 8. How long?', '8 cm', ['7 cm', '9 cm', '80 cm'], 'Read the end.', rule(0, 15, 8)], ['The line ends at 13. How long?', '13 cm', ['12 cm', '14 cm', '3 cm'], 'Read the end.', rule(0, 15, 13)], ['A line starts at 2 and ends at 9. How long?', '7 cm', ['9 cm', '11 cm', '2 cm'], '9 − 2.', ''], ['A leaf from 5 to 12. How long?', '7 cm', ['12 cm', '5 cm', '17 cm'], '12 − 5.', ''],
+         ['What does each small mark mean on a 1 cm ruler?', '1 cm', ['5 cm', '10 cm'], 'Each mark is 1.', ''], ['Which is longer: 9 cm or 11 cm?', '11 cm', ['9 cm'], 'Bigger.', ''], ['A stick is 14 cm. A pencil is 9 cm. Difference?', '5 cm', ['23 cm', '4 cm', '6 cm'], '14 − 9.', ''], ['Where do you put the ruler?', 'at 0', ['at 5', 'at the end'], 'Start at 0.', '']],
+    gen: function (lv) { var n = r(3, lv ? 18 : 12); return mc('Using a ruler', 'The pencil ends at <b>' + n + '</b> on the ruler. How long is it?', n + ' cm', [n + 1 + ' cm', n - 1 + ' cm', n + 5 + ' cm'], 'Read the number at the end.', 'It is ' + n + ' cm long.', rule(0, 20, n)); } });
+
+  M(307, { id: 'learn3', ch: 'frog', bg: 'pond',
+    way: ['A balance scale compares mass. The heavier side goes down. We measure in grams (g) and kilograms (kg).', C(['⬇️ heavier', '⬆️ lighter'])],
+    ex: [['Which is heavier: 500 g or 2 kg?', ['2 kg = 2000 g.', '2000 > 500.'], '2 kg', C(['500 g', '2 kg'])], ['A bag of flour is 1 kg. 3 bags is how many kg?', ['1 + 1 + 1.'], '3 kg', C(['3 kg'])]],
+    mist: ['Use the same unit. 1 kg = 1000 g, so 1 kg is more than 500 g.', C(['1 kg = 1000 g'])],
+    real: ['A bag of sugar is 1 kg. Is a cat nearer 4 g or 4 kg?', '4 kg', ['4 g'], 'A cat is heavy.', C(['🐱'])],
+    qs: [['Which unit would you use for a feather?', 'grams', ['kilograms'], 'Light.', ''], ['Which unit would you use for a car?', 'kilograms', ['grams'], 'Heavy.', ''], ['1 kg = ? g', '1000 g', ['100 g', '10 g', '10000 g'], 'Kilo = 1000.', ''], ['Which is heavier: 2 kg or 1500 g?', '2 kg', ['1500 g'], '2000 g.', ''],
+         ['A parcel is 3 kg. Another is 5 kg. Total?', '8 kg', ['2 kg', '15 kg'], '3 + 5.', ''], ['Half a kilogram is…', '500 g', ['50 g', '5 g', '5000 g'], 'Half of 1000.', ''], ['An apple is about…', '100 g', ['100 kg', '10 kg'], 'Light.', ''], ['Which is lightest: 5 kg, 500 g or 5 g?', '5 g', ['500 g', '5 kg'], '5 g.', '']],
+    gen: function (lv) { var k = r(1, lv ? 9 : 5); return r(0, 1) ? mc('Mass', '<b>' + k + ' kg</b> = how many grams?', k * 1000 + ' g', [k * 100 + ' g', k * 10 + ' g', k * 10000 + ' g'], '1 kg = 1000 g.', k + ' kg = ' + k * 1000 + ' g.') : mc('Mass', 'Which is heavier: <b>' + k + ' kg</b> or <b>' + (k * 1000 - 100) + ' g</b>?', k + ' kg', [k * 1000 - 100 + ' g'], 'Change to the same unit.', k + ' kg is ' + k * 1000 + ' g.'); } });
+
+  M(307, { id: 'learn4', ch: 'frog', bg: 'pond',
+    way: ['Capacity is how much a container holds. We use millilitres (ml) and litres (l). 1 litre = 1000 ml.', C(['1 litre', '= 1000 ml'])],
+    ex: [['Which holds more: 200 ml or 1 litre?', ['1 litre = 1000 ml.', '1000 > 200.'], '1 litre', C(['200 ml', '1 litre'])], ['How many 250 ml cups fill 1 litre?', ['4 quarters.', '250 × 4 = 1000.'], '4 cups', C(['250 × 4 = 1000'])]],
+    mist: ['ml and l are different sizes. 1 l = 1000 ml, so 500 ml is only half a litre.', C(['500 ml = ½ l'])],
+    real: ['A bottle holds 2 litres. How many ml?', '2000 ml', ['200 ml', '20 ml', '20000 ml'], '2 × 1000.', C(['2 l = 2000 ml'])],
+    qs: [['Which holds more: a mug or a bath?', 'a bath', ['a mug'], 'Bath.', ''], ['1 litre = ? ml', '1000 ml', ['100 ml', '10 ml'], 'Kilo style.', ''], ['3 litres = ? ml', '3000 ml', ['300 ml', '30 ml'], '3 × 1000.', ''], ['Half a litre = ? ml', '500 ml', ['50 ml', '5 ml'], 'Half of 1000.', ''],
+         ['Which unit for a teaspoon: ml or l?', 'ml', ['l'], 'Small.', ''], ['Which unit for a swimming pool: ml or l?', 'l', ['ml'], 'Big.', ''], ['Which is more: 750 ml or 1 l?', '1 l', ['750 ml'], '1000 > 750.', ''], ['2 jugs of 500 ml make…', '1 litre', ['500 ml', '2 litres'], '500 + 500.', '']],
+    gen: function (lv) { var k = r(1, lv ? 9 : 5); return mc('Capacity', '<b>' + k + ' litres</b> = how many millilitres?', k * 1000 + ' ml', [k * 100 + ' ml', k * 10 + ' ml', k * 10000 + ' ml'], '1 litre = 1000 ml.', k + ' l = ' + k * 1000 + ' ml.'); } });
+
+  M(307, { id: 'learnm1', ch: 'frog', bg: 'pond',
+    li: ['Choosing the right unit', 'How do I choose the right unit?', 'Choose a unit that fits the size. cm and m for length, g and kg for mass, ml and l for capacity.', C(['length: cm, m', 'mass: g, kg', 'capacity: ml, l']),
+      [['unit', 'what we measure in', '📐'], ['length', 'how long', '📏'], ['mass', 'how heavy', '⚖️'], ['capacity', 'how much it holds', '🥛']],
+      [['A pencil is measured in cm. A classroom in m.', C(['pencil: cm', 'room: m'])], ['A feather is measured in g. A person in kg.', C(['feather: g', 'person: kg'])], ['A spoon holds ml. A bath holds l.', C(['spoon: ml', 'bath: l'])]],
+      [['What unit for the height of a door: cm or m?', ['About 2 big steps.'], 'm', C(['door: m'])], ['What unit for the mass of an apple: g or kg?', ['Light.'], 'g', C(['apple: g'])], ['What unit for juice in a cup: ml or l?', ['Small amount.'], 'ml', C(['cup: ml'])]],
+      ['Pick the unit that gives a sensible number. 200 cm is better said as 2 m.', C(['200 cm = 2 m'])],
+      ['Which unit measures the mass of a bag of sweets?', C(['🍬']), ['cm', 'g', 'ml'], 'g', 'Mass is in grams.', 'Think how heavy.'],
+      ['Right unit: cm, m for length; g, kg for mass; ml, l for capacity.', C(['cm m', 'g kg', 'ml l'])]],
+    ex: [['Unit for the length of a football pitch: cm or m?', ['Very long.'], 'm', C(['pitch: m'])], ['Unit for water in a bath: ml or l?', ['A lot.'], 'l', C(['bath: l'])]],
+    way: ['Make a table: three columns for length, mass and capacity and list things in each.', C(['length', 'mass', 'capacity'])],
+    mist: ['Do not use a length unit for mass. A bag is not “5 cm” heavy.', C(['mass: g, kg'])],
+    real: ['The recipe needs 250 ___ of milk. Which unit fits: ml or m?', 'ml', ['m', 'kg'], 'Milk is capacity.', C(['milk'])],
+    qs: [['A swimming pool holds…', 'litres', ['grams', 'centimetres'], 'Capacity.', ''], ['A tall tree is measured in…', 'metres', ['grams', 'ml'], 'Length.', ''], ['A bag of flour is measured in…', 'kilograms', ['litres', 'metres'], 'Mass.', ''], ['A teaspoon holds…', 'millilitres', ['litres', 'kg'], 'Small.', ''],
+         ['A fingernail is measured in…', 'centimetres', ['metres', 'litres'], 'Small length.', ''], ['A lorry is measured in…', 'tonnes or kg', ['grams', 'ml'], 'Heavy.', ''], ['A pencil is…', '15 cm', ['15 m', '15 kg'], 'Short.', ''], ['A bucket holds…', '10 l', ['10 cm', '10 g'], 'Capacity.', '']],
+    gen: function () { var P = [['a pencil', 'cm'], ['a classroom', 'm'], ['a feather', 'g'], ['a child', 'kg'], ['a cup of water', 'ml'], ['a bath of water', 'l'], ['a football pitch', 'm'], ['a bag of sugar', 'kg']], p = pick(P), all = ['cm', 'm', 'g', 'kg', 'ml', 'l']; return mc('Choosing units', 'Which unit would you use to measure <b>' + p[0] + '</b>?', p[1], all.filter(function (x) { return x !== p[1]; }).sort(function (a, b) { return (a.charAt(0) === p[1].charAt(0) ? -1 : 0) - (b.charAt(0) === p[1].charAt(0) ? -1 : 0); }).slice(0, 3), 'Think: length, mass or capacity?', p[0] + ' is measured in ' + p[1] + '.'); } });
+
+  M(307, { id: 'learnm2', ch: 'frog', bg: 'pond',
+    li: ['Metres and centimetres', 'How are metres and centimetres linked?', '1 metre is 100 centimetres. To change metres to centimetres, multiply by 100.', rule(0, 10, 10),
+      [['metre', '100 cm', '📏'], ['centimetre', '1/100 of a metre', '🔹'], ['convert', 'change units', '🔄'], ['half a metre', '50 cm', '½']],
+      [['1 m = 100 cm. A metre stick is 100 cm long.', C(['1 m', '= 100 cm'])], ['2 m = 200 cm. 3 m = 300 cm.', C(['2 m = 200 cm', '3 m = 300 cm'])], ['Half a metre is 50 cm. A quarter of a metre is 25 cm.', C(['½ m = 50 cm', '¼ m = 25 cm'])]],
+      [['How many cm in 4 m?', ['4 × 100.'], '400 cm', C(['4 m = 400 cm'])], ['How many m in 300 cm?', ['300 ÷ 100.'], '3 m', C(['300 cm = 3 m'])], ['1 m 20 cm is how many cm?', ['100 + 20.'], '120 cm', C(['1 m 20 cm = 120 cm'])]],
+      ['Multiply by 100 to go from m to cm. Divide by 100 to go from cm to m.', C(['m → cm: × 100', 'cm → m: ÷ 100'])],
+      ['How many cm in 5 m?', B('5 m = ? cm'), ['50 cm', '500 cm', '5000 cm'], '500 cm', '5 × 100 = 500.', 'Multiply by 100.'],
+      ['1 m = 100 cm. Multiply by 100 for m to cm.', C(['1 m = 100 cm'])]],
+    ex: [['How many cm in 6 m?', ['6 × 100.'], '600 cm', C(['6 m = 600 cm'])], ['How many m in 800 cm?', ['800 ÷ 100.'], '8 m', C(['800 cm = 8 m'])]],
+    way: ['Lay a metre stick next to a 10 cm ruler: it takes 10 rulers to match one metre.', C(['10 × 10 cm = 1 m'])],
+    mist: ['1 m is 100 cm, not 10 cm. A metre stick is much longer than a ruler.', C(['1 m = 100 cm'])],
+    real: ['A table is 2 m long. How many cm?', '200 cm', ['20 cm', '2000 cm', '102 cm'], '2 × 100.', C(['2 m = 200 cm'])],
+    qs: [['1 m = ? cm', '100 cm', ['10 cm', '1000 cm', '1 cm'], '100.', ''], ['3 m = ? cm', '300 cm', ['30 cm', '3000 cm', '103 cm'], '3 × 100.', ''], ['500 cm = ? m', '5 m', ['50 m', '0.5 m', '500 m'], '500 ÷ 100.', ''], ['Half a metre = ? cm', '50 cm', ['5 cm', '500 cm', '25 cm'], 'Half of 100.', ''],
+         ['1 m 50 cm = ? cm', '150 cm', ['15 cm', '1050 cm', '501 cm'], '100 + 50.', ''], ['250 cm = ? m cm', '2 m 50 cm', ['25 m', '2 m 5 cm', '20 m 50 cm'], '200 + 50.', ''], ['Which is longer: 1 m or 90 cm?', '1 m', ['90 cm'], '100 > 90.', ''], ['A quarter of a metre = ? cm', '25 cm', ['4 cm', '75 cm', '250 cm'], '100 ÷ 4.', '']],
+    gen: function (lv) { var m = r(1, lv ? 9 : 5), c = pick([0, 25, 50]); return c && lv ? mc('Metres and centimetres', '<b>' + m + ' m ' + c + ' cm</b> = how many cm?', m * 100 + c + ' cm', [m * 10 + c + ' cm', m * 100 + c * 10 + ' cm', m + c + ' cm'], '1 m = 100 cm.', m * 100 + c + ' cm.') : mc('Metres and centimetres', '<b>' + m + ' m</b> = how many centimetres?', m * 100 + ' cm', [m * 10 + ' cm', m * 1000 + ' cm', m + 100 + ' cm'], '1 m = 100 cm.', m + ' m = ' + m * 100 + ' cm.'); } });
+
+  M(307, { id: 'learnm3', ch: 'frog', bg: 'pond',
+    li: ['Reading scales', 'How do I read a scale?', 'A scale has marks with numbers. Work out how much each small mark is worth, then count on from the last number.', rule(0, 20, 14),
+      [['scale', 'marks with numbers', '📏'], ['interval', 'the gap between marks', '↔️'], ['pointer', 'the arrow that points', '👆'], ['reading', 'the number we find', '🔍']],
+      [['Look at the numbers: 0, 5, 10, 15, 20. The big steps are 5.', rule(0, 20, 10)], ['Between 10 and 15 there are 5 small marks, so each is 1.', rule(0, 20, 12)], ['The pointer is 2 marks after 10, so it reads 12.', rule(0, 20, 12)]],
+      [['What does the pointer show?', ['Big steps of 5.', 'Pointer is 3 marks after 10.'], '13', rule(0, 20, 13)], ['A jug scale goes 0, 100, 200, 300 ml. The water is halfway between 100 and 200. What is it?', ['Halfway is 50 more.'], '150 ml', C(['100', '150', '200'])], ['A kitchen scale points to the mark between 2 kg and 3 kg. Halfway.', ['2 and a half.'], '2.5 kg', C(['2', '2.5', '3'])]],
+      ['Work out the size of each step first. Do not just read the nearest number.', C(['count the marks'])],
+      ['What does the ruler show?', rule(0, 20, 17), ['15', '17', '18'], '17', 'Read the pointer: 2 after 15.', 'Count on from 15.'],
+      ['To read a scale: find the step size, then count on.', C(['step size', 'count on'])]],
+    ex: [['A thermometer goes up in 2s: 0, 2, 4 … The line is at 8. What is the temperature?', ['Count in 2s.'], '8 °C', C(['0', '2', '4', '6', '8'])], ['A scale goes 0, 10, 20, 30. The pointer is halfway between 10 and 20.', ['Halfway is 15.'], '15', C(['10', '15', '20'])]],
+    way: ['Mark the middle of a scale to get half-values like 5, 15, 25.', C(['0', '5', '10', '15'])],
+    mist: ['Check what each mark is worth before you read. Sometimes the marks are 2, not 1.', C(['marks go up in 2s'])],
+    real: ['A jug marked 0, 250, 500 ml has water at 250 ml and a bit more. What is a good reading?', 'about 300 ml', ['about 100 ml', 'about 500 ml'], 'A bit more than 250.', C(['250', '?', '500'])],
+    qs: [['A ruler pointer is 3 marks after 10. Reading?', '13', ['3', '30', '103'], '10 + 3.', rule(0, 20, 13)], ['A scale steps by 5: 0, 5, 10, 15. Pointer on the third mark. Reading?', '15', ['10', '5', '20'], '3 × 5.', ''], ['The scale steps by 10: 0, 10, 20. Halfway between 10 and 20 is…', '15', ['12', '14', '25'], 'Half of 10.', ''], ['A scale steps by 2. Pointer after 6 (1 mark). Reading?', '8', ['7', '6', '10'], '6 + 2.', ''],
+         ['Steps of 100: 0, 100, 200. Halfway between 100 and 200?', '150', ['110', '120', '250'], 'Half of 100.', ''], ['Steps of 20: 0, 20, 40. The reading is 60. What are the next steps?', '80', ['62', '70', '100'], '+20.', ''], ['The pointer is exactly on 30. Reading?', '30', ['3', '33', '300'], 'On the mark.', ''], ['A thermometer shows 25 °C. 5 more?', '30 °C', ['20 °C', '35 °C'], '25 + 5.', '']],
+    gen: function (lv) { var n = r(1, 19); return mc('Reading scales', 'The pointer is at <b>' + n + '</b> on the scale. What is the reading?', n, [n + 1, n - 1 || 3, n + 10], 'Count on from the nearest number.', 'The reading is ' + n + '.', rule(0, 20, n)); } });
+
+  /* ---------- 308 Shape, movement and data ---------- */
+  M(308, { id: 'learn1', ch: 'rocket', bg: 'space',
+    way: ['3D shapes have faces (flat sides), edges (where faces meet) and vertices (corners).', SH(['cube', 'cuboid', 'cylinder'], 80)],
+    ex: [['How many faces has a cuboid?', ['A box: top, bottom and 4 sides.'], '6', SH(['cuboid'], 100)], ['How many corners has a cube?', ['4 on the top and 4 on the bottom.'], '8', SH(['cube'], 100)]],
+    mist: ['A cube has 12 edges. Faces and edges are different things.', SH(['cube'], 90)],
+    real: ['A dice is a cube. How many faces have numbers?', '6', ['4', '8', '12'], '6 faces.', SH(['cube'], 90)],
+    qs: [['How many faces has a cube?', '6', ['4', '8', '12'], '6.', SH(['cube'], 80)], ['How many edges has a cube?', '12', ['6', '8', '10'], '12.', ''], ['How many corners has a cube?', '8', ['6', '12', '4'], '8.', ''], ['Which can roll: cube or sphere?', 'sphere', ['cube'], 'Curved.', SH(['cube', 'sphere'], 70)],
+         ['Which shape has a flat circle on each end?', 'cylinder', ['cone', 'sphere'], 'Cylinder.', SH(['cylinder'], 80)], ['How many faces has a cylinder?', '3', ['2', '6', '1'], '2 circles + 1 curved.', ''], ['Which has a point at the top?', 'cone', ['cylinder', 'cube'], 'Cone.', SH(['cone'], 80)], ['How many faces has a sphere?', '1', ['0', '2', '6'], '1 curved surface.', '']],
+    gen: function (lv) { var P = [['cube', 6, 12, 8], ['cuboid', 6, 12, 8], ['pyramid', 5, 8, 5]], p = pick(P), k = r(1, 3); return mc('3D shapes', 'How many <b>' + ['faces', 'edges', 'corners'][k - 1] + '</b> has a <b>' + (p[0] === 'pyramid' ? 'square-based pyramid' : p[0]) + '</b>?', p[k], [p[k] + 1, p[k] - 1, p[k] + 2], 'Count carefully.', 'A ' + p[0] + ' has ' + p[k] + ' ' + ['faces', 'edges', 'corners'][k - 1] + '.', SH([p[0]], 90)); } });
+
+  M(308, { id: 'learn2', ch: 'rocket', bg: 'space',
+    way: ['A line of symmetry is where you fold a shape so the two halves match exactly.', C(['fold along the line', 'halves match'])],
+    ex: [['How many lines of symmetry has a square?', ['4 ways to fold it.'], '4', SH(['square'], 100)], ['Does the letter A have a line of symmetry?', ['Fold down the middle.'], 'Yes', C(['A'])]],
+    mist: ['The two halves must match exactly. A rectangle has 2 lines, not 4.', SH(['rectangle'], 100)],
+    real: ['A butterfly has matching wings. How many lines of symmetry?', '1', ['2', '4'], 'Down the middle.', C(['🦋'])],
+    qs: [['Does a circle have lines of symmetry?', 'Yes, lots', ['No', 'Only 1'], 'Any diameter.', SH(['circle'], 80)], ['How many lines of symmetry has a rectangle?', '2', ['1', '4'], '2.', SH(['rectangle'], 90)], ['How many lines of symmetry has an equilateral triangle?', '3', ['1', '2'], '3.', SH(['triangle'], 90)], ['Does the letter F have a line of symmetry?', 'No', ['Yes'], 'No match.', C(['F'])],
+         ['Does the letter H have a line of symmetry?', 'Yes', ['No'], 'Yes.', C(['H'])], ['Which letter has a line of symmetry: M or R?', 'M', ['R'], 'M.', ''], ['How many lines of symmetry has a square?', '4', ['2', '1'], '4.', SH(['square'], 90)], ['A heart has how many lines of symmetry?', '1', ['2', '0'], '1.', C(['❤️'])]],
+    gen: function () { var P = [['square', 4], ['rectangle', 2], ['circle', 'lots'], ['triangle', 3]], p = pick(P.slice(0, 3)); return p[1] === 'lots' ? mc('Symmetry', 'Does a circle have lines of symmetry?', 'Yes, lots', ['No', 'Only 1'], 'Think about folding.', 'A circle has lots.', SH(['circle'], 80)) : mc('Symmetry', 'How many lines of symmetry has a <b>' + p[0] + '</b>?', p[1], [p[1] + 1, p[1] - 1 || 3, 0], 'Fold it every way.', 'A ' + p[0] + ' has ' + p[1] + ' lines.', SH([p[0]], 90)); } });
+
+  M(308, { id: 'learn3', ch: 'rocket', bg: 'space',
+    way: ['A quarter turn is 90°, a half turn is 180° and a full turn is 360°. Clockwise goes like a clock.', C(['¼ turn', '½ turn', 'full turn'])],
+    ex: [['Face north. Turn a quarter turn clockwise. Which way?', ['Clockwise from north is east.'], 'East', C(['N', 'E', 'S', 'W'])], ['Face east. Turn a half turn. Which way?', ['Half turn is the opposite.'], 'West', C(['E → W'])]],
+    mist: ['Clockwise and anticlockwise are opposite directions. Check which way the clock goes.', C(['⟳ clockwise', '⟲ anticlockwise'])],
+    real: ['You face the door and turn a half turn. What are you facing now?', 'the back', ['the door', 'the side'], 'Half turn.', C(['½'])],
+    qs: [['How many quarter turns make a full turn?', '4', ['2', '3', '8'], '4 × 90 = 360.', ''], ['How many half turns make a full turn?', '2', ['1', '4'], '2.', ''], ['Face north. Half turn. Which way?', 'South', ['East', 'West'], 'Opposite.', ''], ['Face south. Quarter turn clockwise. Which way?', 'West', ['East', 'North'], 'Clockwise.', ''],
+         ['Face east. Quarter turn anticlockwise. Which way?', 'North', ['South', 'West'], 'Anticlockwise.', ''], ['How many degrees is a quarter turn?', '90', ['45', '180', '360'], '90.', ''], ['A full turn brings you…', 'back to the start', ['to the side', 'to the back'], '360°.', ''], ['Face west. Half turn. Which way?', 'East', ['North', 'South'], 'Opposite.', '']],
+    gen: function () { var D = ['North', 'East', 'South', 'West'], i = r(0, 3), t = pick([1, 2, 3]), cw = r(0, 1), nm = { 1: 'quarter turn', 2: 'half turn', 3: 'three quarter turn' }, to = D[(i + (cw ? t : 4 - t)) % 4]; return mc('Directions and turns', 'You face <b>' + D[i] + '</b> and make a <b>' + nm[t] + ' ' + (cw ? 'clockwise' : 'anticlockwise') + '</b>. Which way do you face?', to, D.filter(function (x) { return x !== to; }), 'Turn step by step.', 'You face ' + to + '.'); } });
+
+  M(308, { id: 'learn4', ch: 'rocket', bg: 'space',
+    way: ['A bar chart uses bars. The height tells how many. Look at the scale on the side.', bars([['red', 5], ['blue', 8, '#4aa8ff'], ['green', 3, '#7cc96b']])],
+    ex: [['Red 5, blue 8. How many more blue?', ['8 − 5.'], '3 more', bars([['red', 5], ['blue', 8, '#4aa8ff']])], ['Red 5, blue 8, green 3. How many altogether?', ['5 + 8 + 3.'], '16', bars([['red', 5], ['blue', 8, '#4aa8ff'], ['green', 3, '#7cc96b']])]],
+    mist: ['Read the scale. If each step is 2, a bar at 3 steps is 6.', C(['scale: 2s'])],
+    real: ['A bar chart shows favourite fruit. Apples 12, bananas 9. Which is more popular?', 'apples', ['bananas'], '12 > 9.', bars([['apples', 12], ['bananas', 9, '#4aa8ff']])],
+    qs: [['Which bar is tallest? red 4, blue 7, green 2', 'blue', ['red', 'green'], '7.', bars([['red', 4], ['blue', 7, '#4aa8ff'], ['green', 2, '#7cc96b']])], ['How many altogether? 4, 7 and 2', '13', ['11', '9', '12'], '4 + 7 + 2.', ''], ['How many more blue than green? 7 and 2', '5', ['9', '4', '14'], '7 − 2.', ''], ['Which is the least popular? red 4, blue 7, green 2', 'green', ['red', 'blue'], '2.', ''],
+         ['If each square is 2 children, a bar of 5 squares is…', '10', ['5', '7', '25'], '5 × 2.', ''], ['What do the bars show?', 'how many', ['colours', 'days'], 'Their height.', ''], ['How many chose red? red 6, blue 4', '6', ['4', '10'], 'Read the bar.', ''], ['Dogs 9, cats 6. Difference?', '3', ['15', '4'], '9 − 6.', '']],
+    gen: function (lv) { var a = r(2, lv ? 12 : 9), b = r(2, lv ? 12 : 9), c = r(2, lv ? 12 : 9); var tot = a + b + c; return mc('Bar charts', 'The chart shows red <b>' + a + '</b>, blue <b>' + b + '</b>, green <b>' + c + '</b>. How many <b>altogether</b>?', tot, [tot + 1, tot - 1, Math.max(a, b, c)], 'Add all the bars.', a + ' + ' + b + ' + ' + c + ' = ' + tot + '.', bars([['red', a], ['blue', b, '#4aa8ff'], ['green', c, '#7cc96b']])); } });
+
+  M(308, { id: 'learnm1', ch: 'rocket', bg: 'space',
+    li: ['2D shapes and their sides', 'How do I name 2D shapes by their sides?', 'We name flat shapes by how many sides they have: 3 is a triangle, 4 is a quadrilateral, 5 is a pentagon, 6 is a hexagon, 8 is an octagon.', SH(['triangle', 'square', 'pentagon', 'hexagon', 'octagon'], 60),
+      [['polygon', 'a flat shape with straight sides', '🔷'], ['vertex', 'a corner', '📐'], ['regular', 'all sides and angles equal', '✅'], ['quadrilateral', 'a shape with 4 sides', '4️⃣']],
+      [['Triangle: 3 sides, 3 vertices.', SH(['triangle'], 90)], ['Quadrilaterals have 4 sides: squares and rectangles.', SH(['square', 'rectangle'], 80)], ['Pentagon 5, hexagon 6, octagon 8.', SH(['pentagon', 'hexagon', 'octagon'], 70)]],
+      [['What is the name for a 6-sided shape?', ['6 sides.'], 'hexagon', SH(['hexagon'], 100)], ['How many vertices has a pentagon?', ['5 sides, 5 vertices.'], '5', SH(['pentagon'], 100)], ['A stop sign has 8 sides. Name it.', ['8 sides.'], 'octagon', SH(['octagon'], 100)]],
+      ['A square is a special rectangle, and both are quadrilaterals.', SH(['square', 'rectangle'], 70)],
+      ['How many sides has a hexagon?', SH(['hexagon'], 90), ['5', '6', '8'], '6', 'Hexa means 6.', 'Count the sides.'],
+      ['Name a flat shape from its sides: 3, 4, 5, 6, 8.', C(['triangle', 'quadrilateral', 'pentagon', 'hexagon', 'octagon'])]],
+    ex: [['Which shape has 5 sides?', ['Five sides.'], 'pentagon', SH(['pentagon'], 100)], ['How many sides has an octagon?', ['Eight.'], '8', SH(['octagon'], 100)]],
+    way: ['Trace around each shape with your finger and count the sides as you go.', SH(['triangle', 'hexagon'], 70)],
+    mist: ['Hexagon is 6 and octagon is 8. Do not mix them up.', SH(['hexagon', 'octagon'], 70)],
+    real: ['A honeycomb cell has 6 sides. What shape is it?', 'hexagon', ['pentagon', 'octagon'], '6 sides.', SH(['hexagon'], 90)],
+    qs: [['How many sides has a pentagon?', '5', ['4', '6'], '5.', ''], ['How many sides has an octagon?', '8', ['6', '10'], '8.', ''], ['Which has 3 sides?', 'triangle', ['square', 'hexagon'], '3.', ''], ['Which has 6 sides?', 'hexagon', ['pentagon', 'octagon'], '6.', ''],
+         ['Which has 4 equal sides?', 'square', ['rectangle', 'triangle'], 'Square.', ''], ['How many vertices has a hexagon?', '6', ['5', '8'], '6.', ''], ['Which is a quadrilateral?', 'rectangle', ['triangle', 'hexagon'], '4 sides.', ''], ['How many sides has a circle?', '1 curved side', ['0', '4'], 'Round.', '']],
+    gen: function (lv) { var P = [['triangle', 3], ['square', 4], ['rectangle', 4], ['pentagon', 5], ['hexagon', 6], ['octagon', 8]], p = pick(P.slice(0, lv ? 6 : 4)); return r(0, 1) ? mc('2D shapes', 'How many sides has a <b>' + p[0] + '</b>?', p[1], [p[1] + 1, p[1] - 1, p[1] + 2], 'Count them.', p[1] + ' sides.', SH([p[0]], 90)) : mc('2D shapes', 'Which shape has <b>' + p[1] + ' sides</b>?', p[0], P.filter(function (x) { return x[1] !== p[1]; }).slice(0, 3).map(function (x) { return x[0]; }), 'Match the number of sides.', p[0] + ' has ' + p[1] + ' sides.'); } });
+
+  M(308, { id: 'learnm2', ch: 'rocket', bg: 'space',
+    li: ['Finding places on a grid', 'How do I find a place on a grid?', 'A grid uses a letter for the column and a number for the row. Go along first, then up.', C(['A', 'B', 'C', '1', '2', '3']),
+      [['grid', 'squares in rows and columns', '🔳'], ['column', 'goes up and down', '↕️'], ['row', 'goes across', '↔️'], ['reference', 'letter and number address', '📍']],
+      [['Go along to B, then up to 3: the reference is B3.', C(['B3'])], ['Start at A1. Move right 2 and up 1: you reach C2.', C(['A1 → C2'])], ['A treasure map uses grid references to find the gold.', C(['💎 C4'])]],
+      [['What is at C2? Go along to C, then up 2.', ['Along first, then up.'], 'the star', C(['C2'])], ['Write the reference for 3 along, 1 up if A=1.', ['C1.'], 'C1', C(['C1'])], ['Move from B2 up 2 squares. Where are you?', ['B4.'], 'B4', C(['B2 → B4'])]],
+      ['Letter first, then number. B3 is not 3B.', C(['B3 ✓'])],
+      ['Where is D1? Which letter comes after C?', C(['A B C D']), ['3', 'D', 'E'], 'D', 'D comes after C.', 'Letters go along.'],
+      ['Grid reference: along, then up.', C(['letter', 'number'])]],
+    ex: [['A castle is at D3. Is it on row 3?', ['The number is the row.'], 'Yes', C(['D3'])], ['Move from A1 right 3. Where?', ['A, B, C, D → D1.'], 'D1', C(['A1 → D1'])]],
+    way: ['Make a grid of 4 × 4 squares and hide a treasure. Say its reference.', C(['hide at C3'])],
+    mist: ['Along (letter) before up (number). “Along the corridor, then up the stairs.”', C(['A–D along', '1–4 up'])],
+    real: ['The map says ‘fountain at B2’. Which letter do you use first?', 'B', ['2'], 'The letter.', C(['B2'])],
+    qs: [['Which square is the reference C3?', 'C across, 3 up', ['3 across, C up'], 'Letter first.', ''], ['Start at A1. Move right 3. Where?', 'D1', ['A4', 'C3'], 'Along.', ''], ['Start at B2. Move up 1. Where?', 'B3', ['C2', 'B1'], 'Up.', ''], ['Start at D4. Move left 2. Where?', 'B4', ['D2', 'D6'], 'Left.', ''],
+         ['Which is further right: A3 or D3?', 'D3', ['A3'], 'D is further along.', ''], ['Which is higher: B1 or B4?', 'B4', ['B1'], '4 is higher.', ''], ['How many squares from A1 to C1?', '2', ['3', '1'], 'Two moves.', ''], ['Which is the 4th letter?', 'D', ['C', 'E'], 'A B C D.', '']],
+    gen: function (lv) { var L = ['A', 'B', 'C', 'D', 'E', 'F'], c = r(0, lv ? 4 : 3), rw = r(1, lv ? 6 : 4), d = r(0, 1); return d ? mc('Grid references', 'Start at <b>' + L[c] + rw + '</b>. Move <b>up 1</b>. Where are you?', L[c] + (rw + 1), [L[c] + (rw - 1 || 3), L[(c + 1) % 6] + rw, rw + L[c]], 'Up changes the number.', L[c] + (rw + 1) + '.') : mc('Grid references', 'Start at <b>' + L[c] + rw + '</b>. Move <b>right 1</b>. Where are you?', L[c + 1] + rw, [L[c] + (rw + 1), L[Math.max(c - 1, 0) === c ? c + 2 : c - 1] + rw, rw + L[c + 1]], 'Right changes the letter.', L[c + 1] + rw + '.'); } });
+
+  M(308, { id: 'learnm3', ch: 'rocket', bg: 'space',
+    li: ['Pictograms', 'How do I read a pictogram?', 'A pictogram uses pictures to show data. Each picture stands for a number, given in the key.', FL.picto([['cats', 3, 'star'], ['dogs', 5, 'star']]),
+      [['pictogram', 'a chart using pictures', '🖼️'], ['key', 'tells what each picture is worth', '🔑'], ['symbol', 'a picture used for counting', '⭐'], ['data', 'information we collect', '📊']],
+      [['Each ⭐ is 1 child. Cats: 3 stars means 3 children.', FL.picto([['cats', 3, 'star']])], ['Dogs: 5 stars, so 5 children chose dogs.', FL.picto([['dogs', 5, 'star']])], ['If the key says ⭐ = 2, then 3 stars is 6.', C(['⭐ = 2', '3 ⭐ = 6'])]],
+      [['Cats 3, dogs 5. Which is more popular?', ['5 > 3.'], 'dogs', FL.picto([['cats', 3, 'star'], ['dogs', 5, 'star']])], ['How many altogether? cats 3, dogs 5', ['3 + 5.'], '8', FL.picto([['cats', 3, 'star'], ['dogs', 5, 'star']])], ['The key says ⭐ = 2. A row has 4 stars. How many?', ['4 × 2.'], '8', C(['⭐ = 2', '4 stars'])]],
+      ['Always read the key first. One symbol may mean more than 1.', C(['⭐ = 2'])],
+      ['Each ⭐ = 2. Mia has 3 stars. How many?', C(['⭐⭐⭐']), ['3', '5', '6'], '6', '3 × 2 = 6.', 'Use the key.'],
+      ['Pictogram: read the key, then count the pictures.', C(['key', 'count'])]],
+    ex: [['Each ⭐ = 5. A row has 3 stars. How many?', ['3 × 5.'], '15', C(['⭐ = 5'])], ['Apples 4, pears 6. How many more pears?', ['6 − 4.'], '2', FL.picto([['apples', 4, 'apple'], ['pears', 6, 'fish']])]],
+    way: ['Draw your own pictogram of how you come to school: walk, car, bus.', C(['walk', 'car', 'bus'])],
+    mist: ['Do not count the pictures if the key is not 1. Multiply by the key.', C(['key ≠ 1'])],
+    real: ['A pictogram shows each 🍎 = 2 apples. 5 pictures. How many apples?', '10', ['5', '7', '25'], '5 × 2.', C(['🍎 = 2'])],
+    qs: [['Each ⭐ = 1. 7 stars means…', '7', ['1', '70'], 'Count.', ''], ['Each ⭐ = 2. 4 stars means…', '8', ['4', '6', '24'], '4 × 2.', ''], ['Each ⭐ = 5. 3 stars means…', '15', ['8', '53', '35'], '3 × 5.', ''], ['Each ⭐ = 10. 6 stars means…', '60', ['16', '600', '6'], '6 × 10.', ''],
+         ['Cats 8, dogs 5. How many more cats?', '3', ['13', '4'], '8 − 5.', ''], ['Cats 8, dogs 5. Altogether?', '13', ['3', '15'], '8 + 5.', ''], ['What does the key tell you?', 'what each picture is worth', ['the title', 'the colour'], 'Key.', ''], ['Each ⭐ = 2. A row shows 10. How many stars?', '5', ['12', '20', '8'], '10 ÷ 2.', '']],
+    gen: function (lv) { var k = pick(lv ? [2, 5, 10] : [1, 2, 5]), n = r(2, 7); return mc('Pictograms', 'In a pictogram each picture is worth <b>' + k + '</b>. There are <b>' + n + '</b> pictures. How many in all?', n * k, [n + k, n * k + k, n * k - k < 1 ? n * k + 2 : n * k - k], 'Multiply the pictures by the key.', n + ' × ' + k + ' = ' + n * k + '.', FL.picto([['row', n, 'star']])); } });
+
+  M(308, { id: 'learnm4', ch: 'rocket', bg: 'space',
+    li: ['Sorting with Venn and Carroll diagrams', 'How do I sort things in a Venn or Carroll diagram?', 'A Venn diagram uses circles. Things in both groups go where the circles overlap. A Carroll diagram uses a grid with yes and no.', C(['Venn: circles', 'Carroll: yes / no grid']),
+      [['Venn diagram', 'overlapping circles for sorting', '⭕'], ['Carroll diagram', 'a table with yes / no', '🔳'], ['overlap', 'the part in both circles', '🎯'], ['rule', 'what we sort by', '📋']],
+      [['Circle A: even numbers. Circle B: more than 10. 12 is even and more than 10, so it goes in the overlap.', C(['even', '>10', '12 overlap'])], ['A Carroll diagram has yes and no boxes: even / not even.', C(['even', 'not even'])], ['A number not in either circle goes outside both.', C(['outside: 7'])]],
+      [['Where does 8 go? Even circle, more-than-10 circle.', ['8 is even and not more than 10.'], 'in the even circle only', C(['8'])], ['Where does 15? Even circle, more-than-10 circle.', ['15 is odd and more than 10.'], 'in the more-than-10 circle only', C(['15'])], ['Where does 4? Even and >10.', ['Even, not >10: even only.'], 'in the even circle only', C(['4'])]],
+      ['Check both rules for every item.', C(['rule 1', 'rule 2'])],
+      ['Where does 20 go? Even circle, >10 circle.', C(['20']), ['even only', '>10 only', 'overlap'], 'overlap', '20 is even and more than 10.', 'Check both rules.'],
+      ['Venn: overlap = both rules. Carroll: yes/no for each rule.', C(['both', 'neither'])]],
+    ex: [['Where does 5 go: Even, >10?', ['5 is odd and less than 10.'], 'outside both circles', C(['5'])], ['In a Carroll diagram of Even / Odd, where does 9 go?', ['9 is odd.'], 'odd', C(['9'])]],
+    way: ['Make a Venn diagram on the floor with hoops and sort toys or numbers.', C(['hoop 1', 'hoop 2', 'overlap'])],
+    mist: ['Things in both groups go in the overlap, not in one circle.', C(['overlap = both'])],
+    real: ['Sort animals: legs / wings. A bird has 2 legs and wings. Where does it go?', 'overlap', ['legs only', 'wings only'], 'Both.', C(['🐦'])],
+    qs: [['Venn: even / >10. Where is 14?', 'overlap', ['even only', '>10 only'], 'Both.', ''], ['Venn: even / >10. Where is 3?', 'outside both', ['even only', 'overlap'], 'Neither.', ''], ['Venn: even / >10. Where is 12?', 'overlap', ['even only', '>10 only'], 'Both.', ''], ['Venn: even / >10. Where is 17?', '>10 only', ['even only', 'overlap'], 'Odd, more than 10.', ''],
+         ['Carroll: odd or even. Where is 21?', 'odd', ['even'], 'Ends in 1.', ''], ['Carroll: odd or even. Where is 38?', 'even', ['odd'], 'Ends in 8.', ''], ['Venn: 2-D / has corners. Where is a square?', 'overlap', ['neither'], '2-D and corners.', ''], ['Venn: 2-D / has corners. Where is a circle?', '2-D only', ['overlap', 'corners only'], 'No corners.', '']],
+    gen: function (lv) { var n = r(1, lv ? 30 : 20), ev = n % 2 === 0, big = n > 10, ans = ev && big ? 'overlap' : ev ? 'even only' : big ? '>10 only' : 'outside both'; return mc('Venn diagrams', 'A Venn diagram has circles for <b>even</b> and <b>more than 10</b>. Where does <b>' + n + '</b> go?', ans, ['even only', '>10 only', 'overlap', 'outside both'].filter(function (x) { return x !== ans; }), 'Check both rules.', n + ' is ' + (ev ? 'even' : 'odd') + ' and ' + (big ? '' : 'not ') + 'more than 10.'); } });
+
+  M(308, { id: 'learnm5', ch: 'rocket', bg: 'space',
+    li: ['Likely and unlikely', 'How likely is it?', 'Chance tells how likely something is: impossible, unlikely, even chance, likely or certain.', C(['impossible', 'unlikely', 'even chance', 'likely', 'certain']),
+      [['chance', 'how likely it is', '🎲'], ['certain', 'will definitely happen', '✅'], ['impossible', 'cannot happen', '🚫'], ['even chance', 'as likely as not', '⚖️']],
+      [['The sun will rise tomorrow: certain.', C(['certain ✅'])], ['A coin lands on heads: even chance (50-50).', C(['even chance ⚖️'])], ['You will fly to the moon today: impossible.', C(['impossible 🚫'])]],
+      [['A dice will roll a 7. How likely?', ['Dice go to 6.'], 'impossible', C(['🎲 1–6'])], ['You will have lunch today. How likely?', ['Most days.'], 'likely', C(['🍽️'])], ['A coin lands on tails. How likely?', ['2 sides, 1 tail.'], 'even chance', C(['🪙'])]],
+      ['Unlikely is not impossible. Unlikely can still happen.', C(['unlikely ≠ impossible'])],
+      ['It will snow in the desert today. How likely?', C(['🏜️']), ['certain', 'likely', 'unlikely'], 'unlikely', 'Very rare.', 'Think about the desert.'],
+      ['Chance words: impossible, unlikely, even chance, likely, certain.', C(['0 → 1'])]],
+    ex: [['A dice rolls a number from 1 to 6. How likely?', ['It must be one of them.'], 'certain', C(['1–6'])], ['A bag has 1 red and 9 blue counters. How likely is red?', ['Only 1 in 10.'], 'unlikely', C(['1 red', '9 blue'])]],
+    way: ['Put events on a chance line from impossible to certain.', C(['impossible', 'unlikely', 'even', 'likely', 'certain'])],
+    mist: ['A chance is not a promise. “Likely” does not mean it will happen.', C(['likely ≠ certain'])],
+    real: ['A bag has 5 red and 5 blue counters. How likely is picking red?', 'even chance', ['likely', 'unlikely'], '5 of 10.', C(['5 red', '5 blue'])],
+    qs: [['The sun will set today. How likely?', 'certain', ['likely', 'unlikely'], 'Always.', ''], ['A pig will fly. How likely?', 'impossible', ['unlikely', 'certain'], 'Cannot.', ''], ['A coin lands heads. How likely?', 'even chance', ['likely', 'certain'], '50-50.', ''], ['A dice shows 7. How likely?', 'impossible', ['unlikely', 'certain'], 'Only to 6.', ''],
+         ['A bag has 9 red, 1 blue. Pick red. How likely?', 'likely', ['unlikely', 'impossible'], 'Most are red.', ''], ['A bag has 1 red, 9 blue. Pick red. How likely?', 'unlikely', ['likely', 'certain'], 'Few red.', ''], ['It will rain somewhere in Scotland this month. How likely?', 'likely', ['impossible', 'unlikely'], 'Often.', ''], ['A dice shows a number below 7. How likely?', 'certain', ['likely', 'even chance'], 'All of 1-6.', '']],
+    gen: function () { var R = r(0, 10), B2 = 10 - R, ans = R === 0 ? 'impossible' : R === 10 ? 'certain' : R === 5 ? 'even chance' : R > 5 ? 'likely' : 'unlikely'; return mc('Chance', 'A bag has <b>' + R + ' red</b> and <b>' + B2 + ' blue</b> counters. You pick one without looking. How likely is red?', ans, ['impossible', 'unlikely', 'even chance', 'likely', 'certain'].filter(function (x) { return x !== ans; }).slice(0, 3), 'Compare red with all the counters.', R + ' of 10 are red: ' + ans + '.'); } });
+})();
+</script>
+<script>
 (function(){ if (window.FL && FL.wexLast) FL.wexLast(); })();
 </script>
 <script>
