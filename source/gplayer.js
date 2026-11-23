@@ -60,6 +60,7 @@
     '.gp-stage .sv-stick{display:inline-block;width:11px;height:50px;border-radius:6px;border:2px solid var(--fg)}',
     '.gp-stage .sv-list{display:flex;flex-direction:column;gap:9px;width:100%;max-width:640px}',
     '.gp-stage .sv-list div{display:flex;gap:12px;align-items:center;font-size:24px}',
+    '.gp-stage .sv-work{gap:6px}.gp-stage .sv-work div{font-size:19px;line-height:1.25;text-align:left;align-items:flex-start}.gp-stage .sv-work i{font-style:normal;font-weight:800;flex:0 0 26px;width:26px;height:26px;border-radius:50%;background:#2b5fd9;color:#fff;overflow:visible;font-size:15px;display:inline-flex;align-items:center;justify-content:center}',
     '.gp-stage .sv-list b{flex:0 0 12px;height:12px;border-radius:50%;background:var(--accent);color:transparent;overflow:hidden;font-size:0}',
     '.gp-stage .tbl{border-collapse:collapse;font-size:19px;background:#fff;width:auto;margin:0 auto}.gp-stage .tbl th{background:#881cd6;color:#fff;padding:5px 12px}.gp-stage .tbl td{padding:5px 12px;border:1px solid #e3cdf3;text-align:center}',
     '.gp-stage .lk-col{grid-template-columns:repeat(var(--n),46px);font-size:34px;font-family:inherit}',
@@ -155,7 +156,7 @@
     var TT = D(ep.title), FLM = !!ep.fl, slides = [{ title: true, steps: [{ say: FLM ? (ep.intro || ('Today we are going to learn: ' + TT)) : TT + ' In this lesson, we will learn ' + (ep.goal || '') }] }];
     ep.scenes.forEach(function (sc) { slides.push(sc); });
     var chunks = [];
-    slides.forEach(function (sl, si) { sl.steps.forEach(function (st, k) { chunks.push({ si: si, k: k, say: st.say, think: !!st.think, answer: st.answer, facts: st.facts, last: k === sl.steps.length - 1, turnQ: sl.h === 'Your turn' && k === 0 && sl.steps.length > 1 }); }); });
+    slides.forEach(function (sl, si) { sl.steps.forEach(function (st, k) { chunks.push({ si: si, k: k, say: st.say, think: !!st.think, answer: st.answer, facts: st.facts, last: k === sl.steps.length - 1, turnQ: sl.h === 'Your turn' && k === 0 && (sl.steps.length > 1 || !!sl.asks) }); }); });
     var dashes = ''; for (var d = 0; d < meta.of; d++) dashes += '<i class="' + (d <= meta.q ? 'on' : '') + '"></i>';
     var short = TT;   /* the lesson's question, with its question mark, stays in the purple label at the top */
     function same(a, b) { var n = function (x) { return String(x || '').replace(/<[^>]+>/g, '').toLowerCase().replace(/[^a-z0-9]+/g, ' ').trim(); }; return n(a) === n(b); }
@@ -386,7 +387,7 @@
       }
       function next() {
         if (my !== token || !playing || !root.isConnected) return;
-        if (i + 1 < chunks.length) { idx = i + 1; timer = setTimeout(function () { if (my === token && playing && root.isConnected) say(idx); }, chunks[i].turnQ ? 3500 : chunks[i + 1].si !== chunks[i].si ? 1800 : 900); }   /* silence in the narration, the video keeps playing: 3.5 seconds after a Your turn question so the child can think; about 2 seconds when a new slide comes up; a short breath between steps */
+        if (i + 1 < chunks.length) { idx = i + 1; timer = setTimeout(function () { if (my === token && playing && root.isConnected) say(idx); }, chunks[i].turnQ ? (String(chunks[i].say).split(' ').length > 15 ? 4000 : 3000) : chunks[i + 1].si !== chunks[i].si ? 1800 : 900); }   /* silence in the narration, the video keeps playing: 3.5 seconds after a Your turn question so the child can think; about 2 seconds when a new slide comes up; a short breath between steps */
         else { playing = false; idx = 0; setPb('Watch again'); endCard(); }
       }
       if (FLM && H.flTell) {
