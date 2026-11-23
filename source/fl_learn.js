@@ -15,7 +15,7 @@
     return /^\d/.test(m) ? word.charAt(0).toUpperCase() + word.slice(1) + '. For example, ' + m + '.' : word.charAt(0).toUpperCase() + word.slice(1) + ' means ' + m + '.'; }
   function words(list) { return '<div style="display:grid;gap:8px;max-width:520px;margin:0 auto"><p class="say" style="margin:0 0 4px;font-weight:700;text-align:center">Here are the key words for this lesson.</p>' + list.map(function (w) { return '<div class="say" data-say="' + spoken(w).replace(/"/g, '&quot;') + '" style="display:flex;gap:12px;align-items:center;background:#fff;border:2px solid #dcd3f0;border-radius:14px;padding:8px 12px;color:' + INK + '"><span style="font-size:1.6rem" aria-hidden="true">' + (w[2] || '🔤') + '</span><span><b>' + w[0] + '</b><br>' + w[1] + '</span></div>'; }).join('') + '</div>'; }
   function row3(list, kind) { return '<div style="display:flex;align-items:center;justify-content:center;gap:8px;flex-wrap:wrap">' + list.map(function (n) { return '<div style="max-width:200px">' + FL.things(n, kind, 5) + '</div>'; }).join('<b style="font-size:1.8em">+</b>') + '</div>'; }
-  FL.big = big; FL.cards = cards; FL.row3 = row3;
+  FL.big = big; FL.cards = cards; FL.row3 = row3; FL._spoken = spoken;
 
   /* a quick check: one question answered by tapping, then the explanation */
   function check(c) {
@@ -241,7 +241,7 @@
   FL.learnIt = function (n, id, d) {
     var sl = [];
     sl.push({ title: d.title, say: [d.what].concat(BQX[n + '|' + d.title] ? [BQX[n + '|' + d.title]] : []), v: d.pic || '', kind: 'The big question', noMore: true });
-    sl.push({ title: 'Key words', say: [], v: words(d.words), kind: 'Key words', noMore: true });
+    sl.push({ title: 'Key words', say: [], v: words(d.words), kind: 'Key words', noMore: true, wl: d.words });
     [['See it', 'Real things'], ['Draw it', 'A picture'], ['Write it', 'Numbers']].forEach(function (k, i) { var s = d.see[i]; if (!s) return;
       var o = { title: k[0], say: [s[0]], v: s[1], kind: k[1], noMore: true };
       /* Draw it and Write it: the child copies the example on a scribble pad, open and ready */

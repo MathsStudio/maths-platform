@@ -42968,7 +42968,7 @@ S.extraMakers = function (n, level) {
     return /^\d/.test(m) ? word.charAt(0).toUpperCase() + word.slice(1) + '. For example, ' + m + '.' : word.charAt(0).toUpperCase() + word.slice(1) + ' means ' + m + '.'; }
   function words(list) { return '<div style="display:grid;gap:8px;max-width:520px;margin:0 auto"><p class="say" style="margin:0 0 4px;font-weight:700;text-align:center">Here are the key words for this lesson.</p>' + list.map(function (w) { return '<div class="say" data-say="' + spoken(w).replace(/"/g, '&quot;') + '" style="display:flex;gap:12px;align-items:center;background:#fff;border:2px solid #dcd3f0;border-radius:14px;padding:8px 12px;color:' + INK + '"><span style="font-size:1.6rem" aria-hidden="true">' + (w[2] || '🔤') + '</span><span><b>' + w[0] + '</b><br>' + w[1] + '</span></div>'; }).join('') + '</div>'; }
   function row3(list, kind) { return '<div style="display:flex;align-items:center;justify-content:center;gap:8px;flex-wrap:wrap">' + list.map(function (n) { return '<div style="max-width:200px">' + FL.things(n, kind, 5) + '</div>'; }).join('<b style="font-size:1.8em">+</b>') + '</div>'; }
-  FL.big = big; FL.cards = cards; FL.row3 = row3;
+  FL.big = big; FL.cards = cards; FL.row3 = row3; FL._spoken = spoken;
 
   /* a quick check: one question answered by tapping, then the explanation */
   function check(c) {
@@ -43194,7 +43194,7 @@ S.extraMakers = function (n, level) {
   FL.learnIt = function (n, id, d) {
     var sl = [];
     sl.push({ title: d.title, say: [d.what].concat(BQX[n + '|' + d.title] ? [BQX[n + '|' + d.title]] : []), v: d.pic || '', kind: 'The big question', noMore: true });
-    sl.push({ title: 'Key words', say: [], v: words(d.words), kind: 'Key words', noMore: true });
+    sl.push({ title: 'Key words', say: [], v: words(d.words), kind: 'Key words', noMore: true, wl: d.words });
     [['See it', 'Real things'], ['Draw it', 'A picture'], ['Write it', 'Numbers']].forEach(function (k, i) { var s = d.see[i]; if (!s) return;
       var o = { title: k[0], say: [s[0]], v: s[1], kind: k[1], noMore: true };
       /* Draw it and Write it: the child copies the example on a scribble pad, open and ready */
@@ -46464,7 +46464,306 @@ S.extraMakers = function (n, level) {
 })();
 </script>
 <script>
-(function(){ if (window.FL && FL.wexLast) FL.wexLast(); })();
+/* fl_m4h.js: shorthand helpers for the P4 lesson specs */
+(function () {
+  'use strict';
+  var FL = window.FL; if (!FL || !FL.MEGA) return;
+  var C = FL.cards;
+  function pic(s) { return s ? C(s.split(',').map(function (x) { return x.trim(); })) : ''; }
+  function ex(s) { var p = s.split('|'); return [p[0], p[1].split(';'), p[2], pic(p[3])]; }
+  function rl(s) { var p = s.split('|'); return [p[0], p[1], p[2].split(','), p[3], pic(p[4])]; }
+  function qq(s) { var p = s.split('|'); return [p[0], p[1], p[2].split(','), p[3] || 'Check each step.', pic(p[4]), '']; }
+  function two(s) { var p = s.split('|'); return [p[0], pic(p[1])]; }
+  function uniq(a, ans) { var o = [], seen = {}; seen[String(ans)] = 1; a.forEach(function (x) { x = String(x); if (!seen[x] && !/NaN|undefined/.test(x)) { seen[x] = 1; o.push(x); } }); return o.slice(0, 3); }
+  FL.mcq = function (tag, q, a, ws, h, e, p) { return FL.MC(tag, q, String(a), uniq(ws, a), [h], e, p || ''); };
+  FL.P4 = function (n, id, o) {
+    var spec = { id: id, ch: o.ch || 'owl', bg: o.bg || 'day', way: two(o.way), ex: o.ex.map(ex), mist: two(o.mist), real: rl(o.real), qs: o.qs.map(qq), gen: o.gen };
+    if (o.t) {
+      var t = o.t.split('|'), ch = o.chk.split('|'), opts = [ch[1]].concat(ch[2].split(',')), k = opts.length > 1 ? 1 : 0;
+      opts = opts.slice(k).concat(opts.slice(0, k));
+      spec.li = [t[0], t[1], t[2], pic(t[3]),
+        o.words.split(';').map(function (w) { var x = w.split('='); return [x[0], x[1], x[2] || '⭐']; }),
+        o.see.map(two), o.ex3.map(ex), two(o.mist), [ch[0], pic(ch[4] || ''), opts, ch[1], ch[3], ch[5] || 'Take your time.'], two(o.rem)];
+    }
+    FL.MEGA(n, spec);
+  };
+})();
+</script>
+<script>
+/* fl_m4a.js: P4 Place value (401), Adding and subtracting (402), Multiplication and division (403) */
+(function () {
+  'use strict';
+  var FL = window.FL; if (!FL || !FL.P4) return;
+  var P = FL.P4, r = FL.r, pick = FL.pick, mc = FL.mcq, T = FL.track;
+  function nm(n) { return String(n).replace(/\B(?=(\d{3})+(?!\d))/g, ','); }
+
+  /* ===== 401 Place value and number ===== */
+  P(401, 'learn1', { ch: 'owl', bg: 'day',
+    way: 'Find the rule. Look at how much each number goes up or down by, then keep going.|2,5,8,11,+3 each time',
+    ex: ['What comes next? 5, 10, 15, 20, ?|Each step is +5.;20 + 5 = 25.|25|+5,+5,+5', 'What comes next? 50, 45, 40, 35, ?|Each step is -5.;35 - 5 = 30.|30|-5,-5,-5'],
+    mist: 'Check every gap, not just the first. 2, 4, 7 is not a +2 pattern.|2→4 is +2,4→7 is +3',
+    real: 'A bus fare goes 20p, 40p, 60p, 80p. What next?|£1|90p,100p,£10|It goes up by 20p each time.|+20p',
+    qs: ['3, 6, 9, 12, ?|15|14,16,18|+3.', '10, 20, 30, 40, ?|50|45,60,41|+10.', '100, 90, 80, 70, ?|60|50,65,71|-10.', '4, 8, 12, 16, ?|20|18,24,19|+4.', '25, 50, 75, ?|100|85,90,80|+25.', '30, 27, 24, 21, ?|18|19,17,20|-3.', '7, 14, 21, 28, ?|35|32,36,29|+7.', 'What is the rule? 6, 12, 18, 24|add 6|add 3,add 12,add 4|Each gap is 6.'],
+    gen: function g(lv) { var s = pick(lv ? [3, 4, 6, 7, 8, 25, 50] : [2, 3, 5, 10]), a = r(1, 20), up = lv === 2 && r(0, 1) ? 0 : 1, st = up ? a : a + s * 5, seq = [0, 1, 2, 3].map(function (i) { return up ? a + s * i : st - s * i; }), nx = up ? a + s * 4 : st - s * 4; if (nx < 0) return g(lv); return mc('Number patterns', 'What comes next? <b>' + seq.join(', ') + ', ?</b>', nx, [nx + 1, nx - 1, nx + s], 'Find the rule between the numbers.', 'The rule is ' + (up ? '+' : '-') + s + ', so the next number is ' + nx + '.'); } });
+
+  P(401, 'learn2', { ch: 'owl', bg: 'day',
+    way: 'Each digit has a value. In 536 the 5 is 5 hundreds, the 3 is 3 tens and the 6 is 6 ones.|536 = 500 + 30 + 6',
+    ex: ['What is the value of the 4 in 346?|The 4 is in the tens place.;4 tens = 40.|40|3 hundreds,4 tens,6 ones', 'What is the value of the 7 in 724?|The 7 is in the hundreds place.;7 hundreds = 700.|700|7 hundreds,2 tens,4 ones'],
+    mist: 'The digit 4 in 346 is worth 40, not 4. Where it sits changes its value.|4 tens = 40',
+    real: 'A football crowd was 852. What is the 5 worth?|50|5,500,5000|It is in the tens place.|8 hundreds,5 tens,2 ones',
+    qs: ['What is the value of the 3 in 438?|30|3,300,38|Tens place.', 'What is the value of the 6 in 645?|600|6,60,64|Hundreds place.', 'What is the value of the 9 in 209?|9|90,900,20|Ones place.', 'What is 400 + 50 + 7?|457|547,745,4,507|4 hundreds, 5 tens, 7 ones.', 'What is 300 + 8?|308|38,380,3008|No tens.', 'How many tens in 270?|27|2,7,270|27 tens.', 'Which digit is in the tens place of 913?|1|9,3,13|The middle digit.', 'What is the value of the 2 in 825?|20|2,200,25|Tens place.'],
+    gen: function g(lv) { var h = r(1, 9), t = r(1, 9), o = r(0, 9), n = h * 100 + t * 10 + o, k = r(0, 2), v = [h * 100, t * 10, o][k], d = [h, t, o][k]; if (k === 2 && o === 0) return g(lv); return mc('Place value', 'What is the value of the <b>' + d + '</b> in <b>' + n + '</b>?', v, [d, d * 10, d * 100, d * 1000].filter(function (x) { return x !== v; }), 'Look at which place the digit is in.', 'The ' + d + ' is worth ' + v + '.'); } });
+
+  P(401, 'learn3', { ch: 'owl', bg: 'day',
+    way: 'Look at the digit to the right. 5 or more: round up. 4 or less: stay the same.|43 → 40,47 → 50',
+    ex: ['Round 63 to the nearest 10.|Look at the ones digit: 3.;3 is less than 5, so stay.|60|60,63,70', 'Round 350 to the nearest 100.|Look at the tens digit: 5.;5 means round up.|400|300,350,400'],
+    mist: '5 rounds up. 45 goes to 50, not 40.|45 → 50',
+    real: 'A shop has 78 sweets. About how many tens?|80|70,100,75|Round 78 up.|78 → 80',
+    qs: ['Round 24 to the nearest 10.|20|30,25,24|4 is small.', 'Round 36 to the nearest 10.|40|30,35,36|6 rounds up.', 'Round 85 to the nearest 10.|90|80,85,100|5 rounds up.', 'Round 140 to the nearest 100.|100|200,150,140|Tens digit 4.', 'Round 460 to the nearest 100.|500|400,460,600|Tens digit 6.', 'Round 249 to the nearest 100.|200|300,250,240|Tens digit 4.', 'Round 805 to the nearest 10.|810|800,805,820|Ones digit 5.', 'Round 551 to the nearest 100.|600|500,550,650|Tens digit 5.'],
+    gen: function g(lv) { var h = lv ? 100 : 10, n = lv ? r(101, 899) : r(11, 99), down = Math.floor(n / h) * h, a = n % h >= h / 2 ? down + h : down; if (n % h === 0) return g(lv); return mc('Rounding', 'Round <b>' + n + '</b> to the nearest <b>' + h + '</b>.', a, [a === down ? down + h : down, n, down + h * 2, down - h], 'Look at the digit to the right.', n + ' rounds to ' + a + '.'); } });
+
+  P(401, 'learn4', { ch: 'owl', bg: 'day',
+    way: 'Negative numbers are below zero. On a thermometer, going down past 0 gives -1, -2, -3.|0, -1, -2, -3',
+    ex: ['It is 3 °C and gets 5 degrees colder. What is it now?|3 - 3 = 0, then 2 more down.;0 - 2 = -2.|-2 °C|3,0,-2', 'Which is colder: -4 °C or -1 °C?|-4 is further below zero.|-4 °C|-4,-1,0'],
+    mist: '-9 is less than -2. The bigger the number after the minus, the colder.|-9 < -2',
+    real: 'The freezer is -18 °C. The fridge is 4 °C. Which is colder?|the freezer|the fridge|-18 is far below zero.|-18, 4',
+    qs: ['Which is colder: -3 °C or -7 °C?|-7 °C|-3 °C|Further below zero.', 'What is 2 - 5?|-3|3,-7,7|Past zero.', 'Count back: 3, 2, 1, 0, ?|-1|1,-2,0|Below zero.', 'Which is smallest: 4, -2, 0, -5?|-5|4,-2,0|Most negative.', 'It is -2 °C. It warms by 3. New temperature?|1 °C|-5 °C,5 °C,-1 °C|-2 + 3.', 'It is 1 °C. It drops by 4. New temperature?|-3 °C|3 °C,-5 °C,5 °C|1 - 4.', 'Which is the coldest: 2 °C, -1 °C or -4 °C?|-4 °C|2 °C,-1 °C,0 °C|Coldest is furthest below zero.', 'What number is just below 0?|-1|1,0,-10|One less.'],
+    gen: function g(lv) { var a = r(1, lv ? 9 : 5), d = r(a + 1, a + (lv ? 8 : 5)), res = a - d; return mc('Negative numbers', 'It is <b>' + a + ' °C</b> and the temperature drops by <b>' + d + ' degrees</b>. What is it now?', res + ' °C', [(-res) + ' °C', (res - 1) + ' °C', (res + 1) + ' °C'], 'Count down on a thermometer, passing zero.', a + ' - ' + d + ' = ' + res + '.'); } });
+
+  P(401, 'learnm1', { ch: 'owl', bg: 'day',
+    t: 'Reading 3-digit numbers|How do I read and write 3-digit numbers?|We say a 3-digit number by its hundreds, tens and ones. 253 is two hundred and fifty-three.|253,hundreds tens ones',
+    words: 'hundreds=a group of 100=💯;tens=a group of 10=🔟;ones=single units=1️⃣;digit=a number symbol 0 to 9=🔢',
+    see: ['253 is 2 hundreds, 5 tens and 3 ones.|2 hundreds,5 tens,3 ones', 'We say two hundred and fifty-three.|253 = two hundred and fifty-three', 'A zero holds a place. 305 has no tens.|3 hundreds,0 tens,5 ones'],
+    ex3: ['Write four hundred and six in digits.|4 hundreds, no tens, 6 ones.|406|406', 'Write 580 in words.|5 hundreds and 8 tens.|five hundred and eighty|580', 'What is 7 hundreds + 2 tens + 9 ones?|Put the digits side by side.|729|729'],
+    mist: 'Do not leave out the zero. Two hundred and five is 205, not 25.|205 not 25',
+    chk: 'Write three hundred and forty-two in digits.|342|324,432|Hundreds first, then tens, then ones.|342',
+    rem: 'Say the hundreds, then the tens, then the ones. Use 0 for an empty place.|hundreds, tens, ones',
+    way: 'Make the number with place value counters: 100s, 10s and 1s.|3 hundreds,5 tens,2 ones',
+    ex: ['Write 600 + 40 + 5.|6 hundreds, 4 tens, 5 ones.|645|645', 'Write 900 + 3.|No tens, so use a zero.|903|903'],
+    real: 'A page number is two hundred and nine. Write it.|209|29,290,2009|Zero tens.|209',
+    qs: ['Write seven hundred and twenty-one.|721|712,127,7021|7 hundreds, 2 tens, 1 one.', 'Write 400 + 50 + 6.|456|465,546,4056|Place values.', 'Write nine hundred and four.|904|94,940,9004|Zero tens.', 'Say 618 in words.|six hundred and eighteen|six hundred and eight,sixty-eight|Hundreds, tens, ones.', 'How many tens in 350?|35|3,5,350|35 tens.', 'What is 200 + 7?|207|27,270,2007|No tens.', 'Write 3 hundreds, 0 tens, 8 ones.|308|38,380,3008|Zero tens.', 'Write one hundred and thirty.|130|103,1030,13|1 hundred, 3 tens.'],
+    gen: function g(lv) { var h = r(1, 9), t = r(0, 9), o = r(0, 9), n = h * 100 + t * 10 + o; return mc('Reading numbers', 'Write <b>' + h + ' hundreds, ' + t + ' tens and ' + o + ' ones</b> as a number.', n, [h * 100 + o * 10 + t, t * 100 + h * 10 + o, h * 10 + t + o, n + 10], 'Hundreds, then tens, then ones.', n + '.'); } });
+
+  P(401, 'learnm2', { ch: 'owl', bg: 'day',
+    t: 'Comparing numbers|How do I tell which number is bigger?|Compare the hundreds first. If they match, compare the tens, then the ones. Use < for less than and > for greater than.|345 > 298',
+    words: 'greater than=more than (>)=➕;less than=smaller than (<)=➖;equal=the same (=)=🟰;order=put in sequence=📋',
+    see: ['Compare 345 and 298. Hundreds: 3 is more than 2. So 345 is bigger.|345 > 298', 'If the hundreds match, check the tens. 463 and 427: 6 tens is more than 2 tens.|463 > 427', 'The sign opens its mouth to the bigger number.|8 > 5,5 < 8'],
+    ex3: ['Which is bigger: 482 or 512?|Hundreds: 5 is more than 4.|512|482,512', 'Fill in: 637 __ 631|Hundreds and tens match. Ones: 7 is more than 1.|>|637 > 631', 'Put in order smallest first: 305, 350, 53|53 is smallest. 305 < 350.|53, 305, 350|53,305,350'],
+    mist: 'A number with more digits is bigger. 53 is not bigger than 305.|305 > 53',
+    chk: 'Which is the biggest: 407, 470, 74?|470|407,74|Compare the hundreds first.|407, 470, 74',
+    rem: 'Compare hundreds, then tens, then ones. Smallest first means going up.|H, T, O',
+    way: 'Put the numbers on a number line. The one further right is bigger.|smaller ← → bigger',
+    ex: ['Which is smaller: 215 or 251?|Tens: 1 is less than 5.|215|215,251', 'Put in order largest first: 120, 102, 210|210 is largest.|210, 120, 102|210,120,102'],
+    real: 'Anna has 365 stickers. Ben has 356. Who has more?|Anna|Ben,the same|365 > 356.|365, 356',
+    qs: ['Which is bigger: 623 or 632?|632|623,same|Tens 3 vs 2.', 'Which is smaller: 150 or 105?|105|150,same|Tens 0 vs 5.', 'Which sign: 480 __ 408|>|<,=|Tens 8 vs 0.', 'Which sign: 219 __ 291|<|>,=|Tens 1 vs 9.', 'Smallest of 340, 304, 430?|304|340,430|Compare tens.', 'Biggest of 99, 101, 100?|101|99,100|3 digits beats 2.', 'Which is in the middle when ordered: 52, 250, 205?|205|52,250,520|Order: 52, 205, 250.', 'Which sign: 500 __ 500|=|<,>|Same.'],
+    gen: function g(lv) { var a = r(100, 899), b = a + pick([-1, 1]) * pick(lv ? [1, 9, 10, 90] : [10, 40, 100, 200]); if (b < 100 || b > 999 || a === b) return g(lv); var big = a > b ? a : b; return mc('Comparing numbers', 'Which number is <b>bigger</b>: <b>' + a + '</b> or <b>' + b + '</b>?', big, [a > b ? b : a, big + 100, big - 1], 'Compare hundreds, then tens, then ones.', big + ' is bigger.'); } });
+
+  P(401, 'learnm3', { ch: 'owl', bg: 'day',
+    t: '10 or 100 more or less|How do I find 10 or 100 more or less?|Adding 10 changes the tens digit. Adding 100 changes the hundreds digit. The other digits stay the same.|10 more, 100 more',
+    words: 'more=add=➕;less=take away=➖;digit=a number symbol=🔢;pattern=a rule that repeats=🔁',
+    see: ['10 more than 346 is 356. Only the tens digit changes.|346 → 356', '100 more than 346 is 446. Only the hundreds digit changes.|346 → 446', '10 less than 346 is 336. 100 less is 246.|346 → 336,346 → 246'],
+    ex3: ['What is 10 more than 275?|Tens digit 7 becomes 8.|285|275 → 285', 'What is 100 less than 640?|Hundreds digit 6 becomes 5.|540|640 → 540', 'What is 10 more than 390?|9 tens + 1 ten = 10 tens, so carry.|400|390 → 400'],
+    mist: 'Watch for 9s. 10 more than 290 is 300, not 2100.|290 → 300',
+    chk: 'What is 100 more than 527?|627|537,517,528|Change the hundreds.|527 → 627',
+    rem: '10 more changes the tens. 100 more changes the hundreds. Take care with 9s.|+10 tens,+100 hundreds',
+    way: 'Hop 10 at a time on a number line.|340,350,360,370',
+    ex: ['What is 10 less than 405?|Tens digit is 0, so exchange.|395|405 → 395', 'What is 100 more than 850?|8 hundreds + 1 = 9 hundreds.|950|850 → 950'],
+    real: 'A jar has 235 beads. 10 more are added. How many now?|245|335,236,225|Tens go up by 1.|235 → 245',
+    qs: ['10 more than 120?|130|220,121,110|Tens +1.', '100 more than 120?|220|130,121,20|Hundreds +1.', '10 less than 350?|340|250,351,360|Tens -1.', '100 less than 350?|250|340,450,300|Hundreds -1.', '10 more than 495?|505|595,496,500|Carry.', '10 less than 500?|490|400,510,499|Exchange.', '100 more than 905?|1005|1000,915,995|9 + 1 = 10 hundreds.', '100 less than 308?|208|298,108,318|Hundreds -1.'],
+    gen: function g(lv) { var n = r(110, lv ? 890 : 490), up = r(0, 1), d = pick([10, 100]), a = up ? n + d : n - d; return mc('10 or 100 more or less', 'What is <b>' + d + ' ' + (up ? 'more' : 'less') + '</b> than <b>' + n + '</b>?', a, [up ? n - d : n + d, a + (d === 10 ? 100 : 10), n + 1, a - 1], 'Change only the ' + (d === 10 ? 'tens' : 'hundreds') + ' digit.', n + (up ? ' + ' : ' - ') + d + ' = ' + a + '.'); } });
+})();
+</script>
+<script>
+/* fl_m4b.js: P4 Adding and subtracting (402), Multiplication and division (403) */
+(function () {
+  'use strict';
+  var FL = window.FL; if (!FL || !FL.P4) return;
+  var P = FL.P4, r = FL.r, pick = FL.pick, mc = FL.mcq;
+
+  /* ===== 402 Adding and subtracting ===== */
+  P(402, 'learn1', { ch: 'fox', bg: 'day',
+    way: 'To add 9, add 10 then take away 1. To add 19, add 20 then take away 1. This is compensating.|+9 = +10 -1',
+    ex: ['What is 46 + 9?|Add 10: 56.;Take away 1: 55.|55|46 + 10 = 56', 'What is 83 - 19?|Take away 20: 63.;Add 1 back: 64.|64|83 - 20 = 63'],
+    mist: 'Remember to put the extra back. 46 + 9 is 55, not 56.|+10 then -1',
+    real: 'A book costs 49p. You buy 3 of them. Think: 3 × 50p take 3p.|£1.47|£1.50,£1.53,£1.40|150 - 3 = 147.|3 × 50p = 150p',
+    qs: ['34 + 9 = ?|43|44,42,33|34 + 10 - 1.', '57 + 19 = ?|76|77,75,66|57 + 20 - 1.', '72 - 9 = ?|63|62,64,61|72 - 10 + 1.', '65 - 19 = ?|46|45,47,44|65 - 20 + 1.', '48 + 11 = ?|59|58,60,49|48 + 10 + 1.', '90 - 21 = ?|69|70,68,71|90 - 20 - 1.', '125 + 99 = ?|224|225,223,214|125 + 100 - 1.', '200 - 99 = ?|101|100,102,99|200 - 100 + 1.'],
+    gen: function g(lv) { var a = r(21, lv ? 160 : 70), k = pick(lv ? [9, 19, 29, 11, 21, 99] : [9, 19, 11]), up = r(0, 1), res = up ? a + k : a - k; if (res < 1) return g(lv); var near = Math.round(k / 10) * 10 || 10; return mc('Compensating', 'What is <b>' + a + (up ? ' + ' : ' - ') + k + '</b>?', res, [res + 1, res - 1, res + 10, res - 10], 'Use ' + near + ' and adjust by ' + Math.abs(near - k) + '.', a + (up ? ' + ' : ' - ') + k + ' = ' + res + '.'); } });
+
+  P(402, 'learn2', { ch: 'fox', bg: 'day',
+    way: 'Line up the digits. Add the ones first. If you get 10 or more, carry a ten to the next column.|ones first, then tens',
+    ex: ['What is 346 + 27?|Ones: 6 + 7 = 13, write 3 carry 1.;Tens: 4 + 2 + 1 = 7.;Hundreds: 3.|373|346, +27, 373', 'What is 258 + 164?|Ones: 8 + 4 = 12, write 2 carry 1.;Tens: 5 + 6 + 1 = 12, write 2 carry 1.;Hundreds: 2 + 1 + 1 = 4.|422|258, +164, 422'],
+    mist: 'Line up ones under ones. Do not add a tens digit to a ones digit.|ones, tens, hundreds',
+    real: 'A school has 238 girls and 195 boys. How many pupils?|433|423,343,443|238 + 195.|238 + 195',
+    qs: ['45 + 38 = ?|83|73,82,93|5 + 8 = 13 carry 1.', '127 + 36 = ?|163|153,162,173|7 + 6 = 13.', '256 + 145 = ?|401|391,411,301|Carry twice.', '308 + 77 = ?|385|375,395,305|8 + 7 = 15.', '419 + 283 = ?|702|692,712,602|9 + 3 = 12.', '64 + 78 = ?|142|132,152,141|4 + 8 = 12.', '350 + 275 = ?|625|525,615,635|Tens carry.', '199 + 201 = ?|400|390,410,300|99 + 1.'],
+    gen: function g(lv) { var a = r(25, lv ? 699 : 95), b = r(25, lv ? 299 : 95); return mc('Adding in columns', 'What is <b>' + a + ' + ' + b + '</b>?', a + b, [a + b + 10, a + b - 10, a + b + 100, a + b - 1], 'Add ones, then tens, then hundreds, carrying when needed.', a + ' + ' + b + ' = ' + (a + b) + '.'); } });
+
+  P(402, 'learn3', { ch: 'fox', bg: 'day',
+    way: 'Line up the digits. Subtract the ones first. If the top digit is too small, exchange a ten for 10 ones.|exchange when the top is smaller',
+    ex: ['What is 74 - 28?|Ones: 4 is smaller than 8, so exchange: 14 - 8 = 6.;Tens: 6 - 2 = 4.|46|74, -28, 46', 'What is 352 - 175?|Ones: 12 - 5 = 7.;Tens: 4 - 7 so exchange: 14 - 7 = 7.;Hundreds: 2 - 1 = 1.|177|352, -175, 177'],
+    mist: 'Never take the smaller digit from the bigger. 74 - 28 is not 54.|exchange, do not flip',
+    real: 'A bus holds 82. 37 are on board. How many seats left?|45|55,35,119|82 - 37.|82 - 37',
+    qs: ['53 - 27 = ?|26|34,36,25|13 - 7 = 6.', '81 - 46 = ?|35|45,25,34|11 - 6 = 5.', '240 - 85 = ?|155|165,145,225|Exchange.', '305 - 128 = ?|177|187,277,167|Exchange twice.', '420 - 163 = ?|257|267,357,247|Exchange.', '92 - 58 = ?|34|44,24,36|12 - 8 = 4.', '600 - 245 = ?|355|365,455,345|Exchange twice.', '134 - 76 = ?|58|68,48,62|14 - 6 = 8.'],
+    gen: function g(lv) { var a = r(52, lv ? 899 : 99), b = r(11, a - 5); return mc('Subtracting in columns', 'What is <b>' + a + ' - ' + b + '</b>?', a - b, [a - b + 10, a - b - 10, a - b + 100, a - b + 1], 'Subtract ones, then tens, then hundreds. Exchange when needed.', a + ' - ' + b + ' = ' + (a - b) + '.'); } });
+
+  P(402, 'learn4', { ch: 'fox', bg: 'day',
+    way: 'Round each number first, then add or subtract. The estimate tells you if your answer is sensible.|198 + 303 ≈ 200 + 300',
+    ex: ['Estimate 298 + 403.|298 rounds to 300.;403 rounds to 400.;300 + 400 = 700.|about 700|300 + 400', 'Estimate 82 - 39.|82 rounds to 80, 39 rounds to 40.;80 - 40 = 40.|about 40|80 - 40'],
+    mist: 'An estimate is not exact. Use it to check, not to give the final answer.|≈ means about',
+    real: 'You work out 197 + 304 = 5,01. Is that sensible? Estimate: 200 + 300.|No, about 500|Yes,about 50,about 5000|Estimate is 500, so check 501.|200 + 300',
+    qs: ['Estimate 48 + 31 by rounding to tens.|80|90,70,50|50 + 30.', 'Estimate 99 + 102.|200|100,300,210|100 + 100.', 'Estimate 61 - 29.|30|40,20,90|60 - 30.', 'Estimate 295 + 199.|500|400,600,490|300 + 200.', 'Estimate 704 - 296.|400|500,300,410|700 - 300.', 'Estimate 78 + 22.|100|90,110,70|80 + 20.', 'Estimate 405 + 395.|800|700,900,810|400 + 400.', 'Estimate 91 - 48.|40|50,30,140|90 - 50.'],
+    gen: function g(lv) { var a = r(21, lv ? 899 : 99), b = r(11, lv ? 399 : 59), h = lv ? 100 : 10, ra = Math.round(a / h) * h, rb = Math.round(b / h) * h, up = r(0, 1); if (!up && ra - rb < h) return g(lv); var e = up ? ra + rb : ra - rb; return mc('Estimating', 'Estimate <b>' + a + (up ? ' + ' : ' - ') + b + '</b> by rounding to the nearest ' + h + '.', e, [e + h, e - h, a + b, e + h * 2], 'Round each number, then do the sum.', ra + (up ? ' + ' : ' - ') + rb + ' = ' + e + '.'); } });
+
+  P(402, 'learnm1', { ch: 'fox', bg: 'day',
+    t: 'Partitioning to add|How can I split numbers to add them?|Split a number into hundreds, tens and ones, add the parts, then put them back together.|45 + 32 = 40 + 30 + 5 + 2',
+    words: 'partition=split a number into parts=✂️;total=the answer to an addition=🧮;tens=groups of 10=🔟;ones=single units=1️⃣',
+    see: ['Split 45 into 40 and 5. Split 32 into 30 and 2.|45 = 40 + 5,32 = 30 + 2', 'Add the tens: 40 + 30 = 70. Add the ones: 5 + 2 = 7.|70,7', 'Put it together: 70 + 7 = 77.|45 + 32 = 77'],
+    ex3: ['What is 54 + 23?|50 + 20 = 70.;4 + 3 = 7.;70 + 7 = 77.|77|50 + 20,4 + 3', 'What is 63 + 28?|60 + 20 = 80.;3 + 8 = 11.;80 + 11 = 91.|91|80 + 11', 'What is 120 + 45?|100 + 20 + 40 + 5.;60 + 5 = 65 so 165.|165|100,60,5'],
+    mist: 'Add the tens as tens. 40 + 30 is 70, not 7.|tens stay tens',
+    chk: 'What is 35 + 42?|77|67,87,75|30 + 40 + 5 + 2.|35 + 42',
+    rem: 'Split, add tens, add ones, put back together.|split, add, join',
+    way: 'Draw base ten blocks, a rod for each ten and a cube for each one.|4 rods 5 cubes,3 rods 2 cubes',
+    ex: ['What is 36 + 41?|30 + 40 = 70.;6 + 1 = 7.|77|70 + 7', 'What is 72 + 19?|70 + 10 = 80.;2 + 9 = 11.|91|80 + 11'],
+    real: 'You have 47 marbles and win 22. How many now?|69|59,79,25|40 + 20, 7 + 2.|47 + 22',
+    qs: ['23 + 45 = ?|68|58,78,65|20 + 40, 3 + 5.', '51 + 36 = ?|87|77,97,85|50 + 30, 1 + 6.', '64 + 25 = ?|89|79,99,84|60 + 20, 4 + 5.', '38 + 27 = ?|65|55,75,64|30 + 20, 8 + 7 = 15.', '75 + 18 = ?|93|83,103,92|70 + 10, 5 + 8 = 13.', '120 + 53 = ?|173|163,183,172|Hundreds, tens, ones.', 'Split 67 into tens and ones.|60 + 7|6 + 7,70 + 6,600 + 7|6 tens and 7 ones.', '44 + 44 = ?|88|84,78,98|Double 44.'],
+    gen: function g(lv) { var a = r(12, lv ? 89 : 59), b = r(12, lv ? 89 : 59); return mc('Partitioning', 'Use partitioning to work out <b>' + a + ' + ' + b + '</b>.', a + b, [a + b + 10, a + b - 10, a + b + 1, a + b - 1], 'Add the tens, add the ones, then join.', a + ' + ' + b + ' = ' + (a + b) + '.'); } });
+
+  P(402, 'learnm2', { ch: 'fox', bg: 'day',
+    t: 'Add or subtract?|How do I know whether to add or subtract?|Read the story. Joining, getting more, or finding the total means add. Taking away, giving, or finding the difference means subtract.|join = add,take away = subtract',
+    words: 'total=altogether=🧮;difference=how many more or less=↔️;left=what remains=🧺;more than=add on=➕',
+    see: ['“How many altogether?” means add.|3 + 4 = 7', '“How many are left?” means subtract.|9 - 4 = 5', '“How many more?” means find the difference.|12 - 7 = 5'],
+    ex3: ['Sam has 25 cards. He gets 18 more. How many now?|Getting more means add.;25 + 18 = 43.|43|25 + 18', 'There are 60 sweets. 27 are eaten. How many left?|Eaten means take away.;60 - 27 = 33.|33|60 - 27', 'Ali has 45 and Bea has 30. How many more has Ali?|More means difference.;45 - 30 = 15.|15|45 - 30'],
+    mist: 'Do not pick by the biggest number. Read what is happening in the story.|story first',
+    chk: 'There are 14 red and 9 blue balloons. How many altogether?|23|5,24,13|Altogether means add.|14 + 9',
+    rem: 'Picture the story, choose add or subtract, then check the answer makes sense.|read, choose, check',
+    way: 'Draw a bar model: one long bar for the total and two short bars for the parts.|total = part + part',
+    ex: ['A box has 38 pens. 15 are used. How many left?|Used means take away.;38 - 15 = 23.|23|38 - 15', 'A shop sells 26 apples and 19 pears. How many fruit?|Altogether means add.;26 + 19 = 45.|45|26 + 19'],
+    real: 'A class has 28 children. 9 are away. How many are in school?|19|37,29,18|Away means take away.|28 - 9',
+    qs: ['15 birds and 8 more arrive. Altogether?|23|7,22,24|Add.', '40 balloons, 12 pop. How many left?|28|52,38,27|Subtract.', 'Amy has 30p, Ben has 45p. How many more has Ben?|15p|75p,25p,5p|Difference.', '62 ducks, 28 leave. How many left?|34|44,90,24|Subtract.', '17 + 26 pupils. How many altogether?|43|33,53,41|Add.', 'A jug has 90 ml. 35 ml is poured out. Left?|55 ml|125 ml,65 ml,45 ml|Subtract.', '53 and 38. How many altogether?|91|81,15,101|Add.', 'Which sum for “How many more is 72 than 45”?|72 - 45|72 + 45,45 - 72,72 × 45|Difference.'],
+    gen: function g(lv) { var a = r(25, lv ? 95 : 70), b = r(8, 24), ad = r(0, 1), name = pick(['marbles', 'stickers', 'books', 'coins']); return ad ? mc('Add or subtract', 'Mia has <b>' + a + '</b> ' + name + ' and gets <b>' + b + '</b> more. How many does she have <b>now</b>?', a + b, [a - b, a + b + 10, a + b - 1], 'Getting more means add.', a + ' + ' + b + ' = ' + (a + b) + '.') : mc('Add or subtract', 'Mia has <b>' + a + '</b> ' + name + ' and gives away <b>' + b + '</b>. How many are <b>left</b>?', a - b, [a + b, a - b + 10, a - b - 1], 'Giving away means take away.', a + ' - ' + b + ' = ' + (a - b) + '.'); } });
+
+  P(402, 'learnm3', { ch: 'fox', bg: 'day',
+    t: 'Missing numbers|How do I find a missing number?|Use the opposite. Addition and subtraction undo each other. To find a missing part, subtract from the total.|? + 8 = 20, so 20 - 8 = 12',
+    words: 'missing number=the number we must find=❓;inverse=the opposite operation=🔄;total=the whole amount=🧮;part=a piece of the total=🧩',
+    see: ['? + 8 = 20. The total is 20 and one part is 8.|20 = 8 + ?', 'Find the other part: 20 - 8 = 12.|12 + 8 = 20 ✓', 'Check by putting 12 back in the box.|12 + 8 = 20'],
+    ex3: ['? + 15 = 40|40 - 15 = 25.|25|25 + 15 = 40', '60 - ? = 24|The part taken is 60 - 24.;36.|36|60 - 36 = 24', '? - 12 = 30|Add back: 30 + 12.;42.|42|42 - 12 = 30'],
+    mist: 'Do not guess. Work out with the opposite, then check by putting your answer in.|check it',
+    chk: '? + 9 = 30. What is the missing number?|21|39,20,22|30 - 9.|30 - 9',
+    rem: 'Missing part: use the opposite. Always check.|add ↔ subtract',
+    way: 'Draw a bar model with the total on top and the parts below. Fill in what you know.|total 50,part 20,part ?',
+    ex: ['25 + ? = 70|70 - 25 = 45.|45|45 + 25 = 70', '? - 18 = 22|22 + 18 = 40.|40|40 - 18 = 22'],
+    real: 'You need 100 points. You have 64. How many more?|36|46,164,26|100 - 64.|64 + ? = 100',
+    qs: ['? + 20 = 50|30|70,40,20|50 - 20.', '35 + ? = 60|25|95,35,15|60 - 35.', '? - 10 = 45|55|35,45,65|45 + 10.', '80 - ? = 30|50|110,40,60|80 - 30.', '? + 45 = 100|55|145,65,45|100 - 45.', '90 - ? = 55|35|145,45,25|90 - 55.', '? - 25 = 25|50|0,25,100|25 + 25.', '17 + ? = 17|0|17,34,1|Nothing needed.'],
+    gen: function g(lv) { var a = r(11, lv ? 70 : 40), b = r(11, lv ? 70 : 40), t = a + b, k = r(0, 2); return k === 0 ? mc('Missing numbers', 'What is the missing number? <b>? + ' + a + ' = ' + t + '</b>', b, [b + 10, b - 1, t + a], 'Subtract the part from the total.', t + ' - ' + a + ' = ' + b + '.') : k === 1 ? mc('Missing numbers', 'What is the missing number? <b>' + t + ' - ? = ' + a + '</b>', b, [b + 10, b - 1, t + a], 'Subtract the answer from the total.', t + ' - ' + a + ' = ' + b + '.') : mc('Missing numbers', 'What is the missing number? <b>? - ' + a + ' = ' + b + '</b>', t, [t + 10, t - 1, b - a < 1 ? t + 5 : b - a], 'Add back.', b + ' + ' + a + ' = ' + t + '.'); } });
+
+  /* ===== 403 Multiplication and division ===== */
+  P(403, 'learn1', { ch: 'bear', bg: 'farm',
+    way: 'To double a number, add it to itself. To halve it, share it into 2 equal parts.|double 7 = 14,half of 14 = 7',
+    ex: ['Double 26.|Double 20 = 40.;Double 6 = 12.;40 + 12 = 52.|52|20 + 20,6 + 6', 'Half of 74.|Half of 70 = 35.;Half of 4 = 2.;35 + 2 = 37.|37|70 → 35,4 → 2'],
+    mist: 'Doubling is × 2. Halving is ÷ 2. Do not mix them up.|× 2 and ÷ 2',
+    real: 'A packet has 38 sweets. You buy 2 packets. How many sweets?|76|40,66,36|Double 38.|38 + 38',
+    qs: ['Double 15.|30|20,25,35|15 + 15.', 'Double 40.|80|20,60,44|40 + 40.', 'Double 34.|68|64,38,58|30 → 60, 4 → 8.', 'Half of 50.|25|20,100,5|Share into 2.', 'Half of 86.|43|83,34,53|40 + 3.', 'Half of 120.|60|20,240,30|Half of 12 tens.', 'Double 125.|250|225,150,120|100 → 200, 25 → 50.', 'Half of 9 tens is…|45|90,4,35|90 ÷ 2.'],
+    gen: function g(lv) { var n = r(6, lv ? 99 : 49), dbl = r(0, 1); if (!dbl && n % 2) n++; return dbl ? mc('Doubling', 'What is <b>double ' + n + '</b>?', n * 2, [n * 2 + 10, n * 2 - 2, n + 2, n * 2 + 2], 'Add the number to itself.', n + ' + ' + n + ' = ' + n * 2 + '.') : mc('Halving', 'What is <b>half of ' + n + '</b>?', n / 2, [n / 2 + 1, n / 2 + 10, n * 2, n / 2 - 1], 'Share into 2 equal parts.', 'Half of ' + n + ' is ' + n / 2 + '.'); } });
+
+  P(403, 'learn2', { ch: 'bear', bg: 'farm',
+    way: 'To multiply by 20, 30 or 40, multiply by 2, 3 or 4, then by 10.|3 × 20 = 3 × 2 × 10',
+    ex: ['What is 4 × 30?|4 × 3 = 12.;12 × 10 = 120.|120|4 × 3 = 12', 'What is 6 × 50?|6 × 5 = 30.;30 × 10 = 300.|300|6 × 5 = 30'],
+    mist: 'Do not forget the zero. 4 × 30 = 120, not 12.|× 10 adds a place',
+    real: 'Each bag has 40 stickers. There are 5 bags. How many?|200|45,20,2000|5 × 4 = 20.|5 × 40',
+    qs: ['2 × 20 = ?|40|22,4,400|2 × 2 = 4.', '3 × 30 = ?|90|33,9,900|3 × 3 = 9.', '5 × 20 = ?|100|25,10,1000|5 × 2 = 10.', '4 × 50 = ?|200|54,20,2000|4 × 5 = 20.', '6 × 40 = ?|240|64,24,2400|6 × 4 = 24.', '7 × 30 = ?|210|37,21,2100|7 × 3 = 21.', '9 × 20 = ?|180|29,18,1800|9 × 2 = 18.', '8 × 50 = ?|400|58,40,4000|8 × 5 = 40.'],
+    gen: function g(lv) { var a = r(2, lv ? 9 : 6), b = pick(lv ? [20, 30, 40, 50, 60] : [20, 30, 40, 50]), p = a * b; return mc('Multiples of ten', 'What is <b>' + a + ' × ' + b + '</b>?', p, [p / 10, p * 10, a + b, p + 10], 'Do ' + a + ' × ' + b / 10 + ' then × 10.', a + ' × ' + b / 10 + ' = ' + p / 10 + ', then × 10 = ' + p + '.'); } });
+
+  P(403, 'learn3', { ch: 'bear', bg: 'farm',
+    way: 'Split the two-digit number into tens and ones. Multiply each part, then add.|4 × 23 = 4 × 20 + 4 × 3',
+    ex: ['What is 3 × 24?|3 × 20 = 60.;3 × 4 = 12.;60 + 12 = 72.|72|60 + 12', 'What is 5 × 36?|5 × 30 = 150.;5 × 6 = 30.;150 + 30 = 180.|180|150 + 30'],
+    mist: 'Multiply both the tens and the ones. 3 × 24 is not 3 × 20.|do both parts',
+    real: '6 boxes hold 18 pencils each. How many pencils?|108|24,96,118|6 × 10 + 6 × 8.|6 × 18',
+    qs: ['2 × 23 = ?|46|43,26,25|40 + 6.', '3 × 31 = ?|93|34,91,63|90 + 3.', '4 × 22 = ?|88|26,80,84|80 + 8.', '5 × 17 = ?|85|75,22,95|50 + 35.', '6 × 14 = ?|84|20,64,74|60 + 24.', '3 × 45 = ?|135|120,125,105|120 + 15.', '7 × 12 = ?|84|19,74,94|70 + 14.', '4 × 35 = ?|140|120,130,150|120 + 20.'],
+    gen: function g(lv) { var a = r(2, lv ? 9 : 5), b = r(11, lv ? 49 : 29), t = Math.floor(b / 10) * 10, o = b % 10; return mc('Two-digit multiplying', 'What is <b>' + a + ' × ' + b + '</b>?', a * b, [a * t + o, a * b + a, a * b - 10, a * t], 'Split ' + b + ' into ' + t + ' and ' + o + '.', a + ' × ' + t + ' = ' + a * t + ', ' + a + ' × ' + o + ' = ' + a * o + ', total ' + a * b + '.'); } });
+
+  P(403, 'learn4', { ch: 'bear', bg: 'farm',
+    way: 'Use a fact you know to find a new one. If 3 × 4 = 12, then 30 × 4 = 120 and 12 ÷ 4 = 3.|3 × 4 = 12 → 12 ÷ 4 = 3',
+    ex: ['You know 6 × 4 = 24. What is 24 ÷ 4?|Division undoes multiplication.|6|24 ÷ 4 = 6', 'You know 5 × 8 = 40. What is 50 × 8?|5 tens × 8 = 40 tens.|400|50 × 8 = 400'],
+    mist: 'Division is the opposite of multiplication. 24 ÷ 6 = 4 because 6 × 4 = 24.|× and ÷ undo',
+    real: 'You know 7 × 5 = 35. How many fives make 35?|7|30,5,175|35 ÷ 5 = 7.|35 ÷ 5',
+    qs: ['3 × 6 = 18. So 18 ÷ 6 = ?|3|9,12,6|Opposite.', '4 × 5 = 20. So 40 × 5 = ?|200|2000,25,45|× 10.', '7 × 4 = 28. So 28 ÷ 7 = ?|4|7,21,35|Opposite.', '9 × 3 = 27. So 90 × 3 = ?|270|27,2700,120|× 10.', '8 × 6 = 48. So 480 ÷ 6 = ?|80|8,48,800|÷ by 6 then × 10.', '2 × 9 = 18. So 18 ÷ 2 = ?|9|16,20,36|Opposite.', '5 × 7 = 35. So 5 × 70 = ?|350|35,3500,75|× 10.', '6 × 6 = 36. So 36 ÷ 6 = ?|6|30,12,216|Opposite.'],
+    gen: function g(lv) { var a = r(2, lv ? 9 : 6), b = r(2, lv ? 9 : 6), p = a * b, k = r(0, 1); return k ? mc('Fact families', 'You know <b>' + a + ' × ' + b + ' = ' + p + '</b>. What is <b>' + p + ' ÷ ' + b + '</b>?', a, [b, p, a + 1, a - 1 || 10], 'Division undoes multiplication.', p + ' ÷ ' + b + ' = ' + a + '.') : mc('Fact families', 'You know <b>' + a + ' × ' + b + ' = ' + p + '</b>. What is <b>' + a + ' × ' + b * 10 + '</b>?', p * 10, [p, p * 100, p + 10], 'It is 10 times bigger.', a + ' × ' + b * 10 + ' = ' + p * 10 + '.'); } });
+
+  P(403, 'learn5', { ch: 'bear', bg: 'farm',
+    way: 'Sometimes a division does not come out exactly. What is left over is the remainder.|13 ÷ 4 = 3 remainder 1',
+    ex: ['What is 17 ÷ 5?|5 × 3 = 15.;17 - 15 = 2.|3 remainder 2|5 × 3 = 15', 'What is 25 ÷ 6?|6 × 4 = 24.;25 - 24 = 1.|4 remainder 1|6 × 4 = 24'],
+    mist: 'The remainder is always smaller than what you divide by.|r < divisor',
+    real: '14 children make teams of 4. How many teams, and how many left?|3 teams, 2 left|4 teams, 2 left,3 teams, 1 left,2 teams, 3 left|4 × 3 = 12.|14 ÷ 4',
+    qs: ['What is 7 ÷ 2?|3 remainder 1|4 remainder 1,3 remainder 0,2 remainder 3|2 × 3 = 6.', 'What is 11 ÷ 3?|3 remainder 2|2 remainder 3,4 remainder 1,3 remainder 1|3 × 3 = 9.', 'What is 19 ÷ 4?|4 remainder 3|5 remainder 1,3 remainder 4,4 remainder 2|4 × 4 = 16.', 'What is 22 ÷ 5?|4 remainder 2|5 remainder 0,4 remainder 3,3 remainder 7|5 × 4 = 20.', 'What is 15 ÷ 3?|5|4 remainder 3,6,5 remainder 1|Exact.', 'What is 30 ÷ 7?|4 remainder 2|5 remainder 0,3 remainder 9,4 remainder 3|7 × 4 = 28.', 'Which remainder is possible for ÷ 3?|2|3,4,5|Must be smaller than 3.', 'What is 26 ÷ 10?|2 remainder 6|3 remainder 4,2 remainder 0,26|10 × 2 = 20.'],
+    gen: function g(lv) { var d = r(2, lv ? 9 : 5), q = r(2, lv ? 9 : 6), rm = r(1, d - 1), n = d * q + rm; return mc('Remainders', 'What is <b>' + n + ' ÷ ' + d + '</b>?', q + ' remainder ' + rm, [(q + 1) + ' remainder ' + rm, q + ' remainder ' + (rm + 1 < d ? rm + 1 : rm - 1 || 2), (q - 1) + ' remainder ' + (rm + d)], d + ' × ' + q + ' = ' + d * q + '. What is left?', d + ' × ' + q + ' = ' + d * q + ', and ' + n + ' - ' + d * q + ' = ' + rm + '.'); } });
+
+  P(403, 'learnm1', { ch: 'bear', bg: 'farm',
+    t: 'Times table tricks|How can I learn the 6, 7, 8 and 9 times tables?|Use facts you already know. For 6s, double the 3s. For 9s, take away from the 10s. For 8s, double three times.|6 × 4 = double 3 × 4',
+    words: 'multiple=a number in a times table=✖️;product=the answer to a multiplication=🎯;double=× 2=2️⃣;fact=a number sentence you know=📘',
+    see: ['6 × 4: double 3 × 4 = 12, so 6 × 4 = 24.|3 × 4 = 12,6 × 4 = 24', '9 × 4: do 10 × 4 = 40, then take away 4.|40 - 4 = 36', '8 × 3: double 2 × 3 = 6, then double 12.|3 → 6 → 12 → 24'],
+    ex3: ['What is 6 × 7?|5 × 7 = 35.;Add one more 7: 42.|42|35 + 7', 'What is 9 × 6?|10 × 6 = 60.;Take away 6: 54.|54|60 - 6', 'What is 8 × 7?|4 × 7 = 28.;Double: 56.|56|28 × 2'],
+    mist: 'In the 9 times table the digits of the answer add to 9. 9 × 4 = 36 and 3 + 6 = 9.|3 + 6 = 9',
+    chk: 'What is 9 × 7?|63|56,72,69|10 × 7 - 7.|70 - 7',
+    rem: 'Build new facts from easy ones: 5s, 10s and doubles.|5s, 10s, doubles',
+    way: 'Draw an array of dots in rows and columns and count the rows of 6.|6 × 4 = 24',
+    ex: ['What is 7 × 7?|5 × 7 = 35, 2 × 7 = 14.;35 + 14 = 49.|49|35 + 14', 'What is 8 × 8?|8 × 4 = 32.;Double: 64.|64|32 × 2'],
+    real: 'An egg box holds 6. How many eggs in 7 boxes?|42|36,48,13|6 × 7.|7 × 6',
+    qs: ['6 × 6 = ?|36|30,42,12|5 × 6 + 6.', '6 × 8 = ?|48|42,54,14|5 × 8 + 8.', '7 × 6 = ?|42|36,48,13|5 × 6 + 12.', '7 × 8 = ?|56|54,63,15|Double 28.', '8 × 9 = ?|72|63,81,17|80 - 8.', '9 × 9 = ?|81|72,99,18|90 - 9.', '9 × 5 = ?|45|54,40,14|50 - 5.', '8 × 6 = ?|48|42,56,14|Double 24.'],
+    gen: function g(lv) { var a = r(6, 9), b = r(2, lv ? 9 : 7); return mc('Times tables', 'What is <b>' + a + ' × ' + b + '</b>?', a * b, [a * b + a, a * b - a, a * b + b, a * b + 10, a * b - 1], 'Use a trick: doubles, 5s or 10s.', a + ' × ' + b + ' = ' + a * b + '.'); } });
+
+  P(403, 'learnm2', { ch: 'bear', bg: 'farm',
+    t: 'Sharing and grouping|What does dividing mean?|Division means sharing into equal groups, or finding how many groups fit. 12 ÷ 3 can be 12 shared into 3, or how many 3s in 12.|12 ÷ 3 = 4',
+    words: 'divide=share equally or group=➗;share=give equal amounts=🍰;group=a set of things together=👥;equal=the same size=🟰',
+    see: ['Sharing: 12 sweets shared between 3 children is 4 each.|12 ÷ 3 = 4', 'Grouping: How many groups of 3 in 12? 4 groups.|4 groups of 3', 'Both give the same answer: 4.|3 × 4 = 12'],
+    ex3: ['20 stickers shared between 4. How many each?|20 ÷ 4.;4 × 5 = 20.|5|20 ÷ 4 = 5', 'How many groups of 5 in 35?|5 × 7 = 35.|7|35 ÷ 5 = 7', '18 ÷ 3 = ?|3 × 6 = 18.|6|18 ÷ 3 = 6'],
+    mist: 'Division groups must be equal. 10 shared between 3 is not 3, 3, 4.|equal groups',
+    chk: 'How many groups of 4 in 24?|6|5,8,20|4 × 6 = 24.|24 ÷ 4',
+    rem: 'Divide means share equally or find how many groups.|÷ = share or group',
+    way: 'Draw circles and put the items in one at a time until they are used up.|12 sweets, 3 circles',
+    ex: ['16 pencils shared between 4 pots. How many in each?|4 × 4 = 16.|4|16 ÷ 4', 'How many 10s in 70?|10 × 7 = 70.|7|70 ÷ 10'],
+    real: '30 children make teams of 5. How many teams?|6|35,25,150|5 × 6 = 30.|30 ÷ 5',
+    qs: ['12 ÷ 4 = ?|3|8,16,4|4 × 3 = 12.', '20 ÷ 5 = ?|4|15,25,100|5 × 4 = 20.', '18 ÷ 2 = ?|9|16,20,36|Half.', '24 ÷ 6 = ?|4|18,30,144|6 × 4 = 24.', '40 ÷ 10 = ?|4|30,50,400|10 × 4.', '27 ÷ 3 = ?|9|24,30,81|3 × 9.', '35 ÷ 7 = ?|5|28,42,245|7 × 5.', '48 ÷ 8 = ?|6|40,56,384|8 × 6.'],
+    gen: function g(lv) { var d = r(2, lv ? 9 : 6), q = r(2, lv ? 10 : 6), n = d * q; return mc('Sharing and grouping', n + ' items are shared equally between <b>' + d + '</b>. How many each?'.replace(/^/, ''), q, [q + 1, q - 1, n - d, d], d + ' × ? = ' + n + '.', n + ' ÷ ' + d + ' = ' + q + '.'); } });
+
+  P(403, 'learnm3', { ch: 'bear', bg: 'farm',
+    t: 'Multiplication and division stories|How do I solve word problems with × and ÷?|Read the story. “Each” or “groups of” means multiply. “Shared equally” or “how many groups” means divide.|3 bags of 5 = 3 × 5',
+    words: 'each=for every one=1️⃣;groups of=equal sets=👥;shared=split equally=🍰;total=altogether=🧮',
+    see: ['4 boxes with 6 eggs each. 4 × 6 = 24 eggs.|4 × 6 = 24', '20 pens shared into 5 pots. 20 ÷ 5 = 4 each.|20 ÷ 5 = 4', 'Picture the story first, then choose × or ÷.|draw it'],
+    ex3: ['5 packs with 8 cards each. How many cards?|5 × 8 = 40.|40|5 × 8', '36 apples into bags of 6. How many bags?|36 ÷ 6 = 6.|6|36 ÷ 6', 'A ticket costs £4. How much for 7 tickets?|7 × 4 = 28.|£28|7 × £4'],
+    mist: 'Check the answer. Sharing makes the answer smaller; groups of makes it bigger.|÷ smaller, × bigger',
+    chk: 'There are 8 shelves with 5 books each. How many books?|40|13,3,45|8 groups of 5.|8 × 5',
+    rem: 'Draw it, choose × or ÷, work it out, check it.|draw, choose, solve',
+    way: 'Draw a picture or bar for each group and write the number in it.|3 groups of 5',
+    ex: ['6 plates with 3 cakes each. How many cakes?|6 × 3 = 18.|18|6 × 3', '28 children into 4 equal teams. How many each?|28 ÷ 4 = 7.|7|28 ÷ 4'],
+    real: 'Crayons cost 9p each. How much for 6 crayons?|54p|15p,45p,64p|6 × 9.|6 × 9p',
+    qs: ['4 bags with 7 apples each. How many apples?|28|11,24,32|4 × 7.', '45 sweets shared by 5. How many each?|9|40,50,225|45 ÷ 5.', '6 rows of 8 seats. How many seats?|48|14,42,54|6 × 8.', '32 stickers in packs of 4. How many packs?|8|28,36,128|32 ÷ 4.', '9 packs of 3 pens. How many pens?|27|12,24,30|9 × 3.', '60 ÷ 10 children in a game: how many groups of 10?|6|50,70,600|60 ÷ 10.', '7 pizzas cut into 8 slices. How many slices?|56|15,48,63|7 × 8.', '21 cakes in boxes of 3. How many boxes?|7|18,24,63|21 ÷ 3.'],
+    gen: function g(lv) { var a = r(3, lv ? 9 : 6), b = r(3, lv ? 9 : 6), m = r(0, 1); return m ? mc('× and ÷ stories', 'There are <b>' + a + ' boxes</b> with <b>' + b + ' pencils</b> in each. How many pencils?', a * b, [a + b, a * b + b, a * b - a], 'Each box has the same number, so multiply.', a + ' × ' + b + ' = ' + a * b + '.') : mc('× and ÷ stories', '<b>' + a * b + ' pencils</b> are put into boxes of <b>' + b + '</b>. How many boxes?', a, [a + 1, a * b - b, a - 1 || 9], 'Groups of ' + b + ': divide.', a * b + ' ÷ ' + b + ' = ' + a + '.'); } });
+})();
+</script>
+<script>
+(function () {
+  if (window.FL && FL.wexLast) FL.wexLast();
+  /* every Key word on a Let's Learn lesson is also said in its Watch lesson */
+  var S = window.Studio, BT = window.BT; if (!S || !BT || !BT.L || !FL._spoken) return;
+  var L = BT.L;
+  Object.keys(S.topics).forEach(function (k) {
+    var t = S.topics[k]; if (!/^P[234]$/.test(t.year || '')) return;
+    var eps = ((BT.EP_BY_TOPIC && BT.EP_BY_TOPIC[k]) || []).map(function (x) { return typeof x === 'string' ? BT.EP[x] : x; }).filter(Boolean).slice(1);
+    t.steps.filter(function (s) { return /^learn/.test(s.id); }).forEach(function (s, i) {
+      var ti = String(s.slides[0].title || '').toLowerCase(), ep = eps.filter(function (e) { return String(e.title || '').toLowerCase() === ti; })[0] || eps[i], kw = s.slides && s.slides[1] && s.slides[1].wl; if (!ep || !kw || !kw.length) return;
+      var have = ep._kw = ep._kw || {}, fresh = kw.filter(function (w) { return !have[String(w[0]).toLowerCase()]; });
+      if (!fresh.length) return;
+      var steps = fresh.map(function (w) {
+        have[String(w[0]).toLowerCase()] = 1;
+        return L.st(FL._spoken(w), '<div class="flb flb-w"><div class="flb-stage"><div style="text-align:center;padding:10px;color:#2b2340"><div style="font-size:2.6rem" aria-hidden="true">' + (w[2] || '\ud83d\udd24') + '</div><div style="font-size:1.5rem;font-weight:800;margin:6px 0">' + w[0] + '</div><div style="font-size:1.1rem">' + w[1] + '</div></div></div></div>');
+      });
+      var old = ep.scenes.filter(function (x) { return x.h === 'Key words'; })[0];
+      if (old) { old.steps = old.steps.concat(steps); return; }
+      var sc = L.SC('Key words', 'Words to know', steps), at = 1;
+      for (var j = 0; j < ep.scenes.length; j++) if (ep.scenes[j].h === 'Watch me') { at = j; break; }
+      ep.scenes.splice(at, 0, sc);
+    });
+  });
+})();
 </script>
 <script>
 /* moreq.js: extra question makers for the few banks that had fewer different questions than the set size needs.
