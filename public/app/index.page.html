@@ -16207,7 +16207,7 @@ S.extraMakers = function (n, level) {
     '.gp-h{font-size:28px;text-align:center;margin:0;line-height:1.25;text-wrap:balance}',
     '.gp-sub{font-size:18px;color:#6b6480;text-align:center;margin:-4px 0 2px}',
     '.gp-title{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;text-align:center;padding:0 50px}',
-    '.gp-title .t1{font-size:19px;color:#6b6480}.gp-title .t2{font-size:44px;line-height:1.25;text-wrap:balance}.gp-title .t3{font-size:44px;color:#881cd6;line-height:1.1}',
+    '.gp-title .t1{font-size:19px;color:#6b6480}.gp-title .t2{font-size:30px;line-height:1.25;text-wrap:balance}.gp-title .t3{font-size:44px;color:#881cd6;line-height:1.1}',
     '.gp-title .gp-brand{position:absolute;left:22px;top:24px;font-size:19px;gap:8px}.gp-title .gp-ico{width:32px;height:32px}.gp-title .t2{white-space:nowrap;max-width:100%;overflow:hidden}',
     '.gp-ico{width:60px;height:60px;flex:none}.gp-brand{display:flex;align-items:center;gap:12px;font-family:var(--font-display,"Fredoka",sans-serif);font-weight:700;font-size:34px;color:#14213d}.gp-brand b{color:#2b5fd9;font-weight:700}',
     /* blocks build in */
@@ -16420,10 +16420,10 @@ S.extraMakers = function (n, level) {
         h = chrome({}, true) + '<div class="gp-title">' + ICON + '<div class="t2">' + TT + '</div></div>';
         stage.innerHTML = h;
         /* every title card uses the same size and wraps when it is long; it only shrinks if it would not fit the slide at all */
-        var gt = stage.querySelector('.gp-title'), t2 = stage.querySelector('.t2'), fz = 40;
+        var gt = stage.querySelector('.gp-title'), t2 = stage.querySelector('.t2'), fz = 30;
         t2.style.whiteSpace = 'normal'; t2.style.fontSize = fz + 'px'; t2.style.maxWidth = '90%'; t2.style.textAlign = 'center';
         function tall() { var h = 16 * (gt.children.length - 1); [].forEach.call(gt.children, function (c) { h += c.offsetHeight; }); return h > stage.offsetHeight - 100; }
-        while (fz > 24 && tall()) { fz -= 2; t2.style.fontSize = fz + 'px'; }
+        while (fz > 22 && tall()) { fz -= 2; t2.style.fontSize = fz + 'px'; }
         return;
       }
       if (FLM) { stage.innerHTML = '<div class="flx gp-turn"><div class="flx-pic"></div><div class="flx-top"></div><div class="flx-opts"></div><div class="flx-think" aria-hidden="true">🤔</div></div>'; flPic = ''; flTop = ''; flOpt = ''; return; }
