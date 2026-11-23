@@ -47268,6 +47268,34 @@ S.extraMakers = function (n, level) {
     });
   });
 })();
+/* worked examples: add examples from every Learn lesson of the topic, so none is left out */
+(function () {
+  var S = window.Studio, BT = window.BT; if (!S || !BT || !FL._mg || !FL._w) return;
+  var worked = FL._w.worked, cards = FL.cards;
+  function conv(q) { var st = [];
+    (q.hints || []).forEach(function (h) { if (st.indexOf(h) < 0 && !/one step at a time|look carefully at each/i.test(h)) st.push(h); });
+    if (q.explain) st.push(q.explain); if (!st.length) st.push('Think about what the question asks.');
+    var oc = q.options ? '<div style="margin-top:8px">' + cards(q.options) + '</div>' : '';
+    return { q: q.text, steps: st, final: 'The answer is ' + q.answer + '.', pic: (q.pic || '') + oc }; }
+  var SETS = [['wex1', 'Worked examples: getting started', 0, 'Getting started'], ['wex2', 'Worked examples: building up', 1, 'Building up'], ['wex3', 'Worked examples: challenge', 2, 'Challenge']];
+  Object.keys(S.topics).forEach(function (k) {
+    var t = S.topics[k]; if (!/^P[234]$/.test(t.year || '')) return;
+    var mg = FL._mg.filter(function (m) { return String(m[0]) === String(k); }); if (!mg.length) return;
+    var added = false;
+    SETS.forEach(function (p) {
+      var step = t.steps.filter(function (s) { return s.id === p[0]; })[0], sl = step ? step.slides : [], seen = {};
+      sl.forEach(function (x) { try { seen[x.ex && x.ex.q] = 1; } catch (e) {} });
+      var target = step ? sl.length + mg.length : 12, n0 = sl.length;
+      for (var round = 0; round < 6 && sl.length < target; round++) mg.forEach(function (m) {
+        if (sl.length >= target) return;
+        for (var tr = 0; tr < 8; tr++) { var q; try { q = m[2](p[2]); } catch (e) { q = null; } if (!q || !q.text) continue; var w = conv(q), key = w.q; if (seen[key]) continue; seen[key] = 1;
+          sl.push({ flLearn: true, title: 'Worked example ' + (sl.length + 1), say: [], ex: worked(w), kind: p[3], noMore: true }); break; } });
+      if (!step && sl.length) { BT.add(k, p[0], p[1], sl); added = true; }
+    });
+    if (added && S.arrange) { S.arrange(t); }
+  });
+  if (FL.wexLast) FL.wexLast();
+})();
 </script>
 <script>
 /* moreq.js: extra question makers for the few banks that had fewer different questions than the set size needs.
