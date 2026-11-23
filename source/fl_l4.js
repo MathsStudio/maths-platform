@@ -433,16 +433,16 @@
   /* ========================= 409 Data and chance (Ollie's weather station) ========================= */
   var WX = [['Sunny', 5], ['Rainy', 8], ['Cloudy', 4]];
   LI(409, 'learn1', ['Recording data', 'How do I record and display data?',
-    'Collect data with a tally, then show it in a bar chart. The bars make it easy to compare.', V.bars(WX, 10),
+    'Collect data with a tally, then show it in a bar chart. The bars make it easy to compare.', V.bars(WX, 10, 0, { title: 'Weather this week', x: 'Weather', y: 'Number of days' }),
     [['data', 'information we collect', '📋'], ['tally', 'marks in groups of five', '✏️'], ['bar chart', 'bars to show how many', '📊'], ['scale', 'the numbers up the side', '📏']],
     [['Ollie records the weather for 17 days.', C(['☀️ 5', '🌧️ 8', '☁️ 4'])],
       ['Rainy: 8 is one group of 5 and 3 more.', FL.tally(8)],
-      ['He shows the data in a bar chart.', V.bars(WX, 10)]],
-    [['Which weather happened most?', ['Find the tallest bar.', 'Rainy reaches 8.'], 'Rainy', V.bars(WX, 10)],
-      ['How many more rainy days than cloudy days?', ['Rainy: 8. Cloudy: 4.', '8 − 4 = 4.'], '4 more', V.bars(WX, 10)],
-      ['How many days altogether?', ['5 + 8 + 4.', '5 + 8 = 13, then 13 + 4 = 17.'], '17 days', V.bars(WX, 10)]],
+      ['He shows the data in a bar chart.', V.bars(WX, 10, 0, { title: 'Weather this week', x: 'Weather', y: 'Number of days' })]],
+    [['Which weather happened most?', ['Find the tallest bar.', 'Rainy reaches 8.'], 'Rainy', V.bars(WX, 10, 0, { title: 'Weather this week', x: 'Weather', y: 'Number of days' })],
+      ['How many more rainy days than cloudy days?', ['Rainy: 8. Cloudy: 4.', '8 − 4 = 4.'], '4 more', V.bars(WX, 10, 0, { title: 'Weather this week', x: 'Weather', y: 'Number of days' })],
+      ['How many days altogether?', ['5 + 8 + 4.', '5 + 8 = 13, then 13 + 4 = 17.'], '17 days', V.bars(WX, 10, 0, { title: 'Weather this week', x: 'Weather', y: 'Number of days' })]],
     ['Check the scale. If it goes up in 2s, a bar between 6 and 8 shows 7.', V.bars([['Snow', 7], ['Hail', 2]], 10)],
-    ['How many days were sunny?', V.bars(WX, 10), [4, 5, 8], 5, 'The sunny bar reaches 5.', 'Read across from the top of the bar.'],
+    ['How many days were sunny?', V.bars(WX, 10, 0, { title: 'Weather this week', x: 'Weather', y: 'Number of days' }), [4, 5, 8], 5, 'The sunny bar reaches 5.', 'Read across from the top of the bar.'],
     ['Collect, tally, then draw a bar chart.', C(['collect', 'tally', 'bar chart'])]]);
 
   var TEMP = [['8', '11', '6', '14']], DAYS = ['Mon', 'Tue', 'Wed', 'Thu'];

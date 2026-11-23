@@ -140,12 +140,13 @@
     return svg(180, 180, 'A clock showing ' + h + ':' + (m < 10 ? '0' : '') + m, s, 190);
   };
   /* simple bar chart: items [[label,value],...] */
-  V.bars = function (items, max, unit) {
-    var w = 330, h = 190, x0 = 34, bw = Math.min(46, (w - x0 - 10) / items.length - 10), s = '', mx = max || Math.max.apply(null, items.map(function (x) { return x[1]; }));
+  V.bars = function (items, max, unit, meta) {
+    meta = meta || {}; var w = 330, h = 228, x0 = 34, bw = Math.min(46, (w - x0 - 10) / items.length - 10), s = '', mx = max || Math.max.apply(null, items.map(function (x) { return x[1]; }));
     var step = mx <= 10 ? 2 : mx <= 20 ? 5 : mx <= 50 ? 10 : 20;
     for (var v = 0; v <= mx; v += step) { var y = 150 - v / mx * 130; s += '<line x1="' + x0 + '" y1="' + y + '" x2="' + (w - 6) + '" y2="' + y + '" style="stroke:var(--line);stroke-width:1"/>' + txt(x0 - 6, y + 4, v, 11, 'end'); }
     items.forEach(function (it, i) { var x = x0 + 12 + i * ((w - x0 - 10) / items.length), bh = it[1] / mx * 130; s += '<rect x="' + x + '" y="' + (150 - bh) + '" width="' + bw + '" height="' + bh + '" rx="4" style="fill:var(--accent)"/>' + txt(x + bw / 2, 168, it[0], 12) + txt(x + bw / 2, 144 - bh, it[1], 12); });
-    return svg(w, h, 'A bar chart', s, 360);
+    s = '<g transform="translate(0 18)">' + s + txt(10, 85, meta.y || (unit ? unit : 'Number'), 12, 'middle', ';transform:rotate(-90deg);transform-box:fill-box;transform-origin:center') + txt((x0 + w) / 2, 196, meta.x || 'Category', 12) + '</g>' + txt(w / 2, 13, meta.title || 'Bar chart', 13, 'middle', ';font-weight:800');
+    return svg(w, h, meta.title || 'A bar chart', s, 360);
   };
   V.poly = function (pts, fill, w, h, alt, labels) {
     var s = '<polygon points="' + pts.map(function (p) { return p.join(','); }).join(' ') + '" style="fill:' + (fill || 'var(--surface-2)') + ';stroke:var(--fg);stroke-width:3.5;stroke-linejoin:round"/>';

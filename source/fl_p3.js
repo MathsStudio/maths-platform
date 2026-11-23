@@ -523,11 +523,11 @@
         deep: ['Left and right depend on which way you are facing.', 'A full turn brings you back to where you started facing.']
       }),
       FL.LS('How do I record and display data?', 'P3', 'how to show data in a bar chart and read it.', {
-        intro: ['Ruby’s survey', 'Bar charts', "Ruby asked her friends about their favourite pets. He shows the answers in a bar chart. The taller the bar, the more votes!", V.bars([['Cats', 6], ['Dogs', 8], ['Fish', 3]])],
+        intro: ['Ruby’s survey', 'Bar charts', "Ruby asked her friends about their favourite pets. He shows the answers in a bar chart. The taller the bar, the more votes!", V.bars([['Cats', 6], ['Dogs', 8], ['Fish', 3]], 0, 0, { title: 'Favourite pets', x: 'Pet', y: 'Votes' })],
         ex: [['Tally first', 'Count the votes', [["Ruby counts the votes with tally marks: cats six, dogs eight, fish three.", FL.tally(8)]]],
-          ['Draw the bars', 'One bar each', [["Each pet gets a bar. The height shows the number of votes.", V.bars([['Cats', 6], ['Dogs', 8], ['Fish', 3]])]]],
+          ['Draw the bars', 'One bar each', [["Each pet gets a bar. The height shows the number of votes.", V.bars([['Cats', 6], ['Dogs', 8], ['Fish', 3]], 0, 0, { title: 'Favourite pets', x: 'Pet', y: 'Votes' })]]],
           ['Read it', 'Most and least', [["Dogs have the tallest bar: the most votes. Fish have the shortest: the fewest.", E('Dogs 8, fish 3', 'g')]]]],
-        real: ['Lunch choices', "The kitchen uses a bar chart to see which lunches are most popular.", V.bars([['Pasta', 9], ['Soup', 4], ['Salad', 5]])],
+        real: ['Lunch choices', "The kitchen uses a bar chart to see which lunches are most popular.", V.bars([['Pasta', 9], ['Soup', 4], ['Salad', 5]], 0, 0, { title: 'Lunch choices', x: 'Lunch', y: 'Votes' })],
         turn: ["Your turn! How many more votes did dogs get than cats? Pause and try it.", V.bars([['Cats', 6], ['Dogs', 8]]), "Eight take away six: two more.", E('2', 'g')],
         rec: ["Count with tallies, then draw a bar for each group. Read the heights to answer questions.", ['Collect and tally', 'One bar for each group', 'Read the height', 'Compare bars']],
         deep: ['Bar charts let us compare groups at a glance.', 'Read the scale carefully: each line may not be 1.']

@@ -77,7 +77,7 @@
         $('mxA').setAttribute('aria-pressed', mode === 'im'); $('mxB').setAttribute('aria-pressed', mode === 'mi');
         $('mxIm').style.display = mode === 'im' ? '' : 'none'; $('mxMi').style.display = mode === 'mi' ? '' : 'none';
         var nn;
-        if (mode === 'im') { $('mxN').min = d + 1; $('mxN').max = d * cfg.wmax + d - 1; if (n < d + 1) n = d + 1; if (n > d * cfg.wmax + d - 1) n = d * cfg.wmax + d - 1; $('mxN').value = n; nn = n; w = Math.floor(n / d); r = n % d; }
+        if (mode === 'im') { $('mxN').min = d + 1; $('mxN').max = d * cfg.wmax + d - 1; if (n < d + 1) n = d + 1; if (n > d * cfg.wmax + d - 1) n = d * cfg.wmax + d - 1; $('mxN').value = n; $('mxN').dispatchEvent(new Event('lvsync')); nn = n; w = Math.floor(n / d); r = n % d; }
         else {
           /* only show a slider when it has something to choose: with halves the only leftover is 1 part, so it is shown as a fact instead */
           if (r > d - 1) r = d - 1; if (r < 1) r = 1;

@@ -219,7 +219,7 @@
 
   LS('How do you present data using graphs, charts and diagrams?', 'how to choose and draw charts and graphs, including pie charts and scatter graphs.', {
     intro: ['Presenting data', 'Choose the right display', "The right chart depends on the data and the question. Every chart needs a title, labels and a sensible scale.", V.tbl([['Compare categories', 'Bar chart'], ['Change over time', 'Line graph'], ['Parts of a whole', 'Pie chart'], ['Two measurements', 'Scatter graph']], ['Job', 'Display'])],
-    ex: [['Bar charts', 'Gaps between bars', [["Bar charts compare categories. Bars are the same width with gaps between them.", V.bars([['Bus', 8], ['Car', 12], ['Walk', 15], ['Bike', 5]], 16)]]],
+    ex: [['Bar charts', 'Gaps between bars', [["Bar charts compare categories. Bars are the same width with gaps between them.", V.bars([['Bus', 8], ['Car', 12], ['Walk', 15], ['Bike', 5]], 16, 0, { title: 'How we travel to school', x: 'Way of travelling', y: 'Number of pupils' })]]],
       ['Pie charts', 'Angles from 360°', [["For thirty-six people, each person is ten degrees. Twelve chose pizza: one hundred and twenty degrees.", E('360 ÷ 36 = 10° each → 12 × 10 = 120°', 'g')]]],
       ['Line graphs', 'Points joined in time order', [["Plot each value against time and join the points. The slope shows whether it is rising or falling.", V.note('Line graph: change over time')]]],
       ['Scatter graphs', 'Is there a link?', [["Plot pairs, like height and shoe size. If the points rise together, there is positive correlation.", V.cards(['Positive', 'Negative', 'None'], ['g', 'b', 'p'])]]]],

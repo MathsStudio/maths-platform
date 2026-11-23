@@ -135,11 +135,12 @@
     for (i = y0; i <= y1; i++) s += '<line x1="' + X(x0) + '" y1="' + Y(i) + '" x2="' + X(x1) + '" y2="' + Y(i) + '" style="stroke:rgba(120,120,140,.3)"/>';
     s += ln(X(x0), Y(0), X(x1), Y(0), false, false, 2) + ln(X(0), Y(y0), X(0), Y(y1), false, false, 2);
     (segs || []).forEach(function (g) { s += ln(X(g[0]), Y(g[1]), X(g[2]), Y(g[3]), !!g[4], !!g[5]); });
-    placed.push([X(x1) - 30, X(x1), Y(0) + 2, Y(0) + 18], [X(0) - 20, X(0), Y(y1) - 4, Y(y1) + 14]);
+    placed.push([X(x1) - 30, X(x1), Y(0) + 2, Y(0) + 18], [X(0), X(0) + 30, Y(y1) - 4, Y(y1) + 14]);
     (pts || []).forEach(function (p) { s += dot(X(p[0]), Y(p[1]), !!p[3]) + gridLab(p, segs, X, Y); });
     o = o || {};
-    s += tx(X(x1) - 3, Y(0) + 15, o.xt || 'x', false, 'end', 14) + tx(X(0) - 6, Y(y1) + 11, o.yt || 'y', false, 'end', 14);
-    return svg(260, 160, s, o.title || 'A coordinate grid');
+    s += tx(X(x1) - 3, Y(0) + 15, o.xt || 'x', false, 'end', 14) + (o.title ? '' : tx(X(0) + 6, Y(y1) + 11, o.yt || 'y', false, 'start', 14));
+    if (o.title) return svg(260, 196, '<g transform="translate(0 36)">' + s + '</g>' + tx(130, 14, o.title, false, 'middle', 15) + tx(Math.max(48, Math.min(212, X(0))), 32, o.yt || 'y', false, 'middle', 14), o.title);
+    return svg(260, 160, s, 'A coordinate grid');
   };
 
   /* two similar triangles side by side: sa, sb = [base, height-side, slanted] labels, hi = which labels to highlight (indices 0..2 of the second triangle) */

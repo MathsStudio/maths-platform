@@ -4630,7 +4630,7 @@ K.stage = function (sp) {
     if (!document.getElementById('xvCss')) { var st = document.createElement('style'); st.id = 'xvCss'; st.textContent = '.xv{margin-left:.4em;padding:1px 8px;border-radius:99px;background:var(--accent,#2b6cd9);color:#fff;font-size:.82rem;letter-spacing:0;text-transform:none}'; document.head.appendChild(st); }
     var b = document.createElement('b'); b.className = 'xv'; lab.appendChild(document.createTextNode(' ')); lab.appendChild(b);
     function up() { var v = Number(sl.value), p = { label: lab.textContent.replace(/\s+$/, '') }; b.textContent = K.fmtVal(p, v); sl.setAttribute('aria-valuetext', b.textContent); }
-    sl.addEventListener('input', up); up();
+    sl.addEventListener('input', up); sl.addEventListener('lvsync', up); up();
   }
   function scan() { var l = document.querySelectorAll('input.slider'); for (var i = 0; i < l.length; i++) add(l[i]); }
   if (typeof MutationObserver !== 'undefined') new MutationObserver(scan).observe(document.documentElement, { childList: true, subtree: true });
@@ -8805,7 +8805,7 @@ S.storyFor = function (n) {
         $('mxA').setAttribute('aria-pressed', mode === 'im'); $('mxB').setAttribute('aria-pressed', mode === 'mi');
         $('mxIm').style.display = mode === 'im' ? '' : 'none'; $('mxMi').style.display = mode === 'mi' ? '' : 'none';
         var nn;
-        if (mode === 'im') { $('mxN').min = d + 1; $('mxN').max = d * cfg.wmax + d - 1; if (n < d + 1) n = d + 1; if (n > d * cfg.wmax + d - 1) n = d * cfg.wmax + d - 1; $('mxN').value = n; nn = n; w = Math.floor(n / d); r = n % d; }
+        if (mode === 'im') { $('mxN').min = d + 1; $('mxN').max = d * cfg.wmax + d - 1; if (n < d + 1) n = d + 1; if (n > d * cfg.wmax + d - 1) n = d * cfg.wmax + d - 1; $('mxN').value = n; $('mxN').dispatchEvent(new Event('lvsync')); nn = n; w = Math.floor(n / d); r = n % d; }
         else {
           /* only show a slider when it has something to choose: with halves the only leftover is 1 part, so it is shown as a fact instead */
           if (r > d - 1) r = d - 1; if (r < 1) r = 1;
@@ -14144,12 +14144,13 @@ S.spatialExtra = S.extraMakers;
     return svg(180, 180, 'A clock showing ' + h + ':' + (m < 10 ? '0' : '') + m, s, 190);
   };
   /* simple bar chart: items [[label,value],...] */
-  V.bars = function (items, max, unit) {
-    var w = 330, h = 190, x0 = 34, bw = Math.min(46, (w - x0 - 10) / items.length - 10), s = '', mx = max || Math.max.apply(null, items.map(function (x) { return x[1]; }));
+  V.bars = function (items, max, unit, meta) {
+    meta = meta || {}; var w = 330, h = 228, x0 = 34, bw = Math.min(46, (w - x0 - 10) / items.length - 10), s = '', mx = max || Math.max.apply(null, items.map(function (x) { return x[1]; }));
     var step = mx <= 10 ? 2 : mx <= 20 ? 5 : mx <= 50 ? 10 : 20;
     for (var v = 0; v <= mx; v += step) { var y = 150 - v / mx * 130; s += '<line x1="' + x0 + '" y1="' + y + '" x2="' + (w - 6) + '" y2="' + y + '" style="stroke:var(--line);stroke-width:1"/>' + txt(x0 - 6, y + 4, v, 11, 'end'); }
     items.forEach(function (it, i) { var x = x0 + 12 + i * ((w - x0 - 10) / items.length), bh = it[1] / mx * 130; s += '<rect x="' + x + '" y="' + (150 - bh) + '" width="' + bw + '" height="' + bh + '" rx="4" style="fill:var(--accent)"/>' + txt(x + bw / 2, 168, it[0], 12) + txt(x + bw / 2, 144 - bh, it[1], 12); });
-    return svg(w, h, 'A bar chart', s, 360);
+    s = '<g transform="translate(0 18)">' + s + txt(10, 85, meta.y || (unit ? unit : 'Number'), 12, 'middle', ';transform:rotate(-90deg);transform-box:fill-box;transform-origin:center') + txt((x0 + w) / 2, 196, meta.x || 'Category', 12) + '</g>' + txt(w / 2, 13, meta.title || 'Bar chart', 13, 'middle', ';font-weight:800');
+    return svg(w, h, meta.title || 'A bar chart', s, 360);
   };
   V.poly = function (pts, fill, w, h, alt, labels) {
     var s = '<polygon points="' + pts.map(function (p) { return p.join(','); }).join(' ') + '" style="fill:' + (fill || 'var(--surface-2)') + ';stroke:var(--fg);stroke-width:3.5;stroke-linejoin:round"/>';
@@ -18629,11 +18630,12 @@ S.spatialExtra = S.extraMakers;
     for (i = y0; i <= y1; i++) s += '<line x1="' + X(x0) + '" y1="' + Y(i) + '" x2="' + X(x1) + '" y2="' + Y(i) + '" style="stroke:rgba(120,120,140,.3)"/>';
     s += ln(X(x0), Y(0), X(x1), Y(0), false, false, 2) + ln(X(0), Y(y0), X(0), Y(y1), false, false, 2);
     (segs || []).forEach(function (g) { s += ln(X(g[0]), Y(g[1]), X(g[2]), Y(g[3]), !!g[4], !!g[5]); });
-    placed.push([X(x1) - 30, X(x1), Y(0) + 2, Y(0) + 18], [X(0) - 20, X(0), Y(y1) - 4, Y(y1) + 14]);
+    placed.push([X(x1) - 30, X(x1), Y(0) + 2, Y(0) + 18], [X(0), X(0) + 30, Y(y1) - 4, Y(y1) + 14]);
     (pts || []).forEach(function (p) { s += dot(X(p[0]), Y(p[1]), !!p[3]) + gridLab(p, segs, X, Y); });
     o = o || {};
-    s += tx(X(x1) - 3, Y(0) + 15, o.xt || 'x', false, 'end', 14) + tx(X(0) - 6, Y(y1) + 11, o.yt || 'y', false, 'end', 14);
-    return svg(260, 160, s, o.title || 'A coordinate grid');
+    s += tx(X(x1) - 3, Y(0) + 15, o.xt || 'x', false, 'end', 14) + (o.title ? '' : tx(X(0) + 6, Y(y1) + 11, o.yt || 'y', false, 'start', 14));
+    if (o.title) return svg(260, 196, '<g transform="translate(0 36)">' + s + '</g>' + tx(130, 14, o.title, false, 'middle', 15) + tx(Math.max(48, Math.min(212, X(0))), 32, o.yt || 'y', false, 'middle', 14), o.title);
+    return svg(260, 160, s, 'A coordinate grid');
   };
 
   /* two similar triangles side by side: sa, sb = [base, height-side, slanted] labels, hi = which labels to highlight (indices 0..2 of the second triangle) */
@@ -24882,7 +24884,7 @@ W('How do you solve ordering and logic puzzles?', [
 
   LS('How do you present data using graphs, charts and diagrams?', 'how to choose and draw charts and graphs, including pie charts and scatter graphs.', {
     intro: ['Presenting data', 'Choose the right display', "The right chart depends on the data and the question. Every chart needs a title, labels and a sensible scale.", V.tbl([['Compare categories', 'Bar chart'], ['Change over time', 'Line graph'], ['Parts of a whole', 'Pie chart'], ['Two measurements', 'Scatter graph']], ['Job', 'Display'])],
-    ex: [['Bar charts', 'Gaps between bars', [["Bar charts compare categories. Bars are the same width with gaps between them.", V.bars([['Bus', 8], ['Car', 12], ['Walk', 15], ['Bike', 5]], 16)]]],
+    ex: [['Bar charts', 'Gaps between bars', [["Bar charts compare categories. Bars are the same width with gaps between them.", V.bars([['Bus', 8], ['Car', 12], ['Walk', 15], ['Bike', 5]], 16, 0, { title: 'How we travel to school', x: 'Way of travelling', y: 'Number of pupils' })]]],
       ['Pie charts', 'Angles from 360°', [["For thirty-six people, each person is ten degrees. Twelve chose pizza: one hundred and twenty degrees.", E('360 ÷ 36 = 10° each → 12 × 10 = 120°', 'g')]]],
       ['Line graphs', 'Points joined in time order', [["Plot each value against time and join the points. The slope shows whether it is rising or falling.", V.note('Line graph: change over time')]]],
       ['Scatter graphs', 'Is there a link?', [["Plot pairs, like height and shoe size. If the points rise together, there is positive correlation.", V.cards(['Positive', 'Negative', 'None'], ['g', 'b', 'p'])]]]],
@@ -27028,7 +27030,7 @@ W('How do you solve ordering and logic puzzles?', [
   'use strict';
   var BT = window.BT; if (!BT || !BT.fxh) return;
   var H = BT.fxh, E = H.E, M = H.M, T = H.T, LS = H.LS, L = BT.L, F = BT.F;
-  var dt = function (hi) { return F.grid([[0, 0, '0'], [2, 6, '2 h, 60 km', hi === 1], [3, 6, '', hi === 2], [5, 0, '5 h', hi === 3]], [[0, 0, 2, 6, hi === 1], [2, 6, 3, 6, hi === 2], [3, 6, 5, 0, hi === 3]]); };
+  var dt = function (hi) { return F.grid([[0, 0, '0'], [2, 6, '2 h, 60 km', hi === 1], [3, 6, '', hi === 2], [5, 0, '5 h', hi === 3]], [[0, 0, 2, 6, hi === 1], [2, 6, 3, 6, hi === 2], [3, 6, 5, 0, hi === 3]], { title: 'Distance–time graph', xt: 'Time (hours)', yt: 'Distance (km)' }); };
 
   LS('Time calculations across midnight', 'how to find a time difference or an arrival time when a journey crosses midnight.', 'Across midnight',
     E('Split at midnight',
@@ -40914,11 +40916,11 @@ S.extraMakers = function (n, level) {
         deep: ['Left and right depend on which way you are facing.', 'A full turn brings you back to where you started facing.']
       }),
       FL.LS('How do I record and display data?', 'P3', 'how to show data in a bar chart and read it.', {
-        intro: ['Ruby’s survey', 'Bar charts', "Ruby asked her friends about their favourite pets. He shows the answers in a bar chart. The taller the bar, the more votes!", V.bars([['Cats', 6], ['Dogs', 8], ['Fish', 3]])],
+        intro: ['Ruby’s survey', 'Bar charts', "Ruby asked her friends about their favourite pets. He shows the answers in a bar chart. The taller the bar, the more votes!", V.bars([['Cats', 6], ['Dogs', 8], ['Fish', 3]], 0, 0, { title: 'Favourite pets', x: 'Pet', y: 'Votes' })],
         ex: [['Tally first', 'Count the votes', [["Ruby counts the votes with tally marks: cats six, dogs eight, fish three.", FL.tally(8)]]],
-          ['Draw the bars', 'One bar each', [["Each pet gets a bar. The height shows the number of votes.", V.bars([['Cats', 6], ['Dogs', 8], ['Fish', 3]])]]],
+          ['Draw the bars', 'One bar each', [["Each pet gets a bar. The height shows the number of votes.", V.bars([['Cats', 6], ['Dogs', 8], ['Fish', 3]], 0, 0, { title: 'Favourite pets', x: 'Pet', y: 'Votes' })]]],
           ['Read it', 'Most and least', [["Dogs have the tallest bar: the most votes. Fish have the shortest: the fewest.", E('Dogs 8, fish 3', 'g')]]]],
-        real: ['Lunch choices', "The kitchen uses a bar chart to see which lunches are most popular.", V.bars([['Pasta', 9], ['Soup', 4], ['Salad', 5]])],
+        real: ['Lunch choices', "The kitchen uses a bar chart to see which lunches are most popular.", V.bars([['Pasta', 9], ['Soup', 4], ['Salad', 5]], 0, 0, { title: 'Lunch choices', x: 'Lunch', y: 'Votes' })],
         turn: ["Your turn! How many more votes did dogs get than cats? Pause and try it.", V.bars([['Cats', 6], ['Dogs', 8]]), "Eight take away six: two more.", E('2', 'g')],
         rec: ["Count with tallies, then draw a bar for each group. Read the heights to answer questions.", ['Collect and tally', 'One bar for each group', 'Read the height', 'Compare bars']],
         deep: ['Bar charts let us compare groups at a glance.', 'Read the scale carefully: each line may not be 1.']
@@ -44351,16 +44353,16 @@ S.extraMakers = function (n, level) {
   /* ========================= 409 Data and chance (Ollie's weather station) ========================= */
   var WX = [['Sunny', 5], ['Rainy', 8], ['Cloudy', 4]];
   LI(409, 'learn1', ['Recording data', 'How do I record and display data?',
-    'Collect data with a tally, then show it in a bar chart. The bars make it easy to compare.', V.bars(WX, 10),
+    'Collect data with a tally, then show it in a bar chart. The bars make it easy to compare.', V.bars(WX, 10, 0, { title: 'Weather this week', x: 'Weather', y: 'Number of days' }),
     [['data', 'information we collect', '📋'], ['tally', 'marks in groups of five', '✏️'], ['bar chart', 'bars to show how many', '📊'], ['scale', 'the numbers up the side', '📏']],
     [['Ollie records the weather for 17 days.', C(['☀️ 5', '🌧️ 8', '☁️ 4'])],
       ['Rainy: 8 is one group of 5 and 3 more.', FL.tally(8)],
-      ['He shows the data in a bar chart.', V.bars(WX, 10)]],
-    [['Which weather happened most?', ['Find the tallest bar.', 'Rainy reaches 8.'], 'Rainy', V.bars(WX, 10)],
-      ['How many more rainy days than cloudy days?', ['Rainy: 8. Cloudy: 4.', '8 − 4 = 4.'], '4 more', V.bars(WX, 10)],
-      ['How many days altogether?', ['5 + 8 + 4.', '5 + 8 = 13, then 13 + 4 = 17.'], '17 days', V.bars(WX, 10)]],
+      ['He shows the data in a bar chart.', V.bars(WX, 10, 0, { title: 'Weather this week', x: 'Weather', y: 'Number of days' })]],
+    [['Which weather happened most?', ['Find the tallest bar.', 'Rainy reaches 8.'], 'Rainy', V.bars(WX, 10, 0, { title: 'Weather this week', x: 'Weather', y: 'Number of days' })],
+      ['How many more rainy days than cloudy days?', ['Rainy: 8. Cloudy: 4.', '8 − 4 = 4.'], '4 more', V.bars(WX, 10, 0, { title: 'Weather this week', x: 'Weather', y: 'Number of days' })],
+      ['How many days altogether?', ['5 + 8 + 4.', '5 + 8 = 13, then 13 + 4 = 17.'], '17 days', V.bars(WX, 10, 0, { title: 'Weather this week', x: 'Weather', y: 'Number of days' })]],
     ['Check the scale. If it goes up in 2s, a bar between 6 and 8 shows 7.', V.bars([['Snow', 7], ['Hail', 2]], 10)],
-    ['How many days were sunny?', V.bars(WX, 10), [4, 5, 8], 5, 'The sunny bar reaches 5.', 'Read across from the top of the bar.'],
+    ['How many days were sunny?', V.bars(WX, 10, 0, { title: 'Weather this week', x: 'Weather', y: 'Number of days' }), [4, 5, 8], 5, 'The sunny bar reaches 5.', 'Read across from the top of the bar.'],
     ['Collect, tally, then draw a bar chart.', C(['collect', 'tally', 'bar chart'])]]);
 
   var TEMP = [['8', '11', '6', '14']], DAYS = ['Mon', 'Tue', 'Wed', 'Thu'];

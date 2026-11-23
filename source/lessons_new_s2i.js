@@ -3,7 +3,7 @@
   'use strict';
   var BT = window.BT; if (!BT || !BT.fxh) return;
   var H = BT.fxh, E = H.E, M = H.M, T = H.T, LS = H.LS, L = BT.L, F = BT.F;
-  var dt = function (hi) { return F.grid([[0, 0, '0'], [2, 6, '2 h, 60 km', hi === 1], [3, 6, '', hi === 2], [5, 0, '5 h', hi === 3]], [[0, 0, 2, 6, hi === 1], [2, 6, 3, 6, hi === 2], [3, 6, 5, 0, hi === 3]]); };
+  var dt = function (hi) { return F.grid([[0, 0, '0'], [2, 6, '2 h, 60 km', hi === 1], [3, 6, '', hi === 2], [5, 0, '5 h', hi === 3]], [[0, 0, 2, 6, hi === 1], [2, 6, 3, 6, hi === 2], [3, 6, 5, 0, hi === 3]], { title: 'Distance–time graph', xt: 'Time (hours)', yt: 'Distance (km)' }); };
 
   LS('Time calculations across midnight', 'how to find a time difference or an arrival time when a journey crosses midnight.', 'Across midnight',
     E('Split at midnight',

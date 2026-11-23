@@ -89,7 +89,7 @@ K.stage = function (sp) {
     if (!document.getElementById('xvCss')) { var st = document.createElement('style'); st.id = 'xvCss'; st.textContent = '.xv{margin-left:.4em;padding:1px 8px;border-radius:99px;background:var(--accent,#2b6cd9);color:#fff;font-size:.82rem;letter-spacing:0;text-transform:none}'; document.head.appendChild(st); }
     var b = document.createElement('b'); b.className = 'xv'; lab.appendChild(document.createTextNode(' ')); lab.appendChild(b);
     function up() { var v = Number(sl.value), p = { label: lab.textContent.replace(/\s+$/, '') }; b.textContent = K.fmtVal(p, v); sl.setAttribute('aria-valuetext', b.textContent); }
-    sl.addEventListener('input', up); up();
+    sl.addEventListener('input', up); sl.addEventListener('lvsync', up); up();
   }
   function scan() { var l = document.querySelectorAll('input.slider'); for (var i = 0; i < l.length; i++) add(l[i]); }
   if (typeof MutationObserver !== 'undefined') new MutationObserver(scan).observe(document.documentElement, { childList: true, subtree: true });

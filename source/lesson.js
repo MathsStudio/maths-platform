@@ -125,7 +125,7 @@
       '<label class="eyebrow" for="exD">Cut the whole into this many equal parts (bottom number)</label><input class="slider" id="exD" type="range" min="2" max="12" value="4">' +
       '<label class="eyebrow" for="exN">Shade this many parts (top number)</label><input class="slider" id="exN" type="range" min="0" max="4" value="3">';
     function draw() {
-      $('exN').max = d; if (n > d) n = d; $('exN').value = n;
+      $('exN').max = d; if (n > d) n = d; $('exN').value = n; $('exN').dispatchEvent(new Event('lvsync'));
       $('exVis').innerHTML = bars([{ n: n, d: d }]) + pies([{ n: n, d: d }]);
       $('exTxt').innerHTML = fr(n, d) + ' &nbsp;= ' + n + ' out of ' + d + ' equal parts';
     }
