@@ -18597,6 +18597,7 @@ S.spatialExtra = S.extraMakers;
     return svg(260, 160, s, 'A semicircle'); };
   /* coordinate grid: points [[x,y,label,hi]], segments [[x1,y1,x2,y2,hi]] */
   /* label for a grid point: placed in the direction furthest from every line through the point */
+  var placed = [];
   function gridLab(p, segs, X, Y) {
     var vecs = [[1, 0], [-1, 0], [0, 1], [0, -1]]; /* the two axes count as lines too when the point is on one */
     var px = X(p[0]), py = Y(p[1]), lines = [];
@@ -18604,7 +18605,7 @@ S.spatialExtra = S.extraMakers;
       if (Math.hypot(a[0] - px, a[1] - py) < 1) lines.push([b[0] - px, b[1] - py]); else if (Math.hypot(b[0] - px, b[1] - py) < 1) lines.push([a[0] - px, a[1] - py]);
       else { var dx = b[0] - a[0], dy = b[1] - a[1], L = Math.hypot(dx, dy) || 1; if (Math.abs((px - a[0]) * dy - (py - a[1]) * dx) / L < 1) { lines.push([dx, dy]); lines.push([-dx, -dy]); } } });
     if (p[0] === 0) { lines.push([0, 1], [0, -1]); } if (p[1] === 0) { lines.push([1, 0], [-1, 0]); }
-    var best = [0.7, -0.7], bs = -1, k;
+    var best = [0.7, -0.7], bs = -1, k, bbox = null;
     for (k = 0; k < 16; k++) { var ang = k * Math.PI / 8, d = [Math.cos(ang), Math.sin(ang)], m = 9;
       lines.forEach(function (v) { var l = Math.hypot(v[0], v[1]) || 1, c = (d[0] * v[0] + d[1] * v[1]) / l; m = Math.min(m, Math.acos(Math.max(-1, Math.min(1, c)))); });
       if (k % 2 === 0) m += 0.15; if (d[1] < 0) m += 0.05;
@@ -18614,13 +18615,15 @@ S.spatialExtra = S.extraMakers;
       (segs || []).forEach(function (g) { var hit = 0, q; for (q = 0; q <= 20; q++) { var sx = X(g[0]) + (X(g[2]) - X(g[0])) * q / 20, sy = Y(g[1]) + (Y(g[3]) - Y(g[1])) * q / 20; if (sx > xa - 2 && sx < xb + 2 && sy > ly - 16 && sy < ly + 4) hit = 1; } if (hit) m -= 3; });
       if (xb > X(0) - 20 && xa < X(0) + 2 && ly - 16 < 24) m -= 3;
       if (p[0] !== 0 && (xa < X(0) + 3 && xb > X(0) - 3)) m -= 1.5; if (p[1] !== 0 && ly - 16 < Y(0) + 2 && ly + 4 > Y(0) - 2) m -= 1.5;
-      if (m > bs) { bs = m; best = d; } }
+      placed.forEach(function (bx) { if (xa < bx[1] && xb > bx[0] && ly - 16 < bx[3] && ly + 4 > bx[2]) m -= 4; });
+      if (m > bs) { bs = m; best = d; bbox = [xa, xb, ly - 16, ly + 4]; } }
     var anc = best[0] > 0.35 ? 'start' : best[0] < -0.35 ? 'end' : 'middle', off = 11;
+    if (bbox) placed.push(bbox);
     return tx(px + best[0] * off, py + best[1] * off + (best[1] > 0.35 ? 12 : best[1] < -0.35 ? -2 : 6), p[2] || '', !!p[3], anc, 17);
   }
   F.grid = function (pts, segs, o) {
     var xs = [0], ys = [0], s = '', i;
-    (pts || []).forEach(function (p) { xs.push(p[0]); ys.push(p[1]); }); (segs || []).forEach(function (g) { xs.push(g[0], g[2]); ys.push(g[1], g[3]); });
+    placed = []; (pts || []).forEach(function (p) { xs.push(p[0]); ys.push(p[1]); }); (segs || []).forEach(function (g) { xs.push(g[0], g[2]); ys.push(g[1], g[3]); });
     var x0 = Math.floor(Math.min.apply(0, xs)) - 1, x1 = Math.ceil(Math.max.apply(0, xs)) + 1, y0 = Math.floor(Math.min.apply(0, ys)) - 1, y1 = Math.ceil(Math.max.apply(0, ys)) + 1,
         sc = Math.min(230 / (x1 - x0), 140 / (y1 - y0)), ox = 15 + (0 - x0) * sc, oy = 10 + y1 * sc;
     function X(v) { return ox + v * sc; } function Y(v) { return oy - v * sc; }
@@ -18628,6 +18631,7 @@ S.spatialExtra = S.extraMakers;
     for (i = y0; i <= y1; i++) s += '<line x1="' + X(x0) + '" y1="' + Y(i) + '" x2="' + X(x1) + '" y2="' + Y(i) + '" style="stroke:rgba(120,120,140,.3)"/>';
     s += ln(X(x0), Y(0), X(x1), Y(0), false, false, 2) + ln(X(0), Y(y0), X(0), Y(y1), false, false, 2);
     (segs || []).forEach(function (g) { s += ln(X(g[0]), Y(g[1]), X(g[2]), Y(g[3]), !!g[4], !!g[5]); });
+    placed.push([X(x1) - 30, X(x1), Y(0) + 2, Y(0) + 18], [X(0) - 20, X(0), Y(y1) - 4, Y(y1) + 14]);
     (pts || []).forEach(function (p) { s += dot(X(p[0]), Y(p[1]), !!p[3]) + gridLab(p, segs, X, Y); });
     o = o || {};
     s += tx(X(x1) - 3, Y(0) + 15, o.xt || 'x', false, 'end', 14) + tx(X(0) - 6, Y(y1) + 11, o.yt || 'y', false, 'end', 14);
@@ -18681,7 +18685,7 @@ S.spatialExtra = S.extraMakers;
     function X(v) { return x0 + (v - lo) * st; }
     for (i = lo; i <= hi; i++) s += ln(X(i), 82, X(i), 98, false, false, 2) + tx(X(i), 120, '' + i, i === 0, 'middle', n > 10 ? 14 : 17);
     if (a != null && b != null) { var mid = (X(a) + X(b)) / 2, h = Math.min(60, Math.abs(X(b) - X(a)) / 2 + 12);
-      s += '<path d="M' + X(a) + ' 84 Q' + mid + ' ' + (84 - h * 1.4) + ' ' + X(b) + ' 84" style="fill:none;stroke:' + HI + ';stroke-width:4"/>' + dot(X(a), 90, false) + dot(X(b), 90, true) + tx(X(a), 62, '' + a, false, 'middle', 19) + tx(X(b), 62, '' + b, true, 'middle', 19); }
+      s += '<path d="M' + X(a) + ' 84 Q' + mid + ' ' + (84 - h * 1.4) + ' ' + X(b) + ' 84" style="fill:none;stroke:' + HI + ';stroke-width:4"/>' + dot(X(a), 90, false) + dot(X(b), 90, true) + (a === b ? '' : tx(X(a), 62, '' + a, false, 'middle', 19)) + tx(X(b), 62, '' + b, true, 'middle', 19); }
     return svg(260, 140, s, 'A number line');
   };
 })();
