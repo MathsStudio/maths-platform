@@ -132,7 +132,7 @@
   };
   V.clock = function (h, m) {
     var cx = 90, cy = 90, s = '<circle cx="90" cy="90" r="80" style="fill:var(--surface);stroke:var(--fg);stroke-width:4"/>';
-    for (var i = 1; i <= 12; i++) { var a = (i * 30 - 90) * Math.PI / 180; s += txt((cx + 63 * Math.cos(a)).toFixed(1), (cy + 63 * Math.sin(a) + 6).toFixed(1), i, 17); }
+    for (var i = 1; i <= 12; i++) { var a = (i * 30 - 90) * Math.PI / 180; s += txt((cx + 54 * Math.cos(a)).toFixed(1), (cy + 54 * Math.sin(a) + 6).toFixed(1), i, 17); }
     for (var t = 0; t < 60; t++) { var b = (t * 6 - 90) * Math.PI / 180, r1 = t % 5 ? 74 : 70; s += '<line x1="' + (cx + r1 * Math.cos(b)).toFixed(1) + '" y1="' + (cy + r1 * Math.sin(b)).toFixed(1) + '" x2="' + (cx + 78 * Math.cos(b)).toFixed(1) + '" y2="' + (cy + 78 * Math.sin(b)).toFixed(1) + '" style="stroke:var(--fg);stroke-width:' + (t % 5 ? 1 : 2.5) + '"/>'; }
     var ha = ((h % 12) * 30 + m * 0.5 - 90) * Math.PI / 180, ma = (m * 6 - 90) * Math.PI / 180;
     s += '<line x1="90" y1="90" x2="' + (cx + 42 * Math.cos(ha)).toFixed(1) + '" y2="' + (cy + 42 * Math.sin(ha)).toFixed(1) + '" style="stroke:var(--fg);stroke-width:6;stroke-linecap:round"/>';
