@@ -1,25 +1,10 @@
 (function () {
   if (window.FL && FL.wexLast) FL.wexLast();
-  /* every Key word on a Let's Learn lesson is also said in its Watch lesson */
-  var S = window.Studio, BT = window.BT; if (!S || !BT || !BT.L || !FL._spoken) return;
-  var L = BT.L;
+  /* no word-and-meaning cards in First level lessons: ideas are explained through examples instead */
+  var S = window.Studio; if (!S) return;
   Object.keys(S.topics).forEach(function (k) {
     var t = S.topics[k]; if (!/^P[234]$/.test(t.year || '')) return;
-    var eps = ((BT.EP_BY_TOPIC && BT.EP_BY_TOPIC[k]) || []).map(function (x) { return typeof x === 'string' ? BT.EP[x] : x; }).filter(Boolean).slice(1);
-    t.steps.filter(function (s) { return /^learn/.test(s.id); }).forEach(function (s, i) {
-      var ti = String(s.slides[0].title || '').toLowerCase(), ep = eps.filter(function (e) { return String(e.title || '').toLowerCase() === ti; })[0] || eps[i], kw = s.slides && s.slides[1] && s.slides[1].wl; if (!ep || !kw || !kw.length) return;
-      var have = ep._kw = ep._kw || {}, fresh = kw.filter(function (w) { return !have[String(w[0]).toLowerCase()]; });
-      if (!fresh.length) return;
-      var steps = fresh.map(function (w) {
-        have[String(w[0]).toLowerCase()] = 1;
-        return L.st(FL._spoken(w), '<div style="text-align:center;line-height:1.25"><div style="font-size:3rem" aria-hidden="true">' + (w[2] || '\ud83d\udd24') + '</div><div style="font-size:2rem;font-weight:800;margin:10px 0 6px">' + w[0] + '</div><div style="font-size:1.4rem">' + w[1] + '</div></div>');
-      });
-      var old = ep.scenes.filter(function (x) { return x.h === 'Key words'; })[0];
-      if (old) { old.steps = old.steps.concat(steps); return; }
-      var sc = L.SC('Key words', 'Words to know', steps), at = 1;
-      for (var j = 0; j < ep.scenes.length; j++) if (ep.scenes[j].h === 'Watch me') { at = j; break; }
-      ep.scenes.splice(at, 0, sc);
-    });
+    t.steps.forEach(function (s) { if (s.slides) s.slides = s.slides.filter(function (x) { return x.kind !== 'Key words'; }); });
   });
 })();
 /* worked examples: add examples from every Learn lesson of the topic, so none is left out */
@@ -47,6 +32,35 @@
       if (!step && sl.length) { BT.add(k, p[0], p[1], sl); added = true; }
     });
     if (added && S.arrange) { S.arrange(t); }
+  });
+  if (FL.wexLast) FL.wexLast();
+})();
+/* one story per topic: every Watch lesson of a topic uses that topic's own character and background, even a lesson that several topics share */
+(function () {
+  var S = window.Studio, BT = window.BT, FL = window.FL; if (!S || !BT || !FL || !FL.THEME || !BT.EP_BY_TOPIC) return;
+  var NAME = { rocket: 'Ruby', bear: 'Benny', mouse: 'Molly', owl: 'Ollie', fox: 'Finn', frog: 'Frankie', pirate: 'Pip' };
+  var KIND = { rocket: 'rocket', bear: 'bear', mouse: 'mouse', owl: 'owl', fox: 'fox', frog: 'frog', pirate: 'pirate' };
+  var ANIM = /(Ruby|Benny|Molly|Ollie|Finn|Frankie|Captain Pip|Pip)( the (rocket|bear|mouse|owl|fox|frog|pirate))?/g;
+  function re(html, th) {
+    if (typeof html !== 'string') return html;
+    html = html.replace(/flp-(day|farm|kitchen|night|pond|room|sea|shop|space)\b/g, 'flp-' + th[1]);
+    return html.replace(/<svg viewBox="0 0 100 100" role="img" aria-label="(rocket|bear|mouse|owl|fox|frog|pirate)" style="width:(\d+)px[^>]*>[\s\S]*?<\/svg>/g, function (m, c, w) { return FL.char(th[0], +w); });
+  }
+  function say(t, th) {
+    if (typeof t !== 'string') return t;
+    return t.replace(ANIM, function (m, nm, rest, an) { var pip = th[0] === 'pirate' ? 'Captain Pip' : NAME[th[0]]; if (NAME[th[0]] && (m.indexOf(NAME[th[0]]) === 0 || (th[0] === 'pirate' && /Pip/.test(m)))) return m; return pip + (rest ? ' the ' + th[0] : ''); });
+  }
+  Object.keys(FL.THEME).forEach(function (k) {
+    var th = FL.THEME[k], t = S.topics[k]; if (!t) return;
+    var titles = BT.EP_BY_TOPIC[k]; if (!titles || !titles.length) return;
+    var eps = titles.map(function (x) { return BT.EP[x]; }).filter(Boolean).map(function (ep) {
+      var c = Object.assign({}, ep);
+      c.scenes = ep.scenes.map(function (sc) { var s2 = Object.assign({}, sc);
+        s2.steps = (sc.steps || []).map(function (st) { var x = Object.assign({}, st); if (x.html) x.html = re(x.html, th); if (typeof x.say === 'string') x.say = say(x.say, th); return x; }); return s2; });
+      return c; });
+    BT.lessons(k, 'Watch lesson', eps);
+    BT.EP_BY_TOPIC[k] = eps;
+    t.steps.forEach(function (s) { (s.slides || []).forEach(function (sl) { if (typeof sl.v === 'string') sl.v = re(sl.v, th); }); });
   });
   if (FL.wexLast) FL.wexLast();
 })();

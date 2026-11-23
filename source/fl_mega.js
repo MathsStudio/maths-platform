@@ -16,6 +16,11 @@
   /* a question maker from the static rows: a new random choice order each time */
   function fromQs(sp) { return function () { var r = pick(sp.qs); return MC(sp.title || (sp.li && sp.li[0]) || 'Practice', r[0], r[1], r[2], [r[5] || 'Think about what you learned in this lesson.'], r[3] || '', r[4] || ''); }; }
   var BG = { 2: 'day', 3: 'sea', 4: 'farm' };
+  /* one character and one background for each topic, the same in every lesson of that topic (Ruby, Benny, Molly, Ollie, Finn...) */
+  var THEME = { 201: ['rocket', 'space'], 202: ['bear', 'kitchen'], 203: ['mouse', 'shop'], 204: ['owl', 'day'], 205: ['fox', 'day'], 206: ['owl', 'day'],
+    301: ['pirate', 'sea'], 302: ['frog', 'pond'], 303: ['bear', 'kitchen'], 304: ['mouse', 'kitchen'], 305: ['fox', 'kitchen'], 306: ['owl', 'day'], 307: ['bear', 'day'], 308: ['rocket', 'space'],
+    401: ['owl', 'room'], 402: ['rocket', 'space'], 403: ['fox', 'farm'], 404: ['bear', 'kitchen'], 405: ['mouse', 'shop'], 406: ['owl', 'day'], 407: ['frog', 'pond'], 408: ['pirate', 'sea'], 409: ['owl', 'day'] };
+  FL.THEME = THEME;
   FL.MEGA = function (n, sp) {
     var t = S.topics[n]; if (!t) return;
     var title = sp.title || (sp.li && sp.li[1]);
@@ -42,7 +47,7 @@
     if (qs[3]) add.push(mk({ title: 'Quick check 4', say: ['One more. Tap your answer.'], live: W.check(qo(qs[3])), kind: 'Your turn' }));
     sl.splice.apply(sl, [ic, 0].concat(add));
     /* the Watch lesson */
-    var bg = sp.bg || BG[(S.topics[n].year || '').replace('P', '')] || 'day', ch = sp.ch || 'owl';
+    var th = THEME[n] || [], bg = th[1] || sp.bg || BG[(S.topics[n].year || '').replace('P', '')] || 'day', ch = th[0] || sp.ch || 'owl';
     function pn(h) { return P(bg, '', h || ''); }
     var scr = [];
     if (sp.li) { scr.push({ mode: 'watch', say: sp.li[2], pic: pn(sp.li[3]) }); (sp.li[5] || []).forEach(function (s) { scr.push({ mode: 'watch', say: strip(s[0]), pic: pn(s[1]) }); }); }
