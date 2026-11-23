@@ -134,6 +134,28 @@
   var L = null;
   /* in the Watch player each new picture replaces the one before it, so the picture stays big */
   function sw(steps) { return steps.map(function (st, i) { if (i > 0 && st.html) st.html = L.SW + st.html; return st; }); }
+  /* one Let's learn lesson (Watch me, Let's do it together, Your turn, recap) from its screens */
+  function mkLearn(l) {
+    L = BT.L;
+    var sc = [], watch = [], tog = [], turn = [], tips = [];
+      l.screens.forEach(function (x) {
+        var p = pic(x.pic, l.char);
+        if (x.mode === 'watch') { var sw0 = L.st(x.say, p); if (x.facts) sw0.facts = x.facts; watch.push(sw0); }
+        else { if (x.tip && tips.length < 4) tips.push(x.tip); (x.mode === 'together' ? tog : turn).push.apply(x.mode === 'together' ? tog : turn, askSteps(x.say, p, x.options, x.answer, x.explain, x.mode === 'together' ? x.tip : '')); }
+      });
+      if (watch.length) sc.push(L.SC('Watch me', l.title, sw(watch)));
+      if (tog.length) sc.push(L.SC('Let’s do it together', 'Try it with me', sw(tog)));
+      if (turn.length) sc.push(L.SC('Your turn', 'Pause, think, then listen', sw(turn)));
+      if (tips.length) sc.push(L.rec(l.title, 'Let’s remember the tips from this lesson. ' + tips.map(strip).map(function (t) { return /[.!?…]$/.test(t) ? t : t + '.'; }).join(' '), tips.map(strip)));
+    return L.ep(l.title, strip(l.title).replace(/\?$/, '').toLowerCase() + '.', sc);
+  }
+  /* add Let's learn lessons to the end of a topic's Watch lesson list */
+  FL.addWatch = function (n, learn) {
+    var t = S.topics[n]; if (!t) return; L = BT.L;
+    var have = ((BT.EP_BY_TOPIC && BT.EP_BY_TOPIC[n]) || []).map(function (x) { return typeof x === 'string' ? BT.EP[x] : x; }).filter(Boolean), eps = learn.map(mkLearn);
+    eps.forEach(function (e) { e.fl = true; });
+    BT.L.use(n, have.concat(eps));
+  };
   FL.toWatch = function (n, story, learn) {
     L = BT.L; if (!L) return;
     var t = S.topics[n]; if (!t) return;
@@ -150,19 +172,7 @@
       sc.push(L.SC('The end', story.title, [L.st(story.endText || 'The end.', pic(story.endPic))]));
       var sep = L.ep('📖 ' + story.title, 'a picture-book story that uses the maths in this topic.', sc); if (story.film) sep.film = story.film; eps.push(sep);
     }
-    (learn || []).forEach(function (l) {
-      var sc = [], watch = [], tog = [], turn = [], tips = [];
-      l.screens.forEach(function (x) {
-        var p = pic(x.pic, l.char);
-        if (x.mode === 'watch') { var sw0 = L.st(x.say, p); if (x.facts) sw0.facts = x.facts; watch.push(sw0); }
-        else { if (x.tip && tips.length < 4) tips.push(x.tip); (x.mode === 'together' ? tog : turn).push.apply(x.mode === 'together' ? tog : turn, askSteps(x.say, p, x.options, x.answer, x.explain, x.mode === 'together' ? x.tip : '')); }
-      });
-      if (watch.length) sc.push(L.SC('Watch me', l.title, sw(watch)));
-      if (tog.length) sc.push(L.SC('Let’s do it together', 'Try it with me', sw(tog)));
-      if (turn.length) sc.push(L.SC('Your turn', 'Pause, think, then listen', sw(turn)));
-      if (tips.length) sc.push(L.rec(l.title, 'Let’s remember the tips from this lesson. ' + tips.map(strip).map(function (t) { return /[.!?…]$/.test(t) ? t : t + '.'; }).join(' '), tips.map(strip)));
-      eps.push(L.ep(l.title, strip(l.title).replace(/\?$/, '').toLowerCase() + '.', sc));
-    });
+    (learn || []).forEach(function (l) { eps.push(mkLearn(l)); });
     eps.forEach(function (e) { e.fl = true; });
     if (story && eps[0]) eps[0].intro = story.intro || ('This is the story of ' + story.title + '.');
     BT.L.use(n, eps);
