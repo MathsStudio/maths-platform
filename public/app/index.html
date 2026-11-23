@@ -25381,6 +25381,71 @@ S.spatialExtra = S.extraMakers;
     g = function (t) { return E(t, 'g'); }, r = function (t) { return E(t, 'r'); };
   function N(title, goal, scenes) { L.full(title, scenes); return L.ep(title, goal, []); }
 
+  /* ---- full version of the old short lesson (shown in S3 topics 845/846) ---- */
+  N('Brackets, factorising and equations', 'how to factorise expressions, find the two brackets of a quadratic step by step, and use brackets to solve equations.', [
+    SC('Factorising', 'Start with the basics', [
+      S("Factorising puts an expression back into brackets. It is the reverse of expanding. When we expand, three bracket x plus two becomes three x plus six. When we factorise, three x plus six goes back to three bracket x plus two.", E('3(x + 2)', 'b') + V.rule('Expand ↔ Factorise')),
+      S("We will do four things in this lesson. Take out a common factor. Factorise a quadratic by finding two special numbers. Use the same idea to solve a quadratic equation. And solve equations that have brackets.", V.list(['Common factors', 'Quadratics: find two numbers', 'Solve quadratics', 'Equations with brackets']))
+    ]),
+    SC('Common factor', 'Example 1: 6x + 9', [
+      S("Look for a number that divides into every term. Six and nine both divide by three. Take three outside. Six x divided by three is two x. Nine divided by three is three.", E('6x + 9') + g('= 3(2x + 3)')),
+      S("Check by expanding. Three times two x is six x. Three times three is nine. We are back at the start.", V.rule('Always check by expanding.'))
+    ]),
+    SC('Letters too', 'Example 2: x² + 7x', [
+      S("Now the terms share a letter. x squared is x times x. Seven x is seven times x. Both have an x. Take x outside. What is left is x plus seven.", E('x² + 7x') + g('= x(x + 7)'))
+    ]),
+    SC('Quadratics', 'What is a quadratic?', [
+      S("A quadratic has an x squared term, an x term, and a number. For example, x squared plus five x plus six. Many quadratics factorise into two brackets, like x plus two, times x plus three.", E('x² + 5x + 6', 'b')),
+      S("How do we find the two brackets? Let us expand x plus two times x plus three, and watch what happens. x squared, plus three x, plus two x, plus six. That is x squared plus five x plus six.", E('(x + 2)(x + 3) = x² + 3x + 2x + 6') + g('= x² + 5x + 6')),
+      S("Look at the numbers two and three. They multiply to give six, the last number. And they add to give five, the number in front of x. That is the secret. To factorise, we work backwards and find those two numbers.", V.rule('× to the last number, + to the middle number.'))
+    ]),
+    SC('Finding the numbers', 'Example 3: x² + 5x + 6, step by step', [
+      S("Step one. Look at the last number, six. List the pairs of whole numbers that multiply to make six. One and six. Two and three.", E('1 × 6 = 6') + E('2 × 3 = 6')),
+      S("Step two. Add each pair. One plus six is seven. Two plus three is five. We need five, the middle number. So the pair is two and three.", E('1 + 6 = 7 ✗', 'r') + g('2 + 3 = 5 ✓')),
+      S("Step three. Write the brackets. x plus two, times x plus three. Check by expanding, as we did before. It works.", g('x² + 5x + 6 = (x + 2)(x + 3)'))
+    ]),
+    SC('Another one', 'Example 4: x² + 7x + 12', [
+      S("The last number is twelve. Pairs that multiply to twelve. One and twelve add to thirteen. Two and six add to eight. Three and four add to seven. That is the middle number. So three and four.", V.tbl([['1 × 12', '13'], ['2 × 6', '8'], ['3 × 4', '7 ✓']], ['Multiply to 12', 'Add'])),
+      S("The brackets are x plus three, and x plus four.", g('(x + 3)(x + 4)'))
+    ]),
+    SC('Negative middle', 'Example 5: x² − 7x + 10', [
+      S("The last number is positive ten, but the middle is negative seven. When the last number is positive and the middle is negative, both numbers are negative. Pairs: minus one and minus ten add to minus eleven. Minus two and minus five add to minus seven. That is the one.", V.tbl([['−1, −10', '−11'], ['−2, −5', '−7 ✓']], ['Multiply to 10', 'Add'])),
+      S("So x minus two, times x minus five. Check. Minus two times minus five is plus ten. Minus two x minus five x is minus seven x. Correct.", g('(x − 2)(x − 5)'))
+    ]),
+    SC('Negative last number', 'Example 6: x² + 2x − 15', [
+      S("Now the last number is negative fifteen. A negative product means one number is positive and one is negative. Pairs that multiply to fifteen in size. One and fifteen. Three and five. We need them to add to plus two. Try minus three and plus five. They multiply to minus fifteen, and add to plus two.", V.tbl([['−1, 15', '14'], ['1, −15', '−14'], ['−3, 5', '2 ✓'], ['3, −5', '−2']], ['Multiply to −15', 'Add'])),
+      S("So x minus three, times x plus five.", g('(x − 3)(x + 5)')),
+      S("A tip. When the last number is negative, the bigger of the two numbers takes the sign of the middle number.", V.rule('Last number negative: one + and one −.'))
+    ]),
+    SC('Difference of squares', 'Example 7: x² − 9', [
+      S("There is no x term here. Think of it as x squared plus zero x minus nine. We need two numbers that multiply to minus nine and add to zero. Three and minus three. So x minus three, times x plus three.", E('x² − 9') + g('= (x − 3)(x + 3)'))
+    ]),
+    SC('Solving a quadratic', 'Example 8: x² + 5x + 6 = 0', [
+      S("Why do we factorise? To solve equations. Take x squared plus five x plus six equals zero. Factorise. x plus two, times x plus three, equals zero.", E('(x + 2)(x + 3) = 0')),
+      S("Here is the key idea. If two things multiply to give zero, one of them must be zero. So either x plus two is zero, or x plus three is zero. That gives x equals minus two, or x equals minus three.", E('x + 2 = 0 → x = −2') + E('x + 3 = 0 → x = −3'))
+    ]),
+    SC('Check the answers', 'Example 9: put them back', [
+      S("Check x equals minus two. Four, minus ten, plus six. That is zero. Check x equals minus three. Nine, minus fifteen, plus six. Zero as well. Both work.", E('(−2)² + 5(−2) + 6 = 0 ✓') + E('(−3)² + 5(−3) + 6 = 0 ✓'))
+    ]),
+    SC('Equations with brackets', 'Example 10: 4(x − 2) = 3(x + 1)', [
+      S("Now equations with brackets, which are not quadratics. Expand both sides first. Four x minus eight, equals three x plus three.", E('4x − 8 = 3x + 3')),
+      S("Take three x from both sides. x minus eight equals three. Add eight. x equals eleven. Check. Four times nine is thirty-six. Three times twelve is thirty-six. Equal.", E('x − 8 = 3') + g('x = 11'))
+    ]),
+    SC('Watch out!', 'Three common mistakes', [
+      S("Mistake one: not taking out the highest common factor. Six x plus nine is three bracket two x plus three, not one bracket six x plus nine.", V.rule('Take out the highest factor.')),
+      S("Mistake two: finding two numbers that add to the right total but do not multiply to the last number. You need both.", r('2 + 3 = 5, but 2 × 3 = 6 needed too') + V.rule('Both tests: multiply and add.')),
+      S("Mistake three: forgetting that a quadratic equation usually has two answers, and forgetting to set it equal to zero first.", V.rule('Equal to zero. Two answers.'))
+    ]),
+    SC('In real life', 'Areas', [
+      S("A rectangular garden has area x squared plus five x plus six square metres. Factorising gives x plus two, times x plus three. So its sides are x plus two metres and x plus three metres. Factorising lets us find the dimensions from the area.", g('Sides: (x + 2) m and (x + 3) m'))
+    ]),
+    L.turn("Your turn! Number one. Factorise x squared plus seven x plus twelve. Look for two numbers that multiply to twelve and add to seven. Pause and try it.", E('x² + 7x + 12'), "Three and four multiply to twelve and add to seven. So x plus three, times x plus four.", g('(x + 3)(x + 4)')),
+    L.turn("Your turn! Number two. Factorise x squared minus eight x plus fifteen. Both numbers are negative. Pause and try it.", E('x² − 8x + 15'), "Minus three and minus five multiply to fifteen and add to minus eight. So x minus three, times x minus five.", g('(x − 3)(x − 5)')),
+    L.turn("Your turn! Number three. Solve x squared plus x minus six equals zero. Factorise first. Pause and try it.", E('x² + x − 6 = 0'), "Minus two and plus three multiply to minus six and add to one. So x minus two, times x plus three, equals zero. x is two or minus three.", g('x = 2 or x = −3')),
+    L.turn("Your turn! Number four. Solve three bracket x plus four, equals two bracket x minus one, plus twenty. Pause and try it.", E('3(x + 4) = 2(x − 1) + 20'), "Three x plus twelve equals two x plus eighteen. So x is six.", g('x = 6')),
+    L.rec('How do you use brackets and factorising to solve equations?', "To factorise, take out the highest common factor. For a quadratic x squared plus b x plus c, find two numbers that multiply to c and add to b, and put them in two brackets. Check by expanding. To solve a quadratic, make it equal zero, factorise, and set each bracket equal to zero. For equations with brackets, expand first, then solve.", ['Take out the HCF', 'Quadratic: × to c, + to b', 'Check by expanding', 'Each bracket = 0'])
+  ]);
+
   N('How do you expand brackets, including negatives?', 'how to multiply every term inside a bracket and handle minus signs.', [
     SC('Brackets', 'Start with the basics', [
       S("A bracket groups terms together. The number outside tells us to multiply everything inside. Three bracket x plus four means three times x, and three times four. We say we expand the bracket.", E('3(x + 4)', 'b')),
@@ -25662,6 +25727,162 @@ S.spatialExtra = S.extraMakers;
   ]);
 
   L.use(846, ['How do you solve linear equations?', 'How do you create and solve simple equations?', 'Equations with fractions', 'How do you solve inequalities, including with brackets and negative numbers?', 'Changing the subject and inequations', 'How do you change the subject of a formula with powers and roots?', 'How do you change the subject when the letter appears twice?', 'Brackets, factorising and equations']);
+})();
+</script>
+<script>
+(function () {
+  var BT = window.BT; if (!BT || !BT.L || !BT.sv || !BT.lk) return;
+  var L = BT.L, V = BT.sv, E = L.E, S = L.st, SC = L.SC,
+    g = function (t) { return E(t, 'g'); }, r = function (t) { return E(t, 'r'); };
+  function N(title, goal, scenes) { L.full(title, scenes); return L.ep(title, goal, []); }
+
+  N('How do you find the gradient of a line from two points?', 'how to measure steepness using rise over run.', [
+    SC('Gradient', 'Start with the basics', [
+      S("The gradient of a line tells us how steep it is. A big gradient is a steep line. A small gradient is a gentle slope. A gradient of zero is a flat line.", V.list(['Steep: big gradient', 'Gentle: small gradient', 'Flat: zero'])),
+      S("We measure it as rise over run. The rise is how far the line goes up. The run is how far it goes across.", E('Gradient = rise ÷ run', 'g'))
+    ]),
+    SC('From a graph', 'Example 1: counting squares', [
+      S("A line goes through the points zero, one and four, nine. Going from the first point to the second, we move across four, and up eight. Gradient is eight divided by four, which is two.", E('Run = 4, Rise = 8') + g('8 ÷ 4 = 2'))
+    ]),
+    SC('The formula', 'Example 2: using coordinates', [
+      S("With two points, x one y one and x two y two, the gradient is y two minus y one, over x two minus x one. The change in y over the change in x.", E('m = (y₂ − y₁) ÷ (x₂ − x₁)', 'g'))
+    ]),
+    SC('Worked', 'Example 3: (1, 3) and (5, 11)', [
+      S("y two minus y one is eleven minus three, which is eight. x two minus x one is five minus one, which is four. Eight over four is two.", E('(11 − 3) ÷ (5 − 1)') + g('= 8 ÷ 4 = 2'))
+    ]),
+    SC('Negative gradient', 'Example 4: going downhill', [
+      S("Points two, seven and six, three. Rise is three minus seven, minus four. Run is six minus two, four. Gradient is minus four over four, which is minus one. A line that goes down as you move right has a negative gradient.", E('(3 − 7) ÷ (6 − 2) = −4 ÷ 4') + g('= −1'))
+    ]),
+    SC('Same order', 'Example 5: stay consistent', [
+      S("You can use either point first, but be consistent. If you start the top with y two, you must start the bottom with x two. Using the points from Example three the other way round: three minus eleven is minus eight. One minus five is minus four. Minus eight over minus four is two. Same answer.", E('(3 − 11) ÷ (1 − 5) = −8 ÷ −4') + g('= 2'))
+    ]),
+    SC('Special lines', 'Example 6: flat and vertical', [
+      S("A flat line has the same y everywhere, so the rise is zero. The gradient is zero. A vertical line has the same x everywhere, so the run is zero, and we cannot divide by zero. A vertical line has no gradient, we say it is undefined.", V.list(['Horizontal: m = 0', 'Vertical: undefined']))
+    ]),
+    SC('Watch out!', 'Three common mistakes', [
+      S("Mistake one: dividing run by rise. It is rise over run.", r('run ÷ rise  ✗') + g('rise ÷ run  ✓')),
+      S("Mistake two: mixing the order of the points. Top and bottom must match.", V.rule('Same order on top and bottom.')),
+      S("Mistake three: dropping the negative sign.", V.rule('Down to the right: negative.'))
+    ]),
+    SC('In real life', 'Roads and ramps', [
+      S("A road sign saying ten per cent means a gradient of one in ten. For every ten metres across, you climb one metre. A wheelchair ramp is made with a gentle gradient for safety.", V.note('Gradient: steepness'))
+    ]),
+    L.turn("Your turn! Number one. Find the gradient between zero, two and three, eight. Pause and try it.", E('(0, 2), (3, 8)'), "Rise six, run three. Two.", g('2')),
+    L.turn("Your turn! Number two. Find the gradient between one, five and four, two. Pause and try it.", E('(1, 5), (4, 2)'), "Rise is minus three. Run is three. Minus one.", g('−1')),
+    L.turn("Your turn! Number three. What is the gradient of a horizontal line? Pause and think.", E('?'), "Zero.", g('0')),
+    L.rec('How do you find the gradient of a line from two points?', "Gradient is rise over run. With two points, subtract the y values on top and the x values on the bottom, in the same order. A line going up to the right has a positive gradient. A line going down has a negative gradient. A horizontal line has gradient zero.", ['Rise ÷ run', '(y₂ − y₁) ÷ (x₂ − x₁)', 'Same order', 'Negative: downhill'])
+  ]);
+
+  N('How do you read y = mx + c from a graph and from real life?', 'how to find the gradient and y-intercept from a line.', [
+    SC('The equation', 'Start with the basics', [
+      S("Every straight line has an equation in the form y equals m x plus c. The letter m is the gradient. The letter c is the y-intercept, where the line crosses the y axis.", E('y = mx + c', 'b') + V.list(['m: gradient', 'c: where it crosses the y axis']))
+    ]),
+    SC('Reading', 'Example 1: y = 2x + 3', [
+      S("The number in front of x is two, so the gradient is two. The number on its own is three, so the line crosses the y axis at zero, three.", E('m = 2') + E('c = 3'))
+    ]),
+    SC('Rearranging', 'Example 2: y − 4x = 5', [
+      S("The equation is not in the right form. Add four x to both sides. y equals four x plus five. Now the gradient is four, and c is five.", E('y = 4x + 5') + g('m = 4, c = 5'))
+    ]),
+    SC('From a graph', 'Example 3: reading the line', [
+      S("A line crosses the y axis at two. It goes up three for every one across. So c is two, and the gradient is three. The equation is y equals three x plus two.", E('c = 2, m = 3') + g('y = 3x + 2'))
+    ]),
+    SC('Negative', 'Example 4: going down', [
+      S("A line crosses the y axis at five and goes down two for every one across. The gradient is minus two. The equation is y equals minus two x plus five.", g('y = −2x + 5'))
+    ]),
+    SC('Real life', 'Example 5: a taxi', [
+      S("A taxi costs three pounds to start, plus two pounds per mile. The cost C is two times the miles m, plus three. C equals two m plus three. The gradient two is the cost per mile. The intercept three is the starting charge.", E('C = 2m + 3') + g('m = £2 per mile, c = £3 fixed'))
+    ]),
+    SC('Parallel lines', 'Example 6: same gradient', [
+      S("Lines with the same gradient are parallel. y equals two x plus one and y equals two x minus four never meet.", E('y = 2x + 1') + E('y = 2x − 4') + g('Parallel'))
+    ]),
+    SC('Watch out!', 'Three common mistakes', [
+      S("Mistake one: not rearranging to y equals first. In two y equals six x plus four, the gradient is three, not six.", r('m = 6  ✗') + g('y = 3x + 2, m = 3  ✓')),
+      S("Mistake two: mixing up m and c.", V.rule('m is the slope. c is the start.')),
+      S("Mistake three: forgetting the sign of c.", V.rule('y = x − 4: c is −4.'))
+    ]),
+    SC('In real life', 'Phone plans', [
+      S("A phone plan costs fifteen pounds a month plus ten pence per minute. The equation is C equals zero point one m plus fifteen. The graph starts at fifteen and rises slowly.", g('C = 0.1m + 15'))
+    ]),
+    L.turn("Your turn! Number one. What are the gradient and y-intercept of y equals five x minus two? Pause and try it.", E('y = 5x − 2'), "Gradient five. Intercept minus two.", g('m = 5, c = −2')),
+    L.turn("Your turn! Number two. A line crosses the y axis at four, and has gradient one half. Write its equation. Pause and try it.", E('c = 4, m = ½'), "y equals a half x plus four.", g('y = ½x + 4')),
+    L.turn("Your turn! Number three. Rearrange two y equals eight x plus six to find the gradient. Pause and try it.", E('2y = 8x + 6'), "Divide by two. y equals four x plus three. Gradient four.", g('m = 4')),
+    L.rec('How do you read y = mx + c?', "In y equals m x plus c, m is the gradient and c is where the line crosses the y axis. Rearrange so that y is on its own first. Parallel lines have the same gradient. In real life, m is the rate of change and c is the starting value.", ['m: gradient', 'c: y-intercept', 'Rearrange to y = first', 'Parallel: same m'])
+  ]);
+
+  N('How do you find the equation of a line from a point and a gradient, or from two points?', 'how to build the equation y = mx + c from given information.', [
+    SC('Building an equation', 'Start with the basics', [
+      S("To find the equation of a line we need two things. The gradient, m, and one point on the line. Then we use y equals m x plus c, and find c.", V.rule('Find m. Then find c.'))
+    ]),
+    SC('A point and a gradient', 'Example 1: gradient 3, through (2, 7)', [
+      S("The gradient is three, so y equals three x plus c. Put in the point. x is two and y is seven. Seven equals three times two, plus c. Seven equals six plus c. So c is one.", E('7 = 3(2) + c') + E('c = 1') + g('y = 3x + 1'))
+    ]),
+    SC('Negative', 'Example 2: gradient −2, through (3, 1)', [
+      S("y equals minus two x plus c. Put in three, one. One equals minus six plus c. Add six. c is seven.", E('1 = −2(3) + c') + g('y = −2x + 7'))
+    ]),
+    SC('Two points', 'Example 3: (1, 3) and (3, 9)', [
+      S("First, find the gradient. Nine minus three is six. Three minus one is two. Gradient is three. So y equals three x plus c.", E('m = 6 ÷ 2 = 3')),
+      S("Now use either point. Using one, three. Three equals three plus c. So c is zero. The equation is y equals three x.", E('3 = 3(1) + c') + g('y = 3x'))
+    ]),
+    SC('Another', 'Example 4: (0, 5) and (2, 1)', [
+      S("The first point is on the y axis, so c is five straight away. Gradient is one minus five, over two minus zero. Minus four over two, minus two. The equation is y equals minus two x plus five.", E('m = −4 ÷ 2 = −2') + g('y = −2x + 5'))
+    ]),
+    SC('Checking', 'Example 5: use the other point', [
+      S("Always check using the point you did not use. In Example three, put in three, nine. Three times three is nine. Correct.", V.rule('Check with the other point.'))
+    ]),
+    SC('Fractions', 'Example 6: a fractional gradient', [
+      S("Points two, one and six, three. Gradient is two over four, a half. y equals a half x plus c. Put in two, one. One equals one plus c, so c is zero. y equals a half x.", g('y = ½x'))
+    ]),
+    SC('Watch out!', 'Three common mistakes', [
+      S("Mistake one: putting x and y the wrong way round.", V.rule('Point (x, y): x first.')),
+      S("Mistake two: finding c with the wrong sign.", V.rule('Solve for c carefully.')),
+      S("Mistake three: skipping the check.", V.rule('Check with the other point.'))
+    ]),
+    SC('In real life', 'Predicting', [
+      S("A plant is ten centimetres tall after two weeks, and sixteen after four. The gradient is three centimetres a week. We can write an equation and predict the height at any week.", g('h = 3w + 4'))
+    ]),
+    L.turn("Your turn! Number one. A line has gradient two, through one, five. Find c. Pause and try it.", E('5 = 2(1) + c'), "Five equals two plus c. c is three.", g('c = 3')),
+    L.turn("Your turn! Number two. Find the equation of the line through zero, one and two, seven. Pause and try it.", E('(0, 1), (2, 7)'), "Gradient is six over two, three. c is one. y equals three x plus one.", g('y = 3x + 1')),
+    L.turn("Your turn! Number three. Check that the point two, seven is on y equals three x plus one. Pause and try it.", E('3(2) + 1'), "Six plus one is seven. Yes.", g('7 ✓')),
+    L.rec('How do you find the equation of a line?', "Find the gradient m. If you have two points, use rise over run. Write y equals m x plus c, substitute the x and y of one point, and solve for c. Check using the other point.", ['Find m', 'Substitute a point', 'Solve for c', 'Check with the other point'])
+  ]);
+
+  N('How do you draw a straight line graph from a table of values?', 'how to calculate points and plot a line.', [
+    SC('Tables', 'Start with the basics', [
+      S("To draw the graph of an equation, we make a table of values. We choose some x values, work out the y values, and plot the points. Then we join them with a ruler.", V.list(['Choose x values', 'Calculate y', 'Plot the points', 'Join with a ruler']))
+    ]),
+    SC('A table', 'Example 1: y = 2x + 1', [
+      S("Choose x equals minus one, zero, one, two, three. For minus one, two times minus one plus one is minus one. For zero, one. For one, three. For two, five. For three, seven.", V.tbl([['−1', '0', '1', '2', '3'], ['−1', '1', '3', '5', '7']], ['x', 'y']))
+    ]),
+    SC('Plotting', 'Example 2: the points', [
+      S("Plot each pair as a point. Minus one, minus one. Zero, one. One, three. And so on. They fall on a straight line. Draw it with a ruler through all the points, extending past them.", V.rule('They should line up.'))
+    ]),
+    SC('Check', 'Example 3: reading off', [
+      S("The graph crosses the y axis at one, matching c. It rises two for every one across, matching the gradient. If a point is off the line, we made an error in the table.", V.rule('A point off the line is an error.'))
+    ]),
+    SC('A negative gradient', 'Example 4: y = 3 − x', [
+      S("For x of zero, y is three. For one, two. For two, one. For three, zero. For four, minus one. The y values go down as x goes up.", V.tbl([['0', '1', '2', '3', '4'], ['3', '2', '1', '0', '−1']], ['x', 'y']))
+    ]),
+    SC('Special lines', 'Example 5: x = 2 and y = −1', [
+      S("x equals two is a vertical line through two on the x axis. y equals minus one is a horizontal line through minus one on the y axis.", V.list(['x = 2: vertical', 'y = −1: horizontal']))
+    ]),
+    SC('Reading a value', 'Example 6: using the graph', [
+      S("To find y when x is two point five on y equals two x plus one, go up from two point five to the line, then across. About six.", V.note('Read across from the line'))
+    ]),
+    SC('Watch out!', 'Three common mistakes', [
+      S("Mistake one: arithmetic mistakes with negative x values.", V.rule('Take care with negatives.')),
+      S("Mistake two: joining points with a wobbly freehand line.", V.rule('Use a ruler.')),
+      S("Mistake three: plotting x and y the wrong way round.", V.rule('Along first, then up.'))
+    ]),
+    SC('In real life', 'Conversion graphs', [
+      S("A conversion graph from pounds to euros is a straight line through zero. Choose a few pounds, convert, plot, and join. Then read any amount from the line.", V.note('Conversion graph'))
+    ]),
+    L.turn("Your turn! Number one. Find y when x is three, for y equals two x minus one. Pause and try it.", E('y = 2(3) − 1'), "Five.", g('5')),
+    L.turn("Your turn! Number two. Find y when x is minus two, for y equals x plus four. Pause and try it.", E('y = −2 + 4'), "Two.", g('2')),
+    L.turn("Your turn! Number three. Where does y equals three x minus two cross the y axis? Pause and try it.", E('y = 3x − 2'), "At minus two.", g('(0, −2)')),
+    L.rec('How do you draw a straight line graph from a table of values?', "Choose x values, work out each y, and plot the points. They should lie on a straight line. Join them with a ruler. The line crosses the y axis at c and has gradient m. Vertical lines are x equals a number, and horizontal lines are y equals a number.", ['Table of values', 'Plot the points', 'Join with a ruler', 'Check m and c'])
+  ]);
+
+  L.use(847, ['How do you find the gradient of a line from two points?', 'Gradient and straight lines', 'How do you read y = mx + c from a graph and from real life?', 'How do you find the equation of a line from a point and a gradient, or from two points?', 'How do you draw a straight line graph from a table of values?', 'Parallel and perpendicular lines', 'Lines in the form ax + by = c']);
 })();
 </script>
 <script>

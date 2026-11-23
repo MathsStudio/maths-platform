@@ -4,6 +4,71 @@
     g = function (t) { return E(t, 'g'); }, r = function (t) { return E(t, 'r'); };
   function N(title, goal, scenes) { L.full(title, scenes); return L.ep(title, goal, []); }
 
+  /* ---- full version of the old short lesson (shown in S3 topics 845/846) ---- */
+  N('Brackets, factorising and equations', 'how to factorise expressions, find the two brackets of a quadratic step by step, and use brackets to solve equations.', [
+    SC('Factorising', 'Start with the basics', [
+      S("Factorising puts an expression back into brackets. It is the reverse of expanding. When we expand, three bracket x plus two becomes three x plus six. When we factorise, three x plus six goes back to three bracket x plus two.", E('3(x + 2)', 'b') + V.rule('Expand ↔ Factorise')),
+      S("We will do four things in this lesson. Take out a common factor. Factorise a quadratic by finding two special numbers. Use the same idea to solve a quadratic equation. And solve equations that have brackets.", V.list(['Common factors', 'Quadratics: find two numbers', 'Solve quadratics', 'Equations with brackets']))
+    ]),
+    SC('Common factor', 'Example 1: 6x + 9', [
+      S("Look for a number that divides into every term. Six and nine both divide by three. Take three outside. Six x divided by three is two x. Nine divided by three is three.", E('6x + 9') + g('= 3(2x + 3)')),
+      S("Check by expanding. Three times two x is six x. Three times three is nine. We are back at the start.", V.rule('Always check by expanding.'))
+    ]),
+    SC('Letters too', 'Example 2: x² + 7x', [
+      S("Now the terms share a letter. x squared is x times x. Seven x is seven times x. Both have an x. Take x outside. What is left is x plus seven.", E('x² + 7x') + g('= x(x + 7)'))
+    ]),
+    SC('Quadratics', 'What is a quadratic?', [
+      S("A quadratic has an x squared term, an x term, and a number. For example, x squared plus five x plus six. Many quadratics factorise into two brackets, like x plus two, times x plus three.", E('x² + 5x + 6', 'b')),
+      S("How do we find the two brackets? Let us expand x plus two times x plus three, and watch what happens. x squared, plus three x, plus two x, plus six. That is x squared plus five x plus six.", E('(x + 2)(x + 3) = x² + 3x + 2x + 6') + g('= x² + 5x + 6')),
+      S("Look at the numbers two and three. They multiply to give six, the last number. And they add to give five, the number in front of x. That is the secret. To factorise, we work backwards and find those two numbers.", V.rule('× to the last number, + to the middle number.'))
+    ]),
+    SC('Finding the numbers', 'Example 3: x² + 5x + 6, step by step', [
+      S("Step one. Look at the last number, six. List the pairs of whole numbers that multiply to make six. One and six. Two and three.", E('1 × 6 = 6') + E('2 × 3 = 6')),
+      S("Step two. Add each pair. One plus six is seven. Two plus three is five. We need five, the middle number. So the pair is two and three.", E('1 + 6 = 7 ✗', 'r') + g('2 + 3 = 5 ✓')),
+      S("Step three. Write the brackets. x plus two, times x plus three. Check by expanding, as we did before. It works.", g('x² + 5x + 6 = (x + 2)(x + 3)'))
+    ]),
+    SC('Another one', 'Example 4: x² + 7x + 12', [
+      S("The last number is twelve. Pairs that multiply to twelve. One and twelve add to thirteen. Two and six add to eight. Three and four add to seven. That is the middle number. So three and four.", V.tbl([['1 × 12', '13'], ['2 × 6', '8'], ['3 × 4', '7 ✓']], ['Multiply to 12', 'Add'])),
+      S("The brackets are x plus three, and x plus four.", g('(x + 3)(x + 4)'))
+    ]),
+    SC('Negative middle', 'Example 5: x² − 7x + 10', [
+      S("The last number is positive ten, but the middle is negative seven. When the last number is positive and the middle is negative, both numbers are negative. Pairs: minus one and minus ten add to minus eleven. Minus two and minus five add to minus seven. That is the one.", V.tbl([['−1, −10', '−11'], ['−2, −5', '−7 ✓']], ['Multiply to 10', 'Add'])),
+      S("So x minus two, times x minus five. Check. Minus two times minus five is plus ten. Minus two x minus five x is minus seven x. Correct.", g('(x − 2)(x − 5)'))
+    ]),
+    SC('Negative last number', 'Example 6: x² + 2x − 15', [
+      S("Now the last number is negative fifteen. A negative product means one number is positive and one is negative. Pairs that multiply to fifteen in size. One and fifteen. Three and five. We need them to add to plus two. Try minus three and plus five. They multiply to minus fifteen, and add to plus two.", V.tbl([['−1, 15', '14'], ['1, −15', '−14'], ['−3, 5', '2 ✓'], ['3, −5', '−2']], ['Multiply to −15', 'Add'])),
+      S("So x minus three, times x plus five.", g('(x − 3)(x + 5)')),
+      S("A tip. When the last number is negative, the bigger of the two numbers takes the sign of the middle number.", V.rule('Last number negative: one + and one −.'))
+    ]),
+    SC('Difference of squares', 'Example 7: x² − 9', [
+      S("There is no x term here. Think of it as x squared plus zero x minus nine. We need two numbers that multiply to minus nine and add to zero. Three and minus three. So x minus three, times x plus three.", E('x² − 9') + g('= (x − 3)(x + 3)'))
+    ]),
+    SC('Solving a quadratic', 'Example 8: x² + 5x + 6 = 0', [
+      S("Why do we factorise? To solve equations. Take x squared plus five x plus six equals zero. Factorise. x plus two, times x plus three, equals zero.", E('(x + 2)(x + 3) = 0')),
+      S("Here is the key idea. If two things multiply to give zero, one of them must be zero. So either x plus two is zero, or x plus three is zero. That gives x equals minus two, or x equals minus three.", E('x + 2 = 0 → x = −2') + E('x + 3 = 0 → x = −3'))
+    ]),
+    SC('Check the answers', 'Example 9: put them back', [
+      S("Check x equals minus two. Four, minus ten, plus six. That is zero. Check x equals minus three. Nine, minus fifteen, plus six. Zero as well. Both work.", E('(−2)² + 5(−2) + 6 = 0 ✓') + E('(−3)² + 5(−3) + 6 = 0 ✓'))
+    ]),
+    SC('Equations with brackets', 'Example 10: 4(x − 2) = 3(x + 1)', [
+      S("Now equations with brackets, which are not quadratics. Expand both sides first. Four x minus eight, equals three x plus three.", E('4x − 8 = 3x + 3')),
+      S("Take three x from both sides. x minus eight equals three. Add eight. x equals eleven. Check. Four times nine is thirty-six. Three times twelve is thirty-six. Equal.", E('x − 8 = 3') + g('x = 11'))
+    ]),
+    SC('Watch out!', 'Three common mistakes', [
+      S("Mistake one: not taking out the highest common factor. Six x plus nine is three bracket two x plus three, not one bracket six x plus nine.", V.rule('Take out the highest factor.')),
+      S("Mistake two: finding two numbers that add to the right total but do not multiply to the last number. You need both.", r('2 + 3 = 5, but 2 × 3 = 6 needed too') + V.rule('Both tests: multiply and add.')),
+      S("Mistake three: forgetting that a quadratic equation usually has two answers, and forgetting to set it equal to zero first.", V.rule('Equal to zero. Two answers.'))
+    ]),
+    SC('In real life', 'Areas', [
+      S("A rectangular garden has area x squared plus five x plus six square metres. Factorising gives x plus two, times x plus three. So its sides are x plus two metres and x plus three metres. Factorising lets us find the dimensions from the area.", g('Sides: (x + 2) m and (x + 3) m'))
+    ]),
+    L.turn("Your turn! Number one. Factorise x squared plus seven x plus twelve. Look for two numbers that multiply to twelve and add to seven. Pause and try it.", E('x² + 7x + 12'), "Three and four multiply to twelve and add to seven. So x plus three, times x plus four.", g('(x + 3)(x + 4)')),
+    L.turn("Your turn! Number two. Factorise x squared minus eight x plus fifteen. Both numbers are negative. Pause and try it.", E('x² − 8x + 15'), "Minus three and minus five multiply to fifteen and add to minus eight. So x minus three, times x minus five.", g('(x − 3)(x − 5)')),
+    L.turn("Your turn! Number three. Solve x squared plus x minus six equals zero. Factorise first. Pause and try it.", E('x² + x − 6 = 0'), "Minus two and plus three multiply to minus six and add to one. So x minus two, times x plus three, equals zero. x is two or minus three.", g('x = 2 or x = −3')),
+    L.turn("Your turn! Number four. Solve three bracket x plus four, equals two bracket x minus one, plus twenty. Pause and try it.", E('3(x + 4) = 2(x − 1) + 20'), "Three x plus twelve equals two x plus eighteen. So x is six.", g('x = 6')),
+    L.rec('How do you use brackets and factorising to solve equations?', "To factorise, take out the highest common factor. For a quadratic x squared plus b x plus c, find two numbers that multiply to c and add to b, and put them in two brackets. Check by expanding. To solve a quadratic, make it equal zero, factorise, and set each bracket equal to zero. For equations with brackets, expand first, then solve.", ['Take out the HCF', 'Quadratic: × to c, + to b', 'Check by expanding', 'Each bracket = 0'])
+  ]);
+
   N('How do you expand brackets, including negatives?', 'how to multiply every term inside a bracket and handle minus signs.', [
     SC('Brackets', 'Start with the basics', [
       S("A bracket groups terms together. The number outside tells us to multiply everything inside. Three bracket x plus four means three times x, and three times four. We say we expand the bracket.", E('3(x + 4)', 'b')),
