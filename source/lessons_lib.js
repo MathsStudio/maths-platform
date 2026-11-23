@@ -211,6 +211,12 @@
       }); });
     });
   }
+  /* same as L.use, but always runs the full-lesson passes (used for P4 to P7 rebuilt lessons) */
+  L.usePri = function (n, items) {
+    var list = items.map(function (x) { return typeof x === 'string' ? L.get(x) : x; });
+    list.forEach(function (it) { if (it && it.scenes && !/^\uD83D\uDCD6/.test(it.title || '')) { splitTurns(it); extraCalc(it); showWords(it.scenes); fit(it.scenes); } });
+    BT.lessons(n, 'Watch lesson', list);
+  };
   L.use = function (n, items) {
     var list = items.map(function (x) { return typeof x === 'string' ? L.get(x) : x; });
     if (n >= 801 && n <= 853) list.forEach(function (it) { if (it && it.scenes) { splitTurns(it); extraCalc(it); showWords(it.scenes); fit(it.scenes); } });
