@@ -297,9 +297,9 @@
       [q, tip, op].forEach(function (e) { if (e) e.parentNode.removeChild(e); });
       var ph = tmp.innerHTML.trim(), P = stage.querySelector('.flx-pic'), T = stage.querySelector('.flx-top'), O = stage.querySelector('.flx-opts');
       if (ph !== flPic) { flPic = ph; P.innerHTML = ph; P.classList.toggle('flx-plain', !!ph && ph.indexOf('flb-stage') < 0); P.classList.remove('flx-in'); void P.offsetWidth; P.classList.add('flx-in'); fitPic(P); }
-      /* the question is told, not written: only the choices appear, for the child to tap */
-      var th = '';
-      if (th !== flTop) { flTop = th; T.innerHTML = th; }
+      /* the question is written at the top as well as told, so the child can read it and then tap an answer */
+      var th = q ? '<div class="flx-q">' + q.innerHTML + '</div>' : '';
+      if (th !== flTop) { flTop = th; T.innerHTML = th; P.style.top = th ? (T.offsetHeight + 18) + 'px' : ''; fitPic(P); }
       /* answer choices get their own space under the picture, so they never cover it */
       if (P.classList.contains('flx-ask') !== !!op) { P.classList.toggle('flx-ask', !!op); fitPic(P); }
       fitBox(P);
