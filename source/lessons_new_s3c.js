@@ -31,6 +31,17 @@
     SC('Whole numbers', 'Example 7: list the integers', [
       S("List the whole numbers that satisfy minus two is less than or equal to x, which is less than four. They are minus two, minus one, zero, one, two and three. Four is not included, because the sign is less than.", g('−2, −1, 0, 1, 2, 3'))
     ]),
+    SC('A negative coefficient', 'Example 8: 3 − 2x ≥ 11, slowly', [
+      S("Let us do one where the x term is negative. Three minus two x is at least eleven. Step one. Subtract three from both sides. Minus two x is at least eight.", E('3 − 2x ≥ 11') + E('−2x ≥ 8')),
+      S("Step two. Divide both sides by minus two. We are dividing by a negative number, so we must flip the sign. At least becomes at most. x is at most minus four.", g('x ≤ −4')),
+      S("Step three. Check with numbers. Try x equals minus five, which should work. Three minus two times minus five is three plus ten, thirteen. Thirteen is at least eleven. Yes. Now try x equals zero, which should fail. Three minus zero is three. Three is not at least eleven. Correct.", E('x = −5: 13 ≥ 11 ✓') + E('x = 0: 3 ≥ 11 ✗')),
+      S("A second way, if you dislike dividing by a negative. Add two x to both sides, and subtract eleven. Three minus eleven is minus eight, so minus eight is at least two x. Then x is at most minus four. Same answer, and no flip needed.", V.note('Or move x to the positive side'))
+    ]),
+    SC('Double inequalities', 'Example 9: −3 < 2x + 1 ≤ 9', [
+      S("Sometimes x is trapped between two values. Do the same step to all three parts. Subtract one from each part. Minus four is less than two x, which is at most eight.", E('−3 < 2x + 1 ≤ 9') + E('−4 < 2x ≤ 8')),
+      S("Divide all three parts by two. Minus two is less than x, which is at most four. x is bigger than minus two, and no bigger than four.", g('−2 < x ≤ 4')),
+      S("The whole numbers that fit are minus one, zero, one, two, three and four. Minus two is not included, because of the less than sign. Four is included, because of the less than or equal sign.", g('−1, 0, 1, 2, 3, 4'))
+    ]),
     SC('Watch out!', 'Three common mistakes', [
       S("Mistake one: forgetting to flip the sign when dividing by a negative.", r('−2x < 10 → x < −5  ✗') + g('x > −5  ✓')),
       S("Mistake two: using the wrong circle on the number line.", V.rule('Hollow: not included.')),
@@ -68,6 +79,16 @@
     SC('Check', 'Example 6: substitute back', [
       S("Check with numbers. If r is three, then A is pi times nine. Put that into r equals root of A over pi. A over pi is nine. The square root of nine is three. We get back to r equals three.", V.rule('Substitute to check.'))
     ]),
+    SC('A longer one', 'Example 7: V = ⅓πr²h, make r the subject', [
+      S("This is the volume of a cone. We want r on its own. Go slowly, one step at a time. Step one. Get rid of the fraction. Multiply both sides by three. Three V equals pi r squared h.", E('V = ⅓πr²h') + E('3V = πr²h')),
+      S("Step two. r squared is multiplied by pi and by h. Divide both sides by pi h. Three V over pi h equals r squared.", E('3V/(πh) = r²')),
+      S("Step three. Square root both sides. r equals the square root of three V over pi h. The square root covers the whole fraction.", g('r = √(3V/(πh))')),
+      S("Step four. Check with numbers. A cone with radius three and height four has volume pi times nine times four over three, which is twelve pi. Put V equals twelve pi, h equals four into the new formula. Three times twelve pi is thirty-six pi. Over pi times four is nine. The square root of nine is three. We get radius three back.", E('√(36π/(4π)) = √9 = 3 ✓'))
+    ]),
+    SC('Two steps with a root', 'Example 8: v² = u² + 2as, make u the subject', [
+      S("This is a physics formula. Step one. Subtract two a s from both sides. v squared minus two a s equals u squared.", E('v² = u² + 2as') + E('v² − 2as = u²')),
+      S("Step two. Square root both sides. u equals the square root of v squared minus two a s. Notice we cannot split the root across the minus.", g('u = √(v² − 2as)'))
+    ]),
     SC('Watch out!', 'Three common mistakes', [
       S("Mistake one: taking the square root of only one term. You must square root the whole side.", r('a = √c² − √b²  ✗') + g('a = √(c² − b²)  ✓')),
       S("Mistake two: doing the steps in the wrong order. Undo the last operation first.", V.rule('Undo in reverse.')),
@@ -103,6 +124,18 @@
     ]),
     SC('Check', 'Example 5: with numbers', [
       S("Test the result of Example three. Let q be four and r be six. Then p is four plus six over four, which is two point five. Now q equals r over p minus one, six over one point five, which is four. It works.", V.rule('Check with numbers.'))
+    ]),
+    SC('With numbers first', 'Example 6: see the idea with numbers', [
+      S("Before using letters, let us do the same steps with numbers, so the idea is clear. Solve five x plus three equals two x plus twelve. Step one. Subtract two x from both sides, so the x terms are together. Three x plus three equals twelve.", E('5x + 3 = 2x + 12') + E('3x + 3 = 12')),
+      S("Step two. Subtract three. Three x equals nine. Step three. Divide by three. x equals three.", E('3x = 9') + g('x = 3')),
+      S("Now do exactly the same with letters. a x plus b equals c x plus d. Subtract c x, and subtract b. a x minus c x equals d minus b. Factorise the x. x bracket a minus c equals d minus b. Divide by a minus c. The steps are identical, only the numbers have become letters.", E('x = (d − b)/(a − c)', 'g') + V.rule('Same steps as numbers.')),
+      S("Check using our numbers. a is five, b is three, c is two, d is twelve. d minus b is nine. a minus c is three. Nine over three is three. The formula gives x equals three again.", E('(12 − 3)/(5 − 2) = 3 ✓'))
+    ]),
+    SC('Another type', 'Example 7: y = (2x + 1)/(x − 3)', [
+      S("Make x the subject. Step one. Multiply both sides by x minus three, to clear the fraction. y bracket x minus three equals two x plus one.", E('y(x − 3) = 2x + 1')),
+      S("Step two. Expand the bracket. y x minus three y equals two x plus one. Step three. Collect all the x terms on one side. Subtract two x. y x minus two x minus three y equals one. Add three y. y x minus two x equals one plus three y.", E('yx − 3y = 2x + 1') + E('yx − 2x = 1 + 3y')),
+      S("Step four. Factorise the left side. x bracket y minus two equals one plus three y. Step five. Divide. x equals one plus three y, over y minus two.", E('x(y − 2) = 1 + 3y') + g('x = (1 + 3y)/(y − 2)')),
+      S("Check with y equals five. Then x would be sixteen over three. Put x equals sixteen thirds into the original. Two times sixteen thirds plus one is thirty-five thirds. Sixteen thirds minus three is seven thirds. Thirty-five thirds divided by seven thirds is five. It matches.", V.rule('Check with a number.'))
     ]),
     SC('Watch out!', 'Three common mistakes', [
       S("Mistake one: trying to divide before factorising. You cannot divide by x when it is in two places.", V.rule('Factorise first.')),

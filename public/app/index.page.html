@@ -25471,6 +25471,19 @@ S.spatialExtra = S.extraMakers;
     SC('A minus in front', 'Example 7: subtracting a bracket', [
       S("Simplify five x plus six, minus bracket two x plus one. The minus in front multiplies the whole bracket by minus one. So minus two x and minus one. Five x minus two x is three x. Six minus one is five.", E('5x + 6 − (2x + 1)') + E('= 5x + 6 − 2x − 1') + g('= 3x + 5'))
     ]),
+    SC('Why minus times minus is plus', 'A pattern to trust', [
+      S("Many students ask why a negative times a negative is positive. Here is a pattern that shows it. Look at minus three times three, minus three times two, minus three times one. Each answer goes up by three as the number goes down by one.", V.tbl([['−3 × 3', '−9'], ['−3 × 2', '−6'], ['−3 × 1', '−3'], ['−3 × 0', '0']], ['Sum', 'Answer'])),
+      S("Carry on the pattern. Minus three times minus one must be three, to keep going up by three. Minus three times minus two is six. So a negative times a negative is positive.", E('−3 × −1 = +3') + E('−3 × −2 = +6', 'g'))
+    ]),
+    SC('Two bracket terms', 'Example 8: 3(2x − 1) − 2(x − 4)', [
+      S("Take it very slowly. Step one. Expand the first bracket. Three times two x is six x. Three times minus one is minus three. So six x minus three.", E('3(2x − 1) = 6x − 3')),
+      S("Step two. Expand the second bracket, with its minus two in front. Minus two times x is minus two x. Minus two times minus four is plus eight. So minus two x plus eight.", E('−2(x − 4) = −2x + 8')),
+      S("Step three. Put them together. Six x minus three, minus two x, plus eight. Step four. Collect the x terms. Six x minus two x is four x. Collect the numbers. Minus three plus eight is five.", E('6x − 3 − 2x + 8') + g('= 4x + 5')),
+      S("Step five. Check with a number. Let x be two. The original is three times three, minus two times minus two. Nine plus four is thirteen. The answer four times two plus five is thirteen. They agree.", E('x = 2: 13 = 13 ✓'))
+    ]),
+    SC('Letters outside', 'Example 9: −x(3 − x)', [
+      S("The outside can be a letter too. Minus x times three is minus three x. Minus x times minus x is plus x squared, because a negative times a negative is positive. So the answer is minus three x plus x squared. We usually write the x squared first.", E('−x(3 − x)') + g('= x² − 3x'))
+    ]),
     SC('Watch out!', 'Three common mistakes', [
       S("Mistake one: multiplying only the first term. Three bracket x plus four is not three x plus four.", r('3x + 4  ✗') + g('3x + 12  ✓')),
       S("Mistake two: getting signs wrong with a negative outside.", r('−2(x + 6) = −2x + 12  ✗') + g('= −2x − 12  ✓')),
@@ -25511,6 +25524,18 @@ S.spatialExtra = S.extraMakers;
     SC('With a number in front', 'Example 6: (2x + 1)(x + 3)', [
       S("First, two x squared. Outside, six x. Inside, one x. Last, three. Seven x in the middle. So two x squared plus seven x plus three.", E('2x² + 6x + x + 3') + g('= 2x² + 7x + 3'))
     ]),
+    SC('A picture of why', 'The area model', [
+      S("Why do we need four multiplications? Picture a rectangle with sides x plus two, and x plus three. Cut it into four pieces. One big square of x by x, which is x squared. Two strips, x by three, and x by two. And one small rectangle, two by three, which is six.", V.tbl([['x²', '3x'], ['2x', '6']], ['', 'x', '3'])),
+      S("Add the areas of all four pieces. x squared, plus three x, plus two x, plus six. That is x squared plus five x plus six. So each piece is one of the four products. We never miss one when we use the grid.", V.rule('Four pieces, four products.'))
+    ]),
+    SC('Perfect difference', 'Example 7: (x + 5)(x − 5)', [
+      S("This is a special case. First, x squared. Outside, x times minus five is minus five x. Inside, five times x is plus five x. Last, five times minus five is minus twenty-five. The middle terms cancel. We are left with x squared minus twenty-five.", E('x² − 5x + 5x − 25') + g('= x² − 25')),
+      S("So a sum times a difference gives a difference of two squares. Remember this. We will use it for factorising.", V.rule('(x + a)(x − a) = x² − a²'))
+    ]),
+    SC('A number in front', 'Example 8: (3x − 2)(x + 4)', [
+      S("Step one, First. Three x times x is three x squared. Step two, Outside. Three x times four is twelve x. Step three, Inside. Minus two times x is minus two x. Step four, Last. Minus two times four is minus eight.", E('3x² + 12x − 2x − 8')),
+      S("Step five. Collect the middle terms. Twelve x minus two x is ten x. The answer is three x squared plus ten x minus eight.", g('= 3x² + 10x − 8'))
+    ]),
     SC('Watch out!', 'Three common mistakes', [
       S("Mistake one: squaring each term. x plus four squared is not x squared plus sixteen.", r('(x + 4)² = x² + 16  ✗') + g('= x² + 8x + 16  ✓')),
       S("Mistake two: forgetting one of the four products.", V.rule('Four products, always.')),
@@ -25550,6 +25575,19 @@ S.spatialExtra = S.extraMakers;
     SC('Difference of two squares', 'Example 6: x² − 25', [
       S("There is a special pattern. A square minus a square factorises into two brackets. x squared minus twenty-five is x squared minus five squared. So x minus five, times x plus five.", E('x² − 25') + g('= (x − 5)(x + 5)'))
     ]),
+    SC('Finding the HCF', 'How to be sure you have the highest', [
+      S("Let us do this carefully. To find the highest common factor of an expression, deal with the numbers first, then the letters. Take eight x squared plus twelve x. Step one, the numbers. Eight and twelve. The biggest number that divides both is four.", E('8x² + 12x') + E('HCF of 8 and 12 = 4')),
+      S("Step two, the letters. x squared is x times x. Twelve x has one x. The most x's they share is one. So the letter part is x.", E('x² and x share x')),
+      S("Step three. Put them together. The highest common factor is four x. Divide each term by four x. Eight x squared over four x is two x. Twelve x over four x is three.", E('8x² ÷ 4x = 2x') + E('12x ÷ 4x = 3')),
+      S("The answer is four x, bracket two x plus three. Step four. Check by expanding. Four x times two x is eight x squared. Four x times three is twelve x. Correct.", g('4x(2x + 3)'))
+    ]),
+    SC('With a minus', 'Example 7: 15y² − 10y', [
+      S("Fifteen and ten share five. y squared and y share y. The highest common factor is five y. Fifteen y squared over five y is three y. Minus ten y over five y is minus two. So five y, bracket three y minus two.", E('15y² − 10y') + g('= 5y(3y − 2)'))
+    ]),
+    SC('A square minus a square', 'Example 8: 4x² − 49', [
+      S("There is no common factor except one. But look. Four x squared is two x, all squared. Forty-nine is seven squared. A square minus a square. It factorises into two x minus seven, times two x plus seven.", E('4x² − 49 = (2x)² − 7²') + g('= (2x − 7)(2x + 7)')),
+      S("Check by expanding. Two x times two x is four x squared. The middle terms cancel. Minus seven times seven is minus forty-nine. Correct.", V.rule('a² − b² = (a − b)(a + b)'))
+    ]),
     SC('Watch out!', 'Three common mistakes', [
       S("Mistake one: not taking out the highest common factor.", V.rule('Highest common factor.')),
       S("Mistake two: forgetting the one. Factorising x squared plus x gives x bracket x plus one.", r('x(x)  ✗') + g('x(x + 1)  ✓')),
@@ -25588,6 +25626,19 @@ S.spatialExtra = S.extraMakers;
     ]),
     SC('Sharing', 'Example 7: tiles', [
       S("A room is twelve metres by eighteen metres. What is the biggest square tile that fits exactly? That is the highest common factor. Six metres.", g('6 m'))
+    ]),
+    SC('Bigger numbers', 'Example 8: 60 and 84, by factor trees', [
+      S("Let us use prime factors for bigger numbers, very carefully. Step one. Break down sixty. Sixty is two times thirty. Thirty is two times fifteen. Fifteen is three times five. So sixty is two times two times three times five.", E('60 = 2 × 2 × 3 × 5')),
+      S("Step two. Break down eighty-four. Eighty-four is two times forty-two. Forty-two is two times twenty-one. Twenty-one is three times seven. So eighty-four is two times two times three times seven.", E('84 = 2 × 2 × 3 × 7')),
+      S("Step three, the highest common factor. Which primes do they both have? Two, two and three. Multiply. Two times two times three is twelve.", g('HCF = 2 × 2 × 3 = 12')),
+      S("Step four, the lowest common multiple. Take every prime, the most times it appears in either number. Two, two, three, five and seven. Multiply. Two times two is four. Times three is twelve. Times five is sixty. Times seven is four hundred and twenty.", g('LCM = 2 × 2 × 3 × 5 × 7 = 420')),
+      S("A lovely check. The HCF times the LCM equals the product of the two numbers. Twelve times four hundred and twenty is five thousand and forty. Sixty times eighty-four is five thousand and forty. It matches.", E('12 × 420 = 60 × 84 = 5040 ✓'))
+    ]),
+    SC('Using it', 'Example 9: simplifying a fraction', [
+      S("The HCF helps simplify fractions. Sixty over eighty-four. Divide the top and bottom by the HCF, twelve. Sixty over twelve is five. Eighty-four over twelve is seven. So sixty over eighty-four is five sevenths.", E('60/84 = 5/7', 'g'))
+    ]),
+    SC('Adding fractions', 'Example 10: the LCM as a common denominator', [
+      S("The LCM gives the best common denominator. To add a sixth and a quarter, the lowest common multiple of six and four is twelve. A sixth is two twelfths. A quarter is three twelfths. Add. Five twelfths.", E('1/6 + 1/4 = 2/12 + 3/12') + g('= 5/12'))
     ]),
     SC('Watch out!', 'Three common mistakes', [
       S("Mistake one: mixing up HCF and LCM. HCF is never bigger than the smaller number. LCM is never smaller than the bigger number.", V.rule('HCF small. LCM big.')),
@@ -25637,6 +25688,17 @@ S.spatialExtra = S.extraMakers;
     SC('Whole numbers', 'Example 7: list the integers', [
       S("List the whole numbers that satisfy minus two is less than or equal to x, which is less than four. They are minus two, minus one, zero, one, two and three. Four is not included, because the sign is less than.", g('−2, −1, 0, 1, 2, 3'))
     ]),
+    SC('A negative coefficient', 'Example 8: 3 − 2x ≥ 11, slowly', [
+      S("Let us do one where the x term is negative. Three minus two x is at least eleven. Step one. Subtract three from both sides. Minus two x is at least eight.", E('3 − 2x ≥ 11') + E('−2x ≥ 8')),
+      S("Step two. Divide both sides by minus two. We are dividing by a negative number, so we must flip the sign. At least becomes at most. x is at most minus four.", g('x ≤ −4')),
+      S("Step three. Check with numbers. Try x equals minus five, which should work. Three minus two times minus five is three plus ten, thirteen. Thirteen is at least eleven. Yes. Now try x equals zero, which should fail. Three minus zero is three. Three is not at least eleven. Correct.", E('x = −5: 13 ≥ 11 ✓') + E('x = 0: 3 ≥ 11 ✗')),
+      S("A second way, if you dislike dividing by a negative. Add two x to both sides, and subtract eleven. Three minus eleven is minus eight, so minus eight is at least two x. Then x is at most minus four. Same answer, and no flip needed.", V.note('Or move x to the positive side'))
+    ]),
+    SC('Double inequalities', 'Example 9: −3 < 2x + 1 ≤ 9', [
+      S("Sometimes x is trapped between two values. Do the same step to all three parts. Subtract one from each part. Minus four is less than two x, which is at most eight.", E('−3 < 2x + 1 ≤ 9') + E('−4 < 2x ≤ 8')),
+      S("Divide all three parts by two. Minus two is less than x, which is at most four. x is bigger than minus two, and no bigger than four.", g('−2 < x ≤ 4')),
+      S("The whole numbers that fit are minus one, zero, one, two, three and four. Minus two is not included, because of the less than sign. Four is included, because of the less than or equal sign.", g('−1, 0, 1, 2, 3, 4'))
+    ]),
     SC('Watch out!', 'Three common mistakes', [
       S("Mistake one: forgetting to flip the sign when dividing by a negative.", r('−2x < 10 → x < −5  ✗') + g('x > −5  ✓')),
       S("Mistake two: using the wrong circle on the number line.", V.rule('Hollow: not included.')),
@@ -25674,6 +25736,16 @@ S.spatialExtra = S.extraMakers;
     SC('Check', 'Example 6: substitute back', [
       S("Check with numbers. If r is three, then A is pi times nine. Put that into r equals root of A over pi. A over pi is nine. The square root of nine is three. We get back to r equals three.", V.rule('Substitute to check.'))
     ]),
+    SC('A longer one', 'Example 7: V = ⅓πr²h, make r the subject', [
+      S("This is the volume of a cone. We want r on its own. Go slowly, one step at a time. Step one. Get rid of the fraction. Multiply both sides by three. Three V equals pi r squared h.", E('V = ⅓πr²h') + E('3V = πr²h')),
+      S("Step two. r squared is multiplied by pi and by h. Divide both sides by pi h. Three V over pi h equals r squared.", E('3V/(πh) = r²')),
+      S("Step three. Square root both sides. r equals the square root of three V over pi h. The square root covers the whole fraction.", g('r = √(3V/(πh))')),
+      S("Step four. Check with numbers. A cone with radius three and height four has volume pi times nine times four over three, which is twelve pi. Put V equals twelve pi, h equals four into the new formula. Three times twelve pi is thirty-six pi. Over pi times four is nine. The square root of nine is three. We get radius three back.", E('√(36π/(4π)) = √9 = 3 ✓'))
+    ]),
+    SC('Two steps with a root', 'Example 8: v² = u² + 2as, make u the subject', [
+      S("This is a physics formula. Step one. Subtract two a s from both sides. v squared minus two a s equals u squared.", E('v² = u² + 2as') + E('v² − 2as = u²')),
+      S("Step two. Square root both sides. u equals the square root of v squared minus two a s. Notice we cannot split the root across the minus.", g('u = √(v² − 2as)'))
+    ]),
     SC('Watch out!', 'Three common mistakes', [
       S("Mistake one: taking the square root of only one term. You must square root the whole side.", r('a = √c² − √b²  ✗') + g('a = √(c² − b²)  ✓')),
       S("Mistake two: doing the steps in the wrong order. Undo the last operation first.", V.rule('Undo in reverse.')),
@@ -25709,6 +25781,18 @@ S.spatialExtra = S.extraMakers;
     ]),
     SC('Check', 'Example 5: with numbers', [
       S("Test the result of Example three. Let q be four and r be six. Then p is four plus six over four, which is two point five. Now q equals r over p minus one, six over one point five, which is four. It works.", V.rule('Check with numbers.'))
+    ]),
+    SC('With numbers first', 'Example 6: see the idea with numbers', [
+      S("Before using letters, let us do the same steps with numbers, so the idea is clear. Solve five x plus three equals two x plus twelve. Step one. Subtract two x from both sides, so the x terms are together. Three x plus three equals twelve.", E('5x + 3 = 2x + 12') + E('3x + 3 = 12')),
+      S("Step two. Subtract three. Three x equals nine. Step three. Divide by three. x equals three.", E('3x = 9') + g('x = 3')),
+      S("Now do exactly the same with letters. a x plus b equals c x plus d. Subtract c x, and subtract b. a x minus c x equals d minus b. Factorise the x. x bracket a minus c equals d minus b. Divide by a minus c. The steps are identical, only the numbers have become letters.", E('x = (d − b)/(a − c)', 'g') + V.rule('Same steps as numbers.')),
+      S("Check using our numbers. a is five, b is three, c is two, d is twelve. d minus b is nine. a minus c is three. Nine over three is three. The formula gives x equals three again.", E('(12 − 3)/(5 − 2) = 3 ✓'))
+    ]),
+    SC('Another type', 'Example 7: y = (2x + 1)/(x − 3)', [
+      S("Make x the subject. Step one. Multiply both sides by x minus three, to clear the fraction. y bracket x minus three equals two x plus one.", E('y(x − 3) = 2x + 1')),
+      S("Step two. Expand the bracket. y x minus three y equals two x plus one. Step three. Collect all the x terms on one side. Subtract two x. y x minus two x minus three y equals one. Add three y. y x minus two x equals one plus three y.", E('yx − 3y = 2x + 1') + E('yx − 2x = 1 + 3y')),
+      S("Step four. Factorise the left side. x bracket y minus two equals one plus three y. Step five. Divide. x equals one plus three y, over y minus two.", E('x(y − 2) = 1 + 3y') + g('x = (1 + 3y)/(y − 2)')),
+      S("Check with y equals five. Then x would be sixteen over three. Put x equals sixteen thirds into the original. Two times sixteen thirds plus one is thirty-five thirds. Sixteen thirds minus three is seven thirds. Thirty-five thirds divided by seven thirds is five. It matches.", V.rule('Check with a number.'))
     ]),
     SC('Watch out!', 'Three common mistakes', [
       S("Mistake one: trying to divide before factorising. You cannot divide by x when it is in two places.", V.rule('Factorise first.')),
@@ -25757,6 +25841,18 @@ S.spatialExtra = S.extraMakers;
     SC('Special lines', 'Example 6: flat and vertical', [
       S("A flat line has the same y everywhere, so the rise is zero. The gradient is zero. A vertical line has the same x everywhere, so the run is zero, and we cannot divide by zero. A vertical line has no gradient, we say it is undefined.", V.list(['Horizontal: m = 0', 'Vertical: undefined']))
     ]),
+    SC('Negative coordinates', 'Example 6: (−2, −1) and (2, 5), slowly', [
+      S("Negative numbers are where mistakes happen. Take the points minus two, minus one, and two, five. Step one. Label them. x one is minus two, y one is minus one. x two is two, y two is five.", E('(x₁, y₁) = (−2, −1)') + E('(x₂, y₂) = (2, 5)')),
+      S("Step two. The rise is y two minus y one. Five minus minus one. Subtracting a negative is the same as adding. Five plus one is six.", E('5 − (−1) = 6')),
+      S("Step three. The run is x two minus x one. Two minus minus two. That is two plus two, four.", E('2 − (−2) = 4')),
+      S("Step four. Gradient is six over four. Simplify. Three over two, or one and a half. A gradient that is not a whole number is perfectly fine.", g('m = 6/4 = 3/2')),
+      S("Step five. Does it make sense? The line goes up as we move right, so the gradient is positive. Yes.", V.rule('Does the sign make sense?'))
+    ]),
+    SC('From a real graph', 'Example 7: the cost of hiring a van', [
+      S("The cost of hiring a van is plotted against the days. At zero days the cost is three pounds. At four days the cost is eleven pounds. The points are zero, three and four, eleven.", E('(0, 3) and (4, 11)')),
+      S("The rise is eleven minus three, eight. The run is four minus zero, four. The gradient is eight over four, which is two.", g('m = 8 ÷ 4 = 2')),
+      S("What does it mean? Each extra day costs two pounds more. The gradient is the rate of change, here two pounds per day. The three pounds is the fixed charge.", V.rule('Gradient = rate of change.'))
+    ]),
     SC('Watch out!', 'Three common mistakes', [
       S("Mistake one: dividing run by rise. It is rise over run.", r('run ÷ rise  ✗') + g('rise ÷ run  ✓')),
       S("Mistake two: mixing the order of the points. Top and bottom must match.", V.rule('Same order on top and bottom.')),
@@ -25792,6 +25888,15 @@ S.spatialExtra = S.extraMakers;
     ]),
     SC('Parallel lines', 'Example 6: same gradient', [
       S("Lines with the same gradient are parallel. y equals two x plus one and y equals two x minus four never meet.", E('y = 2x + 1') + E('y = 2x − 4') + g('Parallel'))
+    ]),
+    SC('Rearranging slowly', 'Example 7: 2x + 3y = 12', [
+      S("Sometimes the equation is not in the form y equals m x plus c. Step one. Get the y term on its own. Subtract two x from both sides. Three y equals twelve minus two x.", E('2x + 3y = 12') + E('3y = 12 − 2x')),
+      S("Step two. Divide every term by three. y equals four, minus two thirds x. Write the x term first. y equals minus two thirds x plus four.", g('y = −⅔x + 4')),
+      S("Now read off. The gradient is minus two thirds. The line crosses the y axis at four. A negative gradient, so the line slopes down.", E('m = −⅔, c = 4'))
+    ]),
+    SC('Quick sketches', 'Example 8: drawing from m and c', [
+      S("You can sketch a line from y equals m x plus c without a table. Take y equals a half x plus one. Step one. Plot the y-intercept, zero, one. Step two. The gradient is a half. That means across two, up one. From zero, one, go across two and up one, to two, two. Step three. Join the points and extend.", E('y = ½x + 1') + V.rule('Start at c. Then rise over run.')),
+      S("Check with the equation. At x equals two, y is a half times two plus one, which is two. The point is on the line.", E('x = 2: y = 2 ✓'))
     ]),
     SC('Watch out!', 'Three common mistakes', [
       S("Mistake one: not rearranging to y equals first. In two y equals six x plus four, the gradient is three, not six.", r('m = 6  ✗') + g('y = 3x + 2, m = 3  ✓')),
@@ -25830,6 +25935,15 @@ S.spatialExtra = S.extraMakers;
     SC('Fractions', 'Example 6: a fractional gradient', [
       S("Points two, one and six, three. Gradient is two over four, a half. y equals a half x plus c. Put in two, one. One equals one plus c, so c is zero. y equals a half x.", g('y = ½x'))
     ]),
+    SC('Negative point', 'Example 7: gradient 3, through (−1, 4)', [
+      S("Take care with negatives. Start with y equals three x plus c. Step one. Put in x equals minus one and y equals four. Four equals three times minus one, plus c.", E('4 = 3(−1) + c')),
+      S("Step two. Three times minus one is minus three. So four equals minus three plus c. Add three to both sides. c equals seven.", E('4 = −3 + c') + g('c = 7')),
+      S("Step three. Write the equation. y equals three x plus seven. Check. Put in x equals minus one. Three times minus one plus seven is four. Correct.", g('y = 3x + 7') + E('3(−1) + 7 = 4 ✓'))
+    ]),
+    SC('Parallel line', 'Example 8: parallel to y = 2x − 1, through (2, 7)', [
+      S("Parallel lines have the same gradient. The line y equals two x minus one has gradient two. So our line also has gradient two. y equals two x plus c.", V.rule('Parallel: same gradient.')),
+      S("Put in two, seven. Seven equals four plus c. So c is three. The equation is y equals two x plus three. Check the point. Two times two plus three is seven. Correct.", g('y = 2x + 3'))
+    ]),
     SC('Watch out!', 'Three common mistakes', [
       S("Mistake one: putting x and y the wrong way round.", V.rule('Point (x, y): x first.')),
       S("Mistake two: finding c with the wrong sign.", V.rule('Solve for c carefully.')),
@@ -25866,6 +25980,14 @@ S.spatialExtra = S.extraMakers;
     SC('Reading a value', 'Example 6: using the graph', [
       S("To find y when x is two point five on y equals two x plus one, go up from two point five to the line, then across. About six.", V.note('Read across from the line'))
     ]),
+    SC('A fractional gradient', 'Example 7: y = ½x + 1', [
+      S("When there is a half in the equation, choose even values of x, so there are no fractions. x equals zero gives y equals one. x equals two gives y equals two. x equals four gives y equals three. x equals six gives y equals four.", V.tbl([['0', '2', '4', '6'], ['1', '2', '3', '4']], ['x', 'y'])),
+      S("Plot them. Each time x goes across two, y goes up one. That matches the gradient of a half. Join them with a ruler.", V.rule('Choose x to avoid fractions.'))
+    ]),
+    SC('How many points', 'Why three points is better than two', [
+      S("Two points are enough to draw a line. But we use three, or more. If all three are in a straight line, we know our calculations are right. If one is off the line, we have made a mistake, and we can find it.", V.rule('Three points: one is a check.')),
+      S("Also choose a good range of x values, spread out, including negative ones. A longer line is easier to draw accurately and read from.", V.note('Spread the points out'))
+    ]),
     SC('Watch out!', 'Three common mistakes', [
       S("Mistake one: arithmetic mistakes with negative x values.", V.rule('Take care with negatives.')),
       S("Mistake two: joining points with a wobbly freehand line.", V.rule('Use a ruler.')),
@@ -25881,6 +26003,136 @@ S.spatialExtra = S.extraMakers;
   ]);
 
   L.use(847, ['How do you find the gradient of a line from two points?', 'Gradient and straight lines', 'How do you read y = mx + c from a graph and from real life?', 'How do you find the equation of a line from a point and a gradient, or from two points?', 'How do you draw a straight line graph from a table of values?', 'Parallel and perpendicular lines', 'Lines in the form ax + by = c']);
+})();
+</script>
+<script>
+(function () {
+  var BT = window.BT; if (!BT || !BT.L || !BT.sv || !BT.lk) return;
+  var L = BT.L, V = BT.sv, E = L.E, S = L.st, SC = L.SC,
+    g = function (t) { return E(t, 'g'); }, r = function (t) { return E(t, 'r'); };
+  function N(title, goal, scenes) { L.full(title, scenes); return L.ep(title, goal, []); }
+
+  N('What are simultaneous equations and what does the solution mean?', 'what a pair of equations is, why we need both, and how to check an answer.', [
+    SC('Two unknowns', 'Start with the basics', [
+      S("Look at this equation. x plus y equals ten. There are many answers. x could be one and y nine. Or x could be five and y five. Or x could be seven and y three. Lots of pairs work.", E('x + y = 10', 'b') + V.tbl([['1', '9'], ['5', '5'], ['7', '3']], ['x', 'y'])),
+      S("Now add a second clue. x minus y equals two. Which of those pairs also works for the second equation? One minus nine is minus eight, no. Five minus five is zero, no. Seven minus three is four, no. None of them. Let us keep looking.", E('x − y = 2'))
+    ]),
+    SC('Trial and improvement', 'Example 1: finding the pair that fits both', [
+      S("Try x equals six and y equals four. Six plus four is ten, so the first equation works. Six minus four is two, so the second equation works too. The pair that fits both is x equals six, y equals four.", E('6 + 4 = 10 ✓') + E('6 − 4 = 2 ✓') + g('x = 6, y = 4'))
+    ]),
+    SC('Why simultaneous?', 'The meaning of the word', [
+      S("The word simultaneous means at the same time. Both equations must be true at the same time, with the same values of x and y. The answer is the one pair that fits both.", V.rule('Both true at the same time.')),
+      S("Usually, two equations with two unknowns give exactly one pair of answers.", V.note('Two equations, two unknowns'))
+    ]),
+    SC('The graph', 'Example 2: what the solution looks like', [
+      S("Each equation is a straight line on a graph. Every point on a line is a pair that works for that equation. The point where the two lines cross is on both lines. So it is the pair that works for both. That crossing point is the solution.", V.rule('The lines cross at the solution.')),
+      S("For our two equations, the lines cross at the point six, four.", g('Cross at (6, 4)'))
+    ]),
+    SC('Real life', 'Example 3: pens and pencils', [
+      S("Sam buys some pens and some pencils. Ten items in total, so pens plus pencils is ten. He has two more pens than pencils, so pens minus pencils is two. It is exactly our pair of equations. Six pens and four pencils.", E('p + q = 10') + E('p − q = 2') + g('6 pens, 4 pencils'))
+    ]),
+    SC('Setting one up', 'Example 4: from a word problem', [
+      S("A cinema sells adult tickets for eight pounds and child tickets for five pounds. Four people pay forty-one pounds in total. Let a be adults and c be children. Four people: a plus c equals four. Money: eight a plus five c equals forty-one.", E('a + c = 4') + E('8a + 5c = 41')),
+      S("We will learn how to solve these properly in the next lessons. For now, test: three adults and one child. Twenty-four plus five is twenty-nine. Not forty-one. The method will find the right answer for us.", V.note('Methods coming next'))
+    ]),
+    SC('Checking', 'Example 5: always check both', [
+      S("Is x equals three, y equals two a solution of x plus y equals five, and two x minus y equals three? First equation: three plus two is five. Yes. Second: six minus two is four, not three. No. So it is not a solution. It must satisfy both.", E('3 + 2 = 5 ✓') + E('2(3) − 2 = 4 ≠ 3 ✗') + r('Not a solution'))
+    ]),
+    SC('Listing pairs', 'Example 6: a careful search', [
+      S("Let us find a solution without any fancy method, just by listing. Solve x plus y equals seven, and x minus y equals one. Step one. List every pair of whole numbers that add to seven.", E('x + y = 7')),
+      S("One and six. Two and five. Three and four. Four and three. Five and two. Six and one.", V.tbl([['1', '6'], ['2', '5'], ['3', '4'], ['4', '3'], ['5', '2'], ['6', '1']], ['x', 'y'])),
+      S("Step two. For each pair, work out x minus y, and see if it equals one. One minus six is minus five. Two minus five is minus three. Three minus four is minus one. Four minus three is one. That is the one we want.", E('4 − 3 = 1 ✓') + g('x = 4, y = 3')),
+      S("Step three. Check in both equations. Four plus three is seven. Four minus three is one. Both true. This method works, but it is slow for big numbers. That is why we will learn faster methods.", V.rule('Listing works, but is slow.'))
+    ]),
+    SC('Drawing both lines', 'Example 7: the graph, step by step', [
+      S("Now let us see the graph for x plus y equals ten, and x minus y equals two. To draw a line, we only need a few points. For x plus y equals ten, choose x equals zero. Then y is ten. Choose x equals five. Then y is five. Choose x equals ten. Then y is zero.", V.tbl([['0', '10'], ['5', '5'], ['10', '0']], ['x', 'y'])),
+      S("For x minus y equals two, choose y equals zero. Then x is two. Choose y equals two. Then x is four. Choose y equals four. Then x is six.", V.tbl([['2', '0'], ['4', '2'], ['6', '4']], ['x', 'y'])),
+      S("Plot both sets of points and join each with a ruler. Look where the two lines cross. The crossing point is six, four. That is the same answer as before. It is on both lines, so it satisfies both equations.", g('Cross at (6, 4)')),
+      S("Why only one crossing point? Two different straight lines can only cross once. So there is only one solution.", V.note('Two straight lines cross once'))
+    ]),
+    SC('What can go wrong', 'Example 8: no solution or too many', [
+      S("Sometimes two lines never cross. They are parallel. For example, y equals two x plus one, and y equals two x plus five, have the same gradient. There is no pair that fits both. Such equations have no solution.", E('y = 2x + 1') + E('y = 2x + 5') + r('Parallel: no solution')),
+      S("In this course, the questions will almost always have exactly one solution. But it is good to know why.", V.rule('Parallel lines never meet.'))
+    ]),
+    SC('Watch out!', 'Three common mistakes', [
+      S("Mistake one: checking only one equation. A pair must fit both.", V.rule('Check both.')),
+      S("Mistake two: giving only x. A solution has two values, x and y.", V.rule('Give x and y.')),
+      S("Mistake three: thinking the lines cross at the origin. They cross wherever the solution is.", V.rule('Crossing point = solution.'))
+    ]),
+    L.turn("Your turn! Number one. Is x equals four, y equals one a solution of x plus y equals five, and x minus y equals three? Pause and try it.", E('x + y = 5, x − y = 3'), "Four plus one is five. Four minus one is three. Yes, it is a solution.", g('Yes ✓')),
+    L.turn("Your turn! Number two. Find the pair that fits x plus y equals eight, and x minus y equals two. Pause and try it.", E('x + y = 8, x − y = 2'), "Five and three. Five plus three is eight, five minus three is two.", g('x = 5, y = 3')),
+    L.turn("Your turn! Number three. Where do the graphs of two equations meet, if the solution is x equals two, y equals seven? Pause and think.", E('?'), "At the point two, seven.", g('(2, 7)')),
+    L.rec('What are simultaneous equations and what does the solution mean?', "Simultaneous equations are two equations with two unknowns that must both be true at the same time. The solution is the one pair of values that fits both. On a graph, it is where the two lines cross. Always check your answer in both equations.", ['Two equations, two unknowns', 'Both true together', 'Lines cross at the solution', 'Check both'])
+  ]);
+
+  N('How do you solve simultaneous equations by substitution?', 'how to replace one letter with an expression and solve step by step.', [
+    SC('Substitution', 'Start with the basics', [
+      S("Substitution means replacing. If we know that y equals two x plus one, then wherever we see y, we can write two x plus one instead. This turns two unknowns into one.", E('y = 2x + 1', 'b') + V.rule('Replace y with its expression.')),
+      S("Here is the plan. One, get one letter on its own. Two, replace that letter in the other equation. Three, solve for the other letter. Four, put the answer back to find the first. Five, check.", V.list(['Letter on its own', 'Replace in other equation', 'Solve', 'Find the other letter', 'Check']))
+    ]),
+    SC('Example 1', 'y = 2x + 1 and 3x + y = 11', [
+      S("The first equation already has y on its own. In the second equation, replace y with two x plus one. Three x plus bracket two x plus one, equals eleven.", E('3x + (2x + 1) = 11')),
+      S("Now it is one equation with one letter. Five x plus one equals eleven. Subtract one. Five x equals ten. x equals two.", E('5x + 1 = 11') + g('x = 2')),
+      S("Put x equals two back into y equals two x plus one. y is five.", E('y = 2(2) + 1') + g('y = 5'))
+    ]),
+    SC('Check', 'Is x = 2, y = 5 right?', [
+      S("Check both equations. First: five equals two times two plus one, which is five. Yes. Second: three times two plus five is eleven. Yes.", E('5 = 2(2) + 1 ✓') + E('3(2) + 5 = 11 ✓'))
+    ]),
+    SC('Example 2', 'x = y + 2 and x + 2y = 11', [
+      S("Here x is on its own. Replace x in the second equation with y plus two. y plus two, plus two y, equals eleven. Collect. Three y plus two equals eleven. Three y equals nine. y equals three.", E('(y + 2) + 2y = 11') + E('3y = 9') + g('y = 3')),
+      S("Then x is y plus two, which is five. Check. Five plus six is eleven.", g('x = 5, y = 3'))
+    ]),
+    SC('Rearranging first', 'Example 3: x + y = 7 and 2x − y = 5', [
+      S("Neither letter is on its own. Rearrange the first equation. y equals seven minus x.", E('y = 7 − x')),
+      S("Replace y in the second equation. Two x minus bracket seven minus x, equals five. Be careful with the minus in front of the bracket. It changes both signs. Two x minus seven plus x equals five.", E('2x − (7 − x) = 5') + E('2x − 7 + x = 5')),
+      S("Three x minus seven equals five. Three x equals twelve. x equals four. Then y is seven minus four, three.", E('3x = 12') + g('x = 4, y = 3'))
+    ]),
+    SC('Check', 'Example 4: check Example 3', [
+      S("First equation: four plus three is seven. Yes. Second: eight minus three is five. Yes.", E('4 + 3 = 7 ✓') + E('8 − 3 = 5 ✓'))
+    ]),
+    SC('A real problem', 'Example 5: tickets', [
+      S("Adult tickets cost eight pounds and child tickets cost five pounds. Four people pay twenty-six pounds in total. How many adults and how many children? Let a be the number of adults and c the number of children. Four people means a plus c equals four. The money gives eight a plus five c equals twenty-six.", E('a + c = 4') + E('8a + 5c = 26')),
+      S("Step one. Get a on its own from the first equation. Subtract c from both sides. a equals four minus c.", E('a = 4 − c')),
+      S("Step two. Replace a in the second equation, using a bracket. Eight bracket four minus c, plus five c, equals twenty-six.", E('8(4 − c) + 5c = 26')),
+      S("Step three. Expand the bracket. Eight times four is thirty-two. Eight times minus c is minus eight c. So thirty-two minus eight c plus five c equals twenty-six. Collect the c terms. Minus eight c plus five c is minus three c.", E('32 − 8c + 5c = 26') + E('32 − 3c = 26')),
+      S("Step four. Subtract thirty-two from both sides. Minus three c equals minus six. Divide by minus three. c equals two.", E('−3c = −6') + g('c = 2')),
+      S("Step five. Find a. a equals four minus two, which is two. Two adults and two children. Check the money. Two times eight is sixteen. Two times five is ten. Sixteen plus ten is twenty-six. Correct.", g('2 adults, 2 children') + E('16 + 10 = 26 ✓')),
+      S("Always ask if the answer makes sense. Two adults and two children is a sensible answer. A negative number of people would tell us we had made a mistake.", V.rule('Does the answer make sense?'))
+    ]),
+    SC('A number in front', 'Example 6: y = 3x and x + y = 12', [
+      S("Let us do another one, very slowly. y equals three x, and x plus y equals twelve. Step one. Is a letter on its own? Yes. y equals three x.", E('y = 3x') + E('x + y = 12')),
+      S("Step two. Replace y in the second equation. Wherever you see y, write three x. x plus three x equals twelve. We use a bracket if there is more than one term, but here three x is one term.", E('x + 3x = 12')),
+      S("Step three. Collect the x terms. x is one x. One x plus three x is four x. Four x equals twelve. Divide both sides by four. x equals three.", E('4x = 12') + g('x = 3')),
+      S("Step four. Find y. y equals three x. Three times three is nine. y equals nine.", E('y = 3 × 3') + g('y = 9')),
+      S("Step five. Check in the equation we did not use to find y. x plus y is three plus nine, which is twelve. Correct.", E('3 + 9 = 12 ✓'))
+    ]),
+    SC('A number multiplying the bracket', 'Example 7: 2x + y = 9 and 3x − 2y = 10', [
+      S("This one needs more care. Step one. Get y on its own from the first equation. Subtract two x from both sides. y equals nine minus two x.", E('2x + y = 9') + g('y = 9 − 2x')),
+      S("Step two. Replace y in the second equation. Three x minus two, bracket nine minus two x, equals ten. The bracket is important, because the whole of nine minus two x is being multiplied by minus two.", E('3x − 2(9 − 2x) = 10')),
+      S("Step three. Expand the bracket. Minus two times nine is minus eighteen. Minus two times minus two x is plus four x. So three x minus eighteen plus four x equals ten.", E('3x − 18 + 4x = 10')),
+      S("Step four. Collect the x terms. Three x plus four x is seven x. Seven x minus eighteen equals ten. Add eighteen to both sides. Seven x equals twenty-eight. Divide by seven. x equals four.", E('7x − 18 = 10') + E('7x = 28') + g('x = 4')),
+      S("Step five. Find y. y equals nine minus two times four, which is nine minus eight. y equals one.", E('y = 9 − 8') + g('y = 1')),
+      S("Step six. Check both. First equation: eight plus one is nine. Yes. Second equation: twelve minus two is ten. Yes. So x is four, and y is one.", E('2(4) + 1 = 9 ✓') + E('3(4) − 2(1) = 10 ✓'))
+    ]),
+    SC('Choosing the easiest letter', 'Which letter should I get on its own?', [
+      S("A helpful tip. Choose the letter that has no number in front of it, or just a one. In x plus three y equals seven, x has just a one in front. So write x equals seven minus three y. That avoids fractions.", E('x + 3y = 7 → x = 7 − 3y', 'g')),
+      S("If every letter has a number, you can still do it, but fractions appear. In that case, the elimination method, which comes next, is usually easier.", V.note('Next: elimination'))
+    ]),
+    SC('Watch out!', 'Three common mistakes', [
+      S("Mistake one: forgetting brackets when substituting an expression. Replace y with a bracket.", r('2x − 7 − x  ✗') + g('2x − (7 − x)  ✓')),
+      S("Mistake two: finding x and stopping. You must find y too.", V.rule('Find both letters.')),
+      S("Mistake three: substituting back into the same equation you rearranged from. That is fine, but check both original equations at the end.", V.rule('Check both.'))
+    ]),
+    SC('In real life', 'Comparing plans', [
+      S("Two phone plans can be written as two equations. Substituting one into the other finds the number of minutes where they cost the same.", V.note('Where do the costs match?'))
+    ]),
+    L.turn("Your turn! Number one. Solve y equals x plus three, and x plus y equals nine. Replace y first. Pause and try it.", E('y = x + 3, x + y = 9'), "x plus x plus three is nine. Two x is six. x is three, and y is six.", g('x = 3, y = 6')),
+    L.turn("Your turn! Number two. Solve x equals two y, and x plus y equals twelve. Pause and try it.", E('x = 2y, x + y = 12'), "Two y plus y is twelve. Three y is twelve. y is four, and x is eight.", g('x = 8, y = 4')),
+    L.turn("Your turn! Number three. Solve y equals three x minus one, and y equals x plus five. Pause and try it.", E('y = 3x − 1, y = x + 5'), "Three x minus one equals x plus five. Two x is six. x is three, and y is eight.", g('x = 3, y = 8')),
+    L.rec('How do you solve simultaneous equations by substitution?', "Get one letter on its own. Replace it in the other equation, using brackets. Solve for the remaining letter, then substitute back to find the first. Check in both equations, and ask whether the answer makes sense.", ['Letter on its own', 'Replace using brackets', 'Solve, then substitute back', 'Check both'])
+  ]);
+
+  L.use(848, ['What are simultaneous equations and what does the solution mean?', 'Solving by graph', 'How do you solve simultaneous equations by substitution?', 'Solving by elimination', 'Simultaneous equations']);
 })();
 </script>
 <script>

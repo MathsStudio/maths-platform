@@ -96,6 +96,19 @@
     SC('A minus in front', 'Example 7: subtracting a bracket', [
       S("Simplify five x plus six, minus bracket two x plus one. The minus in front multiplies the whole bracket by minus one. So minus two x and minus one. Five x minus two x is three x. Six minus one is five.", E('5x + 6 − (2x + 1)') + E('= 5x + 6 − 2x − 1') + g('= 3x + 5'))
     ]),
+    SC('Why minus times minus is plus', 'A pattern to trust', [
+      S("Many students ask why a negative times a negative is positive. Here is a pattern that shows it. Look at minus three times three, minus three times two, minus three times one. Each answer goes up by three as the number goes down by one.", V.tbl([['−3 × 3', '−9'], ['−3 × 2', '−6'], ['−3 × 1', '−3'], ['−3 × 0', '0']], ['Sum', 'Answer'])),
+      S("Carry on the pattern. Minus three times minus one must be three, to keep going up by three. Minus three times minus two is six. So a negative times a negative is positive.", E('−3 × −1 = +3') + E('−3 × −2 = +6', 'g'))
+    ]),
+    SC('Two bracket terms', 'Example 8: 3(2x − 1) − 2(x − 4)', [
+      S("Take it very slowly. Step one. Expand the first bracket. Three times two x is six x. Three times minus one is minus three. So six x minus three.", E('3(2x − 1) = 6x − 3')),
+      S("Step two. Expand the second bracket, with its minus two in front. Minus two times x is minus two x. Minus two times minus four is plus eight. So minus two x plus eight.", E('−2(x − 4) = −2x + 8')),
+      S("Step three. Put them together. Six x minus three, minus two x, plus eight. Step four. Collect the x terms. Six x minus two x is four x. Collect the numbers. Minus three plus eight is five.", E('6x − 3 − 2x + 8') + g('= 4x + 5')),
+      S("Step five. Check with a number. Let x be two. The original is three times three, minus two times minus two. Nine plus four is thirteen. The answer four times two plus five is thirteen. They agree.", E('x = 2: 13 = 13 ✓'))
+    ]),
+    SC('Letters outside', 'Example 9: −x(3 − x)', [
+      S("The outside can be a letter too. Minus x times three is minus three x. Minus x times minus x is plus x squared, because a negative times a negative is positive. So the answer is minus three x plus x squared. We usually write the x squared first.", E('−x(3 − x)') + g('= x² − 3x'))
+    ]),
     SC('Watch out!', 'Three common mistakes', [
       S("Mistake one: multiplying only the first term. Three bracket x plus four is not three x plus four.", r('3x + 4  ✗') + g('3x + 12  ✓')),
       S("Mistake two: getting signs wrong with a negative outside.", r('−2(x + 6) = −2x + 12  ✗') + g('= −2x − 12  ✓')),
@@ -136,6 +149,18 @@
     SC('With a number in front', 'Example 6: (2x + 1)(x + 3)', [
       S("First, two x squared. Outside, six x. Inside, one x. Last, three. Seven x in the middle. So two x squared plus seven x plus three.", E('2x² + 6x + x + 3') + g('= 2x² + 7x + 3'))
     ]),
+    SC('A picture of why', 'The area model', [
+      S("Why do we need four multiplications? Picture a rectangle with sides x plus two, and x plus three. Cut it into four pieces. One big square of x by x, which is x squared. Two strips, x by three, and x by two. And one small rectangle, two by three, which is six.", V.tbl([['x²', '3x'], ['2x', '6']], ['', 'x', '3'])),
+      S("Add the areas of all four pieces. x squared, plus three x, plus two x, plus six. That is x squared plus five x plus six. So each piece is one of the four products. We never miss one when we use the grid.", V.rule('Four pieces, four products.'))
+    ]),
+    SC('Perfect difference', 'Example 7: (x + 5)(x − 5)', [
+      S("This is a special case. First, x squared. Outside, x times minus five is minus five x. Inside, five times x is plus five x. Last, five times minus five is minus twenty-five. The middle terms cancel. We are left with x squared minus twenty-five.", E('x² − 5x + 5x − 25') + g('= x² − 25')),
+      S("So a sum times a difference gives a difference of two squares. Remember this. We will use it for factorising.", V.rule('(x + a)(x − a) = x² − a²'))
+    ]),
+    SC('A number in front', 'Example 8: (3x − 2)(x + 4)', [
+      S("Step one, First. Three x times x is three x squared. Step two, Outside. Three x times four is twelve x. Step three, Inside. Minus two times x is minus two x. Step four, Last. Minus two times four is minus eight.", E('3x² + 12x − 2x − 8')),
+      S("Step five. Collect the middle terms. Twelve x minus two x is ten x. The answer is three x squared plus ten x minus eight.", g('= 3x² + 10x − 8'))
+    ]),
     SC('Watch out!', 'Three common mistakes', [
       S("Mistake one: squaring each term. x plus four squared is not x squared plus sixteen.", r('(x + 4)² = x² + 16  ✗') + g('= x² + 8x + 16  ✓')),
       S("Mistake two: forgetting one of the four products.", V.rule('Four products, always.')),
@@ -175,6 +200,19 @@
     SC('Difference of two squares', 'Example 6: x² − 25', [
       S("There is a special pattern. A square minus a square factorises into two brackets. x squared minus twenty-five is x squared minus five squared. So x minus five, times x plus five.", E('x² − 25') + g('= (x − 5)(x + 5)'))
     ]),
+    SC('Finding the HCF', 'How to be sure you have the highest', [
+      S("Let us do this carefully. To find the highest common factor of an expression, deal with the numbers first, then the letters. Take eight x squared plus twelve x. Step one, the numbers. Eight and twelve. The biggest number that divides both is four.", E('8x² + 12x') + E('HCF of 8 and 12 = 4')),
+      S("Step two, the letters. x squared is x times x. Twelve x has one x. The most x's they share is one. So the letter part is x.", E('x² and x share x')),
+      S("Step three. Put them together. The highest common factor is four x. Divide each term by four x. Eight x squared over four x is two x. Twelve x over four x is three.", E('8x² ÷ 4x = 2x') + E('12x ÷ 4x = 3')),
+      S("The answer is four x, bracket two x plus three. Step four. Check by expanding. Four x times two x is eight x squared. Four x times three is twelve x. Correct.", g('4x(2x + 3)'))
+    ]),
+    SC('With a minus', 'Example 7: 15y² − 10y', [
+      S("Fifteen and ten share five. y squared and y share y. The highest common factor is five y. Fifteen y squared over five y is three y. Minus ten y over five y is minus two. So five y, bracket three y minus two.", E('15y² − 10y') + g('= 5y(3y − 2)'))
+    ]),
+    SC('A square minus a square', 'Example 8: 4x² − 49', [
+      S("There is no common factor except one. But look. Four x squared is two x, all squared. Forty-nine is seven squared. A square minus a square. It factorises into two x minus seven, times two x plus seven.", E('4x² − 49 = (2x)² − 7²') + g('= (2x − 7)(2x + 7)')),
+      S("Check by expanding. Two x times two x is four x squared. The middle terms cancel. Minus seven times seven is minus forty-nine. Correct.", V.rule('a² − b² = (a − b)(a + b)'))
+    ]),
     SC('Watch out!', 'Three common mistakes', [
       S("Mistake one: not taking out the highest common factor.", V.rule('Highest common factor.')),
       S("Mistake two: forgetting the one. Factorising x squared plus x gives x bracket x plus one.", r('x(x)  ✗') + g('x(x + 1)  ✓')),
@@ -213,6 +251,19 @@
     ]),
     SC('Sharing', 'Example 7: tiles', [
       S("A room is twelve metres by eighteen metres. What is the biggest square tile that fits exactly? That is the highest common factor. Six metres.", g('6 m'))
+    ]),
+    SC('Bigger numbers', 'Example 8: 60 and 84, by factor trees', [
+      S("Let us use prime factors for bigger numbers, very carefully. Step one. Break down sixty. Sixty is two times thirty. Thirty is two times fifteen. Fifteen is three times five. So sixty is two times two times three times five.", E('60 = 2 × 2 × 3 × 5')),
+      S("Step two. Break down eighty-four. Eighty-four is two times forty-two. Forty-two is two times twenty-one. Twenty-one is three times seven. So eighty-four is two times two times three times seven.", E('84 = 2 × 2 × 3 × 7')),
+      S("Step three, the highest common factor. Which primes do they both have? Two, two and three. Multiply. Two times two times three is twelve.", g('HCF = 2 × 2 × 3 = 12')),
+      S("Step four, the lowest common multiple. Take every prime, the most times it appears in either number. Two, two, three, five and seven. Multiply. Two times two is four. Times three is twelve. Times five is sixty. Times seven is four hundred and twenty.", g('LCM = 2 × 2 × 3 × 5 × 7 = 420')),
+      S("A lovely check. The HCF times the LCM equals the product of the two numbers. Twelve times four hundred and twenty is five thousand and forty. Sixty times eighty-four is five thousand and forty. It matches.", E('12 × 420 = 60 × 84 = 5040 ✓'))
+    ]),
+    SC('Using it', 'Example 9: simplifying a fraction', [
+      S("The HCF helps simplify fractions. Sixty over eighty-four. Divide the top and bottom by the HCF, twelve. Sixty over twelve is five. Eighty-four over twelve is seven. So sixty over eighty-four is five sevenths.", E('60/84 = 5/7', 'g'))
+    ]),
+    SC('Adding fractions', 'Example 10: the LCM as a common denominator', [
+      S("The LCM gives the best common denominator. To add a sixth and a quarter, the lowest common multiple of six and four is twelve. A sixth is two twelfths. A quarter is three twelfths. Add. Five twelfths.", E('1/6 + 1/4 = 2/12 + 3/12') + g('= 5/12'))
     ]),
     SC('Watch out!', 'Three common mistakes', [
       S("Mistake one: mixing up HCF and LCM. HCF is never bigger than the smaller number. LCM is never smaller than the bigger number.", V.rule('HCF small. LCM big.')),

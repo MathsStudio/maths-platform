@@ -27,6 +27,18 @@
     SC('Special lines', 'Example 6: flat and vertical', [
       S("A flat line has the same y everywhere, so the rise is zero. The gradient is zero. A vertical line has the same x everywhere, so the run is zero, and we cannot divide by zero. A vertical line has no gradient, we say it is undefined.", V.list(['Horizontal: m = 0', 'Vertical: undefined']))
     ]),
+    SC('Negative coordinates', 'Example 6: (−2, −1) and (2, 5), slowly', [
+      S("Negative numbers are where mistakes happen. Take the points minus two, minus one, and two, five. Step one. Label them. x one is minus two, y one is minus one. x two is two, y two is five.", E('(x₁, y₁) = (−2, −1)') + E('(x₂, y₂) = (2, 5)')),
+      S("Step two. The rise is y two minus y one. Five minus minus one. Subtracting a negative is the same as adding. Five plus one is six.", E('5 − (−1) = 6')),
+      S("Step three. The run is x two minus x one. Two minus minus two. That is two plus two, four.", E('2 − (−2) = 4')),
+      S("Step four. Gradient is six over four. Simplify. Three over two, or one and a half. A gradient that is not a whole number is perfectly fine.", g('m = 6/4 = 3/2')),
+      S("Step five. Does it make sense? The line goes up as we move right, so the gradient is positive. Yes.", V.rule('Does the sign make sense?'))
+    ]),
+    SC('From a real graph', 'Example 7: the cost of hiring a van', [
+      S("The cost of hiring a van is plotted against the days. At zero days the cost is three pounds. At four days the cost is eleven pounds. The points are zero, three and four, eleven.", E('(0, 3) and (4, 11)')),
+      S("The rise is eleven minus three, eight. The run is four minus zero, four. The gradient is eight over four, which is two.", g('m = 8 ÷ 4 = 2')),
+      S("What does it mean? Each extra day costs two pounds more. The gradient is the rate of change, here two pounds per day. The three pounds is the fixed charge.", V.rule('Gradient = rate of change.'))
+    ]),
     SC('Watch out!', 'Three common mistakes', [
       S("Mistake one: dividing run by rise. It is rise over run.", r('run ÷ rise  ✗') + g('rise ÷ run  ✓')),
       S("Mistake two: mixing the order of the points. Top and bottom must match.", V.rule('Same order on top and bottom.')),
@@ -62,6 +74,15 @@
     ]),
     SC('Parallel lines', 'Example 6: same gradient', [
       S("Lines with the same gradient are parallel. y equals two x plus one and y equals two x minus four never meet.", E('y = 2x + 1') + E('y = 2x − 4') + g('Parallel'))
+    ]),
+    SC('Rearranging slowly', 'Example 7: 2x + 3y = 12', [
+      S("Sometimes the equation is not in the form y equals m x plus c. Step one. Get the y term on its own. Subtract two x from both sides. Three y equals twelve minus two x.", E('2x + 3y = 12') + E('3y = 12 − 2x')),
+      S("Step two. Divide every term by three. y equals four, minus two thirds x. Write the x term first. y equals minus two thirds x plus four.", g('y = −⅔x + 4')),
+      S("Now read off. The gradient is minus two thirds. The line crosses the y axis at four. A negative gradient, so the line slopes down.", E('m = −⅔, c = 4'))
+    ]),
+    SC('Quick sketches', 'Example 8: drawing from m and c', [
+      S("You can sketch a line from y equals m x plus c without a table. Take y equals a half x plus one. Step one. Plot the y-intercept, zero, one. Step two. The gradient is a half. That means across two, up one. From zero, one, go across two and up one, to two, two. Step three. Join the points and extend.", E('y = ½x + 1') + V.rule('Start at c. Then rise over run.')),
+      S("Check with the equation. At x equals two, y is a half times two plus one, which is two. The point is on the line.", E('x = 2: y = 2 ✓'))
     ]),
     SC('Watch out!', 'Three common mistakes', [
       S("Mistake one: not rearranging to y equals first. In two y equals six x plus four, the gradient is three, not six.", r('m = 6  ✗') + g('y = 3x + 2, m = 3  ✓')),
@@ -100,6 +121,15 @@
     SC('Fractions', 'Example 6: a fractional gradient', [
       S("Points two, one and six, three. Gradient is two over four, a half. y equals a half x plus c. Put in two, one. One equals one plus c, so c is zero. y equals a half x.", g('y = ½x'))
     ]),
+    SC('Negative point', 'Example 7: gradient 3, through (−1, 4)', [
+      S("Take care with negatives. Start with y equals three x plus c. Step one. Put in x equals minus one and y equals four. Four equals three times minus one, plus c.", E('4 = 3(−1) + c')),
+      S("Step two. Three times minus one is minus three. So four equals minus three plus c. Add three to both sides. c equals seven.", E('4 = −3 + c') + g('c = 7')),
+      S("Step three. Write the equation. y equals three x plus seven. Check. Put in x equals minus one. Three times minus one plus seven is four. Correct.", g('y = 3x + 7') + E('3(−1) + 7 = 4 ✓'))
+    ]),
+    SC('Parallel line', 'Example 8: parallel to y = 2x − 1, through (2, 7)', [
+      S("Parallel lines have the same gradient. The line y equals two x minus one has gradient two. So our line also has gradient two. y equals two x plus c.", V.rule('Parallel: same gradient.')),
+      S("Put in two, seven. Seven equals four plus c. So c is three. The equation is y equals two x plus three. Check the point. Two times two plus three is seven. Correct.", g('y = 2x + 3'))
+    ]),
     SC('Watch out!', 'Three common mistakes', [
       S("Mistake one: putting x and y the wrong way round.", V.rule('Point (x, y): x first.')),
       S("Mistake two: finding c with the wrong sign.", V.rule('Solve for c carefully.')),
@@ -135,6 +165,14 @@
     ]),
     SC('Reading a value', 'Example 6: using the graph', [
       S("To find y when x is two point five on y equals two x plus one, go up from two point five to the line, then across. About six.", V.note('Read across from the line'))
+    ]),
+    SC('A fractional gradient', 'Example 7: y = ½x + 1', [
+      S("When there is a half in the equation, choose even values of x, so there are no fractions. x equals zero gives y equals one. x equals two gives y equals two. x equals four gives y equals three. x equals six gives y equals four.", V.tbl([['0', '2', '4', '6'], ['1', '2', '3', '4']], ['x', 'y'])),
+      S("Plot them. Each time x goes across two, y goes up one. That matches the gradient of a half. Join them with a ruler.", V.rule('Choose x to avoid fractions.'))
+    ]),
+    SC('How many points', 'Why three points is better than two', [
+      S("Two points are enough to draw a line. But we use three, or more. If all three are in a straight line, we know our calculations are right. If one is off the line, we have made a mistake, and we can find it.", V.rule('Three points: one is a check.')),
+      S("Also choose a good range of x values, spread out, including negative ones. A longer line is easier to draw accurately and read from.", V.note('Spread the points out'))
     ]),
     SC('Watch out!', 'Three common mistakes', [
       S("Mistake one: arithmetic mistakes with negative x values.", V.rule('Take care with negatives.')),
