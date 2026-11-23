@@ -237,6 +237,7 @@
     '409|How can I sort data with Venn and Carroll diagrams?': '<b>4</b> is even, so it goes in the Even circle. <b>15</b> is more than 10, so it goes in that circle. <b>12</b> is both, so it goes in the overlap.'
   };
   /* d = { short, title, what, words: [[word, meaning, emoji]], see: [[say, pic] x3], ex: [w x3], mistake: [say, pic], check: {q, pic, options, answer, explain, tip}, remember: [say, pic] } */
+  FL._w = { worked: worked, check: check };
   FL.learnIt = function (n, id, d) {
     var sl = [];
     sl.push({ title: d.title, say: [d.what].concat(BQX[n + '|' + d.title] ? [BQX[n + '|' + d.title]] : []), v: d.pic || '', kind: 'The big question', noMore: true });

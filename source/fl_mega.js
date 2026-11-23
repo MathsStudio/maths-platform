@@ -1,0 +1,70 @@
+/* fl_mega.js: one definition per Let's learn lesson gives
+   - a Learn-it lesson of about 20 slides (the first 11 are the original lesson; this adds a second way to see the idea,
+     two more worked examples, a second common mistake, four more checks and a real-life check)
+   - the matching Watch lesson (about 14 screens: Watch me, Let's do it together, Your turn)
+   - an activity (new lessons) and, for P4, practice questions made by the lesson's own question maker.
+   FL.MEGA(n, spec). spec: { id, title (existing lesson) | li (a new lesson, FL.LI array), ch, bg, way:[say,pic], ex:[[q,steps,final,pic]x2],
+   mist:[say,pic], real:[text,ans,wrong,explain,pic], qs:[[text,ans,wrong[],explain,pic,tip]x8], gen:function(level), lab:[label,lead], watch:[[say,pic]] } */
+(function () {
+  'use strict';
+  var FL = window.FL, BT = window.BT, S = window.Studio; if (!FL || !FL._w || !FL.growWatch || !BT || !S) return;
+  var W = FL._w, shuffle = FL.shuffle, pick = FL.pick, MC = FL.MC, P = FL.panel;
+  function strip(h) { return String(h).replace(/<[^>]+>/g, ''); }
+  function opts(a, wrong) { var o = [String(a)]; (wrong || []).forEach(function (w) { w = String(w); if (o.indexOf(w) < 0) o.push(w); }); return shuffle(o).slice(0, 4).indexOf(String(a)) < 0 ? shuffle(o.slice(0, 4)) : shuffle(o).slice(0, 4); }
+  function qo(r) { var o = [String(r[1])]; (r[2] || []).forEach(function (w) { w = String(w); if (o.indexOf(w) < 0 && o.length < 4) o.push(w); });
+    return { q: r[0], pic: r[4] || '', options: shuffle(o), answer: String(r[1]), explain: r[3] || '', tip: r[5] || 'Think about what you learned in this lesson.' }; }
+  /* a question maker from the static rows: a new random choice order each time */
+  function fromQs(sp) { return function () { var r = pick(sp.qs); return MC(sp.title || (sp.li && sp.li[0]) || 'Practice', r[0], r[1], r[2], [r[5] || 'Think about what you learned in this lesson.'], r[3] || '', r[4] || ''); }; }
+  var BG = { 2: 'day', 3: 'sea', 4: 'farm' };
+  FL.MEGA = function (n, sp) {
+    var t = S.topics[n]; if (!t) return;
+    var title = sp.title || (sp.li && sp.li[1]);
+    if (sp.li) FL.LI(n, sp.id, sp.li);
+    var st = t.steps.filter(function (s) { return s.id === sp.id; })[0];
+    if (!st || !st.slides) return;
+    var sl = st.slides, qs = sp.qs || [], guard = st.__mega; if (guard) return; st.__mega = 1;
+    title = sl[0].title;
+    function at(name) { for (var i = 0; i < sl.length; i++) if (sl[i].title === name) return i; return -1; }
+    function mk(o) { o.flLearn = true; o.noMore = true; return o; }
+    /* another way to see it, after Write it */
+    if (sp.way) { var iw = at('Write it'); sl.splice(iw + 1, 0, mk({ title: 'Another way', say: [sp.way[0]], v: sp.way[1], kind: 'Another way' })); }
+    /* worked examples 4 and 5 */
+    var ix = at('Watch out!'), k0 = sl.filter(function (x) { return /^Worked example/.test(x.title); }).length;
+    (sp.ex || []).forEach(function (e, i) { var w = { q: e[0], steps: e[1], final: e[2], pics: Array.isArray(e[3]) ? e[3] : null, pic: Array.isArray(e[3]) ? null : e[3] };
+      sl.splice(ix + i, 0, mk({ title: 'Worked example ' + (k0 + i + 1), say: [], ex: W.worked(w), kind: 'Step by step' })); });
+    /* a second common mistake */
+    if (sp.mist) { var im = at('Watch out!'); sl.splice(im + 1, 0, mk({ title: 'Watch out again!', say: [sp.mist[0]], v: sp.mist[1], kind: 'A common mistake' })); }
+    /* more checks */
+    var ic = at('Quick check') + 1, add = [];
+    [0, 1].forEach(function (i) { if (qs[i]) add.push(mk({ title: 'Quick check ' + (i + 2), say: ['Now you try. Tap your answer.'], live: W.check(qo(qs[i])), kind: 'Your turn' })); });
+    if (sp.real) add.push(mk({ title: 'In real life', say: ['Here is a real-life question. Tap your answer.'], live: W.check(qo(sp.real)), kind: 'In real life' }));
+    if (qs[2]) add.push(mk({ title: 'Challenge', say: ['Here is a harder one. Take your time.'], live: W.check(qo(qs[2])), kind: 'Challenge' }));
+    if (qs[3]) add.push(mk({ title: 'Quick check 4', say: ['One more. Tap your answer.'], live: W.check(qo(qs[3])), kind: 'Your turn' }));
+    sl.splice.apply(sl, [ic, 0].concat(add));
+    /* the Watch lesson */
+    var bg = sp.bg || BG[(S.topics[n].year || '').replace('P', '')] || 'day', ch = sp.ch || 'owl';
+    function pn(h) { return P(bg, '', h || ''); }
+    var scr = [];
+    if (sp.li) { scr.push({ mode: 'watch', say: sp.li[2], pic: pn(sp.li[3]) }); (sp.li[5] || []).forEach(function (s) { scr.push({ mode: 'watch', say: strip(s[0]), pic: pn(s[1]) }); }); }
+    if (sp.way) scr.push({ mode: 'watch', say: strip(sp.way[0]), pic: pn(sp.way[1]) });
+    (sp.watch || []).forEach(function (w) { scr.push({ mode: 'watch', say: strip(w[0]), pic: pn(w[1]) }); });
+    (sp.ex || []).forEach(function (e) { scr.push({ mode: 'watch', say: strip(e[0]) + ' ' + e[1].map(strip).join(' ') + ' ' + strip(e[2]), pic: pn(Array.isArray(e[3]) ? e[3][e[3].length - 1] : e[3]) }); });
+    qs.slice(0, 4).forEach(function (r) { var o = qo(r); scr.push({ mode: 'together', say: o.q, pic: pn(o.pic), tip: o.tip, options: o.options, answer: o.answer, explain: o.explain }); });
+    qs.slice(4, 8).forEach(function (r) { var o = qo(r); scr.push({ mode: 'turn', say: o.q, pic: pn(o.pic), tip: o.tip, options: o.options, answer: o.answer, explain: o.explain }); });
+    if (sp.li) {
+      var first = scr.filter(function (x) { return x.mode === 'watch'; }).slice(0, 7).concat(scr.filter(function (x) { return x.mode !== 'watch'; }));
+      var rest = scr.filter(function (x) { return x.mode === 'watch'; }).slice(7);
+      FL.addWatch(n, [{ title: title, char: ch, screens: first.concat(rest) }]);
+    } else FL.growWatch(n, title, ch, scr);
+    /* the activity for a new lesson */
+    (FL._mg = FL._mg || []).push([n, sp.id, sp.gen, qs]);
+    var gen = sp.gen ? function () { return sp.gen(pick([0, 1, 2])); } : fromQs(sp);
+    if (sp.li) { var lb = sp.lab || [sp.li[0], 'Choose the answer.']; BT.addLab(n, 'flm' + sp.id, lb[0], lb[1], FL.genAct(gen, ch)); }
+    /* P4: the practice questions cover the lesson as well */
+    if (t.year === 'P4' && FL.GENS && FL.GENS[n]) { var g = FL.GENS[n]; [0, 1, 2].forEach(function (lv) { var f = function () { return sp.gen ? sp.gen(lv) : fromQs(sp)(); }; (g[['low', 'medium', 'high'][lv]] = g[['low', 'medium', 'high'][lv]] || []).push(f); });
+      (window.__addQ = window.__addQ || {})[n] = (window.__addQ[n] || []).concat([function () { return sp.gen ? sp.gen(pick([0, 1, 2])) : fromQs(sp)(); }]); }
+  };
+  /* worked examples last in the Let's learn list */
+  FL.wexLast = function () { Object.keys(S.topics).forEach(function (k) { var t = S.topics[k]; if (!t || !t.steps) return; var isW = function (x) { return /^wex/.test(x.id || ''); }, w = t.steps.filter(isW); if (!w.length) return; t.steps = t.steps.filter(function (x) { return !isW(x); }).concat(w); if (S.arrange) S.arrange(t); }); };
+  FL.opts = opts; FL.qrow = qo;
+})();

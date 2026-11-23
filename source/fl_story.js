@@ -156,6 +156,24 @@
     eps.forEach(function (e) { e.fl = true; });
     BT.L.use(n, have.concat(eps));
   };
+
+  /* more Watch me / together / Your turn screens for a lesson that already exists (found by its title) */
+  FL.growWatch = function (n, title, char, screens) {
+    L = BT.L; if (!L) return;
+    var eps = ((BT.EP_BY_TOPIC && BT.EP_BY_TOPIC[n]) || []).map(function (x) { return typeof x === 'string' ? BT.EP[x] : x; }).filter(Boolean);
+    var ep = eps.filter(function (e) { return e.title === title; })[0]; if (!ep) return false;
+    var by = { watch: [], together: [], turn: [] }, tips = [];
+    screens.forEach(function (x) { var p = pic(x.pic, char);
+      if (x.mode === 'watch') by.watch.push(L.st(x.say, p));
+      else { if (x.tip) tips.push(x.tip); by[x.mode].push.apply(by[x.mode], askSteps(x.say, p, x.options, x.answer, x.explain, x.mode === 'together' ? x.tip : '')); } });
+    function scene(name) { return ep.scenes.filter(function (s) { return s.h === name; })[0]; }
+    [['Watch me', 'watch', title], ['Let\u2019s do it together', 'together', 'Try it with me'], ['Your turn', 'turn', 'Pause, think, then listen']].forEach(function (k) {
+      if (!by[k[1]].length) return; var sc = scene(k[0]), add = sw(by[k[1]]);
+      if (sc) { sc.steps = (sc.steps || []).concat(add); }
+      else { var ns = L.SC(k[0], k[2], add), at = ep.scenes.length; for (var i = 0; i < ep.scenes.length; i++) if (ep.scenes[i].h === 'Let\u2019s recap') { at = i; break; } ep.scenes.splice(at, 0, ns); }
+    });
+    return true;
+  };
   FL.toWatch = function (n, story, learn) {
     L = BT.L; if (!L) return;
     var t = S.topics[n]; if (!t) return;
