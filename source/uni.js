@@ -16,7 +16,8 @@
       }
       /* new lessons add their own question makers: mix them in at about one in five */
       var mix = window.__addQ && window.__addQ[Number(topicN)];
-      if (mix && mix.length && step.id === 'practise' && out.length >= want) {
+      if (step.id === 'practical' && mix) mix = mix.filter(function (f) { return f.life; });
+      if (mix && mix.length && out.length >= want) {
         for (var i4 = 2, t3 = 0; i4 < want && t3 < 2000; i4 += 5, t3++) { var q3 = pick(mix)(); if (q3 && !seen[sig(q3)]) { seen[sig(q3)] = 1; out[i4] = q3; } else i4 -= 5; }
       }
       var ex = window.__extraQ && window.__extraQ[Number(topicN)], list = ex && ex[step.id];

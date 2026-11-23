@@ -206,4 +206,5 @@
     ['How many lines of symmetry does a <b>rectangle</b> have?', symRow([['rectangle', '']]), [1, 2, 4], 2, 'A rectangle has 2 lines of symmetry: up and down, and side to side.', 'Try folding each way.'],
     ['A line of symmetry makes two halves that match.', C(['fold', 'halves match'])]]);
   addQ(408, qProp); addQ(408, qSym); lab(408, 'fl9', 'Faces and corners', 'Count the faces, edges and corners.', qProp, 'pirate'); lab(408, 'fl10', 'Lines of symmetry', 'Find the lines of symmetry.', qSym, 'pirate');
+  qRem.life = true;
 })();
