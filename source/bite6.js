@@ -137,10 +137,10 @@
     PARTS.forEach(function (p, i) {
       var from = Math.floor(i * T / 3), to = Math.max(from + 1, Math.floor((i + 1) * T / 3)), grp = tagOrder.slice(from, to);
       if (grp.length < 3) grp = tagOrder.slice(Math.max(0, Math.min(from, T - 4)), Math.max(0, Math.min(from, T - 4)) + 4);
-      var chosen = [], round = 0;
-      while (chosen.length < 8 && round < 8) {
+      var chosen = [], round = 0, cap = Math.max(8, grp.length);
+      while (chosen.length < cap && round < 8) {
         grp.forEach(function (tg) {
-          if (chosen.length >= 8) return;
+          if (chosen.length >= cap) return;
           var l = by[tg], q = l.filter(function (x) { return !used[plain(x.text)]; })[Math.min(round, 0)];
           if (q) { used[plain(q.text)] = 1; chosen.push(q); }
         });
