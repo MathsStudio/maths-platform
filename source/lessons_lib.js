@@ -139,8 +139,9 @@
           if ((isQ || (x.length < 150 && FACT.test(x))) && !onScreen(st.html, x)) add.push(x);
         });
         /* a worked example writes out the whole problem, not just its last question */
-        if (!turn && k === 0 && /^Example/.test(sc.sub || '')) {
+        if (!turn && k === 0 && (/^Example/.test(sc.sub || '') || /^Example/.test(sc.h || ''))) {
           var qe = -1, i2; for (i2 = 0; i2 < Math.min(sents.length, 5); i2++) { var t2 = sents[i2].trim(); if (/\?$/.test(t2) || /^(work out|find|calculate|solve|simplify|write|expand|factorise|factorize|round|estimate|show|convert|express|draw|measure|describe|give|name|state|list|use|complete|plot|sketch|construct|compare|change|multiply|divide|add|subtract|put)\b/i.test(t2)) qe = i2; if (qe >= 0 && /\?$/.test(t2)) break; }
+          if (qe < 0 && sents.length) { var f0 = sents[0].trim(); if (f0.split(/\s+/).length >= 6 && !/^(now|let|here|first|next|so|this|remember|notice|look|we |to |the rule|that)/i.test(f0)) qe = 0; }
           if (qe >= 0) { var full = sents.slice(0, qe + 1).map(function (z) { return z.trim(); }).join(' '); if (!onScreen(st.html, sents[0].trim()) || !onScreen(st.html, sents[qe].trim())) add = [full]; }
         }
         if (!turn && !add.length && st.html && st.html.indexOf('sv-work') < 0 && answerOnly(st.html)) {
