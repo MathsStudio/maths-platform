@@ -1618,7 +1618,7 @@ var SLIDE_MORE = {"1.learn1": [{"more": ["Our number system uses only ten digits
       var gl = (SLIDE_GOALS[t.n + '.' + step.id] || [])[k], goal = gl ? '<p class="goal say"><b>In this slide</b> we will learn ' + gl + '</p>' : '';
       var nxS = allSteps(t)[state.step + 1] || {}, endLab = nxS.group === 'learn' ? 'Next lesson' : 'On to ' + gname(nxS.group);
       var snav = '<div class="qnav"><button class="btn ghost" id="sPrev" type="button"' + (k === 0 ? ' disabled' : '') + ' aria-label="Previous slide">← Previous</button><button class="btn' + (lastSlide ? '' : ' ghost') + '" id="sNext" type="button" aria-label="' + (lastSlide ? endLab : 'Next slide') + '">' + (lastSlide ? endLab + ' →' : 'Next →') + '</button></div>';
-      pane.innerHTML = '<div class="slide"><div class="qtop"><span class="step-tag">' + step.tag + ' · slide ' + (k + 1) + ' of ' + slides.length + '</span>' + snav + '</div>' + dots + (s.kind ? '<span class="kindtag">' + s.kind + '</span>' : '') + '<h2 class="say">' + s.title + '</h2>' + goal + body + moreBlock(t, step, k) +
+      pane.innerHTML = '<div class="slide' + (s.flLearn ? ' fls' : '') + '"><div class="qtop"><span class="step-tag">' + step.tag + ' · slide ' + (k + 1) + ' of ' + slides.length + '</span>' + snav + '</div>' + dots + (s.kind ? '<span class="kindtag">' + s.kind + '</span>' : '') + '<h2 class="say">' + s.title + '</h2>' + goal + body + moreBlock(t, step, k) +
         (lastSlide ? mediaAid(t) : '') + '</div>';
       $('sPrev').addEventListener('click', function () { state.slide--; draw(); });
       $('sNext').addEventListener('click', function () { if (lastSlide) go(t.n, state.step + 1); else { state.slide++; draw(); } });
