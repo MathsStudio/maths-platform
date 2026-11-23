@@ -45,6 +45,7 @@
     '@keyframes gpin{from{opacity:0;transform:translateX(-16px)}to{opacity:1;transform:none}}',
     /* fixed sizes for the picture helpers inside the stage */
     '.gp-stage .sv-row{display:flex;flex-wrap:wrap;gap:8px 12px;justify-content:center;align-items:center;width:100%}',
+    '.gp-stage svg text{paint-order:stroke fill;stroke:#f4f4f4;stroke-width:5px;stroke-linejoin:round}',
     '.gp-stage .sv-card{border:4px solid;border-radius:14px;min-width:58px;padding:2px 10px;text-align:center;font-weight:700;font-size:32px;line-height:1.25;background:#fff}',
     '.gp-stage .sv-card.sm{font-size:22px;min-width:0;padding:3px 10px;border-width:3px}',
     '.gp-stage .b{color:var(--accent);border-color:var(--accent)}.gp-stage .g{color:var(--good);border-color:var(--good)}.gp-stage .r{color:var(--bad);border-color:var(--bad)}.gp-stage .y{color:#2a7fb0;border-color:#2a7fb0}',
