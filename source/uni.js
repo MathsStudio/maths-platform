@@ -14,6 +14,11 @@
       for (var r = 0; r < 40 && out.length < want; r++) {
         (orig.apply(this, args) || []).forEach(function (q) { var k = sig(q); if (out.length < want && !seen[k]) { seen[k] = 1; out.push(q); } });
       }
+      /* new lessons add their own question makers: mix them in at about one in five */
+      var mix = window.__addQ && window.__addQ[Number(topicN)];
+      if (mix && mix.length && step.id === 'practise' && out.length >= want) {
+        for (var i4 = 2, t3 = 0; i4 < want && t3 < 2000; i4 += 5, t3++) { var q3 = pick(mix)(); if (q3 && !seen[sig(q3)]) { seen[sig(q3)] = 1; out[i4] = q3; } else i4 -= 5; }
+      }
       var ex = window.__extraQ && window.__extraQ[Number(topicN)], list = ex && ex[step.id];
       if (out.length < want && list && list.length) {
         for (var t2 = 0; t2 < 6000 && out.length < want; t2++) { var q = pick(list)(); if (q && !seen[sig(q)]) { seen[sig(q)] = 1; out.push(q); } }
