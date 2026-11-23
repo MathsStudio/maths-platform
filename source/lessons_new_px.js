@@ -1,0 +1,23 @@
+/* lessons_new_px.js: compact lesson helper for P5-P7. BT.px = {X, tbl, bar, nl, rect, grid, h} */
+(function () {
+  'use strict';
+  var BT = window.BT; if (!BT || !BT.fxh) return;
+  var H = BT.fxh, E = H.E, M = H.M, T = H.T, LS = H.LS;
+  var h = function (x) { return 'h|' + x; };
+  var tbl = function (rows) { return h('<table style="border-collapse:collapse;margin:4px auto;font-size:15px">' + rows.map(function (r, i) { return '<tr>' + r.map(function (c) { return '<' + (i === 0 ? 'th' : 'td') + ' style="border:1.5px solid currentColor;padding:3px 10px;text-align:center">' + c + '</' + (i === 0 ? 'th' : 'td') + '>'; }).join('') + '</tr>'; }).join('') + '</table>'); };
+  var bar = function (n, d, w) { w = w || 240; var s = '<svg viewBox="0 0 ' + (w + 4) + ' 40" style="width:100%;max-width:' + (w + 4) + 'px"><title>' + n + ' out of ' + d + ' parts shaded</title>'; for (var i = 0; i < d; i++) s += '<rect x="' + (2 + i * w / d) + '" y="4" width="' + (w / d) + '" height="30" style="fill:' + (i < n ? '#2b62d9' : 'none') + ';stroke:currentColor;stroke-width:2"/>'; return h(s + '</svg>'); };
+  /* number line: nl(lo, hi, step, marks[{v,l}]) */
+  var nl = function (lo, hi, step, marks, title) { var W = 300, x0 = 20, x1 = W - 10, f = function (v) { return x0 + (x1 - x0) * (v - lo) / (hi - lo); }; var s = '<svg viewBox="0 0 ' + W + ' 70" style="width:100%;max-width:' + W + 'px"><title>' + (title || 'Number line from ' + lo + ' to ' + hi) + '</title><line x1="' + x0 + '" y1="30" x2="' + x1 + '" y2="30" style="stroke:currentColor;stroke-width:2"/>'; for (var v = lo; v <= hi + 1e-9; v += step) { s += '<line x1="' + f(v) + '" y1="24" x2="' + f(v) + '" y2="36" style="stroke:currentColor;stroke-width:2"/><text x="' + f(v) + '" y="52" text-anchor="middle" font-size="11" fill="currentColor">' + (Math.round(v * 1000) / 1000) + '</text>'; } (marks || []).forEach(function (m) { s += '<circle cx="' + f(m.v) + '" cy="30" r="6" fill="#d9362b"/><text x="' + f(m.v) + '" y="16" text-anchor="middle" font-size="12" font-weight="bold" fill="currentColor">' + (m.l || '') + '</text>'; }); return h(s + '</svg>'); };
+  var rect = function (w, hh, lw, lh) { var s = 24, W = w * s, Hh = hh * s; return h('<svg viewBox="0 0 ' + (W + 60) + ' ' + (Hh + 40) + '" style="width:100%;max-width:' + (W + 60) + 'px"><title>Rectangle ' + lw + ' by ' + lh + '</title><rect x="30" y="8" width="' + W + '" height="' + Hh + '" style="fill:none;stroke:currentColor;stroke-width:2.5"/><text x="' + (30 + W / 2) + '" y="' + (Hh + 28) + '" text-anchor="middle" font-size="14" fill="currentColor">' + lw + '</text><text x="12" y="' + (8 + Hh / 2) + '" text-anchor="middle" font-size="14" fill="currentColor">' + lh + '</text></svg>'); };
+  var grid = function (cols, rows, pts, title) { var s = 30, o = 28, svg = '<svg viewBox="0 0 ' + (cols * s + 50) + ' ' + (rows * s + 50) + '" style="width:100%;max-width:' + (cols * s + 50) + 'px"><title>' + (title || 'Grid with labelled points') + '</title>'; for (var i = 0; i <= cols; i++) svg += '<line x1="' + (o + i * s) + '" y1="10" x2="' + (o + i * s) + '" y2="' + (10 + rows * s) + '" style="stroke:currentColor;stroke-width:1;opacity:.5"/><text x="' + (o + i * s) + '" y="' + (rows * s + 28) + '" text-anchor="middle" font-size="12" fill="currentColor">' + i + '</text>'; for (var j = 0; j <= rows; j++) svg += '<line x1="' + o + '" y1="' + (10 + j * s) + '" x2="' + (o + cols * s) + '" y2="' + (10 + j * s) + '" style="stroke:currentColor;stroke-width:1;opacity:.5"/><text x="' + (o - 12) + '" y="' + (14 + (rows - j) * s) + '" text-anchor="middle" font-size="12" fill="currentColor">' + j + '</text>'; (pts || []).forEach(function (p) { svg += '<circle cx="' + (o + p[0] * s) + '" cy="' + (10 + (rows - p[1]) * s) + '" r="5" fill="#d9362b"/><text x="' + (o + p[0] * s + 8) + '" y="' + (10 + (rows - p[1]) * s - 6) + '" font-size="13" font-weight="bold" fill="currentColor">' + p[2] + '</text>'; }); return h(svg + '</svg>'); };
+  /* X(title, goal, head, [sub, say, lines], [[sub, say, lines]...], [[sub, say, wrong, right]...], [say, lines], [[q, say, work, ans, fig]...], [say, points]) */
+  var X = function (title, goal, head, rule, exs, mist, real, turns, rec) {
+    return LS(title, goal, head, E(rule[0], [rule[1], rule[2]]),
+      exs.map(function (e) { return E(e[0], [e[1], e[2]]); }),
+      mist.map(function (m) { return M(m[0], m[1], m[2], m[3]); }),
+      [real[0], real[1]],
+      turns.map(function (t) { return T(t[0], t[1], t[2], t[3], t[4]); }),
+      [rec[0], rec[1]]);
+  };
+  BT.px = { X: X, tbl: tbl, bar: bar, nl: nl, rect: rect, grid: grid, h: h };
+})();
