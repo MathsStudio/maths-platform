@@ -47634,7 +47634,7 @@ S.extraMakers = function (n, level) {
         ['Perimeter of a rectangle', 'P = 2 × (l + w)', 'P is the distance all the way round: two lengths and two widths.'],
         ['Area of a triangle', 'A = ½ × b × h', 'b is the base, h is the height. The height meets the base at a right angle.'],
         ['Area of a parallelogram', 'A = b × h', 'b is the base, h is the straight-up height (not the slanted side).']];
-      if (y !== 'S3') { f.push([F.trap(), 'Trapezium']); r.push(['Area of a trapezium', 'A = ½ × (a + b) × h', 'a and b are the two parallel sides, h is the distance between them.']); }
+      if (true) { f.push([F.trap(), 'Trapezium']); r.push(['Area of a trapezium', 'A = ½ × (a + b) × h', 'a and b are the two parallel sides, h is the distance between them.']); }
       return { icon: '📐', title: 'Area and perimeter', cat: 'Shape', figs: f, rows: r, ex: ['A triangle has a base of 8 cm and a height of 5 cm. What is its area?', 'b = 8 and h = 5, so A = ½ × 8 × 5 = 20 cm².'] };
     },
     circle: function () {
@@ -47654,7 +47654,7 @@ S.extraMakers = function (n, level) {
         ['Volume of a cuboid', 'V = l × w × h', 'V is the volume (space inside). l is the length, w the width, h the height.'],
         ['Volume of a prism', 'V = area of end × length', 'A prism has the same shape all the way along. Find the area of that end face, then multiply by how long the prism is.']];
       if (y !== 'S1') { f.push([F.cyl(), 'Cylinder']); r.push(['Volume of a cylinder', 'V = πr²h', 'The circle at the end has area πr². Multiply by the height h.']); }
-      if (y === 'S2') r.push(['Surface area of a cuboid', 'A = 2(lw + lh + wh)', 'Add the areas of all 6 faces: two of each pair.']);
+      if (y !== 'S1') r.push(['Surface area of a cuboid', 'A = 2(lw + lh + wh)', 'Add the areas of all 6 faces: two of each pair.']);
       if (y === 'S3') { f.push([F.cone(), 'Cone'], [F.sphere(), 'Sphere'], [F.pyr(), 'Pyramid']); r.push(['Volume of a cone', 'V = ⅓ × πr²h', 'A third of the cylinder with the same r and h.'], ['Volume of a pyramid', 'V = ⅓ × base area × h', 'A third of the prism with the same base and height.'], ['Volume of a sphere', 'V = 4/3 × πr³', 'r³ means r × r × r.'], ['Surface area of a cylinder', 'A = 2πr² + 2πrh', 'Two circles for the ends plus the curved side (a rectangle when unrolled).']); }
       return { icon: '📦', title: 'Volume' + (y === 'S1' ? '' : ' and surface area'), cat: 'Shape', figs: f, rows: r, ex: y === 'S3' ? ['A cone has radius 3 cm and height 4 cm. What is its volume?', 'V = ⅓ × π × 3 × 3 × 4 = ⅓ × 3.14 × 36 = 37.7 cm³.'] : ['A cuboid is 4 cm long, 3 cm wide and 2 cm high. What is its volume?', 'V = l × w × h = 4 × 3 × 2 = 24 cm³.'] };
     },
@@ -47744,9 +47744,9 @@ S.extraMakers = function (n, level) {
     }
   };
   var YEAR = {
-    S1: ['area', 'volume', 'speed', 'percent', 'ratio', 'data', 'prob', 'angles', 'scale', 'seq'],
-    S2: ['indices', 'percent', 'ratio', 'speed', 'area', 'circle2', 'volume', 'lines', 'seq', 'angles', 'bearings', 'pythag', 'similar', 'data', 'prob'],
-    S3: ['percent', 'indices', 'speed', 'area', 'circle', 'volume', 'factor', 'lines', 'pythag', 'trig', 'similar', 'bearings', 'data', 'prob']
+    S1: ['area', 'volume', 'speed', 'percent', 'ratio', 'seq', 'angles', 'scale', 'data', 'prob'],
+    S2: ['area', 'circle2', 'volume', 'speed', 'percent', 'ratio', 'indices', 'seq', 'lines', 'angles', 'bearings', 'scale', 'pythag', 'similar', 'data', 'prob'],
+    S3: ['area', 'circle', 'volume', 'speed', 'percent', 'ratio', 'indices', 'seq', 'lines', 'factor', 'angles', 'bearings', 'scale', 'pythag', 'trig', 'similar', 'data', 'prob']
   };
   var TOPIC = {
     804: ['percent'], 805: ['ratio'], 806: ['percent'], 807: ['speed'], 808: ['area', 'volume'], 809: ['seq'], 810: ['angles'], 811: ['scale'], 812: ['data', 'prob'],
@@ -47780,7 +47780,7 @@ S.extraMakers = function (n, level) {
     var all = YEAR[y], list = ids && ids.length ? ids.filter(function (i) { return all.indexOf(i) > -1; }) : all;
     if (!list.length) list = all;
     var cards = list.map(function (i) { return { id: i, c: C[i](y) }; }), cats = CATS.filter(function (k) { return cards.some(function (x) { return x.c.cat === k; }); });
-    d.innerHTML = '<div class="fm-in"><div class="fm-top"><div><h2>Formulas for ' + y + '</h2><p class="fm-lead">' + (list.length < all.length ? 'The formulas for this topic.' : 'Everything ' + y + ' teaches, in one place. Each one shows a picture, what every letter means, and a worked example.') + '</p></div><button class="fm-x" type="button" aria-label="Close" data-fmx>×</button></div>' +
+    d.innerHTML = '<div class="fm-in"><div class="fm-top"><div><h2>Formulas for ' + y + '</h2><p class="fm-lead">' + (list.length < all.length ? 'The formulas for this topic.' : 'Everything up to ' + y + ', in one place. Each one shows a picture, what every letter means, and a worked example.') + '</p></div><button class="fm-x" type="button" aria-label="Close" data-fmx>×</button></div>' +
       (list.length > 1 ? '<div class="fm-tabs" role="group" aria-label="Choose a group">' + ['All'].concat(cats).map(function (k, i) { return '<button type="button" class="fm-tab" data-tab="' + k + '" aria-pressed="' + (i === 0) + '">' + k + '</button>'; }).join('') + '</div>' : '') +
       '<div class="fm-grid">' + list.map(function (i) { return card(i, y); }).join('') + '</div>' + (list.length < all.length ? '<button class="fm-btn fm-more" type="button" data-fm="' + y + '">Show all ' + y + ' formulas</button>' : '') + '</div>';
     d.querySelectorAll('.fm-tab').forEach(function (b) { b.addEventListener('click', function () { var k = b.getAttribute('data-tab'); d.querySelectorAll('.fm-tab').forEach(function (x) { x.setAttribute('aria-pressed', x === b); }); d.querySelectorAll('.fm-c').forEach(function (c) { c.hidden = !(k === 'All' || c.getAttribute('data-cat') === k); }); }); });
