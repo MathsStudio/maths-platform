@@ -24,7 +24,7 @@
     '.flb-opts button{flex:1 1 0;min-width:0;max-width:150px;min-height:72px;padding:6px 4px;font-size:1.6rem;font-weight:800;border-radius:18px;border:3px solid ' + INK + ';background:#fff;color:' + INK + ';cursor:pointer}' +
     '.flb-show .o{flex:1 1 0;min-width:0;max-width:150px;display:flex;align-items:center;justify-content:center;min-height:56px;padding:6px 4px;font-size:1.3rem;font-weight:800;border-radius:16px;border:3px solid ' + INK + ';background:#fff;color:' + INK + ';text-align:center;line-height:1.15}.flb-show .o.ok{background:#8fd67d}' +
     '.flb-q{font-weight:800;font-size:1.2rem;line-height:1.35;text-align:center;margin:8px 0 0;max-width:560px}.flb-w{width:100%;max-width:560px}.flb-w .flp-pic>svg{min-width:min(260px,100%)!important;flex:1 1 260px!important}.flb-w .flp-ch svg{width:76px!important}.flb-w .flb-tip{font-size:1rem;line-height:1.35;margin:8px 0 0;text-align:left}.flb-w+.flb-opts,.gp-stage .flb-opts{margin:8px 0 0}' +
-    '.flb-opts.long button{font-size:1.15rem;min-height:64px}.flb-opts.col{flex-direction:column;align-items:center}.flb-opts.col button{font-size:1.15rem;min-height:56px;width:100%;max-width:420px;flex:0 0 auto}' +
+    '.flb-opts.col{width:100%}.flb-opts.wrapr{flex-wrap:wrap;width:100%}.flb-opts.wrapr button{flex:1 1 44%;max-width:none;font-size:1.15rem;min-height:56px}.flb-opts.long button{font-size:1.15rem;min-height:64px}.flb-opts.col{flex-direction:column;align-items:center}.flb-opts.col button{font-size:1.15rem;min-height:56px;width:100%;max-width:420px;flex:0 0 auto}' +
     '.flb-opts button.ok{background:#8fd67d}.flb-opts button.no{background:#ffd0d0;opacity:.75}' +
     '.flb-fb{min-height:2.2em;text-align:center;font-weight:800;font-size:1.25rem;margin:4px 0}' +
     '.flb-fb.ok{color:#1f7a3a}.flb-fb.no{color:#b3261e}' +
@@ -296,7 +296,7 @@
   function words(t) { return t.split(/\s+/).map(function (w) { return '<span class="w">' + w + '</span>'; }).join(' '); }
   function cheer() { return pick(['Brilliant!', 'Super!', 'Well done!', 'You did it!', 'Amazing!', 'Great thinking!']); }
   function nudge() { return pick(['Nearly! Have another go.', 'Good try! Look again.', 'Not quite. Try again.']); }
-  function opts(list) { var L = Math.max.apply(null, list.map(function (o) { return String(o).length; })); return '<div class="flb-opts' + (L > 12 ? ' col' : L > 4 ? ' long' : '') + '">' + list.map(function (o) { return '<button type="button" data-o="' + String(o).replace(/"/g, '&quot;') + '">' + o + '</button>'; }).join('') + '</div>'; }
+  function opts(list) { var L = Math.max.apply(null, list.map(function (o) { return String(o).length; })); return '<div class="flb-opts' + (L > 12 ? ' col' : L > 9 ? ' wrapr' : L > 4 ? ' long' : '') + '">' + list.map(function (o) { return '<button type="button" data-o="' + String(o).replace(/"/g, '&quot;') + '">' + o + '</button>'; }).join('') + '</div>'; }
   function wireOpts(root, answer, onRight, onWrong) {
     root.querySelectorAll('[data-o]').forEach(function (b) { b.addEventListener('click', function () {
       if (b.classList.contains('ok')) return;

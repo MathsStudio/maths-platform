@@ -3,7 +3,7 @@
   'use strict';
   var FL = window.FL; if (!FL || !FL.MEGA) return;
   var C = FL.cards;
-  function pic(s) { return s ? C(s.split(',').map(function (x) { return x.trim(); })) : ''; }
+  function pic(s) { if (s && s.charAt(0) === '<') return s; return s ? C(s.split(',').map(function (x) { return x.trim(); })) : ''; }
   function ex(s) { var p = s.split('|'); return [p[0], p[1].split(';'), p[2], pic(p[3])]; }
   function rl(s) { var p = s.split('|'); return [p[0], p[1], p[2].split(','), p[3], pic(p[4])]; }
   function qq(s) { var p = s.split('|'); return [p[0], p[1], p[2].split(','), p[3] || 'Check each step.', pic(p[4]), '']; }

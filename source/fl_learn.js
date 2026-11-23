@@ -20,7 +20,7 @@
   /* a quick check: one question answered by tapping, then the explanation */
   function check(c) {
     return function (host) {
-      host.innerHTML = '<div class="flb">' + (c.pic ? '<div class="flb-pic">' + c.pic + '</div>' : '') + '<div class="flb-q">' + c.q + '</div><div class="flb-opts' + (function () { var L = Math.max.apply(null, c.options.map(function (o) { return String(o).length; })); return L > 12 ? ' col' : L > 4 ? ' long' : ''; })() + '">' + c.options.map(function (o) { return '<button type="button" data-o="' + String(o).replace(/"/g, '&quot;') + '">' + o + '</button>'; }).join('') + '</div><p class="flb-fb" aria-live="polite"></p></div>';
+      host.innerHTML = '<div class="flb">' + (c.pic ? '<div class="flb-pic">' + c.pic + '</div>' : '') + '<div class="flb-q">' + c.q + '</div><div class="flb-opts' + (function () { var L = Math.max.apply(null, c.options.map(function (o) { return String(o).length; })); return L > 12 ? ' col' : L > 9 ? ' wrapr' : L > 4 ? ' long' : ''; })() + '">' + c.options.map(function (o) { return '<button type="button" data-o="' + String(o).replace(/"/g, '&quot;') + '">' + o + '</button>'; }).join('') + '</div><p class="flb-fb" aria-live="polite"></p></div>';
       var fb = host.querySelector('.flb-fb');
       host.querySelectorAll('[data-o]').forEach(function (b) { b.addEventListener('click', function () {
         if (String(b.getAttribute('data-o')) === String(c.answer)) { b.classList.add('ok'); host.querySelectorAll('[data-o]').forEach(function (x) { x.disabled = true; }); fb.className = 'flb-fb ok'; fb.textContent = 'Well done! ' + c.explain; }
