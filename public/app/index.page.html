@@ -47258,7 +47258,7 @@ S.extraMakers = function (n, level) {
       if (!fresh.length) return;
       var steps = fresh.map(function (w) {
         have[String(w[0]).toLowerCase()] = 1;
-        return L.st(FL._spoken(w), '<div class="flb flb-w"><div class="flb-stage"><div style="text-align:center;padding:10px;color:#2b2340"><div style="font-size:2.6rem" aria-hidden="true">' + (w[2] || '\ud83d\udd24') + '</div><div style="font-size:1.5rem;font-weight:800;margin:6px 0">' + w[0] + '</div><div style="font-size:1.1rem">' + w[1] + '</div></div></div></div>');
+        return L.st(FL._spoken(w), '<div style="text-align:center;line-height:1.25"><div style="font-size:3rem" aria-hidden="true">' + (w[2] || '\ud83d\udd24') + '</div><div style="font-size:2rem;font-weight:800;margin:10px 0 6px">' + w[0] + '</div><div style="font-size:1.4rem">' + w[1] + '</div></div>');
       });
       var old = ep.scenes.filter(function (x) { return x.h === 'Key words'; })[0];
       if (old) { old.steps = old.steps.concat(steps); return; }
