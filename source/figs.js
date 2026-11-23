@@ -113,4 +113,45 @@
     (pts || []).forEach(function (p) { s += dot(X(p[0]), Y(p[1]), !!p[3]) + tx(X(p[0]) + 7, Y(p[1]) - 8, p[2] || '', !!p[3], 'start', 17); });
     return svg(260, 160, s, 'A coordinate grid');
   };
+
+  /* two similar triangles side by side: sa, sb = [base, height-side, slanted] labels, hi = which labels to highlight (indices 0..2 of the second triangle) */
+  F.simtri = function (sa, sb, hi) {
+    hi = hi || []; var A = [[12, 130], [102, 130], [102, 78]], B = [[130, 130], [250, 130], [250, 50]], s = pg(A, 'none') + pg(B, 'none') + rm(102, 130, -1, 0, 0, -1) + rm(250, 130, -1, 0, 0, -1);
+    function lab(P, Q, t, h, off) { if (t === '' || t == null) return ''; var mx = (P[0] + Q[0]) / 2, my = (P[1] + Q[1]) / 2; return tx(mx + off[0], my + off[1], t, h, 'middle', 19); }
+    s += lab(A[0], A[1], sa[0], false, [0, 22]) + lab(A[1], A[2], sa[1], false, [14, 5]) + lab(A[0], A[2], sa[2], false, [-12, -6]);
+    s += lab(B[0], B[1], sb[0], hi.indexOf(0) >= 0, [0, 22]) + lab(B[1], B[2], sb[1], hi.indexOf(1) >= 0, [14, 5]) + lab(B[0], B[2], sb[2], hi.indexOf(2) >= 0, [-12, -6]);
+    hi.forEach(function (i) { var P = B[i], Q = B[(i + 1) % 3]; s += ln(P[0], P[1], Q[0], Q[1], true); });
+    return svg(260, 160, s, 'Two similar triangles');
+  };
+  /* a regular polygon with one exterior angle drawn */
+  F.regpoly = function (n, label, hiInterior) {
+    var cx = 110, cy = 82, r = 58, pts = [], i, ex = 360 / n; for (i = 0; i < n; i++) { var a = (90 + 180 / n + i * ex) * R; pts.push([cx + r * Math.cos(a), cy - r * Math.sin(a)]); }
+    var V = pts[0], P = pts[n - 1], Q = pts[1], dx = V[0] - P[0], dy = V[1] - P[1], l = Math.hypot(dx, dy), ux = dx / l, uy = dy / l, ext = [V[0] + ux * 50, V[1] + uy * 50];
+    var s = pg(pts, 'none') + ln(V[0], V[1], ext[0], ext[1], false, true), a0 = Math.atan2(-uy, ux) / R, a1 = Math.atan2(-(Q[1] - V[1]), Q[0] - V[0]) / R, d = a1 - a0; while (d < 0) d += 360; while (d > 180) d -= 360;
+    var lo = Math.min(a0, a0 + d), hi = Math.max(a0, a0 + d); s += ar(V[0], V[1], 28, lo, hi, true) + tx(ext[0] + 8, ext[1] - 4, label, true, 'start', 20);
+    return svg(260, 160, s, 'A regular polygon with an exterior angle');
+  };
+  /* mirror lines on a regular shape */
+  F.sym = function (k) {
+    var s = '', cx = 130, cy = 82, r = 56, n = k === 'tri' ? 3 : k === 'pent' ? 5 : k === 'hex' ? 6 : 4, pts = [], i;
+    if (k === 'rhomb') pts = [[130, 18], [196, 82], [130, 146], [64, 82]]; else for (i = 0; i < n; i++) { var a = (90 + i * 360 / n) * R; pts.push([cx + r * Math.cos(a), cy - r * Math.sin(a)]); }
+    s = pg(pts, SOFT);
+    if (k === 'rhomb') s += ln(130, 8, 130, 156, true, true) + ln(54, 82, 206, 82, true, true);
+    else for (i = 0; i < n; i++) { var a2 = (90 + i * 360 / n) * R; s += ln(cx + (r + 10) * Math.cos(a2), cy - (r + 10) * Math.sin(a2), cx - (n % 2 ? 0.45 : 1) * (r + 10) * Math.cos(a2), cy + (n % 2 ? 0.45 : 1) * (r + 10) * Math.sin(a2), true, true); }
+    return svg(260, 160, s, 'Lines of symmetry');
+  };
+  /* a cube net (cross) with one face highlighted */
+  F.net = function () { var s = '', u = 34, ox = 62, oy = 14, cells = [[1, 0], [0, 1], [1, 1], [2, 1], [3, 1], [1, 2]], i; cells.forEach(function (c, j) { s += '<rect x="' + (ox + c[0] * u) + '" y="' + (oy + c[1] * u) + '" width="' + u + '" height="' + u + '" style="fill:' + (j === 2 ? SOFT : 'none') + ';stroke:' + (j === 2 ? HI : FG) + ';stroke-width:3"/>' + tx(ox + c[0] * u + u / 2, oy + c[1] * u + u / 2 + 7, '' + (j + 1), j === 2, 'middle', 20); }); return svg(260, 160, s, 'A cube net with six squares'); };
+  /* parallel lines cut by a transversal: known angle and the one to find */
+  F.para = function (known, find, kind) {
+    var s = ln(20, 52, 240, 52) + ln(20, 112, 240, 112) + ln(70, 150, 170, 14, false, false, 3), x1 = 70 + (150 - 52) / 136 * 100, y1 = 52, x2 = 70 + (150 - 112) / 136 * 100, y2 = 112;
+    s += '<polygon points="228,48 240,52 228,56" style="fill:' + FG + '"/><polygon points="228,108 240,112 228,116" style="fill:' + FG + '"/>';
+    s += ar(x1, y1, 24, 0, 54, kind !== 'a') + tx(x1 + 34, y1 - 10, known, kind !== 'a', 'start', 20);
+    s += ar(x2, y2, 24, 126, 180, false) ; s += ar(x2, y2, 24, 0, 54, kind === 'a') + tx(x2 + 34, y2 - 10, find, true, 'start', 20);
+    return svg(260, 160, s, 'Parallel lines cut by a transversal');
+  };
+  /* a circle with its diameter (and optionally radius) highlighted */
+  F.cdia = function (d, r) { var c = [130, 80], rr = 60, s = ci(c[0], c[1], rr, SOFT) + ln(c[0] - rr, c[1], c[0] + rr, c[1], !r, false, 5) + dot(c[0], c[1]); if (r) s = ci(c[0], c[1], rr, SOFT) + ln(c[0], c[1], c[0] + rr, c[1], true, false, 5) + dot(c[0], c[1]) + tx(c[0] + rr / 2, c[1] - 8, r, true); else s += tx(c[0], c[1] + 28, d, true); return svg(260, 160, s, 'A circle'); };
+  /* shadows: a pole and a tree with the sun's ray */
+  F.shadow = function (hp, sp, ht, st) { var s = ln(10, 140, 250, 140) + ln(40, 140, 40, 100, true, false, 6) + ln(40, 100, 90, 140, false, true) + ln(150, 140, 150, 40, true, false, 6) + ln(150, 40, 250, 140, false, true) + tx(24, 122, hp, false, 'end', 19) + tx(65, 158, sp, false, 'middle', 19) + tx(136, 92, ht, true, 'end', 19) + tx(200, 158, st, true, 'middle', 19); return svg(260, 170, s, 'A pole and a tree with shadows'); };
 })();

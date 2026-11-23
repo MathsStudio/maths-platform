@@ -192,9 +192,22 @@
     });
     ep.scenes = out;
   }
+  /* BT.EX: [title start, narration start, [calculation lines], 1 = show before the result] adds the written calculation to a step whose narration does the arithmetic aloud */
+  function extraCalc(ep) {
+    (BT.EX || []).forEach(function (x) {
+      if (String(ep.title).indexOf(x[0]) !== 0) return;
+      ep.scenes.forEach(function (sc) { if (sc.h === 'Your turn') return; sc.steps.slice().forEach(function (st) {
+        if (String(st.say || '').indexOf(x[1]) !== 0 || st._ex) return; st._ex = 1;
+        if (x[3] === 2) { var at = sc.steps.indexOf(st); sc.steps.splice(at + 1, 0, L.st('Here is the working, line by line.', '<!--swap-->' + x[2].map(function (c) { return BT.sv.eq(c); }).join(''))); return; }
+        var raw = String(st.html || ''), swap = raw.indexOf('<!--swap-->') === 0; if (swap) raw = raw.replace('<!--swap-->', '');
+        var add = x[2].map(function (c) { return BT.sv.eq(c); }).join('');
+        st.html = (swap ? '<!--swap-->' : '') + (x[3] ? add + raw : raw + add);
+      }); });
+    });
+  }
   L.use = function (n, items) {
     var list = items.map(function (x) { return typeof x === 'string' ? L.get(x) : x; });
-    if (n >= 841 && n <= 853) list.forEach(function (it) { if (it && it.scenes) { splitTurns(it); showWords(it.scenes); fit(it.scenes); } });
+    if (n >= 841 && n <= 853) list.forEach(function (it) { if (it && it.scenes) { splitTurns(it); extraCalc(it); showWords(it.scenes); fit(it.scenes); } });
     BT.lessons(n, 'Watch lesson', list);
   };
 

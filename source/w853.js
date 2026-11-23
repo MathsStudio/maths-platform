@@ -1,8 +1,8 @@
 (function () { var BT = window.BT; if (!BT || !BT.W3) return; var W = BT.W3, F = BT.F;
 W('What is symmetry in 2D shapes?', [
- ['Equilateral triangle: 3 equal sides', '3 lines of symmetry', 'Order of rotational symmetry: 3'],
- ['A rhombus fits after a half turn (180°)', '360 ÷ 180 = 2', 'Order 2'],
- ['Regular pentagon: 5 sides', '5 lines of symmetry', 'Order 5']]);
+ [['Equilateral triangle: 3 equal sides', F.sym('tri')], '3 lines of symmetry', 'Order of rotational symmetry: 3'],
+ [['A rhombus fits after a half turn (180°)', F.sym('rhomb')], '360 ÷ 180 = 2', 'Order 2'],
+ [['Regular pentagon: 5 sides', F.sym('pent')], '5 lines of symmetry', 'Order 5']]);
 W('How do you reflect shapes and decide whether shapes are congruent?', [
  [['Reflect in the x-axis: y changes sign', F.grid([[4,2,'(4, 2)'],[4,-2,'(4, −2)',1]],[[4,2,4,-2,0,1]])], '(4, 2) → (4, −2)'],
  [['Reflect in y = x: swap x and y', F.grid([[2,5,'(2, 5)'],[5,2,'(5, 2)',1]],[[0,0,6,6,0,1],[2,5,5,2,0,1]])], '(2, 5) → (5, 2)'],
@@ -24,9 +24,9 @@ W('How do linear, quadratic and exponential patterns grow?', [
  ['3 ÷ 1 = 3', '9 ÷ 3 = 3', '27 ÷ 9 = 3', 'Next term: 27 × 3 = 81'],
  ['First differences: 4, 6, 8', 'Second differences: 2, 2', 'Constant second difference: quadratic']]);
 W('How do you work with nets, views and stacks of cubes?', [
- ['A cube has 6 faces', 'Each face is 1 square', 'Its net has 6 squares'],
+ [['A cube has 6 faces', F.net()], 'Each face is 1 square', 'Its net has 6 squares'],
  ['Add the numbers in the plan view', '2 + 3 + 1 + 1 = 7'],
- ['Cube 3 × 3 × 3', 'One face painted: the middle of each face', '6 faces × 1 = 6']]);
+ [['Cube 3 × 3 × 3', F.solid('cuboid',{l:'3',w:'3',h:'3'})], 'One face painted: the middle of each face', '6 faces × 1 = 6']]);
 W('Painted cubes and stacks', [
  ['Sides: 4 cubes × 4 sides = 16', 'Top: 1 face', '16 + 1 = 17']]);
 W('How do you solve ordering and logic puzzles?', [

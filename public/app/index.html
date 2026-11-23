@@ -18409,9 +18409,22 @@ S.spatialExtra = S.extraMakers;
     });
     ep.scenes = out;
   }
+  /* BT.EX: [title start, narration start, [calculation lines], 1 = show before the result] adds the written calculation to a step whose narration does the arithmetic aloud */
+  function extraCalc(ep) {
+    (BT.EX || []).forEach(function (x) {
+      if (String(ep.title).indexOf(x[0]) !== 0) return;
+      ep.scenes.forEach(function (sc) { if (sc.h === 'Your turn') return; sc.steps.slice().forEach(function (st) {
+        if (String(st.say || '').indexOf(x[1]) !== 0 || st._ex) return; st._ex = 1;
+        if (x[3] === 2) { var at = sc.steps.indexOf(st); sc.steps.splice(at + 1, 0, L.st('Here is the working, line by line.', '<!--swap-->' + x[2].map(function (c) { return BT.sv.eq(c); }).join(''))); return; }
+        var raw = String(st.html || ''), swap = raw.indexOf('<!--swap-->') === 0; if (swap) raw = raw.replace('<!--swap-->', '');
+        var add = x[2].map(function (c) { return BT.sv.eq(c); }).join('');
+        st.html = (swap ? '<!--swap-->' : '') + (x[3] ? add + raw : raw + add);
+      }); });
+    });
+  }
   L.use = function (n, items) {
     var list = items.map(function (x) { return typeof x === 'string' ? L.get(x) : x; });
-    if (n >= 841 && n <= 853) list.forEach(function (it) { if (it && it.scenes) { splitTurns(it); showWords(it.scenes); fit(it.scenes); } });
+    if (n >= 841 && n <= 853) list.forEach(function (it) { if (it && it.scenes) { splitTurns(it); extraCalc(it); showWords(it.scenes); fit(it.scenes); } });
     BT.lessons(n, 'Watch lesson', list);
   };
 
@@ -18547,7 +18560,627 @@ S.spatialExtra = S.extraMakers;
     (pts || []).forEach(function (p) { s += dot(X(p[0]), Y(p[1]), !!p[3]) + tx(X(p[0]) + 7, Y(p[1]) - 8, p[2] || '', !!p[3], 'start', 17); });
     return svg(260, 160, s, 'A coordinate grid');
   };
+
+  /* two similar triangles side by side: sa, sb = [base, height-side, slanted] labels, hi = which labels to highlight (indices 0..2 of the second triangle) */
+  F.simtri = function (sa, sb, hi) {
+    hi = hi || []; var A = [[12, 130], [102, 130], [102, 78]], B = [[130, 130], [250, 130], [250, 50]], s = pg(A, 'none') + pg(B, 'none') + rm(102, 130, -1, 0, 0, -1) + rm(250, 130, -1, 0, 0, -1);
+    function lab(P, Q, t, h, off) { if (t === '' || t == null) return ''; var mx = (P[0] + Q[0]) / 2, my = (P[1] + Q[1]) / 2; return tx(mx + off[0], my + off[1], t, h, 'middle', 19); }
+    s += lab(A[0], A[1], sa[0], false, [0, 22]) + lab(A[1], A[2], sa[1], false, [14, 5]) + lab(A[0], A[2], sa[2], false, [-12, -6]);
+    s += lab(B[0], B[1], sb[0], hi.indexOf(0) >= 0, [0, 22]) + lab(B[1], B[2], sb[1], hi.indexOf(1) >= 0, [14, 5]) + lab(B[0], B[2], sb[2], hi.indexOf(2) >= 0, [-12, -6]);
+    hi.forEach(function (i) { var P = B[i], Q = B[(i + 1) % 3]; s += ln(P[0], P[1], Q[0], Q[1], true); });
+    return svg(260, 160, s, 'Two similar triangles');
+  };
+  /* a regular polygon with one exterior angle drawn */
+  F.regpoly = function (n, label, hiInterior) {
+    var cx = 110, cy = 82, r = 58, pts = [], i, ex = 360 / n; for (i = 0; i < n; i++) { var a = (90 + 180 / n + i * ex) * R; pts.push([cx + r * Math.cos(a), cy - r * Math.sin(a)]); }
+    var V = pts[0], P = pts[n - 1], Q = pts[1], dx = V[0] - P[0], dy = V[1] - P[1], l = Math.hypot(dx, dy), ux = dx / l, uy = dy / l, ext = [V[0] + ux * 50, V[1] + uy * 50];
+    var s = pg(pts, 'none') + ln(V[0], V[1], ext[0], ext[1], false, true), a0 = Math.atan2(-uy, ux) / R, a1 = Math.atan2(-(Q[1] - V[1]), Q[0] - V[0]) / R, d = a1 - a0; while (d < 0) d += 360; while (d > 180) d -= 360;
+    var lo = Math.min(a0, a0 + d), hi = Math.max(a0, a0 + d); s += ar(V[0], V[1], 28, lo, hi, true) + tx(ext[0] + 8, ext[1] - 4, label, true, 'start', 20);
+    return svg(260, 160, s, 'A regular polygon with an exterior angle');
+  };
+  /* mirror lines on a regular shape */
+  F.sym = function (k) {
+    var s = '', cx = 130, cy = 82, r = 56, n = k === 'tri' ? 3 : k === 'pent' ? 5 : k === 'hex' ? 6 : 4, pts = [], i;
+    if (k === 'rhomb') pts = [[130, 18], [196, 82], [130, 146], [64, 82]]; else for (i = 0; i < n; i++) { var a = (90 + i * 360 / n) * R; pts.push([cx + r * Math.cos(a), cy - r * Math.sin(a)]); }
+    s = pg(pts, SOFT);
+    if (k === 'rhomb') s += ln(130, 8, 130, 156, true, true) + ln(54, 82, 206, 82, true, true);
+    else for (i = 0; i < n; i++) { var a2 = (90 + i * 360 / n) * R; s += ln(cx + (r + 10) * Math.cos(a2), cy - (r + 10) * Math.sin(a2), cx - (n % 2 ? 0.45 : 1) * (r + 10) * Math.cos(a2), cy + (n % 2 ? 0.45 : 1) * (r + 10) * Math.sin(a2), true, true); }
+    return svg(260, 160, s, 'Lines of symmetry');
+  };
+  /* a cube net (cross) with one face highlighted */
+  F.net = function () { var s = '', u = 34, ox = 62, oy = 14, cells = [[1, 0], [0, 1], [1, 1], [2, 1], [3, 1], [1, 2]], i; cells.forEach(function (c, j) { s += '<rect x="' + (ox + c[0] * u) + '" y="' + (oy + c[1] * u) + '" width="' + u + '" height="' + u + '" style="fill:' + (j === 2 ? SOFT : 'none') + ';stroke:' + (j === 2 ? HI : FG) + ';stroke-width:3"/>' + tx(ox + c[0] * u + u / 2, oy + c[1] * u + u / 2 + 7, '' + (j + 1), j === 2, 'middle', 20); }); return svg(260, 160, s, 'A cube net with six squares'); };
+  /* parallel lines cut by a transversal: known angle and the one to find */
+  F.para = function (known, find, kind) {
+    var s = ln(20, 52, 240, 52) + ln(20, 112, 240, 112) + ln(70, 150, 170, 14, false, false, 3), x1 = 70 + (150 - 52) / 136 * 100, y1 = 52, x2 = 70 + (150 - 112) / 136 * 100, y2 = 112;
+    s += '<polygon points="228,48 240,52 228,56" style="fill:' + FG + '"/><polygon points="228,108 240,112 228,116" style="fill:' + FG + '"/>';
+    s += ar(x1, y1, 24, 0, 54, kind !== 'a') + tx(x1 + 34, y1 - 10, known, kind !== 'a', 'start', 20);
+    s += ar(x2, y2, 24, 126, 180, false) ; s += ar(x2, y2, 24, 0, 54, kind === 'a') + tx(x2 + 34, y2 - 10, find, true, 'start', 20);
+    return svg(260, 160, s, 'Parallel lines cut by a transversal');
+  };
+  /* a circle with its diameter (and optionally radius) highlighted */
+  F.cdia = function (d, r) { var c = [130, 80], rr = 60, s = ci(c[0], c[1], rr, SOFT) + ln(c[0] - rr, c[1], c[0] + rr, c[1], !r, false, 5) + dot(c[0], c[1]); if (r) s = ci(c[0], c[1], rr, SOFT) + ln(c[0], c[1], c[0] + rr, c[1], true, false, 5) + dot(c[0], c[1]) + tx(c[0] + rr / 2, c[1] - 8, r, true); else s += tx(c[0], c[1] + 28, d, true); return svg(260, 160, s, 'A circle'); };
+  /* shadows: a pole and a tree with the sun's ray */
+  F.shadow = function (hp, sp, ht, st) { var s = ln(10, 140, 250, 140) + ln(40, 140, 40, 100, true, false, 6) + ln(40, 100, 90, 140, false, true) + ln(150, 140, 150, 40, true, false, 6) + ln(150, 40, 250, 140, false, true) + tx(24, 122, hp, false, 'end', 19) + tx(65, 158, sp, false, 'middle', 19) + tx(136, 92, ht, true, 'end', 19) + tx(200, 158, st, true, 'middle', 19); return svg(260, 170, s, 'A pole and a tree with shadows'); };
 })();
+</script>
+<script>
+(function () { var BT = window.BT; if (!BT) return; BT.EX = [
+[
+"How do you write a number as a p",
+"For the lowest common multiple",
+[
+"2³ = 8 and 3² = 9",
+"8 × 9 = 72",
+"72 × 5 = 360",
+"360 × 7 = 2,520"
+],
+0
+],
+[
+"How do you multiply and divide n",
+"Divide two times ten to the six",
+[
+"2 ÷ 5 = 0.4",
+"10⁶ ÷ 10² = 10⁴",
+"0.4 × 10⁴ = 4 × 10³"
+],
+1
+],
+[
+"How do you work with rounding an",
+"A crowd is eighty",
+[
+"Half of 10 = 5",
+"80 − 5 = 75",
+"80 + 5 = 85",
+"75 ≤ crowd < 85"
+],
+1
+],
+[
+"How do you work with rounding an",
+"Manufacturers use tolerance",
+[
+"250 − 5 = 245",
+"250 + 5 = 255"
+],
+0
+],
+[
+"How do you work with rounding an",
+"A parcel weighs two point three",
+[
+"Upper bound: 2.3 + 0.05 = 2.35",
+"2.35 < 2.4"
+],
+0
+],
+[
+"Surds",
+"The square root of thirty-six",
+[
+"√36 = 6"
+],
+1
+],
+[
+"Surds",
+"It is tidy not to leave",
+[
+"6/√3 × √3/√3 = 6√3/3",
+"6 ÷ 3 = 2",
+"So 6/√3 = 2√3"
+],
+0
+],
+[
+"How do you convert currencies",
+"How many euros do you get",
+[
+"350 × 1.16 = 406",
+"£350 = €406"
+],
+0
+],
+[
+"How do you work out profit and l",
+"A cafe buys coffee",
+[
+"Profit: 2.50 − 0.20 = 2.30",
+"2.30 ÷ 0.20 = 11.5",
+"11.5 × 100 = 1,150%"
+],
+0
+],
+[
+"How do you compare value for mon",
+"Juice comes in three sizes",
+[
+"90 ÷ 5 = 18",
+"165 ÷ 10 = 16.5",
+"240 ÷ 15 = 16"
+],
+1
+],
+[
+"Volume of cones and spheres",
+"A cone has a radius of three",
+[
+"r² = 3² = 9",
+"⅓ × π × 9 × 10",
+"= 30π"
+],
+0
+],
+[
+"How do you simplify algebraic t",
+"Simplify four a plus three b",
+[
+"a terms: 4a − a = 3a",
+"b terms: 3b + 2b = 5b",
+"Answer: 3a + 5b"
+],
+0
+],
+[
+"How do you simplify algebraic t",
+"Two x squared plus one x squared",
+[
+"2x² + x² = 3x²"
+],
+1
+],
+[
+"How do you simplify algebraic t",
+"When we multiply terms",
+[
+"3 × 4 = 12",
+"a × a = a²",
+"3ab × 4a = 12a²b"
+],
+0
+],
+[
+"How do you simplify algebraic t",
+"To divide, write it as a fraction",
+[
+"12 ÷ 4 = 3",
+"x² ÷ x = x",
+"12x²y ÷ 4x = 3xy"
+],
+0
+],
+[
+"How do you substitute numbers in",
+"Find the value of five a",
+[
+"5 × 4 = 20",
+"2 × 3 = 6",
+"20 − 6 = 14"
+],
+0
+],
+[
+"How do you expand two brackets",
+"Collect the middle terms",
+[
+"3x + 2x = 5x"
+],
+1
+],
+[
+"How do you expand two brackets",
+"Step one, First",
+[
+"3x × x = 3x²",
+"3x × 4 = 12x",
+"−2 × x = −2x",
+"−2 × 4 = −8"
+],
+1
+],
+[
+"How do you expand two brackets",
+"Mistake three. Sign errors",
+[
+"(−3) × (−2) = +6",
+"−2x − 3x = −5x"
+],
+1
+],
+[
+"How do you solve inequalities, i",
+"Let us do one where the x term",
+[
+"3 − 2x ≥ 11",
+"−2x ≥ 11 − 3",
+"−2x ≥ 8"
+],
+1
+],
+[
+"How do you solve inequalities, i",
+"Step two. Divide both sides by minus two",
+[
+"x ≤ 8 ÷ (−2)",
+"x ≤ −4"
+],
+1
+],
+[
+"Changing the subject and inequat",
+"Solve five minus two x is less than eleven",
+[
+"5 − 2x < 11",
+"−2x < 11 − 5 = 6",
+"x > 6 ÷ (−2) = −3"
+],
+1
+],
+[
+"How do you change the subject wi",
+"Check with numbers. If r is three",
+[
+"A = π × 3² = 9π",
+"A ÷ π = 9",
+"√9 = 3"
+],
+1
+],
+[
+"How do you change the subject wh",
+"Check with y equals five",
+[
+"2 × 16/3 + 1 = 35/3",
+"16/3 − 3 = 7/3",
+"35/3 ÷ 7/3 = 5 ✓"
+],
+1
+],
+[
+"How do you draw a straight line",
+"Choose x equals minus one",
+[
+"x = −1: 2 × (−1) + 1 = −1",
+"x = 0: 2 × 0 + 1 = 1",
+"x = 1: 2 × 1 + 1 = 3",
+"x = 2: 2 × 2 + 1 = 5",
+"x = 3: 2 × 3 + 1 = 7"
+],
+2
+],
+[
+"How do you draw a straight line",
+"For x of zero, y is three",
+[
+"x = 0: y = 3 − 0 = 3",
+"x = 1: y = 3 − 1 = 2",
+"x = 2: y = 3 − 2 = 1",
+"x = 3: y = 3 − 3 = 0",
+"x = 4: y = 3 − 4 = −1"
+],
+2
+],
+[
+"How do you draw a straight line",
+"When there is a half",
+[
+"x = 0: ½ × 0 + 1 = 1",
+"x = 2: ½ × 2 + 1 = 2",
+"x = 4: ½ × 4 + 1 = 3",
+"x = 6: ½ × 6 + 1 = 4"
+],
+1
+],
+[
+"How do you draw a straight line",
+"Mistake two. Drawing a bendy line",
+[
+"2 × 3 + 1 = 6 + 1 = 7"
+],
+0
+],
+[
+"Parallel and perpendicular lines",
+"A line has gradient two",
+[
+"2 = 2/1",
+"Flip: 1/2",
+"Change the sign: −1/2"
+],
+1
+],
+[
+"Parallel and perpendicular lines",
+"What is perpendicular to gradient negative three",
+[
+"−3 = −3/1",
+"Flip: 1/(−3)",
+"Change the sign: +1/3"
+],
+1
+],
+[
+"What are simultaneous equations ",
+"We will learn how to solve",
+[
+"3 × 8 + 5 = 24 + 5 = 29",
+"29 ≠ 41"
+],
+0
+],
+[
+"What are simultaneous equations ",
+"Step three. Check in both",
+[
+"4 + 3 = 7 ✓",
+"4 − 3 = 1 ✓"
+],
+1
+],
+[
+"What are simultaneous equations ",
+"Now let us see the graph",
+[
+"x = 0: y = 10 − 0 = 10",
+"x = 5: y = 10 − 5 = 5",
+"x = 10: y = 10 − 10 = 0"
+],
+1
+],
+[
+"What are simultaneous equations ",
+"For x minus y equals two",
+[
+"y = 0: x = 2 + 0 = 2",
+"y = 2: x = 2 + 2 = 4",
+"y = 4: x = 2 + 4 = 6"
+],
+1
+],
+[
+"Solving by graph",
+"First draw y equals x plus one",
+[
+"x = 0: 0 + 1 = 1",
+"x = 1: 1 + 1 = 2",
+"x = 2: 2 + 1 = 3",
+"x = 3: 3 + 1 = 4"
+],
+1
+],
+[
+"Solving by graph",
+"Now draw y equals seven minus x",
+[
+"x = 0: 7 − 0 = 7",
+"x = 1: 7 − 1 = 6",
+"x = 2: 7 − 2 = 5",
+"x = 3: 7 − 3 = 4"
+],
+1
+],
+[
+"How do you check for a right ang",
+"Mistake three. Assuming",
+[
+"5² + 6² = 25 + 36 = 61",
+"8² = 64",
+"61 ≠ 64"
+],
+2
+],
+[
+"How do you check for a right ang",
+"If you multiply every number in a triple",
+[
+"× 2: 3, 4, 5 → 6, 8, 10",
+"× 3: 3, 4, 5 → 9, 12, 15",
+"× 10: 3, 4, 5 → 30, 40, 50"
+],
+1
+],
+[
+"How do you give exact answers us",
+"A common mistake is to use a smaller square",
+[
+"72 = 4 × 18",
+"√72 = 2√18",
+"18 = 9 × 2, so 2√18 = 2 × 3√2",
+"√72 = 6√2"
+],
+1
+],
+[
+"How do you work backwards from t",
+"Check. Pi times ten",
+[
+"π × 10 = 31.4 ✓"
+],
+1
+],
+[
+"How do you find arc length and s",
+"Ninety degrees. Ninety over",
+[
+"90 ÷ 360 = 1/4",
+"60 ÷ 360 = 1/6",
+"120 ÷ 360 = 1/3",
+"180 ÷ 360 = 1/2"
+],
+2
+],
+[
+"What are angles in triangles and",
+"In a parallelogram, opposite angles",
+[
+"Opposite angle: 65°",
+"Neighbour: 180 − 65 = 115°"
+],
+1
+],
+[
+"How do you find the mean, median",
+"A table can show how many times",
+[
+"2 + 3 + 5 + 4 + 1 = 15"
+],
+0
+],
+[
+"How do you find the mean, median",
+"Step one. Add a column",
+[
+"1 × 2 = 2",
+"2 × 3 = 6",
+"3 × 5 = 15",
+"4 × 4 = 16",
+"5 × 1 = 5"
+],
+2
+],
+[
+"How do you draw and use cumulati",
+"Here are the heights of one hundred",
+[
+"5 + 20 + 40 + 25 + 10 = 100"
+],
+0
+],
+[
+"How do you draw and use cumulati",
+"Add as you go",
+[
+"5",
+"5 + 20 = 25",
+"25 + 40 = 65",
+"65 + 25 = 90",
+"90 + 10 = 100"
+],
+2
+],
+[
+"How do you use Venn diagrams and",
+"Check. Thirteen plus five plus seven plus five",
+[
+"13 + 5 + 7 + 5 = 30"
+],
+1
+],
+[
+"How do you use Venn diagrams and",
+"Check with the Venn diagram",
+[
+"13 + 5 + 7 = 25"
+],
+1
+],
+[
+"How do you use independent event",
+"To find the probability of a route",
+[
+"RR: 0.3 × 0.3 = 0.09",
+"RB: 0.3 × 0.7 = 0.21",
+"BR: 0.7 × 0.3 = 0.21",
+"BB: 0.7 × 0.7 = 0.49"
+],
+2
+],
+[
+"How do you use relative frequenc",
+"After ten spins",
+[
+"4 ÷ 10 = 0.4",
+"27 ÷ 100 = 0.27",
+"258 ÷ 1000 = 0.258"
+],
+0
+],
+[
+"How do you reflect shapes and de",
+"Reflect in the line x equals three",
+[
+"Distance: 3 − 1 = 2 to the left",
+"Image: 3 + 2 = 5"
+],
+0
+],
+[
+"How do you reflect shapes and de",
+"Mistake two. Measuring the distance",
+[
+"Distance: 4 − 1 = 3",
+"Image: 4 + 3 = 7"
+],
+1
+],
+[
+"How do you carry out combined tr",
+"One, minus one becomes three, two",
+[
+"(1 + 2, −1 + 3) = (3, 2)",
+"(1 + 2, −2 + 3) = (3, 1)",
+"(3 + 2, −1 + 3) = (5, 2)"
+],
+1
+],
+[
+"How do you carry out combined tr",
+"Mistake three. Mixing up the vector",
+[
+"(4 − 2, 1 + 3) = (2, 4)"
+],
+1
+],
+[
+"How do linear, quadratic and exp",
+"The differences are three, six, twelve",
+[
+"6 ÷ 3 = 2",
+"12 ÷ 6 = 2",
+"24 ÷ 12 = 2"
+],
+0
+],
+[
+"How do linear, quadratic and exp",
+"Suppose you get one penny",
+[
+"2⁹ = 512 pence = £5.12",
+"2¹⁹ = 524,288 pence = £5,242.88"
+],
+0
+],
+[
+"How do linear, quadratic and exp",
+"Compound interest is exponential",
+[
+"100 × 1.1 = 110",
+"110 × 1.1 = 121",
+"121 × 1.1 = 133.1"
+],
+0
+],
+[
+"How do you work with nets, views",
+"A stack of cubes is shown",
+[
+"2 + 1 + 3 + 1 = 7"
+],
+0
+],
+[
+"How do you solve ordering and lo",
+"Which is the odd one out",
+[
+"4² = 16",
+"5² = 25",
+"6² = 36",
+"48 is not a square number"
+],
+0
+]
+]; })();
 </script>
 <script>
 (function () { var BT = window.BT; if (!BT || !BT.W3) return; var W = BT.W3;
@@ -18858,15 +19491,15 @@ W('How do you find the midpoint and length of a line segment?', [
 })();
 </script>
 <script>
-(function () { var BT = window.BT; if (!BT || !BT.W3) return; var W = BT.W3;
+(function () { var BT = window.BT; if (!BT || !BT.W3) return; var W = BT.W3, F = BT.F;
 W('What are simultaneous equations and what does the solution mean?', [
  ['x + y: 4 + 1 = 5 ✓', 'x − y: 4 − 1 = 3 ✓', 'Both are true, so yes'],
  ['Try x = 5 and y = 3', 'x + y = 5 + 3 = 8 ✓', 'x − y = 5 − 3 = 2 ✓'],
- ['x = 2 and y = 7', 'The graphs meet at (x, y) = (2, 7)']]);
+ [['x = 2 and y = 7', F.grid([[2,7,'(2, 7)',1]],[[0,3,4,11],[0,9,4,5]])], 'The graphs meet at (x, y) = (2, 7)']]);
 W('Solving by graph', [
- ['y = 2x and y = x + 3', 'Same y: 2x = x + 3', 'Subtract x: x = 3', 'y = 2 × 3 = 6'],
- ['y = x + 2 has gradient 1', 'y = x − 1 has gradient 1', 'Parallel lines never meet'],
- ['They cross at (2, 5)', 'x = 2 and y = 5']]);
+ [['y = 2x and y = x + 3', F.grid([[3,6,'(3, 6)',1]],[[0,0,4,8],[0,3,5,8]])], 'Same y: 2x = x + 3', 'Subtract x: x = 3', 'y = 2 × 3 = 6'],
+ [['y = x + 2 has gradient 1', F.grid([],[[0,2,4,6],[0,-1,4,3]])], 'y = x − 1 has gradient 1', 'Parallel lines never meet'],
+ [['They cross at (2, 5)', F.grid([[2,5,'(2, 5)',1]],[[0,1,4,9],[0,7,4,3]])], 'x = 2 and y = 5']]);
 W('How do you solve simultaneous equations by substitution?', [
  ['Put y = x + 3 into x + y = 9', 'x + (x + 3) = 9', '2x + 3 = 9, so 2x = 6', 'x = 3', 'y = 3 + 3 = 6'],
  ['Put x = 2y into x + y = 12', '2y + y = 12', '3y = 12', 'y = 4', 'x = 2 × 4 = 8'],
@@ -18888,13 +19521,13 @@ W("How do you use Pythagoras' theorem to find a missing side?", [
  [['a² + b² = c²', F.rt({a:'b', b:'8', c:'17', hi:'a'})], '8² + b² = 17²', '64 + b² = 289', 'b² = 289 − 64 = 225', 'b = √225 = 15'],
  [['7² + b² = 10²', F.rt({a:'b', b:'7', c:'10', hi:'a'})], '49 + b² = 100', 'b² = 100 − 49 = 51', 'b = √51 = 7.1 (1 d.p.)']]);
 W('How do you check for a right angle and use Pythagorean triples?', [
- ['9² + 40² = 81 + 1600 = 1681', '41² = 1681', 'They are equal, so right-angled ✓'],
- ['4² + 5² = 16 + 25 = 41', '6² = 36', '41 ≠ 36, so not right-angled'],
+ [['9² + 40² = 81 + 1600 = 1681', F.rt({a:'40', b:'9', c:'41', hi:'c', ratio:2.2})], '41² = 1681', 'They are equal, so right-angled ✓'],
+ [['4² + 5² = 16 + 25 = 41', F.rt({a:'5', b:'4', c:'6', hi:'c', ratio:1.25})], '6² = 36', '41 ≠ 36, so not right-angled'],
  ['3 × 5 = 15', '4 × 5 = 20', '5 × 5 = 25', 'Triple: 15, 20, 25']]);
 W('How do you give exact answers using surds in Pythagoras questions?', [
- ['18 = 9 × 2', '√18 = √9 × √2', '√9 = 3', '√18 = 3√2'],
- ['c² = 3² + 3²', 'c² = 9 + 9 = 18', 'c = √18', '√18 = 3√2'],
- ['d² = 5² + 5²', 'd² = 25 + 25 = 50', 'd = √50', '50 = 25 × 2, so √50 = 5√2']]);
+ [['18 = 9 × 2', F.rt({a:'3', b:'3', c:'?', hi:'c', ratio:1})], '√18 = √9 × √2', '√9 = 3', '√18 = 3√2'],
+ [['c² = 3² + 3²', F.rt({a:'3', b:'3', c:'c', hi:'c', ratio:1})], 'c² = 9 + 9 = 18', 'c = √18', '√18 = 3√2'],
+ [['d² = 5² + 5²', F.rt({a:'5', b:'5', c:'d', hi:'c', ratio:1})], 'd² = 25 + 25 = 50', 'd = √50', '50 = 25 × 2, so √50 = 5√2']]);
 W('SOH CAH TOA', [
  [['sin 30° = ½', F.rt({a:'x', c:'20', angle:'30°', hi:'a', ratio:0.58})], 'Opposite = hypotenuse × sin 30°', '20 × ½ = 10'],
  [['Opposite and adjacent: T, O, A', F.rt({a:'opp', b:'adj', angle:'θ', hi:'angle'})], 'tan = opposite ÷ adjacent'],
@@ -18904,7 +19537,7 @@ W('Finding an angle', [
  [['sin θ = 3 ÷ 6 = ½', F.rt({a:'3', c:'6', angle:'θ', hi:'angle', ratio:0.58})], 'θ = sin⁻¹(½)', 'θ = 30°'],
  [['cos θ = 5 ÷ 10 = ½', F.rt({b:'5', c:'10', angle:'θ', hi:'angle', ratio:1.7})], 'θ = cos⁻¹(½)', 'θ = 60°']]);
 W('Pythagoras and trigonometry', [
- ['sin θ = 6 ÷ 12 = ½', 'θ = sin⁻¹(½) = 30°']]);
+ [['sin θ = 6 ÷ 12 = ½', F.rt({a:'6', c:'12', angle:'θ', hi:'angle', ratio:0.58})], 'θ = sin⁻¹(½) = 30°']]);
 W('How do you use Pythagoras to find the distance between two points?', [
  [['Across: 4 − 1 = 3', F.grid([[1,2,'A'],[4,6,'B']],[[1,2,4,2,0,1],[4,2,4,6,0,1],[1,2,4,6,1]])], 'Up: 6 − 2 = 4', 'd² = 3² + 4² = 9 + 16 = 25', 'd = √25 = 5']]);
 })();
@@ -18912,9 +19545,9 @@ W('How do you use Pythagoras to find the distance between two points?', [
 <script>
 (function () { var BT = window.BT; if (!BT || !BT.W3) return; var W = BT.W3, F = BT.F;
 W('How do you find the circumference and area of a circle, exactly and as a decimal?', [
- ['C = πd', 'C = π × 14', 'C = 44.0 cm (1 d.p.)'],
- ['A = πr²', 'A = π × 2²', 'A = π × 4 = 4π'],
- ['Curved part: ½ × π × 8 = 4π', '4π = 12.6', 'Add the straight edge: 12.6 + 8 = 20.6']]);
+ [['C = πd', F.cdia('14')], 'C = π × 14', 'C = 44.0 cm (1 d.p.)'],
+ [['A = πr²', F.cdia('','2')], 'A = π × 2²', 'A = π × 4 = 4π'],
+ [['Curved part: ½ × π × 8 = 4π', F.circle('semi',{d:'8',hiArc:1,hiD:1})], '4π = 12.6', 'Add the straight edge: 12.6 + 8 = 20.6']]);
 W('How do you work backwards from the circumference or area of a circle?', [
  ['C = πd', '25.1 = π × d', 'd = 25.1 ÷ π', 'd = 7.99 ≈ 8'],
  ['A = πr²', '28.3 = π × r²', 'r² = 28.3 ÷ π', 'r² = 9.01 ≈ 9'],
@@ -18944,9 +19577,9 @@ W('How do you construct triangles?', [
 W('What are angles in triangles and quadrilaterals?', [
  [['110 + 110 + 60 = 280', F.quad('kite',['?','110°','60°','110°'],[0])], 'A quadrilateral adds to 360°', '360 − 280 = 80°'],
  [['Triangle: 180°', F.tri(['?','?','40°'],[0,1])], '180 − 40 = 140', 'Base angles are equal: 140 ÷ 2 = 70°'],
- ['Neighbouring angles add to 180°', '180 − 70 = 110°']]);
+ [['Neighbouring angles add to 180°', F.para('70°','?','b')], '180 − 70 = 110°']]);
 W('What is a linear scale factor?', [
- ['Scale factor = new ÷ old', '6 ÷ 9 = 6/9 = ⅔'],
+ [['Scale factor = new ÷ old', F.simtri(['9','',''],['6','',''],[0])], '6 ÷ 9 = 6/9 = ⅔'],
  ['Area scale factor = k²', '4² = 16', '5 × 16 = 80 cm²'],
  ['New length = old × k', '15 × 0.4 = 6 cm']]);
 W('How do you use scale drawings and map scales?', [
@@ -18954,9 +19587,9 @@ W('How do you use scale drawings and map scales?', [
  ['4 m = 400 cm', '400 ÷ 50 = 8 cm'],
  ['20 m = 2,000 cm', 'Model : real = 10 : 2,000', 'Divide by 10: 1 : 200']]);
 W('Similar triangles', [
- ['Scale factor: 12 ÷ 8 = 1.5', '10 × 1.5 = 15'],
- ['Two angles are equal', 'Angles in a triangle add to 180°', 'So the third angles are equal too', 'All angles equal: similar'],
- ['Pole: height 2, shadow 4', 'Tree: shadow 10', 'Scale factor: 10 ÷ 4 = 2.5', 'Tree: 2 × 2.5 = 5 m']]);
+ [['Scale factor: 12 ÷ 8 = 1.5', F.simtri(['8','','6'],['12','','?'],[2])], '10 × 1.5 = 15'],
+ [['Two angles are equal', F.simtri(['','',''],['','',''],[])], 'Angles in a triangle add to 180°', 'So the third angles are equal too', 'All angles equal: similar'],
+ [['Pole: height 2, shadow 4', F.shadow('2','4','?','10')], 'Tree: shadow 10', 'Scale factor: 10 ÷ 4 = 2.5', 'Tree: 2 × 2.5 = 5 m']]);
 W('How do you use area and volume scale factors for similar shapes?', [
  ['Area scale factor = k²', '4² = 16', '10 × 16 = 160'],
  ['Volume factor: 64 ÷ 8 = 8', 'k³ = 8', 'k = ³√8 = 2'],
@@ -18964,13 +19597,13 @@ W('How do you use area and volume scale factors for similar shapes?', [
 W('Angles of elevation', [
  [['sin 30° = ½', F.rt({a:'h', c:'50', angle:'30°', hi:'a', ratio:0.58})], 'Height = 50 × sin 30°', '50 × ½ = 25 m'],
  [['tan 45° = 1', F.rt({a:'h', b:'10', angle:'45°', hi:'a', ratio:1})], 'Height = 10 × tan 45°', '10 × 1 = 10 m'],
- ['Horizontal lines are parallel', 'Alternate angles are equal', 'So depression = elevation']]);
+ [['Horizontal lines are parallel', F.para('θ','θ','a')], 'Alternate angles are equal', 'So depression = elevation']]);
 W('How do you measure and calculate with bearings?', [
  [['Back bearing: add 180°', F.bearing(60)], '60 + 180 = 240°'],
  ['A bearing needs three figures', '80° is written 080°'],
  [['East 6 km, then south 8 km', F.rt({a:'8 km', b:'6 km', c:'d', hi:'c', ratio:1.33})], 'A right angle between them', 'd² = 6² + 8² = 36 + 64 = 100', 'd = √100 = 10 km']]);
 W('Polygon angles, bearings and coordinates', [
- ['Exterior angles add to 360°', '8 sides: 360 ÷ 8 = 45°']]);
+ [['Exterior angles add to 360°', F.regpoly(8,'?')], '8 sides: 360 ÷ 8 = 45°']]);
 })();
 </script>
 <script>
@@ -19024,9 +19657,9 @@ W('How do you choose a fair sample and write good survey questions?', [
 <script>
 (function () { var BT = window.BT; if (!BT || !BT.W3) return; var W = BT.W3, F = BT.F;
 W('What is symmetry in 2D shapes?', [
- ['Equilateral triangle: 3 equal sides', '3 lines of symmetry', 'Order of rotational symmetry: 3'],
- ['A rhombus fits after a half turn (180°)', '360 ÷ 180 = 2', 'Order 2'],
- ['Regular pentagon: 5 sides', '5 lines of symmetry', 'Order 5']]);
+ [['Equilateral triangle: 3 equal sides', F.sym('tri')], '3 lines of symmetry', 'Order of rotational symmetry: 3'],
+ [['A rhombus fits after a half turn (180°)', F.sym('rhomb')], '360 ÷ 180 = 2', 'Order 2'],
+ [['Regular pentagon: 5 sides', F.sym('pent')], '5 lines of symmetry', 'Order 5']]);
 W('How do you reflect shapes and decide whether shapes are congruent?', [
  [['Reflect in the x-axis: y changes sign', F.grid([[4,2,'(4, 2)'],[4,-2,'(4, −2)',1]],[[4,2,4,-2,0,1]])], '(4, 2) → (4, −2)'],
  [['Reflect in y = x: swap x and y', F.grid([[2,5,'(2, 5)'],[5,2,'(5, 2)',1]],[[0,0,6,6,0,1],[2,5,5,2,0,1]])], '(2, 5) → (5, 2)'],
@@ -19048,9 +19681,9 @@ W('How do linear, quadratic and exponential patterns grow?', [
  ['3 ÷ 1 = 3', '9 ÷ 3 = 3', '27 ÷ 9 = 3', 'Next term: 27 × 3 = 81'],
  ['First differences: 4, 6, 8', 'Second differences: 2, 2', 'Constant second difference: quadratic']]);
 W('How do you work with nets, views and stacks of cubes?', [
- ['A cube has 6 faces', 'Each face is 1 square', 'Its net has 6 squares'],
+ [['A cube has 6 faces', F.net()], 'Each face is 1 square', 'Its net has 6 squares'],
  ['Add the numbers in the plan view', '2 + 3 + 1 + 1 = 7'],
- ['Cube 3 × 3 × 3', 'One face painted: the middle of each face', '6 faces × 1 = 6']]);
+ [['Cube 3 × 3 × 3', F.solid('cuboid',{l:'3',w:'3',h:'3'})], 'One face painted: the middle of each face', '6 faces × 1 = 6']]);
 W('Painted cubes and stacks', [
  ['Sides: 4 cubes × 4 sides = 16', 'Top: 1 face', '16 + 1 = 17']]);
 W('How do you solve ordering and logic puzzles?', [

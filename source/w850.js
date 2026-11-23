@@ -1,8 +1,8 @@
 (function () { var BT = window.BT; if (!BT || !BT.W3) return; var W = BT.W3, F = BT.F;
 W('How do you find the circumference and area of a circle, exactly and as a decimal?', [
- ['C = πd', 'C = π × 14', 'C = 44.0 cm (1 d.p.)'],
- ['A = πr²', 'A = π × 2²', 'A = π × 4 = 4π'],
- ['Curved part: ½ × π × 8 = 4π', '4π = 12.6', 'Add the straight edge: 12.6 + 8 = 20.6']]);
+ [['C = πd', F.cdia('14')], 'C = π × 14', 'C = 44.0 cm (1 d.p.)'],
+ [['A = πr²', F.cdia('','2')], 'A = π × 2²', 'A = π × 4 = 4π'],
+ [['Curved part: ½ × π × 8 = 4π', F.circle('semi',{d:'8',hiArc:1,hiD:1})], '4π = 12.6', 'Add the straight edge: 12.6 + 8 = 20.6']]);
 W('How do you work backwards from the circumference or area of a circle?', [
  ['C = πd', '25.1 = π × d', 'd = 25.1 ÷ π', 'd = 7.99 ≈ 8'],
  ['A = πr²', '28.3 = π × r²', 'r² = 28.3 ÷ π', 'r² = 9.01 ≈ 9'],
