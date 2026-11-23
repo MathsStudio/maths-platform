@@ -16418,12 +16418,11 @@ S.extraMakers = function (n, level) {
       if (sl.title) {
         h = chrome({}, true) + '<div class="gp-title">' + ICON + '<div class="t2">' + TT + '</div></div>';
         stage.innerHTML = h;
-        /* a very long question: make the title smaller until it fits the slide */
-        var gt = stage.querySelector('.gp-title'), t2 = stage.querySelector('.t2'), fz = 44;
-        function tall() { var h = 16 * (gt.children.length - 1); [].forEach.call(gt.children, function (c) { h += c.offsetHeight; }); return h > stage.offsetHeight - 100 || t2.scrollWidth > t2.clientWidth + 2; }
-        while (fz > 22 && tall()) { fz -= 2; t2.style.fontSize = fz + 'px'; }
-        /* still too long for one line: let it wrap at a readable size */
-        if (tall()) { t2.style.whiteSpace = 'normal'; fz = 36; t2.style.fontSize = fz + 'px'; while (fz > 22 && tall()) { fz -= 2; t2.style.fontSize = fz + 'px'; } }
+        /* every title card uses the same size and wraps when it is long; it only shrinks if it would not fit the slide at all */
+        var gt = stage.querySelector('.gp-title'), t2 = stage.querySelector('.t2'), fz = 40;
+        t2.style.whiteSpace = 'normal'; t2.style.fontSize = fz + 'px'; t2.style.maxWidth = '90%'; t2.style.textAlign = 'center';
+        function tall() { var h = 16 * (gt.children.length - 1); [].forEach.call(gt.children, function (c) { h += c.offsetHeight; }); return h > stage.offsetHeight - 100; }
+        while (fz > 24 && tall()) { fz -= 2; t2.style.fontSize = fz + 'px'; }
         return;
       }
       if (FLM) { stage.innerHTML = '<div class="flx gp-turn"><div class="flx-pic"></div><div class="flx-top"></div><div class="flx-opts"></div><div class="flx-think" aria-hidden="true">🤔</div></div>'; flPic = ''; flTop = ''; flOpt = ''; return; }
