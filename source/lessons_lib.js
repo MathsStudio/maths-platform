@@ -150,18 +150,44 @@
     });
   }
   /* a Your turn question gets its own slide; the solution then has a slide of its own: the question again, the numbered working, then the answer */
+  BT.WORK = BT.WORK || {};
+  /* BT.W3(title, [ [lines of turn 1], [lines of turn 2], ... ]): the written step-by-step working of each Your turn, in order */
+  BT.W3 = function (title, turns) { BT.WORK[title] = turns; };
+  function sentences(say) { return (String(say || '').replace(/^Your turn!\s*/, '').replace(/\s+/g, ' ').match(/[^.?!]+[.?!]+/g) || [String(say || '')]).map(function (x) { return x.trim(); }).filter(Boolean); }
+  /* the lines of working are spread over the spoken sentences in order; more than three lines go onto a further slide */
+  function workScenes(lines0, say, qt, ansHtml) {
+    var S = sentences(say), lines = [], figs = [], cur = '', hasFig = false, N, scenes = [], i, per;
+    lines0.forEach(function (x) { if (x && typeof x === 'object') { if (x[1]) { cur = x[1]; hasFig = true; } lines.push(x[0]); } else lines.push(x); figs.push(cur); });
+    N = lines.length; per = hasFig ? 2 : 3;
+    for (i = 0; i < N; i += (hasFig && i === 0 ? 1 : per)) {
+      var per0 = (hasFig && i === 0 ? 1 : per), chunk = lines.slice(i, i + per0), steps = [], pend = '', fg = figs[Math.min(N - 1, i + per0 - 1)];
+      chunk.forEach(function (ln, j) {
+        var li = i + j, a = Math.floor(li * S.length / N), b = Math.floor((li + 1) * S.length / N), h = BT.sv.eq(ln);
+        if (j === 0) h = (li === 0 ? BT.sv.note('<b>' + qt + '</b>') : '') + (fg || '') + h;
+        if (a >= b) { pend += h; return; }
+        steps.push(L.st(S.slice(a, b).join(' '), pend + h)); pend = '';
+      });
+      if (pend) { if (steps.length) steps[steps.length - 1].html += pend; else steps.push(L.st(S.join(' '), pend)); }
+      if (i + per0 >= N) steps[steps.length - 1].html += String(ansHtml || '').replace('<!--swap-->', '');
+      scenes.push(L.SC('Your turn', i ? 'Let us see how we get it (continued)' : 'Let us see how we get it', steps));
+    }
+    return scenes;
+  }
+  /* a Your turn question gets its own slide; the answer is then shown on a slide of its own; the working follows, calculation by calculation */
   function splitTurns(ep) {
-    if (ep._split) return; ep._split = 1; var out = [];
+    if (ep._split) return; ep._split = 1; var out = [], ord = 0;
     ep.scenes.forEach(function (sc) {
       if (sc.h === 'Your turn' && sc.steps.length === 2 && sc.steps[0] && sc.steps[1]) {
-        var q = sc.steps[0], a = sc.steps[1], qt = q.say.replace(/^Your turn!\s*/, '').replace(/\s*Pause[^.]*\.\s*$/, '').replace(/^Number [a-z]+\.\s*/i, ''), w = working(a.say, q.html, a.html);
+        ord++;
+        var q = sc.steps[0], a = sc.steps[1], qt = q.say.replace(/^Your turn!\s*/, '').replace(/\s*Pause[^.]*\.\s*$/, '').replace(/^Number [a-z]+\.\s*/i, ''), wk = (BT.WORK[ep.title] || [])[ord - 1], w = wk ? '' : working(a.say, q.html, a.html);
         /* a word problem shows only its question (the sum would give the method away); a task such as "Simplify ..." keeps the expression, which is the task itself */
         var qh = String(q.html || ''), rest = qh.replace(/<div class="sv-note"[\s\S]*?<\/div>/g, '').replace(/<div class="sv-eq[\s\S]*?<\/div>/g, '').replace(/\s+/g, ''),
             eqs = (qh.match(/<div class="sv-eq[\s\S]*?<\/div>/g) || []).join(''), onlyEq = !rest && eqs, keep = (onlyEq && !/\?\s*$/.test(qt)) ? eqs : '';
         if (onlyEq) q = L.st(q.say, BT.sv.note('<b>' + qt + '</b>') + keep);
         var qs = L.SC('Your turn', 'Pause, think, then listen', [q]); qs.asks = 1; out.push(qs);
         out.push(L.SC('Your turn', 'Is your answer the same?', [L.st('Here is the answer. Did you get the same? Then let us find out how we get it.', BT.sv.note('<b>' + qt + '</b>') + keep + String(a.html || '').replace('<!--swap-->', ''))]));
-        out.push(L.SC('Your turn', 'Let us see how we get it', [L.st(a.say, BT.sv.note('<b>' + qt + '</b>') + w + String(a.html || '').replace('<!--swap-->', ''))]));
+        if (wk && wk.length) workScenes(wk, a.say, qt, a.html).forEach(function (x) { out.push(x); });
+        else out.push(L.SC('Your turn', 'Let us see how we get it', [L.st(a.say, BT.sv.note('<b>' + qt + '</b>') + w + String(a.html || '').replace('<!--swap-->', ''))]));
       } else out.push(sc);
     });
     ep.scenes = out;
