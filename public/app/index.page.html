@@ -1013,51 +1013,97 @@ var SLIDE_MORE = {"1.learn1": [{"more": ["Our number system uses only ten digits
   };
   S.pools = function (n, base, e, hd) { EASY_POOL[n] = e; HARD_POOL[n] = hd; if (typeof MEDIA !== 'undefined' && MEDIA[base] && !MEDIA[n]) MEDIA[n] = MEDIA[base]; };
   function plainQuestionText(value) {
-    var el = document.createElement('div'); el.innerHTML = String(value || '');
-    return String(el.textContent || el.innerText || '').replace(/\s+/g, ' ').trim().toLowerCase();
+    return String(value || '').replace(/<[^>]*>/g, ' ').replace(/&nbsp;/g, ' ').replace(/&minus;/g, '\u2212').replace(/&times;/g, '\u00d7').replace(/&divide;/g, '\u00f7').replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&amp;/g, '&').replace(/\s+/g, ' ').trim().toLowerCase();
   }
   function picHash(p) { if (!p) return 0; p = String(p); var h = 0; for (var i = 0; i < p.length; i++) h = (h * 31 + p.charCodeAt(i)) | 0; return h; }
   function questionSignature(q) {
     return JSON.stringify([plainQuestionText(q.data), plainQuestionText(q.text),
       (q.options || []).map(plainQuestionText).sort(), String(q.answer), q.type || 'input', picHash(q.pic)]);
   }
+  /* How hard a question looks: big numbers, many numbers, long wording, decimals, fractions, powers and several operations all raise the score.
+     Each topic is calibrated on its own questions, so Low, Medium and High really get easier, middle and harder questions. */
+  function qScore(q) {
+    var raw = plainQuestionText(q.text) + ' ' + plainQuestionText(q.data), nums = raw.match(/\d+(?:[.,]\d+)?/g) || [];
+    var maxd = 0, k; for (k = 0; k < nums.length; k++) maxd = Math.max(maxd, nums[k].replace(/[.,]/g, '').length);
+    var ops = (raw.match(/[+−\-×÷*\/^√²³=]/g) || []).length;
+    var ans = String(q.answer == null ? '' : q.answer);
+    var s = maxd * 1.2 + Math.min(nums.length, 6) * 0.5 + raw.length / 45 + Math.min(ops, 6) * 0.6 + (/\d[.,]\d/.test(raw) ? 1 : 0) + (/\d\s*\/\s*\d|fraction|percent|%/.test(raw) ? 1 : 0) + (/[²³√^]|square|cube|root|power|index|indices/.test(raw) ? 1 : 0) + Math.min(ans.length, 8) * 0.15;
+    return s;
+  }
+  var calibCache = {};
+  function calibration(topicNumber, makers) {
+    var key = String(topicNumber) + ':' + (makers.length);
+    if (calibCache[key]) return calibCache[key];
+    var all = makers.slice(), wide = S.extraMakers ? (S.extraMakers(topicNumber, 'wide') || []) : []; all = all.concat(wide);
+    var sc = [], i, q; var tc = Date.now(); for (i = 0; i < 360 && all.length && Date.now() - tc < 500; i++) { try { q = all[i % all.length](); sc.push(qScore(q)); } catch (e) {} }
+    sc.sort(function (a, b) { return a - b; });
+    var at = function (f) { return sc.length ? sc[Math.min(sc.length - 1, Math.floor(f * sc.length))] : 0; };
+    return (calibCache[key] = { p35: at(.35), p40: at(.4), p62: at(.62), p65: at(.65), flat: !sc.length || at(.9) - at(.1) < 0.6 });
+  }
+  function inBand(q, level, cal) {
+    if (cal.flat) return true; var s = qScore(q);
+    return level === 'low' ? s <= cal.p40 : level === 'high' ? s >= cal.p62 : (s >= cal.p35 && s <= cal.p65);
+  }
+  function bandGap(q, level, cal) {
+    var s = qScore(q); return level === 'low' ? Math.max(0, s - cal.p40) : level === 'high' ? Math.max(0, cal.p62 - s) : Math.max(0, cal.p35 - s, s - cal.p65);
+  }
+  /* A generator that the topic's own tags call easy never feeds High, and one tagged hard never feeds Low. */
+  function tierWrong(make, level, n) {
+    var nm = make.name || '', e = EASY_POOL[n], h = HARD_POOL[n];
+    if (!nm || !e || !h) return false;
+    if (level === 'high') return e.indexOf(nm) !== -1 && h.indexOf(nm) === -1;
+    if (level === 'low') return h.indexOf(nm) !== -1 && e.indexOf(nm) === -1;
+    return false;
+  }
+  S.h.qScore = qScore; S.h.setLevel = function (l) { store.settings.difficulty = l; }; S.h.setTab = function (t) { state.tab = t; };
   S.h.buildPracticeSet = function (makers, count) {
     if (S.__wantCount) count = S.__wantCount;
     var level = store.settings.difficulty || 'medium';
     var topicNumber = Number(state.tab);
-    var allowed = level === 'low' ? EASY_POOL[topicNumber] : (level === 'high' ? HARD_POOL[topicNumber] : null);
+    var cal = makers.storyMode ? null : calibration(topicNumber, makers);
+    S.h.lastCal = cal; var scored = !!(cal && !cal.flat);   /* scored topics pick by measured difficulty, so every generator is available to every level */
+    var allowed = scored ? null : (level === 'low' ? EASY_POOL[topicNumber] : (level === 'high' ? HARD_POOL[topicNumber] : null));
     var pool = allowed ? makers.filter(function (make) {
       return allowed.indexOf(make.name || '') !== -1 || (level === 'high' && !make.name);
     }) : makers.slice();
     if (!pool.length) pool = makers.slice();
     var newPool = [], bonus = (!makers.storyMode && count === 100) ? 50 : 0;
-    if (!makers.storyMode && count >= 50 && S.extraMakers) { var extra = S.extraMakers(topicNumber, level); if (extra && extra.length) { newPool = extra.filter(function (f) { return f.__gap; }); pool = pool.concat(extra.filter(function (f) { return !f.__gap; })); } }
+    if (!makers.storyMode && count >= 50 && S.extraMakers) { var extra = S.extraMakers(topicNumber, scored ? 'wide' : level); if (extra && extra.length) { newPool = extra.filter(function (f) { return f.__gap; }); pool = pool.concat(extra.filter(function (f) { return !f.__gap; })); } }
     if (!bonus || !newPool.length) { pool = pool.concat(newPool); newPool = []; bonus = 0; }
     var st = makers.storyMode && S.storyFor && S.storyFor(topicNumber);
     if (st) pool = level === 'low' ? st.easy.slice() : level === 'high' ? st.hard.slice() : st.easy.concat(st.hard);
-    var out = [], seen = Object.create(null), attempts = 0, maxAttempts = count * 45;
+    var out = [], seen = Object.create(null), near = Object.create(null), attempts = 0, maxAttempts = makers.storyMode ? count * 45 : count * 14;
     if (!pool.length) return out;   /* nothing to build from: never loop forever */
     // Each level/topic set contains 150 distinct prompts wherever the generators allow it.
-    while (out.length < count && attempts < maxAttempts) {
+    var t0 = Date.now();
+    while (out.length < count && attempts < maxAttempts && (makers.storyMode || Date.now() - t0 < 700)) {
       shuffle(pool.slice()).forEach(function (make) {
-        if (out.length >= count || attempts >= maxAttempts) return;
+        if (out.length >= count || attempts >= maxAttempts || (!makers.storyMode && Date.now() - t0 >= 700)) return;
         attempts++;
         var q = make(), sig = questionSignature(q);
+        if (!makers.storyMode && S.h.isBanned && S.h.isBanned(topicNumber, q)) return;
+        if (!makers.storyMode) { var wrong = tierWrong(make, level, topicNumber); if (wrong || !inBand(q, level, cal)) { if (!seen[sig] && !near[sig]) near[sig] = { q: q, sg: sig, d: bandGap(q, level, cal) + (wrong ? 4 : 0) }; return; } }
         if (!seen[sig]) { seen[sig] = true; out.push(q); }
       });
+    }
+    // Not enough distinct questions inside the band: take the closest ones (never an easy question for High or a hard one for Low).
+    if (out.length < count && !makers.storyMode) {
+      Object.keys(near).map(function (k) { return near[k]; }).sort(function (a, b) { return a.d - b.d; }).forEach(function (n) { var sg = n.sg || questionSignature(n.q); if (out.length < count && !seen[sg]) { seen[sg] = true; out.push(n.q); } });
     }
     // A finite generator pool can run short of distinct questions: top up with reasoning puzzles before any repeat.
     if (out.length < count && !makers.storyMode && count >= 50 && S.extraMakers) {
       var wide = S.extraMakers(topicNumber, 'wide') || [], more = 0;
-      while (out.length < count && wide.length && more < count * 30) { more++; var wq = pick(wide)(), wsig = questionSignature(wq); if (!seen[wsig]) { seen[wsig] = true; out.push(wq); } }
+      var cand = [];
+      while (wide.length && more < count * 12 && Date.now() - t0 < 1400) { more++; var wq = pick(wide)(), wsig = questionSignature(wq); if (seen[wsig] || (S.h.isBanned && S.h.isBanned(topicNumber, wq))) continue; if (!cal) { seen[wsig] = true; out.push(wq); if (out.length >= count) break; } else cand.push({ q: wq, d: bandGap(wq, level, cal) }); }
+      cand.sort(function (x, y) { return x.d - y.d; }).forEach(function (n) { var sg = n.sg || questionSignature(n.q); if (out.length < count && !seen[sg]) { seen[sg] = true; out.push(n.q); } });
     }
     // Keep the quiz at the promised length even if a topic has a finite generator pool.
-    while (out.length < count) out.push(pick(pool)());
+    var inBandOut = out.slice(); while (out.length < count) out.push(inBandOut.length ? pick(inBandOut) : pick(pool)());
     // The original 100 stay exactly as they were; 50 more come from the newer question types (never repeating a question already in the set).
     if (bonus) {
       var added = 0, tries2 = 0;
-      while (added < bonus && tries2 < bonus * 60) { tries2++; var nq = pick(newPool)(), nsig = questionSignature(nq); if (!seen[nsig]) { seen[nsig] = true; out.push(nq); added++; } }
-      while (added < bonus) { out.push(pick(newPool)()); added++; }
+      while (added < bonus && tries2 < bonus * 40) { tries2++; var nq = pick(newPool)(), nsig = questionSignature(nq); if (cal && !inBand(nq, level, cal)) continue; if (!seen[nsig]) { seen[nsig] = true; out.push(nq); added++; } }
+      /* only questions that really suit the level are added; a level never gets padded with easier or harder ones */
     }
     return out;
   };
@@ -13300,6 +13346,7 @@ S.extraMakers = function (n, level) {
   });
   BT.banFor = function (n, tag) { return !!(BAN[Number(n)] && BAN[Number(n)][tag]); };
 
+  H.isBanned = function (n, q) { var bn = BAN[Number(n)]; return !!(bn && q && bn[q.tag]); };
   var orig = H.buildPracticeSet;
   function sig(q) { return String(q && q.text) + '|' + String(q && q.answer); }
   H.buildPracticeSet = function (makers, count) {
@@ -13308,7 +13355,8 @@ S.extraMakers = function (n, level) {
     if (!ban || makers.storyMode) return out;
     var want = out.length;
     var bad = function (q) { return q && ban[q.tag]; };
-    for (var round = 0; round < 12 && out.some(bad); round++) {
+    var tb = Date.now();
+    for (var round = 0; round < 12 && out.some(bad) && Date.now() - tb < 1500; round++) {
       var keep = out.filter(function (q) { return !bad(q); }), seen = {}; keep.forEach(function (q) { seen[sig(q)] = 1; });
       var need = want - keep.length, batch = orig.call(this, makers, Math.max(need * 3, 30));
       batch.forEach(function (q) { if (keep.length < want && !bad(q) && !seen[sig(q)]) { seen[sig(q)] = 1; keep.push(q); } });
