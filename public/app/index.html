@@ -47340,7 +47340,7 @@ S.extraMakers = function (n, level) {
 
   /* ===== 407 Measurement ===== */
   P(407, 'learn1', { ch: 'frog', bg: 'pond',
-    way: 'Area is the amount of flat space a shape covers. Count the squares inside it, or multiply rows by columns.|3 rows of 4 = 12 squares',
+    way: 'Area is the amount of flat space a shape covers. Count the squares inside it, or multiply rows by columns.|' + FL.p4.rectPic(4, 3, 'squares'),
     ex: ['A rectangle is 4 squares long and 3 squares wide. What is its area?|3 rows of 4 squares.;3 × 4 = 12.|12 squares|3 × 4', 'A square is 5 squares long. What is its area?|5 rows of 5 squares.;5 × 5 = 25.|25 squares|5 × 5'],
     mist: 'Area is not the distance round the edge. It is the squares inside.|inside, not around',
     real: 'A tile floor has 6 rows of 8 tiles. How many tiles?|48|14,42,56|6 × 8.|6 × 8',
@@ -47348,7 +47348,7 @@ S.extraMakers = function (n, level) {
     gen: function g(lv) { var a = r(2, lv ? 8 : 5), b = r(2, lv ? 8 : 6); return mc('Area', 'A rectangle is <b>' + b + ' squares long</b> and <b>' + a + ' squares wide</b>. What is its area?', a * b + ' squares', [(a + b) + ' squares', (a * b + a) + ' squares', (2 * (a + b)) + ' squares'], 'Multiply rows by columns.', a + ' × ' + b + ' = ' + a * b + ' squares.', grid(Math.min(a, 6), Math.min(b, 8))); } });
 
   P(407, 'learn2', { ch: 'frog', bg: 'pond',
-    way: 'We measure length in millimetres (mm), centimetres (cm), metres (m) and kilometres (km). Use a small unit for small things.|10 mm = 1 cm, 100 cm = 1 m',
+    way: 'We measure length in millimetres (mm), centimetres (cm), metres (m) and kilometres (km). Use a small unit for small things.|' + FL.p4.tbl([['10 mm', '1 cm'], ['100 cm', '1 m'], ['1000 m', '1 km']], ['Small unit', 'Big unit']),
     ex: ['A line starts at 3 cm and ends at 11 cm. How long?|Take the start from the end.;11 - 3 = 8.|8 cm|11 - 3', 'Which unit for the length of a bus: cm or m?|A bus is long.|m|bus: m'],
     mist: 'Start at 0. If the object starts at 3 take 3 away from the end number.|end - start',
     real: 'A worm starts at 2 cm and ends at 9 cm on a ruler. How long?|7 cm|9 cm,11 cm,2 cm|9 - 2.|9 - 2',
@@ -47372,7 +47372,7 @@ S.extraMakers = function (n, level) {
     gen: function g(lv) { var step = pick(lv ? [10, 20, 50, 100] : [10, 20]), k = r(0, 3), lo = k * step; return mc('Reading a scale', 'A scale is marked in <b>' + step + 's</b>. The pointer is <b>halfway</b> between <b>' + lo + '</b> and <b>' + (lo + step) + '</b>. What is the reading?', lo + step / 2, [lo + step / 2 + step / 5, lo + step / 2 - step / 5 > 0 ? lo + step / 2 - step / 5 : lo + step / 2 + step, lo + step, lo + step / 2 + step], 'Halfway is half of ' + step + ' more.', lo + ' + ' + step / 2 + ' = ' + (lo + step / 2) + '.'); } });
 
   P(407, 'learn5', { ch: 'frog', bg: 'pond',
-    way: 'Mass is how heavy something is: grams (g) and kilograms (kg). Capacity is how much a container holds: millilitres (ml) and litres (l).|1 kg = 1000 g,1 l = 1000 ml',
+    way: 'Mass is how heavy something is: grams (g) and kilograms (kg). Capacity is how much a container holds: millilitres (ml) and litres (l).|' + FL.p4.tbl([['1 kg', '1000 g'], ['1 l', '1000 ml']], ['Big unit', 'Small unit']),
     ex: ['How many grams are in 3 kg?|1 kg = 1000 g.;3 × 1000.|3000 g|3 × 1000', 'How many ml are in 2 litres?|1 l = 1000 ml.;2 × 1000.|2000 ml|2 × 1000'],
     mist: 'Use the same unit to compare. 1 kg is more than 500 g.|1 kg = 1000 g',
     real: 'A bag of rice is 2 kg. How many grams?|2000 g|200 g,20 g,2 g|2 × 1000.|2 kg',
@@ -47387,7 +47387,7 @@ S.extraMakers = function (n, level) {
     mist: 'Check which unit is bigger. 1 m is 100 cm, but 1 cm is only 10 mm.|10, 100, 1000',
     chk: 'How many cm in 3 m?|300 cm|30 cm,3000 cm,103 cm|3 × 100.|3 × 100',
     rem: '10 mm = 1 cm. 100 cm = 1 m. 1000 m = 1 km.|10, 100, 1000',
-    way: 'Use a ladder of units: km, m, cm, mm. Going down, multiply.|km → m → cm → mm',
+    way: 'Use a ladder of units: km, m, cm, mm. Going down, multiply.|' + FL.p4.tbl([['1 km', '1000 m'], ['1 m', '100 cm'], ['1 cm', '10 mm']], ['Big unit', 'Small unit']),
     ex: ['How many mm in 6 cm?|6 × 10.|60 mm|60', 'How many cm in 8 m?|8 × 100.|800 cm|800'],
     real: 'A pencil is 15 cm. How many millimetres?|150 mm|15 mm,1500 mm,1.5 mm|15 × 10.|15 cm',
     qs: ['1 cm = ? mm|10 mm|100 mm,1 mm,1000 mm|10.', '1 m = ? cm|100 cm|10 cm,1000 cm,1 cm|100.', '1 km = ? m|1000 m|100 m,10 m,10000 m|1000.', '5 cm = ? mm|50 mm|5 mm,500 mm,15 mm|5 × 10.', '4 m = ? cm|400 cm|40 cm,4000 cm,104 cm|4 × 100.', '2 km = ? m|2000 m|200 m,20 m,2 m|2 × 1000.', '300 cm = ? m|3 m|30 m,300 m,0.3 m|÷ 100.', '70 mm = ? cm|7 cm|70 cm,700 cm,0.7 cm|÷ 10.'],
@@ -47401,7 +47401,7 @@ S.extraMakers = function (n, level) {
     mist: 'Multiply, do not add. A 3 by 5 rectangle has area 15 not 8.|× not +',
     chk: 'A rectangle is 3 cm by 8 cm. Area?|24 square cm|11 square cm,16 square cm,22 square cm|3 × 8.|3 × 8',
     rem: 'Area = rows × columns.|rows × columns',
-    way: 'Cover a shape with squared paper and count, then check by multiplying.|count, then ×',
+    way: 'Cover a shape with squared paper and count, then check by multiplying.|' + FL.p4.rectPic(5, 3, 'squares'),
     ex: ['A rectangle is 2 cm by 9 cm. Area?|2 × 9.|18 square cm|18', 'A square has sides of 3 cm. Area?|3 × 3.|9 square cm|9'],
     real: 'A rug is 3 m by 2 m. How many square metres of floor?|6 square m|5 square m,10 square m,12 square m|3 × 2.|3 × 2',
     qs: ['A rectangle is 3 by 4. Area?|12|7,14,10|3 × 4.', '2 by 6. Area?|12|8,14,26|2 × 6.', '5 by 5. Area?|25|10,20,55|5 × 5.', '4 by 8. Area?|32|12,24,36|4 × 8.', '7 by 3. Area?|21|10,24,73|7 × 3.', '10 by 4. Area?|40|14,44,104|10 × 4.', '6 by 6. Area?|36|12,66,42|6 × 6.', '9 by 2. Area?|18|11,27,29|9 × 2.'],
@@ -47423,7 +47423,7 @@ S.extraMakers = function (n, level) {
 
   /* ===== 408 Shape, position and movement ===== */
   P(408, 'learn1', { ch: 'rocket', bg: 'space',
-    way: 'A shape tessellates if copies fit together with no gaps and no overlaps. Squares, rectangles, triangles and hexagons do.|squares fit, circles do not',
+    way: 'A shape tessellates if copies fit together with no gaps and no overlaps. Squares, rectangles, triangles and hexagons do.|' + FL.sh.tess(),
     ex: ['Do squares tessellate?|Squares fit together with no gaps.|Yes|squares', 'Do circles tessellate?|Circles leave gaps.|No|circles'],
     mist: 'No gaps and no overlaps. Circles leave gaps, so they do not tessellate.|no gaps',
     real: 'A bathroom wall uses square tiles. Why do they work well?|They tessellate|They are round,They leave gaps,They overlap|No gaps.|squares',
@@ -47431,7 +47431,7 @@ S.extraMakers = function (n, level) {
     gen: function g(lv) { var Y = ['square', 'rectangle', 'triangle', 'hexagon'], N = ['circle', 'pentagon', 'octagon'], yes = r(0, 1), s = yes ? pick(Y) : pick(N); return mc('Tessellation', 'Does a regular <b>' + s + '</b> tessellate?', yes ? 'Yes' : 'No', [yes ? 'No' : 'Yes'], 'Check for gaps.', 'A ' + s + (yes ? ' fits together with no gaps.' : ' leaves gaps or overlaps.'), SH([s], 90)); } });
 
   P(408, 'learn2', { ch: 'rocket', bg: 'space',
-    way: 'A grid reference gives a place using a letter and a number. Go along first, then up.|C4: along to C, up to 4',
+    way: 'A grid reference gives a place using a letter and a number. Go along first, then up.|' + FL.sh.grid(2, 4),
     ex: ['Start at B2 and move 2 squares up. Where are you?|Up changes the number.;B2 + 2 up = B4.|B4|B2 → B4', 'Start at A1 and move 3 squares right. Where?|Right changes the letter.;A, B, C, D.|D1|A1 → D1'],
     mist: 'Letter first, then number. C4 means along to C then up to 4.|letter, number',
     real: 'A map says the cafe is at D3. Which letter do you find first?|D|3,C,4|Along first.|D3',
@@ -47439,7 +47439,7 @@ S.extraMakers = function (n, level) {
     gen: function g(lv) { var L = ['A', 'B', 'C', 'D', 'E', 'F'], c = r(0, lv ? 3 : 2), rw = r(1, lv ? 5 : 3), t = r(0, 1); return t ? mc('Grid references', 'Start at <b>' + L[c] + rw + '</b>. Move <b>up 1</b>. Where are you?', L[c] + (rw + 1), [L[c + 1] + rw, L[c] + (rw + 2), (rw + 1) + L[c]], 'Up changes the number.', L[c] + (rw + 1) + '.') : mc('Grid references', 'Start at <b>' + L[c] + rw + '</b>. Move <b>right 1</b>. Where are you?', L[c + 1] + rw, [L[c] + (rw + 1), L[c + 2] + rw, rw + L[c + 1]], 'Right changes the letter.', L[c + 1] + rw + '.'); } });
 
   P(408, 'learn3', { ch: 'rocket', bg: 'space',
-    way: 'A right angle is a square corner. It is a quarter turn. We mark it with a small square.|⌐ a square corner',
+    way: 'A right angle is a square corner. It is a quarter turn. We mark it with a small square.|' + FL.sh.right(),
     ex: ['How many right angles has a square?|A square has 4 square corners.|4|4 corners', 'How many right angles has a rectangle?|A rectangle has 4 square corners.|4|4 corners'],
     mist: 'A right angle is exactly a square corner. Slanted corners are not right angles.|square corner',
     real: 'The corner of a book is a right angle. How many right angles on its cover?|4|2,3,1|A rectangle.|book',
@@ -47455,7 +47455,7 @@ S.extraMakers = function (n, level) {
     gen: function g(lv) { var D = ['North', 'East', 'South', 'West'], i = r(0, 3), t = pick([1, 2, 3]), cw = r(0, 1), nm = { 1: 'quarter turn', 2: 'half turn', 3: 'three quarter turn' }, to = D[(i + (cw ? t : 4 - t)) % 4]; return mc('Compass points', 'You face <b>' + D[i] + '</b> and make a <b>' + nm[t] + ' ' + (cw ? 'clockwise' : 'anticlockwise') + '</b>. Which way do you face?', to, D.filter(function (x) { return x !== to; }), 'Turn one quarter at a time.', 'You face ' + to + '.'); } });
 
   P(408, 'learn5', { ch: 'rocket', bg: 'space',
-    way: '2D shapes are flat. We name them by their sides and corners. 3D shapes are solid. We describe them by their faces, edges and vertices.|triangle: 3 sides,cube: 6 faces',
+    way: '2D shapes are flat. We name them by their sides and corners. 3D shapes are solid. We describe them by their faces, edges and vertices.|' + FL.sh.shapes(),
     ex: ['How many sides has a hexagon?|Hexa means 6.|6|6', 'How many faces has a cube?|A cube is like a dice.|6|6'],
     mist: 'Sides belong to 2D shapes. Faces belong to 3D shapes.|2D sides, 3D faces',
     real: 'A dice is a cube. How many faces and how many corners has it?|6 faces, 8 corners|6 faces and 6 corners,8 faces and 6 corners,4 faces and 8 corners|Cube.|dice',
@@ -47463,7 +47463,7 @@ S.extraMakers = function (n, level) {
     gen: function g(lv) { var P = [['cube', 6, 12, 8], ['cuboid', 6, 12, 8], ['square-based pyramid', 5, 8, 5]], p = pick(P), k = r(1, 3), nm = ['faces', 'edges', 'vertices'][k - 1]; return mc('Describing 3D shapes', 'How many <b>' + nm + '</b> has a <b>' + p[0] + '</b>?', p[k], [p[k] + 1, p[k] - 1, p[k] + 2], 'Count carefully.', 'A ' + p[0] + ' has ' + p[k] + ' ' + nm + '.', SH([p[0].indexOf('pyramid') >= 0 ? 'pyramid' : p[0]], 90)); } });
 
   P(408, 'learn6', { ch: 'rocket', bg: 'space',
-    way: 'A line of symmetry is a fold line. Both halves match exactly. Some shapes have more than one.|square: 4 lines',
+    way: 'A line of symmetry is a fold line. Both halves match exactly. Some shapes have more than one.|' + FL.sh.sym(),
     ex: ['How many lines of symmetry has a square?|Fold across, down and both corners.|4|4 lines', 'Does the letter A have a line of symmetry?|Fold down the middle.|Yes|A'],
     mist: 'A rectangle has 2 lines of symmetry, not 4. A diagonal does not make matching halves.|rectangle: 2',
     real: 'A butterfly has matching wings. How many lines of symmetry?|1|2,4,0|Down the middle.|butterfly',
@@ -47478,7 +47478,7 @@ S.extraMakers = function (n, level) {
     mist: 'A turn is about how far you spin, not how fast. 4 quarter turns end where you began.|4 quarters = full',
     chk: 'How many right angles in three-quarters of a turn?|3|2,4,1|3 quarters.|¾ turn',
     rem: 'Quarter = 1, half = 2, three-quarter = 3, full = 4 right angles.|1 2 3 4',
-    way: 'Stand up and turn yourself a quarter, a half and a full turn.|¼ ½ ¾ 1',
+    way: 'Stand up and turn yourself a quarter, a half and a full turn.|' + FL.sh.turns(),
     ex: ['Face East. A full turn. Where now?|Back to start.|East|E', 'How many half turns make a full turn?|2.|2|2'],
     real: 'You do 3 quarter turns clockwise starting facing North. Which way?|West|East,South,North|N → E → S → W.|3 quarters',
     qs: ['A quarter turn is how many right angles?|1|2,3,4|1.', 'A half turn is how many right angles?|2|1,3,4|2.', 'A full turn is how many right angles?|4|2,3,1|4.', 'Two quarter turns make a…|half turn|full turn,quarter turn|2 quarters.', 'Face South. Full turn. Which way?|South|North,East,West|Back.', 'Face West. Half turn. Which way?|East|North,South|Opposite.', 'Face North. Quarter turn clockwise. Which way?|East|West,South|N → E.', 'Face North. Three quarter turns clockwise. Which way?|West|East,South|N → E → S → W.'],
@@ -47492,7 +47492,7 @@ S.extraMakers = function (n, level) {
     mist: 'The reflection is the same distance from the line, not the same side.|other side',
     chk: 'A point is 4 squares right of the mirror line. Reflection?|4 squares left|2 squares left,4 squares right,8 squares left|Same distance.|4',
     rem: 'Same distance, other side of the mirror line.|same distance',
-    way: 'Put a small mirror on the line and look at the shape.|mirror',
+    way: 'Put a small mirror on the line and look at the shape.|' + FL.sh.mirror(),
     ex: ['A point is 2 squares from the line. Its reflection is how far from the line?|Same.|2 squares|2', 'Reflect the letter p across a vertical line.|Left and right swap.|q|p ⇄ q'],
     real: 'You see yourself 1 m in front of a mirror. How far behind the mirror does your image seem?|1 m|2 m,0 m,0.5 m|Same distance.|mirror',
     qs: ['A dot is 5 squares from the mirror line. Its reflection is how far from the line?|5 squares|10 squares,0 squares,2 squares|Same.', 'A dot is 1 square from the line. Reflection distance?|1 square|2 squares,0 squares|Same.', 'A reflection is a…|mirror image|turn,slide,shrink|Mirror.', 'Reflect a dot 3 squares left. It is now…|3 squares right|3 squares left,6 squares right|Other side.', 'The mirror line is also called…|line of symmetry|compass,grid,scale|Fold line.', 'A shape and its reflection are the…|same size|bigger,smaller,different|Mirror.', 'Reflect a dot that is on the line. Where is it?|on the line|2 squares away,1 square away|Distance 0.', 'Reflect a dot 4 squares above the line. It is now…|4 squares below|4 squares above,8 squares below|Other side.'],
@@ -47538,7 +47538,7 @@ S.extraMakers = function (n, level) {
     gen: function g(lv) { var n = r(1, lv ? 30 : 20), ev = n % 2 === 0, big = n > 10, ans = ev && big ? 'overlap' : ev ? 'even only' : big ? 'more than 10 only' : 'outside both'; return mc('Venn diagrams', 'A Venn diagram has circles for <b>even</b> and <b>more than 10</b>. Where does <b>' + n + '</b> go?', ans, ['even only', 'more than 10 only', 'overlap', 'outside both'].filter(function (x) { return x !== ans; }), 'Check both rules.', n + ' is ' + (ev ? 'even' : 'odd') + ' and ' + (big ? '' : 'not ') + 'more than 10.'); } });
 
   P(409, 'learn4', { ch: 'fox', bg: 'day',
-    way: 'Chance tells how likely something is: impossible, unlikely, even chance, likely, certain.|0 → impossible,1 → certain',
+    way: 'Chance tells how likely something is: impossible, unlikely, even chance, likely, certain.|' + FL.sh.chance(),
     ex: ['A dice shows 7. How likely?|A dice has 1 to 6.|impossible|1–6', 'A coin lands heads. How likely?|2 sides, 1 heads.|even chance|50-50'],
     mist: 'Unlikely is not impossible. Unlikely events can still happen.|unlikely ≠ impossible',
     real: 'A bag has 9 red and 1 blue counter. How likely is red?|likely|unlikely,impossible,even chance|9 of 10.|9 red 1 blue',
