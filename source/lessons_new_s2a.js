@@ -70,7 +70,7 @@
         ["600 divided by 20 is 30. Divide both numbers by 10 to make it easier, 60 divided by 2, which is 30.", ['600 ÷ 20 = 60 ÷ 2 = 30', 'g|592 ÷ 19.8 ≈ 30']]]],
       ['Estimate 38.6 × 0.52 ÷ 0.0098', [
         ["Round each number to 1 significant figure. 38.6 is 40. 0.52 is 0.5. 0.0098 is 0.01.", ['38.6 ≈ 40', '0.52 ≈ 0.5', '0.0098 ≈ 0.01']],
-        ["40 times 0.5 is 20. Then 20 divided by 0.01 is 2,000, because dividing by a hundredth is the same as multiplying by 100.", ['40 × 0.5 = 20', '20 ÷ 0.01 = 2000', 'g|≈ 2000']]]]],
+        ["40 times 0.5 is 20. Then 20 divided by 0.01 is 2,000, because dividing by 1/100 is the same as multiplying by 100.", ['40 × 0.5 = 20', '20 ÷ 0.01 = 2000', 'g|≈ 2000']]]]],
     mist: [
       ['Rounding to the wrong place', "Mistake one: rounding to the nearest 10 when the question wants 1 significant figure. Estimate 384 times 12. Wrong: round to 380 and 10. 1 significant figure means 410.", ['r|380 × 10 = 3800 ✗ (not 1 s.f.)', 'g|400 × 10 = 4000 ✓']],
       ['Not checking', "Mistake two: not using the estimate to check. If a calculator gives 4,608 for 46 times 10.2, the estimate 50 times 10 is 500. They are very different. Something went wrong, perhaps a decimal point.", ['46 × 10.2 ≈ 50 × 10 = 500', 'r|Calculator: 4608 ✗ (decimal point?)', 'g|46 × 10.2 = 469.2 ✓']]],

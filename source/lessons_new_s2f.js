@@ -11,21 +11,21 @@
       ["To find a fraction of an amount, divide by the bottom and multiply by the top. To find a percentage of an amount, change the percentage to a decimal and multiply.", ['2/5 of 60: 60 ÷ 5 × 2', '35% of 240: 0.35 × 240']]]]],
     ex: [
       ['Fraction to percentage', [
-        ["Write three eighths as a decimal and a percentage. Divide three by eight to get zero point three seven five. Multiply by one hundred to get thirty-seven point five per cent.", ['3 ÷ 8 = 0.375', 'g|0.375 × 100 = 37.5%']]]],
+        ["Write 3/8 as a decimal and a percentage. Divide 3 by 8 to get 0.375. Multiply by 100 to get 37.5%.", ['3 ÷ 8 = 0.375', 'g|0.375 × 100 = 37.5%']]]],
       ['Percentage to fraction', [
         ["Write 60% as a fraction in its simplest form. 60% is 60 over 100. Divide top and bottom by 20 to get 3 over 5.", ['60% = 60/100', 'g|= 3/5']]]],
       ['A fraction of an amount', [
-        ["Find 2 fifths of 60. Divide 60 by 5 to get 12. Multiply by 2 to get 24.", ['60 ÷ 5 = 12', 'g|12 × 2 = 24']]]],
+        ["Find 2/5 of 60. Divide 60 by 5 to get 12. Multiply by 2 to get 24.", ['60 ÷ 5 = 12', 'g|12 × 2 = 24']]]],
       ['A percentage of an amount', [
         ["Find 35% of 240. 35% is 0.35 as a decimal. 0.35 times 240 is 84.", ['35% = 0.35', 'g|0.35 × 240 = 84']]]]],
     mist: [
       ['Percent as the whole number', "Mistake one: using 35 instead of 0.35. 35% of 240 is not 35 times 240. Change the percentage to a decimal first.", ['r|35 × 240 = 8400 ✗', 'g|0.35 × 240 = 84 ✓']],
-      ['Dividing the wrong way', "Mistake two: dividing 8 by 3 to change 3 eighths to a decimal. The top goes first: 3 divided by 8.", ['r|8 ÷ 3 = 2.67 ✗', 'g|3 ÷ 8 = 0.375 ✓']]],
-    real: ['In real life', "A recipe uses 3 quarters of a bag of flour, which is 75%. A phone battery on 40% has 2 fifths left. All of these mean the same amount in different clothes.", ['3/4 = 0.75 = 75%', '40% = 2/5']],
+      ['Dividing the wrong way', "Mistake two: dividing 8 by 3 to change 3/8 to a decimal. The top goes first: 3 divided by 8.", ['r|8 ÷ 3 = 2.67 ✗', 'g|3 ÷ 8 = 0.375 ✓']]],
+    real: ['In real life', "A recipe uses 3/4 of a bag of flour, which is 75%. A phone battery on 40% has 2/5 left. All of these mean the same amount in different clothes.", ['3/4 = 0.75 = 75%', '40% = 2/5']],
     turns: [
-      { q: 'Write 7 twentieths as a percentage.', say: "7 twentieths is the same as 35 hundredths, because we multiply top and bottom by 5. 35 hundredths is 35%.", work: ['7/20 = 35/100', '= 35%'], ans: ['g|35%'] },
+      { q: 'Write 7 twentieths as a percentage.', say: "7 twentieths is the same as 35/100, because we multiply top and bottom by 5. 35/100 is 35%.", work: ['7/20 = 35/100', '= 35%'], ans: ['g|35%'] },
       { q: 'Find 35% of £240.', say: "35% is 0.35. 0.35 times 240 is £84.", work: ['35% = 0.35', '0.35 × 240 = 84'], ans: ['g|£84'] },
-      { q: 'Put these in order, smallest first: 0.4, 35%, 3 eighths.', say: "Change them all to percentages. Zero point four is forty per cent. Thirty-five per cent stays the same. Three eighths is thirty-seven point five per cent. In order: thirty-five, thirty-seven point five, forty.", work: ['0.4 = 40%', '3/8 = 0.375 = 37.5%', '35% < 37.5% < 40%'], ans: ['g|35%, 3/8, 0.4'] }],
+      { q: 'Put these in order, smallest first: 0.4, 35%, 3/8.', say: "Change them all to percentages. 0.4 is 40%. 35% stays the same. 3/8 is 37.5%. In order: 35, 37.5, 40.", work: ['0.4 = 40%', '3/8 = 0.375 = 37.5%', '35% < 37.5% < 40%'], ans: ['g|35%, 3/8, 0.4'] }],
     rec: ["Fractions, decimals and percentages are 3 ways to write the same number.", ['Fraction → decimal: top ÷ bottom', 'Decimal → %: × 100', 'Percentage of an amount: × decimal', 'Fraction of an amount: ÷ bottom × top']]
   });
 
@@ -42,9 +42,9 @@
         ["A price of £500 goes up by 20%, then down by 20%. Up: 500 times 1.2 is 600.", ['500 × 1.2 = 600']],
         ["Down: 600 times 0.8 is £480. It is less than the start, because the fall is of the bigger amount.", ['600 × 0.8 = 480', 'g|£480 (4% less)']]]],
       ['The overall multiplier', [
-        ["A five per cent rise then a ten per cent rise. The multipliers are one point zero five and one point one. Multiply: one point zero five times one point one is one point one five five. That is a fifteen point five per cent rise.", ['1.05 × 1.1 = 1.155', 'g|15.5% increase']]]],
+        ["A 5% rise then a 10% rise. The multipliers are 1.05 and 1.1. Multiply: 1.05 times 1.1 is 1.155. That is a 15.5% rise.", ['1.05 × 1.1 = 1.155', 'g|15.5% increase']]]],
       ['Population', [
-        ["A town grows by three per cent a year for two years. The multiplier is one point zero three, twice. One point zero three squared is one point zero six zero nine. The town grew by six point zero nine per cent overall.", ['1.03² = 1.0609', 'g|6.09% overall']]]]],
+        ["A town grows by 3% a year for 2 years. The multiplier is 1.03, twice. 1.03 squared is 1.0609. The town grew by 6.09% overall.", ['1.03² = 1.0609', 'g|6.09% overall']]]]],
     mist: [
       ['Adding the percentages', "Mistake one: adding the percentages. 10% then 10% is not 20%. It is 21%, because the second 10% is of a bigger amount.", ['r|10% + 10% = 20% ✗', 'g|1.1 × 1.1 = 1.21 → 21% ✓']],
       ['Rise then fall cancel', "Mistake two: thinking a 20% rise and a 20% fall cancel out. The result is 4% less than the start.", ['r|+20% − 20% = 0% ✗', 'g|1.2 × 0.8 = 0.96 → 4% less ✓']]],
@@ -52,7 +52,7 @@
     turns: [
       { q: 'A price of £200 goes up by 10% and then up by 10% again. What is the final price?', say: "The multiplier is 1.1 each time. 200 times 1.1 is 220. 220 times 1.1 is £242.", work: ['200 × 1.1 = 220', '220 × 1.1 = 242'], ans: ['g|£242'] },
       { q: '£500 goes up by 20%, then down by 20%. What is the final amount?', say: "Up by 20%: 500 times 1.2 is 600. Down by 20%: 600 times 0.8 is £480.", work: ['500 × 1.2 = 600', '600 × 0.8 = 480'], ans: ['g|£480'] },
-      { q: 'A price rises by 5% and then by 10%. What single multiplier gives the overall change, and what is the overall percentage increase?', say: "The multipliers are one point zero five and one point one. One point zero five times one point one is one point one five five. That is an overall increase of fifteen point five per cent.", work: ['1.05 × 1.1 = 1.155', '1.155 − 1 = 0.155', '= 15.5%'], ans: ['g|× 1.155, a 15.5% increase'] }],
+      { q: 'A price rises by 5% and then by 10%. What single multiplier gives the overall change, and what is the overall percentage increase?', say: "The multipliers are 1.05 and 1.1. 1.05 times 1.1 is 1.155. That is an overall increase of 15.5%.", work: ['1.05 × 1.1 = 1.155', '1.155 − 1 = 0.155', '= 15.5%'], ans: ['g|× 1.155, a 15.5% increase'] }],
     rec: ["Multiply the multipliers. Do not add the percentages.", ['Each change is on the new amount', 'Overall multiplier = m₁ × m₂', 'A rise then a fall of the same % is a loss']]
   });
 
@@ -67,7 +67,7 @@
       ['After a sale', [
         ["In a sale, a jacket is 15% off. The sale price is £68. What was the original price? The multiplier is 0.85. Divide 68 by 0.85 to get £80.", ['Multiplier 0.85', '68 ÷ 0.85', 'g|= £80']]]],
       ['Check by going forwards', [
-        ["Always check. Eighty pounds with fifteen per cent off is eighty times zero point eight five, which is sixty-eight. That matches the sale price.", ['80 × 0.85 = 68 ✓']]]],
+        ["Always check. £80 with 15% off is 80 times 0.85, which is 68. That matches the sale price.", ['80 × 0.85 = 68 ✓']]]],
       ['Including tax', [
         ["A price including 20% tax is £90. What is the price before tax? Divide 90 by 1.2 to get £75.", ['90 ÷ 1.2', 'g|= £75']]]]],
     mist: [
@@ -92,7 +92,7 @@
       ['The size of the rise', [
         ["A salary of £24,000 rises by 5%. The rise is 5% of 24,000. 10% is 2,400, so 5% is 1,200. The new salary is 25,000, £200.", ['5% of 24,000 = 1,200', 'g|24,000 + 1,200 = £25,200']]]],
       ['Percentage rise in hourly pay', [
-        ["Hourly pay goes from twelve pounds to twelve pounds sixty. The rise is sixty pence. Sixty pence divided by twelve pounds is zero point zero five. That is a five per cent rise.", ['12.60 − 12 = 0.60', '0.60 ÷ 12 = 0.05', 'g|5%']]]],
+        ["Hourly pay goes from £12 to £12.60. The rise is 60p. 60p divided by £12 is 0.05. That is a 5% rise.", ['12.60 − 12 = 0.60', '0.60 ÷ 12 = 0.05', 'g|5%']]]],
       ['Before and after', [
         ["After a 3% rise, Sam earns £1,854. What did he earn before? Divide by 1.03 to get £1,800.", ['1854 ÷ 1.03', 'g|= £1,800']]]]],
     mist: [

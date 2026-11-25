@@ -62,17 +62,17 @@
     SC('Rotation', 'Example 2: 90° clockwise about the origin', [
       S("A rotation needs 3 things. The angle, the direction, and the centre. For 90 degrees clockwise about the origin, the point x, y goes to y, minus x.", E('(x, y) → (y, −x)', 'g')),
       S("1, 1 becomes 1, minus 1. 2, 1 becomes 1, minus 2. 1, 3 becomes 3, minus 1.", E('(1, 1) → (1, −1)') + E('(2, 1) → (1, −2)') + E('(1, 3) → (3, −1)')),
-      S("A check. Take the point 1, 3. It is up and a bit right. Turning clockwise a quarter turn, it ends right and a bit down, 3, minus 1. That matches.", V.rule('Check with a quick sketch.'))
+      S("A check. Take the point 1, 3. It is up and a bit right. Turning clockwise 1/4 turn, it ends right and a bit down, 3, minus 1. That matches.", V.rule('Check with a quick sketch.'))
     ]),
     SC('Anticlockwise', 'Example 3: the other direction', [
-      S("For 90 degrees anticlockwise, the point x, y goes to minus y, x. 1, 3 goes to minus 3, 1. For a hundred and 80 degrees, either direction, x, y goes to minus x, minus y.", E('90° anticlockwise: (x, y) → (−y, x)') + E('180°: (x, y) → (−x, −y)'))
+      S("For 90 degrees anticlockwise, the point x, y goes to minus y, x. 1, 3 goes to minus 3, 1. For 180 degrees, either direction, x, y goes to minus x, minus y.", E('90° anticlockwise: (x, y) → (−y, x)') + E('180°: (x, y) → (−x, −y)'))
     ]),
     SC('Enlargement', 'Example 4: scale factor 2, centre the origin', [
       S("An enlargement needs a scale factor and a centre. With the centre at the origin, multiply both coordinates by the scale factor. Scale factor 2. 1, 1 becomes 2, 2. 2, 1 becomes 4, 2. 1, 3 becomes 2, 6.", E('(x, y) → (2x, 2y)', 'g') + E('(2, 2), (4, 2), (2, 6)')),
       S("The new triangle has sides twice as long. Notice that every point is twice as far from the centre.", V.rule('Twice as far from the centre.'))
     ]),
-    SC('A fraction', 'Example 5: scale factor 1 half', [
-      S("A scale factor between 0 and 1 makes the shape smaller. Scale factor one half, centre the origin. 2, 4 goes to 1, 2. 6, 2 goes to 3, 1.", E('(2, 4) → (1, 2)') + E('(6, 2) → (3, 1)'))
+    SC('A fraction', 'Example 5: scale factor 1/2', [
+      S("A scale factor between 0 and 1 makes the shape smaller. Scale factor 1/2, centre the origin. 2, 4 goes to 1, 2. 6, 2 goes to 3, 1.", E('(2, 4) → (1, 2)') + E('(6, 2) → (3, 1)'))
     ]),
     SC('Combined', 'Example 6: rotate, then translate', [
       S("Now combine 2 transformations. First, rotate A 90 degrees clockwise about the origin. We found the corners 1, minus 1. 1, minus 2. 3, minus 1. Second, translate by the vector 2, 3. Add 2 to x and 3 to y.", E('(1, −1), (1, −2), (3, −1)')),
@@ -83,7 +83,7 @@
       S("Now do it in the other order. Reflect first. Minus 1, 2. Then translate by 3, 0. 2, 2. Different! The order matters.", E('(1, 2) → (−1, 2) → (2, 2)') + r('(−4, 2) ≠ (2, 2)'))
     ]),
     SC('Watch out!', 'Common mistakes, with examples', [
-      S("Mistake one. Rotating the wrong way. Rotate 1, 2 90 degrees clockwise about the origin. Wrong: use the anticlockwise rule, minus 2, 1. Clockwise gives y, minus x. 2, minus 1. Check with a sketch. 1, 2 is up and right. A quarter turn clockwise is down and right.", r('(1, 2) → (−2, 1)  ✗') + g('(1, 2) → (2, −1)  ✓')),
+      S("Mistake one. Rotating the wrong way. Rotate 1, 2 90 degrees clockwise about the origin. Wrong: use the anticlockwise rule, minus 2, 1. Clockwise gives y, minus x. 2, minus 1. Check with a sketch. 1, 2 is up and right. 1/4 turn clockwise is down and right.", r('(1, 2) → (−2, 1)  ✗') + g('(1, 2) → (2, −1)  ✓')),
       S("Mistake two. Enlarging only one coordinate. Enlarge 3, 2 by scale factor 2 from the origin. Wrong: 6, 2. Both coordinates are multiplied. 6, 4.", r('(3, 2) → (6, 2)  ✗') + g('(3, 2) → (6, 4)  ✓')),
       S("Mistake three. Mixing up the vector. The vector minus 2, 3 means 2 left and 3 up. Wrong: 2 right and 3 up, so the point 4, 1 goes to 6, 4. Take away 2 from x. 2, 4.", r('(4, 1) → (6, 4)  ✗') + g('(4, 1) → (2, 4)  ✓'))
     ]),
@@ -92,7 +92,7 @@
     ]),
     L.turn("Your turn! Number one. Translate the point 3, 5 by the vector minus 1, 2. Pause and try it.", E('(3, 5) + (−1, 2)'), "Two, seven.", g('(2, 7)')),
     L.turn("Your turn! Number two. Rotate 2, 1 90 degrees clockwise about the origin. Pause and try it.", E('(2, 1)'), "The rule is y, minus x. 1, minus 2.", g('(1, −2)')),
-    L.turn("Your turn! Number three. Enlarge 4, 6 by scale factor one half, centre the origin. Pause and try it.", E('(4, 6)'), "Half of each. 2, 3.", g('(2, 3)')),
+    L.turn("Your turn! Number three. Enlarge 4, 6 by scale factor 1/2, centre the origin. Pause and try it.", E('(4, 6)'), "Half of each. 2, 3.", g('(2, 3)')),
     L.rec('How do you carry out combined transformations?', "A translation slides a shape by a vector. A rotation needs an angle, a direction and a centre. An enlargement needs a scale factor and a centre. For combined transformations, do them 1 at a time in order, because the order can change the result. Always check with a quick sketch.", ['Translation: add the vector', 'Rotation: angle, direction, centre', 'Enlargement: multiply both', 'Order matters'])
   ]);
 
@@ -118,7 +118,7 @@
       S("Compare with adding 10p a day. Day 30 is only £2.91. Doubling wins by a huge margin.", E('Adding 10p a day: day 30 = £2.91', 'r'))
     ]),
     SC('Compound growth', 'Example 5: money in the bank', [
-      S("Compound interest is exponential. £100 at 10%. Each year it is multiplied by 1.1. Year 1, a hundred and 10. Year 2, a hundred and 21. Year 3, a hundred and 33.1. After n years it is a hundred times 1.1 to the power n.", E('100 × 1.1ⁿ', 'g') + E('110, 121, 133.10'))
+      S("Compound interest is exponential. £100 at 10%. Each year it is multiplied by 1.1. Year 1, 110. Year 2, 121. Year 3, 133.1. After n years it is 100 times 1.1 to the power n.", E('100 × 1.1ⁿ', 'g') + E('110, 121, 133.10'))
     ]),
     SC('Comparing', 'Example 6: n² against 2ⁿ', [
       S("Which grows faster, n squared or 2 to the power n? At n equals 4, both are 16. At 5, 25 against 32. At 10, 100 against 1,024. Exponential growth always overtakes.", V.tbl([['4', '16', '16'], ['5', '25', '32'], ['10', '100', '1024']], ['n', 'n²', '2ⁿ']))

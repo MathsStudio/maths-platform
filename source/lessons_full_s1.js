@@ -27,12 +27,12 @@
       ]),
       SC('The decimal point', 'Parts of a whole', [
         S("What if we need less than 1? We use a decimal point. The digits to the left of the point are whole numbers. The digits to the right are parts of 1.", E('3 . 2 5 8')),
-        S("The first column after the point is tenths. To make tenths, cut 1 whole into 10 equal parts. 3 tenths means 3 of those 10 parts. We write it as 0.3.", V.bar(3, 10) + g('0.3 = 3 tenths')),
-        S("The next column is hundredths. Now cut each tenth into 10 more pieces, so 1 whole is a hundred pieces. The column after that is thousandths. Each column is 10 times smaller than the one on its left, exactly as before.", V.tbl([['1', '0.1', '0.01', '0.001']], ['Ones', 'tenths', 'hundredths', 'thousandths']))
+        S("The first column after the point is tenths. To make tenths, cut 1 whole into 10 equal parts. 3/10 means 3 of those 10 parts. We write it as 0.3.", V.bar(3, 10) + g('0.3 = 3/10')),
+        S("The next column is hundredths. Now cut each tenth into 10 more pieces, so 1 whole is 100 pieces. The column after that is thousandths. Each column is 10 times smaller than the one on its left, exactly as before.", V.tbl([['1', '0.1', '0.01', '0.001']], ['Ones', 'tenths', 'hundredths', 'thousandths']))
       ]),
       SC('Decimal places', 'Example 3: 3.258', [
         S("Take the number 3.258. We say each digit after the point on its own.", V.tbl([['3', '.', '2', '5', '8']], ['O', '', 'tenths', 'hundredths', 'thousandths'])),
-        S("The 3 is 3 ones. The 2 is in the tenths column, so it is 2 tenths, which is 0.2. The 5 is in the hundredths column, so it is 5 hundredths, 0.05. The 8 is in the thousandths column, so it is 8 thousandths, 0.008.", g('3.258 = 3 + 0.2 + 0.05 + 0.008'))
+        S("The 3 is 3 ones. The 2 is in the tenths column, so it is 2/10, which is 0.2. The 5 is in the hundredths column, so it is 5/100, 0.05. The 8 is in the thousandths column, so it is 8/1000, 0.008.", g('3.258 = 3 + 0.2 + 0.05 + 0.008'))
       ]),
       SC('Comparing decimals', 'Example 4: 0.7 or 0.65?', [
         S("Which is bigger, 0.7 or 0.65? Many people say 0.65, because 65 looks bigger than 7. That is a trap. Let's do it properly.", E('0.7  or  0.65  ?')),
@@ -42,7 +42,7 @@
       SC('Comparing decimals', 'Example 5: put in order', [
         S("Put these in order, smallest first: 0.5, 0.45, and 0.405.", E('0.5   0.45   0.405')),
         S("Give them all 3 decimal places so they line up. 0.5 becomes 0.500. 0.45 becomes 0.450.", E('0.500') + E('0.450') + E('0.405')),
-        S("Now compare the tenths. 2 of them have 4 tenths, and 1 has 5 tenths, so 0.5 is the biggest. For the other 2, look at the hundredths. 0.405 has 0 hundredths and 0.45 has 5 hundredths. So the smallest is 0.405.", g('0.405 < 0.45 < 0.5'))
+        S("Now compare the tenths. 2 of them have 4/10, and 1 has 5/10, so 0.5 is the biggest. For the other 2, look at the hundredths. 0.405 has 0/100 and 0.45 has 5/100. So the smallest is 0.405.", g('0.405 < 0.45 < 0.5'))
       ]),
       SC('Multiplying and dividing by 10, 100, 1,000', 'The digits move', [
         S("Because each column is 10 times the next, multiplying by 10 makes every digit move 1 column to the left. It is the digits that move. The decimal point stays where it is.", E('4.37 × 10 = 43.7')),
@@ -56,10 +56,10 @@
         S("Mistake number three: saying that multiplying by 10 just adds a 0. That works for whole numbers like 7 times 10, but not for decimals. 4.37 times 10 is 43.7, not 4.370.", E('4.37 × 10 = 4.370  ✗', 'r') + g('4.37 × 10 = 43.7  ✓'))
       ]),
       SC('In real life', 'Money and sport', [
-        S("Money uses place value all the time. £3.45 is 3 ones, 4 tenths and 5 hundredths of a pound. That is why pence come after the point.", E('£3.45 = 3 + 0.4 + 0.05')),
+        S("Money uses place value all the time. £3.45 is 3 ones, 4/10 and 5/100 of a pound. That is why pence come after the point.", E('£3.45 = 3 + 0.4 + 0.05')),
         S("In sport, races are timed to the hundredth of a second. 9.58 seconds beats 9.63 seconds, because at the tenths column 5 is smaller than 6, and a smaller time is faster.", g('9.58 < 9.63'))
       ]),
-      L.turn("Your turn! Number one. What is the value of the 6 in 12.364? Pause and think.", E('12.364'), "The 6 is in the hundredths column, so it is worth 6 hundredths: 0.06.", g('0.06')),
+      L.turn("Your turn! Number one. What is the value of the 6 in 12.364? Pause and think.", E('12.364'), "The 6 is in the hundredths column, so it is worth 6/100: 0.06.", g('0.06')),
       L.turn("Your turn! Number two. Which is bigger, 0.09 or 0.1? Pause and think.", E('0.09  or  0.1  ?'), "Write 0.1 as 0.10. In the tenths, 0 is smaller than 1, so 0.1 is bigger.", g('0.10 > 0.09')),
       L.turn("Your turn! Number three. What is 6.3 divided by 10? Pause and think.", E('6.3 ÷ 10 = ?'), "Dividing by 10 moves each digit 1 column to the right. The 6 moves to the tenths and the 3 to the hundredths, so the answer is 0.63.", g('6.3 ÷ 10 = 0.63')),
       L.rec(T, "A digit's value depends on its column. Each column is 10 times the one to its right. After the point come tenths, hundredths and thousandths. Compare decimals column by column from the left, and use 0 as a placeholder.", ['Each column × 10 to the left', 'tenths, hundredths, thousandths', 'Zeros hold places', 'Compare from the left', '× or ÷ 10 moves the digits'])
@@ -146,7 +146,7 @@
       ]),
       SC('Subtracting decimals', 'Example 3: 9.2 − 3.457', [
         S("Now subtraction. 9.2 take away 3.457. The first number has only one decimal place. So we write it as 9.200.", E('9.200') + E('−3.457')),
-        S("Thousandths: 0 take away 7 cannot be done, and the hundredths are 0 too. So we exchange from the tenths. 2 tenths become 1 tenth. 1 tenth is 10 hundredths. Take 1 of those to give the thousandths. That leaves 9 hundredths, and 10 thousandths.", V.rule('Tenths: 2 → 1.   Hundredths: 0 → 9.   Thousandths: 0 → 10.')),
+        S("Thousandths: 0 take away 7 cannot be done, and the hundredths are 0 too. So we exchange from the tenths. 2/10 become 1/10. 1/10 is 10/100. Take 1 of those to give the thousandths. That leaves 9/100, and 10/1000.", V.rule('Tenths: 2 → 1.   Hundredths: 0 → 9.   Thousandths: 0 → 10.')),
         S("10 take away 7 is 3. 9 take away 5 is 4. 1 take away 4 cannot be done, so we exchange from the ones. 11 take away 4 is 7. 8 take away 3 is 5. The answer is 5.743.", E('10 − 7 = 3,   9 − 5 = 4,   11 − 4 = 7,   8 − 3 = 5') + g('9.2 − 3.457 = 5.743')),
         S("Check by adding back. 5.743 plus 3.457 is 9.2. It matches.", g('5.743 + 3.457 = 9.200 ✓'))
       ]),
@@ -156,7 +156,7 @@
       ]),
       SC('Mental methods', 'Bridging to a whole number', [
         S("Sometimes you can do a decimal sum in your head. One way is to bridge to a whole number. Take 5.98 plus 2.05.", E('5.98 + 2.05')),
-        S("5.98 is only 2 hundredths away from 6. So take 2 hundredths from the 2.05. That leaves 2.03. Then 6 plus 2.03 is 8.03.", g('5.98 + 2.05 = 6 + 2.03 = 8.03'))
+        S("5.98 is only 2/100 away from 6. So take 2/100 from the 2.05. That leaves 2.03. Then 6 plus 2.03 is 8.03.", g('5.98 + 2.05 = 6 + 2.03 = 8.03'))
       ]),
       SC('Watch out!', 'Three common mistakes', [
         S("Mistake one: lining up the last digits instead of the decimal points. 4.375 and 2.86 are different lengths. The points must be in a straight line, not the right-hand ends.", r('4.375 + 2.86  with the ends lined up  ✗') + g('Points lined up  ✓')),
@@ -238,7 +238,7 @@
       ]),
       SC('Using the HCF', 'Simplifying fractions', [
         S("Here is why the HCF is useful. It lets us simplify a fraction in 1 step. Take 18 twenty-fourths. We found that the HCF of 18 and 24 is 6.", E('18/24')),
-        S("Divide the top and the bottom by 6. 18 divided by 6 is 3. 24 divided by 6 is 4. So 18 twenty-fourths is the same as 3 quarters. It cannot be simplified any more.", g('18/24 = 3/4'))
+        S("Divide the top and the bottom by 6. 18 divided by 6 is 3. 24 divided by 6 is 4. So 18 twenty-fourths is the same as 3/4. It cannot be simplified any more.", g('18/24 = 3/4'))
       ]),
       SC('Watch out!', 'Three common mistakes', [
         S("Mistake one: missing factors because you forgot the pairs. Always work through in order. 1 times, 2 times, 3 times, and stop when the pairs meet.", V.rule('Find them in pairs: 1 × 24, 2 × 12, 3 × 8, 4 × 6.')),
@@ -251,7 +251,7 @@
       ]),
       L.turn("Your turn! Number one. What is the highest common factor of 20 and 32? Pause and try it.", E('HCF(20, 32)'), "Factors of 20: 1, 2, 4, 5, 10, 20. Which of these divide 32? 1, 2 and 4. The highest is 4.", g('HCF(20, 32) = 4')),
       L.turn("Your turn! Number two. What is the highest common factor of 36 and 54? Pause and try it.", E('HCF(36, 54)'), "Factors of 36 include 18. 18 divides 54 exactly, 3 times. Nothing bigger than 18 divides both. So the answer is 18.", g('HCF(36, 54) = 18')),
-      L.turn("Your turn! Number three. Simplify 28 forty-seconds. Pause and try it.", E('28/42'), "The HCF of 28 and 42 is 14. Divide top and bottom by 14. We get 2 thirds.", g('28/42 = 2/3')),
+      L.turn("Your turn! Number three. Simplify 28 forty-seconds. Pause and try it.", E('28/42'), "The HCF of 28 and 42 is 14. Divide top and bottom by 14. We get 2/3.", g('28/42 = 2/3')),
       L.rec(T, "A factor divides in exactly, and factors come in pairs. Common factors are in both lists. The highest common factor is the biggest 1. Use the HCF to simplify fractions and to share things into equal groups.", ['Factors come in pairs', 'Common: in both lists', 'HCF: the biggest', 'HCF is never above the smaller number', 'Use it to simplify fractions'])
     ]);
   })();
@@ -260,40 +260,40 @@
     var T = 'What are fractions?';
     L.full(T, [
       SC('A fraction', 'Start with the basics', [
-        S("Imagine a chocolate bar made of 8 equal squares. You eat 3 of them. We can say you ate 3 eighths of the bar. That is a fraction.", LK.fbar(3, 8, 300, 280)),
+        S("Imagine a chocolate bar made of 8 equal squares. You eat 3 of them. We can say you ate 3/8 of the bar. That is a fraction.", LK.fbar(3, 8, 300, 280)),
         S("A fraction has 2 numbers. The bottom number is called the denominator. It tells us how many equal parts the whole is split into. The top number is called the numerator. It tells us how many of those parts we are talking about.", E('3/8', 'g') + V.cols([V.card('Denominator: parts in the whole', 'b', true), V.card('Numerator: parts we have', 'g', true)], 2)),
         S("The word equal is very important. A fraction only works when all the parts are the same size. If the pieces are different sizes, we cannot call them eighths.", V.rule('Every part must be the same size.'))
       ]),
       SC('Fractions of shapes', 'Example 1: 2 fifths', [
-        S("Here is a circle cut into 5 equal slices. 2 of the slices are shaded. So the fraction shaded is 2 fifths.", LK.pie(2, 5, { r: 50 }) + E('2/5', 'g')),
-        S("How many slices are not shaded? 3. So 3 fifths of the circle is not shaded. The 2 fractions together make 5 fifths, which is the whole circle.", E('2/5 + 3/5 = 5/5 = 1', 'g'))
+        S("Here is a circle cut into 5 equal slices. 2 of the slices are shaded. So the fraction shaded is 2/5.", LK.pie(2, 5, { r: 50 }) + E('2/5', 'g')),
+        S("How many slices are not shaded? 3. So 3/5 of the circle is not shaded. The 2 fractions together make 5/5, which is the whole circle.", E('2/5 + 3/5 = 5/5 = 1', 'g'))
       ]),
       SC('A fraction of an amount', 'Example 2: 3/8 of 64', [
-        S("Now we find a fraction of a number. What is 3 eighths of 64? Think of 64 split into 8 equal groups.", E('3/8 of 64')),
-        S("Step one. The denominator is 8, so divide by 8 to find 1 eighth. 64 divided by 8 is 8. 1 eighth of 64 is 8.", E('64 ÷ 8 = 8', 'b') + V.rule('Divide by the bottom number.')),
+        S("Now we find a fraction of a number. What is 3/8 of 64? Think of 64 split into 8 equal groups.", E('3/8 of 64')),
+        S("Step one. The denominator is 8, so divide by 8 to find 1/8. 64 divided by 8 is 8. 1/8 of 64 is 8.", E('64 ÷ 8 = 8', 'b') + V.rule('Divide by the bottom number.')),
         S("Step two. The numerator is 3, so we want 3 of those groups. Multiply by 3. 8 times 3 is 24.", E('8 × 3 = 24', 'b') + V.rule('Multiply by the top number.')),
-        S("So 3 eighths of 64 is 24.", g('3/8 of 64 = 24'))
+        S("So 3/8 of 64 is 24.", g('3/8 of 64 = 24'))
       ]),
       SC('A fraction of an amount', 'Example 3: 5/8 of 72', [
-        S("Let's do it again with 5 eighths of 72. First divide by the denominator. 72 divided by 8 is 9. Then multiply by the numerator. 9 times 5 is 45.", E('72 ÷ 8 = 9') + E('9 × 5 = 45') + g('5/8 of 72 = 45'))
+        S("Let's do it again with 5/8 of 72. First divide by the denominator. 72 divided by 8 is 9. Then multiply by the numerator. 9 times 5 is 45.", E('72 ÷ 8 = 9') + E('9 × 5 = 45') + g('5/8 of 72 = 45'))
       ]),
       SC('Fractions are divisions', 'Example 4: 3 ÷ 4', [
-        S("Here is a surprising fact. A fraction is also a division. 3 quarters means 3 divided by 4. Share 3 pizzas between 4 people. Each person gets 3 quarters of a pizza.", E('3/4 = 3 ÷ 4')),
-        S("On a calculator, 3 divided by 4 is 0.75. So 3 quarters is the same as 0.75. This is how fractions and decimals are connected.", g('3/4 = 0.75')),
-        S("1 eighth is 1 divided by 8, which is 0.125.", g('1/8 = 0.125'))
+        S("Here is a surprising fact. A fraction is also a division. 3/4 means 3 divided by 4. Share 3 pizzas between 4 people. Each person gets 3/4 of a pizza.", E('3/4 = 3 ÷ 4')),
+        S("On a calculator, 3 divided by 4 is 0.75. So 3/4 is the same as 0.75. This is how fractions and decimals are connected.", g('3/4 = 0.75')),
+        S("1/8 is 1 divided by 8, which is 0.125.", g('1/8 = 0.125'))
       ]),
       SC('Watch out!', 'Three common mistakes', [
         S("Mistake one: parts that are not equal. A rectangle cut into 1 big piece and 2 small pieces is not cut into thirds.", V.rule('Equal parts only.')),
-        S("Mistake two: mixing up the numerator and the denominator. The denominator is the down number, and it is the total number of parts. 3 eighths is not 8 thirds.", r('8/3 for 3 eighths  ✗') + g('3/8  ✓')),
-        S("Mistake three: forgetting to multiply by the numerator. To find 3 eighths of 64, dividing by 8 only gives 1 eighth. You still need to multiply by 3.", r('3/8 of 64 = 8  ✗') + g('3/8 of 64 = 24  ✓'))
+        S("Mistake two: mixing up the numerator and the denominator. The denominator is the down number, and it is the total number of parts. 3/8 is not 8/3.", r('8/3 for 3/8  ✗') + g('3/8  ✓')),
+        S("Mistake three: forgetting to multiply by the numerator. To find 3/8 of 64, dividing by 8 only gives 1/8. You still need to multiply by 3.", r('3/8 of 64 = 8  ✗') + g('3/8 of 64 = 24  ✓'))
       ]),
       SC('In real life', 'Recipes and classes', [
-        S("A recipe uses 2 thirds of a 300 gram bag of oats. 1 third of 300 is 100. So 2 thirds is 200 grams.", E('300 ÷ 3 = 100,  100 × 2 = 200') + g('2/3 of 300 g = 200 g')),
-        S("In a class of 28 pupils, 3 quarters walk to school. 1 quarter of 28 is 7. So 3 quarters is 21 pupils.", E('28 ÷ 4 = 7,  7 × 3 = 21') + g('21 pupils walk'))
+        S("A recipe uses 2/3 of a 300 gram bag of oats. 1/3 of 300 is 100. So 2/3 is 200 grams.", E('300 ÷ 3 = 100,  100 × 2 = 200') + g('2/3 of 300 g = 200 g')),
+        S("In a class of 28 pupils, 3/4 walk to school. 1/4 of 28 is 7. So 3/4 is 21 pupils.", E('28 ÷ 4 = 7,  7 × 3 = 21') + g('21 pupils walk'))
       ]),
-      L.turn("Your turn! Number one. What is 5 sixths of 48? Pause and try it.", E('5/6 of 48'), "48 divided by 6 is 8. 8 times 5 is 40.", g('5/6 of 48 = 40')),
-      L.turn("Your turn! Number two. What is 3 fifths of 35? Pause and try it.", E('3/5 of 35'), "35 divided by 5 is 7. 7 times 3 is 21.", g('3/5 of 35 = 21')),
-      L.turn("Your turn! Number three. Write one fifth as a decimal. Pause and try it.", E('1/5 = 1 ÷ 5'), "1 divided by 5 is 0.2.", g('1/5 = 0.2')),
+      L.turn("Your turn! Number one. What is 5/6 of 48? Pause and try it.", E('5/6 of 48'), "48 divided by 6 is 8. 8 times 5 is 40.", g('5/6 of 48 = 40')),
+      L.turn("Your turn! Number two. What is 3/5 of 35? Pause and try it.", E('3/5 of 35'), "35 divided by 5 is 7. 7 times 3 is 21.", g('3/5 of 35 = 21')),
+      L.turn("Your turn! Number three. Write 1/5 as a decimal. Pause and try it.", E('1/5 = 1 ÷ 5'), "1 divided by 5 is 0.2.", g('1/5 = 0.2')),
       L.rec(T, "A fraction is equal parts of a whole. The denominator says how many parts. The numerator says how many we have. To find a fraction of an amount, divide by the denominator, then multiply by the numerator. A fraction is also a division.", ['Equal parts', 'Denominator: how many parts', 'Numerator: how many we have', '÷ bottom, then × top', 'A fraction is a division'])
     ]);
   })();
@@ -303,38 +303,38 @@
     var T = 'What are equivalent fractions?';
     L.full(T, [
       SC('Same amount, different numbers', 'Start with a picture', [
-        S("Look at these 3 bars. The first bar is split into 2 parts, and 1 part is shaded. That is one half. The second bar is split into 4 parts, and 2 are shaded. The third is split into 8 parts, and 4 are shaded.", LK.fbar(1, 2, 280, 280) + LK.fbar(2, 4, 280, 280) + LK.fbar(4, 8, 280, 280)),
-        S("Look closely. The shaded part is exactly the same size in all 3 bars. So one half, 2 quarters and 4 eighths are equal. We call them equivalent fractions. Equivalent means has the same value.", E('1/2 = 2/4 = 4/8', 'g'))
+        S("Look at these 3 bars. The first bar is split into 2 parts, and 1 part is shaded. That is 1/2. The second bar is split into 4 parts, and 2 are shaded. The third is split into 8 parts, and 4 are shaded.", LK.fbar(1, 2, 280, 280) + LK.fbar(2, 4, 280, 280) + LK.fbar(4, 8, 280, 280)),
+        S("Look closely. The shaded part is exactly the same size in all 3 bars. So 1/2, 2/4 and 4/8 are equal. We call them equivalent fractions. Equivalent means has the same value.", E('1/2 = 2/4 = 4/8', 'g'))
       ]),
       SC('Making equivalent fractions', 'Example 1: multiply top and bottom', [
-        S("How can we make equivalent fractions without a picture? Multiply the numerator and the denominator by the same number. Let's start with 3 fifths and multiply by 2.", E('3/5')),
-        S("3 times 2 is 6. 5 times 2 is 10. So 3 fifths is equal to 6 tenths.", E('3/5 = 6/10', 'g') + V.rule('Do the same to the top and the bottom.')),
-        S("We can do it again, multiplying by 3. 3 times 3 is 9. 5 times 3 is 15. So 3 fifths is also 9 fifteenths.", E('3/5 = 9/15', 'g')),
+        S("How can we make equivalent fractions without a picture? Multiply the numerator and the denominator by the same number. Let's start with 3/5 and multiply by 2.", E('3/5')),
+        S("3 times 2 is 6. 5 times 2 is 10. So 3/5 is equal to 6/10.", E('3/5 = 6/10', 'g') + V.rule('Do the same to the top and the bottom.')),
+        S("We can do it again, multiplying by 3. 3 times 3 is 9. 5 times 3 is 15. So 3/5 is also 9 fifteenths.", E('3/5 = 9/15', 'g')),
         S("Why does this work? Multiplying the top and bottom by the same number is the same as multiplying the fraction by 1, and that never changes its value.", V.rule('× 2 over 2 is × 1, so the value stays the same.'))
       ]),
       SC('Simplifying', 'Example 2: divide top and bottom', [
         S("We can go the other way. We divide the top and the bottom by the same number. This is called simplifying. Take 12 sixteenths.", E('12/16')),
-        S("12 and 16 can both be divided by 4. 12 divided by 4 is 3. 16 divided by 4 is 4. So 12 sixteenths is 3 quarters.", g('12/16 = 3/4')),
-        S("Is 3 quarters as simple as it can get? 3 and 4 have no common factor, apart from 1. So yes. It is in its simplest form.", V.rule('Simplest form: no more common factors.'))
+        S("12 and 16 can both be divided by 4. 12 divided by 4 is 3. 16 divided by 4 is 4. So 12 sixteenths is 3/4.", g('12/16 = 3/4')),
+        S("Is 3/4 as simple as it can get? 3 and 4 have no common factor, apart from 1. So yes. It is in its simplest form.", V.rule('Simplest form: no more common factors.'))
       ]),
       SC('Simplifying', 'Example 3: 30 forty-fifths', [
-        S("Here is a bigger 1. 30 forty-fifths. What is the biggest number that goes into both 30 and 45? It is 15. We divide the top and bottom by 15. 30 divided by 15 is 2. 45 divided by 15 is 3. The answer is 2 thirds.", E('30/45') + g('30/45 = 2/3'))
+        S("Here is a bigger 1. 30 forty-fifths. What is the biggest number that goes into both 30 and 45? It is 15. We divide the top and bottom by 15. 30 divided by 15 is 2. 45 divided by 15 is 3. The answer is 2/3.", E('30/45') + g('30/45 = 2/3'))
       ]),
       SC('Missing numbers', 'Example 4: 2/3 = ?/12', [
-        S("Now a missing number. 2 thirds equals what over 12? Look at the bottoms first. 3 has become 12. What did we multiply by? 4.", E('2/3 = ?/12')),
-        S("We must do the same to the top. 2 times 4 is 8. So 2 thirds is equal to 8 twelfths.", g('2/3 = 8/12'))
+        S("Now a missing number. 2/3 equals what over 12? Look at the bottoms first. 3 has become 12. What did we multiply by? 4.", E('2/3 = ?/12')),
+        S("We must do the same to the top. 2 times 4 is 8. So 2/3 is equal to 8/12.", g('2/3 = 8/12'))
       ]),
       SC('Watch out!', 'Three common mistakes', [
-        S("Mistake one: adding the same number to the top and bottom. 1 half plus 1 on top and bottom gives 2 thirds, but 2 thirds is not equal to 1 half. We must multiply or divide, never add.", r('1/2 = 2/3  ✗') + g('1/2 = 2/4  ✓')),
+        S("Mistake one: adding the same number to the top and bottom. 1/2 plus 1 on top and bottom gives 2/3, but 2/3 is not equal to 1/2. We must multiply or divide, never add.", r('1/2 = 2/3  ✗') + g('1/2 = 2/4  ✓')),
         S("Mistake two: doing something to the top but not the bottom. If you multiply the top by 4, you must multiply the bottom by 4 as well.", V.rule('Same number, top and bottom.')),
-        S("Mistake three: stopping too soon when simplifying. 8 twelfths can be divided by 2 to give 4 sixths. But that is not finished. Divide by 2 again to get 2 thirds.", r('8/12 = 4/6  (not finished)  ✗') + g('8/12 = 2/3  ✓'))
+        S("Mistake three: stopping too soon when simplifying. 8/12 can be divided by 2 to give 4/6. But that is not finished. Divide by 2 again to get 2/3.", r('8/12 = 4/6  (not finished)  ✗') + g('8/12 = 2/3  ✓'))
       ]),
       SC('In real life', 'Pizza', [
-        S("A pizza has 8 slices. You eat 4 slices. You have eaten 4 eighths. But your friend ate half of another pizza. Who ate more? 4 eighths is equal to a half, so you both ate the same amount.", g('4/8 = 1/2'))
+        S("A pizza has 8 slices. You eat 4 slices. You have eaten 4/8. But your friend ate half of another pizza. Who ate more? 4/8 is equal to 1/2, so you both ate the same amount.", g('4/8 = 1/2'))
       ]),
-      L.turn("Your turn! Number one. Find the missing number. 3 quarters equals how many twentieths? Pause and try it.", E('3/4 = ?/20'), "4 times 5 is 20. So 3 times 5 is 15. 3 quarters equals 15 twentieths.", g('3/4 = 15/20')),
-      L.turn("Your turn! Number two. Simplify 40 sixtieths fully. Pause and try it.", E('40/60'), "Divide top and bottom by 20. 40 divided by 20 is 2. 60 divided by 20 is 3. The answer is 2 thirds.", g('40/60 = 2/3')),
-      L.turn("Your turn! Number three. Fill in the missing number. 4 tenths equals what over 5? Pause and try it.", E('4/10 = ?/5'), "10 divided by 2 is 5. So divide the top by 2 as well. 4 divided by 2 is 2. The answer is 2 fifths.", g('4/10 = 2/5')),
+      L.turn("Your turn! Number one. Find the missing number. 3/4 equals how many twentieths? Pause and try it.", E('3/4 = ?/20'), "4 times 5 is 20. So 3 times 5 is 15. 3/4 equals 15 twentieths.", g('3/4 = 15/20')),
+      L.turn("Your turn! Number two. Simplify 40 sixtieths fully. Pause and try it.", E('40/60'), "Divide top and bottom by 20. 40 divided by 20 is 2. 60 divided by 20 is 3. The answer is 2/3.", g('40/60 = 2/3')),
+      L.turn("Your turn! Number three. Fill in the missing number. 4/10 equals what over 5? Pause and try it.", E('4/10 = ?/5'), "10 divided by 2 is 5. So divide the top by 2 as well. 4 divided by 2 is 2. The answer is 2/5.", g('4/10 = 2/5')),
       L.rec(T, "Equivalent fractions show the same amount. Multiply the top and the bottom by the same number to make 1. Divide the top and the bottom by the same number to simplify. Never add or subtract the same number.", ['Same amount, different numbers', '× top and bottom by the same', '÷ to simplify', 'Never add to top and bottom', 'Scale to find missing numbers'])
     ]);
   })();
@@ -344,37 +344,37 @@
     var T = 'What are mixed numbers and improper fractions?';
     L.full(T, [
       SC('More than one whole', 'Two ways to write it', [
-        S("So far our fractions have been smaller than 1 whole. But what if you have more than 1? Imagine you eat 2 whole pizzas and 3 quarters of a third pizza.", E('2 3/4')),
-        S("We can write that as a mixed number: 2 and 3 quarters. It has a whole number part and a fraction part.", E('2 3/4', 'g') + V.rule('Mixed number: wholes and a fraction.')),
-        S("We can also count in quarters only. Each pizza has 4 quarters. 2 pizzas make 8 quarters. Add 3 more quarters. That makes 11 quarters.", E('11/4', 'g')),
-        S("11 quarters is called an improper fraction, because the top is bigger than the bottom. 2 and 3 quarters, and 11 quarters, are 2 ways of writing the same amount.", E('2 3/4 = 11/4', 'g'))
+        S("So far our fractions have been smaller than 1 whole. But what if you have more than 1? Imagine you eat 2 whole pizzas and 3/4 of 1/3 pizza.", E('2 3/4')),
+        S("We can write that as a mixed number: 2 and 3/4. It has a whole number part and a fraction part.", E('2 3/4', 'g') + V.rule('Mixed number: wholes and a fraction.')),
+        S("We can also count in quarters only. Each pizza has 4/4. 2 pizzas make 8/4. Add 3 more quarters. That makes 11/4.", E('11/4', 'g')),
+        S("11/4 is called an improper fraction, because the top is bigger than the bottom. 2 and 3/4, and 11/4, are 2 ways of writing the same amount.", E('2 3/4 = 11/4', 'g'))
       ]),
       SC('Improper to mixed', 'Example 1: 17/5', [
-        S("How do we change 17 fifths to a mixed number? We ask: how many whole ones are inside? Divide the top by the bottom. 17 divided by 5 is 3, with 2 left over.", E('17 ÷ 5 = 3 remainder 2', 'b')),
-        S("The 3 is the number of wholes. The remainder of 2 goes over the same denominator, 5. So 17 fifths is 3 and 2 fifths.", g('17/5 = 3 2/5'))
+        S("How do we change 17/5 to a mixed number? We ask: how many whole ones are inside? Divide the top by the bottom. 17 divided by 5 is 3, with 2 left over.", E('17 ÷ 5 = 3 remainder 2', 'b')),
+        S("The 3 is the number of wholes. The remainder of 2 goes over the same denominator, 5. So 17/5 is 3 and 2/5.", g('17/5 = 3 2/5'))
       ]),
       SC('Mixed to improper', 'Example 2: 4 2/3', [
-        S("Now the other way. How do we change 4 and 2 thirds into an improper fraction? Each whole has 3 thirds. So 4 wholes make 4 times 3, which is 12 thirds.", E('4 × 3 = 12 thirds', 'b')),
-        S("Now add the 2 thirds we already had. 12 plus 2 is 14. So 4 and 2 thirds is 14 thirds.", g('4 2/3 = 14/3') + V.rule('Whole × denominator, then add the numerator.'))
+        S("Now the other way. How do we change 4 and 2/3 into an improper fraction? Each whole has 3/3. So 4 wholes make 4 times 3, which is 12/3.", E('4 × 3 = 12/3', 'b')),
+        S("Now add the 2/3 we already had. 12 plus 2 is 14. So 4 and 2/3 is 14/3.", g('4 2/3 = 14/3') + V.rule('Whole × denominator, then add the numerator.'))
       ]),
       SC('Mixed to improper', 'Example 3: 7 1/4', [
-        S("One more. 7 and 1 quarter. 7 times 4 is 28. Add the one. We get 29 quarters.", E('7 × 4 + 1 = 29') + g('7 1/4 = 29/4'))
+        S("One more. 7 and 1/4. 7 times 4 is 28. Add the one. We get 29/4.", E('7 × 4 + 1 = 29') + g('7 1/4 = 29/4'))
       ]),
       SC('On a number line', 'Where does it sit?', [
-        S("A number line helps us see mixed numbers. 2 and 3 quarters sits between 2 and 3. It is 3 quarters of the way along from 2.", V.nl(0, 4, { tick: 0.25, marks: [[2.75, 22]] })),
-        S("That is the same place as 11 quarters. You can count along in quarters, 1, 2, 3, up to 11, and arrive at the same spot.", E('11/4 = 2 3/4', 'g'))
+        S("A number line helps us see mixed numbers. 2 and 3/4 sits between 2 and 3. It is 3/4 of the way along from 2.", V.nl(0, 4, { tick: 0.25, marks: [[2.75, 22]] })),
+        S("That is the same place as 11/4. You can count along in quarters, 1, 2, 3, up to 11, and arrive at the same spot.", E('11/4 = 2 3/4', 'g'))
       ]),
       SC('Watch out!', 'Three common mistakes', [
-        S("Mistake one: forgetting the remainder. 17 divided by 5 is 3 with 2 left over. The 2 matters. The answer is 3 and 2 fifths, not just 3.", r('17/5 = 3  ✗') + g('17/5 = 3 2/5  ✓')),
-        S("Mistake two: changing the denominator. When we change form, the denominator stays the same. 3 and 2 fifths has fifths in it, so the improper fraction must have fifths too.", V.rule('Same denominator. Only the numerator changes.')),
-        S("Mistake three: forgetting to add the numerator. For 4 and 2 thirds, 4 times 3 is 12. We must add the 2, to get 14.", r('4 2/3 = 12/3  ✗') + g('4 2/3 = 14/3  ✓'))
+        S("Mistake one: forgetting the remainder. 17 divided by 5 is 3 with 2 left over. The 2 matters. The answer is 3 and 2/5, not just 3.", r('17/5 = 3  ✗') + g('17/5 = 3 2/5  ✓')),
+        S("Mistake two: changing the denominator. When we change form, the denominator stays the same. 3 and 2/5 has fifths in it, so the improper fraction must have fifths too.", V.rule('Same denominator. Only the numerator changes.')),
+        S("Mistake three: forgetting to add the numerator. For 4 and 2/3, 4 times 3 is 12. We must add the 2, to get 14.", r('4 2/3 = 12/3  ✗') + g('4 2/3 = 14/3  ✓'))
       ]),
       SC('In real life', 'Measuring', [
-        S("A carpenter needs 9 halves of a metre of wood. 2 halves make 1 metre, so 9 halves is 4 whole metres and one half left over. That is 4 and a half metres.", g('9/2 = 4 1/2 m'))
+        S("A carpenter needs 9/2 of a metre of wood. 2/2 make 1 metre, so 9/2 is 4 whole metres and 1/2 left over. That is 4 and 1/2 metres.", g('9/2 = 4 1/2 m'))
       ]),
-      L.turn("Your turn! Number one. Write 23 sixths as a mixed number. Pause and try it.", E('23/6'), "23 divided by 6 is 3, with 5 left over. The answer is 3 and 5 sixths.", g('23/6 = 3 5/6')),
-      L.turn("Your turn! Number two. Write 5 and 3 eighths as an improper fraction. Pause and try it.", E('5 3/8'), "5 times 8 is 40. Add 3 to make 43. The answer is 43 eighths.", g('5 3/8 = 43/8')),
-      L.turn("Your turn! Number three. Write 31 fifths as a mixed number. Pause and try it.", E('31/5'), "31 divided by 5 is 6, with 1 left over. The answer is 6 and 1 fifth.", g('31/5 = 6 1/5')),
+      L.turn("Your turn! Number one. Write 23/6 as a mixed number. Pause and try it.", E('23/6'), "23 divided by 6 is 3, with 5 left over. The answer is 3 and 5/6.", g('23/6 = 3 5/6')),
+      L.turn("Your turn! Number two. Write 5 and 3/8 as an improper fraction. Pause and try it.", E('5 3/8'), "5 times 8 is 40. Add 3 to make 43. The answer is 43/8.", g('5 3/8 = 43/8')),
+      L.turn("Your turn! Number three. Write 31/5 as a mixed number. Pause and try it.", E('31/5'), "31 divided by 5 is 6, with 1 left over. The answer is 6 and 1/5.", g('31/5 = 6 1/5')),
       L.rec(T, "An improper fraction has a numerator bigger than its denominator. A mixed number has wholes and a fraction. To change improper to mixed, divide, and put the remainder over the same denominator. To change mixed to improper, multiply the whole by the denominator and add the numerator.", ['Improper → mixed: divide', 'Remainder over the same bottom', 'Mixed → improper: × then +', 'Same amount, 2 ways'])
     ]);
   })();
@@ -386,10 +386,10 @@
       SC('Per cent', 'Out of one hundred', [
         S("The word per cent means out of 100. A percent sign looks like this. Percent comes from Latin, and it means for every hundred.", E('%', 'b')),
         S("Imagine a square split into 100 small squares. If 45 of them are shaded, then 45% of the square is shaded.", LK.hsq(45)),
-        S("So 45% is the same as 45 hundredths. As a fraction, that is 45 over 100. As a decimal, it is 0.45.", E('45% = 45/100 = 0.45', 'g'))
+        S("So 45% is the same as 45/100. As a fraction, that is 45 over 100. As a decimal, it is 0.45.", E('45% = 45/100 = 0.45', 'g'))
       ]),
       SC('Key percentages', 'Learn these', [
-        S("There are a few percentages worth knowing by heart. 50% is a half. 25% is a quarter. 75% is 3 quarters. 10% is a tenth. And 1% is 1 hundredth.", V.tbl([['50%', '½'], ['25%', '¼'], ['75%', '¾'], ['10%', '1/10'], ['1%', '1/100']], ['Percentage', 'Fraction'])),
+        S("There are a few percentages worth knowing by heart. 50% is 1/2. 25% is 1/4. 75% is 3/4. 10% is 1/10. And 1% is 1/100.", V.tbl([['50%', '½'], ['25%', '¼'], ['75%', '¾'], ['10%', '1/10'], ['1%', '1/100']], ['Percentage', 'Fraction'])),
         S("They are useful because we can find them quickly. To find 50% of a number, halve it. To find 10%, divide by 10. To find 1%, divide by 100.", V.rule('50% ÷ 2.   10% ÷ 10.   1% ÷ 100.'))
       ]),
       SC('Building percentages', 'Example 1: 35% of £60', [
@@ -415,7 +415,7 @@
         S("The saving is £9. So the new price is 45 minus 9, which is £36.", g('£45 − £9 = £36'))
       ]),
       L.turn("Your turn! Number one. What is 5% of 60? Pause and try it.", E('5% of 60'), "10% of 60 is 6. 5% is half of that. The answer is 3.", g('5% of 60 = 3')),
-      L.turn("Your turn! Number two. What is 25% of 96? Pause and try it.", E('25% of 96'), "25% is a quarter. 96 divided by 4 is 24.", g('25% of 96 = 24')),
+      L.turn("Your turn! Number two. What is 25% of 96? Pause and try it.", E('25% of 96'), "25% is 1/4. 96 divided by 4 is 24.", g('25% of 96 = 24')),
       L.turn("Your turn! Number three. A girl scores 24 out of 30. What percentage is that? Pause and try it.", E('24/30'), "24 divided by 30 is 0.8. Multiply by 100. The answer is 80%.", g('24/30 = 80%')),
       L.rec(T, "Per cent means out of 100. Learn the key percentages. Build other percentages from 10%, 5% and 1%. To write 1 amount as a percentage, divide the part by the whole and multiply by 100.", ['Per cent = out of 100', 'Key: 50%, 25%, 10%, 1%', 'Build from 10% and 1%', 'Part ÷ whole × 100'])
     ]);
@@ -520,7 +520,7 @@
         S("A useful trick is to remember one thing for each unit. A fingernail is about a centimetre wide. A big step is about a metre. A kilometre takes about 10 minutes to walk.", V.tbl([['1 cm', 'fingernail'], ['1 m', 'big step'], ['1 km', '10 minute walk']], ['Unit', 'Think of']))
       ]),
       SC('Mass and capacity', 'Example 2: heavy and full', [
-        S("Mass is how heavy something is. An apple has a mass of about 150 grams. A bag of sugar is 1 kilogram. A car is about 1 and a half tonnes. A tonne is 1,000 kilograms.", E('g · kg · tonnes', 'g')),
+        S("Mass is how heavy something is. An apple has a mass of about 150 grams. A bag of sugar is 1 kilogram. A car is about 1 and 1/2 tonnes. A tonne is 1,000 kilograms.", E('g · kg · tonnes', 'g')),
         S("Capacity is how much a container holds. A teaspoon holds about 5 millilitres. A bottle of water holds about half a litre. A bath holds about 150 litres.", E('ml · l', 'g'))
       ]),
       SC('Time', 'Example 3: how long does it take?', [
@@ -583,7 +583,7 @@
       ]),
       L.turn("Your turn! Number one. How many centimetres are in 4.06 metres? Pause and try it.", E('4.06 m = ? cm'), "Multiply by 100. The answer is 406 centimetres.", g('406 cm')),
       L.turn("Your turn! Number two. Change 3,000, 200 metres to kilometres. Pause and try it.", E('3,200 m = ? km'), "Divide by 1,000. The answer is 3.2 kilometres.", g('3.2 km')),
-      L.turn("Your turn! Number three. How many minutes are in 1 and 3 quarter hours? Pause and try it.", E('1 3/4 h'), "1 hour is 60 minutes. 3 quarters of an hour is 45 minutes. Add them. The answer is 105 minutes.", g('105 minutes')),
+      L.turn("Your turn! Number three. How many minutes are in 1 and 3/4 hours? Pause and try it.", E('1 3/4 h'), "1 hour is 60 minutes. 3/4 of an hour is 45 minutes. Add them. The answer is 105 minutes.", g('105 minutes')),
       L.rec(T, "Learn the metric links. To change to a smaller unit, multiply. To change to a bigger unit, divide. Check that your answer makes sense. Time uses 60 and 24, not 10.", ['10 mm = 1 cm, 100 cm = 1 m', '1,000 for km, kg, l', 'Smaller unit: ×', 'Bigger unit: ÷', 'Time: 60 and 24'])
     ]);
   })();
@@ -724,7 +724,7 @@
         S("Why 3 letters? Because there may be many angles at the same point. The 3 letters tell us exactly which one we mean.", V.rule('Middle letter = vertex.'))
       ]),
       SC('Measuring', 'Using a protractor', [
-        S("A protractor is a half circle with a scale from 0 to 180. First, estimate the angle. Is it acute or obtuse? This stops silly mistakes.", V.rule('Estimate first.')),
+        S("A protractor is 1/2 circle with a scale from 0 to 180. First, estimate the angle. Is it acute or obtuse? This stops silly mistakes.", V.rule('Estimate first.')),
         S("Put the centre of the protractor on the vertex. Line up the 0 line with 1 arm of the angle. Now look where the other arm crosses the scale.", V.rule('Centre on the vertex. 0 on 1 arm.')),
         S("There are 2 scales. Use the one that starts at 0 on your first arm. If the angle is acute, read the smaller number. If it is obtuse, read the bigger number.", V.rule('Read from zero.'))
       ]),
@@ -758,7 +758,7 @@
       ]),
       SC('Types of data', 'Words or numbers?', [
         S("There are different types of data. Categorical data is words or groups. For example, favourite sport, or eye colour. You cannot do sums with it.", V.tbl([['Categorical', 'favourite sport']], ['Type', 'Example'])),
-        S("Numerical data is numbers. It comes in 2 kinds. Discrete data is counted, and can only take certain values, like the number of pets. You cannot have 2 and a half pets.", V.tbl([['Categorical', 'favourite sport'], ['Discrete', 'number of pets']], ['Type', 'Example'])),
+        S("Numerical data is numbers. It comes in 2 kinds. Discrete data is counted, and can only take certain values, like the number of pets. You cannot have 2 and 1/2 pets.", V.tbl([['Categorical', 'favourite sport'], ['Discrete', 'number of pets']], ['Type', 'Example'])),
         S("Continuous data is measured, and can take any value in a range, like height or time. A person can be 1.53 metres tall.", V.tbl([['Categorical', 'favourite sport'], ['Discrete', 'number of pets'], ['Continuous', 'height, time']], ['Type', 'Example'])),
         S("A quick test: if you count it, it is discrete. If you measure it, it is continuous.", V.rule('Count = discrete.   Measure = continuous.'))
       ]),

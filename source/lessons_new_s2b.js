@@ -90,7 +90,7 @@
   fx('How do you divide to three decimal places?', 'how to divide with decimals and round the answer to 3 decimal places.', {
     head: 'Dividing decimals',
     basics: [['Make the divisor a whole number', [
-      ["Dividing by a decimal is awkward. So we make the number we are dividing by a whole number. We do this by multiplying both numbers by 10, or a hundred, or a thousand. Both numbers must be multiplied by the same amount.", ['4.8 ÷ 0.6', '× 10 both: 48 ÷ 6', 'n|Multiply BOTH by the same power of 10']],
+      ["Dividing by a decimal is awkward. So we make the number we are dividing by a whole number. We do this by multiplying both numbers by 10, or 100, or 1,000. Both numbers must be multiplied by the same amount.", ['4.8 ÷ 0.6', '× 10 both: 48 ÷ 6', 'n|Multiply BOTH by the same power of 10']],
       ["The answer does not change, because we scaled both numbers the same way. 48 divided by 6 is easy: 8.", ['48 ÷ 6 = 8', 'g|4.8 ÷ 0.6 = 8']]]]],
     ex: [
       ['7.2 divided by 0.04', [
@@ -104,7 +104,7 @@
         ["3 goes into 20-5 8 times, making 24, remainder 1. Then 10: 3 times, remainder 1. The threes go on forever: 8.3333. To 3 decimal places, the decider is 3, so it stays.", ['25 ÷ 3 = 8 r 1', '10 ÷ 3 = 3 r 1', 'g|≈ 8.333 (3 d.p.)']]]]],
     mist: [
       ['Moving the point in one number only', "Mistake one: changing only one of the numbers. Work out 4.8 divided by 0.6. Wrong: 4.8 divided by 6, which is 0.8. You must multiply both numbers by 10. 48 divided by 6 is 8.", ['r|4.8 ÷ 0.6 = 4.8 ÷ 6 = 0.8 ✗', 'g|48 ÷ 6 = 8 ✓']],
-      ['Thinking division makes smaller', "Mistake two: expecting the answer to be smaller. Dividing by a number smaller than 1 makes the answer bigger. 6 divided by 0.5 is 12, because there are 12 halves in 6.", ['6 ÷ 0.5 = 12', 'n|Dividing by less than 1 gives a bigger answer']]],
+      ['Thinking division makes smaller', "Mistake two: expecting the answer to be smaller. Dividing by a number smaller than 1 makes the answer bigger. 6 divided by 0.5 is 12, because there are 12/2 in 6.", ['6 ÷ 0.5 = 12', 'n|Dividing by less than 1 gives a bigger answer']]],
     real: ['In real life', "A jug holds 7.5 litres of juice. Each glass holds 0.25 litres. How many glasses can be filled? Multiply both numbers by 100: 750 divided by 25 is 30 glasses.", ['7.5 ÷ 0.25', '750 ÷ 25 = 30', 'g|30 glasses']],
     turns: [
       { q: 'Work out 9.6 divided by 0.8.', task: '9.6 ÷ 0.8', say: "Multiply both numbers by 10. 9.6 becomes 96, 0.8 becomes 8. 96 divided by 8 is 12.", work: ['× 10 both: 96 ÷ 8', '96 ÷ 8 = 12'], ans: ['g|12'] },

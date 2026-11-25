@@ -15,7 +15,7 @@
         st("Now count the decimal places in the question. 3.6 has 1, and 0.4 has 1. That is 2 altogether, so the answer has 2 decimal places: 1.44.", V.eq('3.6 × 0.4 = 1.44', 'g') + V.rule('Count the decimal places in the question.')),
         st("Check by estimating. 4 times a bit less than half is a bit less than 2. 1.44 is sensible.", V.eq('≈ 4 × 0.4 = 1.6 ✓'))]),
       SC('Dividing decimals', '12.5 ÷ 0.5', [
-        st("To divide by a decimal, make the divisor a whole number. Multiply both numbers by 10. 12.5 divided by 0.5 becomes a hundred and 25 divided by 5, which is 25.", V.eq('12.5 ÷ 0.5 = 125 ÷ 5 = 25', 'g'))]),
+        st("To divide by a decimal, make the divisor a whole number. Multiply both numbers by 10. 12.5 divided by 0.5 becomes 125 divided by 5, which is 25.", V.eq('12.5 ÷ 0.5 = 125 ÷ 5 = 25', 'g'))]),
       REC("Multiply as whole numbers and put back the decimal places. To divide by a decimal, multiply both numbers by the same power of 10.", ['Multiply as whole numbers', 'Count the decimal places', 'Divide: make the divisor whole'])] },
     { title: 'Rounding and estimating', goal: 'how to round to decimal places and significant figures and estimate answers.', scenes: [
       SC('Rounding', 'Decimal places and significant figures', [
@@ -38,7 +38,7 @@
       REC("Subtracting a negative is adding. For × and ÷: same signs positive, different signs negative.", ['− (−a) = + a', 'Same signs → positive', 'Different signs → negative'])] },
     { title: 'Powers, roots and prime factors', goal: 'how indices, roots and prime factors work together.', scenes: [
       SC('Index laws', 'Multiplying powers', [
-        st("A power says how many times to multiply. 2 to the 5 is 2 times itself 5 times, 32. When you multiply powers of the same base, add the indices. 3 squared times 3 to the 4 is 3 to the six.", V.eq('2⁵ = 32') + V.eq('3² × 3⁴ = 3⁶', 'g') + V.rule('Same base: add the indices.'))]),
+        st("A power says how many times to multiply. 2 to the 5 is 2 times itself 5 times, 32. When you multiply powers of the same base, add the indices. 3 squared times 3 to the 4 is 3 to the 6.", V.eq('2⁵ = 32') + V.eq('3² × 3⁴ = 3⁶', 'g') + V.rule('Same base: add the indices.'))]),
       SC('Roots and prime factors', '60 as a product of primes', [
         st("A square root undoes a square. The square root of 49 is 7. Now break 60 into primes. 60 is 6 times 10, which is 2 times 3 times 2 times 5.", V.eq('√49 = 7') + V.eq('60 = 2² × 3 × 5', 'g')),
         st("And remember BODMAS: brackets, orders, then divide and multiply, then add and subtract.", V.list(['Brackets', 'Orders (powers, roots)', 'Divide / Multiply', 'Add / Subtract']))]),
@@ -49,14 +49,14 @@
   BT.story(803, 'Watch lesson', [
     { title: 'Adding and subtracting mixed numbers', goal: 'how to add mixed numbers by using a common denominator.', scenes: [
       SC('Whole numbers first', '2 1/3 + 1 3/4', [
-        st("2 and a third plus 1 and 3 quarters. Add the whole numbers: 2 plus 1 is 3. Now the fractions. The common denominator of 3 and 4 is 12.", V.eq('2 + 1 = 3') + V.eq('1/3 = 4/12    3/4 = 9/12')),
-        st("4 twelfths plus 9 twelfths is 13 twelfths. That is more than 1 whole: 1 and 1 twelfth. Add that to the three: 4 and 1 twelfth.", V.eq('4/12 + 9/12 = 13/12 = 1 1/12') + V.eq('3 + 1 1/12 = 4 1/12', 'g'))]),
+        st("2 and 1/3 plus 1 and 3/4. Add the whole numbers: 2 plus 1 is 3. Now the fractions. The common denominator of 3 and 4 is 12.", V.eq('2 + 1 = 3') + V.eq('1/3 = 4/12    3/4 = 9/12')),
+        st("4/12 plus 9/12 is 13/12. That is more than 1 whole: 1 and 1/12. Add that to the 3: 4 and 1/12.", V.eq('4/12 + 9/12 = 13/12 = 1 1/12') + V.eq('3 + 1 1/12 = 4 1/12', 'g'))]),
       REC("Add whole numbers and fractions separately. Use a common denominator, and convert any improper fraction at the end.", ['Whole numbers first', 'Common denominator', 'Convert improper fractions'])] },
     { title: 'Multiplying and dividing fractions', goal: 'how to multiply and divide fractions and mixed numbers.', scenes: [
       SC('Multiplying mixed numbers', '2 1/2 × 1 1/3', [
-        st("Turn mixed numbers into improper fractions first. 2 and a half is 5 halves. 1 and a third is 4 thirds. Multiply tops and bottoms: 20 sixths. Simplify to 10 thirds, which is 3 and a third.", V.eq('5/2 × 4/3 = 20/6 = 10/3 = 3 1/3', 'g'))]),
+        st("Turn mixed numbers into improper fractions first. 2 and 1/2 is 5/2. 1 and 1/3 is 4/3. Multiply tops and bottoms: 20/6. Simplify to 10/3, which is 3 and 1/3.", V.eq('5/2 × 4/3 = 20/6 = 10/3 = 3 1/3', 'g'))]),
       SC('Dividing', '3/5 ÷ 2/3', [
-        st("To divide, keep the first fraction, change to multiply, and flip the second. 3 fifths times 3 halves is 9 tenths.", V.eq('3/5 × 3/2 = 9/10', 'g') + V.rule('Keep, change, flip.'))]),
+        st("To divide, keep the first fraction, change to multiply, and flip the second. 3/5 times 3/2 is 9/10.", V.eq('3/5 × 3/2 = 9/10', 'g') + V.rule('Keep, change, flip.'))]),
       REC("Improper fractions first. To multiply: tops and bottoms. To divide: keep, change, flip.", ['Mixed → improper', 'Multiply across', 'Divide: keep, change, flip'])] }
   ]);
 
@@ -67,13 +67,13 @@
         st("Find 35% of 240. 10% is 24. 30% is 3 times that, 72. 5% is half of 10%, 12. Add them: 84.", V.eq('30% = 72') + V.eq('5% = 12') + V.eq('35% = 84', 'g')),
         st("Or use a calculator. 35% is 0.35. 0.35 times 240 is also 84.", V.eq('0.35 × 240 = 84', 'g'))]),
       SC('One amount as a percentage', '18 out of 45', [
-        st("Write 18 out of 45 as a percentage. Divide 18 by 45 to get 0.4. Multiply by a hundred: 40%.", V.eq('18 ÷ 45 = 0.4 = 40%', 'g'))]),
-      REC("Build percentages from 10%, or use the decimal multiplier. For a percentage, divide then multiply by a hundred.", ['10% then build', 'Decimal multiplier', 'Part ÷ whole × 100'])] },
+        st("Write 18 out of 45 as a percentage. Divide 18 by 45 to get 0.4. Multiply by 100: 40%.", V.eq('18 ÷ 45 = 0.4 = 40%', 'g'))]),
+      REC("Build percentages from 10%, or use the decimal multiplier. For a percentage, divide then multiply by 100.", ['10% then build', 'Decimal multiplier', 'Part ÷ whole × 100'])] },
     { title: 'Percentage increase and decrease', goal: 'how to use multipliers for percentage change.', scenes: [
       SC('The multiplier', 'Increase by 12%', [
-        st("To increase by 12%, you have 100% plus 12, a hundred and 12%. As a decimal, that is the multiplier 1.12. 250 times 1.12 is 280.", V.eq('250 × 1.12 = 280', 'g')),
+        st("To increase by 12%, you have 100% plus 12, 112%. As a decimal, that is the multiplier 1.12. 250 times 1.12 is 280.", V.eq('250 × 1.12 = 280', 'g')),
         st("To decrease by 15%, you keep 85%. The multiplier is 0.85. 60 times 0.85 is 51.", V.eq('60 × 0.85 = 51', 'g')),
-        st("So the multiplier is a hundred per cent, plus or minus the change, written as a decimal.", V.tbl([['+12%', '1.12'], ['−15%', '0.85'], ['+5%', '1.05'], ['−30%', '0.70']], ['Change', 'Multiplier']))]),
+        st("So the multiplier is 100 per cent, plus or minus the change, written as a decimal.", V.tbl([['+12%', '1.12'], ['−15%', '0.85'], ['+5%', '1.05'], ['−30%', '0.70']], ['Change', 'Multiplier']))]),
       REC("Increase: 1 plus the decimal. Decrease: 1 minus the decimal. Multiply the original amount.", ['Increase: 1 + p', 'Decrease: 1 − p', 'Multiply the original'])] }
   ]);
 
@@ -84,7 +84,7 @@
         st("To simplify a ratio, divide both parts by their highest common factor. The highest common factor of 24 and 36 is 12. So 24 to 36 is 2 to 3.", V.eq('24 : 36 = 2 : 3', 'g')),
         st("Ratios with different units need the same units first. 50 centimetres to 2 metres is 50 to 200, which is 1 to 4.", V.eq('50 cm : 2 m = 50 : 200 = 1 : 4', 'g'))]),
       SC('Sharing', '£150 in the ratio 2 : 3', [
-        st("Share a hundred and £50 in the ratio 2 to 3. Add the parts: 5. A hundred and 50 divided by 5 is £30 a part. So the shares are 60 and 90.", V.bm([['A', [[80, '2']]], ['B', [[120, '3']]]]) + V.eq('150 ÷ 5 = £30') + V.eq('£60 and £90', 'g'))]),
+        st("Share 100 and £50 in the ratio 2 to 3. Add the parts: 5. 150 divided by 5 is £30 a part. So the shares are 60 and 90.", V.bm([['A', [[80, '2']]], ['B', [[120, '3']]]]) + V.eq('150 ÷ 5 = £30') + V.eq('£60 and £90', 'g'))]),
       REC("Simplify by dividing by the highest common factor, with the same units. To share, add the parts, find 1 part, multiply.", ['Same units first', 'Divide by the HCF', 'Add parts → one part → multiply'])] },
     { title: 'Direct proportion', goal: 'how to solve proportion problems with the unitary method.', scenes: [
       SC('The unitary method', '3 kg costs £4.50', [
@@ -99,14 +99,14 @@
     { title: 'Wages and overtime', goal: 'how to calculate pay including overtime.', scenes: [
       SC('Basic pay', '35 hours at £9.50', [
         st("Maya works 35 hours at £9.50 an hour. Her basic pay is 35 times 9 50, £332.50.", V.eq('35 × £9.50 = £332.50', 'b')),
-        st("Overtime at time and a half means 1 and a half times the normal rate. 9 50 times 1.5 is £14.25 an hour. For 6 hours: £85.50.", V.eq('£9.50 × 1.5 = £14.25') + V.eq('6 × £14.25 = £85.50', 'g')),
+        st("Overtime at time and 1/2 means 1 and 1/2 times the normal rate. 9 50 times 1.5 is £14.25 an hour. For 6 hours: £85.50.", V.eq('£9.50 × 1.5 = £14.25') + V.eq('6 × £14.25 = £85.50', 'g')),
         st("Her total is basic pay plus overtime, £418.", V.eq('£332.50 + £85.50 = £418', 'g'))]),
       REC("Basic pay is hours times rate. Overtime uses a higher rate. Add the two.", ['Hours × rate', 'Overtime rate: × 1.5 or × 2', 'Add the pay'])] },
     { title: 'VAT and simple interest', goal: 'how to add VAT, remove it, and calculate simple interest.', scenes: [
       SC('Adding VAT', '£35 plus 20% VAT', [
         st("VAT of 20% on £35. The multiplier is 1.2. 35 times 1.2 is £42.", V.eq('£35 × 1.2 = £42', 'g'))]),
       SC('Removing VAT', 'Price with VAT is £60', [
-        st("Going backwards: a price of £60 already includes 20% VAT. 60 is 120%. Divide by 1.2 to get back to a hundred per cent: £50.", V.eq('£60 ÷ 1.2 = £50', 'g') + V.rule('To go backwards, divide by the multiplier.'))]),
+        st("Going backwards: a price of £60 already includes 20% VAT. 60 is 120%. Divide by 1.2 to get back to 100 per cent: £50.", V.eq('£60 ÷ 1.2 = £50', 'g') + V.rule('To go backwards, divide by the multiplier.'))]),
       SC('Simple interest', '£800 at 3% for 2 years', [
         st("Simple interest is the same each year. 3% of 800 is £24. For 2 years that is £48.", V.eq('3% of £800 = £24') + V.eq('2 × £24 = £48', 'g'))]),
       REC("Use multipliers to add VAT, and divide by the multiplier to take it off. Simple interest is the same every year.", ['× 1.2 adds 20% VAT', '÷ 1.2 removes it', 'Interest = amount × rate × years'])] }
@@ -116,16 +116,16 @@
   BT.story(807, 'Watch lesson', [
     { title: 'Speed, distance and time', goal: 'how to use the speed formula and convert times.', scenes: [
       SC('The formula', 'Speed = distance ÷ time', [
-        st("Speed tells us how far we go in 1 hour. A car travels a hundred and 80 kilometres in 2 and a half hours. Divide the distance by the time: 72 kilometres per hour.", V.eq('180 ÷ 2.5 = 72 km/h', 'g')),
+        st("Speed tells us how far we go in 1 hour. A car travels 180 kilometres in 2 and 1/2 hours. Divide the distance by the time: 72 kilometres per hour.", V.eq('180 ÷ 2.5 = 72 km/h', 'g')),
         st("Rearranged, distance is speed times time, and time is distance divided by speed. A triangle with D at the top, S and T at the bottom helps you remember.", V.cols([V.card('D', 'b'), V.card('S × T', 'g'), V.card('D ÷ S = T', 'r')], 3).replace('sv-cols"', 'sv-cols" '))]),
       SC('Hours and minutes', '2 h 15 min', [
-        st("Careful with time. 2 hours 15 minutes is not 2.15 hours. 15 minutes is a quarter of an hour, so it is 2.25 hours.", V.eq('2 h 15 min = 2.25 h', 'g') + V.rule('Minutes ÷ 60 gives hours.'))]),
+        st("Careful with time. 2 hours 15 minutes is not 2.15 hours. 15 minutes is 1/4 of an hour, so it is 2.25 hours.", V.eq('2 h 15 min = 2.25 h', 'g') + V.rule('Minutes ÷ 60 gives hours.'))]),
       REC("Speed is distance over time. Change minutes into hours by dividing by 60 before you use the formula.", ['S = D ÷ T', 'D = S × T', 'T = D ÷ S', 'Minutes ÷ 60'])] },
     { title: 'Distance–time graphs', goal: 'how to read a distance–time graph.', scenes: [
       SC('A journey', 'Three stages', [
         st("This graph shows a journey. Time is along the bottom, distance from home up the side. For the first hour the line goes up steadily to 60 kilometres.", V.plot(0, 4, 0, 180, [{ l: [[0, 0], [1, 60]] }], { tx: 1, ty: 60, xl: 'Time (hours)', yl: 'Distance from home (km)', title: 'A journey' })),
         st("Then the line is flat for an hour. The distance is not changing, so the traveller has stopped.", V.plot(0, 4, 0, 180, [{ l: [[0, 0], [1, 60], [2, 60]] }], { tx: 1, ty: 60, xl: 'Time (hours)', yl: 'Distance from home (km)', title: 'A journey' })),
-        st("In the last 2 hours the line climbs from 60 to a hundred and 80. That is a hundred and 20 kilometres in 2 hours, 60 kilometres an hour. The steeper the line, the faster the speed.", V.plot(0, 4, 0, 180, [{ l: [[0, 0], [1, 60], [2, 60], [4, 180]] }], { tx: 1, ty: 60, xl: 'Time (hours)', yl: 'Distance from home (km)', title: 'A journey' }) + V.eq('gradient = 120 ÷ 2 = 60 km/h', 'g'))]),
+        st("In the last 2 hours the line climbs from 60 to 180. That is 120 kilometres in 2 hours, 60 kilometres an hour. The steeper the line, the faster the speed.", V.plot(0, 4, 0, 180, [{ l: [[0, 0], [1, 60], [2, 60], [4, 180]] }], { tx: 1, ty: 60, xl: 'Time (hours)', yl: 'Distance from home (km)', title: 'A journey' }) + V.eq('gradient = 120 ÷ 2 = 60 km/h', 'g'))]),
       REC("The gradient of a distance–time graph is the speed. A flat line means stopped.", ['Steeper = faster', 'Flat = stopped', 'Gradient = speed'])] }
   ]);
 
@@ -141,7 +141,7 @@
     { title: 'Volume of a prism', goal: 'how to find the volume of a prism from its cross-section.', scenes: [
       SC('Cross-section times length', 'A triangular prism', [
         st("A prism has the same cross-section all the way along. Its volume is the area of the cross-section times the length. This triangle has base 6 and height 4, so its area is 12 square centimetres.", V.eq('½ × 6 × 4 = 12 cm²')),
-        st("The prism is 10 centimetres long. 12 times 10 is a hundred and 20 cubic centimetres.", V.eq('V = 12 × 10 = 120 cm³', 'g') + V.rule('Volume = area of cross-section × length.'))]),
+        st("The prism is 10 centimetres long. 12 times 10 is 120 cubic centimetres.", V.eq('V = 12 × 10 = 120 cm³', 'g') + V.rule('Volume = area of cross-section × length.'))]),
       REC("Find the area of the end face, then multiply by the length.", ['Area of the cross-section', '× length', 'Units are cubed'])] }
   ]);
 
@@ -169,8 +169,8 @@
       SC('Facts to know', 'Lines and points', [
         st("Angles on a straight line add up to 1 80. Angles around a point add up to 3 60. Where 2 straight lines cross, the opposite angles, called vertically opposite, are equal.", V.tbl([['Straight line', '180°'], ['Around a point', '360°'], ['Vertically opposite', 'equal']], ['Fact', 'Rule']))]),
       SC('Triangles', 'Angles add to 180', [
-        st("The angles in a triangle add up to 1 80. In an isosceles triangle, 2 sides are equal and the 2 base angles are equal. If the top angle is 40, the other 2 share a hundred and 40, 70 each.", V.eq('180 − 40 = 140') + V.eq('140 ÷ 2 = 70° each', 'g'))]),
-      REC("Straight line 1 80, point 3 60, triangle 1 80. Isosceles triangles have 2 equal angles.", ['Line: 180°', 'Point: 360°', 'Triangle: 180°', 'Vertically opposite: equal'])] },
+        st("The angles in a triangle add up to 1 80. In an isosceles triangle, 2 sides are equal and the 2 base angles are equal. If the top angle is 40, the other 2 share 140, 70 each.", V.eq('180 − 40 = 140') + V.eq('140 ÷ 2 = 70° each', 'g'))]),
+      REC("Straight line 1 80,.360, triangle 1 80. Isosceles triangles have 2 equal angles.", ['Line: 180°', 'Point: 360°', 'Triangle: 180°', 'Vertically opposite: equal'])] },
     { title: 'Parallel lines', goal: 'corresponding, alternate and co-interior angles.', scenes: [
       SC('F, Z and C', 'Equal or supplementary', [
         st("When a line crosses 2 parallel lines, corresponding angles in an F shape are equal.", V.par([[155, 72, '65°'], [215, 152, '65°']])),
@@ -190,7 +190,7 @@
       SC('Rotational symmetry', 'Order of rotation', [
         st("A shape has rotational symmetry if it looks the same after a turn of less than a full turn. The order is how many times it fits in 1 full turn. A square fits 4 times. An equilateral triangle fits 3 times.", V.tbl([['Square', '4'], ['Equilateral triangle', '3'], ['Rectangle', '2']], ['Shape', 'Order']))]),
       SC('Scale', 'Scale 1 : 100', [
-        st("A scale of 1 to a hundred means 1 centimetre on the drawing is a hundred centimetres, 1 metre, in real life. So a wall drawn 5 centimetres long is 5 metres.", V.eq('5 cm × 100 = 500 cm = 5 m', 'g'))]),
+        st("A scale of 1 to 100 means 1 centimetre on the drawing is 100 centimetres, 1 metre, in real life. So a wall drawn 5 centimetres long is 5 metres.", V.eq('5 cm × 100 = 500 cm = 5 m', 'g'))]),
       REC("The order of rotational symmetry counts how many times a shape fits on itself in a full turn. Multiply by the scale to get real lengths.", ['Order = number of fits', 'Drawing × scale = real', 'Change units'])] }
   ]);
 
@@ -203,10 +203,10 @@
       REC("Order the data for the median. With 2 middle values, find halfway between them.", ['Mean = total ÷ count', 'Median: middle of ordered data', 'Mode: most common', 'Range = max − min'])] },
     { title: 'Probability and relative frequency', goal: 'theoretical probability and experimental estimates.', scenes: [
       SC('Theoretical probability', 'A fair dice', [
-        st("The probability of an even number on a fair dice is 3 out of 6, one half. Probability is favourable outcomes over all outcomes.", V.eq('P(even) = 3/6 = 1/2', 'g'))]),
+        st("The probability of an even number on a fair dice is 3 out of 6, 1/2. Probability is favourable outcomes over all outcomes.", V.eq('P(even) = 3/6 = 1/2', 'g'))]),
       SC('Relative frequency', 'Testing a dice', [
-        st("Roll a dice 90 times and get 18 sixes. The relative frequency is 18 over 90, 0.2. That is a bit more than one sixth, which is about 0.17, but experiments vary.", V.eq('18 ÷ 90 = 0.2') + V.eq('1/6 ≈ 0.167')),
-        st("We can use probability to predict. In a hundred and 20 rolls, we expect a sixth to be sixes: 20.", V.eq('120 × 1/6 = 20', 'g'))]),
+        st("Roll a dice 90 times and get 18 sixes. The relative frequency is 18 over 90, 0.2. That is a bit more than 1/6, which is about 0.17, but experiments vary.", V.eq('18 ÷ 90 = 0.2') + V.eq('1/6 ≈ 0.167')),
+        st("We can use probability to predict. In 120 rolls, we expect 1/6 to be sixes: 20.", V.eq('120 × 1/6 = 20', 'g'))]),
       REC("Probability is favourable over total. More trials make relative frequency closer to the true probability.", ['Favourable ÷ total', 'Relative frequency = successes ÷ trials', 'Expected = probability × trials'])] }
   ]);
 

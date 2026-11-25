@@ -38,7 +38,7 @@
       SC('Interest on interest', '£5,000 at 3% for 4 years', [
         st("With compound interest, the interest is added to the savings each year, and then earns interest too. 3% growth has the multiplier 1 point oh 3. 4 years: 1 point oh 3 to the power 4.", V.eq('5000 × 1.03⁴', 'b')),
         st("1 point oh 3 to the fourth is about 1.1255. Times 5,000 is 5,000, £627.54.", V.eq('5000 × 1.1255 ≈ £5,627.54', 'g')),
-        st("Compare with simple interest. 3% of 5,000 is a hundred and 50 a year, 600 in 4 years, giving 5,000, 600. Compound gives a little more.", V.eq('simple: £5,600'))]),
+        st("Compare with simple interest. 3% of 5,000 is 150 a year, 600 in 4 years, giving 5,000, 600. Compound gives a little more.", V.eq('simple: £5,600'))]),
       REC("Compound interest uses the multiplier to the power of the number of years. It beats simple interest over time.", ['Multiplier = 1 + rate', 'Power = years', 'Interest = final − original'])] },
     { title: 'Tax bands', goal: 'how tax is worked out when there is more than 1 rate.', scenes: [
       SC('Two rates', 'An example with made-up bands', [
@@ -65,13 +65,13 @@
   BT.story(844, 'Watch lesson', [
     { title: 'Volume of cones and spheres', goal: 'how to use the volume formulae for a cone and sphere.', scenes: [
       SC('Cone', 'Radius 3 cm, height 4 cm', [
-        st("A cone is a third of the cylinder that fits around it. Its volume is one third pi r squared h. With radius 3 and height 4: a third of pi times 9 times 4 is 12 pi, about 37.7 cubic centimetres.", V.eq('V = ⅓πr²h = ⅓ × π × 9 × 4 = 12π ≈ 37.7 cm³', 'g'))]),
+        st("A cone is 1/3 of the cylinder that fits around it. Its volume is 1/3 pi r squared h. With radius 3 and height 4: 1/3 of pi times 9 times 4 is 12 pi, about 37.7 cubic centimetres.", V.eq('V = ⅓πr²h = ⅓ × π × 9 × 4 = 12π ≈ 37.7 cm³', 'g'))]),
       SC('Sphere', 'Radius 3 cm', [
-        st("The volume of a sphere is 4 thirds pi r cubed. With radius 3, r cubed is 27. 4 thirds of 27 is 36, so 36 pi, about a hundred and 13.1.", V.eq('V = 4/3 πr³ = 4/3 × π × 27 = 36π ≈ 113.1 cm³', 'g'))]),
-      REC("Cone: a third pi r squared h. Sphere: 4 thirds pi r cubed. Substitute carefully and keep pi until the end.", ['Cone: ⅓πr²h', 'Sphere: 4/3 πr³', 'Cube r before multiplying'])] },
+        st("The volume of a sphere is 4/3 pi r cubed. With radius 3, r cubed is 27. 4/3 of 27 is 36, so 36 pi, about 113.1.", V.eq('V = 4/3 πr³ = 4/3 × π × 27 = 36π ≈ 113.1 cm³', 'g'))]),
+      REC("Cone: 1/3 pi r squared h. Sphere: 4/3 pi r cubed. Substitute carefully and keep pi until the end.", ['Cone: ⅓πr²h', 'Sphere: 4/3 πr³', 'Cube r before multiplying'])] },
     { title: 'Surface area of cones and spheres', goal: 'how to find the curved surface area of a cone and sphere.', scenes: [
       SC('Sphere', '4πr²', [
-        st("The surface area of a sphere is 4 pi r squared. With radius 3, that is 36 pi, about a hundred and 13 square centimetres.", V.eq('SA = 4πr² = 36π ≈ 113.1 cm²', 'g'))]),
+        st("The surface area of a sphere is 4 pi r squared. With radius 3, that is 36 pi, about 113 square centimetres.", V.eq('SA = 4πr² = 36π ≈ 113.1 cm²', 'g'))]),
       SC('Cone', 'The slant height', [
         st("The curved surface of a cone is pi r l, where l is the slant height. We need l. With radius 3 and height 4, use Pythagoras: 3 squared plus 4 squared is 25. So l is 5.", V.rt({ a: 'r = 3', b: 'h = 4', c: 'l = 5' }) + V.eq('l = √(3² + 4²) = 5', 'b')),
         st("The curved area is pi times 3 times 5, 15 pi, about 47.1 square centimetres.", V.eq('πrl = 15π ≈ 47.1 cm²', 'g'))]),
@@ -117,7 +117,7 @@
       SC('Parallel', 'The same gradient', [
         st("Parallel lines never meet. They have exactly the same gradient. The lines y equals 2 x plus 1, and y equals 2 x minus 3 are parallel, because both have gradient 2.", V.plot(-2, 4, -5, 7, [{ l: [[-2, -3], [3, 7]] }, { l: [[-1, -5], [4, 5]], c: 'var(--good)' }], { tx: 1, ty: 2 , title: 'Parallel lines y = 2x + 1 and y = 2x − 3' }) + V.eq('y = 2x + 1   y = 2x − 3', 'g'))]),
       SC('Perpendicular', 'Gradients multiply to −1', [
-        st("Perpendicular lines meet at a right angle. Their gradients multiply to minus 1. A line with gradient 2 is perpendicular to a line with gradient minus a half, because 2 times minus a half is minus 1.", V.eq('m₁ × m₂ = −1') + V.eq('2 × (−½) = −1 ✓', 'g'))]),
+        st("Perpendicular lines meet at a right angle. Their gradients multiply to minus 1. A line with gradient 2 is perpendicular to a line with gradient minus 1/2, because 2 times minus 1/2 is minus 1.", V.eq('m₁ × m₂ = −1') + V.eq('2 × (−½) = −1 ✓', 'g'))]),
       REC("Parallel: equal gradients. Perpendicular: gradients multiply to minus 1.", ['Parallel: m₁ = m₂', 'Perpendicular: m₁m₂ = −1', 'Write gradients first'])] },
     { title: 'Lines in the form ax + by = c', goal: 'how to sketch a line from its intercepts.', scenes: [
       SC('Using intercepts', '2x + 3y = 12', [
@@ -168,7 +168,7 @@
       SC('Chord', 'Radius 5, perpendicular distance 3', [
         st("A perpendicular from the centre to a chord cuts it exactly in half. With radius 5 and perpendicular distance 3, half the chord is a side of a right-angled triangle. 5 squared minus 3 squared is 16, so half the chord is 4.", V.eq('5² − 3² = 16 → half chord = 4') + V.eq('chord = 8', 'g'))]),
       SC('Tangent length', 'A point 13 from the centre', [
-        st("A tangent is perpendicular to the radius, so the radius, the tangent and the line to the centre make a right-angled triangle. The hypotenuse is 13 and the radius is 5. 13 squared minus 5 squared is a hundred and 44. The tangent is 12.", V.eq('13² − 5² = 144') + V.eq('tangent = 12', 'g'))]),
+        st("A tangent is perpendicular to the radius, so the radius, the tangent and the line to the centre make a right-angled triangle. The hypotenuse is 13 and the radius is 5. 13 squared minus 5 squared is 144. The tangent is 12.", V.eq('13² − 5² = 144') + V.eq('tangent = 12', 'g'))]),
       REC("Look for the right angle. A perpendicular to a chord bisects it, and a tangent meets the radius at 90 degrees.", ['Find the right angle', 'Use Pythagoras', 'Double for a whole chord'])] }
   ]);
 

@@ -38,7 +38,7 @@
         S("Mistake three: mixing up the base and the index. 2 to the power 3 is 8. 3 to the power 2 is 9. They are different.", E('2³ = 8') + E('3² = 9'))
       ]),
       SC('In real life', 'Doubling', [
-        S("A bacterium splits in 2 every hour. After 1 hour there are 2. After 2 hours there are 4. After 10 hours there are 2 to the power 10, which is 1,024 bacteria. 1 bacterium becomes more than a thousand in just 10 hours.", g('2¹⁰ = 1,024'))
+        S("A bacterium splits in 2 every hour. After 1 hour there are 2. After 2 hours there are 4. After 10 hours there are 2 to the power 10, which is 1,024 bacteria. 1 bacterium becomes more than 1,000 in just 10 hours.", g('2¹⁰ = 1,024'))
       ]),
       L.turn("Your turn! Number one. Write 243 as a power of 3. Pause and try it.", E('243 = 3^?'), "Keep multiplying by 3. 3, 9, 27, 81, 243. That is 5 threes. So 3 to the power 5.", g('243 = 3⁵')),
       L.turn("Your turn! Number two. What is 4 to the power 3? Pause and try it.", E('4³'), "4 times 4 is 16. 16 times 4 is 64.", g('4³ = 64')),
@@ -100,7 +100,7 @@
       ]),
       SC('Percentage increase', 'Example 1: £48 to £54', [
         S("A ticket goes up from £48 to £54. First find the change. 54 take away 48 is £6.", E('54 − 48 = 6')),
-        S("Now divide the change by the original. Six divided by forty-eight is zero point one two five. Multiply by one hundred. That is twelve point five per cent. It is a twelve point five per cent increase.", g('6 ÷ 48 × 100 = 12.5%'))
+        S("Now divide the change by the original. 6 divided by 48 is 0.125. Multiply by 100. That is 12.5%. It is a 12.5% increase.", g('6 ÷ 48 × 100 = 12.5%'))
       ]),
       SC('Percentage decrease', 'Example 2: 1,250 to 1,000', [
         S("The number of visitors to a museum falls from 1,000, 250 to 1,000. The change is 250.", E('1,250 − 1,000 = 250')),
@@ -117,7 +117,7 @@
       ]),
       SC('Watch out!', 'Three common mistakes', [
         S("Mistake one: dividing by the new value instead of the original. In example one, dividing 6 by 54 would give the wrong answer.", r('6 ÷ 54  ✗') + g('6 ÷ 48  ✓')),
-        S("Mistake two: forgetting to multiply by one hundred. Zero point one two five is a decimal. It must be turned into twelve point five per cent.", r('0.125%  ✗') + g('12.5%  ✓')),
+        S("Mistake two: forgetting to multiply by 100. 0.125 is a decimal. It must be turned into 12.5%.", r('0.125%  ✗') + g('12.5%  ✓')),
         S("Mistake three: using the wrong multiplier. A 15% decrease is times 0.85, not 0.15.", r('× 0.15  ✗') + g('× 0.85  ✓'))
       ]),
       SC('In real life', 'Population', [
@@ -136,16 +136,16 @@
     L.full(T, [
       SC('Exchange rates', 'Different countries, different money', [
         S("In the United Kingdom we use pounds. In France they use euros. In America they use dollars. When you travel, you swap your money for the local money. The exchange rate tells you how much you get.", E('£1 = €1.16', 'g')),
-        S("This rate says that one pound buys one point one six euros. The rate changes from day to day, so we are always told it in the question. Here is another. One pound buys one dollar twenty-seven.", E('£1 = €1.16') + E('£1 = $1.27'))
+        S("This rate says that £1 buys 1.16 euros. The rate changes from day to day, so we are always told it in the question. Here is another. £1 buys 1 dollar 27.", E('£1 = €1.16') + E('£1 = $1.27'))
       ]),
       SC('Pounds to euros', 'Example 1: multiply', [
-        S("How many euros do you get for three hundred and fifty pounds? One pound gives one point one six euros. So three hundred and fifty pounds gives three hundred and fifty times one point one six.", E('£350 × 1.16')),
+        S("How many euros do you get for £350? £1 gives 1.16 euros. So £350 gives 350 times 1.16.", E('£350 × 1.16')),
         S("350 times 1 is 350. 350 times 0.16 is 56. Add them. 406 euros.", g('350 × 1.16 = €406')),
         S("A good check: you should get more euros than pounds, because £1 buys more than 1 euro. 406 is bigger than 350. Good.", V.rule('£1 buys more than €1, so expect more euros.'))
       ]),
       SC('Euros to pounds', 'Example 2: divide', [
         S("Now the other way. You have 232 euros. How many pounds is that? We go backwards, so we divide by the rate.", E('€232 ÷ 1.16')),
-        S("Two hundred and thirty-two divided by one point one six is two hundred. You get two hundred pounds. Check: two hundred pounds times one point one six is two hundred and thirty-two euros.", g('232 ÷ 1.16 = £200'))
+        S("232 divided by 1.16 is 200. You get £200. Check: £200 times 1.16 is 232 euros.", g('232 ÷ 1.16 = £200'))
       ]),
       SC('Comparing prices', 'Example 3: where is it cheaper?', [
         S("Trainers cost £75 in Glasgow. In Paris, the same trainers cost 85 euros. Where is it cheaper? We cannot compare pounds with euros directly. Change both to pounds.", E('£75   or   €85 ?')),
@@ -164,8 +164,8 @@
         S("You have £500 for a holiday. The bank charges a 2% fee. 2% of 500 is £10. So you change £490. At 1.12 euros to the pound, that is 548 euros 80.", E('£500 − 2% = £490') + g('490 × 1.12 = €548.80'))
       ]),
       L.turn("Your turn! Number one. At £1 to 1 dollar 25, how many pounds is 100 dollars? Pause and try it.", E('100 ÷ 1.25'), "We are going back to pounds, so we divide. 100 divided by 1.25 is £80.", g('£80')),
-      L.turn("Your turn! Number two. At one pound to one point one euros, how many euros for two hundred pounds? Pause and try it.", E('200 × 1.1'), "We multiply. 200 times 1.1 is 220 euros.", g('€220')),
-      L.turn("Your turn! Number three. A book costs twelve euros. At one pound to one point two euros, what is that in pounds? Pause and try it.", E('12 ÷ 1.2'), "We divide. 12 divided by 1.2 is £10.", g('£10')),
+      L.turn("Your turn! Number two. At £1 to 1.1 euros, how many euros for £200? Pause and try it.", E('200 × 1.1'), "We multiply. 200 times 1.1 is 220 euros.", g('€220')),
+      L.turn("Your turn! Number three. A book costs 12 euros. At £1 to 1.2 euros, what is that in pounds? Pause and try it.", E('12 ÷ 1.2'), "We divide. 12 divided by 1.2 is £10.", g('£10')),
       L.rec(T, "An exchange rate tells you how much of another currency you get for £1. To change from pounds, multiply by the rate. To change back to pounds, divide by the rate. Always compare prices in the same currency. Take off any fees before you exchange.", ['£ → other: × rate', 'Other → £: ÷ rate', 'Compare in one currency', 'Watch for fees'])
     ]);
   })();
@@ -541,7 +541,7 @@
         S("The new rectangle is 12 centimetres by 6 centimetres.", g('12 cm by 6 cm'))
       ]),
       SC('Reduction', 'Example 2: k = ¼', [
-        S("A scale factor of 1 quarter means every length is divided by 4. A line of 20 centimetres becomes 20 divided by 4. That is 5 centimetres.", g('20 × ¼ = 5 cm'))
+        S("A scale factor of 1/4 means every length is divided by 4. A line of 20 centimetres becomes 20 divided by 4. That is 5 centimetres.", g('20 × ¼ = 5 cm'))
       ]),
       SC('Finding k', 'Example 3: new divided by old', [
         S("A side of 8 centimetres becomes 14 centimetres. What is the scale factor? Divide the new length by the old length.", E('k = 14 ÷ 8')),
@@ -559,7 +559,7 @@
       SC('In real life', 'Models and maps', [
         S("A model car is made at a scale of 1 to 43. A real car is 4.3 metres long. That is 430 centimetres. Divide by 43. The model is 10 centimetres long.", g('430 ÷ 43 = 10 cm'))
       ]),
-      L.turn("Your turn! Number one. A photo 9 centimetres wide is reduced to 6 centimetres. What is the scale factor? Pause and try it.", E('6 ÷ 9'), "6 divided by 9 simplifies to 2 thirds.", g('k = ⅔')),
+      L.turn("Your turn! Number one. A photo 9 centimetres wide is reduced to 6 centimetres. What is the scale factor? Pause and try it.", E('6 ÷ 9'), "6 divided by 9 simplifies to 2/3.", g('k = ⅔')),
       L.turn("Your turn! Number two. A triangle has an area of 5 square centimetres. It is enlarged with scale factor 4. What is the new area? Pause and try it.", E('5 × 4²'), "4 squared is 16. 5 times 16 is 80 square centimetres.", g('80 cm²')),
       L.turn("Your turn! Number three. A line of 15 centimetres is reduced with scale factor 0.4. How long is it now? Pause and try it.", E('15 × 0.4'), "15 times 0.4 is 6 centimetres.", g('6 cm')),
       L.rec(T, "Multiply every length by the linear scale factor. To find the scale factor, divide a new length by the matching old length. A scale factor above 1 enlarges. Below 1 it reduces. Areas multiply by k squared. Angles stay the same.", ['New = old × k', 'k = new ÷ old', 'k > 1 enlarges, k < 1 reduces', 'Area × k²'])
@@ -572,7 +572,7 @@
     L.full(T, [
       SC('Symmetry', 'Start with the basics', [
         S("Symmetry is when a shape looks the same after something is done to it. There are 2 kinds. Line symmetry, and rotational symmetry.", V.cards(['Line symmetry: fold', 'Rotational symmetry: turn'], ['b', 'g'])),
-        S("A shape has line symmetry if you can fold it along a line so that the 2 halves match exactly. The fold line is called a line of symmetry, or a mirror line.", V.rule('Fold it: both halves match.')),
+        S("A shape has line symmetry if you can fold it along a line so that the 2/2 match exactly. The fold line is called a line of symmetry, or a mirror line.", V.rule('Fold it: both halves match.')),
         S("A shape has rotational symmetry if you can turn it round a centre point, less than a full turn, and it fits back onto itself. The number of times it fits during 1 full turn is called the order.", V.rule('Order: fits in 1 full turn.'))
       ]),
       SC('Lines of symmetry', 'Example 1: regular polygons', [
@@ -742,7 +742,7 @@
         S("With simple interest, 5% of 2,000 is £100 a year. In 3 years, that is £300. Compound interest gave 3 hundred and 15 25. That is £15.25 more, and the gap grows every year.", E('Simple: £300') + g('Compound: £315.25'))
       ]),
       SC('Monthly rates', 'Example 4: more often', [
-        S("Sometimes interest is added every month. A loan at one per cent a month, for twelve months, uses one point zero one to the power twelve. That is about one point one two seven. So the yearly growth is about twelve point seven per cent, more than twelve.", E('1.01¹² ≈ 1.127') + g('≈ 12.7% a year'))
+        S("Sometimes interest is added every month. A loan at 1% a month, for 12 months, uses 1.01 to the power 12. That is about 1.127. So the yearly growth is about 12.7%, more than 12.", E('1.01¹² ≈ 1.127') + g('≈ 12.7% a year'))
       ]),
       SC('Watch out!', 'Three common mistakes', [
         S("Mistake one: using the rate as a multiplier. 5% is 1.05, not 0.05.", r('× 0.05  ✗') + g('× 1.05  ✓')),
@@ -754,7 +754,7 @@
       ]),
       L.turn("Your turn! Number one. Find the value of £1,000 after 2 years at 4% compound interest. Pause and try it.", E('1,000 × 1.04²'), "1.04 squared is 1.0816. So £1,081.60.", g('£1,081.60')),
       L.turn("Your turn! Number two. How much interest was earned? Pause and try it.", E('1,081.60 − 1,000'), "£81.60.", g('£81.60')),
-      L.turn("Your turn! Number three. What is the multiplier for three point five per cent interest? Pause and think.", E('?'), "1 plus 0.035 is 1.035.", g('1.035')),
+      L.turn("Your turn! Number three. What is the multiplier for 3.5% interest? Pause and think.", E('?'), "1 plus 0.035 is 1.035.", g('1.035')),
       L.rec(T, "Compound interest is added to the balance each period, so you earn interest on interest. Use the amount, times 1 plus the rate, to the power of the number of periods. Interest earned is the final amount minus the start. It always beats simple interest after the first period.", ['A = P(1 + r)ⁿ', 'Interest on interest', 'More than simple interest', 'Interest = A − P'])
     ]);
   })();
@@ -877,34 +877,34 @@
     L.full(T, [
       SC('Volume', 'Start with the basics', [
         S("Volume is the amount of space inside a solid. For a prism, we multiply the base area by the height. Cones, pyramids and spheres need their own formulae.", V.tbl([['Cone', '⅓πr²h'], ['Pyramid', '⅓ × base × h'], ['Sphere', '⁴⁄₃πr³']], ['Solid', 'Volume'])),
-        S("Here is a nice fact. A cone is exactly 1 third of a cylinder with the same base and the same height. Fill a cone with water 3 times, and you fill the cylinder. A pyramid is also 1 third of a prism.", V.rule('Cone or pyramid = ⅓ of the prism.'))
+        S("Here is a nice fact. A cone is exactly 1/3 of a cylinder with the same base and the same height. Fill a cone with water 3 times, and you fill the cylinder. A pyramid is also 1/3 of a prism.", V.rule('Cone or pyramid = ⅓ of the prism.'))
       ]),
       SC('Cone', 'Example 1: r = 3, h = 10', [
-        S("A cone has a radius of 3 centimetres and a height of 10. Use 1 third times pi times r squared times h. The radius squared is 9.", E('⅓ × π × 3² × 10')),
-        S("A third of 9 times 10 is 30. So 30 pi. As a decimal, about 94.2 cubic centimetres.", g('30π ≈ 94.2 cm³'))
+        S("A cone has a radius of 3 centimetres and a height of 10. Use 1/3 times pi times r squared times h. The radius squared is 9.", E('⅓ × π × 3² × 10')),
+        S("1/3 of 9 times 10 is 30. So 30 pi. As a decimal, about 94.2 cubic centimetres.", g('30π ≈ 94.2 cm³'))
       ]),
       SC('Pyramid', 'Example 2: square base 6, height 8', [
-        S("A pyramid has a square base of side 6, and a height of 8. The base area is 36. 1 third times 36 times 8. 36 times 8 is 288. A third of that is 96.", g('⅓ × 36 × 8 = 96 cm³'))
+        S("A pyramid has a square base of side 6, and a height of 8. The base area is 36. 1/3 times 36 times 8. 36 times 8 is 288. 1/3 of that is 96.", g('⅓ × 36 × 8 = 96 cm³'))
       ]),
       SC('Sphere', 'Example 3: r = 6', [
-        S("For a sphere of radius 6, use 4 thirds pi r cubed. 6 cubed is 216. 4 thirds of 216 is 288. So 288 pi.", E('⁴⁄₃ × π × 6³ = 288π')),
+        S("For a sphere of radius 6, use 4/3 pi r cubed. 6 cubed is 216. 4/3 of 216 is 288. So 288 pi.", E('⁴⁄₃ × π × 6³ = 288π')),
         S("On the calculator, that is about 904.8 cubic centimetres.", g('≈ 904.8 cm³'))
       ]),
       SC('Hemisphere', 'Example 4: half a sphere', [
         S("A hemisphere is half a sphere. Take the sphere's volume and halve it. 904.8, divided by 2, is 452.4 cubic centimetres.", g('≈ 452.4 cm³'))
       ]),
       SC('Watch out!', 'Three common mistakes', [
-        S("Mistake one: forgetting the one third on a cone or pyramid.", r('πr²h  ✗') + g('⅓πr²h  ✓')),
+        S("Mistake one: forgetting the 1/3 on a cone or pyramid.", r('πr²h  ✗') + g('⅓πr²h  ✓')),
         S("Mistake two: using the slant height. Volume needs the straight up height, at right angles to the base.", V.rule('Perpendicular height.')),
         S("Mistake three: cubing wrongly. r cubed means r times r times r, not r times 3.", r('6³ = 18  ✗') + g('6³ = 216  ✓'))
       ]),
       SC('In real life', 'Ice cream', [
-        S("An ice cream cone holds its volume of ice cream, plus a half sphere of ice cream on top. A shop works out how much ice cream each portion needs, using exactly these 2 formulae.", V.note('Cone + hemisphere'))
+        S("An ice cream cone holds its volume of ice cream, plus 1/2 sphere of ice cream on top. A shop works out how much ice cream each portion needs, using exactly these 2 formulae.", V.note('Cone + hemisphere'))
       ]),
-      L.turn("Your turn! Number one. Find the volume of a cone with radius 5 and height 12, in terms of pi. Pause and try it.", E('⅓ × π × 25 × 12'), "25 times 12 is 300. A third is 100. So 100 pi.", g('100π ≈ 314')),
-      L.turn("Your turn! Number two. Find the volume of a sphere with radius 3, in terms of pi. Pause and try it.", E('⁴⁄₃ × π × 27'), "4 thirds of 27 is 36. So 36 pi.", g('36π')),
-      L.turn("Your turn! Number three. A pyramid has a base area of 40 and height 9. Find its volume. Pause and try it.", E('⅓ × 40 × 9'), "40 times 9 is 360. A third is 120.", g('120')),
-      L.rec(T, "Cones and pyramids are one third of the matching cylinder or prism. A sphere's volume is 4 thirds pi r cubed. A hemisphere is half of that. Always use the perpendicular height.", ['Cone: ⅓πr²h', 'Pyramid: ⅓ base × h', 'Sphere: ⁴⁄₃πr³', 'Hemisphere: half'])
+      L.turn("Your turn! Number one. Find the volume of a cone with radius 5 and height 12, in terms of pi. Pause and try it.", E('⅓ × π × 25 × 12'), "25 times 12 is 300. 1/3 is 100. So 100 pi.", g('100π ≈ 314')),
+      L.turn("Your turn! Number two. Find the volume of a sphere with radius 3, in terms of pi. Pause and try it.", E('⁴⁄₃ × π × 27'), "4/3 of 27 is 36. So 36 pi.", g('36π')),
+      L.turn("Your turn! Number three. A pyramid has a base area of 40 and height 9. Find its volume. Pause and try it.", E('⅓ × 40 × 9'), "40 times 9 is 360. 1/3 is 120.", g('120')),
+      L.rec(T, "Cones and pyramids are 1/3 of the matching cylinder or prism. A sphere's volume is 4/3 pi r cubed. A hemisphere is half of that. Always use the perpendicular height.", ['Cone: ⅓πr²h', 'Pyramid: ⅓ base × h', 'Sphere: ⁴⁄₃πr³', 'Hemisphere: half'])
     ]);
   })();
 
@@ -940,7 +940,7 @@
       ]),
       L.turn("Your turn! Number one. Find the surface area of a sphere with radius 2, in terms of pi. Pause and try it.", E('4π × 2²'), "4 times 4 is 16. So 16 pi.", g('16π ≈ 50.3')),
       L.turn("Your turn! Number two. A cone has radius 5 and slant height 13. Find its curved surface area. Pause and try it.", E('π × 5 × 13'), "65 pi, about 204 square centimetres.", g('65π ≈ 204 cm²')),
-      L.turn("Your turn! Number three. A cone has radius 5 and height 12. Find the slant height. Pause and try it.", E('√(5² + 12²)'), "25 plus a hundred and 44 is a hundred and 69. The square root is 13.", g('13')),
+      L.turn("Your turn! Number three. A cone has radius 5 and height 12. Find the slant height. Pause and try it.", E('√(5² + 12²)'), "25 plus 144 is 169. The square root is 13.", g('13')),
       L.rec(T, "A cone's curved surface is pi r l, where l is the slant height. Add pi r squared for the base. A sphere's surface area is 4 pi r squared. Use Pythagoras to find a slant height. Do not forget the flat face on a solid hemisphere.", ['Cone curved: πrl', 'Add the base πr²', 'Sphere: 4πr²', 'Slant height by Pythagoras'])
     ]);
   })();
@@ -1053,7 +1053,7 @@
         S("Mistake three: adding denominators. x over 2 plus x over 3 is not x over 5.", r('x/2 + x/3 = x/5  ✗'))
       ]),
       SC('In real life', 'Sharing costs', [
-        S("Half of a prize pot goes to the winner, and a third goes to the runner-up. Together they get £10. How big is the pot? x over 2 plus x over 3 equals 10. Solving gives x equals 12. The pot is £12.", g('x = 12'))
+        S("Half of a prize pot goes to the winner, and 1/3 goes to the runner-up. Together they get £10. How big is the pot? x over 2 plus x over 3 equals 10. Solving gives x equals 12. The pot is £12.", g('x = 12'))
       ]),
       L.turn("Your turn! Number one. Solve x over 3 plus 2 equals 9. Pause and try it.", E('x/3 + 2 = 9'), "Subtract 2. x over 3 equals 7. Multiply by 3. x is 21.", g('x = 21')),
       L.turn("Your turn! Number two. Solve x over 4 plus x over 2 equals 6. Pause and try it.", E('x/4 + x/2 = 6'), "Multiply by 4. x plus 2 x equals 24. 3 x equals 24. x is 8.", g('x = 8')),
@@ -1113,25 +1113,25 @@
         S("y equals 3 x plus 1, and y equals 3 x minus 4. Both have a gradient of 3. So they are parallel. They only differ in where they cross the y-axis.", E('m = 3 for both', 'g'))
       ]),
       SC('Perpendicular', 'Example 2: negative reciprocal', [
-        S("A line has gradient 2. What is the gradient of a perpendicular line? Flip the number upside down, and change the sign. 2 is 2 over 1. Flip it. 1 over 2. Change the sign. Negative a half.", E('2 → ½ → −½')),
-        S("Check. 2 times negative a half is negative 1. Correct.", g('2 × (−½) = −1 ✓'))
+        S("A line has gradient 2. What is the gradient of a perpendicular line? Flip the number upside down, and change the sign. 2 is 2 over 1. Flip it. 1 over 2. Change the sign. Negative 1/2.", E('2 → ½ → −½')),
+        S("Check. 2 times negative 1/2 is negative 1. Correct.", g('2 × (−½) = −1 ✓'))
       ]),
       SC('Another one', 'Example 3: gradient −3', [
-        S("What is perpendicular to gradient negative 3? Negative 3 is negative 3 over 1. Flip it. 1 over negative 3. Change the sign. Positive one third.", E('−3 → 1/3', 'g'))
+        S("What is perpendicular to gradient negative 3? Negative 3 is negative 3 over 1. Flip it. 1 over negative 3. Change the sign. Positive 1/3.", E('−3 → 1/3', 'g'))
       ]),
       SC('Finding an equation', 'Example 4: through a point', [
         S("Find the line parallel to y equals 2 x plus 1 that goes through the point 3, 11. Parallel means the gradient is 2. So y equals 2 x plus c.", E('y = 2x + c')),
         S("Put in the point. x is 3 and y is 11. 11 equals 6 plus c. So c is 5.", E('11 = 6 + c') + g('y = 2x + 5'))
       ]),
       SC('Watch out!', 'Three common mistakes', [
-        S("Mistake one: changing only the sign. The perpendicular to gradient 2 is negative a half, not negative 2.", r('−2  ✗') + g('−½  ✓')),
-        S("Mistake two: flipping but forgetting the sign change. The perpendicular to a half is negative 2, not 2.", V.rule('Flip AND change the sign.')),
+        S("Mistake one: changing only the sign. The perpendicular to gradient 2 is negative 1/2, not negative 2.", r('−2  ✗') + g('−½  ✓')),
+        S("Mistake two: flipping but forgetting the sign change. The perpendicular to 1/2 is negative 2, not 2.", V.rule('Flip AND change the sign.')),
         S("Mistake three: mixing the 2 rules. Parallel means equal. Perpendicular means negative reciprocal.", V.cols([V.card('Parallel: equal', 'b', true), V.card('Perpendicular: −1/m', 'g', true)], 2))
       ]),
       SC('In real life', 'Road layouts', [
         S("City planners use these rules. Streets in a grid are parallel to each other, and cross other streets at right angles. On a map with coordinates, the gradient shows whether a new street will be perpendicular to an existing 1.", V.note('Maps use gradients'))
       ]),
-      L.turn("Your turn! Number one. What is the gradient of a line perpendicular to y equals negative 3 x plus 2? Pause and think.", E('?'), "The negative reciprocal of negative 3. One third.", g('⅓')),
+      L.turn("Your turn! Number one. What is the gradient of a line perpendicular to y equals negative 3 x plus 2? Pause and think.", E('?'), "The negative reciprocal of negative 3. 1/3.", g('⅓')),
       L.turn("Your turn! Number two. Is y equals 4 x minus 1 parallel to y equals 4 x plus 6? Pause and think.", E('?'), "Both have gradient 4. Yes, they are parallel.", g('Yes')),
       L.turn("Your turn! Number three. Find the line parallel to y equals 5 x minus 2 through the point 1, 9. Pause and try it.", E('y = 5x + c'), "Put in 1 and 9. 9 equals 5 plus c. So c is 4. y equals 5 x plus 4.", g('y = 5x + 4')),
       L.rec(T, "Parallel lines share the same gradient. Perpendicular gradients multiply to negative 1. To find 1, flip the gradient upside down and change the sign. To find an equation through a point, find the gradient, then substitute the point to find c.", ['Parallel: same m', 'Perpendicular: −1/m', 'Substitute a point for c', 'Check with a sketch'])
@@ -1148,7 +1148,7 @@
       ]),
       SC('Rearranging', 'Example 1: 2x + 3y = 12', [
         S("Subtract 2 x from both sides. 3 y equals negative 2 x plus 12. Now divide everything by 3.", E('3y = −2x + 12')),
-        S("y equals negative 2 thirds x plus 4. So the gradient is negative 2 thirds, and the line crosses the y-axis at 4.", g('y = −⅔x + 4'))
+        S("y equals negative 2/3 x plus 4. So the gradient is negative 2/3, and the line crosses the y-axis at 4.", g('y = −⅔x + 4'))
       ]),
       SC('Intercepts', 'Example 2: a quick sketch', [
         S("There is a quicker way to draw it. Find where the line crosses each axis. When x is 0, 2 times 0 is 0, so 3 y equals 12, and y is 4.", E('x = 0 → y = 4')),
@@ -1158,7 +1158,7 @@
         S("Is the point 3, 2 on the line 2 x plus 3 y equals 12? Put in x equals 3 and y equals 2. 2 times 3 is 6. 3 times 2 is 6. 6 plus 6 is 12. Yes. The point is on the line.", E('2(3) + 3(2) = 12 ✓', 'g'))
       ]),
       SC('Another line', 'Example 4: x − 2y = 8', [
-        S("Find the gradient of x minus 2 y equals 8. Subtract x. Negative 2 y equals negative x plus 8. Divide by negative 2. y equals a half x minus 4. The gradient is a half. Notice that dividing by a negative changes every sign.", E('−2y = −x + 8') + g('y = ½x − 4'))
+        S("Find the gradient of x minus 2 y equals 8. Subtract x. Negative 2 y equals negative x plus 8. Divide by negative 2. y equals 1/2 x minus 4. The gradient is 1/2. Notice that dividing by a negative changes every sign.", E('−2y = −x + 8') + g('y = ½x − 4'))
       ]),
       SC('Watch out!', 'Three common mistakes', [
         S("Mistake one: forgetting to divide every term. In 3 y equals negative 2 x plus 12, all of the right side is divided by 3.", r('y = −2x + 4  ✗') + g('y = −⅔x + 4  ✓')),
@@ -1246,7 +1246,7 @@
       ]),
       L.turn("Your turn! Number one. Solve x plus y equals 10 and x minus y equals 4. Pause and try it.", E('x + y = 10') + E('x − y = 4'), "Add them. 2 x equals 14. x is 7. y is 3.", g('x = 7, y = 3')),
       L.turn("Your turn! Number two. Solve 2x + y = 9 and x + y = 5. Pause and try it.", E('2x + y = 9') + E('x + y = 5'), "Subtract. x equals 4. Then y is 1.", g('x = 4, y = 1')),
-      L.turn("Your turn! Number three. Solve x + 2y = 8 and 3x − 2y = 4. Pause and try it.", E('x + 2y = 8') + E('3x − 2y = 4'), "The y terms have different signs, so add. 4 x equals 12. x is 3. Then 3 plus 2 y equals 8, so y is 2 and a half.", g('x = 3, y = 2.5')),
+      L.turn("Your turn! Number three. Solve x + 2y = 8 and 3x − 2y = 4. Pause and try it.", E('x + 2y = 8') + E('3x − 2y = 4'), "The y terms have different signs, so add. 4 x equals 12. x is 3. Then 3 plus 2 y equals 8, so y is 2 and 1/2.", g('x = 3, y = 2.5')),
       L.rec(T, "Make the coefficients of 1 letter match, by multiplying every term if needed. Subtract if the signs are the same, and add if they differ. Solve for 1 letter, substitute back to find the other, and check in both equations.", ['Match one coefficient', 'Same signs: subtract', 'Different signs: add', 'Substitute and check'])
     ]);
   })();
@@ -1299,7 +1299,7 @@
         S("To get O on its own, multiply both sides by 12. O equals 12 times sine of 40. On the calculator, that is about 7.71.", g('O = 12 × sin 40° ≈ 7.71'))
       ]),
       SC('Adjacent from hypotenuse', 'Example 2: cos', [
-        S("Angle 60 degrees. Hypotenuse 10. Find the adjacent side. We have A and H, so we use CAH. A equals 10 times cosine of 60. Cosine of 60 is a half. So 5.", g('A = 10 × cos 60° = 5'))
+        S("Angle 60 degrees. Hypotenuse 10. Find the adjacent side. We have A and H, so we use CAH. A equals 10 times cosine of 60. Cosine of 60 is 1/2. So 5.", g('A = 10 × cos 60° = 5'))
       ]),
       SC('Opposite from adjacent', 'Example 3: tan', [
         S("Angle 35 degrees. Adjacent 8. Find the opposite. We have O and A, so we use TOA. O equals 8 times tangent of 35. About 5.6.", g('O = 8 × tan 35° ≈ 5.60'))
@@ -1315,7 +1315,7 @@
       SC('In real life', 'Ladders', [
         S("A ladder is 3 metres long and leans at 70 degrees to the ground. How high does it reach? We have the hypotenuse and want the opposite. 3 times sine of 70 is about 2.82 metres.", g('3 × sin 70° ≈ 2.82 m'))
       ]),
-      L.turn("Your turn! Number one. Angle 30 degrees, hypotenuse 20. Find the opposite side. Pause and try it.", E('20 × sin 30°'), "Sine of 30 is a half. 20 times a half is 10.", g('10')),
+      L.turn("Your turn! Number one. Angle 30 degrees, hypotenuse 20. Find the opposite side. Pause and try it.", E('20 × sin 30°'), "Sine of 30 is 1/2. 20 times 1/2 is 10.", g('10')),
       L.turn("Your turn! Number two. Which ratio links the opposite and the adjacent? Pause and think.", E('?'), "Tangent. T, O, A.", g('tan')),
       L.turn("Your turn! Number three. Angle 45 degrees, adjacent 6. Find the opposite. Pause and try it.", E('6 × tan 45°'), "Tangent of 45 is 1. So 6.", g('6')),
       L.rec(T, "Label the opposite, adjacent and hypotenuse from the angle. Choose the ratio that links the side you know with the side you want. Multiply if the unknown is on top, and divide if it is on the bottom. Check your calculator is in degrees.", ['Label O, A, H', 'Pick SOH, CAH or TOA', 'Unknown on top: ×', 'Unknown on bottom: ÷'])
@@ -1335,7 +1335,7 @@
         S("Opposite 5, adjacent 5. We know O and A, so we use TOA. Tangent of the angle is 5 over 5, which is 1. The angle is tan to the minus 1 of 1. 45 degrees.", E('tan θ = 5 ÷ 5 = 1') + g('θ = tan⁻¹(1) = 45°'))
       ]),
       SC('Using sin', 'Example 2: O = 7, H = 14', [
-        S("Opposite 7, hypotenuse 14. We use SOH. Sine of the angle is 7 over 14, which is a half. The angle is sine to the minus 1 of a half. 30 degrees.", E('sin θ = 7 ÷ 14 = 0.5') + g('θ = 30°'))
+        S("Opposite 7, hypotenuse 14. We use SOH. Sine of the angle is 7 over 14, which is 1/2. The angle is sine to the minus 1 of 1/2. 30 degrees.", E('sin θ = 7 ÷ 14 = 0.5') + g('θ = 30°'))
       ]),
       SC('Using cos', 'Example 3: A = 4, H = 9', [
         S("Adjacent 4, hypotenuse 9. We use CAH. Cosine of the angle is 4 over 9. That is about 0.444. Press cosine to the minus 1. The angle is about 63.6 degrees.", E('cos θ = 4 ÷ 9') + g('θ ≈ 63.6°'))
@@ -1350,11 +1350,11 @@
         S("Mistake three: not checking if the answer is sensible. In a right-angled triangle, the sine and cosine of an angle are never bigger than 1.", V.rule('sin and cos: between 0 and 1.'))
       ]),
       SC('In real life', 'Safe ladders', [
-        S("Ladders should lean at about 75 degrees. A 4 metre ladder with its foot 1 metre from the wall. Adjacent is 1, hypotenuse is 4. Cosine is a quarter. The angle is about 76 degrees. That is safe.", g('cos⁻¹(1 ÷ 4) ≈ 75.5°'))
+        S("Ladders should lean at about 75 degrees. A 4 metre ladder with its foot 1 metre from the wall. Adjacent is 1, hypotenuse is 4. Cosine is 1/4. The angle is about 76 degrees. That is safe.", g('cos⁻¹(1 ÷ 4) ≈ 75.5°'))
       ]),
       L.turn("Your turn! Number one. Opposite 8, adjacent 8. What is the angle? Pause and think.", E('tan⁻¹(8 ÷ 8)'), "The ratio is 1. Tan to the minus 1 of 1 is 45 degrees.", g('45°')),
-      L.turn("Your turn! Number two. Opposite 3, hypotenuse 6. Find the angle. Pause and try it.", E('sin⁻¹(3 ÷ 6)'), "3 over 6 is a half. Sine to the minus 1 of a half is 30 degrees.", g('30°')),
-      L.turn("Your turn! Number three. Adjacent 5, hypotenuse 10. Find the angle. Pause and try it.", E('cos⁻¹(5 ÷ 10)'), "A half again. Cosine to the minus 1 of a half is 60 degrees.", g('60°')),
+      L.turn("Your turn! Number two. Opposite 3, hypotenuse 6. Find the angle. Pause and try it.", E('sin⁻¹(3 ÷ 6)'), "3 over 6 is 1/2. Sine to the minus 1 of 1/2 is 30 degrees.", g('30°')),
+      L.turn("Your turn! Number three. Adjacent 5, hypotenuse 10. Find the angle. Pause and try it.", E('cos⁻¹(5 ÷ 10)'), "1/2 again. Cosine to the minus 1 of 1/2 is 60 degrees.", g('60°')),
       L.rec(T, "Label the sides you know. Choose the ratio that uses them. Divide to get a number. Then use the inverse function to find the angle. Sine and cosine ratios are always between 0 and 1 in a right-angled triangle.", ['Label O, A, H', 'Choose the ratio', 'Divide the sides', 'Use sin⁻¹, cos⁻¹ or tan⁻¹'])
     ]);
   })();
@@ -1469,7 +1469,7 @@
       ]),
       L.turn("Your turn! Number one. A side of 8 in 1 triangle matches a side of 12 in a similar 1. A side of 10 matches what? Pause and try it.", E('10 × 12 ÷ 8'), "The scale factor is 1.5. 10 times 1.5 is 15.", g('15')),
       L.turn("Your turn! Number two. 2 triangles have 2 equal angles. Are they similar? Pause and think.", E('?'), "Yes. 2 equal angles are enough, because the third angle is also equal.", g('Yes')),
-      L.turn("Your turn! Number three. A tree casts a 10 metre shadow. A 2 metre pole casts a 4 metre shadow. How tall is the tree? Pause and try it.", E('2 × 10 ÷ 4'), "The scale factor is 2 and a half. 2 times 2 and a half is 5 metres.", g('5 m')),
+      L.turn("Your turn! Number three. A tree casts a 10 metre shadow. A 2 metre pole casts a 4 metre shadow. How tall is the tree? Pause and try it.", E('2 × 10 ÷ 4'), "The scale factor is 2 and 1/2. 2 times 2 and 1/2 is 5 metres.", g('5 m')),
       L.rec(T, "Show that the angles are equal. Match corresponding sides, opposite equal angles. Find the scale factor, which is new divided by old. Then multiply or divide. In nested triangles, use the full side lengths.", ['Equal angles', 'Match corresponding sides', 'k = new ÷ old', '× or ÷ by k'])
     ]);
   })();
@@ -1492,7 +1492,7 @@
         S("Now the unknown is on the bottom, so rearrange. d equals 60 divided by tangent of 20. About 165 metres.", g('d ≈ 165 m'))
       ]),
       SC('Using sine', 'Example 3: a kite', [
-        S("A kite string is 50 metres long, at an angle of elevation of 30 degrees. How high is the kite? The string is the hypotenuse. The height is opposite. So we use SOH. 50 times sine of 30. Sine of 30 is a half. 25 metres.", g('50 × sin 30° = 25 m'))
+        S("A kite string is 50 metres long, at an angle of elevation of 30 degrees. How high is the kite? The string is the hypotenuse. The height is opposite. So we use SOH. 50 times sine of 30. Sine of 30 is 1/2. 25 metres.", g('50 × sin 30° = 25 m'))
       ]),
       SC('Watch out!', 'Three common mistakes', [
         S("Mistake one: measuring the angle from the vertical. Angles of elevation and depression are always from the horizontal.", V.rule('From the horizontal.')),
@@ -1502,7 +1502,7 @@
       SC('In real life', 'Lighthouses', [
         S("A lighthouse keeper looks down at a ship at an angle of depression. By measuring this angle and knowing the height of the lighthouse, they can work out exactly how far away the ship is, without leaving the tower.", V.note('Measure an angle, find a distance'))
       ]),
-      L.turn("Your turn! Number one. A kite string is 50 metres long at an angle of elevation of 30 degrees. How high is the kite? Pause and try it.", E('50 × sin 30°'), "50 times a half. 25 metres.", g('25 m')),
+      L.turn("Your turn! Number one. A kite string is 50 metres long at an angle of elevation of 30 degrees. How high is the kite? Pause and try it.", E('50 × sin 30°'), "50 times 1/2. 25 metres.", g('25 m')),
       L.turn("Your turn! Number two. You are 10 metres from a tree. The angle of elevation to the top is 45 degrees. How tall is the tree? Pause and try it.", E('10 × tan 45°'), "Tangent of 45 is 1. 10 metres.", g('10 m')),
       L.turn("Your turn! Number three. Is the angle of depression from the top of a tower to a boat the same as the angle of elevation from the boat to the top? Pause and think.", E('?'), "Yes. They are alternate angles.", g('Yes')),
       L.rec(T, "Draw the right-angled triangle with the horizontal. Mark the angle of elevation or depression. Label the sides, choose SOH, CAH or TOA, and solve. The angle of depression from above equals the angle of elevation from below.", ['Draw the horizontal', 'Mark the angle', 'Label O, A, H', 'Use trigonometry'])
@@ -1552,7 +1552,7 @@
     L.full(T, [
       SC('Box plots', 'Start with the basics', [
         S("A box plot is a neat picture of how data is spread. It uses 5 numbers. The smallest value, the lower quartile, the median, the upper quartile, and the largest value.", V.cards(['Min', 'Q1', 'Median', 'Q3', 'Max'], ['b', 'p', 'g', 'p', 'b'], true)),
-        S("The median is the middle value. It splits the data in 2 halves. The lower quartile, Q1, is the middle of the lower half. The upper quartile, Q3, is the middle of the upper half. Each quarter of the data lies between these numbers.", V.rule('Quartiles split the data into 4 equal parts.'))
+        S("The median is the middle value. It splits the data in 2/2. The lower quartile, Q1, is the middle of the lower half. The upper quartile, Q3, is the middle of the upper half. Each quarter of the data lies between these numbers.", V.rule('Quartiles split the data into 4 equal parts.'))
       ]),
       SC('Finding the five numbers', 'Example 1: 2, 4, 5, 7, 9, 11, 14', [
         S("The data is already in order. There are 7 values. The smallest is 2. The largest is 14. The median is the middle, the fourth value. That is 7.", E('Min = 2') + E('Max = 14') + E('Median = 7')),
@@ -1652,7 +1652,7 @@
         S("A drone flies 5 metres east and 12 metres north. The straight line back to the start is 13 metres. That is the magnitude. It is the shortest way home.", g('√(25 + 144) = 13 m'))
       ]),
       L.turn("Your turn! Number one. Find the magnitude of 5, 12. Pause and try it.", E('√(25 + 144)'), "25 plus 144 is 169. The root is 13.", g('13')),
-      L.turn("Your turn! Number two. Find the magnitude of negative 8, 6. Pause and try it.", E('√(64 + 36)'), "A hundred. The root is 10.", g('10')),
+      L.turn("Your turn! Number two. Find the magnitude of negative 8, 6. Pause and try it.", E('√(64 + 36)'), "100. The root is 10.", g('10')),
       L.turn("Your turn! Number three. Find the distance from the point 0, 0 to the point 9, 12. Pause and try it.", E('√(81 + 144)'), "225. The root is 15.", g('15')),
       L.rec(T, "Square the components, add them, and take the square root. Negative components give the same magnitude, because squaring removes the sign. The distance between 2 points is the magnitude of the vector between them.", ['Square each part', 'Add', 'Square root', 'Distance between points'])
     ]);

@@ -76,7 +76,7 @@
     if (kind === 'wage') { var h = rnd(12, 38), r = pick([8, 9, 10, 11, 12, 13, 14]); return Q({ tag: 'Wages and VAT', text: 'Sam is paid £' + r + ' an hour and works ' + h + ' hours. How much does Sam earn, in pounds?', answer: String(h * r),
       hints: ['Pay = hours worked × rate per hour.'], explain: h + ' × £' + r + ' = £' + h * r + '.' }); }
     if (kind === 'ot') { var base = rnd(25, 38), over = rnd(2, 8), rr = pick([10, 12, 14, 16]), tot = base * rr + over * rr * 1.5;
-      return Q({ tag: 'Wages and VAT', text: 'Ria earns £' + rr + ' an hour. She works ' + base + ' normal hours and ' + over + ' hours of overtime at time and a half (1.5 times the rate). How much does she earn, in pounds?', answer: T(tot),
+      return Q({ tag: 'Wages and VAT', text: 'Ria earns £' + rr + ' an hour. She works ' + base + ' normal hours and ' + over + ' hours of overtime at time and 1/2 (1.5 times the rate). How much does she earn, in pounds?', answer: T(tot),
         hints: ['Work out the normal pay and the overtime pay separately.', 'Overtime rate = £' + rr + ' × 1.5 = £' + T(rr * 1.5) + ' an hour.'], explain: 'Normal: ' + base + ' × ' + rr + ' = £' + base * rr + '. Overtime: ' + over + ' × £' + T(rr * 1.5) + ' = £' + T(over * rr * 1.5) + '. Total £' + T(tot) + '.' }); }
     var pr = pick([40, 50, 60, 80, 120, 150, 200, 250, 400]);
     if (kind === 'novat') { var inc = pr * 1.2; return Q({ tag: 'Wages and VAT', text: 'A price including 20% VAT is £' + T(inc) + '. What was the price <b>before</b> VAT, in pounds?', answer: String(pr),

@@ -8,11 +8,11 @@
   LS('What is place value and decimal place value?', 'how the position of a digit, before or after the decimal point, gives its value.', {
     intro: ['Place value', 'Every digit has a column', "Our number system uses 10 digits. A digit's value depends on its column. Each column is 10 times bigger than the one to its right, and 10 times smaller than the one to its left.", V.tbl([['1,000', '100', '10', '1', '0.1', '0.01', '0.001']], ['Th', 'H', 'T', 'O', 'tenths', 'hundredths', 'thousandths'])],
     ex: [['Whole number places', '47,306', [["In 47,000, 306, the 7 is in the thousands column, so it is worth 7,000. The 0 holds the tens place.", E('47,306 = 40,000 + 7,000 + 300 + 6', 'g')]]],
-      ['Decimal places', 'After the point', [["After the decimal point come tenths, hundredths and thousandths. In 3.258, the 2 is 2 tenths, the 5 is 5 hundredths, and the 8 is 8 thousandths.", E('3.258 = 3 + 0.2 + 0.05 + 0.008', 'g')]]],
-      ['Comparing decimals', '0.7 or 0.65?', [["Line up the decimal points and compare from the left. 0.7 has 7 tenths; 0.65 has 6 tenths. So 0.7 is bigger, even though it has fewer digits.", E('0.70 > 0.65', 'g') + V.rule('Compare column by column from the left.')]]],
+      ['Decimal places', 'After the point', [["After the decimal point come tenths, hundredths and thousandths. In 3.258, the 2 is 2/10, the 5 is 5/100, and the 8 is 8/1000.", E('3.258 = 3 + 0.2 + 0.05 + 0.008', 'g')]]],
+      ['Comparing decimals', '0.7 or 0.65?', [["Line up the decimal points and compare from the left. 0.7 has 7/10; 0.65 has 6/10. So 0.7 is bigger, even though it has fewer digits.", E('0.70 > 0.65', 'g') + V.rule('Compare column by column from the left.')]]],
       ['Multiplying by 10, 100, 1,000', 'Digits move', [["Multiplying by 10 moves every digit 1 place left. Dividing by 100 moves every digit 2 places right.", E('4.37 × 10 = 43.7') + E('52.8 ÷ 100 = 0.528', 'g')]]]],
     real: ['Sport timing', "In a race, times are measured to the hundredth or thousandth of a second. 9.58 seconds beats 9.63 seconds.", E('9.58 < 9.63', 'g')],
-    turn: ["Your turn! What is the value of the 6 in 12.364? Pause and think.", E('12.364'), "The 6 is in the hundredths column, so it is worth 6 hundredths: 0.06.", E('0.06', 'g')],
+    turn: ["Your turn! What is the value of the 6 in 12.364? Pause and think.", E('12.364'), "The 6 is in the hundredths column, so it is worth 6/100: 0.06.", E('0.06', 'g')],
     rec: ["A digit's value depends on its column. Each column is 10 times the one to its right. After the point come tenths, hundredths and thousandths. Compare decimals column by column.", ['Each column × 10 to the left', 'tenths, hundredths, thousandths', 'Zeros hold places', 'Compare from the left']],
     deep: ['Place value works because every column is 10 times the one to its right, on both sides of the decimal point.', 'More digits after the point does not mean bigger: 0.7 is bigger than 0.65. Fill gaps with zeros to compare.']
   });
@@ -32,7 +32,7 @@
     intro: ['Decimals in columns', 'Line up the points', "Adding and subtracting decimals works just like whole numbers, as long as the decimal points line up.", V.rule('Line up the decimal points. Fill gaps with zeros.')],
     ex: [['Adding', '4.375 + 2.86', [["Write 2.86 as 2.860 so both have 3 decimal places. Then add: 7.235.", E('4.375 + 2.860 = 7.235', 'g')]]],
       ['Subtracting', '9.2 − 3.457', [["Write 9.2 as 9.200. Exchange where needed. The answer is 5.743.", E('9.200 − 3.457 = 5.743', 'g')]]],
-      ['Mental decimals', 'Bridging to a whole number', [["5.98 plus 2.05: 5.98 is 2 hundredths away from 6. 6 plus 2.03 is 8.03.", E('5.98 + 2.05 = 8.03', 'g')]]]],
+      ['Mental decimals', 'Bridging to a whole number', [["5.98 plus 2.05: 5.98 is 2/100 away from 6. 6 plus 2.03 is 8.03.", E('5.98 + 2.05 = 8.03', 'g')]]]],
     real: ['Science measurements', "A beaker holds 1.25 litres. 0.375 litres is poured out. 0.875 litres are left.", E('1.250 − 0.375 = 0.875 l', 'g')],
     turn: ["Your turn! Work out 3.7 plus 0.456. Pause and try it.", E('3.700 + 0.456'), "Line up the points and add: 4.156.", E('4.156', 'g')],
     rec: ["Line up the decimal points, fill empty places with zeros, then add or subtract as normal. Estimate to check.", ['Line up the points', 'Fill gaps with zeros', 'Carry and exchange as normal', 'Estimate to check']],
@@ -54,7 +54,7 @@
     intro: ['Factors', 'Numbers that divide exactly', "A factor divides into a number exactly. Factors come in pairs: the factors of 18 are 1 and 18, 2 and 9, 3 and 6.", E('18: 1, 2, 3, 6, 9, 18', 'b')],
     ex: [['Common factors', '18 and 24', [["Factors of 24: 1, 2, 3, 4, 6, 8, 12, 24. The factors in both lists are 1, 2, 3 and 6.", E('Common factors: 1, 2, 3, 6', 'g')]]],
       ['The highest common factor', 'HCF', [["The highest common factor is the biggest 1. For 18 and 24, it is 6.", E('HCF(18, 24) = 6', 'g')]]],
-      ['Using the HCF', 'Simplifying fractions', [["The HCF helps simplify fractions. 18 twenty-fourths: divide top and bottom by 6 to get 3 quarters.", E('18/24 = 3/4', 'g')]]]],
+      ['Using the HCF', 'Simplifying fractions', [["The HCF helps simplify fractions. 18 twenty-fourths: divide top and bottom by 6 to get 3/4.", E('18/24 = 3/4', 'g')]]]],
     real: ['Packing', "30 pencils and 45 rubbers are shared into identical packs with nothing left over. The most packs is the HCF of 30 and 45: 15 packs.", E('HCF(30, 45) = 15', 'g')],
     turn: ["Your turn! What is the highest common factor of 20 and 32? Pause and try it.", E('HCF(20, 32)'), "Factors of 20: 1, 2, 4, 5, 10, 20. 4 is the biggest that also divides 32.", E('4', 'g')],
     rec: ["List the factors of both numbers in pairs. Common factors are in both lists; the highest common factor is the biggest.", ['Factors come in pairs', 'Common: in both lists', 'HCF: the biggest', 'Use it to simplify fractions']],
@@ -63,40 +63,40 @@
 
   LS('What are fractions?', 'what a fraction means and how to find a fraction of an amount.', {
     intro: ['A fraction', 'Equal parts of a whole', "A fraction shows part of a whole that has been split into equal parts. The denominator, on the bottom, says how many parts. The numerator, on top, says how many we have.", LK.fbar(3, 8, 300, 280) + E('3/8: 3 of 8 equal parts', 'g')],
-    ex: [['Fractions of shapes', 'Equal parts only', [["A circle cut into 5 equal slices with 2 shaded shows 2 fifths.", LK.pie(2, 5, { r: 50 }) + E('2/5', 'g')]]],
-      ['A fraction of an amount', '3/8 of 64', [["Divide by the denominator to find 1 eighth: 64 divided by 8 is 8. Multiply by the numerator: 3 eighths is 24.", E('64 ÷ 8 = 8 → 8 × 3 = 24', 'g')]]],
-      ['Fractions as division', '3 ÷ 4', [["A fraction is also a division. 3 quarters means 3 divided by 4, which is 0.75.", E('3/4 = 3 ÷ 4 = 0.75', 'g')]]]],
-    real: ['Recipes', "A recipe uses 2 thirds of a 300 gram bag of oats. 1 third is 100 grams, so 2 thirds is 200 grams.", E('2/3 of 300 g = 200 g', 'g')],
-    turn: ["Your turn! What is 5 sixths of 48? Pause and try it.", E('5/6 of 48'), "48 divided by 6 is 8. 8 times 5 is 40.", E('40', 'g')],
+    ex: [['Fractions of shapes', 'Equal parts only', [["A circle cut into 5 equal slices with 2 shaded shows 2/5.", LK.pie(2, 5, { r: 50 }) + E('2/5', 'g')]]],
+      ['A fraction of an amount', '3/8 of 64', [["Divide by the denominator to find 1/8: 64 divided by 8 is 8. Multiply by the numerator: 3/8 is 24.", E('64 ÷ 8 = 8 → 8 × 3 = 24', 'g')]]],
+      ['Fractions as division', '3 ÷ 4', [["A fraction is also a division. 3/4 means 3 divided by 4, which is 0.75.", E('3/4 = 3 ÷ 4 = 0.75', 'g')]]]],
+    real: ['Recipes', "A recipe uses 2/3 of a 300 gram bag of oats. 1/3 is 100 grams, so 2/3 is 200 grams.", E('2/3 of 300 g = 200 g', 'g')],
+    turn: ["Your turn! What is 5/6 of 48? Pause and try it.", E('5/6 of 48'), "48 divided by 6 is 8. 8 times 5 is 40.", E('40', 'g')],
     rec: ["A fraction is equal parts of a whole: the denominator says how many parts, the numerator how many we have. To find a fraction of an amount, divide by the bottom and multiply by the top.", ['Equal parts', 'Denominator: how many parts', 'Numerator: how many we have', '÷ bottom, × top']],
     deep: ['A fraction is a division: 3/4 means 3 shared into 4, which is why fractions and decimals connect.', 'The parts must be equal in size, not just equal in number.']
   });
 
   LS('What are equivalent fractions?', 'how different fractions can show the same amount, and how to find them.', {
-    intro: ['Same amount, different numbers', 'Equivalent fractions', "Equivalent fractions show the same amount. One half, 2 quarters and 4 eighths all cover the same part of a bar.", LK.fbar(1, 2, 280, 280) + LK.fbar(2, 4, 280, 280) + LK.fbar(4, 8, 280, 280)],
-    ex: [['Making equivalent fractions', 'Multiply top and bottom', [["Multiply the numerator and denominator by the same number. 3 fifths times 2 over 2 is 6 tenths.", E('3/5 = 6/10 = 9/15', 'g') + V.rule('Do the same to the top and the bottom.')]]],
-      ['Simplifying', 'Divide top and bottom', [["Divide both by the same number to simplify. 12 sixteenths divided by 4 is 3 quarters.", E('12/16 = 3/4', 'g')]]],
+    intro: ['Same amount, different numbers', 'Equivalent fractions', "Equivalent fractions show the same amount. 1/2, 2/4 and 4/8 all cover the same part of a bar.", LK.fbar(1, 2, 280, 280) + LK.fbar(2, 4, 280, 280) + LK.fbar(4, 8, 280, 280)],
+    ex: [['Making equivalent fractions', 'Multiply top and bottom', [["Multiply the numerator and denominator by the same number. 3/5 times 2 over 2 is 6/10.", E('3/5 = 6/10 = 9/15', 'g') + V.rule('Do the same to the top and the bottom.')]]],
+      ['Simplifying', 'Divide top and bottom', [["Divide both by the same number to simplify. 12 sixteenths divided by 4 is 3/4.", E('12/16 = 3/4', 'g')]]],
       ['Missing numbers', '2/3 = ?/12', [["3 times 4 is 12, so the top must be 2 times 4: 8.", E('2/3 = 8/12', 'g')]]]],
     real: ['Pizza', "4 slices of an 8-slice pizza is the same as half a pizza. Same amount, different slices.", E('4/8 = 1/2', 'g')],
-    turn: ["Your turn! Find the missing number: 3 quarters equals how many twentieths? Pause and try it.", E('3/4 = ?/20'), "4 times 5 is 20, so 3 times 5 is 15. 15 twentieths.", E('15/20', 'g')],
+    turn: ["Your turn! Find the missing number: 3/4 equals how many twentieths? Pause and try it.", E('3/4 = ?/20'), "4 times 5 is 20, so 3 times 5 is 15. 15 twentieths.", E('15/20', 'g')],
     rec: ["Equivalent fractions show the same amount. Multiply or divide the top and bottom by the same number to find them.", ['Same amount, different numbers', '× top and bottom by the same', '÷ to simplify', 'Find missing numbers by scaling']],
     deep: ['Multiplying top and bottom by the same number is multiplying by 1, so the value never changes.', 'Adding the same number to top and bottom does not give an equivalent fraction: 1/2 ≠ 2/3.']
   });
 
   LS('What are mixed numbers and improper fractions?', 'how to change between mixed numbers and improper fractions.', {
-    intro: ['More than one whole', 'Two ways to write it', "An improper fraction has a numerator bigger than its denominator, like 11 quarters. A mixed number writes the same amount as wholes and a fraction: 2 and 3 quarters.", E('11/4 = 2 3/4', 'g')],
-    ex: [['Improper to mixed', '17/5', [["Divide the top by the bottom. 17 divided by 5 is 3, remainder 2. So 3 and 2 fifths.", E('17 ÷ 5 = 3 r 2 → 3 2/5', 'g')]]],
-      ['Mixed to improper', '4 2/3', [["Multiply the whole number by the denominator and add the numerator. 4 times 3 is 12, plus 2 is 14. 14 thirds.", E('4 2/3 = 14/3', 'g')]]],
-      ['On a number line', 'Between whole numbers', [["2 and 3 quarters sits between 2 and 3, 3 quarters of the way along.", V.nl(0, 4, { tick: 0.25, marks: [[2.75, 22]] })]]]],
-    real: ['Measuring', "A carpenter needs 9 halves of a metre of wood. That is 4 and a half metres.", E('9/2 = 4 1/2 m', 'g')],
-    turn: ["Your turn! Write 23 sixths as a mixed number. Pause and try it.", E('23/6'), "23 divided by 6 is 3 remainder 5. 3 and 5 sixths.", E('3 5/6', 'g')],
+    intro: ['More than one whole', 'Two ways to write it', "An improper fraction has a numerator bigger than its denominator, like 11/4. A mixed number writes the same amount as wholes and a fraction: 2 and 3/4.", E('11/4 = 2 3/4', 'g')],
+    ex: [['Improper to mixed', '17/5', [["Divide the top by the bottom. 17 divided by 5 is 3, remainder 2. So 3 and 2/5.", E('17 ÷ 5 = 3 r 2 → 3 2/5', 'g')]]],
+      ['Mixed to improper', '4 2/3', [["Multiply the whole number by the denominator and add the numerator. 4 times 3 is 12, plus 2 is 14. 14/3.", E('4 2/3 = 14/3', 'g')]]],
+      ['On a number line', 'Between whole numbers', [["2 and 3/4 sits between 2 and 3, 3/4 of the way along.", V.nl(0, 4, { tick: 0.25, marks: [[2.75, 22]] })]]]],
+    real: ['Measuring', "A carpenter needs 9/2 of a metre of wood. That is 4 and 1/2 metres.", E('9/2 = 4 1/2 m', 'g')],
+    turn: ["Your turn! Write 23/6 as a mixed number. Pause and try it.", E('23/6'), "23 divided by 6 is 3 remainder 5. 3 and 5/6.", E('3 5/6', 'g')],
     rec: ["To change an improper fraction to a mixed number, divide and put the remainder over the denominator. To go back, multiply the whole by the denominator and add the numerator.", ['Improper → mixed: divide', 'Remainder over the same bottom', 'Mixed → improper: × then +', 'Same amount, 2 ways']],
     deep: ['Each whole is made of as many parts as the denominator, so wholes × denominator counts those parts.', 'Keep the same denominator when changing form; only the numerator changes.']
   });
 
   LS('What are percentages?', 'what percentages are and how to find percentages of amounts.', {
     intro: ['Out of one hundred', 'Per cent', "Per cent means out of 100. 45% means 45 out of every hundred.", LK.hsq(45) + E('45% = 45/100 = 0.45', 'g')],
-    ex: [['Key percentages', 'Learn these', [["50% is a half, 25 is a quarter, 75 is 3 quarters, 10 is a tenth, 1% is a hundredth.", V.tbl([['50%', '½'], ['25%', '¼'], ['75%', '¾'], ['10%', '1/10'], ['1%', '1/100']], ['Percentage', 'Fraction'])]]],
+    ex: [['Key percentages', 'Learn these', [["50% is 1/2, 25 is 1/4, 75 is 3/4, 10 is 1/10, 1% is 1/100.", V.tbl([['50%', '½'], ['25%', '¼'], ['75%', '¾'], ['10%', '1/10'], ['1%', '1/100']], ['Percentage', 'Fraction'])]]],
       ['Building percentages', '35% of £60', [["10% is £6. 30% is £18. 5% is £3. So 35% is £21.", E('£18 + £3 = £21', 'g')]]],
       ['One amount as a percentage', '18 out of 40', [["Write it as a fraction and make the bottom 100, or divide and multiply by 100. 18 divided by 40 is 0.45: 45%.", E('18 ÷ 40 × 100 = 45%', 'g')]]]],
     real: ['A discount', "A £45 coat has 20% off. 10% is £4.50, so 20% is £9. It costs £36.", E('£45 − £9 = £36', 'g')],
@@ -130,7 +130,7 @@
   LS('How do you choose appropriate units of measurement?', 'how to choose sensible units for length, mass, capacity and time.', {
     intro: ['The right unit', 'Small things, big things', "We choose a unit that suits the size of what we measure, so the number is sensible and easy to use.", V.tbl([['Length', 'mm, cm, m, km'], ['Mass', 'g, kg, tonnes'], ['Capacity', 'ml, l'], ['Time', 's, min, h, days']], ['Measure', 'Units'])],
     ex: [['Length', 'Which unit?', [["A grain of rice is a few millimetres. A pencil is about 15 centimetres. A football pitch is about 100 metres. Glasgow to Edinburgh is about 75 kilometres.", E('mm · cm · m · km', 'g')]]],
-      ['Mass and capacity', 'Which unit?', [["An apple weighs about 150 grams; a car about 1 and a half tonnes. A teaspoon holds 5 millilitres; a bath about 150 litres.", E('g · kg · t · ml · l', 'g')]]],
+      ['Mass and capacity', 'Which unit?', [["An apple weighs about 150 grams; a car about 1 and 1/2 tonnes. A teaspoon holds 5 millilitres; a bath about 150 litres.", E('g · kg · t · ml · l', 'g')]]],
       ['Is it sensible?', 'Spot the mistake', [["A classroom door that is 2 kilometres tall? No: it is about 2 metres. A mug holding 3 litres? Too big: about 300 millilitres.", E('door ≈ 2 m · mug ≈ 300 ml', 'g')]]]],
     real: ['Cooking', "Recipes use grams for flour and millilitres for milk, because kilograms and litres would give tiny decimals.", E('250 g flour · 300 ml milk', 'g')],
     turn: ["Your turn! What unit would you use to measure the mass of a lorry? Pause and think.", E('?'), "A lorry is very heavy, so tonnes.", E('tonnes', 'g')],
@@ -192,7 +192,7 @@
     real: ['Estimating first', "Always estimate before measuring. If it looks acute but you read 115 degrees, you used the wrong scale: it should be 65.", E('180° − 115° = 65°', 'g')],
     turn: ["Your turn! What type of angle is 125 degrees? Pause and think.", E('125°'), "It is between 90 and 180, so it is obtuse.", E('obtuse', 'g')],
     rec: ["Angles measure turn in degrees. Name them with 3 letters, vertex in the middle. Measure and draw with a protractor from 0, and estimate first.", ['Acute, right, obtuse, reflex', '∠ABC: vertex B', 'Protractor: centre on vertex', 'Estimate first']],
-    deep: ['Degrees split a full turn into 360 equal parts, so a right angle is a quarter turn: 90°.', 'Protractors have 2 scales. Read the one that starts at 0 on your first arm.']
+    deep: ['Degrees split a full turn into 360 equal parts, so a right angle is 1/4 turn: 90°.', 'Protractors have 2 scales. Read the one that starts at 0 on your first arm.']
   });
 
   LS('What is data handling?', 'what data is, the types of data, and the steps of a data investigation.', {

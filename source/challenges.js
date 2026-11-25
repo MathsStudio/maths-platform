@@ -9,7 +9,7 @@
   var C = {
     801: [
       [2, 'Different dollars', 'You have $1 coins and $5 notes, 11 items in all, worth $35. How many $5 notes do you have?', '6', ['5', '7', '4'], 'If all 11 were $1 coins, that would be $11. Each swap to a $5 note adds $4.', '$35 − $11 = $24 extra. $24 ÷ $4 = 6 notes. Check: 6 × $5 + 5 × $1 = $35.'],
-      [3, 'Teachers’ pet', 'In a staffroom, 3/5 of the teachers have a pet. 12 teachers have a pet. How many teachers are there?', '20', ['15', '18', '24'], '3 fifths is 12, so find 1 fifth first.', '1/5 is 12 ÷ 3 = 4, so 5/5 is 4 × 5 = 20 teachers.'],
+      [3, 'Teachers’ pet', 'In a staffroom, 3/5 of the teachers have a pet. 12 teachers have a pet. How many teachers are there?', '20', ['15', '18', '24'], '3/5 is 12, so find 1/5 first.', '1/5 is 12 ÷ 3 = 4, so 5/5 is 4 × 5 = 20 teachers.'],
       [4, 'Rectangles', 'How many different rectangles with whole-number sides have an area of 36 cm²? (A 4 × 9 and a 9 × 4 count as the same.)', '5', ['4', '6', '9'], 'List the factor pairs of 36.', '1 × 36, 2 × 18, 3 × 12, 4 × 9, 6 × 6: 5 rectangles.'],
       [5, 'Last Wednesday', 'The 1st of a 31-day month is a Wednesday. What date is the last Wednesday of that month?', '29th', ['28th', '30th', '22nd'], 'Wednesdays come every 7 days after the 1st.', '1, 8, 15, 22, 29: the last Wednesday is the 29th.'],
       [6, 'Painting flats', 'A painter takes 3 hours to paint a flat. How many hours do 2 painters take to paint 8 flats, working together at the same rate?', '12', ['24', '16', '6'], 'How many flats can two painters do in 3 hours?', '8 flats need 8 × 3 = 24 painter-hours. 2 painters share it: 24 ÷ 2 = 12 hours.'],
@@ -21,13 +21,13 @@
       [12, 'Racing swifts', 'A swift flies at 30 m/s. How many kilometres does it fly in 10 minutes?', '18 km', ['3 km', '30 km', '1.8 km'], 'Find the metres first: 10 minutes is 600 seconds.', '30 × 600 = 18,000 m = 18 km.'],
       [13, 'Mystery angle', '2 angles on a straight line are 3x and 2x. What is x?', '36°', ['30°', '45°', '60°'], 'Angles on a straight line add up to 180°.', '3x + 2x = 5x = 180°, so x = 36°.'],
       [14, 'Television deal', 'A TV costs £480. Shop A gives 25% off. Shop B gives £100 off. How much cheaper is the better deal?', '£20', ['£25', '£100', '£120'], 'Work out 25% of £480.', '25% of £480 is £120, so A costs £360 and B costs £380. A is £20 cheaper.'],
-      [15, 'Nuts', 'A bag of nuts is shared: Ali takes half, Bea takes a third of what is left, leaving 20 nuts. How many were in the bag?', '60', ['40', '80', '120'], 'Work backwards: 20 is 2 thirds of what Bea saw.', 'Before Bea: 20 ÷ 2/3 = 30. Before Ali: 30 × 2 = 60 nuts.']
+      [15, 'Nuts', 'A bag of nuts is shared: Ali takes half, Bea takes 1/3 of what is left, leaving 20 nuts. How many were in the bag?', '60', ['40', '80', '120'], 'Work backwards: 20 is 2/3 of what Bea saw.', 'Before Bea: 20 ÷ 2/3 = 30. Before Ali: 30 × 2 = 60 nuts.']
     ],
     821: [
       [16, 'Dominoes', 'A full set of dominoes runs from 0–0 to 6–6. How many dominoes are in the set?', '28', ['21', '36', '49'], 'Count the dominoes with 0, then those with 1 but not 0, and so on.', '7 + 6 + 5 + 4 + 3 + 2 + 1 = 28.'],
       [17, 'Tortoise and hare', 'A hare runs at 10 m/s and a tortoise at 0.1 m/s. The tortoise has a 99 m head start. After how many seconds does the hare draw level?', '10 s', ['9.9 s', '11 s', '99 s'], 'The hare gains 9.9 m every second.', '99 ÷ 9.9 = 10 seconds.'],
       [18, 'Wall', 'A wall is built from bricks 20 cm long. Each row is 3 m long. How many bricks are in each row?', '15', ['150', '12', '6'], 'Change 3 m to centimetres.', '300 cm ÷ 20 cm = 15 bricks.'],
-      [19, 'Test scores', 'The mean of 4 test scores is 72. A fifth test makes the mean 75. What was the fifth score?', '87', ['75', '78', '90'], 'Find the totals before and after.', 'Before: 4 × 72 = 288. After: 5 × 75 = 375. Fifth score: 375 − 288 = 87.'],
+      [19, 'Test scores', 'The mean of 4 test scores is 72. 1/5 test makes the mean 75. What was the fifth score?', '87', ['75', '78', '90'], 'Find the totals before and after.', 'Before: 4 × 72 = 288. After: 5 × 75 = 375. Fifth score: 375 − 288 = 87.'],
       [20, 'Sculpture', 'A cube sculpture of side 3 m is made of 1 m cubes. How many 1 m cubes can’t be seen from outside at all?', '1', ['0', '8', '27'], 'Think about the cube right in the middle.', 'Only the centre cube is hidden on every side: 3 × 3 × 3 = 27, minus 26 on the outside, leaves 1.'],
       [21, 'Deli(cious) sandwiches', 'A deli offers 4 breads, 5 fillings and 3 sauces. How many different sandwiches can be made with one of each?', '60', ['12', '20', '45'], 'Multiply the choices.', '4 × 5 × 3 = 60 sandwiches.'],
       [22, 'All the ones', 'What is 1111 × 11?', '12221', ['11111', '12321', '1221'], 'Multiply by 10 and add 1 more lot.', '1111 × 10 = 11110, plus 1111 = 12221.'],

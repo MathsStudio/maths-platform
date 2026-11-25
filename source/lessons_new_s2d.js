@@ -11,54 +11,54 @@
       ["Find the lowest common multiple of the denominators. Change each fraction to an equivalent 1 with that denominator. Then add or subtract the numerators only, and keep the denominator the same.", ['1. Common denominator (LCM)', '2. Make equivalent fractions', '3. Add or subtract the tops', '4. Simplify']]]]],
     ex: [
       ['1 half add 1 third', [
-        ["The denominators are 2 and 3. The lowest common multiple is 6. 1 half is 3 sixths, because we multiply the top and the bottom by 3. 1 third is 2 sixths, because we multiply top and bottom by 2.", ['LCM of 2 and 3 = 6', '1/2 = 3/6', '1/3 = 2/6']],
-        ["Now the pieces are the same size, so add the tops. 3 plus 2 is 5. The answer is 5 sixths.", ['3/6 + 2/6 = 5/6', 'g|1/2 + 1/3 = 5/6']]]],
-      ['Three quarters take away one sixth', [
-        ["The lowest common multiple of 4 and 6 is 12. 3 quarters is 9 twelfths. 1 sixth is 2 twelfths.", ['LCM of 4 and 6 = 12', '3/4 = 9/12', '1/6 = 2/12']],
-        ["Subtract the tops. 9 minus 2 is 7. The answer is 7 twelfths. It cannot be simplified.", ['9/12 − 2/12 = 7/12', 'g|3/4 − 1/6 = 7/12']]]],
+        ["The denominators are 2 and 3. The lowest common multiple is 6. 1/2 is 3/6, because we multiply the top and the bottom by 3. 1/3 is 2/6, because we multiply top and bottom by 2.", ['LCM of 2 and 3 = 6', '1/2 = 3/6', '1/3 = 2/6']],
+        ["Now the pieces are the same size, so add the tops. 3 plus 2 is 5. The answer is 5/6.", ['3/6 + 2/6 = 5/6', 'g|1/2 + 1/3 = 5/6']]]],
+      ['3/4 take away 1/6', [
+        ["The lowest common multiple of 4 and 6 is 12. 3/4 is 9/12. 1/6 is 2/12.", ['LCM of 4 and 6 = 12', '3/4 = 9/12', '1/6 = 2/12']],
+        ["Subtract the tops. 9 minus 2 is 7. The answer is 7/12. It cannot be simplified.", ['9/12 − 2/12 = 7/12', 'g|3/4 − 1/6 = 7/12']]]],
       ['Mixed numbers', [
-        ["2 and a half plus 1 and 3 quarters. Add the whole numbers first: 2 plus 1 is 3. Then add the fractions. A half is 2 quarters. 2 quarters plus 3 quarters is 5 quarters, which is 1 and 1 quarter.", ['2 + 1 = 3', '1/2 + 3/4 = 2/4 + 3/4 = 5/4 = 1 1/4']],
-        ["Put them together. 3 plus 1 and a quarter is 4 and a quarter.", ['3 + 1 1/4', 'g|= 4 1/4']]]],
+        ["2 and 1/2 plus 1 and 3/4. Add the whole numbers first: 2 plus 1 is 3. Then add the fractions. 1/2 is 2/4. 2/4 plus 3/4 is 5/4, which is 1 and 1/4.", ['2 + 1 = 3', '1/2 + 3/4 = 2/4 + 3/4 = 5/4 = 1 1/4']],
+        ["Put them together. 3 plus 1 and 1/4 is 4 and 1/4.", ['3 + 1 1/4', 'g|= 4 1/4']]]],
       ['Subtracting mixed numbers', [
-        ["3 and 1 fifth take away 1 and 3 fifths. The fraction part of the first number is smaller, so change both to improper fractions. 3 and 1 fifth is 16 fifths. 1 and 3 fifths is 8 fifths.", ['3 1/5 = 16/5', '1 3/5 = 8/5']],
-        ["16 fifths take away 8 fifths is 8 fifths. As a mixed number, that is 1 and 3 fifths.", ['16/5 − 8/5 = 8/5', 'g|= 1 3/5']]]]],
+        ["3 and 1/5 take away 1 and 3/5. The fraction part of the first number is smaller, so change both to improper fractions. 3 and 1/5 is 16/5. 1 and 3/5 is 8/5.", ['3 1/5 = 16/5', '1 3/5 = 8/5']],
+        ["16/5 take away 8/5 is 8/5. As a mixed number, that is 1 and 3/5.", ['16/5 − 8/5 = 8/5', 'g|= 1 3/5']]]]],
     mist: [
-      ['Adding the tops and the bottoms', "Mistake one: adding the numerators and the denominators. 1 half plus 1 third is not 2 fifths. 2 fifths is smaller than a half, which cannot be right. Find a common denominator first. The answer is 5 sixths.", ['r|1/2 + 1/3 = 2/5 ✗', 'g|1/2 + 1/3 = 3/6 + 2/6 = 5/6 ✓']],
-      ['Forgetting to simplify', "Mistake two: leaving the answer unsimplified. 1 sixth plus 1 third is 1 sixth plus 2 sixths, which is 3 sixths. That simplifies to a half.", ['1/6 + 2/6 = 3/6', 'g|3/6 = 1/2 ✓']]],
-    real: ['In real life', "A recipe needs 3 quarters of a cup of flour for the cake and 2 thirds of a cup for the topping. 3 quarters is 9 twelfths and 2 thirds is 8 twelfths. Together that is 17 twelfths, which is 1 and 5 twelfths cups.", ['3/4 + 2/3 = 9/12 + 8/12', '= 17/12 = 1 5/12 cups']],
+      ['Adding the tops and the bottoms', "Mistake one: adding the numerators and the denominators. 1/2 plus 1/3 is not 2/5. 2/5 is smaller than 1/2, which cannot be right. Find a common denominator first. The answer is 5/6.", ['r|1/2 + 1/3 = 2/5 ✗', 'g|1/2 + 1/3 = 3/6 + 2/6 = 5/6 ✓']],
+      ['Forgetting to simplify', "Mistake two: leaving the answer unsimplified. 1/6 plus 1/3 is 1/6 plus 2/6, which is 3/6. That simplifies to 1/2.", ['1/6 + 2/6 = 3/6', 'g|3/6 = 1/2 ✓']]],
+    real: ['In real life', "A recipe needs 3/4 of a cup of flour for the cake and 2/3 of a cup for the topping. 3/4 is 9/12 and 2/3 is 8/12. Together that is 17/12, which is 1 and 5/12 cups.", ['3/4 + 2/3 = 9/12 + 8/12', '= 17/12 = 1 5/12 cups']],
     turns: [
-      { q: 'Work out 2 thirds plus 1 quarter.', task: '2/3 + 1/4', say: "The lowest common multiple of 3 and 4 is 12. 2 thirds is 8 twelfths. 1 quarter is 3 twelfths. 8 plus 3 is 11. The answer is 11 twelfths.", work: ['LCM of 3 and 4 = 12', '2/3 = 8/12 and 1/4 = 3/12', '8/12 + 3/12 = 11/12'], ans: ['g|11/12'] },
-      { q: 'Work out 5 sixths minus 3 eighths.', task: '5/6 − 3/8', say: "The lowest common multiple of 6 and 8 is 24. 5 sixths is 20 twenty-fourths. 3 eighths is 9 twenty-fourths. 20 minus 9 is 11. The answer is 11 twenty-fourths.", work: ['LCM of 6 and 8 = 24', '5/6 = 20/24 and 3/8 = 9/24', '20/24 − 9/24 = 11/24'], ans: ['g|11/24'] },
-      { q: 'Work out 1 and 2 thirds plus 2 and 3 quarters.', task: '1 2/3 + 2 3/4', say: "Add the whole numbers first. 1 plus 2 is 3. Then the fractions. The common denominator is 12. 2 thirds is 8 twelfths, and 3 quarters is 9 twelfths. 8 plus 9 is 17 twelfths, which is 1 and 5 twelfths. 3 plus 1 and 5 twelfths is 4 and 5 twelfths.", work: ['1 + 2 = 3', '2/3 + 3/4 = 8/12 + 9/12', '= 17/12 = 1 5/12', '3 + 1 5/12 = 4 5/12'], ans: ['g|4 5/12'] }],
+      { q: 'Work out 2/3 plus 1/4.', task: '2/3 + 1/4', say: "The lowest common multiple of 3 and 4 is 12. 2/3 is 8/12. 1/4 is 3/12. 8 plus 3 is 11. The answer is 11/12.", work: ['LCM of 3 and 4 = 12', '2/3 = 8/12 and 1/4 = 3/12', '8/12 + 3/12 = 11/12'], ans: ['g|11/12'] },
+      { q: 'Work out 5/6 minus 3/8.', task: '5/6 − 3/8', say: "The lowest common multiple of 6 and 8 is 24. 5/6 is 20 twenty-fourths. 3/8 is 9 twenty-fourths. 20 minus 9 is 11. The answer is 11 twenty-fourths.", work: ['LCM of 6 and 8 = 24', '5/6 = 20/24 and 3/8 = 9/24', '20/24 − 9/24 = 11/24'], ans: ['g|11/24'] },
+      { q: 'Work out 1 and 2/3 plus 2 and 3/4.', task: '1 2/3 + 2 3/4', say: "Add the whole numbers first. 1 plus 2 is 3. Then the fractions. The common denominator is 12. 2/3 is 8/12, and 3/4 is 9/12. 8 plus 9 is 17/12, which is 1 and 5/12. 3 plus 1 and 5/12 is 4 and 5/12.", work: ['1 + 2 = 3', '2/3 + 3/4 = 8/12 + 9/12', '= 17/12 = 1 5/12', '3 + 1 5/12 = 4 5/12'], ans: ['g|4 5/12'] }],
     rec: ["Same denominator first, then add or subtract the tops.", ['Find the LCM of the denominators', 'Make equivalent fractions', 'Add or subtract the numerators only', 'Simplify the answer', 'Mixed numbers: whole numbers and fractions, or improper fractions']]
   });
 
   fx('How do you multiply and divide fractions?', 'how to multiply and divide fractions and mixed numbers.', {
     head: 'Multiplying and dividing fractions',
     basics: [['Multiplying', [
-      ["To multiply fractions, multiply the numerators together and multiply the denominators together. 2 thirds times 3 quarters is 2 times 3 over 3 times 4. That is 6 twelfths, which simplifies to a half.", ['2/3 × 3/4 = (2 × 3)/(3 × 4)', '= 6/12 = 1/2']],
-      ["We can often make it easier by cancelling first. The 3 on the top and the 3 on the bottom cancel. That leaves 2 over 4, which is a half.", ['2/3 × 3/4 → cancel the 3s', '= 2/4 = 1/2']]]],
+      ["To multiply fractions, multiply the numerators together and multiply the denominators together. 2/3 times 3/4 is 2 times 3 over 3 times 4. That is 6/12, which simplifies to 1/2.", ['2/3 × 3/4 = (2 × 3)/(3 × 4)', '= 6/12 = 1/2']],
+      ["We can often make it easier by cancelling first. The 3 on the top and the 3 on the bottom cancel. That leaves 2 over 4, which is 1/2.", ['2/3 × 3/4 → cancel the 3s', '= 2/4 = 1/2']]]],
       ['Dividing', [
-      ["To divide by a fraction, we flip the second fraction upside down and multiply. This is the reciprocal. 2 thirds divided by 4 fifths becomes 2 thirds times 5 quarters.", ['2/3 ÷ 4/5', '= 2/3 × 5/4']],
-      ["Multiply across: 2 times 5 is 10, and 3 times 4 is 12. 10 twelfths simplifies to 5 sixths. We flip only the second fraction, the one we divide by.", ['= 10/12', 'g|= 5/6']]]]],
+      ["To divide by a fraction, we flip the second fraction upside down and multiply. This is the reciprocal. 2/3 divided by 4/5 becomes 2/3 times 5/4.", ['2/3 ÷ 4/5', '= 2/3 × 5/4']],
+      ["Multiply across: 2 times 5 is 10, and 3 times 4 is 12. 10/12 simplifies to 5/6. We flip only the second fraction, the one we divide by.", ['= 10/12', 'g|= 5/6']]]]],
     ex: [
       ['A fraction of an amount', [
-        ["3 fifths of 40. The word of means multiply. 40 is 40 over 1. 3 fifths times 40 over 1 is 120 over 5.", ['3/5 × 40 = 3/5 × 40/1', '= 120/5']],
+        ["3/5 of 40. The word of means multiply. 40 is 40 over 1. 3/5 times 40 over 1 is 120 over 5.", ['3/5 × 40 = 3/5 × 40/1', '= 120/5']],
         ["120 divided by 5 is 24.", ['120 ÷ 5 = 24', 'g|3/5 of 40 = 24']]]],
       ['Mixed numbers', [
-        ["1 and a half times 2 and 2 thirds. First change both to improper fractions. 1 and a half is 3 halves. 2 and 2 thirds is 8 thirds.", ['1 1/2 = 3/2', '2 2/3 = 8/3']],
-        ["Multiply: 3 halves times 8 thirds is 24 sixths. The threes cancel, and 8 halves is 4. 24 divided by 6 is 4.", ['3/2 × 8/3 = 24/6', 'g|= 4']]]],
+        ["1 and 1/2 times 2 and 2/3. First change both to improper fractions. 1 and 1/2 is 3/2. 2 and 2/3 is 8/3.", ['1 1/2 = 3/2', '2 2/3 = 8/3']],
+        ["Multiply: 3/2 times 8/3 is 24/6. The threes cancel, and 8/2 is 4. 24 divided by 6 is 4.", ['3/2 × 8/3 = 24/6', 'g|= 4']]]],
       ['Dividing mixed numbers', [
-        ["2 and a quarter divided by 1 and a half. Change to improper fractions: 9 quarters divided by 3 halves. Flip the second fraction and multiply.", ['2 1/4 = 9/4', '1 1/2 = 3/2', '9/4 ÷ 3/2 = 9/4 × 2/3']],
-        ["9 times 2 is 18. 4 times 3 is 12. 18 twelfths simplifies to 3 halves, which is 1 and a half.", ['= 18/12 = 3/2', 'g|= 1 1/2']]]]],
+        ["2 and 1/4 divided by 1 and 1/2. Change to improper fractions: 9/4 divided by 3/2. Flip the second fraction and multiply.", ['2 1/4 = 9/4', '1 1/2 = 3/2', '9/4 ÷ 3/2 = 9/4 × 2/3']],
+        ["9 times 2 is 18. 4 times 3 is 12. 18/12 simplifies to 3/2, which is 1 and 1/2.", ['= 18/12 = 3/2', 'g|= 1 1/2']]]]],
     mist: [
-      ['Flipping the wrong fraction', "Mistake one: flipping the first fraction, or both. 2 thirds divided by 4 fifths. Wrong: 3 halves times 4 fifths. We only flip the second fraction. The first stays the same.", ['r|2/3 ÷ 4/5 = 3/2 × 4/5 ✗', 'g|2/3 ÷ 4/5 = 2/3 × 5/4 ✓']],
-      ['Multiplying mixed numbers part by part', "Mistake two: multiplying the whole numbers and fractions separately. 1 and a half times 2 and 2 thirds is not 1 times 2 plus a half times 2 thirds. Change to improper fractions first.", ['r|1 1/2 × 2 2/3 = (1 × 2) + (1/2 × 2/3) ✗', 'g|3/2 × 8/3 = 4 ✓']]],
-    real: ['In real life', "You have 3 and a half litres of juice. Each glass holds a quarter of a litre. How many glasses? 3 and a half is 7 halves. 7 halves divided by a quarter is 7 halves times 4. That is 28 halves, which is 14 glasses.", ['3 1/2 ÷ 1/4 = 7/2 × 4/1', '= 28/2 = 14 glasses']],
+      ['Flipping the wrong fraction', "Mistake one: flipping the first fraction, or both. 2/3 divided by 4/5. Wrong: 3/2 times 4/5. We only flip the second fraction. The first stays the same.", ['r|2/3 ÷ 4/5 = 3/2 × 4/5 ✗', 'g|2/3 ÷ 4/5 = 2/3 × 5/4 ✓']],
+      ['Multiplying mixed numbers part by part', "Mistake two: multiplying the whole numbers and fractions separately. 1 and 1/2 times 2 and 2/3 is not 1 times 2 plus 1/2 times 2/3. Change to improper fractions first.", ['r|1 1/2 × 2 2/3 = (1 × 2) + (1/2 × 2/3) ✗', 'g|3/2 × 8/3 = 4 ✓']]],
+    real: ['In real life', "You have 3 and 1/2 litres of juice. Each glass holds 1/4 of a litre. How many glasses? 3 and 1/2 is 7/2. 7/2 divided by 1/4 is 7/2 times 4. That is 28/2, which is 14 glasses.", ['3 1/2 ÷ 1/4 = 7/2 × 4/1', '= 28/2 = 14 glasses']],
     turns: [
-      { q: 'Work out 3 quarters times 2 fifths.', task: '3/4 × 2/5', say: "Multiply the numerators: 3 times 2 is 6. Multiply the denominators: 4 times 5 is 20. 6 twentieths. Divide the top and the bottom by 2 to get 3 tenths.", work: ['3 × 2 = 6', '4 × 5 = 20', '6/20 = 3/10'], ans: ['g|3/10'] },
-      { q: 'Work out 5 sixths divided by 2 thirds.', task: '5/6 ÷ 2/3', say: "Flip the second fraction and multiply. 5 sixths times 3 halves. 5 times 3 is 15. 6 times 2 is 12. 15 twelfths simplifies to 5 quarters, which is 1 and a quarter.", work: ['5/6 ÷ 2/3 = 5/6 × 3/2', '5 × 3 = 15 and 6 × 2 = 12', '15/12 = 5/4 = 1 1/4'], ans: ['g|1 1/4'] },
-      { q: 'A batch of biscuits needs 2 thirds of a cup of sugar. You have 4 and a half cups. How many batches can you make?', say: "We divide 4 and a half by 2 thirds. 4 and a half is 9 halves. 9 halves divided by 2 thirds is 9 halves times 3 halves. 9 times 3 is 27. 2 times 2 is 4. 27 quarters is 6 and 3 quarters. So 6 full batches, and 3 quarters of another.", work: ['4 1/2 = 9/2', '9/2 ÷ 2/3 = 9/2 × 3/2', '= 27/4', '= 6 3/4'], ans: ['g|6 full batches (6 3/4)'] }],
+      { q: 'Work out 3/4 times 2/5.', task: '3/4 × 2/5', say: "Multiply the numerators: 3 times 2 is 6. Multiply the denominators: 4 times 5 is 20. 6 twentieths. Divide the top and the bottom by 2 to get 3/10.", work: ['3 × 2 = 6', '4 × 5 = 20', '6/20 = 3/10'], ans: ['g|3/10'] },
+      { q: 'Work out 5/6 divided by 2/3.', task: '5/6 ÷ 2/3', say: "Flip the second fraction and multiply. 5/6 times 3/2. 5 times 3 is 15. 6 times 2 is 12. 15/12 simplifies to 5/4, which is 1 and 1/4.", work: ['5/6 ÷ 2/3 = 5/6 × 3/2', '5 × 3 = 15 and 6 × 2 = 12', '15/12 = 5/4 = 1 1/4'], ans: ['g|1 1/4'] },
+      { q: 'A batch of biscuits needs 2/3 of a cup of sugar. You have 4 and 1/2 cups. How many batches can you make?', say: "We divide 4 and 1/2 by 2/3. 4 and 1/2 is 9/2. 9/2 divided by 2/3 is 9/2 times 3/2. 9 times 3 is 27. 2 times 2 is 4. 27/4 is 6 and 3/4. So 6 full batches, and 3/4 of another.", work: ['4 1/2 = 9/2', '9/2 ÷ 2/3 = 9/2 × 3/2', '= 27/4', '= 6 3/4'], ans: ['g|6 full batches (6 3/4)'] }],
     rec: ["Multiply across. To divide, flip the second fraction and multiply.", ['Multiply the tops and the bottoms', 'Cancel before multiplying if you can', 'Divide: flip the second fraction, then multiply', 'Mixed numbers: change to improper fractions first', 'Simplify the answer']]
   });
 
@@ -69,22 +69,22 @@
       ["Work in steps. Find the first part. Take it away to find what is left. Then find the second fraction of that. Write down the amount at each step.", ['1. First part', '2. What is left', '3. Fraction of what is left', '4. What remains']]]]],
     ex: [
       ['Spending money', [
-        ["Aisha has £60. She spends 1 third on a coat. Then she spends 1 quarter of what is left on lunch. 1 third of 60 is 20. So she has £40 left.", ['1/3 of 60 = 20', '60 − 20 = 40 left']],
-        ["Now 1 quarter of the £40 left. 40 divided by 4 is 10. She spends £10 on lunch, and has £30 left.", ['1/4 of 40 = 10', '40 − 10 = 30', 'g|£30 left']]]],
+        ["Aisha has £60. She spends 1/3 on a coat. Then she spends 1/4 of what is left on lunch. 1/3 of 60 is 20. So she has £40 left.", ['1/3 of 60 = 20', '60 − 20 = 40 left']],
+        ["Now 1/4 of the £40 left. 40 divided by 4 is 10. She spends £10 on lunch, and has £30 left.", ['1/4 of 40 = 10', '40 − 10 = 30', 'g|£30 left']]]],
       ['Reading a book', [
-        ["Tom reads 2 fifths of a book on Monday. What fraction is left? 1 whole is 5 fifths. 5 fifths minus 2 fifths is 3 fifths left.", ['1 − 2/5 = 3/5 left']],
-        ["On Tuesday he reads 1 third of what is left. 1 third of 3 fifths is 3 fifteenths, which is 1 fifth. So altogether he has read 2 fifths plus 1 fifth, which is 3 fifths. 2 fifths of the book is still left.", ['1/3 × 3/5 = 1/5', '2/5 + 1/5 = 3/5 read', 'g|2/5 left']]]],
+        ["Tom reads 2/5 of a book on Monday. What fraction is left? 1 whole is 5/5. 5/5 minus 2/5 is 3/5 left.", ['1 − 2/5 = 3/5 left']],
+        ["On Tuesday he reads 1/3 of what is left. 1/3 of 3/5 is 3 fifteenths, which is 1/5. So altogether he has read 2/5 plus 1/5, which is 3/5. 2/5 of the book is still left.", ['1/3 × 3/5 = 1/5', '2/5 + 1/5 = 3/5 read', 'g|2/5 left']]]],
       ['Getting to school', [
-        ["In a class, 3 eighths walk to school. 1 quarter of the rest cycle. The rest take the bus. What fraction take the bus? The rest after the walkers is 1 minus 3 eighths, which is 5 eighths.", ['1 − 3/8 = 5/8 are not walking']],
-        ["The cyclists are 1 quarter of 5 eighths. That is 5 thirty-seconds. Bus riders are 5 eighths minus 5 thirty-seconds: 20 thirty-seconds minus 5 thirty-seconds, which is 15 thirty-seconds.", ['1/4 × 5/8 = 5/32', '5/8 − 5/32 = 20/32 − 5/32', 'g|15/32 take the bus']]]]],
+        ["In a class, 3/8 walk to school. 1/4 of the rest cycle. The rest take the bus. What fraction take the bus? The rest after the walkers is 1 minus 3/8, which is 5/8.", ['1 − 3/8 = 5/8 are not walking']],
+        ["The cyclists are 1/4 of 5/8. That is 5 thirty-seconds. Bus riders are 5/8 minus 5 thirty-seconds: 20 thirty-seconds minus 5 thirty-seconds, which is 15 thirty-seconds.", ['1/4 × 5/8 = 5/32', '5/8 − 5/32 = 20/32 − 5/32', 'g|15/32 take the bus']]]]],
     mist: [
-      ['Taking the second fraction of the original', "Mistake one: taking the second fraction of the whole amount. Aisha had £60 and spent a third. She then spends a quarter of what is left. Wrong: a quarter of 60 is 15. A quarter of the £40 left is 10.", ['r|1/4 of 60 = 15 ✗', 'g|1/4 of 40 = 10 ✓']],
-      ['Adding the fractions to find what is left', "Mistake two: adding one third and one quarter and saying the rest is 5 twelfths. The second fraction is a fraction of a smaller amount, so you cannot add the fractions directly.", ['r|1/3 + 1/4 = 7/12 spent ✗', 'n|1/4 is of what is left, not of the whole']]],
-    real: ['In real life', "Budgeting uses this idea. You spend a third of your wages on rent. Then you save a quarter of what is left. The savings are one quarter of 2 thirds of your wages, which is one sixth of your wages.", ['2/3 × 1/4 = 2/12 = 1/6']],
+      ['Taking the second fraction of the original', "Mistake one: taking the second fraction of the whole amount. Aisha had £60 and spent 1/3. She then spends 1/4 of what is left. Wrong: 1/4 of 60 is 15. 1/4 of the £40 left is 10.", ['r|1/4 of 60 = 15 ✗', 'g|1/4 of 40 = 10 ✓']],
+      ['Adding the fractions to find what is left', "Mistake two: adding 1/3 and 1/4 and saying the rest is 5/12. The second fraction is a fraction of a smaller amount, so you cannot add the fractions directly.", ['r|1/3 + 1/4 = 7/12 spent ✗', 'n|1/4 is of what is left, not of the whole']]],
+    real: ['In real life', "Budgeting uses this idea. You spend 1/3 of your wages on rent. Then you save 1/4 of what is left. The savings are 1/4 of 2/3 of your wages, which is 1/6 of your wages.", ['2/3 × 1/4 = 2/12 = 1/6']],
     turns: [
-      { q: 'Sam has £48. He spends 1 quarter on lunch, then 1 third of what is left on a book. How much does he have left?', say: "1 quarter of 48 is 12. So £36 are left. 1 third of 36 is 12 for the book. 36 minus 12 leaves £24.", work: ['1/4 of 48 = 12', '48 − 12 = 36 left', '1/3 of 36 = 12', '36 − 12 = 24'], ans: ['g|£24'] },
-      { q: 'A tank is 2 fifths used in the morning. In the afternoon one quarter of what is left is used. What fraction of the tank is left?', say: "After the morning, 3 fifths are left. 1 quarter of 3 fifths is 3 twentieths used in the afternoon. 3 fifths is 12 twentieths. 12 twentieths minus 3 twentieths is 9 twentieths.", work: ['1 − 2/5 = 3/5 left', '1/4 × 3/5 = 3/20 used', '3/5 = 12/20', '12/20 − 3/20 = 9/20'], ans: ['g|9/20 left'] },
-      { q: 'A bag has 72 sweets. 1 third are red. 3 eighths of the rest are green. How many are green?', say: "1 third of 72 is 24 red sweets. That leaves 48. 3 eighths of 48: 48 divided by 8 is 6, and 6 times 3 is 18. So 18 sweets are green.", work: ['1/3 of 72 = 24 red', '72 − 24 = 48 left', '48 ÷ 8 = 6', '6 × 3 = 18'], ans: ['g|18 green'] }],
+      { q: 'Sam has £48. He spends 1/4 on lunch, then 1/3 of what is left on a book. How much does he have left?', say: "1/4 of 48 is 12. So £36 are left. 1/3 of 36 is 12 for the book. 36 minus 12 leaves £24.", work: ['1/4 of 48 = 12', '48 − 12 = 36 left', '1/3 of 36 = 12', '36 − 12 = 24'], ans: ['g|£24'] },
+      { q: 'A tank is 2/5 used in the morning. In the afternoon 1/4 of what is left is used. What fraction of the tank is left?', say: "After the morning, 3/5 are left. 1/4 of 3/5 is 3 twentieths used in the afternoon. 3/5 is 12 twentieths. 12 twentieths minus 3 twentieths is 9 twentieths.", work: ['1 − 2/5 = 3/5 left', '1/4 × 3/5 = 3/20 used', '3/5 = 12/20', '12/20 − 3/20 = 9/20'], ans: ['g|9/20 left'] },
+      { q: 'A bag has 72 sweets. 1/3 are red. 3/8 of the rest are green. How many are green?', say: "1/3 of 72 is 24 red sweets. That leaves 48. 3/8 of 48: 48 divided by 8 is 6, and 6 times 3 is 18. So 18 sweets are green.", work: ['1/3 of 72 = 24 red', '72 − 24 = 48 left', '48 ÷ 8 = 6', '6 × 3 = 18'], ans: ['g|18 green'] }],
     rec: ["Each new fraction is taken from what is left.", ['Find the first part', 'Subtract to find what is left', 'Take the next fraction of what is left', 'Do not add fractions of different wholes']]
   });
 
@@ -96,7 +96,7 @@
     ex: [
       ['A large number', [
         ["Write 4 million 500,000 in standard form. Put the point to make a number between 1 and 10: 4.5. The point has moved 6 places to the left. So the power is positive 6.", ['4,500,000', '4.5 | 000000: moved 6 places']],
-        ["4.5 times 10 to the six.", ['g|4,500,000 = 4.5 × 10⁶']]]],
+        ["4.5 times 10 to the 6.", ['g|4,500,000 = 4.5 × 10⁶']]]],
       ['A small number', [
         ["Write 0.00072 in standard form. The first number must be between 1 and 10, so we want 7.2. The point moves 4 places to the right. Moving right for a small number gives a negative power.", ['0.00072', 'Point moves 4 places right']],
         ["7.2 times 10 to the minus 4.", ['g|0.00072 = 7.2 × 10⁻⁴']]]],
@@ -104,13 +104,13 @@
         ["Write 3.08 times 10 to the 5 as an ordinary number. The power is 5, so move the point 5 places to the right. Add zeros to fill the places.", ['3.08 × 10⁵', '3.08 → 308000.']],
         ["The answer is 308,000.", ['g|308,000']]]],
       ['Which is bigger?', [
-        ["Compare 3 times 10 to the 5 and 8 times 10 to the four. Look at the powers first. 5 is bigger than 4, so the first number is bigger. Check: 300,000 against 80,000.", ['3 × 10⁵ = 300,000', '8 × 10⁴ = 80,000', 'g|3 × 10⁵ is bigger']]]]],
+        ["Compare 3 times 10 to the 5 and 8 times 10 to the 4. Look at the powers first. 5 is bigger than 4, so the first number is bigger. Check: 300,000 against 80,000.", ['3 × 10⁵ = 300,000', '8 × 10⁴ = 80,000', 'g|3 × 10⁵ is bigger']]]]],
     mist: [
-      ['The first number is not between 1 and 10', "Mistake one: a number like 45 times 10 to the five. The first number must be between 1 and 10. 4.5 times 10 to the 6 is correct.", ['r|45 × 10⁵ ✗', 'g|4.5 × 10⁶ ✓']],
-      ['Wrong sign on the power', "Mistake two: using a positive power for a small number. 0 point 0 0 4 is 4 times 10 to the minus 3, not 10 to the three.", ['r|0.004 = 4 × 10³ ✗', 'g|0.004 = 4 × 10⁻³ ✓']]],
-    real: ['In real life', "Scientists use standard form all the time. The Sun is about 150 million kilometres from the Earth: 1.5 times 10 to the eight. A red blood cell is about 7 times 10 to the minus 6 metres across.", ['1.5 × 10⁸ km', '7 × 10⁻⁶ m']],
+      ['The first number is not between 1 and 10', "Mistake one: a number like 45 times 10 to the 5. The first number must be between 1 and 10. 4.5 times 10 to the 6 is correct.", ['r|45 × 10⁵ ✗', 'g|4.5 × 10⁶ ✓']],
+      ['Wrong sign on the power', "Mistake two: using a positive power for a small number. 0.004 is 4 times 10 to the minus 3, not 10 to the 3.", ['r|0.004 = 4 × 10³ ✗', 'g|0.004 = 4 × 10⁻³ ✓']]],
+    real: ['In real life', "Scientists use standard form all the time. The Sun is about 150 million kilometres from the Earth: 1.5 times 10 to the 8. A red blood cell is about 7 times 10 to the minus 6 metres across.", ['1.5 × 10⁸ km', '7 × 10⁻⁶ m']],
     turns: [
-      { q: 'Write 62,000 in standard form.', task: '62,000', say: "Put the point to make a number between 1 and 10: 6.2. The point moves 4 places to the left. So the power is 4. The answer is 6.2 times 10 to the four.", work: ['62,000 → 6.2', 'The point moved 4 places left', 'Power = 4'], ans: ['g|6.2 × 10⁴'] },
+      { q: 'Write 62,000 in standard form.', task: '62,000', say: "Put the point to make a number between 1 and 10: 6.2. The point moves 4 places to the left. So the power is 4. The answer is 6.2 times 10 to the 4.", work: ['62,000 → 6.2', 'The point moved 4 places left', 'Power = 4'], ans: ['g|6.2 × 10⁴'] },
       { q: 'Write 0.0035 in standard form.', task: '0.0035', say: "We want a number between 1 and 10: 3.5. The point moves 3 places to the right. For a small number, that is a negative power. 3.5 times 10 to the minus 3.", work: ['0.0035 → 3.5', 'The point moved 3 places right', 'Power = −3'], ans: ['g|3.5 × 10⁻³'] },
       { q: 'Write 2.9 times 10 to the minus 2 as an ordinary number.', task: '2.9 × 10⁻²', say: "A negative power means a small number. Move the point 2 places to the left. 2.9 becomes 0.029.", work: ['Power −2: move the point 2 places left', '2.9 → 0.029'], ans: ['g|0.029'] }],
     rec: ["Standard form: a number from 1 up to 10, times a power of 10.", ['a × 10ⁿ with 1 ≤ a < 10', 'Big numbers: positive power', 'Small numbers: negative power', 'The power counts the places the point moves']]
@@ -123,25 +123,25 @@
       ["Check the answer. If the front number is not between 1 and 10, change it to standard form and adjust the power.", ['n|Front number must be from 1 up to 10']]]]],
     ex: [
       ['Multiplying', [
-        ["2 times 10 to the 3, multiplied by 4 times 10 to the five. Multiply the front numbers: 2 times 4 is 8. Add the powers: 3 plus 5 is 8.", ['(2 × 10³) × (4 × 10⁵)', '2 × 4 = 8', '3 + 5 = 8']],
-        ["The answer is 8 times 10 to the eight.", ['g|8 × 10⁸']]]],
+        ["2 times 10 to the 3, multiplied by 4 times 10 to the 5. Multiply the front numbers: 2 times 4 is 8. Add the powers: 3 plus 5 is 8.", ['(2 × 10³) × (4 × 10⁵)', '2 × 4 = 8', '3 + 5 = 8']],
+        ["The answer is 8 times 10 to the 8.", ['g|8 × 10⁸']]]],
       ['Multiplying with a tidy-up', [
-        ["3 times 10 to the 4, times 5 times 10 to the three. 3 times 5 is 15. 4 plus 3 is 7. That gives 15 times 10 to the seven.", ['3 × 5 = 15', '4 + 3 = 7', '15 × 10⁷']],
-        ["15 is not between 1 and 10. 15 is 1.5 times 10. So the power goes up by 1. The answer is 1.5 times 10 to the eight.", ['15 = 1.5 × 10', '1.5 × 10 × 10⁷', 'g|1.5 × 10⁸']]]],
+        ["3 times 10 to the 4, times 5 times 10 to the 3. 3 times 5 is 15. 4 plus 3 is 7. That gives 15 times 10 to the 7.", ['3 × 5 = 15', '4 + 3 = 7', '15 × 10⁷']],
+        ["15 is not between 1 and 10. 15 is 1.5 times 10. So the power goes up by 1. The answer is 1.5 times 10 to the 8.", ['15 = 1.5 × 10', '1.5 × 10 × 10⁷', 'g|1.5 × 10⁸']]]],
       ['Dividing', [
-        ["8 times 10 to the 6, divided by 2 times 10 to the two. 8 divided by 2 is 4. 6 minus 2 is 4.", ['(8 × 10⁶) ÷ (2 × 10²)', '8 ÷ 2 = 4', '6 − 2 = 4']],
-        ["The answer is 4 times 10 to the four.", ['g|4 × 10⁴']]]],
+        ["8 times 10 to the 6, divided by 2 times 10 to the 2. 8 divided by 2 is 4. 6 minus 2 is 4.", ['(8 × 10⁶) ÷ (2 × 10²)', '8 ÷ 2 = 4', '6 − 2 = 4']],
+        ["The answer is 4 times 10 to the 4.", ['g|4 × 10⁴']]]],
       ['Adding', [
         ["Add three times ten to the four and five times ten to the three. We cannot just add the front numbers when the powers are different. Write them as ordinary numbers. Thirty thousand and five thousand.", ['3 × 10⁴ = 30,000', '5 × 10³ = 5,000']],
-        ["35,000. In standard form, that is 3.5 times 10 to the four.", ['30,000 + 5,000 = 35,000', 'g|3.5 × 10⁴']]]]],
+        ["35,000. In standard form, that is 3.5 times 10 to the 4.", ['30,000 + 5,000 = 35,000', 'g|3.5 × 10⁴']]]]],
     mist: [
-      ['Multiplying the powers', "Mistake one: multiplying the powers. 10 to the 3 times 10 to the 5 is 10 to the eight. Add the powers, do not multiply them.", ['r|10³ × 10⁵ = 10¹⁵ ✗', 'g|10³ × 10⁵ = 10⁸ ✓']],
-      ['Leaving the answer untidy', "Mistake two: leaving 15 times 10 to the seven. It looks right, but the front number is bigger than 10. Change it to 1.5 times 10 to the eight.", ['r|15 × 10⁷ (not standard form) ✗', 'g|1.5 × 10⁸ ✓']]],
+      ['Multiplying the powers', "Mistake one: multiplying the powers. 10 to the 3 times 10 to the 5 is 10 to the 8. Add the powers, do not multiply them.", ['r|10³ × 10⁵ = 10¹⁵ ✗', 'g|10³ × 10⁵ = 10⁸ ✓']],
+      ['Leaving the answer untidy', "Mistake two: leaving 15 times 10 to the 7. It looks right, but the front number is bigger than 10. Change it to 1.5 times 10 to the 8.", ['r|15 × 10⁷ (not standard form) ✗', 'g|1.5 × 10⁸ ✓']]],
     real: ['In real life', "Light travels at 3 times 10 to the 5 kilometres each second. In 500 seconds, which is 5 times 10 to the 2, it travels 3 times 5, which is 15, times 10 to the 7 kilometres. That is 1.5 times 10 to the 8 kilometres, the distance to the Sun.", ['(3 × 10⁵) × (5 × 10²) = 15 × 10⁷', 'g|= 1.5 × 10⁸ km']],
     turns: [
-      { q: 'Work out 4 times 10 to the 3, multiplied by 2 times 10 to the four.', task: '(4 × 10³) × (2 × 10⁴)', say: "Multiply the front numbers: 4 times 2 is 8. Add the powers: 3 plus 4 is 7. The answer is 8 times 10 to the seven.", work: ['4 × 2 = 8', '3 + 4 = 7'], ans: ['g|8 × 10⁷'] },
-      { q: 'Work out 5 times 10 to the 6, multiplied by 4 times 10 to the two. Give the answer in standard form.', task: '(5 × 10⁶) × (4 × 10²)', say: "Multiply the front numbers: 5 times 4 is 20. Add the powers: 6 plus 2 is 8. That gives 20 times 10 to the eight. 20 is 2 times 10, so the power goes up by 1. 2 times 10 to the nine.", work: ['5 × 4 = 20', '6 + 2 = 8', '20 × 10⁸', '20 = 2 × 10, so 2 × 10⁹'], ans: ['g|2 × 10⁹'] },
-      { q: 'Work out 9 times 10 to the 8, divided by 3 times 10 to the three.', task: '(9 × 10⁸) ÷ (3 × 10³)', say: "Divide the front numbers: 9 divided by 3 is 3. Subtract the powers: 8 minus 3 is 5. The answer is 3 times 10 to the five.", work: ['9 ÷ 3 = 3', '8 − 3 = 5'], ans: ['g|3 × 10⁵'] }],
+      { q: 'Work out 4 times 10 to the 3, multiplied by 2 times 10 to the 4.', task: '(4 × 10³) × (2 × 10⁴)', say: "Multiply the front numbers: 4 times 2 is 8. Add the powers: 3 plus 4 is 7. The answer is 8 times 10 to the 7.", work: ['4 × 2 = 8', '3 + 4 = 7'], ans: ['g|8 × 10⁷'] },
+      { q: 'Work out 5 times 10 to the 6, multiplied by 4 times 10 to the 2. Give the answer in standard form.', task: '(5 × 10⁶) × (4 × 10²)', say: "Multiply the front numbers: 5 times 4 is 20. Add the powers: 6 plus 2 is 8. That gives 20 times 10 to the 8. 20 is 2 times 10, so the power goes up by 1. 2 times 10 to the 9.", work: ['5 × 4 = 20', '6 + 2 = 8', '20 × 10⁸', '20 = 2 × 10, so 2 × 10⁹'], ans: ['g|2 × 10⁹'] },
+      { q: 'Work out 9 times 10 to the 8, divided by 3 times 10 to the 3.', task: '(9 × 10⁸) ÷ (3 × 10³)', say: "Divide the front numbers: 9 divided by 3 is 3. Subtract the powers: 8 minus 3 is 5. The answer is 3 times 10 to the 5.", work: ['9 ÷ 3 = 3', '8 − 3 = 5'], ans: ['g|3 × 10⁵'] }],
     rec: ["Multiply: multiply the fronts and add the powers. Divide: divide the fronts and subtract the powers.", ['× : fronts multiply, powers add', '÷ : fronts divide, powers subtract', 'Tidy so the front is from 1 up to 10', 'Adding: write as ordinary numbers first']]
   });
 
@@ -152,22 +152,22 @@
       ["2 special cases. Any number to the power 0 is 1. A negative power means 1 over the positive power.", ['a⁰ = 1', 'a⁻ⁿ = 1/aⁿ']]]]],
     ex: [
       ['Multiplying and dividing', [
-        ["2 to the 5 times 2 to the three. The bases are the same, so add the indices: 5 plus 3 is 8. 2 to the 8 is 256.", ['2⁵ × 2³ = 2⁵⁺³', '= 2⁸', 'g|= 256']],
-        ["5 to the 7 divided by 5 to the four. Subtract the indices: 7 minus 4 is 3. 5 cubed is 125.", ['5⁷ ÷ 5⁴ = 5⁷⁻⁴', '= 5³', 'g|= 125']]]],
+        ["2 to the 5 times 2 to the 3. The bases are the same, so add the indices: 5 plus 3 is 8. 2 to the 8 is 256.", ['2⁵ × 2³ = 2⁵⁺³', '= 2⁸', 'g|= 256']],
+        ["5 to the 7 divided by 5 to the 4. Subtract the indices: 7 minus 4 is 3. 5 cubed is 125.", ['5⁷ ÷ 5⁴ = 5⁷⁻⁴', '= 5³', 'g|= 125']]]],
       ['A power of a power', [
         ["3 squared, all cubed. That means 3 squared times 3 squared times 3 squared. Multiply the indices: 2 times 3 is 6.", ['(3²)³ = 3²ˣ³', '= 3⁶', 'g|= 729']]]],
       ['Zero and negative indices', [
-        ["7 to the 0 is 1. Any number to the power 0 is 1. 2 to the minus 3 is 1 over 2 cubed. 2 cubed is 8, so it is 1 eighth.", ['7⁰ = 1', '2⁻³ = 1/2³ = 1/8']],
+        ["7 to the 0 is 1. Any number to the power 0 is 1. 2 to the minus 3 is 1 over 2 cubed. 2 cubed is 8, so it is 1/8.", ['7⁰ = 1', '2⁻³ = 1/2³ = 1/8']],
         ["10 to the minus 2 is 1 over 10 squared, which is 1 over 100. That is 0.01. Negative powers give small numbers, not negative numbers.", ['10⁻² = 1/10² = 1/100', 'g|= 0.01']]]],
       ['With letters', [
         ["Simplify 3 x squared times 4 x cubed. Multiply the numbers: 3 times 4 is 12. Add the powers of x: 2 plus 3 is 5.", ['3x² × 4x³', '3 × 4 = 12', 'x² × x³ = x⁵', 'g|12x⁵']]]]],
     mist: [
-      ['Multiplying the bases', "Mistake one: multiplying the bases. 2 cubed times 2 to the 4 is not 4 to the seven. The base stays 2. The answer is 2 to the seven.", ['r|2³ × 2⁴ = 4⁷ ✗', 'g|2³ × 2⁴ = 2⁷ ✓']],
-      ['Negative index means negative number', "Mistake two: thinking a negative index gives a negative answer. 2 to the minus 3 is 1 eighth. It is a small positive number.", ['r|2⁻³ = −8 ✗', 'g|2⁻³ = 1/8 ✓']]],
+      ['Multiplying the bases', "Mistake one: multiplying the bases. 2 cubed times 2 to the 4 is not 4 to the 7. The base stays 2. The answer is 2 to the 7.", ['r|2³ × 2⁴ = 4⁷ ✗', 'g|2³ × 2⁴ = 2⁷ ✓']],
+      ['Negative index means negative number', "Mistake two: thinking a negative index gives a negative answer. 2 to the minus 3 is 1/8. It is a small positive number.", ['r|2⁻³ = −8 ✗', 'g|2⁻³ = 1/8 ✓']]],
     real: ['In real life', "Computers store data in powers of 2. 1 kilobyte is 2 to the 10 bytes, which is 1,024. 2 to the 10 times 2 to the 10 is 2 to the 20, which is about 1 million bytes, or 1 megabyte.", ['2¹⁰ = 1024', '2¹⁰ × 2¹⁰ = 2²⁰ ≈ 1,000,000']],
     turns: [
       { q: 'Work out 3 to the 4 times 3 squared.', task: '3⁴ × 3²', say: "The bases are the same, so add the indices. 4 plus 2 is 6. 3 to the 6 is 729.", work: ['3⁴ × 3² = 3⁴⁺²', '= 3⁶', '3⁶ = 729'], ans: ['g|729'] },
-      { q: 'Work out 6 to the 9 divided by 6 to the seven.', task: '6⁹ ÷ 6⁷', say: "The bases are the same, so subtract the indices. 9 minus 7 is 2. 6 squared is 36.", work: ['6⁹ ÷ 6⁷ = 6⁹⁻⁷', '= 6²', '6² = 36'], ans: ['g|36'] },
+      { q: 'Work out 6 to the 9 divided by 6 to the 7.', task: '6⁹ ÷ 6⁷', say: "The bases are the same, so subtract the indices. 9 minus 7 is 2. 6 squared is 36.", work: ['6⁹ ÷ 6⁷ = 6⁹⁻⁷', '= 6²', '6² = 36'], ans: ['g|36'] },
       { q: 'Work out 4 to the minus 2, as a fraction.', task: '4⁻²', say: "A negative index means 1 over the positive power. So it is 1 over 4 squared. 4 squared is 16. The answer is 1 sixteenth.", work: ['4⁻² = 1/4²', '4² = 16', '= 1/16'], ans: ['g|1/16'] }],
     rec: ["Same base: add when multiplying, subtract when dividing.", ['aᵐ × aⁿ = aᵐ⁺ⁿ', 'aᵐ ÷ aⁿ = aᵐ⁻ⁿ', '(aᵐ)ⁿ = aᵐⁿ', 'a⁰ = 1', 'a⁻ⁿ = 1/aⁿ']]
   });

@@ -31,7 +31,7 @@
       S("Negative numbers are where mistakes happen. Take the points minus 2, minus 1, and 2, 5. Step one. Label them. x 1 is minus 2, y 1 is minus 1. x 2 is 2, y 2 is 5.", E('(x₁, y₁) = (−2, −1)') + E('(x₂, y₂) = (2, 5)')),
       S("Step two. The rise is y 2 minus y 1. 5 minus minus 1. Subtracting a negative is the same as adding. 5 plus 1 is 6.", E('5 − (−1) = 6')),
       S("Step three. The run is x 2 minus x 1. 2 minus minus 2. That is 2 plus 2, 4.", E('2 − (−2) = 4')),
-      S("Step four. Gradient is 6 over 4. Simplify. 3 over 2, or 1 and a half. A gradient that is not a whole number is perfectly fine.", g('m = 6/4 = 3/2')),
+      S("Step four. Gradient is 6 over 4. Simplify. 3 over 2, or 1 and 1/2. A gradient that is not a whole number is perfectly fine.", g('m = 6/4 = 3/2')),
       S("Step five. Does it make sense? The line goes up as we move right, so the gradient is positive. Yes.", V.rule('Does the sign make sense?'))
     ]),
     SC('From a real graph', 'Example 7: the cost of hiring a van', [
@@ -40,7 +40,7 @@
       S("What does it mean? Each extra day costs £2 more. The gradient is the rate of change, here £2 per day. The £3 is the fixed charge.", V.rule('Gradient = rate of change.'))
     ]),
     SC('Watch out!', 'Common mistakes, with examples', [
-      S("Mistake one. Dividing run by rise. The points are 0, 2 and 3, 8. Wrong: 3 over 6, a half. Gradient is rise over run. 6 over 3. 2.", r('run ÷ rise = 3 ÷ 6  ✗') + g('rise ÷ run = 6 ÷ 3 = 2  ✓')),
+      S("Mistake one. Dividing run by rise. The points are 0, 2 and 3, 8. Wrong: 3 over 6, 1/2. Gradient is rise over run. 6 over 3. 2.", r('run ÷ rise = 3 ÷ 6  ✗') + g('rise ÷ run = 6 ÷ 3 = 2  ✓')),
       S("Mistake two. Using a different order on the top and the bottom. The points are 1, 5 and 4, 2. Wrong: 2 minus 5 on top, 1 minus 4 on the bottom, which gives plus 1. Use the same order. 2 minus 5 over 4 minus 1. Minus 3 over 3. Minus 1.", r('(2 − 5) ÷ (1 − 4) = 1  ✗') + g('(2 − 5) ÷ (4 − 1) = −1  ✓')),
       S("Mistake three. Dropping the negative sign. The points are 2, 7 and 6, 3. The line goes down. Wrong: 4 over 4, 1. 3 minus 7 is minus 4. The gradient is minus 1.", r('m = 4 ÷ 4 = 1  ✗') + g('m = (3 − 7) ÷ (6 − 2) = −1  ✓'))
     ]),
@@ -77,12 +77,12 @@
     ]),
     SC('Rearranging slowly', 'Example 7: 2x + 3y = 12', [
       S("Sometimes the equation is not in the form y equals m x plus c. Step one. Get the y term on its own. Subtract 2 x from both sides. 3 y equals 12 minus 2 x.", E('2x + 3y = 12') + E('3y = 12 − 2x')),
-      S("Step two. Divide every term by 3. y equals 4, minus 2 thirds x. Write the x term first. y equals minus 2 thirds x plus 4.", g('y = −⅔x + 4')),
-      S("Now read off. The gradient is minus 2 thirds. The line crosses the y axis at 4. A negative gradient, so the line slopes down.", E('m = −⅔, c = 4'))
+      S("Step two. Divide every term by 3. y equals 4, minus 2/3 x. Write the x term first. y equals minus 2/3 x plus 4.", g('y = −⅔x + 4')),
+      S("Now read off. The gradient is minus 2/3. The line crosses the y axis at 4. A negative gradient, so the line slopes down.", E('m = −⅔, c = 4'))
     ]),
     SC('Quick sketches', 'Example 8: drawing from m and c', [
-      S("You can sketch a line from y equals m x plus c without a table. Take y equals a half x plus 1. Step one. Plot the y-intercept, 0, 1. Step two. The gradient is a half. That means across 2, up 1. From 0, 1, go across 2 and up 1, to 2, 2. Step three. Join the points and extend.", E('y = ½x + 1') + V.rule('Start at c. Then rise over run.')),
-      S("Check with the equation. At x equals 2, y is a half times 2 plus 1, which is 2. The point is on the line.", E('x = 2: y = 2 ✓'))
+      S("You can sketch a line from y equals m x plus c without a table. Take y equals 1/2 x plus 1. Step one. Plot the y-intercept, 0, 1. Step two. The gradient is 1/2. That means across 2, up 1. From 0, 1, go across 2 and up 1, to 2, 2. Step three. Join the points and extend.", E('y = ½x + 1') + V.rule('Start at c. Then rise over run.')),
+      S("Check with the equation. At x equals 2, y is 1/2 times 2 plus 1, which is 2. The point is on the line.", E('x = 2: y = 2 ✓'))
     ]),
     SC('Watch out!', 'Common mistakes, with examples', [
       S("Mistake one. Not rearranging first. 2 y equals 6 x plus 4. Wrong: the gradient is 6. Divide every term by 2. y equals 3 x plus 2. The gradient is 3.", r('2y = 6x + 4 → m = 6  ✗') + g('y = 3x + 2 → m = 3  ✓')),
@@ -93,7 +93,7 @@
       S("A phone plan costs £15 a month plus 10p per minute. The equation is C equals 0.1 m plus 15. The graph starts at 15 and rises slowly.", g('C = 0.1m + 15'))
     ]),
     L.turn("Your turn! Number one. What are the gradient and y-intercept of y equals 5 x minus 2? Pause and try it.", E('y = 5x − 2'), "Gradient 5. Intercept minus 2.", g('m = 5, c = −2')),
-    L.turn("Your turn! Number two. A line crosses the y axis at 4, and has gradient one half. Write its equation. Pause and try it.", E('c = 4, m = ½'), "y equals a half x plus 4.", g('y = ½x + 4')),
+    L.turn("Your turn! Number two. A line crosses the y axis at 4, and has gradient 1/2. Write its equation. Pause and try it.", E('c = 4, m = ½'), "y equals 1/2 x plus 4.", g('y = ½x + 4')),
     L.turn("Your turn! Number three. Rearrange 2 y equals 8 x plus 6 to find the gradient. Pause and try it.", E('2y = 8x + 6'), "Divide by 2. y equals 4 x plus 3. Gradient 4.", g('m = 4')),
     L.rec('How do you read y = mx + c?', "In y equals m x plus c, m is the gradient and c is where the line crosses the y axis. Rearrange so that y is on its own first. Parallel lines have the same gradient. In real life, m is the rate of change and c is the starting value.", ['m: gradient', 'c: y-intercept', 'Rearrange to y = first', 'Parallel: same m'])
   ]);
@@ -119,7 +119,7 @@
       S("Always check using the point you did not use. In Example three, put in 3, 9. 3 times 3 is 9. Correct.", V.rule('Check with the other point.'))
     ]),
     SC('Fractions', 'Example 6: a fractional gradient', [
-      S("Points 2, 1 and 6, 3. Gradient is 2 over 4, a half. y equals a half x plus c. Put in 2, 1. 1 equals 1 plus c, so c is 0. y equals a half x.", g('y = ½x'))
+      S("Points 2, 1 and 6, 3. Gradient is 2 over 4, 1/2. y equals 1/2 x plus c. Put in 2, 1. 1 equals 1 plus c, so c is 0. y equals 1/2 x.", g('y = ½x'))
     ]),
     SC('Negative point', 'Example 7: gradient 3, through (−1, 4)', [
       S("Take care with negatives. Start with y equals 3 x plus c. Step one. Put in x equals minus 1 and y equals 4. 4 equals 3 times minus 1, plus c.", E('4 = 3(−1) + c')),
@@ -167,8 +167,8 @@
       S("To find y when x is 2.5 on y equals 2 x plus 1, go up from 2.5 to the line, then across. About 6.", V.note('Read across from the line'))
     ]),
     SC('A fractional gradient', 'Example 7: y = ½x + 1', [
-      S("When there is a half in the equation, choose even values of x, so there are no fractions. x equals 0 gives y equals 1. x equals 2 gives y equals 2. x equals 4 gives y equals 3. x equals 6 gives y equals 4.", V.tbl([['0', '2', '4', '6'], ['1', '2', '3', '4']], ['x', 'y'])),
-      S("Plot them. Each time x goes across 2, y goes up 1. That matches the gradient of a half. Join them with a ruler.", V.rule('Choose x to avoid fractions.'))
+      S("When there is 1/2 in the equation, choose even values of x, so there are no fractions. x equals 0 gives y equals 1. x equals 2 gives y equals 2. x equals 4 gives y equals 3. x equals 6 gives y equals 4.", V.tbl([['0', '2', '4', '6'], ['1', '2', '3', '4']], ['x', 'y'])),
+      S("Plot them. Each time x goes across 2, y goes up 1. That matches the gradient of 1/2. Join them with a ruler.", V.rule('Choose x to avoid fractions.'))
     ]),
     SC('How many points', 'Why three points is better than two', [
       S("2 points are enough to draw a line. But we use 3, or more. If all 3 are in a straight line, we know our calculations are right. If 1 is off the line, we have made a mistake, and we can find it.", V.rule('3 points: 1 is a check.')),

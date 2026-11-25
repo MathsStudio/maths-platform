@@ -12,19 +12,19 @@
     ex: [['Large numbers', '4,500,000', [["Move the point to make 4.5: 6 places. So 4.5 times 10 to the power 6.", E('4,500,000 = 4.5 × 10⁶', 'g')]]],
       ['Small numbers', '0.00072', [["Move the point to make 7.2: 4 places right, so the power is negative 4.", E('0.00072 = 7.2 × 10⁻⁴', 'g')]]],
       ['Back to ordinary form', '3.08 × 10⁵', [["Move the point 5 places right: 308,000.", E('3.08 × 10⁵ = 308,000', 'g')]]],
-      ['Multiplying', 'Multiply the numbers, add the powers', [["2 times 10 cubed times 4 times 10 to the 5 is 8 times 10 to the eight.", E('(2 × 10³)(4 × 10⁵) = 8 × 10⁸', 'g')]]]],
-    real: ['Science', "The Sun is about 150 million kilometres away: 1.5 times 10 to the eight. A red blood cell is about 7 times 10 to the minus 6 metres wide.", E('1.5 × 10⁸ km · 7 × 10⁻⁶ m', 'g')],
-    turn: ["Your turn! Write 62,000 in standard form. Pause and try it.", E('62,000'), "6.2 times 10 to the four.", E('6.2 × 10⁴', 'g')],
+      ['Multiplying', 'Multiply the numbers, add the powers', [["2 times 10 cubed times 4 times 10 to the 5 is 8 times 10 to the 8.", E('(2 × 10³)(4 × 10⁵) = 8 × 10⁸', 'g')]]]],
+    real: ['Science', "The Sun is about 150 million kilometres away: 1.5 times 10 to the 8. A red blood cell is about 7 times 10 to the minus 6 metres wide.", E('1.5 × 10⁸ km · 7 × 10⁻⁶ m', 'g')],
+    turn: ["Your turn! Write 62,000 in standard form. Pause and try it.", E('62,000'), "6.2 times 10 to the 4.", E('6.2 × 10⁴', 'g')],
     rec: ["Write a number between 1 and 10, times a power of 10. Big numbers have positive powers; small numbers have negative powers.", ['1 ≤ a < 10', 'Count the moves of the point', 'Big: positive power', 'Small: negative power']],
     deep: ['The power of 10 tells you how many places the decimal point moved.', '45 × 10⁵ is not standard form: the first number must be less than 10.']
   });
 
   LS('Index laws and negative indices', 'the laws for multiplying and dividing powers, and what negative and 0 powers mean.', {
     intro: ['Index laws', 'Shortcuts for powers', "When the base is the same, there are quick rules for multiplying, dividing and raising powers.", V.tbl([['aᵐ × aⁿ', 'aᵐ⁺ⁿ'], ['aᵐ ÷ aⁿ', 'aᵐ⁻ⁿ'], ['(aᵐ)ⁿ', 'aᵐⁿ']], ['Rule', 'Result'])],
-    ex: [['Multiplying', 'Add the powers', [["3 to the 4 times 3 to the 2 is 3 to the six.", E('3⁴ × 3² = 3⁶', 'g')]]],
-      ['Dividing', 'Subtract the powers', [["5 to the 7 divided by 5 to the 3 is 5 to the four.", E('5⁷ ÷ 5³ = 5⁴', 'g')]]],
-      ['Power of a power', 'Multiply the powers', [["2 squared, all cubed, is 2 to the six.", E('(2²)³ = 2⁶', 'g')]]],
-      ['Zero and negative powers', 'a⁰ = 1, a⁻ⁿ = 1/aⁿ', [["Anything to the power 0 is 1. 2 to the minus 3 is 1 over 2 cubed: 1 eighth.", E('7⁰ = 1 · 2⁻³ = 1/8', 'g')]]]],
+    ex: [['Multiplying', 'Add the powers', [["3 to the 4 times 3 to the 2 is 3 to the 6.", E('3⁴ × 3² = 3⁶', 'g')]]],
+      ['Dividing', 'Subtract the powers', [["5 to the 7 divided by 5 to the 3 is 5 to the 4.", E('5⁷ ÷ 5³ = 5⁴', 'g')]]],
+      ['Power of a power', 'Multiply the powers', [["2 squared, all cubed, is 2 to the 6.", E('(2²)³ = 2⁶', 'g')]]],
+      ['Zero and negative powers', 'a⁰ = 1, a⁻ⁿ = 1/aⁿ', [["Anything to the power 0 is 1. 2 to the minus 3 is 1 over 2 cubed: 1/8.", E('7⁰ = 1 · 2⁻³ = 1/8', 'g')]]]],
     turn: ["Your turn! Simplify x to the 5 times x to the minus 2. Pause and try it.", E('x⁵ × x⁻²'), "Add the powers: x cubed.", E('x³', 'g')],
     rec: ["With the same base: multiply means add powers, divide means subtract powers, a power of a power means multiply. a to the 0 is 1; a negative power is 1 over the positive power.", ['× : add powers', '÷ : subtract powers', '( )ⁿ: multiply powers', 'a⁰ = 1, a⁻ⁿ = 1/aⁿ']],
     deep: ['a⁰ = 1 because aⁿ ÷ aⁿ is 1, and the rule gives aⁿ⁻ⁿ = a⁰.', 'The laws only work with the same base: 2³ × 3² cannot be combined.']
@@ -55,7 +55,7 @@
   LS('Percentage change and wages', 'how pay rises, deductions and percentage changes affect wages.', {
     intro: ['Pay and percentages', 'Rises and deductions', "Pay rises are usually given as a percentage. Deductions like tax and pension are taken off. Percentages help us compare.", E('New pay = old pay × (1 + rise)', 'g')],
     ex: [['A pay rise', '3% on £24,000', [["3% of 24,000 is £720. The new salary is £24,720.", E('24,000 × 1.03 = £24,720', 'g')]]],
-      ['Hourly rate', 'A 5% rise on £11.40', [["Eleven pounds forty times one point zero five is eleven pounds ninety-seven.", E('£11.40 × 1.05 = £11.97', 'g')]]],
+      ['Hourly rate', 'A 5% rise on £11.40', [["£11.40 times 1.05 is £11.97.", E('£11.40 × 1.05 = £11.97', 'g')]]],
       ['Deductions', 'Net pay', [["Gross pay is £2,000. Deductions of £340 leave net pay of £1,660.", E('£2,000 − £340 = £1,660', 'g')]]],
       ['Comparing rises', 'Which is better?', [["A 4% rise on £20,000, or a flat £700? 4% is £800, so the percentage is better.", E('£800 > £700', 'g')]]]],
     turn: ["Your turn! A wage rises from £400 to £420 a week. What percentage rise is that? Pause and try it.", E('20 ÷ 400 × 100'), "Five per cent.", E('5%', 'g')],
@@ -110,7 +110,7 @@
   LS('Average speed', 'how to work out average speed for a journey with different parts.', {
     intro: ['Average speed', 'Total distance ÷ total time', "On a real journey, speed changes. The average speed is the total distance divided by the total time.", E('Average speed = total distance ÷ total time', 'g')],
     ex: [['Two parts', 'A drive', [["60 kilometres in 1 hour, then 100 kilometres in 2 hours. Total: 160 kilometres in 3 hours. Average speed: 53.3 kilometres per hour.", E('160 ÷ 3 ≈ 53.3 km/h', 'g')]]],
-      ['With a stop', 'Include the break', [["A cyclist rides 30 kilometres in 1 and a half hours, stops for half an hour, then rides 20 kilometres in 1 hour. 50 kilometres in 3 hours: 16.7 kilometres per hour.", E('50 ÷ 3 ≈ 16.7 km/h', 'g')]]],
+      ['With a stop', 'Include the break', [["A cyclist rides 30 kilometres in 1 and 1/2 hours, stops for half an hour, then rides 20 kilometres in 1 hour. 50 kilometres in 3 hours: 16.7 kilometres per hour.", E('50 ÷ 3 ≈ 16.7 km/h', 'g')]]],
       ['Not the mean of speeds', 'A trap', [["Driving there at 60 and back at 40 does not average 50. For 120 kilometres each way: 2 hours plus 3 hours, 240 kilometres in 5 hours: 48.", E('240 ÷ 5 = 48 km/h', 'g')]]]],
     turn: ["Your turn! A walk of 12 kilometres takes 3 hours, including a 1-hour lunch. What is the average speed? Pause and try it.", E('12 ÷ 3'), "4 kilometres per hour, using the total time.", E('4 km/h', 'g')],
     rec: ["Add up all the distances and all the times, including stops, then divide. Don't just average the speeds.", ['Total distance', 'Total time (with stops)', 'Divide', 'Not the mean of speeds']],
@@ -120,7 +120,7 @@
   LS('Distance–time graphs with a return', 'how to read and draw distance–time graphs for journeys that go out and come back.', {
     intro: ['Out and back', 'The line comes down', "On a distance–time graph, going away makes the line rise. Coming back makes it fall towards 0.", V.cards(['Rising: going away', 'Flat: stopped', 'Falling: coming back'], ['b', 'p', 'g'])],
     ex: [['Reading speeds', 'Each section', [["10 kilometres out in 1 hour is 10 kilometres per hour. Back in 30 minutes is 20 kilometres per hour: faster on the way home, so steeper.", E('10 ÷ 1 = 10 · 10 ÷ 0.5 = 20 km/h', 'g')]]],
-      ['A stop', 'Flat line', [["A flat section from 11 to 11 30 means a half-hour stop.", E('30 min stop', 'g')]]],
+      ['A stop', 'Flat line', [["A flat section from 11 to 11 30 means 1/2-hour stop.", E('30 min stop', 'g')]]],
       ['Two people', 'Where lines cross', [["When 2 journey lines cross, the people are at the same place at the same time.", V.note('Crossing lines: same place, same time')]]]],
     turn: ["Your turn! A line goes from 12 kilometres back to 0 in 45 minutes. What is the speed? Pause and try it.", E('12 ÷ 0.75'), "16 kilometres per hour.", E('16 km/h', 'g')],
     rec: ["Rising lines go away, flat lines are stops, falling lines come back. Speed is distance over time for each section; steeper means faster.", ['Rising: away', 'Flat: stopped', 'Falling: returning', 'Steeper = faster']],
@@ -262,8 +262,8 @@
 
   LS('Arcs and sectors', 'how to find the length of an arc and the area of a sector.', {
     intro: ['Parts of a circle', 'Arc and sector', "An arc is part of the circumference. A sector is a slice of the circle, like a slice of pizza. Both are a fraction of the whole circle.", E('fraction = angle ÷ 360°', 'g')],
-    ex: [['Arc length', 'Angle 60°, radius 9', [["60 degrees is a sixth of the circle. The circumference is pi times 18. A sixth of it is 3 pi: about 9.42.", E('60/360 × π × 18 ≈ 9.42', 'g')]]],
-      ['Sector area', 'Angle 90°, radius 10', [["90 degrees is a quarter. The circle's area is 100 pi. A quarter is 25 pi: about 78.5.", E('90/360 × π × 10² ≈ 78.5', 'g')]]],
+    ex: [['Arc length', 'Angle 60°, radius 9', [["60 degrees is 1/6 of the circle. The circumference is pi times 18. 1/6 of it is 3 pi: about 9.42.", E('60/360 × π × 18 ≈ 9.42', 'g')]]],
+      ['Sector area', 'Angle 90°, radius 10', [["90 degrees is 1/4. The circle's area is 100 pi. 1/4 is 25 pi: about 78.5.", E('90/360 × π × 10² ≈ 78.5', 'g')]]],
       ['Perimeter of a sector', 'Arc plus two radii', [["The perimeter of a sector is the arc length plus 2 radii. For the 60 degree sector of radius 9: 9.42 plus 18, 27.42.", E('9.42 + 2 × 9 = 27.42', 'g')]]]],
     turn: ["Your turn! What is the area of a semicircle with radius 4? Leave it in terms of pi. Pause and try it.", E('180/360 × π × 16'), "Half of 16 pi is 8 pi.", E('8π ≈ 25.1', 'g')],
     rec: ["The fraction of the circle is the angle over 360. Arc length is that fraction of the circumference; sector area is that fraction of the area.", ['Fraction = angle ÷ 360', 'Arc = fraction × πd', 'Sector = fraction × πr²', 'Perimeter: arc + 2r']],
@@ -276,7 +276,7 @@
       ['SOH CAH TOA', 'Label the sides', [["Opposite is across from the angle, adjacent is next to it, hypotenuse is the longest. Sine is opposite over hypotenuse, cosine adjacent over hypotenuse, tangent opposite over adjacent.", V.tbl([['sin', 'O ÷ H'], ['cos', 'A ÷ H'], ['tan', 'O ÷ A']], ['Ratio', 'Sides'])]]],
       ['Finding a side', 'With an angle', [["Angle 30 degrees, hypotenuse 10, find the opposite: 10 times sine 30 is 5.", E('O = 10 × sin 30° = 5', 'g')]]],
       ['Finding an angle', 'Inverse', [["Opposite 4, adjacent 4: tangent is 1, so the angle is 45 degrees.", E('tan⁻¹(4 ÷ 4) = 45°', 'g')]]]],
-    turn: ["Your turn! Opposite 6, hypotenuse 12. Find the angle. Pause and try it.", E('sin⁻¹(6 ÷ 12)'), "Sine is a half, so the angle is 30 degrees.", E('30°', 'g')],
+    turn: ["Your turn! Opposite 6, hypotenuse 12. Find the angle. Pause and try it.", E('sin⁻¹(6 ÷ 12)'), "Sine is 1/2, so the angle is 30 degrees.", E('30°', 'g')],
     rec: ["Use Pythagoras for 3 sides. Use SOH CAH TOA when an angle is involved: label the sides, pick the ratio, then solve.", ['3 sides: Pythagoras', 'Angle: SOH CAH TOA', 'Label O, A, H', 'Inverse for angles']],
     deep: ['Trigonometric ratios are fixed for each angle because all right-angled triangles with that angle are similar.', 'Check your calculator is in degrees.']
   });
@@ -284,9 +284,9 @@
   /* ---------- 831 ---------- */
   LS('Similar shapes and scale factors', 'how to recognise similar shapes and use scale factors to find missing lengths.', {
     intro: ['Similar shapes', 'Same shape, different size', "Similar shapes have equal angles and corresponding sides in the same ratio. 1 is an enlargement of the other.", E('scale factor = new ÷ original', 'g')],
-    ex: [['Finding the scale factor', 'Matching sides', [["A side of 4 becomes 10. The scale factor is 10 divided by 4: 2 and a half.", E('10 ÷ 4 = 2.5', 'g')]]],
-      ['Missing length', 'Multiply', [["Another side of 6 on the small shape becomes 6 times 2 and a half: 15.", E('6 × 2.5 = 15', 'g')]]],
-      ['Going back', 'Divide', [["A side of 20 on the large shape is 20 divided by 2 and a half on the small shape: 8.", E('20 ÷ 2.5 = 8', 'g')]]],
+    ex: [['Finding the scale factor', 'Matching sides', [["A side of 4 becomes 10. The scale factor is 10 divided by 4: 2 and 1/2.", E('10 ÷ 4 = 2.5', 'g')]]],
+      ['Missing length', 'Multiply', [["Another side of 6 on the small shape becomes 6 times 2 and 1/2: 15.", E('6 × 2.5 = 15', 'g')]]],
+      ['Going back', 'Divide', [["A side of 20 on the large shape is 20 divided by 2 and 1/2 on the small shape: 8.", E('20 ÷ 2.5 = 8', 'g')]]],
       ['Similar triangles', 'Equal angles', [["If 2 triangles have the same angles, they are similar, even if they are different sizes or turned around.", V.note('Same angles → similar')]]]],
     turn: ["Your turn! A photo 6 centimetres wide is enlarged to 15 centimetres wide. Its height was 4. What is the new height? Pause and try it.", E('4 × 15 ÷ 6'), "The scale factor is 2.5, so 10 centimetres.", E('10 cm', 'g')],
     rec: ["Similar shapes have equal angles and sides in the same ratio. Find the scale factor from matching sides, multiply to enlarge, divide to reduce.", ['Equal angles', 'Sides in the same ratio', 'k = new ÷ original', '× k or ÷ k']],
@@ -296,7 +296,7 @@
   LS('Enlargement', 'how to enlarge a shape from a centre of enlargement by a scale factor.', {
     intro: ['Enlargement', 'Scale factor and centre', "An enlargement changes a shape's size. Every length is multiplied by the scale factor, measured from a centre of enlargement.", E('distance from centre × k', 'g')],
     ex: [['Scale factor 2', 'From the origin', [["A corner at 2, 1 moves to 4, 2: twice as far from the origin.", E('(2, 1) → (4, 2)', 'g')]]],
-      ['Scale factor ½', 'Smaller', [["A scale factor of a half moves each point halfway to the centre, making the shape smaller.", E('(6, 4) → (3, 2)', 'g')]]],
+      ['Scale factor ½', 'Smaller', [["A scale factor of 1/2 moves each point halfway to the centre, making the shape smaller.", E('(6, 4) → (3, 2)', 'g')]]],
       ['Another centre', 'Count from the centre', [["Centre 1, 1, scale factor 3. The point 2, 2 is 1 across and 1 up from the centre, so it moves 3 across and 3 up: 4, 4.", E('(2, 2) → (4, 4)', 'g')]]],
       ['Finding the centre', 'Ray lines', [["Join each corner to its image and extend the lines. They meet at the centre of enlargement.", V.note('Rays meet at the centre')]]]],
     turn: ["Your turn! Enlarge the point 3, 2 by scale factor 3 from the origin. Pause and try it.", E('(3, 2) × 3'), "Nine, six.", E('(9, 6)', 'g')],
@@ -318,10 +318,10 @@
 
   LS('Tree diagrams', 'how to use tree diagrams to find probabilities of combined events.', {
     intro: ['Tree diagrams', 'Two events', "A tree diagram shows all outcomes of 2 or more events. Each branch has a probability.", E('Multiply along, add between', 'g')],
-    ex: [['Two coin flips', 'Branches', [["Each flip has 2 branches: heads and tails, each a half. 2 flips give 4 paths.", V.tbl([['H then H', '¼'], ['H then T', '¼'], ['T then H', '¼'], ['T then T', '¼']], ['Path', 'Probability'])]]],
+    ex: [['Two coin flips', 'Branches', [["Each flip has 2 branches: heads and tails, each 1/2. 2 flips give 4 paths.", V.tbl([['H then H', '¼'], ['H then T', '¼'], ['T then H', '¼'], ['T then T', '¼']], ['Path', 'Probability'])]]],
       ['Multiply along', 'One path', [["The probability of rain and then rain, if each day has a chance of 0.3, is 0.3 times 0.3: 0.09.", E('0.3 × 0.3 = 0.09', 'g')]]],
       ['Add between', 'More than one path', [["Rain on exactly one of 2 days: 0.3 times 0.7, plus 0.7 times 0.3: 0.42.", E('0.21 + 0.21 = 0.42', 'g')]]],
-      ['Without replacement', 'Probabilities change', [["A bag has 3 red and 2 blue. Take 1, don't put it back. Red then red: 3 fifths times 2 quarters: 3 tenths.", E('3/5 × 2/4 = 3/10', 'g')]]]],
+      ['Without replacement', 'Probabilities change', [["A bag has 3 red and 2 blue. Take 1, don't put it back. Red then red: 3/5 times 2/4: 3/10.", E('3/5 × 2/4 = 3/10', 'g')]]]],
     turn: ["Your turn! A spinner lands on green with probability 0.4. Spin twice. What is the probability of 2 greens? Pause and try it.", E('0.4 × 0.4'), "Zero point one six.", E('0.16', 'g')],
     rec: ["Draw branches for each outcome with probabilities that add to 1. Multiply along a path, add between paths. Change the second probabilities if there is no replacement.", ['Branches add to 1', 'Multiply along', 'Add between paths', 'No replacement: probabilities change']],
     deep: ['Multiplying along branches works because each event is a fraction of the one before.', 'Check all the final probabilities add up to 1.']
@@ -341,7 +341,7 @@
   LS('Rotation on a grid', 'how to rotate shapes on a grid about a centre by 90° or 180°.', {
     intro: ['Rotation', 'Turning about a point', "A rotation turns a shape about a centre by an angle in a direction. The shape stays the same size.", V.note('Centre, angle, direction')],
     ex: [['90° clockwise about the origin', 'A rule', [["Rotating 90 degrees clockwise about the origin sends x, y to y, negative x. 3, 1 goes to 1, negative 3.", E('(3, 1) → (1, −3)', 'g')]]],
-      ['180° about the origin', 'Both signs change', [["A half turn sends x, y to negative x, negative y. 2, 5 goes to negative 2, negative 5.", E('(2, 5) → (−2, −5)', 'g')]]],
+      ['180° about the origin', 'Both signs change', [["1/2 turn sends x, y to negative x, negative y. 2, 5 goes to negative 2, negative 5.", E('(2, 5) → (−2, −5)', 'g')]]],
       ['Using tracing paper', 'Any centre', [["Trace the shape, hold the centre with a pencil, turn the paper, and mark the new position.", V.note('Trace, pin, turn')]]],
       ['Describing a rotation', 'Full description', [["To describe a rotation, give all 3: centre, angle and direction, like 90 degrees anticlockwise about 1, 2.", E('90° anticlockwise about (1, 2)', 'g')]]]],
     turn: ["Your turn! Rotate the point 4, negative 1 by 180 degrees about the origin. Pause and try it.", E('(4, −1)'), "Both signs change: negative 4, 1.", E('(−4, 1)', 'g')],

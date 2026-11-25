@@ -103,21 +103,21 @@
 
   LS('Giving directions with compass points and turns', 'how to give and follow directions using compass points and quarter turns.', 'Directions',
     E('Compass points',
-      ["The 4 main points are north, east, south and west, clockwise. Between them are northeast, southeast, southwest and northwest. A quarter turn is 90 degrees. A half turn is 180 degrees.", ['N, E, S, W clockwise', 'Quarter turn: 90°', 'Half turn: 180°']]),
+      ["The 4 main points are north, east, south and west, clockwise. Between them are northeast, southeast, southwest and northwest. 1/4 turn is 90 degrees. 1/2 turn is 180 degrees.", ['N, E, S, W clockwise', 'Quarter turn: 90°', 'Half turn: 180°']]),
     [E('Turning clockwise',
-        ["Facing north, turn a quarter turn clockwise. You face east.", ['N → E', 'g|East']]),
+        ["Facing north, turn 1/4 turn clockwise. You face east.", ['N → E', 'g|East']]),
       E('A half turn',
-        ["Facing west, turn a half turn. You face east.", ['W → E', 'g|East']]),
+        ["Facing west, turn 1/2 turn. You face east.", ['W → E', 'g|East']]),
       E('Anticlockwise',
-        ["Facing south, turn a quarter turn anticlockwise. You face east.", ['S → E', 'g|East']]),
+        ["Facing south, turn 1/4 turn anticlockwise. You face east.", ['S → E', 'g|East']]),
       E('A route',
         ["Walk 3 squares north, turn right and walk 2 squares. You are now facing east and have moved 3 up and 2 across.", ['3 N, then 2 E', 'g|Ended 3 up, 2 across']])],
     [M('Left and right confusion', "Mistake one: turning left when told to turn right. Right is clockwise from the direction you are facing.", 'Right = anticlockwise ✗', 'Right = clockwise ✓'),
-     M('Counting the turn wrongly', "Mistake two: a quarter turn is 90 degrees, not 180.", 'Quarter = 180° ✗', 'Quarter = 90° ✓')],
+     M('Counting the turn wrongly', "Mistake two: 1/4 turn is 90 degrees, not 180.", 'Quarter = 180° ✗', 'Quarter = 90° ✓')],
     ["Sat navs and treasure maps use directions. Turn left, go straight, turn right.", ['Directions']],
-    [T('Facing north, turn a half turn. Which way do you face?', "South.", ['180°'], 'South'),
-     T('Facing east, turn a quarter turn clockwise. Which way do you face?', "South.", ['E → S'], 'South'),
-     T('Facing west, turn a quarter turn anticlockwise. Which way?', "South.", ['W → S'], 'South')],
+    [T('Facing north, turn 1/2 turn. Which way do you face?', "South.", ['180°'], 'South'),
+     T('Facing east, turn 1/4 turn clockwise. Which way do you face?', "South.", ['E → S'], 'South'),
+     T('Facing west, turn 1/4 turn anticlockwise. Which way?', "South.", ['W → S'], 'South')],
     ["Clockwise N, E, S, W.", ['90° = quarter', '180° = half']]);
 
   LS('Number and shape sequences', 'how to continue and describe sequences of numbers and shapes.', 'Number and shape sequences',
@@ -139,13 +139,13 @@
      T('Continue 30, 25, 20, 15, ...', "The difference is minus 5. 10, 5.", ['−5'], '10, 5')],
     ["Find the difference or multiplier.", ['Add', 'Multiply', 'Check each step']]);
 
-  LS('Rotation and translation', 'how to translate a shape and rotate it by a quarter or half turn.', 'Rotation and translation',
+  LS('Rotation and translation', 'how to translate a shape and rotate it by 1/4 or half turn.', 'Rotation and translation',
     E('Two moves',
-      ["A translation slides a shape without turning it. It is given as a number of squares across and up or down. A rotation turns a shape about a point by a quarter turn or half turn.", ['Translation: slide', 'Rotation: turn']]),
+      ["A translation slides a shape without turning it. It is given as a number of squares across and up or down. A rotation turns a shape about a point by 1/4 turn or half turn.", ['Translation: slide', 'Rotation: turn']]),
     [E('Translate a point',
         ["Translate the point 2, 3 by 3 right and 1 down. 3 right makes x 5. 1 down makes y 2. The new point is 5, 2.", ['x: 2 + 3 = 5', 'y: 3 − 1 = 2', 'g|(5, 2)']]),
       E('Rotate a point',
-        ["Rotate the point 3, 1 by a half turn about the origin. Both coordinates change sign. Minus 3, minus 1.", ['(3, 1) → (−3, −1)', 'g|(−3, −1)']]),
+        ["Rotate the point 3, 1 by 1/2 turn about the origin. Both coordinates change sign. Minus 3, minus 1.", ['(3, 1) → (−3, −1)', 'g|(−3, −1)']]),
       E('A shape',
         ["A translation moves every point by the same amount. The shape stays the same size and faces the same way.", ['Same size', 'Same direction']]),
       E('Describing',
@@ -154,7 +154,7 @@
      M('Wrong direction', "Mistake two: moving down instead of up.", '(2, 3) up 1 → (2, 2) ✗', '(2, 3) up 1 → (2, 4) ✓')],
     ["Computer games move characters by translations. A character moves 3 squares right, then 2 up.", ['Translation']],
     [T('Translate (1, 2) by 4 right and 3 up.', "Five, five.", ['(1 + 4, 2 + 3)'], '(5, 5)'),
-     T('Rotate (2, 4) by a half turn about the origin.', "Minus 2, minus 4.", ['Change both signs'], '(−2, −4)'),
+     T('Rotate (2, 4) by 1/2 turn about the origin.', "Minus 2, minus 4.", ['Change both signs'], '(−2, −4)'),
      T('A point moves from (3, 3) to (6, 1). Describe the translation.', "3 right and 2 down.", ['6 − 3 = 3', '1 − 3 = −2'], '3 right, 2 down')],
     ["Slide or turn.", ['Translation: across, up', 'Half turn: change both signs']]);
 
@@ -164,7 +164,7 @@
     [E('An analogy',
         ["Bird is to nest as bee is to hive. A nest is where a bird lives. A hive is where a bee lives.", ['Lives in', 'g|hive']]),
       E('A rotation',
-        ["An arrow points up. After a quarter turn clockwise it points right. After a half turn, it points down.", ['Up → right → down', 'g|Down']]),
+        ["An arrow points up. After 1/4 turn clockwise it points right. After 1/2 turn, it points down.", ['Up → right → down', 'g|Down']]),
       E('A letter code',
         ["In a code each letter moves 1 forward. A becomes B, so CAT becomes DBU.", ['C → D', 'A → B', 'T → U', 'g|DBU']]),
       E('Decoding',
@@ -174,7 +174,7 @@
     ["Secret codes and puzzle questions use these ideas. Spotting the rule is also the key skill in sequences.", ['Spot the rule']],
     [T('Hand is to glove as foot is to ___.', "A glove covers a hand. A sock covers a foot.", ['Covers'], 'sock'),
      T('In a code each letter moves 1 forward. Write BAD.', "B to C, A to B, D to E. CBE.", ['B → C', 'A → B', 'D → E'], 'CBE'),
-     T('An arrow points right. It turns a half turn. Which way does it point?', "Left.", ['180°'], 'Left')],
+     T('An arrow points right. It turns 1/2 turn. Which way does it point?', "Left.", ['180°'], 'Left')],
     ["Say the link. Follow the rule.", ['Analogy', 'Rotation', 'Code']]);
 
   L.use(813, ['How do you use nets to find surface area?', 'Using nets to find surface area', 'Volume and surface area of stacks', 'Views and cross-sections of solids', 'How do you draw views and cross-sections of solids?', 'Counting painted cubes', 'How do you count painted cubes and cubes in stacks?', 'Line and rotational symmetry in patterns', 'How do you find lines of symmetry and rotational symmetry?', 'Giving directions with compass points and turns', 'Number and shape sequences', 'Rotation and translation', 'Analogies, rotation rules and letter codes']);

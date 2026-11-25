@@ -24,7 +24,7 @@
     [T('A parallelogram has a base of 9 centimetres and a perpendicular height of 6 centimetres. Find its area.', "Multiply the base by the height. 9 times 6 is 54 square centimetres.", ['Area = base × height', '9 × 6', '= 54'], '54 cm²'),
      T('A trapezium has parallel sides of 5 and 11 centimetres, and a height of 4 centimetres. Find its area.', "Add the parallel sides: 5 plus 11 is 16. Half of 16 is 8. 8 times 4 is 32 square centimetres.", ['5 + 11 = 16', '½ × 16 = 8', '8 × 4 = 32'], '32 cm²', F.trap('5', '11', '4')),
      T('A trapezium has an area of 60 square centimetres. The parallel sides are 7 and 13 centimetres. Find the height.', "7 plus 13 is 20. Half of 20 is 10. So 10 times the height is 60. The height is 6 centimetres.", ['½ × (7 + 13) = 10', '10 × h = 60', 'h = 60 ÷ 10 = 6'], '6 cm')],
-    ["Use the perpendicular height. A trapezium has a half.", ['Parallelogram: base × height', 'Trapezium: ½ (a + b) × h', 'Height is at a right angle', 'Square units']]);
+    ["Use the perpendicular height. A trapezium has 1/2.", ['Parallelogram: base × height', 'Trapezium: ½ (a + b) × h', 'Height is at a right angle', 'Square units']]);
 
   LS('Area of a rhombus and kite', 'how to find the area of a rhombus and of a kite using the diagonals.', 'Rhombus and kite',
     E('The diagonals',
@@ -96,7 +96,7 @@
         ["A tank is 2 metres long, 50 centimetres wide and 40 centimetres high. How many litres does it hold? Change everything to centimetres: 200, 50 and 40. The volume is 200 times 50 times 40, 400,000 cubic centimetres.", ['2 m = 200 cm', '200 × 50 × 40 = 400,000 cm³']],
         ["Divide by 1,000. 400,000 divided by 1,000 is 400 litres.", ['400,000 ÷ 1000', 'g|= 400 litres']]),
       E('Using metres',
-        ["A box is 1 and a half metres long, 1 metre wide and 8 tenths of a metre high. The volume is 1.5 times 1 times 0.8, 1.2 cubic metres. 1 cubic metre is 1,000 litres, so it holds 1,200 litres.", ['1.5 × 1 × 0.8 = 1.2 m³', 'g|1.2 × 1000 = 1,200 l']]),
+        ["A box is 1 and 1/2 metres long, 1 metre wide and 8/10 of a metre high. The volume is 1.5 times 1 times 0.8, 1.2 cubic metres. 1 cubic metre is 1,000 litres, so it holds 1,200 litres.", ['1.5 × 1 × 0.8 = 1.2 m³', 'g|1.2 × 1000 = 1,200 l']]),
       E('Litres to cubic centimetres',
         ["A bottle holds 2 litres. How many cubic centimetres is that? Multiply by 1,000. It is 2,000 cubic centimetres.", ['2 × 1000', 'g|= 2,000 cm³']]),
       E('Cubic centimetres to cubic metres',
@@ -141,7 +141,7 @@
       E('Square centimetres to square millimetres',
         ["Change 5 square centimetres to square millimetres. Multiply by 100. 500 square millimetres.", ['5 × 100', 'g|= 500 mm²']]),
       E('Cubic metres to cubic centimetres',
-        ["Change 2 and a half cubic metres to cubic centimetres. Multiply by 1 million. That is 2 million, 500,000 cubic centimetres.", ['2.5 × 1,000,000', 'g|= 2,500,000 cm³']])],
+        ["Change 2 and 1/2 cubic metres to cubic centimetres. Multiply by 1 million. That is 2 million, 500,000 cubic centimetres.", ['2.5 × 1,000,000', 'g|= 2,500,000 cm³']])],
     [M('Using 100 for area', "Mistake one: multiplying by 100 to change square metres to square centimetres. For area we square the 100, so it is 10,000.", '3 m² = 300 cm² ✗', '3 m² = 30,000 cm² ✓'),
      M('Using 100 for volume', "Mistake two: using 100, or 1,000, for cubic metres to cubic centimetres. The conversion is cubed, which is 1 million.", '1 m³ = 1000 cm³ ✗', '1 m³ = 1,000,000 cm³ ✓')],
     ["Floor plans use square metres and tile packs use square centimetres. Builders change between them when ordering materials.", ['1 m² = 10,000 cm²']],

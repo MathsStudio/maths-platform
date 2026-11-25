@@ -12,18 +12,18 @@
     { title: 'Standard form', goal: 'how to write very big and very small numbers in standard form.', scenes: [
       SC('Big numbers', '45,000', [
         st("Scientists need a short way to write very large and very small numbers. It is called standard form. A number in standard form is a number between 1 and 10, multiplied by a power of 10.", V.eq('a × 10ⁿ', 'b') + V.note('1 ≤ a < 10')),
-        st("45,000: put the decimal point after the first digit to get 4.5. We moved the point 4 places, so the power is 10 to the four.", V.eq('45,000 = 4.5 × 10⁴', 'g'))]),
+        st("45,000: put the decimal point after the first digit to get 4.5. We moved the point 4 places, so the power is 10 to the 4.", V.eq('45,000 = 4.5 × 10⁴', 'g'))]),
       SC('Small numbers', '0.00032', [
         st("For a small number, the power is negative. 0.00032. Move the point 4 places right to get 3.2. The power is minus 4.", V.eq('0.00032 = 3.2 × 10⁻⁴', 'g'))]),
       SC('Calculating', 'Multiply in standard form', [
-        st("To multiply, multiply the numbers and add the powers. 3 times 10 to the 3, times 2 times 10 to the two. 3 times 2 is 6. 10 to the 3 times 10 squared is 10 to the five.", V.eq('(3 × 10³) × (2 × 10²) = 6 × 10⁵', 'g'))]),
+        st("To multiply, multiply the numbers and add the powers. 3 times 10 to the 3, times 2 times 10 to the 2. 3 times 2 is 6. 10 to the 3 times 10 squared is 10 to the 5.", V.eq('(3 × 10³) × (2 × 10²) = 6 × 10⁵', 'g'))]),
       REC("Standard form is a number from 1 to 10 times a power of 10. Big numbers have positive powers, small numbers negative.", ['1 ≤ a < 10', 'Big: positive power', 'Small: negative power'])] },
     { title: 'Index laws and negative indices', goal: 'the laws of indices, including 0 and negative powers.', scenes: [
       SC('Index laws', 'Same base', [
         st("When you multiply the same base, add the powers. When you divide, subtract. Brackets raised to a power: multiply the powers.", V.tbl([['aᵐ × aⁿ', 'aᵐ⁺ⁿ'], ['aᵐ ÷ aⁿ', 'aᵐ⁻ⁿ'], ['(aᵐ)ⁿ', 'aᵐⁿ']], ['Law', 'Result'])),
         st("An example: 5 to the 6 divided by 5 to the 4 is 5 squared, 25.", V.eq('5⁶ ÷ 5⁴ = 5² = 25', 'g'))]),
       SC('Zero and negative powers', 'What do they mean?', [
-        st("Anything to the power 0 is 1. A negative power means a reciprocal. 2 to the minus 3 is 1 over 2 cubed, which is one eighth.", V.eq('a⁰ = 1') + V.eq('2⁻³ = 1/2³ = 1/8', 'g'))]),
+        st("Anything to the power 0 is 1. A negative power means a reciprocal. 2 to the minus 3 is 1 over 2 cubed, which is 1/8.", V.eq('a⁰ = 1') + V.eq('2⁻³ = 1/2³ = 1/8', 'g'))]),
       REC("Add powers to multiply, subtract to divide. Power 0 is 1. A negative power is a reciprocal.", ['× add, ÷ subtract', 'a⁰ = 1', 'a⁻ⁿ = 1/aⁿ'])] }
   ]);
 
@@ -37,11 +37,11 @@
       REC("For repeated percentage change, raise the multiplier to the power of the number of years.", ['Find the multiplier', 'Raise to the power n', 'Multiply the original'])] },
     { title: 'Percentage change and reverse percentages', goal: 'how to calculate percentage change and work backwards.', scenes: [
       SC('Percentage change', 'From 40 to 50', [
-        st("Percentage change is the change divided by the original, times a hundred. A price rises from 40 to 50. The change is 10. 10 over 40 is a quarter, so 25%.", V.eq('(50 − 40) ÷ 40 × 100 = 25%', 'g') + V.rule('Always divide by the original.'))]),
+        st("Percentage change is the change divided by the original, times 100. A price rises from 40 to 50. The change is 10. 10 over 40 is 1/4, so 25%.", V.eq('(50 − 40) ÷ 40 × 100 = 25%', 'g') + V.rule('Always divide by the original.'))]),
       SC('Reverse percentages', 'After a 20% increase the price is £90', [
-        st("After a 20% increase, the price is £90. What was it before? £90 is a hundred and 20% of the original. So divide by 1.2: £75.", V.eq('£90 ÷ 1.2 = £75', 'g')),
+        st("After a 20% increase, the price is £90. What was it before? £90 is 120% of the original. So divide by 1.2: £75.", V.eq('£90 ÷ 1.2 = £75', 'g')),
         st("Check: 20% of 75 is 15, and 75 plus 15 is 90.", V.eq('75 + 15 = 90 ✓', 'g'))]),
-      REC("Change over original times a hundred. For reverse problems, divide by the multiplier.", ['Change ÷ original × 100', 'Reverse: ÷ multiplier', 'Check by going forwards'])] }
+      REC("Change over original times 100. For reverse problems, divide by the multiplier.", ['Change ÷ original × 100', 'Reverse: ÷ multiplier', 'Check by going forwards'])] }
   ]);
 
   /* 823 RATIO AND PROPORTION */
@@ -69,7 +69,7 @@
       REC("Subtract the allowance to find taxable income. Apply the tax rate to that part only.", ['Income − allowance', '× tax rate', 'Use the figures in the question'])] },
     { title: 'Hire purchase and exchange rates', goal: 'how to compare ways of paying and convert currency.', scenes: [
       SC('Hire purchase', 'Cash £550 or credit?', [
-        st("A sofa costs £550 cash. On hire purchase it is a hundred pounds deposit and 12 payments of £45. The payments are 540. With the deposit, the total is 640.", V.eq('12 × £45 = £540') + V.eq('£100 + £540 = £640', 'b')),
+        st("A sofa costs £550 cash. On hire purchase it is 100 pounds deposit and 12 payments of £45. The payments are 540. With the deposit, the total is 640.", V.eq('12 × £45 = £540') + V.eq('£100 + £540 = £640', 'b')),
         st("The extra cost of credit is 6 40 minus 5 50, £90. That is the price of paying slowly.", V.eq('£640 − £550 = £90 extra', 'g'))]),
       SC('Exchange rates', '£1 = €1.18', [
         st("To change pounds to euros, multiply by the rate. To change euros to pounds, divide. 250 euros divided by 1.18 is £211.86.", V.eq('250 ÷ 1.18 = £211.86', 'g') + V.rule('Pounds to euros: ×. Euros to pounds: ÷.'))]),
@@ -81,8 +81,8 @@
     { title: 'Average speed', goal: 'why average speed is total distance over total time.', scenes: [
       SC('A common mistake', '30 km/h then 60 km/h', [
         st("A car drives 60 kilometres at 30 kilometres an hour, then 60 kilometres at 60 an hour. Is the average 45? Let's check carefully.", V.eq('average = 45?', 'r')),
-        st("The first part takes 2 hours. The second takes 1 hour. Total distance is a hundred and 20 kilometres, in 3 hours.", V.eq('60 ÷ 30 = 2 h') + V.eq('60 ÷ 60 = 1 h')),
-        st("Average speed is total distance over total time: a hundred and 20 divided by 3 is 40 kilometres an hour, not 45.", V.eq('120 ÷ 3 = 40 km/h', 'g') + V.rule('Average speed = total distance ÷ total time.'))]),
+        st("The first part takes 2 hours. The second takes 1 hour. Total distance is 120 kilometres, in 3 hours.", V.eq('60 ÷ 30 = 2 h') + V.eq('60 ÷ 60 = 1 h')),
+        st("Average speed is total distance over total time: 120 divided by 3 is 40 kilometres an hour, not 45.", V.eq('120 ÷ 3 = 40 km/h', 'g') + V.rule('Average speed = total distance ÷ total time.'))]),
       REC("Never average the speeds. Divide the total distance by the total time.", ['Total distance', 'Total time', 'Divide'])] },
     { title: 'Distance–time graphs with a return', goal: 'how to read speeds from a graph with several stages.', scenes: [
       SC('Out, rest and back', 'A cycle ride', [
@@ -157,15 +157,15 @@
     { title: 'Pythagoras’ theorem', goal: 'how to find a missing side in a right-angled triangle.', scenes: [
       SC('The theorem', 'a² + b² = c²', [
         st("In a right-angled triangle, the longest side, opposite the right angle, is the hypotenuse. Pythagoras found that the squares on the 2 shorter sides add up to the square on the hypotenuse.", V.rt({ a: 'a', b: 'b', c: 'c' }) + V.eq('a² + b² = c²', 'b')),
-        st("With sides 6 and 8: 36 plus 64 is a hundred. The square root of a hundred is 10. So the hypotenuse is 10.", V.eq('6² + 8² = 36 + 64 = 100') + V.eq('c = √100 = 10', 'g'))]),
+        st("With sides 6 and 8: 36 plus 64 is 100. The square root of 100 is 10. So the hypotenuse is 10.", V.eq('6² + 8² = 36 + 64 = 100') + V.eq('c = √100 = 10', 'g'))]),
       SC('A shorter side', 'Hypotenuse 13, other side 5', [
-        st("To find a shorter side, subtract. 13 squared is a hundred and 69. Take away 5 squared, 25. That leaves a hundred and 44. The square root is 12.", V.eq('13² − 5² = 169 − 25 = 144') + V.eq('b = √144 = 12', 'g') + V.rule('Finding the longest side: add. A shorter side: subtract.'))]),
+        st("To find a shorter side, subtract. 13 squared is 169. Take away 5 squared, 25. That leaves 144. The square root is 12.", V.eq('13² − 5² = 169 − 25 = 144') + V.eq('b = √144 = 12', 'g') + V.rule('Finding the longest side: add. A shorter side: subtract.'))]),
       REC("Add the squares to find the hypotenuse. Subtract to find a shorter side. Then take the square root.", ['Hypotenuse: add squares', 'Short side: subtract', 'Square root at the end'])] },
     { title: 'Arcs and sectors', goal: 'how to find the arc length and area of a sector.', scenes: [
       SC('A fraction of a circle', 'A 90° sector, radius 6 cm', [
-        st("A sector is a slice of a circle. A 90 degree sector is 90 out of 3 60, a quarter of the whole circle.", V.pie([[90, 'var(--accent)', '90°'], [270, 'var(--surface-2)', '']]) + V.eq('90 ÷ 360 = 1/4', 'b')),
-        st("The area of the whole circle is pi times 6 squared, 36 pi. A quarter of that is 9 pi, about 28.3 square centimetres.", V.eq('¼ × 36π = 9π ≈ 28.3 cm²', 'g')),
-        st("The arc is a quarter of the circumference. The whole circumference is 12 pi, so the arc is 3 pi, about 9.4 centimetres.", V.eq('¼ × 12π = 3π ≈ 9.4 cm', 'g'))]),
+        st("A sector is a slice of a circle. A 90 degree sector is 90 out of 3 60, 1/4 of the whole circle.", V.pie([[90, 'var(--accent)', '90°'], [270, 'var(--surface-2)', '']]) + V.eq('90 ÷ 360 = 1/4', 'b')),
+        st("The area of the whole circle is pi times 6 squared, 36 pi. 1/4 of that is 9 pi, about 28.3 square centimetres.", V.eq('¼ × 36π = 9π ≈ 28.3 cm²', 'g')),
+        st("The arc is 1/4 of the circumference. The whole circumference is 12 pi, so the arc is 3 pi, about 9.4 centimetres.", V.eq('¼ × 12π = 3π ≈ 9.4 cm', 'g'))]),
       REC("Take the fraction angle over 3 60 of the whole circle's area or circumference.", ['Fraction = angle ÷ 360', 'Sector area: × πr²', 'Arc length: × 2πr'])] }
   ]);
 
@@ -189,13 +189,13 @@
     { title: 'Scatter graphs', goal: 'how to describe correlation and use a line of best fit.', scenes: [
       SC('Correlation', 'Revision time and test score', [
         st("A scatter graph shows 2 sets of data at once. Here, students who revised longer scored higher. The points trend upwards: positive correlation.", V.plot(0, 6, 0, 100, [{ p: [1, 25, '', 'var(--accent)'] }, { p: [2, 40, '', 'var(--accent)'] }, { p: [2.5, 50, '', 'var(--accent)'] }, { p: [3, 55, '', 'var(--accent)'] }, { p: [4, 70, '', 'var(--accent)'] }, { p: [5, 85, '', 'var(--accent)'] }], { tx: 1, ty: 20, xl: 'Revision time (hours)', yl: 'Test score (marks)', title: 'Revision and test score' })),
-        st("Draw a line of best fit through the middle of the points, with about as many points on each side. Then you can estimate: for 4 and a half hours of revision, the score is about 78.", V.plot(0, 6, 0, 100, [{ l: [[0.5, 15], [5.5, 92]], d: true }, { p: [1, 25, '', 'var(--accent)'] }, { p: [2, 40, '', 'var(--accent)'] }, { p: [2.5, 50, '', 'var(--accent)'] }, { p: [3, 55, '', 'var(--accent)'] }, { p: [4, 70, '', 'var(--accent)'] }, { p: [5, 85, '', 'var(--accent)'] }], { tx: 1, ty: 20, xl: 'Revision time (hours)', yl: 'Test score (marks)', title: 'Revision and test score' }) + V.rule('Correlation is not the same as cause.'))]),
+        st("Draw a line of best fit through the middle of the points, with about as many points on each side. Then you can estimate: for 4 and 1/2 hours of revision, the score is about 78.", V.plot(0, 6, 0, 100, [{ l: [[0.5, 15], [5.5, 92]], d: true }, { p: [1, 25, '', 'var(--accent)'] }, { p: [2, 40, '', 'var(--accent)'] }, { p: [2.5, 50, '', 'var(--accent)'] }, { p: [3, 55, '', 'var(--accent)'] }, { p: [4, 70, '', 'var(--accent)'] }, { p: [5, 85, '', 'var(--accent)'] }], { tx: 1, ty: 20, xl: 'Revision time (hours)', yl: 'Test score (marks)', title: 'Revision and test score' }) + V.rule('Correlation is not the same as cause.'))]),
       REC("Describe the correlation, draw a line of best fit through the middle, and only estimate inside the range of the data.", ['Positive, negative or none', 'Best fit through the middle', 'Estimate within the data'])] },
     { title: 'Tree diagrams', goal: 'how to find probabilities of combined events.', scenes: [
       SC('Without replacement', '3 red and 7 blue counters', [
         st("A bag has 3 red and 7 blue counters. 2 are taken without putting the first back. What is the chance both are red? The first is red with probability 3 out of 10.", V.eq('P(1st red) = 3/10', 'b')),
-        st("Now there are 9 counters left, 2 of them red. The second is red with probability 2 ninths. Multiply along the branches.", V.eq('P(2nd red) = 2/9', 'b') + V.eq('3/10 × 2/9 = 6/90 = 1/15', 'g') + V.rule('Along the branches, multiply.')),
-        st("If the first counter were replaced, the second chance would still be 3 out of 10, and the answer would be 9 over a hundred.", V.eq('with replacement: 3/10 × 3/10 = 9/100'))]),
+        st("Now there are 9 counters left, 2 of them red. The second is red with probability 2/9. Multiply along the branches.", V.eq('P(2nd red) = 2/9', 'b') + V.eq('3/10 × 2/9 = 6/90 = 1/15', 'g') + V.rule('Along the branches, multiply.')),
+        st("If the first counter were replaced, the second chance would still be 3 out of 10, and the answer would be 9 over 100.", V.eq('with replacement: 3/10 × 3/10 = 9/100'))]),
       REC("Multiply along the branches. Without replacement, the numbers change on the second pick.", ['Multiply along branches', 'Add different routes', 'Without replacement: change the total'])] }
   ]);
 

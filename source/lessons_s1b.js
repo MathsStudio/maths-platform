@@ -69,22 +69,22 @@
   /* ---------- 803 ---------- */
   LS('Adding and subtracting mixed numbers', 'how to add and subtract mixed numbers with different denominators.', {
     intro: ['Mixed numbers', 'Wholes and parts', "To add or subtract mixed numbers, you can deal with the wholes and the fractions separately, or change them to improper fractions.", E('2 1/3 + 1 1/2', 'b')],
-    ex: [['Wholes and parts', '2 1/3 + 1 1/2', [["Add the wholes: 3. Add the fractions with a common denominator: 2 sixths plus 3 sixths is 5 sixths. 3 and 5 sixths.", E('3 + 5/6 = 3 5/6', 'g')]]],
-      ['Carrying a whole', '1 3/4 + 2 2/3', [["Wholes: 3. Fractions: 9 twelfths plus 8 twelfths is 17 twelfths, which is 1 and 5 twelfths. Total: 4 and 5 twelfths.", E('3 + 1 5/12 = 4 5/12', 'g')]]],
-      ['Subtracting', '5 1/4 − 2 2/3', [["Change to improper fractions: 21 quarters take away 8 thirds. Common denominator 12: 63 twelfths take away 32 twelfths is 31 twelfths: 2 and 7 twelfths.", E('63/12 − 32/12 = 31/12 = 2 7/12', 'g')]]]],
-    real: ['Wood', "A plank is 4 and a half metres. A piece of 1 and 3 quarters metres is cut off. 2 and 3 quarters metres are left.", E('4 1/2 − 1 3/4 = 2 3/4 m', 'g')],
-    turn: ["Your turn! Work out 3 and 2 fifths plus 1 and 1 half. Pause and try it.", E('3 2/5 + 1 1/2'), "Wholes: 4. Fractions: 4 tenths plus 5 tenths is 9 tenths. 4 and 9 tenths.", E('4 9/10', 'g')],
+    ex: [['Wholes and parts', '2 1/3 + 1 1/2', [["Add the wholes: 3. Add the fractions with a common denominator: 2/6 plus 3/6 is 5/6. 3 and 5/6.", E('3 + 5/6 = 3 5/6', 'g')]]],
+      ['Carrying a whole', '1 3/4 + 2 2/3', [["Wholes: 3. Fractions: 9/12 plus 8/12 is 17/12, which is 1 and 5/12. Total: 4 and 5/12.", E('3 + 1 5/12 = 4 5/12', 'g')]]],
+      ['Subtracting', '5 1/4 − 2 2/3', [["Change to improper fractions: 21/4 take away 8/3. Common denominator 12: 63/12 take away 32/12 is 31/12: 2 and 7/12.", E('63/12 − 32/12 = 31/12 = 2 7/12', 'g')]]]],
+    real: ['Wood', "A plank is 4 and 1/2 metres. A piece of 1 and 3/4 metres is cut off. 2 and 3/4 metres are left.", E('4 1/2 − 1 3/4 = 2 3/4 m', 'g')],
+    turn: ["Your turn! Work out 3 and 2/5 plus 1 and 1/2. Pause and try it.", E('3 2/5 + 1 1/2'), "Wholes: 4. Fractions: 4/10 plus 5/10 is 9/10. 4 and 9/10.", E('4 9/10', 'g')],
     rec: ["Add or subtract the wholes and the fractions, using a common denominator. If subtracting is awkward, change to improper fractions first.", ['Common denominator', 'Wholes and fractions separately', 'Carry if the fraction is over 1', 'Or use improper fractions']],
     deep: ['Changing to improper fractions always works, even when the fraction part is too small to subtract.', 'When the fraction part adds to more than 1, carry a whole into the whole-number part.']
   });
 
   LS('Multiplying and dividing fractions', 'how to multiply and divide fractions and mixed numbers.', {
     intro: ['Multiplying fractions', 'Tops and bottoms', "To multiply fractions, multiply the numerators and multiply the denominators. Simplify at the end, or cancel first.", E('2/3 × 3/5 = 6/15 = 2/5', 'g')],
-    ex: [['Cancelling first', '4/9 × 3/8', [["4 and 8 share a factor of 4; 3 and 9 share 3. Cancel: 1 third times 1 half is 1 sixth.", E('4/9 × 3/8 = 1/3 × 1/2 = 1/6', 'g')]]],
-      ['Dividing', 'Keep, change, flip', [["3 quarters divided by 2 fifths: keep 3 quarters, change to multiply, flip to 5 halves. 15 eighths, which is 1 and 7 eighths.", E('3/4 × 5/2 = 15/8 = 1 7/8', 'g')]]],
-      ['Mixed numbers', 'Change first', [["2 and a half times 1 and a third: 5 halves times 4 thirds is 20 sixths, which is 3 and 1 third.", E('5/2 × 4/3 = 20/6 = 3 1/3', 'g')]]]],
-    real: ['Recipes', "A recipe needs 3 quarters of a cup of sugar. 2 thirds of the recipe needs half a cup.", E('2/3 × 3/4 = 1/2', 'g')],
-    turn: ["Your turn! Work out 5 sixths divided by 5 twelfths. Pause and try it.", E('5/6 ÷ 5/12'), "Flip to 12 fifths: 5 sixths times 12 fifths is 60 thirtieths, which is 2.", E('2', 'g')],
+    ex: [['Cancelling first', '4/9 × 3/8', [["4 and 8 share a factor of 4; 3 and 9 share 3. Cancel: 1/3 times 1/2 is 1/6.", E('4/9 × 3/8 = 1/3 × 1/2 = 1/6', 'g')]]],
+      ['Dividing', 'Keep, change, flip', [["3/4 divided by 2/5: keep 3/4, change to multiply, flip to 5/2. 15/8, which is 1 and 7/8.", E('3/4 × 5/2 = 15/8 = 1 7/8', 'g')]]],
+      ['Mixed numbers', 'Change first', [["2 and 1/2 times 1 and 1/3: 5/2 times 4/3 is 20/6, which is 3 and 1/3.", E('5/2 × 4/3 = 20/6 = 3 1/3', 'g')]]]],
+    real: ['Recipes', "A recipe needs 3/4 of a cup of sugar. 2/3 of the recipe needs half a cup.", E('2/3 × 3/4 = 1/2', 'g')],
+    turn: ["Your turn! Work out 5/6 divided by 5/12. Pause and try it.", E('5/6 ÷ 5/12'), "Flip to 12/5: 5/6 times 12/5 is 60 thirtieths, which is 2.", E('2', 'g')],
     rec: ["Multiply tops and bottoms, cancelling first where you can. To divide, keep the first, change to multiply, flip the second. Change mixed numbers to improper fractions first.", ['× : tops × tops, bottoms × bottoms', 'Cancel to save work', '÷ : keep, change, flip', 'Mixed → improper first']],
     deep: ['Dividing by a fraction is the same as multiplying by its reciprocal, because they undo each other.', 'Never multiply mixed numbers part by part: 2½ × 1⅓ is not 2 × 1 plus ½ × ⅓.']
   });
@@ -94,7 +94,7 @@
     intro: ['A percentage of an amount', 'Two methods', "Build the percentage from 10%, 5% and 1%, or multiply by the percentage as a decimal.", V.cards(['Build: 10%, 5%, 1%', 'Decimal: × 0.36'], ['b', 'g'])],
     ex: [['Building', '36% of £250', [["10% is £25, so 30% is 75. 1% is £2.50, so 6% is 15. 36% is £90.", E('£75 + £15 = £90', 'g')]]],
       ['Decimal multiplier', '36% of £250', [["36% is 0.36. 0.36 times 250 is 90.", E('0.36 × 250 = 90', 'g')]]],
-      ['Fractions help', '12.5% of 64', [["12 and a half per cent is 1 eighth. 1 eighth of 64 is 8.", E('12.5% = 1/8 → 64 ÷ 8 = 8', 'g')]]]],
+      ['Fractions help', '12.5% of 64', [["12 and 1/2 per cent is 1/8. 1/8 of 64 is 8.", E('12.5% = 1/8 → 64 ÷ 8 = 8', 'g')]]]],
     real: ['VAT', "VAT is 20%. On a £75 item, VAT is £15, so the price is £90.", E('20% of £75 = £15', 'g')],
     turn: ["Your turn! Find 17% of 300. Pause and try it.", E('17% of 300'), "10% is 30, 7% is 21. 51.", E('51', 'g')],
     rec: ["Build percentages from 10, 5 and 1%, use a decimal multiplier, or use a fraction you know.", ['10% → ÷ 10, 1% → ÷ 100', 'Decimal × amount', '12.5% = ⅛, 33⅓% = ⅓', 'Check it is sensible']],
@@ -140,11 +140,11 @@
   LS('Wages and overtime', 'how to calculate pay, including overtime and bonuses.', {
     intro: ['Earning money', 'Wages and salaries', "A wage is paid per hour or per week. A salary is a fixed amount per year. Overtime is extra hours, often paid at a higher rate.", V.cards(['Wage: per hour', 'Salary: per year', 'Overtime: extra rate'], ['b', 'p', 'g'])],
     ex: [['Hourly pay', 'Rate × hours', [["Sam earns £11.20 an hour for 35 hours: £392.", E('35 × £11.20 = £392', 'g')]]],
-      ['Time and a half', 'Overtime', [["Overtime at time and a half pays 1.5 times the normal rate. 6 hours of overtime at £11.20: 1.5 times £11.20 is £16.80, times 6 is £100.80.", E('6 × 1.5 × £11.20 = £100.80', 'g')]]],
+      ['Time and a half', 'Overtime', [["Overtime at time and 1/2 pays 1.5 times the normal rate. 6 hours of overtime at £11.20: 1.5 times £11.20 is £16.80, times 6 is £100.80.", E('6 × 1.5 × £11.20 = £100.80', 'g')]]],
       ['Double time', 'Sundays', [["Double time pays twice the rate. 4 hours at double time: 4 times £22.40 is £89.60.", E('4 × 2 × £11.20 = £89.60', 'g')]]],
       ['Salary', 'Per month', [["A salary of £27,000 a year is 27,000 divided by 12: £2,250 a month.", E('£27,000 ÷ 12 = £2,250', 'g')]]]],
-    turn: ["Your turn! 10 hours at £10 plus 4 hours at time and a half. Pause and try it.", E('10 × £10 + 4 × £15'), "£100 plus £60: £160.", E('£160', 'g')],
-    rec: ["Pay is rate times hours. Time and a half is 1.5 times the rate; double time is twice. Divide a salary by 12 for monthly pay.", ['Pay = rate × hours', 'Time and a half: × 1.5', 'Double time: × 2', 'Salary ÷ 12 = monthly']],
+    turn: ["Your turn! 10 hours at £10 plus 4 hours at time and 1/2. Pause and try it.", E('10 × £10 + 4 × £15'), "£100 plus £60: £160.", E('£160', 'g')],
+    rec: ["Pay is rate times hours. Time and 1/2 is 1.5 times the rate; double time is twice. Divide a salary by 12 for monthly pay.", ['Pay = rate × hours', 'Time and 1/2: × 1.5', 'Double time: × 2', 'Salary ÷ 12 = monthly']],
     deep: ['Overtime rates are multipliers on the normal rate, so find the new rate first, then multiply by the hours.', 'Don’t multiply the total by 1.5: only the overtime hours get the higher rate.']
   });
 
@@ -162,9 +162,9 @@
   LS('Best buys, interest and exchange', 'how to compare deals, and use exchange rates and interest.', {
     intro: ['Making money decisions', 'Compare fairly', "To compare deals, compare the same quantity: price per item, per gram or per litre.", V.rule('Compare like with like.')],
     ex: [['Best buy', 'Price per unit', [["2 litres of juice for £1.80, or 3 litres for £2.64? Per litre: 90p and 88p. The 3-litre bottle is better value.", E('90p vs 88p per litre', 'g')]]],
-      ['Offers', 'Three for two', [["3 for the price of 2: you pay for 2 items but get 3, so each costs 2 thirds of the price.", E('3 for 2 → each ⅔ price', 'g')]]],
+      ['Offers', 'Three for two', [["3 for the price of 2: you pay for 2 items but get 3, so each costs 2/3 of the price.", E('3 for 2 → each ⅔ price', 'g')]]],
       ['Exchange', 'Euros', [["If £1 is 1 euro 16, £300 is 348 euros. 87 euros is £75.", E('£300 × 1.16 = €348 · €87 ÷ 1.16 = £75', 'g')]]],
-      ['Comparing interest', 'Which account?', [["Account A pays three per cent; account B pays two point five per cent plus a ten pound bonus. On four hundred pounds for one year: A gives twelve pounds, B gives twenty. B is better here.", E('A: £12 · B: £10 + £10 = £20', 'g')]]]],
+      ['Comparing interest', 'Which account?', [["Account A pays 3%; account B pays 2.5% plus a £10 bonus. On £400 for 1 year: A gives £12, B gives 20. B is better here.", E('A: £12 · B: £10 + £10 = £20', 'g')]]]],
     turn: ["Your turn! Which is better value: 400 grams for £1.60, or 1 kilogram for £3.90? Pause and try it.", E('per 100 g'), "40p and 39p per hundred grams. The kilogram bag.", E('1 kg for £3.90', 'g')],
     rec: ["Compare the price per unit to find the best buy. Multiply by the exchange rate to change pounds, divide to change back. Compare interest by working out what each account actually pays.", ['Price per unit', 'Offers: work out each item', 'Exchange: × or ÷ the rate', 'Compare actual interest']],
     deep: ['Unit prices put deals on the same scale, so the comparison is fair.', 'A bigger pack is not always cheaper per item. Always check.']
@@ -174,11 +174,11 @@
   LS('Speed, distance and time', 'how to calculate speed, distance and time.', {
     intro: ['Speed', 'How fast?', "Speed is the distance travelled in a unit of time, like kilometres per hour.", E('Speed = Distance ÷ Time', 'g')],
     ex: [['Speed', 'D ÷ T', [["A cyclist rides 45 kilometres in 3 hours: 15 kilometres per hour.", E('45 ÷ 3 = 15 km/h', 'g')]]],
-      ['Distance', 'S × T', [["A train travels at 120 kilometres per hour for 2 and a half hours: 300 kilometres.", E('120 × 2.5 = 300 km', 'g')]]],
+      ['Distance', 'S × T', [["A train travels at 120 kilometres per hour for 2 and 1/2 hours: 300 kilometres.", E('120 × 2.5 = 300 km', 'g')]]],
       ['Time', 'D ÷ S', [["A car travels 192 kilometres at 64 kilometres per hour: 3 hours.", E('192 ÷ 64 = 3 h', 'g')]]],
-      ['Minutes', 'Change to hours', [["20 minutes is a third of an hour. At 60 kilometres per hour, you travel 20 kilometres. 45 minutes is 0.75 hours.", E('20 min = ⅓ h · 45 min = 0.75 h', 'g')]]]],
+      ['Minutes', 'Change to hours', [["20 minutes is 1/3 of an hour. At 60 kilometres per hour, you travel 20 kilometres. 45 minutes is 0.75 hours.", E('20 min = ⅓ h · 45 min = 0.75 h', 'g')]]]],
     real: ['A journey', "Glasgow to Edinburgh is 75 kilometres. At 60 kilometres per hour it takes 1 hour 15 minutes.", E('75 ÷ 60 = 1.25 h = 1 h 15 min', 'g')],
-    turn: ["Your turn! How far do you walk in 30 minutes at 5 kilometres per hour? Pause and try it.", E('5 × 0.5'), "30 minutes is half an hour: 2 and a half kilometres.", E('2.5 km', 'g')],
+    turn: ["Your turn! How far do you walk in 30 minutes at 5 kilometres per hour? Pause and try it.", E('5 × 0.5'), "30 minutes is half an hour: 2 and 1/2 kilometres.", E('2.5 km', 'g')],
     rec: ["Speed is distance divided by time. Rearrange for distance or time. Always change minutes into hours first.", ['S = D ÷ T', 'D = S × T', 'T = D ÷ S', 'Minutes → hours']],
     deep: ['The units tell you the formula: km per hour means km ÷ hours.', 'A time of 1.25 hours is 1 hour 15 minutes, not 1 hour 25 minutes.']
   });
@@ -317,8 +317,8 @@
 
   LS('Probability and relative frequency', 'how to calculate probability and estimate it from experiments.', {
     intro: ['Probability', 'From 0 to 1', "Probability measures how likely something is, from 0, impossible, to 1, certain.", V.cards(['0 impossible', '0.5 even', '1 certain'], ['b', 'p', 'g'])],
-    ex: [['Theoretical probability', 'Equally likely outcomes', [["A bag has 4 red and 6 blue counters. The probability of red is 4 out of 10: 2 fifths.", E('P(red) = 4/10 = 2/5', 'g')]]],
-      ['The complement', 'Not happening', [["The probability of not red is 1 take away 2 fifths: 3 fifths.", E('P(not red) = 1 − 2/5 = 3/5', 'g')]]],
+    ex: [['Theoretical probability', 'Equally likely outcomes', [["A bag has 4 red and 6 blue counters. The probability of red is 4 out of 10: 2/5.", E('P(red) = 4/10 = 2/5', 'g')]]],
+      ['The complement', 'Not happening', [["The probability of not red is 1 take away 2/5: 3/5.", E('P(not red) = 1 − 2/5 = 3/5', 'g')]]],
       ['Relative frequency', 'From an experiment', [["A drawing pin lands point up 36 times in 50 throws. The relative frequency is 36 fiftieths: 0.72.", E('36 ÷ 50 = 0.72', 'g')]]],
       ['Expected results', 'Predict', [["If the probability of rain is 0.3, in 30 days we expect about 9 rainy days.", E('0.3 × 30 = 9', 'g')]]]],
     turn: ["Your turn! A fair dice is rolled 60 times. About how many sixes would you expect? Pause and try it.", E('1/6 × 60'), "Ten sixes.", E('10', 'g')],

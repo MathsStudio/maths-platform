@@ -32,7 +32,7 @@
     ex: [['Year by year', '£2,000 at 5%', [["Year 1: 2,100. Year 2: 2,205. Year 3: £2,315.25.", V.tbl([['1', '£2,100.00'], ['2', '£2,205.00'], ['3', '£2,315.25']], ['Year', 'Balance'])]]],
       ['Using the formula', 'One calculation', [["2,000 times 1.05 cubed: £2,315.25. The interest earned is £315.25.", E('2,000 × 1.05³ = £2,315.25', 'g')]]],
       ['Compared with simple', 'The difference', [["Simple interest for 3 years would be £300. Compound gives £15.25 more.", E('£315.25 vs £300', 'g')]]],
-      ['Monthly rates', 'More often', [["A loan at one per cent a month for twelve months grows by one point zero one to the twelve: about twelve point seven per cent a year.", E('1.01¹² ≈ 1.127', 'g')]]]],
+      ['Monthly rates', 'More often', [["A loan at 1% a month for 12 months grows by 1.01 to the 12: about 12.7% a year.", E('1.01¹² ≈ 1.127', 'g')]]]],
     turn: ["Your turn! Find the value of £1,000 after 2 years at 4% compound interest. Pause and try it.", E('1,000 × 1.04²'), "£1,081.60.", E('£1,081.60', 'g')],
     rec: ["Compound interest adds interest to the balance each period. Use the amount times 1 plus the rate, to the power of the number of periods.", ['A = P(1 + r)ⁿ', 'Interest on interest', 'More than simple interest', 'Interest = A − P']],
     deep: ['Compound interest grows faster each year because the base keeps growing.', 'Use the rate as a decimal: 5% is 0.05, so the multiplier is 1.05.']
@@ -72,13 +72,13 @@
 
   /* ---------- 844 ---------- */
   LS('Volume of cones and spheres', 'how to find the volume of cones, pyramids and spheres.', {
-    intro: ['Pointed and round solids', 'Formulas', "A cone or pyramid has a third of the volume of a prism with the same base and height. A sphere has its own formula.", V.tbl([['Cone', '⅓πr²h'], ['Pyramid', '⅓ × base × h'], ['Sphere', '⁴⁄₃πr³']], ['Solid', 'Volume'])],
-    ex: [['Cone', 'r = 3, h = 10', [["A third times pi times 9 times 10: 30 pi, about 94.2 cubic centimetres.", E('⅓ × π × 9 × 10 ≈ 94.2 cm³', 'g')]]],
-      ['Pyramid', 'Square base 6, height 8', [["A third times 36 times 8: 96 cubic centimetres.", E('⅓ × 36 × 8 = 96 cm³', 'g')]]],
-      ['Sphere', 'r = 6', [["4 thirds times pi times 216: 288 pi, about 904.8 cubic centimetres.", E('⁴⁄₃ × π × 216 ≈ 904.8 cm³', 'g')]]],
+    intro: ['Pointed and round solids', 'Formulas', "A cone or pyramid has 1/3 of the volume of a prism with the same base and height. A sphere has its own formula.", V.tbl([['Cone', '⅓πr²h'], ['Pyramid', '⅓ × base × h'], ['Sphere', '⁴⁄₃πr³']], ['Solid', 'Volume'])],
+    ex: [['Cone', 'r = 3, h = 10', [["1/3 times pi times 9 times 10: 30 pi, about 94.2 cubic centimetres.", E('⅓ × π × 9 × 10 ≈ 94.2 cm³', 'g')]]],
+      ['Pyramid', 'Square base 6, height 8', [["1/3 times 36 times 8: 96 cubic centimetres.", E('⅓ × 36 × 8 = 96 cm³', 'g')]]],
+      ['Sphere', 'r = 6', [["4/3 times pi times 216: 288 pi, about 904.8 cubic centimetres.", E('⁴⁄₃ × π × 216 ≈ 904.8 cm³', 'g')]]],
       ['Hemisphere', 'Half a sphere', [["Half of a sphere of radius 6: about 452.4 cubic centimetres.", E('904.8 ÷ 2 ≈ 452.4 cm³', 'g')]]]],
     turn: ["Your turn! Find the volume of a cone with radius 5 and height 12, in terms of pi. Pause and try it.", E('⅓ × π × 25 × 12'), "One hundred pi.", E('100π ≈ 314', 'g')],
-    rec: ["Cones and pyramids are a third of the matching prism. A sphere's volume is 4 thirds pi r cubed.", ['Cone: ⅓πr²h', 'Pyramid: ⅓ base × h', 'Sphere: ⁴⁄₃πr³', 'Hemisphere: half']],
+    rec: ["Cones and pyramids are 1/3 of the matching prism. A sphere's volume is 4/3 pi r cubed.", ['Cone: ⅓πr²h', 'Pyramid: ⅓ base × h', 'Sphere: ⁴⁄₃πr³', 'Hemisphere: half']],
     deep: ['3 cones of water exactly fill the cylinder with the same base and height.', 'Use the perpendicular height, not the slant height, for volume.']
   });
 
@@ -142,16 +142,16 @@
   LS('Parallel and perpendicular lines', 'how gradients show whether lines are parallel or perpendicular.', {
     intro: ['Gradients of lines', 'Parallel and perpendicular', "Parallel lines have the same gradient. Perpendicular lines have gradients that multiply to negative 1.", V.cards(['Parallel: m₁ = m₂', 'Perpendicular: m₁ × m₂ = −1'], ['b', 'g'])],
     ex: [['Parallel', 'Same gradient', [["y equals 3 x plus 1 and y equals 3 x minus 4 are parallel.", E('m = 3 for both', 'g')]]],
-      ['Perpendicular', 'Negative reciprocal', [["A line perpendicular to gradient 2 has gradient negative a half.", E('2 × (−½) = −1', 'g')]]],
+      ['Perpendicular', 'Negative reciprocal', [["A line perpendicular to gradient 2 has gradient negative 1/2.", E('2 × (−½) = −1', 'g')]]],
       ['Finding an equation', 'Through a point', [["A line parallel to y equals 2 x plus 1, through 3, 11: y equals 2 x plus c; 11 equals 6 plus c, so c is 5.", E('y = 2x + 5', 'g')]]]],
-    turn: ["Your turn! What is the gradient of a line perpendicular to y equals negative 3 x plus 2? Pause and think.", E('?'), "The negative reciprocal of negative 3: one third.", E('⅓', 'g')],
+    turn: ["Your turn! What is the gradient of a line perpendicular to y equals negative 3 x plus 2? Pause and think.", E('?'), "The negative reciprocal of negative 3: 1/3.", E('⅓', 'g')],
     rec: ["Parallel lines share a gradient. Perpendicular gradients multiply to negative 1: flip and change the sign.", ['Parallel: same m', 'Perpendicular: −1/m', 'Substitute a point for c', 'Check with a sketch']],
     deep: ['Rotating a line by 90° swaps rise and run and changes 1 sign, giving the negative reciprocal.', 'The perpendicular to gradient 2 is −½, not −2.']
   });
 
   LS('Lines in the form ax + by = c', 'how to work with straight lines written as ax + by = c.', {
     intro: ['Another form', 'ax + by = c', "Lines can be written as a x plus b y equals c. Rearrange to y equals m x plus c to see the gradient.", E('2x + 3y = 12', 'b')],
-    ex: [['Rearranging', 'Find the gradient', [["2 x plus 3 y equals 12. 3 y equals negative 2 x plus 12. y equals negative 2 thirds x plus 4.", E('y = −⅔x + 4', 'g')]]],
+    ex: [['Rearranging', 'Find the gradient', [["2 x plus 3 y equals 12. 3 y equals negative 2 x plus 12. y equals negative 2/3 x plus 4.", E('y = −⅔x + 4', 'g')]]],
       ['Intercepts', 'Quick sketch', [["When x is 0, y is 4. When y is 0, x is 6. Join 0, 4 and 6, 0.", E('(0, 4) and (6, 0)', 'g')]]],
       ['Is the point on it?', 'Substitute', [["Is 3, 2 on the line? 6 plus 6 is 12: yes.", E('2(3) + 3(2) = 12 ✓', 'g')]]]],
     turn: ["Your turn! Where does 5 x plus 2 y equals 20 cross the y-axis? Pause and try it.", E('x = 0'), "2 y equals 20, so y is 10: at 0, 10.", E('(0, 10)', 'g')],
@@ -196,7 +196,7 @@
       ['Adjacent from hypotenuse', 'cos', [["Angle 60, hypotenuse 10: adjacent is 10 times cos 60: 5.", E('10 × cos 60° = 5', 'g')]]],
       ['Opposite from adjacent', 'tan', [["Angle 35, adjacent 8: opposite is 8 times tan 35, about 5.6.", E('8 × tan 35° ≈ 5.60', 'g')]]],
       ['Hypotenuse', 'Divide', [["Angle 50, opposite 9: hypotenuse is 9 divided by sine 50, about 11.75.", E('9 ÷ sin 50° ≈ 11.75', 'g')]]]],
-    turn: ["Your turn! Angle 30 degrees, hypotenuse 20. Find the opposite side. Pause and try it.", E('20 × sin 30°'), "20 times a half: 10.", E('10', 'g')],
+    turn: ["Your turn! Angle 30 degrees, hypotenuse 20. Find the opposite side. Pause and try it.", E('20 × sin 30°'), "20 times 1/2: 10.", E('10', 'g')],
     rec: ["Label opposite, adjacent and hypotenuse from the angle. Choose the ratio that links the side you know and the side you want. Multiply or divide.", ['Label O, A, H', 'Pick SOH, CAH or TOA', 'Unknown on top: ×', 'Unknown on bottom: ÷']],
     deep: ['The ratios stay the same for a given angle because all right-angled triangles with that angle are similar.', 'Make sure your calculator is in degree mode.']
   });
@@ -204,8 +204,8 @@
   LS('Finding an angle', 'how to use inverse trigonometry to find an angle in a right-angled triangle.', {
     intro: ['Inverse trig', 'From sides to angle', "If you know 2 sides, find the ratio, then use the inverse function, like sine to the minus 1, to find the angle.", E('θ = sin⁻¹(O ÷ H)', 'g')],
     ex: [['Using tan', 'O = 5, A = 5', [["Tan is 1, so the angle is tan to the minus 1 of 1: 45 degrees.", E('tan⁻¹(1) = 45°', 'g')]]],
-      ['Using sin', 'O = 7, H = 14', [["Sine is a half: the angle is 30 degrees.", E('sin⁻¹(0.5) = 30°', 'g')]]],
-      ['Using cos', 'A = 4, H = 9', [["Cos is 4 ninths, about 0.444: the angle is about 63.6 degrees.", E('cos⁻¹(4 ÷ 9) ≈ 63.6°', 'g')]]],
+      ['Using sin', 'O = 7, H = 14', [["Sine is 1/2: the angle is 30 degrees.", E('sin⁻¹(0.5) = 30°', 'g')]]],
+      ['Using cos', 'A = 4, H = 9', [["Cos is 4/9, about 0.444: the angle is about 63.6 degrees.", E('cos⁻¹(4 ÷ 9) ≈ 63.6°', 'g')]]],
       ['Real life', 'A ramp', [["A ramp rises 1.2 metres over a horizontal distance of 5 metres. Its angle is tan to the minus 1 of 0.24: about 13.5 degrees.", E('tan⁻¹(1.2 ÷ 5) ≈ 13.5°', 'g')]]]],
     turn: ["Your turn! Opposite 8, adjacent 8. What is the angle? Pause and think.", E('tan⁻¹(1)'), "Forty-five degrees.", E('45°', 'g')],
     rec: ["Label the sides, choose the ratio, divide to get a number, then use the inverse function to find the angle.", ['Label O, A, H', 'Choose the ratio', 'Divide the sides', 'Use sin⁻¹, cos⁻¹ or tan⁻¹']],
@@ -238,7 +238,7 @@
   /* ---------- 851 ---------- */
   LS('Similar triangles', 'how to show triangles are similar and use them to find missing sides.', {
     intro: ['Similar triangles', 'Equal angles', "2 triangles are similar if their angles are equal. Then their sides are in the same ratio.", V.note('Equal angles → sides in the same ratio')],
-    ex: [['Matching sides', 'Opposite equal angles', [["Match sides that are opposite equal angles. If a side of 6 matches a side of 15, the scale factor is 2 and a half.", E('k = 15 ÷ 6 = 2.5', 'g')]]],
+    ex: [['Matching sides', 'Opposite equal angles', [["Match sides that are opposite equal angles. If a side of 6 matches a side of 15, the scale factor is 2 and 1/2.", E('k = 15 ÷ 6 = 2.5', 'g')]]],
       ['Finding a side', 'Multiply', [["Another side of 4 becomes 10.", E('4 × 2.5 = 10', 'g')]]],
       ['Nested triangles', 'Parallel lines', [["When a line inside a triangle is parallel to 1 side, it makes a smaller similar triangle. Use the whole sides, not the bits.", V.note('Use whole side lengths')]]],
       ['Heights by shadows', 'Real life', [["A 1.5 metre post casts a 2 metre shadow; a tree casts a 12 metre shadow at the same time. The tree is 9 metres tall.", E('1.5 × 12 ÷ 2 = 9 m', 'g')]]]],

@@ -74,13 +74,13 @@
       E('Two points by calculation',
         ["Find the gradient of the line through the points 2, 3 and 6, 11. The rise is 11 minus 3, which is 8. The run is 6 minus 2, which is 4. The gradient is 8 over 4, which is 2.", ['Rise = 11 − 3 = 8', 'Run = 6 − 2 = 4', 'g|Gradient = 8 ÷ 4 = 2']]),
       E('Fractional gradient',
-        ["Find the gradient of the line through 0, 1 and 4, 3. The rise is 2 and the run is 4. The gradient is 2 over 4, which simplifies to one half.", ['Rise = 3 − 1 = 2', 'Run = 4 − 0 = 4', 'g|Gradient = 2/4 = 1/2']])],
+        ["Find the gradient of the line through 0, 1 and 4, 3. The rise is 2 and the run is 4. The gradient is 2 over 4, which simplifies to 1/2.", ['Rise = 3 − 1 = 2', 'Run = 4 − 0 = 4', 'g|Gradient = 2/4 = 1/2']])],
     [M('Run over rise', "Mistake one: dividing the wrong way round. The gradient is the rise divided by the run, not the run divided by the rise.", 'Gradient = 3 ÷ 6 = 1/2 ✗', 'Gradient = 6 ÷ 3 = 2 ✓'),
      M('Subtracting in different orders', "Mistake two: subtracting the y values and the x values in different orders. If you start with the first point for the rise, you must start with the first point for the run.", '(8 − 2) ÷ (0 − 3) = −2 ✗', '(8 − 2) ÷ (3 − 0) = 2 ✓')],
     ["The gradient of a road sign says how steep a hill is. A gradient of 1 in 10 means the road rises 1 metre for every 10 metres across. Ramps for wheelchairs have a gentle gradient so they are safe to use.", ['Rise 1 m, run 10 m', 'Gradient = 1/10']],
     [T('Find the gradient of the line through (1, 2) and (4, 11).', "The rise is 11 minus 2, 9. The run is 4 minus 1, 3. 9 divided by 3 is 3.", ['Rise = 11 − 2 = 9', 'Run = 4 − 1 = 3', 'Gradient = 9 ÷ 3 = 3'], '3'),
      T('Find the gradient of the line through (0, 7) and (5, 2).', "The rise is 2 minus 7, minus 5. The run is 5 minus 0, 5. Minus 5 divided by 5 is minus 1.", ['Rise = 2 − 7 = −5', 'Run = 5 − 0 = 5', 'Gradient = −5 ÷ 5 = −1'], '−1'),
-     T('Find the gradient of the line through (2, 1) and (8, 4).', "The rise is 4 minus 1, 3. The run is 8 minus 2, 6. 3 over 6 is 1 half.", ['Rise = 4 − 1 = 3', 'Run = 8 − 2 = 6', 'Gradient = 3/6 = 1/2'], '1/2')],
+     T('Find the gradient of the line through (2, 1) and (8, 4).', "The rise is 4 minus 1, 3. The run is 8 minus 2, 6. 3 over 6 is 1/2.", ['Rise = 4 − 1 = 3', 'Run = 8 − 2 = 6', 'Gradient = 3/6 = 1/2'], '1/2')],
     ["Rise over run. Subtract in the same order.", ['Gradient = rise ÷ run', 'Up = positive, down = negative', 'Same order for x and y']]);
 
   LS('Using y = mx + c', 'how to read the gradient and the y-intercept from the equation of a straight line, and how to draw the line.', 'The equation y = mx + c',

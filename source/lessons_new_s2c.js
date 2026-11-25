@@ -62,7 +62,7 @@
       ["A set is a collection of things, written inside curly brackets. The things in the set are called its members. We write the members separated by commas. The set of even numbers up to 10 is 2, 4, 6, 8, 10.", ['{2, 4, 6, 8, 10}', 'n|A set: members inside { }']],
       ["The symbol that looks like a curved E means is a member of. 4 belongs to the set of even numbers, so we write 4 is a member of the set. 7 is not a member, so we cross out the symbol.", ['4 ∈ {2, 4, 6, 8, 10}', '7 ∉ {2, 4, 6, 8, 10}']]]],
       ['Important sets of numbers', [
-      ["Whole numbers start at 0 and go up: 0, 1, 2, 3 and so on. Integers include the negatives as well: minus 2, minus 1, 0, 1, 2. Rational numbers are numbers that can be written as a fraction, like a half or 0.75.", ['Whole: 0, 1, 2, 3, …', 'Integers: …, −2, −1, 0, 1, 2, …', 'Rational: fractions and decimals that end or repeat']],
+      ["Whole numbers start at 0 and go up: 0, 1, 2, 3 and so on. Integers include the negatives as well: minus 2, minus 1, 0, 1, 2. Rational numbers are numbers that can be written as a fraction, like 1/2 or 0.75.", ['Whole: 0, 1, 2, 3, …', 'Integers: …, −2, −1, 0, 1, 2, …', 'Rational: fractions and decimals that end or repeat']],
       ["Some sets have special rules. Square numbers are 1, 4, 9, 16 and so on. Cube numbers are 1, 8, 27, 64. Prime numbers have exactly 2 factors. Multiples of 3 are 3, 6, 9.", ['Squares: 1, 4, 9, 16, 25', 'Cubes: 1, 8, 27, 64, 125', 'Primes: 2, 3, 5, 7, 11']]]]],
     ex: [
       ['Listing members', [
@@ -70,7 +70,7 @@
         ["So the set is 16, 25, 36, 49.", ['g|{16, 25, 36, 49}']]]],
       ['Which set does it belong to?', [
         ["Is minus 3 a whole number? No, whole numbers start at 0. Is it an integer? Yes. Is it rational? Yes, because minus 3 is minus 3 over 1.", ['−3: not whole', '−3: integer ✓', '−3 = −3/1: rational ✓']],
-        ["What about 0.4? It is not an integer, because it lies between 0 and 1. It is rational, because it is 4 tenths, or 2 fifths.", ['0.4: not an integer', '0.4 = 2/5: rational ✓']]]],
+        ["What about 0.4? It is not an integer, because it lies between 0 and 1. It is rational, because it is 4/10, or 2/5.", ['0.4: not an integer', '0.4 = 2/5: rational ✓']]]],
       ['Two sets together', [
         ["Let set A be the primes less than 10: 2, 3, 5, 7. Let set B be the odd numbers less than 10: 1, 3, 5, 7, 9. The numbers in both sets are 3, 5 and 7.", ['A = {2, 3, 5, 7}', 'B = {1, 3, 5, 7, 9}', 'In both: {3, 5, 7}']],
         ["The numbers in A or B or both are 1, 2, 3, 5, 7, 9. Note that 2 is the only member of A that is not in B.", ['In A or B: {1, 2, 3, 5, 7, 9}']]]]],

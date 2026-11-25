@@ -38,14 +38,14 @@
     return [
       XV('Improper fractions and mixed numbers', 'Write 17/5 as a mixed number.', ['Divide the numerator by the denominator: 17 ÷ 5 = 3 remainder 2.', 'The whole number is 3.', 'The remainder 2 goes over the denominator 5.', 'So 17/5 = 3 2/5.'], '17/5 = 3 2/5',
         function () { return table([['17/5', '3 whole ones and 2/5'], ['3 2/5', '3 × 5 + 2 = 17, so 17/5']], ['Form', 'Meaning']); },
-        '3 and 2 fifths of a pizza is more than 1 pizza, so it is a mixed number.', 'how to change between improper fractions and mixed numbers.',
+        '3 and 2/5 of a pizza is more than 1 pizza, so it is a mixed number.', 'how to change between improper fractions and mixed numbers.',
         ['An improper fraction has a numerator bigger than its denominator.', 'To go back: whole × denominator + numerator, over the same denominator.'],
         ['Example 1: 7/2 = 3 1/2.', 'Example 2: 2 3/4 = 11/4.', 'Example 3: 13/3 = 4 1/3.'])
     ];
   }
   function L_pctchg() {
     return [
-      XV('Percentage increase and decrease', 'A £60 jacket is reduced by 25%. What is the sale price?', ['Find 25% of £60. 25% is a quarter: £60 ÷ 4 = £15.', 'It is a reduction, so subtract: £60 − £15.', 'The sale price is £45.'], '£45',
+      XV('Percentage increase and decrease', 'A £60 jacket is reduced by 25%. What is the sale price?', ['Find 25% of £60. 25% is 1/4: £60 ÷ 4 = £15.', 'It is a reduction, so subtract: £60 − £15.', 'The sale price is £45.'], '£45',
         function () { return table([['10%', '÷ 10'], ['25%', '÷ 4'], ['50%', '÷ 2'], ['1%', '÷ 100']], ['Percentage', 'Quick method']); },
         'Shops show sales as a percentage off the original price.', 'how to increase or decrease an amount by a percentage.',
         ['Increase: add the percentage on. Decrease: take it off.', 'You can also use a multiplier: a 25% decrease is × 0.75.'],
@@ -54,7 +54,7 @@
   }
   function L_wage() {
     return [
-      XV('Wages and VAT', 'Ria earns £12 an hour. She works 30 normal hours and 4 hours of overtime at time and a half. What does she earn?', ['Normal pay: 30 × £12 = £360.', 'Overtime rate: £12 × 1.5 = £18 an hour.', 'Overtime pay: 4 × £18 = £72.', 'Total: £360 + £72 = £432.'], '£432',
+      XV('Wages and VAT', 'Ria earns £12 an hour. She works 30 normal hours and 4 hours of overtime at time and 1/2. What does she earn?', ['Normal pay: 30 × £12 = £360.', 'Overtime rate: £12 × 1.5 = £18 an hour.', 'Overtime pay: 4 × £18 = £72.', 'Total: £360 + £72 = £432.'], '£432',
         function () { return table([['Normal', '30 × £12', '£360'], ['Overtime', '4 × £18', '£72'], ['Total', '', '£432']], ['Type', 'Working', 'Pay']); },
         'Many jobs pay extra for overtime and weekend hours.', 'how to work out pay with overtime, and prices with VAT.',
         ['VAT is a tax on goods and services. It is 20% in the UK.', 'To add VAT: price × 1.2. To remove it: divide by 1.2.'],
@@ -151,7 +151,7 @@
   }
   function L_tally() {
     return [
-      sl('Tally charts and two-way tables', ['A tally chart records data as it is collected. 4 lines with a fifth across them make a group of 5.', 'A 2-way table sorts people by 2 features at once, with totals for each row and column.', 'Use the totals to find a missing number.'],
+      sl('Tally charts and two-way tables', ['A tally chart records data as it is collected. 4 lines with 1/5 across them make a group of 5.', 'A 2-way table sorts people by 2 features at once, with totals for each row and column.', 'Use the totals to find a missing number.'],
         table([['Boys', '14', '6', '20'], ['Girls', '10', '?', '17'], ['Total', '24', '', '37']], ['', 'Walk', 'Bus', 'Total']),
         'A school survey on travel can be recorded with tallies and then sorted by year group in a two-way table.', 'how to count a tally and use a two-way table.',
         ['Count the groups of 5 first, then the single lines.', 'Each row and column adds up to its total.'], ['Example 1: 1 group of 5 plus 3 single lines is 5 + 3 = 8.', 'Example 2: 17 − 10 = 7 girls take the bus.', 'Example 3: Add the column totals to check the grand total.'])
@@ -213,11 +213,11 @@
       insight: ['When you multiply powers with the same base, you add the indices. When you divide, you subtract. This works because each index counts how many copies of the base there are.', 'The rules only work for the same base. Any non-0 number to the power 0 equals 1, and a negative index means 1 over the positive power.'] },
     'Multiples and factors in context': { tags: ['Multiples and factors in context'], story: '2 buses leave a station at the same moment. 1 returns every 6 minutes and the other every 8 minutes. Working out when they next leave together is a multiples problem.',
       insight: ['Ask what the problem wants. If things repeat and meet again, you want the lowest common multiple. If you cut or share into equal pieces, you want the highest common factor.', 'List multiples or factors of both numbers and find the first or biggest 1 they have in common.'] },
-    'Improper fractions and mixed numbers': { tags: ['Improper fractions and mixed numbers'], story: 'You eat 3 whole pizzas and 2 fifths of another. As a mixed number that is 3 2/5, and as an improper fraction it is 17/5.',
+    'Improper fractions and mixed numbers': { tags: ['Improper fractions and mixed numbers'], story: 'You eat 3 whole pizzas and 2/5 of another. As a mixed number that is 3 2/5, and as an improper fraction it is 17/5.',
       insight: ['A mixed number and an improper fraction are 2 ways of writing the same amount. Dividing the numerator by the denominator gives the whole number, and the remainder is the new numerator.', 'To go back, multiply the whole number by the denominator and add the numerator.'] },
-    'Percentage increase and decrease': { tags: ['Percentage increase and decrease'], story: 'A jacket costs £60 and the shop takes 25% off. A quarter of £60 is £15, so you pay £45.',
-      insight: ['To change an amount by a percentage, work out the percentage first, then add it on for an increase or take it off for a decrease.', 'Quick percentages help: 10% is a tenth, 25% is a quarter and 50% is a half.'] },
-    'Wages and VAT': { tags: ['Wages and VAT'], story: 'A cafe worker earns £12 an hour. For extra hours on a Sunday she gets time and a half. When she buys a phone, 20% VAT is already in the price.',
+    'Percentage increase and decrease': { tags: ['Percentage increase and decrease'], story: 'A jacket costs £60 and the shop takes 25% off. 1/4 of £60 is £15, so you pay £45.',
+      insight: ['To change an amount by a percentage, work out the percentage first, then add it on for an increase or take it off for a decrease.', 'Quick percentages help: 10% is 1/10, 25% is 1/4 and 50% is 1/2.'] },
+    'Wages and VAT': { tags: ['Wages and VAT'], story: 'A cafe worker earns £12 an hour. For extra hours on a Sunday she gets time and 1/2. When she buys a phone, 20% VAT is already in the price.',
       insight: ['Pay is hours multiplied by the rate. Overtime has its own higher rate, so work it out separately and then add.', 'VAT is a tax on goods and services. Multiply by 1.2 to add 20% VAT, and divide by 1.2 to remove it.'] },
     'Reading a bank statement': { tags: ['Bank statements'], story: 'A bank statement is a list of every payment in and out of your account, with the balance after each one. It helps you spot mistakes and plan.',
       insight: ['Money in adds to the balance and money out takes away from it. Start at the opening balance and work down the rows.', 'To check, add all the money in, subtract all the money out, and see if you reach the final balance.'] },

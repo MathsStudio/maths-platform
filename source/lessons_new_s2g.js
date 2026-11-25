@@ -18,7 +18,7 @@
       ['A ratio that is not whole numbers', [
         ["Write 4 to 10 in the form 1 to n. Divide both by 4. 10 divided by 4 is 2.5. The ratio is 1 to 2.5.", ['4 : 10', '÷ 4 → 1 : 2.5', 'g|1 : 2.5']]]],
       ['Ratio as a fraction', [
-        ["Boys to girls is 2 to 3. How much of the class are girls? There are 2 plus 3, 5 parts altogether. Girls are 3 of the 5 parts, which is 3 fifths.", ['2 + 3 = 5 parts', 'g|Girls = 3/5']]]]],
+        ["Boys to girls is 2 to 3. How much of the class are girls? There are 2 plus 3, 5 parts altogether. Girls are 3 of the 5 parts, which is 3/5.", ['2 + 3 = 5 parts', 'g|Girls = 3/5']]]]],
     mist: [
       ['Writing it the wrong way round', "Mistake one: swapping the order. 12 boys and 18 girls gives boys to girls as 12 to 18, which is 2 to 3. Writing 3 to 2 gives girls to boys, a different ratio.", ['r|Boys : Girls = 3 : 2 ✗', 'g|Boys : Girls = 2 : 3 ✓']],
       ['Dividing only one number', "Mistake two: dividing only one side. To simplify 12 to 18, we must divide both numbers by the same amount. Dividing only one side changes the ratio.", ['r|12 : 18 → 2 : 18 ✗', 'g|12 : 18 → 2 : 3 ✓']]],
@@ -26,7 +26,7 @@
     turns: [
       { q: 'A bag has 15 red sweets and 25 blue sweets. Write the ratio of red to blue in its simplest form.', say: "The ratio is 15 to 25. The highest common factor is 5. 15 divided by 5 is 3. 25 divided by 5 is 5. The simplest ratio is 3 to 5.", work: ['Red : Blue = 15 : 25', 'HCF = 5', '15 ÷ 5 = 3 and 25 ÷ 5 = 5', '= 3 : 5'], ans: ['g|3 : 5'] },
       { q: 'Write the ratio 4 to 10 in the form 1 to n.', say: "Divide both numbers by 4, to make the first number one. 4 divided by 4 is 1. 10 divided by 4 is 2.5. So the ratio is 1 to 2.5.", work: ['4 : 10', '4 ÷ 4 = 1', '10 ÷ 4 = 2.5', '= 1 : 2.5'], ans: ['g|1 : 2.5'] },
-      { q: 'The ratio of boys to girls in a club is 3 to 4. What fraction of the club are girls?', say: "There are 3 plus 4, 7 parts altogether. Girls are 4 of the 7 parts. So girls are 4 sevenths of the club.", work: ['3 + 4 = 7 parts', 'Girls = 4 parts', '= 4/7'], ans: ['g|4/7'] }],
+      { q: 'The ratio of boys to girls in a club is 3 to 4. What fraction of the club are girls?', say: "There are 3 plus 4, 7 parts altogether. Girls are 4 of the 7 parts. So girls are 4/7 of the club.", work: ['3 + 4 = 7 parts', 'Girls = 4 parts', '= 4/7'], ans: ['g|4/7'] }],
     rec: ["A ratio compares amounts, and the order matters.", ['Write in the order given', 'Simplify: divide both by the HCF', '1 : n: divide both by the first number', 'Fraction: part ÷ total parts']]
   });
 
@@ -119,14 +119,14 @@
       ['A scale factor', [
         ["6 buns need 250 grams of flour. How much flour for 18 buns? 18 is 3 times 6, so multiply the flour by 3. 250 times 3 is 750 grams.", ['18 ÷ 6 = 3', 'g|250 × 3 = 750 g']]]],
       ['Money', [
-        ["One pound buys one point one five euros. How many euros for two hundred pounds? Multiply two hundred by one point one five, which is two hundred and thirty euros.", ['200 × 1.15', 'g|= €230']]]]],
+        ["£1 buys 1.15 euros. How many euros for £200? Multiply 200 by 1.15, which is 230 euros.", ['200 × 1.15', 'g|= €230']]]]],
     mist: [
       ['Adding instead of multiplying', "Mistake one: adding. 5 pens cost £3.50. 8 pens are 3 more, so adding 3 to the price is wrong. We need the price of 1 pen and multiply.", ['r|3.50 + 3 = £6.50 ✗', 'g|8 × 0.70 = £5.60 ✓']],
       ['Dividing instead of multiplying', "Mistake two: dividing when we should multiply. More pens cost more, so the answer must be bigger than £3.50.", ['r|3.50 ÷ 8 ✗', 'g|8 × 0.70 = 5.60 ✓']]],
     real: ['In real life', "Shopping, cooking and converting currency all use direct proportion. If petrol costs a fixed price per litre, double the litres means double the cost.", ['Cost ∝ litres', 'Double litres → double cost']],
     turns: [
       { q: '6 apples cost £2.40. How much do 9 apples cost?', say: "1 apple costs £2.40 divided by 6, which is 40p. 9 apples cost 9 times 40p, £3.60.", work: ['1 apple = 2.40 ÷ 6 = £0.40', '9 apples = 9 × 0.40', '= £3.60'], ans: ['g|£3.60'] },
-      { q: '3 eggs make 12 muffins. How many eggs are needed for 20 muffins?', say: "1 muffin needs 3 divided by 12, which is a quarter of an egg. 20 muffins need 20 times a quarter, 5 eggs.", work: ['1 muffin = 3 ÷ 12 = 0.25 egg', '20 muffins = 20 × 0.25', '= 5 eggs'], ans: ['g|5 eggs'] },
+      { q: '3 eggs make 12 muffins. How many eggs are needed for 20 muffins?', say: "1 muffin needs 3 divided by 12, which is 1/4 of an egg. 20 muffins need 20 times 1/4, 5 eggs.", work: ['1 muffin = 3 ÷ 12 = 0.25 egg', '20 muffins = 20 × 0.25', '= 5 eggs'], ans: ['g|5 eggs'] },
       { q: 'A car uses 6 litres of petrol to drive 100 kilometres. How much petrol does it need for 350 kilometres?', say: "350 divided by 100 is 3.5. So multiply 6 litres by 3.5. That is 21 litres.", work: ['350 ÷ 100 = 3.5', '6 × 3.5', '= 21 litres'], ans: ['g|21 litres'] }],
     rec: ["In direct proportion, both quantities go up together.", ['Find the value of one unit', 'Multiply for the amount you need', 'Check: more means more']]
   });
@@ -143,7 +143,7 @@
       ['Hours', [
         ["6 people paint a fence in 10 hours. How long would 5 people take? The total is 6 times 10, 60 person-hours. 60 divided by 5 is 12 hours.", ['6 × 10 = 60', 'g|60 ÷ 5 = 12 hours']]]],
       ['Speed and time', [
-        ["A journey of 120 kilometres at 60 kilometres an hour takes 2 hours. At 80 kilometres an hour it takes 120 divided by 80, 1 and a half hours.", ['120 ÷ 60 = 2 h', 'g|120 ÷ 80 = 1.5 h']]]],
+        ["A journey of 120 kilometres at 60 kilometres an hour takes 2 hours. At 80 kilometres an hour it takes 120 divided by 80, 1 and 1/2 hours.", ['120 ÷ 60 = 2 h', 'g|120 ÷ 80 = 1.5 h']]]],
       ['Sharing sweets', [
         ["12 sweets are shared equally. Among 3 people, each gets 4. Among 4 people, each gets 3. More people, fewer sweets each.", ['12 ÷ 3 = 4', 'g|12 ÷ 4 = 3']]]]],
     mist: [
@@ -176,7 +176,7 @@
       ['Wrong conversion', "Mistake two: using the wrong conversion. 2 metres is 200 centimetres, not 20.", ['r|2 m = 20 cm ✗', 'g|2 m = 200 cm ✓']]],
     real: ['In real life', "Recipes mix grams and kilograms, millilitres and litres. A cleaning mix might use 250 millilitres of cleaner to 2 litres of water. The ratio is 250 to 2,000, which is 1 to 8.", ['250 ml : 2 l = 250 : 2000', '= 1 : 8']],
     turns: [
-      { q: 'Write 30 centimetres to 1 and a half metres as a ratio in its simplest form.', say: "1 and a half metres is 150 centimetres. The ratio is 30 to 150. Divide both by 30 to get 1 to 5.", work: ['1.5 m = 150 cm', '30 : 150', '÷ 30 → 1 : 5'], ans: ['g|1 : 5'] },
+      { q: 'Write 30 centimetres to 1 and 1/2 metres as a ratio in its simplest form.', say: "1 and 1/2 metres is 150 centimetres. The ratio is 30 to 150. Divide both by 30 to get 1 to 5.", work: ['1.5 m = 150 cm', '30 : 150', '÷ 30 → 1 : 5'], ans: ['g|1 : 5'] },
       { q: 'Write 250 millilitres to 2 litres as a ratio in its simplest form.', say: "2 litres is 2,000 millilitres. The ratio is 250 to 2,000. Divide both by 250 to get 1 to 8.", work: ['2 l = 2000 ml', '250 : 2000', '÷ 250 → 1 : 8'], ans: ['g|1 : 8'] },
       { q: 'Write 20 minutes to 1 hour and 40 minutes as a ratio in its simplest form.', say: "1 hour and 40 minutes is 100 minutes. The ratio is 20 to 100. Divide both by 20 to get 1 to 5.", work: ['1 h 40 min = 100 min', '20 : 100', '÷ 20 → 1 : 5'], ans: ['g|1 : 5'] }],
     rec: ["Change to the same unit before writing the ratio.", ['Convert to the smaller unit', 'Write the ratio', 'Simplify', 'Remember the conversion facts']]
@@ -190,14 +190,14 @@
     ex: [
       ['Comparing two packs', [
         ["Rice comes in 500 grams for £1.20, and 750 grams for £1.65. Which is the better buy? Find the cost per 100 grams. £1.20 for 500 grams is 24p per hundred grams.", ['500 g: 120p ÷ 5 = 24p per 100 g']],
-        ["One pound sixty-five for seven hundred and fifty grams is one hundred and sixty-five pence divided by seven point five, twenty-two pence per hundred grams. Twenty-two is less than twenty-four, so the larger pack is better value.", ['750 g: 165p ÷ 7.5 = 22p per 100 g', 'g|750 g pack is the better buy']]]],
+        ["£1.65 for 750 grams is 165p divided by 7.5, 22p per hundred grams. 22 is less than 24, so the larger pack is better value.", ['750 g: 165p ÷ 7.5 = 22p per 100 g', 'g|750 g pack is the better buy']]]],
       ['Number of items', [
         ["6 pens cost £2.40. 10 pens cost £3.80. Which is better? 6 pens: 240p divided by 6 is 40p each. 10 pens: 380 divided by 10 is 38p each. The pack of 10 is better.", ['240 ÷ 6 = 40p each', '380 ÷ 10 = 38p each', 'g|10 pens is the better buy']]]],
       ['Scaling up', [
         ["A recipe for 4 people uses 200 grams of flour and 2 eggs. Scale it up for 10 people. The scale factor is 10 divided by 4, 2.5.", ['Scale factor = 10 ÷ 4 = 2.5']],
         ["Flour: 200 times 2.5 is 500 grams. Eggs: 2 times 2.5 is 5 eggs.", ['200 × 2.5 = 500 g', '2 × 2.5 = 5 eggs']]]],
       ['Scaling to six', [
-        ["For 6 people the scale factor is 6 divided by 4, 1.5. Flour is 300 grams, and eggs are 4 and a half.", ['Scale factor = 1.5', '200 × 1.5 = 300 g']]]]],
+        ["For 6 people the scale factor is 6 divided by 4, 1.5. Flour is 300 grams, and eggs are 4 and 1/2.", ['Scale factor = 1.5', '200 × 1.5 = 300 g']]]]],
     mist: [
       ['Comparing only the prices', "Mistake one: choosing the cheaper pack without checking the amounts. The bigger pack costs more, but it gives more for each pound, so the price alone is not enough.", ['r|£1.20 < £1.65, so 500 g is better ✗', 'g|24p v 22p per 100 g: 750 g is better ✓']],
       ['Scaling only one ingredient', "Mistake two: scaling the flour but not the eggs. Every ingredient must be multiplied by the same scale factor, or the recipe will not work.", ['r|Flour × 2.5, eggs × 1 ✗', 'g|Everything × 2.5 ✓']]],

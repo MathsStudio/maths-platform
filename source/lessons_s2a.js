@@ -86,29 +86,29 @@
     real: ['Area and volume', "A square garden with an area of 81 square metres has sides of 9 metres. A cube with a volume of 64 cubic centimetres has edges of 4.", E('√81 = 9 m · ∛64 = 4 cm', 'g')],
     turn: ["Your turn! Work out 2 to the power 5, add the square root of 49. Pause and try it.", E('2⁵ + √49'), "32 plus 7 is 39.", E('39', 'g')],
     rec: ["A power is repeated multiplication. Roots undo powers. Estimate roots by finding the square numbers either side.", ['aⁿ = a × a × … (n times)', 'Squared: ², cubed: ³', '√ and ∛ undo them', 'Estimate between squares']],
-    deep: ['Powers grow very fast: 2¹⁰ is already over a thousand.', '3² is 9, not 6: the power is not multiplied by the number.']
+    deep: ['Powers grow very fast: 2¹⁰ is already over 1,000.', '3² is 9, not 6: the power is not multiplied by the number.']
   });
 
   LS('How do you add and subtract fractions?', 'how to add and subtract fractions and mixed numbers with different denominators.', {
     intro: ['Same-size pieces', 'Common denominators', "You can only add or subtract fractions when the pieces are the same size, so find a common denominator first.", LK.fbar(1, 3, 280, 280) + LK.fbar(1, 4, 280, 150)],
-    ex: [['Different denominators', '1/3 + 1/4', [["The lowest common denominator of 3 and 4 is 12. 1 third is 4 twelfths; 1 quarter is 3 twelfths. 7 twelfths.", E('4/12 + 3/12 = 7/12', 'g')]]],
+    ex: [['Different denominators', '1/3 + 1/4', [["The lowest common denominator of 3 and 4 is 12. 1/3 is 4/12; 1/4 is 3/12. 7/12.", E('4/12 + 3/12 = 7/12', 'g')]]],
       ['Subtracting', '5/6 − 3/8', [["The LCM of 6 and 8 is 24. 20 twenty-fourths take away 9 twenty-fourths is 11 twenty-fourths.", E('20/24 − 9/24 = 11/24', 'g')]]],
       ['Mixed numbers', '2 3/4 + 1 2/5', [["Wholes: 3. Fractions: 15 twentieths plus 8 twentieths is 23 twentieths, 1 and 3 twentieths. Total: 4 and 3 twentieths.", E('2 3/4 + 1 2/5 = 4 3/20', 'g')]]],
-      ['Borrowing a whole', '3 1/6 − 1 2/3', [["Change to improper: 19 sixths take away 10 sixths is 9 sixths: 1 and a half.", E('19/6 − 10/6 = 9/6 = 1 1/2', 'g')]]]],
-    real: ['Time', "Ali spends 3 quarters of an hour on maths and 2 thirds of an hour reading. Together: 9 twelfths plus 8 twelfths, 17 twelfths, 1 hour and 5 minutes.", E('3/4 + 2/3 = 1 5/12 h', 'g')],
-    turn: ["Your turn! Work out 3 fifths plus 1 half. Pause and try it.", E('3/5 + 1/2'), "6 tenths plus 5 tenths is 11 tenths: 1 and 1 tenth.", E('1 1/10', 'g')],
+      ['Borrowing a whole', '3 1/6 − 1 2/3', [["Change to improper: 19/6 take away 10/6 is 9/6: 1 and 1/2.", E('19/6 − 10/6 = 9/6 = 1 1/2', 'g')]]]],
+    real: ['Time', "Ali spends 3/4 of an hour on maths and 2/3 of an hour reading. Together: 9/12 plus 8/12, 17/12, 1 hour and 5 minutes.", E('3/4 + 2/3 = 1 5/12 h', 'g')],
+    turn: ["Your turn! Work out 3/5 plus 1/2. Pause and try it.", E('3/5 + 1/2'), "6/10 plus 5/10 is 11/10: 1 and 1/10.", E('1 1/10', 'g')],
     rec: ["Find a common denominator, change each fraction, then add or subtract the numerators. For mixed numbers, use wholes and parts, or improper fractions. Simplify.", ['Common denominator (LCM)', 'Change each fraction', 'Add or subtract the tops', 'Simplify the answer']],
     deep: ['Using the lowest common denominator keeps the numbers small, but any common denominator gives the right answer.', 'Never add the denominators: 1/3 + 1/4 is not 2/7.']
   });
 
   LS('How do you calculate fractions and percentages?', 'how to find fractions and percentages of amounts and convert between them.', {
-    intro: ['Fractions and percentages', 'Two ways to describe part of a whole', "A fraction and a percentage can describe the same part. 3 fifths is 60%. Changing between them helps calculations.", E('3/5 = 60/100 = 60%', 'g')],
+    intro: ['Fractions and percentages', 'Two ways to describe part of a whole', "A fraction and a percentage can describe the same part. 3/5 is 60%. Changing between them helps calculations.", E('3/5 = 60/100 = 60%', 'g')],
     ex: [['Fraction of an amount', '5/8 of £72', [["72 divided by 8 is 9. 9 times 5 is £45.", E('5/8 of £72 = £45', 'g')]]],
       ['Percentage of an amount', '35% of 240', [["10% is 24. 30% is 72, 5% is 12. 84.", E('35% of 240 = 84', 'g')]]],
-      ['Fraction to percentage', '7/20', [["Multiply top and bottom by 5: 35 hundredths, 35%. Or divide 7 by 20: 0.35.", E('7/20 = 35%', 'g')]]],
-      ['Percentage to fraction', '45%', [["45 hundredths, which simplifies to 9 twentieths.", E('45% = 45/100 = 9/20', 'g')]]],
-      ['Which is bigger?', '2/3 of 90 or 70% of 80', [["2 thirds of 90 is 60. 70% of 80 is 56. 2 thirds of 90 is bigger.", E('60 > 56', 'g')]]]],
-    turn: ["Your turn! Which is bigger: 3 quarters of 60, or 40% of 120? Pause and try it.", E('¾ of 60 or 40% of 120'), "45 and 48. 40% of 120 is bigger.", E('48 > 45', 'g')],
+      ['Fraction to percentage', '7/20', [["Multiply top and bottom by 5: 35/100, 35%. Or divide 7 by 20: 0.35.", E('7/20 = 35%', 'g')]]],
+      ['Percentage to fraction', '45%', [["45/100, which simplifies to 9 twentieths.", E('45% = 45/100 = 9/20', 'g')]]],
+      ['Which is bigger?', '2/3 of 90 or 70% of 80', [["2/3 of 90 is 60. 70% of 80 is 56. 2/3 of 90 is bigger.", E('60 > 56', 'g')]]]],
+    turn: ["Your turn! Which is bigger: 3/4 of 60, or 40% of 120? Pause and try it.", E('¾ of 60 or 40% of 120'), "45 and 48. 40% of 120 is bigger.", E('48 > 45', 'g')],
     rec: ["For a fraction of an amount, divide by the bottom and multiply by the top. Build percentages from 10%. Convert using hundredths.", ['Fraction: ÷ bottom, × top', 'Percent: build from 10%', 'Fraction ↔ percentage via /100', 'Compare in the same form']],
     deep: ['A percentage is a fraction out of 100, so any fraction can become a percentage by scaling to hundredths.', 'Simplify fractions from percentages fully: 45/100 = 9/20.']
   });
@@ -118,7 +118,7 @@
     ex: [['Simplifying', 'Divide by a common factor', [["15 to 25: divide by 5, 3 to 5.", E('15 : 25 = 3 : 5', 'g')]]],
       ['Equivalent ratios', 'Scaling up', [["2 to 1 is the same as 6 to 3 and 10 to 5.", E('2 : 1 = 6 : 3 = 10 : 5', 'g')]]],
       ['Sharing', '£56 in 3 : 4', [["7 parts. 1 part is £8. 3 parts is £24, 4 parts is £32.", E('£24 and £32', 'g')]]],
-      ['Ratio and fractions', 'Part of the whole', [["In 3 to 4, the first share is 3 sevenths of the total and the second is 4 sevenths.", E('3 : 4 → 3/7 and 4/7', 'g')]]]],
+      ['Ratio and fractions', 'Part of the whole', [["In 3 to 4, the first share is 3/7 of the total and the second is 4/7.", E('3 : 4 → 3/7 and 4/7', 'g')]]]],
     real: ['Maps', "A map scale of 1 to 50,000 is a ratio: 1 centimetre on the map is 50,000 centimetres, half a kilometre, on the ground.", E('1 : 50,000 → 1 cm = 0.5 km', 'g')],
     turn: ["Your turn! Simplify the ratio 18 to 12. Pause and try it.", E('18 : 12'), "Divide by 6: 3 to 2.", E('3 : 2', 'g')],
     rec: ["A ratio compares quantities in order. Simplify by dividing, scale by multiplying, and share by finding the value of 1 part.", ['Order matters', 'Simplify: ÷ common factor', 'Scale: × both parts', 'Share: total ÷ parts']],
@@ -129,7 +129,7 @@
     intro: ['Best value', 'Compare fairly', "To find the best value, compare the same amount: the price of 1 item, 100 grams or 1 litre.", V.rule('Work out the price per unit.')],
     ex: [['Price per unit', 'Cereal boxes', [["500 grams for £2.15, or 750 grams for £3. Per hundred grams: 43p, and 40p. The bigger box is better value.", E('43p vs 40p per 100 g', 'g')]]],
       ['Amount per pound', 'Another way', [["Instead, find how much you get per pound: 233 grams, or 250 grams. More per pound is better value.", E('233 g vs 250 g per £1', 'g')]]],
-      ['Offers', 'Buy one get one half price', [["2 pizzas at £4 each with the second half price cost £6: £3 each. 3 for £10 is £3.33 each. The first deal is better.", E('£3.00 vs £3.33 each', 'g')]]],
+      ['Offers', 'Buy 1 get 1/2 price', [["2 pizzas at £4 each with the second half price cost £6: £3 each. 3 for £10 is £3.33 each. The first deal is better.", E('£3.00 vs £3.33 each', 'g')]]],
       ['Percentages off', '25% off vs £5 off', [["On a £24 jumper, 25% off saves £6, better than £5 off.", E('£6 > £5', 'g')]]]],
     real: ['Phone contracts', "Plan A is £12 a month; plan B is £120 a year. Over a year, A costs £144, so B is cheaper.", E('£144 vs £120', 'g')],
     turn: ["Your turn! Which is better: 6 cans for £3.60, or 10 cans for £5.80? Pause and try it.", E('per can'), "60p and 58p per can. 10 cans is better value.", E('10 for £5.80', 'g')],
@@ -140,7 +140,7 @@
   LS('How do you calculate distance, speed and time?', 'how to use the formulas linking distance, speed and time.', {
     intro: ['Three linked quantities', 'D, S and T', "Distance, speed and time are linked. If you know 2, you can find the third.", V.tbl([['Distance', 'S × T'], ['Speed', 'D ÷ T'], ['Time', 'D ÷ S']], ['To find', 'Use'])],
     ex: [['Speed', 'A train', [["A train travels 270 kilometres in 3 hours: 90 kilometres per hour.", E('270 ÷ 3 = 90 km/h', 'g')]]],
-      ['Distance', 'A cyclist', [["A cyclist rides at 18 kilometres per hour for 2 hours and 20 minutes. 20 minutes is a third of an hour, so 2 and a third hours: 42 kilometres.", E('18 × 2⅓ = 42 km', 'g')]]],
+      ['Distance', 'A cyclist', [["A cyclist rides at 18 kilometres per hour for 2 hours and 20 minutes. 20 minutes is 1/3 of an hour, so 2 and 1/3 hours: 42 kilometres.", E('18 × 2⅓ = 42 km', 'g')]]],
       ['Time', 'A car', [["A car travels 210 miles at 60 miles per hour: 3.5 hours, which is 3 hours 30 minutes.", E('210 ÷ 60 = 3.5 h = 3 h 30 min', 'g')]]],
       ['Changing units', 'Metres per second', [["10 metres per second is 36,000 metres per hour: 36 kilometres per hour.", E('10 m/s = 36 km/h', 'g')]]]],
     real: ['Running', "A runner completes 5 kilometres in 25 minutes. That is 12 kilometres per hour.", E('5 ÷ (25/60) = 12 km/h', 'g')],

@@ -8,11 +8,11 @@
   LS('How do you evaluate powers and express whole numbers as powers?', 'how to work out powers and write numbers as powers of a base.', {
     intro: ['Powers', 'Base and index', "In 3 to the power 4, 3 is the base and 4 is the index. It means 3 multiplied by itself 4 times.", E('3⁴ = 3 × 3 × 3 × 3 = 81', 'g')],
     ex: [['Evaluating', 'Work them out', [["2 to the power 7 is 128. 10 to the power 5 is 100,000. 5 cubed is 125.", E('2⁷ = 128 · 10⁵ = 100,000 · 5³ = 125', 'g')]]],
-      ['Writing as a power', 'Find the base and index', [["64 is 2 times itself 6 times: 2 to the six. It is also 4 cubed and 8 squared.", E('64 = 2⁶ = 4³ = 8²', 'g')]]],
-      ['Powers of ten', 'Place value', [["1,000 is 10 cubed. 1 million is 10 to the six.", E('1,000 = 10³ · 1,000,000 = 10⁶', 'g')]]],
+      ['Writing as a power', 'Find the base and index', [["64 is 2 times itself 6 times: 2 to the 6. It is also 4 cubed and 8 squared.", E('64 = 2⁶ = 4³ = 8²', 'g')]]],
+      ['Powers of ten', 'Place value', [["1,000 is 10 cubed. 1 million is 10 to the 6.", E('1,000 = 10³ · 1,000,000 = 10⁶', 'g')]]],
       ['Using a calculator', 'The power key', [["Use the power key: 1.5 to the power 4 is 5.0625.", E('1.5⁴ = 5.0625', 'g')]]]],
     real: ['Doubling', "A bacterium splits in 2 every hour. After 10 hours, 1 becomes 2 to the 10: 1,024.", E('2¹⁰ = 1,024', 'g')],
-    turn: ["Your turn! Write 243 as a power of 3. Pause and try it.", E('243 = 3^?'), "3, 9, 27, 81, 243: 3 to the five.", E('3⁵', 'g')],
+    turn: ["Your turn! Write 243 as a power of 3. Pause and try it.", E('243 = 3^?'), "3, 9, 27, 81, 243: 3 to the 5.", E('3⁵', 'g')],
     rec: ["A power multiplies the base by itself index times. To write a number as a power, keep dividing by the base and count.", ['Base and index', 'aⁿ: a × a × … n times', 'Divide repeatedly to find n', 'Some numbers have several forms']],
     deep: ['Powers grow fast, which is why they describe things like doubling populations.', '2⁷ is 128, not 14: the index counts multiplications, it isn’t multiplied.']
   });
@@ -31,7 +31,7 @@
 
   LS('How do you calculate percentage changes?', 'how to work out percentage increases and decreases, and apply them.', {
     intro: ['Percentage change', 'Compare with the original', "Percentage change tells us how big a change is compared with where we started.", E('% change = change ÷ original × 100', 'g')],
-    ex: [['Increase', '£48 to £54', [["The change is six pounds. Six divided by forty-eight times one hundred: twelve point five per cent increase.", E('6 ÷ 48 × 100 = 12.5%', 'g')]]],
+    ex: [['Increase', '£48 to £54', [["The change is £6. 6 divided by 48 times 100: 12.5% increase.", E('6 ÷ 48 × 100 = 12.5%', 'g')]]],
       ['Decrease', '1,250 to 1,000', [["The change is 250. 250 divided by 1,250: 20% decrease.", E('250 ÷ 1,250 × 100 = 20%', 'g')]]],
       ['Applying a change', 'Multipliers', [["Increase 320 by 15%: times 1.15, 368. Decrease it by 15%: times 0.85, 272.", E('320 × 1.15 = 368 · 320 × 0.85 = 272', 'g')]]],
       ['Profit and loss', 'Percentage profit', [["Bought for £40, sold for 52: a £12 profit, 30%.", E('12 ÷ 40 × 100 = 30%', 'g')]]]],
@@ -43,7 +43,7 @@
 
   LS('How do you convert currencies?', 'how to convert money between currencies using exchange rates.', {
     intro: ['Exchange rates', 'Different money', "An exchange rate tells you how much of 1 currency you get for 1 unit of another.", E('£1 = €1.16 · £1 = $1.27', 'g')],
-    ex: [['Pounds to euros', 'Multiply', [["Three hundred and fifty pounds at one point one six euros per pound: four hundred and six euros.", E('350 × 1.16 = €406', 'g')]]],
+    ex: [['Pounds to euros', 'Multiply', [["£350 at 1.16 euros per pound: 406 euros.", E('350 × 1.16 = €406', 'g')]]],
       ['Euros to pounds', 'Divide', [["232 euros divided by 1.16: £200.", E('232 ÷ 1.16 = £200', 'g')]]],
       ['Comparing prices', 'Where is cheaper?', [["Trainers cost £75 in Glasgow or 85 euros in Paris. 85 euros is £73.28, so Paris is slightly cheaper.", E('€85 ÷ 1.16 ≈ £73.28', 'g')]]],
       ['Between two foreign currencies', 'Via pounds', [["To change dollars to euros, change dollars to pounds first, then pounds to euros.", E('$ → £ → €', 'g')]]]],
@@ -157,11 +157,11 @@
   LS('What is a linear scale factor?', 'how a linear scale factor enlarges or reduces lengths, and its effect on area.', {
     intro: ['Linear scale factor', 'Multiplying lengths', "A linear scale factor tells you how many times longer each length becomes in an enlargement or reduction.", E('new length = old length × k', 'g')],
     ex: [['Enlargement', 'k = 3', [["A rectangle 4 by 2 centimetres with scale factor 3 becomes 12 by 6.", E('4 × 3 = 12 · 2 × 3 = 6', 'g')]]],
-      ['Reduction', 'k = ¼', [["A scale factor of 1 quarter makes every length a quarter. 20 centimetres becomes 5.", E('20 × ¼ = 5', 'g')]]],
+      ['Reduction', 'k = ¼', [["A scale factor of 1/4 makes every length 1/4. 20 centimetres becomes 5.", E('20 × ¼ = 5', 'g')]]],
       ['Finding k', 'new ÷ old', [["A side of 8 becomes 14. The scale factor is 14 divided by 8: 1.75.", E('k = 14 ÷ 8 = 1.75', 'g')]]],
       ['Effect on area', 'Square it', [["With scale factor 3, the area becomes 9 times bigger: 8 square centimetres becomes 72.", E('8 × 3² = 72 cm²', 'g')]]]],
     real: ['Models and maps', "A model car is built at a scale of 1 to 43. A real car 4.3 metres long is a 10 centimetre model.", E('430 cm ÷ 43 = 10 cm', 'g')],
-    turn: ["Your turn! A photo 9 centimetres wide is reduced to 6 centimetres. What is the scale factor? Pause and try it.", E('6 ÷ 9'), "Two thirds.", E('k = ⅔', 'g')],
+    turn: ["Your turn! A photo 9 centimetres wide is reduced to 6 centimetres. What is the scale factor? Pause and try it.", E('6 ÷ 9'), "2/3.", E('k = ⅔', 'g')],
     rec: ["Multiply every length by the linear scale factor. Find it by dividing a new length by the matching old length. Areas scale by k squared.", ['New = old × k', 'k = new ÷ old', 'k > 1 enlarges, k < 1 reduces', 'Area × k²']],
     deep: ['Angles never change in an enlargement, only lengths.', 'Area does not scale by k: a scale factor of 2 makes areas 4 times bigger.']
   });

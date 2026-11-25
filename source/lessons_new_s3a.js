@@ -26,8 +26,8 @@
       S("2 times 3 is 6. So for a power of a power, we multiply the indices.", E('(aᵐ)ⁿ = aᵐⁿ', 'g'))
     ]),
     SC('Using the laws', 'Example 1: with numbers in front', [
-      S("Simplify 6 x to the 7, divided by 2 x to the four. Deal with the numbers first. 6 divided by 2 is 3. Then the letters. 7 minus 4 is 3. So 3 x cubed.", E('6x⁷ ÷ 2x⁴') + g('= 3x³')),
-      S("Another. 3 a squared, times 4 a to the five. Multiply the numbers. 3 times 4 is 12. Add the indices. 2 plus 5 is 7. 12 a to the seven.", E('3a² × 4a⁵') + g('= 12a⁷'))
+      S("Simplify 6 x to the 7, divided by 2 x to the 4. Deal with the numbers first. 6 divided by 2 is 3. Then the letters. 7 minus 4 is 3. So 3 x cubed.", E('6x⁷ ÷ 2x⁴') + g('= 3x³')),
+      S("Another. 3 a squared, times 4 a to the 5. Multiply the numbers. 3 times 4 is 12. Add the indices. 2 plus 5 is 7. 12 a to the 7.", E('3a² × 4a⁵') + g('= 12a⁷'))
     ]),
     SC('Using the laws', 'Example 2: brackets', [
       S("Simplify 2 x cubed, all to the power 4. The power outside the bracket goes on everything inside. 2 to the power 4 is 16. And x cubed to the power 4 is x to the power 12, since 3 times 4 is 12.", E('(2x³)⁴ = 2⁴ × (x³)⁴') + g('= 16x¹²')),
@@ -38,25 +38,25 @@
       S("This is true for any number, except 0 itself. 5 to the power 0 is 1. A million to the power 0 is 1.", g('a⁰ = 1'))
     ]),
     SC('Special case: negative', 'Negative indices', [
-      S("What if we divide a small power by a big 1? 2 squared divided by 2 to the five. The law gives 2 to the negative 3. But we can also cancel. 2 squared over 2 to the 5 leaves 1 over 2 cubed. So 2 to the negative 3 is 1 over 2 cubed. That is 1 eighth.", E('2⁻³ = 1 ÷ 2³ = 1/8')),
+      S("What if we divide a small power by a big 1? 2 squared divided by 2 to the 5. The law gives 2 to the negative 3. But we can also cancel. 2 squared over 2 to the 5 leaves 1 over 2 cubed. So 2 to the negative 3 is 1 over 2 cubed. That is 1/8.", E('2⁻³ = 1 ÷ 2³ = 1/8')),
       S("A negative index does not make the answer negative. It flips the number upside down. a to the negative n is 1 over a to the n.", E('a⁻ⁿ = 1 ÷ aⁿ', 'g'))
     ]),
     SC('Special case: fractions', 'Fractional indices', [
-      S("An index of 1 half means the square root. 25 to the power a half is the square root of 25. That is 5. An index of 1 third means the cube root. 8 to the one third is 2.", E('25^(½) = √25 = 5') + E('8^(⅓) = ∛8 = 2')),
-      S("What about 8 to the 2 thirds? Take the cube root first, which is 2. Then square it. 4. The bottom number of the fraction is the root, and the top number is the power.", g('8^(⅔) = (∛8)² = 2² = 4'))
+      S("An index of 1/2 means the square root. 25 to the power 1/2 is the square root of 25. That is 5. An index of 1/3 means the cube root. 8 to the 1/3 is 2.", E('25^(½) = √25 = 5') + E('8^(⅓) = ∛8 = 2')),
+      S("What about 8 to the 2/3? Take the cube root first, which is 2. Then square it. 4. The bottom number of the fraction is the root, and the top number is the power.", g('8^(⅔) = (∛8)² = 2² = 4'))
     ]),
     SC('Watch out!', 'Four common mistakes', [
       S("Mistake one: multiplying the indices when you should add. x squared times x cubed is x to the five, not x to the six.", r('x² × x³ = x⁶  ✗') + g('x² × x³ = x⁵  ✓')),
-      S("Mistake two: multiplying the bases. 2 cubed times 2 squared is 2 to the five. It is not 4 to the five.", r('2³ × 2² = 4⁵  ✗') + g('2³ × 2² = 2⁵  ✓')),
-      S("Mistake three: thinking a negative index makes a negative number. 2 to the negative 3 is one eighth, which is positive.", r('2⁻³ = −8  ✗') + g('2⁻³ = 1/8  ✓')),
+      S("Mistake two: multiplying the bases. 2 cubed times 2 squared is 2 to the 5. It is not 4 to the 5.", r('2³ × 2² = 4⁵  ✗') + g('2³ × 2² = 2⁵  ✓')),
+      S("Mistake three: thinking a negative index makes a negative number. 2 to the negative 3 is 1/8, which is positive.", r('2⁻³ = −8  ✗') + g('2⁻³ = 1/8  ✓')),
       S("Mistake four: thinking anything to the power 0 is 0. It is 1.", r('5⁰ = 0  ✗') + g('5⁰ = 1  ✓'))
     ]),
     SC('In real life', 'Computers and memory', [
       S("Computer memory is measured in powers of 2. A kilobyte is about 2 to the 10 bytes. A megabyte is 2 to the 20. To find how many kilobytes are in a megabyte, divide. 2 to the 20 divided by 2 to the 10 is 2 to the 10. That is 1,024.", g('2²⁰ ÷ 2¹⁰ = 2¹⁰ = 1,024'))
     ]),
     L.turn("Your turn! Number one. Simplify x to the six, times x to the four. Pause and try it.", E('x⁶ × x⁴'), "Add the indices. 6 plus 4 is 10. x to the 10.", g('x¹⁰')),
-    L.turn("Your turn! Number two. Simplify 12 y to the 8, divided by 3 y to the two. Pause and try it.", E('12y⁸ ÷ 3y²'), "12 divided by 3 is 4. 8 minus 2 is 6. 4 y to the six.", g('4y⁶')),
-    L.turn("Your turn! Number three. Simplify 3 a squared, all to the power 3. Pause and try it.", E('(3a²)³'), "3 cubed is 27. a squared cubed is a to the six. 27 a to the six.", g('27a⁶')),
+    L.turn("Your turn! Number two. Simplify 12 y to the 8, divided by 3 y to the 2. Pause and try it.", E('12y⁸ ÷ 3y²'), "12 divided by 3 is 4. 8 minus 2 is 6. 4 y to the 6.", g('4y⁶')),
+    L.turn("Your turn! Number three. Simplify 3 a squared, all to the power 3. Pause and try it.", E('(3a²)³'), "3 cubed is 27. a squared cubed is a to the 6. 27 a to the 6.", g('27a⁶')),
     L.turn("Your turn! Number four. Work out 4 to the negative 2. Pause and try it.", E('4⁻²'), "1 over 4 squared. 1 over 16.", g('1/16')),
     L.rec('How do you use the laws of indices?', "To multiply powers with the same base, add the indices. To divide, subtract them. For a power of a power, multiply. Anything to the power 0 is 1. A negative index means 1 over the power. A fractional index means a root. Always apply the power to every part inside a bracket.", ['×: add indices', '÷: subtract indices', '(aᵐ)ⁿ: multiply', 'a⁰ = 1, a⁻ⁿ = 1/aⁿ', 'a^(1/2) = √a'])
   ]);
@@ -69,7 +69,7 @@
     ]),
     SC('Powers of ten', 'Why it works', [
       S("Look at the powers of 10. 10 to the one is 10. 10 squared is 100. 10 cubed is 1,000. Each time, one more 0.", E('10¹ = 10') + E('10² = 100') + E('10³ = 1,000')),
-      S("Now go downwards. 10 to the 0 is 1. 10 to the negative 1 is 1 tenth, 0.1. 10 to the negative 2 is 0.01. Each time, we divide by 10, and the decimal point moves 1 place left.", E('10⁰ = 1') + E('10⁻¹ = 0.1') + E('10⁻² = 0.01'))
+      S("Now go downwards. 10 to the 0 is 1. 10 to the negative 1 is 1/10, 0.1. 10 to the negative 2 is 0.01. Each time, we divide by 10, and the decimal point moves 1 place left.", E('10⁰ = 1') + E('10⁻¹ = 0.1') + E('10⁻² = 0.01'))
     ]),
     SC('Large numbers', 'Example 1: 5,600,000', [
       S("Write 5 million, 600,000 in standard form. First, find the number between 1 and 10. Put the decimal point after the first digit. 5.6.", E('5.6')),
@@ -82,25 +82,25 @@
     ]),
     SC('Converting back', 'Example 3: to an ordinary number', [
       S("Now the other way. Write 6.2 times 10 to the negative 3 as an ordinary number. The power is negative 3. So move the decimal point 3 places to the left. 6.2 becomes 0.0062.", E('6.2 × 10⁻³ = 0.0062', 'g')),
-      S("And 4.8 times 10 to the five. Move the point 5 places to the right. 4.8 becomes 480,000.", E('4.8 × 10⁵ = 480,000', 'g'))
+      S("And 4.8 times 10 to the 5. Move the point 5 places to the right. 4.8 becomes 480,000.", E('4.8 × 10⁵ = 480,000', 'g'))
     ]),
     SC('Comparing sizes', 'Example 4: which is bigger?', [
       S("Which is bigger, 3 times 10 to the negative 5, or 8 times 10 to the negative 6? Look at the powers first. Negative 5 is bigger than negative 6. So the first number is bigger.", E('3 × 10⁻⁵   or   8 × 10⁻⁶ ?')),
       S("Check by writing them out. 3 times 10 to the negative 5 is 0.00003. 8 times 10 to the negative 6 is 0.000008. The first has the larger digit sooner. So 3 times 10 to the negative 5 is bigger.", g('3 × 10⁻⁵ is bigger'))
     ]),
     SC('Not quite standard', 'Example 5: fixing the front', [
-      S("What about 45 times 10 to the four? It looks like standard form, but 45 is not between 1 and 10. Fix it. 45 is 4.5 times 10. So 4.5 times 10, times 10 to the four. That is 4.5 times 10 to the five.", E('45 × 10⁴ = 4.5 × 10 × 10⁴') + g('= 4.5 × 10⁵')),
-      S("And 0.6 times 10 to the three. 0.6 is 6 times 10 to the negative 1. So 6 times 10 to the negative 1, times 10 to the three. 6 times 10 squared.", E('0.6 × 10³ = 6 × 10²', 'g'))
+      S("What about 45 times 10 to the 4? It looks like standard form, but 45 is not between 1 and 10. Fix it. 45 is 4.5 times 10. So 4.5 times 10, times 10 to the 4. That is 4.5 times 10 to the 5.", E('45 × 10⁴ = 4.5 × 10 × 10⁴') + g('= 4.5 × 10⁵')),
+      S("And 0.6 times 10 to the 3. 0.6 is 6 times 10 to the negative 1. So 6 times 10 to the negative 1, times 10 to the 3. 6 times 10 squared.", E('0.6 × 10³ = 6 × 10²', 'g'))
     ]),
     SC('Watch out!', 'Three common mistakes', [
       S("Mistake one: the first number is not between 1 and 10. 12 times 10 to the 3 is not in standard form.", r('12 × 10³  ✗') + g('1.2 × 10⁴  ✓')),
-      S("Mistake two: using a positive power for a small number. 0 point 0 0 4 is 4 times 10 to the negative 3.", r('4 × 10³  ✗') + g('4 × 10⁻³  ✓')),
+      S("Mistake two: using a positive power for a small number. 0.004 is 4 times 10 to the negative 3.", r('4 × 10³  ✗') + g('4 × 10⁻³  ✓')),
       S("Mistake three: miscounting the places. Count carefully, 1 place at a time, from the original decimal point.", V.rule('Count the places the point moves.'))
     ]),
     SC('In real life', 'Science', [
-      S("The distance from the Earth to the Sun is about 150 million kilometres. In standard form, 1.5 times 10 to the eight. A red blood cell is about 0.00007 metres across. In standard form, 7 times 10 to the negative 5.", E('1.5 × 10⁸ km') + E('7 × 10⁻⁵ m'))
+      S("The distance from the Earth to the Sun is about 150 million kilometres. In standard form, 1.5 times 10 to the 8. A red blood cell is about 0.00007 metres across. In standard form, 7 times 10 to the negative 5.", E('1.5 × 10⁸ km') + E('7 × 10⁻⁵ m'))
     ]),
-    L.turn("Your turn! Number one. Write 340,000 in standard form. Pause and try it.", E('340,000'), "3.4. The point moves 5 places. 3.4 times 10 to the five.", g('3.4 × 10⁵')),
+    L.turn("Your turn! Number one. Write 340,000 in standard form. Pause and try it.", E('340,000'), "3.4. The point moves 5 places. 3.4 times 10 to the 5.", g('3.4 × 10⁵')),
     L.turn("Your turn! Number two. Write 0.00008 in standard form. Pause and try it.", E('0.00008'), "8. The point moves 5 places to the right. A small number, so a negative power. 8 times 10 to the negative 5.", g('8 × 10⁻⁵')),
     L.turn("Your turn! Number three. Write 2.5 times 10 to the negative 2 as an ordinary number. Pause and try it.", E('2.5 × 10⁻²'), "Move the point 2 places left. 0.025.", g('0.025')),
     L.rec('How do you write numbers in standard form, including small numbers?', "Standard form is a number between 1 and 10, times a power of 10. Big numbers have a positive power. Small numbers have a negative power. The power counts how many places the decimal point moves. To convert back, move the point the other way. Always check the front number is at least 1 and less than 10.", ['a × 10ⁿ with 1 ≤ a < 10', 'Big: n positive', 'Small: n negative', 'Count the places the point moves'])
@@ -113,28 +113,28 @@
       S("This works because of the laws of indices. When we multiply powers of 10, we add the indices. When we divide powers of 10, we subtract the indices.", V.cols([V.card('× powers: add', 'b', true), V.card('÷ powers: subtract', 'g', true)], 2))
     ]),
     SC('Multiplying', 'Example 1: simple', [
-      S("Work out 3 times 10 to the 4, times 2 times 10 to the five. Multiply the front numbers. 3 times 2 is 6. Add the powers. 4 plus 5 is 9.", E('(3 × 10⁴) × (2 × 10⁵)') + E('3 × 2 = 6') + E('10⁴ × 10⁵ = 10⁹')),
-      S("The answer is 6 times 10 to the nine.", g('6 × 10⁹'))
+      S("Work out 3 times 10 to the 4, times 2 times 10 to the 5. Multiply the front numbers. 3 times 2 is 6. Add the powers. 4 plus 5 is 9.", E('(3 × 10⁴) × (2 × 10⁵)') + E('3 × 2 = 6') + E('10⁴ × 10⁵ = 10⁹')),
+      S("The answer is 6 times 10 to the 9.", g('6 × 10⁹'))
     ]),
     SC('Multiplying', 'Example 2: a tidy-up is needed', [
-      S("Now 4 times 10 to the 6, times 5 times 10 to the three. 4 times 5 is 20. 6 plus 3 is 9. So 20 times 10 to the nine.", E('(4 × 10⁶) × (5 × 10³) = 20 × 10⁹')),
+      S("Now 4 times 10 to the 6, times 5 times 10 to the 3. 4 times 5 is 20. 6 plus 3 is 9. So 20 times 10 to the 9.", E('(4 × 10⁶) × (5 × 10³) = 20 × 10⁹')),
       S("But 20 is not between 1 and 10. So the answer is not yet in standard form. 20 is 2 times 10. So 20 times 10 to the 9 is 2 times 10 to the 10.", g('= 2 × 10¹⁰'))
     ]),
     SC('Dividing', 'Example 3: 8 times 10 to the 7, over 2 times 10 to the three', [
-      S("Divide the front numbers. 8 divided by 2 is 4. Subtract the powers. 7 minus 3 is 4. So 4 times 10 to the four.", E('(8 × 10⁷) ÷ (2 × 10³)') + g('= 4 × 10⁴'))
+      S("Divide the front numbers. 8 divided by 2 is 4. Subtract the powers. 7 minus 3 is 4. So 4 times 10 to the 4.", E('(8 × 10⁷) ÷ (2 × 10³)') + g('= 4 × 10⁴'))
     ]),
     SC('Negative powers', 'Example 4: small numbers', [
       S("Multiply 6 times 10 to the negative 3, by 3 times 10 to the negative 2. 6 times 3 is 18. Add the powers. Negative 3 plus negative 2 is negative 5. So 18 times 10 to the negative 5.", E('18 × 10⁻⁵')),
       S("18 is 1.8 times 10. So 1.8 times 10, times 10 to the negative 5. That is 1.8 times 10 to the negative 4. Notice that the power went up by 1, from negative 5 to negative 4.", g('= 1.8 × 10⁻⁴'))
     ]),
     SC('Dividing, with a tidy-up', 'Example 5: a smaller front number', [
-      S("Divide 2 times 10 to the 6, by 5 times 10 to the two. 2 divided by 5 is 0.4. 6 minus 2 is 4. So 0.4 times 10 to the four.", E('0.4 × 10⁴')),
-      S("0.4 is not between 1 and 10. It is 4 times 10 to the negative 1. So 4 times 10 to the negative 1, times 10 to the four. That is 4 times 10 cubed. Notice the power went down by 1.", g('= 4 × 10³'))
+      S("Divide 2 times 10 to the 6, by 5 times 10 to the 2. 2 divided by 5 is 0.4. 6 minus 2 is 4. So 0.4 times 10 to the 4.", E('0.4 × 10⁴')),
+      S("0.4 is not between 1 and 10. It is 4 times 10 to the negative 1. So 4 times 10 to the negative 1, times 10 to the 4. That is 4 times 10 cubed. Notice the power went down by 1.", g('= 4 × 10³'))
     ]),
     SC('Adding', 'Example 6: a different method', [
-      S("Adding is different. 3 times 10 to the 5, plus 4 times 10 to the four. The powers are not the same, so we cannot just add the front numbers. The easiest way is to write them as ordinary numbers. 300,000, plus 40,000, is 340,000.", E('300,000 + 40,000 = 340,000')),
-      S("In standard form, that is 3.4 times 10 to the five.", g('3.4 × 10⁵')),
-      S("Another way is to give them the same power. 4 times 10 to the 4 is 0.4 times 10 to the five. Then 3 plus 0.4 is 3.4. Same answer.", E('3 + 0.4 = 3.4'))
+      S("Adding is different. 3 times 10 to the 5, plus 4 times 10 to the 4. The powers are not the same, so we cannot just add the front numbers. The easiest way is to write them as ordinary numbers. 300,000, plus 40,000, is 340,000.", E('300,000 + 40,000 = 340,000')),
+      S("In standard form, that is 3.4 times 10 to the 5.", g('3.4 × 10⁵')),
+      S("Another way is to give them the same power. 4 times 10 to the 4 is 0.4 times 10 to the 5. Then 3 plus 0.4 is 3.4. Same answer.", E('3 + 0.4 = 3.4'))
     ]),
     SC('Watch out!', 'Three common mistakes', [
       S("Mistake one: multiplying the powers. We add the powers when multiplying powers of 10.", r('10⁴ × 10⁵ = 10²⁰  ✗') + g('10⁴ × 10⁵ = 10⁹  ✓')),
@@ -144,9 +144,9 @@
     SC('In real life', 'Light and distance', [
       S("Light travels at about 3 times 10 to the 8 metres per second. How far does it go in 500 seconds, which is 5 times 10 squared? Multiply. 3 times 5 is 15. 8 plus 2 is 10. 15 times 10 to the 10, which is 1.5 times 10 to the 11 metres.", E('(3 × 10⁸) × (5 × 10²) = 15 × 10¹⁰') + g('= 1.5 × 10¹¹ m'))
     ]),
-    L.turn("Your turn! Number one. Work out 2 times 10 to the 3, times 4 times 10 to the five. Pause and try it.", E('(2 × 10³)(4 × 10⁵)'), "2 times 4 is 8. 3 plus 5 is 8. 8 times 10 to the eight.", g('8 × 10⁸')),
-    L.turn("Your turn! Number two. Work out 6 times 10 to the 8, divided by 3 times 10 to the two. Pause and try it.", E('(6 × 10⁸) ÷ (3 × 10²)'), "6 divided by 3 is 2. 8 minus 2 is 6. 2 times 10 to the six.", g('2 × 10⁶')),
-    L.turn("Your turn! Number three. Work out 5 times 10 to the 4, times 6 times 10 to the three. Give it in standard form. Pause and try it.", E('(5 × 10⁴)(6 × 10³)'), "30 times 10 to the seven. 30 is 3 times 10. So 3 times 10 to the eight.", g('3 × 10⁸')),
+    L.turn("Your turn! Number one. Work out 2 times 10 to the 3, times 4 times 10 to the 5. Pause and try it.", E('(2 × 10³)(4 × 10⁵)'), "2 times 4 is 8. 3 plus 5 is 8. 8 times 10 to the 8.", g('8 × 10⁸')),
+    L.turn("Your turn! Number two. Work out 6 times 10 to the 8, divided by 3 times 10 to the 2. Pause and try it.", E('(6 × 10⁸) ÷ (3 × 10²)'), "6 divided by 3 is 2. 8 minus 2 is 6. 2 times 10 to the 6.", g('2 × 10⁶')),
+    L.turn("Your turn! Number three. Work out 5 times 10 to the 4, times 6 times 10 to the 3. Give it in standard form. Pause and try it.", E('(5 × 10⁴)(6 × 10³)'), "30 times 10 to the 7. 30 is 3 times 10. So 3 times 10 to the 8.", g('3 × 10⁸')),
     L.rec('How do you multiply and divide numbers in standard form?', "To multiply, multiply the front numbers and add the powers of 10. To divide, divide the front numbers and subtract the powers. Then check the front number is still between 1 and 10, and tidy up if it is not. To add or subtract, make the powers the same first, or write the numbers out in full.", ['× : multiply fronts, add powers', '÷ : divide fronts, subtract powers', 'Tidy the front number', '+ and −: match the powers first'])
   ]);
 
@@ -198,10 +198,10 @@
   N('What are rational and irrational numbers?', 'how to tell rational numbers from irrational numbers, and recognise exact values like surds and pi.', [
     SC('Kinds of number', 'Start with the basics', [
       S("Numbers come in families. Natural numbers are the counting numbers, 1, 2, 3. Integers include 0 and the negatives. Now we meet 2 bigger families. Rational and irrational numbers.", V.list(['Natural: 1, 2, 3 …', 'Integers: … −1, 0, 1 …'])),
-      S("A rational number is any number that can be written as a fraction, with a whole number on top and a whole number on the bottom. The word comes from ratio. For example, a half, 3 quarters, and even 4, which is 4 over 1.", E('½, ¾, 4 = 4/1', 'g'))
+      S("A rational number is any number that can be written as a fraction, with a whole number on top and a whole number on the bottom. The word comes from ratio. For example, 1/2, 3/4, and even 4, which is 4 over 1.", E('½, ¾, 4 = 4/1', 'g'))
     ]),
     SC('Decimals', 'Example 1: which decimals are rational?', [
-      S("Decimals that stop, like 0.75, are rational. 0.75 is 75 over 100, which is 3 quarters. Decimals that repeat forever, like 0.333, are rational too. That is 1 third.", E('0.75 = 3/4') + E('0.333… = 1/3')),
+      S("Decimals that stop, like 0.75, are rational. 0.75 is 75 over 100, which is 3/4. Decimals that repeat forever, like 0.333, are rational too. That is 1/3.", E('0.75 = 3/4') + E('0.333… = 1/3')),
       S("So a decimal is rational if it stops, or repeats in a pattern.", V.rule('Stops or repeats: rational.'))
     ]),
     SC('Irrational numbers', 'Example 2: no fraction', [
@@ -220,14 +220,14 @@
       S("A circle has radius 5. Its area is pi times 5 squared. That is 25 pi. This is the exact answer. If we write 78.5, we have rounded. Exact answers keep pi or the root in the answer.", E('A = 25π', 'g') + V.rule('Exact: leave it as π or a surd.'))
     ]),
     SC('Watch out!', 'Three common mistakes', [
-      S("Mistake one: thinking every decimal that goes on forever is irrational. 0.333 repeating is rational. It is a third.", r('0.333… is irrational  ✗') + g('0.333… = 1/3 is rational  ✓')),
+      S("Mistake one: thinking every decimal that goes on forever is irrational. 0.333 repeating is rational. It is 1/3.", r('0.333… is irrational  ✗') + g('0.333… = 1/3 is rational  ✓')),
       S("Mistake two: thinking all square roots are irrational. The square root of 9 is 3, which is rational.", r('√9 irrational  ✗') + g('√9 = 3 rational  ✓')),
       S("Mistake three: thinking 22 over 7 is pi. It is only a close approximation. It is a fraction, so it is rational, but pi is not.", V.rule('22/7 ≈ π, but ≠ π'))
     ]),
     SC('In real life', 'Measuring', [
       S("A square with sides of 1 metre has a diagonal of root 2 metres. This length is irrational. No matter how finely we measure, we can never write its exact length as a fraction. We can only get closer.", V.note('The diagonal of a unit square is irrational'))
     ]),
-    L.turn("Your turn! Number one. Is 0.6 rational or irrational? Pause and think.", E('0.6'), "It is 6 tenths, which is 3 fifths. It is a fraction, so it is rational.", g('Rational')),
+    L.turn("Your turn! Number one. Is 0.6 rational or irrational? Pause and think.", E('0.6'), "It is 6/10, which is 3/5. It is a fraction, so it is rational.", g('Rational')),
     L.turn("Your turn! Number two. Is the square root of 25 rational or irrational? Pause and think.", E('√25'), "The root of 25 is 5. That is rational.", g('Rational')),
     L.turn("Your turn! Number three. Is the square root of 11 rational or irrational? Pause and think.", E('√11'), "11 is not a perfect square. So it is irrational.", g('Irrational')),
     L.rec('What are rational and irrational numbers?', "A rational number can be written as a fraction. Its decimal stops or repeats. An irrational number cannot be written as a fraction, and its decimal goes on forever without repeating. Pi and the square roots of non-square numbers are irrational. Leave exact answers in terms of pi or a surd.", ['Rational: a fraction', 'Decimal stops or repeats', 'Irrational: never repeats', 'π and √2 are irrational'])
@@ -340,7 +340,7 @@
       S("0.96 means 96%. The price is 4% lower than the start. It does not return to the original, because each change is on a different amount.", g('Overall: 4% decrease'))
     ]),
     SC('Overall change', 'Example 5: finding the overall percentage', [
-      S("Two years of growth of five per cent. What is the overall percentage increase? One point zero five squared is one point one zero two five. That is one hundred and ten point two five per cent of the original. So the overall increase is ten point two five per cent.", E('1.05² = 1.1025') + g('Overall: 10.25% increase'))
+      S("2 years of growth of 5%. What is the overall percentage increase? 1.05 squared is 1.1025. That is 110.25% of the original. So the overall increase is 10.25%.", E('1.05² = 1.1025') + g('Overall: 10.25% increase'))
     ]),
     SC('Watch out!', 'Three common mistakes', [
       S("Mistake one: adding the percentages. 3 years at 10% is not 30%.", r('3 × 10% = 30%  ✗') + g('1.1³ = 1.331 → 33.1%  ✓')),
@@ -384,8 +384,8 @@
       S("Another example. Integers that are both even and odd. None. Empty set.", g('n(∅) = 0'))
     ]),
     SC('Watch out!', 'Common mistakes, with examples', [
-      S("Mistake one. Calling a fraction an integer. Is 3 quarters an integer? Wrong: yes, because it is made from whole numbers. An integer is a whole number, with no fractional part. 3 quarters is a rational number, but not an integer.", r('3/4 is an integer  ✗') + g('3/4 is rational, not an integer  ✓')),
-      S("Mistake two. Thinking a recurring decimal is irrational. 0.333, recurring. Wrong: it goes on forever, so it is irrational. It equals 1 third, which is a fraction, so it is rational. Irrational numbers like pi never repeat.", r('0.333… is irrational  ✗') + g('0.333… = 1/3, rational  ✓')),
+      S("Mistake one. Calling a fraction an integer. Is 3/4 an integer? Wrong: yes, because it is made from whole numbers. An integer is a whole number, with no fractional part. 3/4 is a rational number, but not an integer.", r('3/4 is an integer  ✗') + g('3/4 is rational, not an integer  ✓')),
+      S("Mistake two. Thinking a recurring decimal is irrational. 0.333, recurring. Wrong: it goes on forever, so it is irrational. It equals 1/3, which is a fraction, so it is rational. Irrational numbers like pi never repeat.", r('0.333… is irrational  ✗') + g('0.333… = 1/3, rational  ✓')),
       S("Mistake three. Thinking every square root is irrational. Root 16. Wrong: irrational, because it has a root sign. Root 16 is 4, a whole number, so it is rational. Root 17 is not a whole number, and it is irrational.", r('√16 is irrational  ✗') + g('√16 = 4 rational; √17 irrational  ✓'))
     ]),
     SC('In real life', 'Groups', [
@@ -415,7 +415,7 @@
       S("Let's check with a table. After 1 year, 850. After 2 years, 7 hundred and 20-2 50. After 3 years, £614.13. Notice the amount lost each year gets smaller. 150, then 1 hundred and 20-7 50, then about £108.", V.tbl([['1', '£850.00'], ['2', '£722.50'], ['3', '£614.13']], ['Year', 'Value']))
     ]),
     SC('How much was lost?', 'Example 4: the total depreciation', [
-      S("How much value did the laptop lose in three years? Subtract. One thousand minus six hundred and fourteen. Three hundred and eighty-six pounds. As a percentage of the original, that is thirty-eight point six per cent.", E('1,000 − 614 = £386') + g('≈ 38.6% in total'))
+      S("How much value did the laptop lose in 3 years? Subtract. 1,000 minus 614. £386. As a percentage of the original, that is 38.6%.", E('1,000 − 614 = £386') + g('≈ 38.6% in total'))
     ]),
     SC('Straight line', 'Example 5: a different way', [
       S("Some businesses use straight line depreciation. The value falls by the same amount every year. A machine costs 10,000 and loses 1,500 each year. After 4 years, it loses 6,000. It is worth £4,000.", E('10,000 − 4 × 1,500') + g('= £4,000')),
@@ -504,7 +504,7 @@
     SC('In real life', 'Running a stall', [
       S("At a school fair, you buy cakes for £50 and sell them for 75. Your profit is £25. The percentage profit is 25 over 50, which is 50%. The school keeps the profit.", g('25 ÷ 50 × 100 = 50%'))
     ]),
-    L.turn("Your turn! Number one. A cap costs £12 and is sold for 15. What is the percentage profit? Pause and try it.", E('3 ÷ 12 × 100'), "The profit is £3. 3 over 12 is a quarter. 25%.", g('25%')),
+    L.turn("Your turn! Number one. A cap costs £12 and is sold for 15. What is the percentage profit? Pause and try it.", E('3 ÷ 12 × 100'), "The profit is £3. 3 over 12 is 1/4. 25%.", g('25%')),
     L.turn("Your turn! Number two. A shop adds a 30% profit to a cost of £40. What is the selling price? Pause and try it.", E('40 × 1.3'), "Fifty-two pounds.", g('£52')),
     L.turn("Your turn! Number three. A lamp is sold at a loss of 10%, for £45. What did it cost? Pause and try it.", E('45 ÷ 0.9'), "A loss means the multiplier is 0.9. 45 divided by 0.9 is £50.", g('£50')),
     L.rec('How do you work out profit and loss as a percentage?', "Profit is selling price minus cost price. Loss is cost price minus selling price. A percentage profit or loss is always of the cost price. To find a selling price, multiply the cost by the multiplier. To find the cost, divide the selling price by the multiplier.", ['Profit = selling − cost', '% profit = profit ÷ cost × 100', 'Selling = cost × multiplier', 'Cost = selling ÷ multiplier'])
@@ -543,7 +543,7 @@
     ]),
     L.turn("Your turn! Number one. Find the simple interest on £500 at 4% for 3 years. Pause and try it.", E('500 × 4 × 3 ÷ 100'), "£20 a year. For 3 years. £60.", g('£60')),
     L.turn("Your turn! Number two. What is the total in the account? Pause and try it.", E('500 + 60'), "£560.", g('£560')),
-    L.turn("Your turn! Number three. How much simple interest on £2,000 at 3% for 6 months? Pause and try it.", E('2,000 × 3 × 0.5 ÷ 100'), "2,000 times 3 is 6,000. Times a half is 3,000. Divided by 100. £30.", g('£30')),
+    L.turn("Your turn! Number three. How much simple interest on £2,000 at 3% for 6 months? Pause and try it.", E('2,000 × 3 × 0.5 ÷ 100'), "2,000 times 3 is 6,000. Times 1/2 is 3,000. Divided by 100. £30.", g('£30')),
     L.rec('How do you calculate simple interest?', "Simple interest is the same amount every year, based on the principal. Use I equals P times R times T, over 100. T is the time in years. The total is the principal plus the interest. Compound interest is a little more, because the interest earns interest too.", ['I = PRT ÷ 100', 'Same amount each year', 'Total = P + I', 'Months: fractions of a year'])
   ]);
 
@@ -595,7 +595,7 @@
       S("Always check they add up to the income. Twelve hundred, plus 720, plus 480. 20-4 hundred. Correct.", E('1,200 + 720 + 480 = 2,400 ✓'))
     ]),
     SC('Needs in detail', 'Example 2: splitting a category', [
-      S("The needs budget of £1,200 covers rent, food and bills. Suppose rent is a half of it. £600. Food is a quarter. 300. The rest is bills. That leaves £300.", E('Rent £600  ·  Food £300  ·  Bills £300'))
+      S("The needs budget of £1,200 covers rent, food and bills. Suppose rent is 1/2 of it. £600. Food is 1/4. 300. The rest is bills. That leaves £300.", E('Rent £600  ·  Food £300  ·  Bills £300'))
     ]),
     SC('A yearly plan', 'Example 3: 12 months', [
       S("A yearly plan multiplies by 12. Saving £480 a month is 480 times 12. 5,000, £760 a year.", E('480 × 12') + g('= £5,760 a year')),
@@ -608,9 +608,9 @@
       S("Income goes up by 10%, from 2,400 to £2,640. With the same percentages, every part of the budget rises by 10%. That is the power of using percentages. Savings go from 480 to 528.", E('2,640 × 20% = £528', 'g'))
     ]),
     SC('Watch out!', 'Common mistakes, with examples', [
-      S("Mistake one. Percentages that do not add to 100. Rent 40%, food 25, travel 15, savings 10, fun 15. Wrong: it looks fine. Add them. A hundred and 5%. That is more than the income. Change fun to 10%.", r('40 + 25 + 15 + 10 + 15 = 105%  ✗') + g('… + 10 = 100%  ✓')),
+      S("Mistake one. Percentages that do not add to 100. Rent 40%, food 25, travel 15, savings 10, fun 15. Wrong: it looks fine. Add them. 105%. That is more than the income. Change fun to 10%.", r('40 + 25 + 15 + 10 + 15 = 105%  ✗') + g('… + 10 = 100%  ✓')),
       S("Mistake two. Taking the percentage of the wrong amount. Income is £1,800 a month, and rent is 30%. Wrong: 30% of 1,000, 300. Use the income. 30% of 1,800 is 540.", r('30% of 1000 = 300  ✗') + g('30% of 1800 = 540  ✓')),
-      S("Mistake three. Forgetting a yearly cost. A subscription is £12 a month. Wrong: put £12 in the yearly plan. There are 12 months. 12 times 12 is a hundred and £44.", r('£12 a year  ✗') + g('12 × 12 = £144 a year  ✓'))
+      S("Mistake three. Forgetting a yearly cost. A subscription is £12 a month. Wrong: put £12 in the yearly plan. There are 12 months. 12 times 12 is 100 and £44.", r('£12 a year  ✗') + g('12 × 12 = £144 a year  ✓'))
     ]),
     SC('In real life', 'Setting a goal', [
       S("You want to save £600 for a trip in 10 months. 600 divided by 10 is £60 a month. That is your savings target. A budget helps you reach it.", g('600 ÷ 10 = £60 a month'))
@@ -647,9 +647,9 @@
       S("The best way to use a credit card is to pay the whole balance every month. Then you pay no interest at all. If you only pay the minimum, the debt can last years and cost far more.", V.note('Pay in full to avoid interest'))
     ]),
     SC('Watch out!', 'Common mistakes, with examples', [
-      S("Mistake one. Comparing only the monthly payment. A sofa costs £600 in cash. Hire purchase is £25 a month for 30 months. Wrong: £25 sounds cheap. Multiply. £750. That is a hundred and 50 more.", r('only £25  ✗') + g('25 × 30 = £750 in total  ✓')),
+      S("Mistake one. Comparing only the monthly payment. A sofa costs £600 in cash. Hire purchase is £25 a month for 30 months. Wrong: £25 sounds cheap. Multiply. £750. That is 150 more.", r('only £25  ✗') + g('25 × 30 = £750 in total  ✓')),
       S("Mistake two. Forgetting the deposit. A deposit of £50, then 12 payments of 40. Wrong: 12 times 40, 480. Add the deposit. £530.", r('12 × 40 = £480  ✗') + g('50 + 480 = £530  ✓')),
-      S("Mistake three. Calling the extra cost the interest rate. The cash price is £400, and the credit price is 450. Wrong: the interest is 50%. The extra is £50. As a fraction of 400 it is 12 and a half per cent.", r('£50 extra = 50%  ✗') + g('50 ÷ 400 = 12.5%  ✓'))
+      S("Mistake three. Calling the extra cost the interest rate. The cash price is £400, and the credit price is 450. Wrong: the interest is 50%. The extra is £50. As a fraction of 400 it is 12 and 1/2 per cent.", r('£50 extra = 50%  ✗') + g('50 ÷ 400 = 12.5%  ✓'))
     ]),
     SC('In real life', 'Buy now, pay later', [
       S("Shops often say interest free for 12 months. That can be fine if you pay on time. But if you miss the deadline, interest may be added back to the whole amount. Always read the details.", V.note('Read the small print'))
@@ -685,14 +685,14 @@
       S("A guidebook costs 24 euros in Paris, and £19 in London. Rate: 1.15. 24 euros divided by 1.15 is £20.87. The London price is cheaper. Change both prices to the same currency to compare.", E('24 ÷ 1.15 ≈ £20.87') + g('£19 is cheaper'))
     ]),
     SC('Watch out!', 'Common mistakes, with examples', [
-      S("Mistake one. Multiplying when you should divide. Change two hundred and twenty euros into pounds, when one pound is one point one euros. Wrong: two twenty times one point one, two hundred and forty-two pounds. A euro is worth less than a pound, so the answer must be smaller. Divide. Two hundred pounds.", r('220 × 1.1 = £242  ✗') + g('220 ÷ 1.1 = £200  ✓')),
+      S("Mistake one. Multiplying when you should divide. Change 220 euros into pounds, when £1 is 1.1 euros. Wrong: 2 20 times 1.1, £242. A euro is worth less than a pound, so the answer must be smaller. Divide. £200.", r('220 × 1.1 = £242  ✗') + g('220 ÷ 1.1 = £200  ✓')),
       S("Mistake two. Ignoring the fee. Shop A gives 1.1 euros per pound with no fee. Shop B gives 1.12, but takes a £5 fee. For £200. Wrong: B has the better rate, so B is better. A gives 220 euros. B gives 195 times 1.12, 218.4. A is better.", r('B has a better rate, so B  ✗') + g('A: 220 euros.  B: 218.4 euros  ✓')),
       S("Mistake three. Comparing different amounts. Offer 1 gives 220 euros for £200. Offer 2 gives 324 euros for £300. Wrong: 3 24 is bigger, so offer 2 is better. Compare euros per pound. 1.10 against 1.08. Offer 1 is better.", r('324 > 220, so offer 2  ✗') + g('1.10 against 1.08 per £: offer 1  ✓'))
     ]),
     SC('In real life', 'Airport or bank?', [
       S("Airport exchange desks often have worse rates and bigger fees. Comparing offers before you travel can save you a good deal of money.", V.note('Compare before you travel'))
     ]),
-    L.turn("Your turn! Number one. You change three hundred pounds at one point one four euros to the pound. How many euros? Pause and try it.", E('300 × 1.14'), "342 euros.", g('€342')),
+    L.turn("Your turn! Number one. You change £300 at 1.14 euros to the pound. How many euros? Pause and try it.", E('300 × 1.14'), "342 euros.", g('€342')),
     L.turn("Your turn! Number two. A fee of 2% is taken first. How many pounds are changed from 300? Pause and try it.", E('300 × 0.98'), "£294.", g('£294')),
     L.turn("Your turn! Number three. A hotel costs 150 euros a night. At 1.2 euros to the pound, how much in pounds? Pause and try it.", E('150 ÷ 1.2'), "£125.", g('£125')),
     L.rec('How do you compare currency exchange offers?', "To compare offers, work out how much you actually receive. Take off any commission or fixed fee first. Then multiply by the exchange rate to get foreign money, or divide by the rate to get pounds. Compare prices in the same currency.", ['Fees first', '£ → foreign: × rate', 'Foreign → £: ÷ rate', 'Compare in one currency'])
@@ -725,7 +725,7 @@
       S("So there were 12 boys and 8 girls before. Now there are 12 and 12, 24 in total.", g('Now 12 boys, 12 girls'))
     ]),
     SC('Ratio to fraction', 'Example 6: finding fractions', [
-      S("If the ratio of red to blue is 2 to 3, then red is 2 out of 5 parts. That is 2 fifths. Blue is 3 fifths. This helps us find percentages. 2 fifths is 40%.", E('Red = 2/5 = 40%') + E('Blue = 3/5 = 60%'))
+      S("If the ratio of red to blue is 2 to 3, then red is 2 out of 5 parts. That is 2/5. Blue is 3/5. This helps us find percentages. 2/5 is 40%.", E('Red = 2/5 = 40%') + E('Blue = 3/5 = 60%'))
     ]),
     SC('Watch out!', 'Common mistakes, with examples', [
       S("Mistake one. Dividing by 1 of the ratio numbers. Share £60 in the ratio 2 to 3. Wrong: 60 divided by 2 is 30, and 60 divided by 3 is 20. They only add to 50. Add the parts first. 5. 60 divided by 5 is 12. Then 24 and 36.", r('60 ÷ 2 = 30 and 60 ÷ 3 = 20  ✗') + g('60 ÷ 5 = 12 → 24 and 36  ✓')),
@@ -800,7 +800,7 @@
       S("Using y equals 24 over x. Find y when x is 8. 24 divided by 8 is 3. And find x when y is 2. 2 equals 24 over x. So x is 12.", E('x = 8 → y = 3') + E('y = 2 → x = 12', 'g'))
     ]),
     SC('Speed and time', 'Example 5: travel', [
-      S("A journey of 120 kilometres. At 60 kilometres per hour, it takes 2 hours. At 40, 3 hours. At 80, 1 and a half hours. Speed and time are in inverse proportion when the distance is fixed.", E('v × t = 120', 'g'))
+      S("A journey of 120 kilometres. At 60 kilometres per hour, it takes 2 hours. At 40, 3 hours. At 80, 1 and 1/2 hours. Speed and time are in inverse proportion when the distance is fixed.", E('v × t = 120', 'g'))
     ]),
     SC('The graph', 'Example 6: the shape', [
       S("The graph of inverse proportion is not a straight line. It is a curve that falls steeply and then flattens. It never touches either axis. As x gets bigger, y gets closer and closer to 0.", V.note('A falling curve, not a line'))
@@ -840,17 +840,17 @@
       S("Total distance is 300. Total time is 5 hours. Average speed is 60 kilometres per hour. Again, not 62.5, which would be the mean of 75 and 50.", E('300 ÷ 5') + g('= 60 km/h'))
     ]),
     SC('Out and back', 'Example 5: a return journey', [
-      S("A girl cycles to school at 12 kilometres per hour and returns at 8. The distance is 6 kilometres each way. Time there is half an hour. Time back is 3 quarters of an hour. Total distance is 12 kilometres. Total time is 1 and a quarter hours. Average speed is 9.6 kilometres per hour.", E('6 ÷ 12 = 0.5 h') + E('6 ÷ 8 = 0.75 h') + g('12 ÷ 1.25 = 9.6 km/h'))
+      S("A girl cycles to school at 12 kilometres per hour and returns at 8. The distance is 6 kilometres each way. Time there is half an hour. Time back is 3/4 of an hour. Total distance is 12 kilometres. Total time is 1 and 1/4 hours. Average speed is 9.6 kilometres per hour.", E('6 ÷ 12 = 0.5 h') + E('6 ÷ 8 = 0.75 h') + g('12 ÷ 1.25 = 9.6 km/h'))
     ]),
     SC('Watch out!', 'Common mistakes, with examples', [
       S("Mistake one. Averaging the speeds. 80 kilometres per hour for 1 hour, then 30 for 2 hours. Wrong: 80 plus 30, over 2, 55. Use the total distance and total time. 140 kilometres in 3 hours. About 46.7.", r('(80 + 30) ÷ 2 = 55  ✗') + g('140 ÷ 3 ≈ 46.7  ✓')),
       S("Mistake two. Using minutes as hours. 15 kilometres in 45 minutes. Wrong: 15 divided by 45. Change the time to hours first. 45 minutes is 0.75 hours. 20 kilometres per hour.", r('15 ÷ 45 = 0.33 km/h  ✗') + g('15 ÷ 0.75 = 20 km/h  ✓')),
-      S("Mistake three. Leaving out a stop. A driver goes 100 kilometres. The driving takes 1 hour, and there is a half hour stop. Wrong: 100 kilometres per hour. The whole journey took 1 and a half hours. About 66.7.", r('100 ÷ 1 = 100 km/h  ✗') + g('100 ÷ 1.5 ≈ 66.7 km/h  ✓'))
+      S("Mistake three. Leaving out a stop. A driver goes 100 kilometres. The driving takes 1 hour, and there is 1/2 hour stop. Wrong: 100 kilometres per hour. The whole journey took 1 and 1/2 hours. About 66.7.", r('100 ÷ 1 = 100 km/h  ✗') + g('100 ÷ 1.5 ≈ 66.7 km/h  ✓'))
     ]),
     SC('In real life', 'Journey planning', [
       S("Sat navs use average speed to estimate arrival times. A 240 kilometre trip at an average of 80 kilometres per hour takes 3 hours. Heavy traffic lowers the average, and so the arrival time is later.", g('240 ÷ 80 = 3 h'))
     ]),
-    L.turn("Your turn! Number one. A runner goes 12 kilometres in 1 and a half hours. What is the average speed? Pause and try it.", E('12 ÷ 1.5'), "8 kilometres per hour.", g('8 km/h')),
+    L.turn("Your turn! Number one. A runner goes 12 kilometres in 1 and 1/2 hours. What is the average speed? Pause and try it.", E('12 ÷ 1.5'), "8 kilometres per hour.", g('8 km/h')),
     L.turn("Your turn! Number two. A car goes 60 kilometres in 1 hour, and then 90 kilometres in 1 hour. Find the average speed. Pause and try it.", E('150 ÷ 2'), "150 kilometres in 2 hours. 75 kilometres per hour.", g('75 km/h')),
     L.turn("Your turn! Number three. A bus takes 30 minutes to go 15 kilometres. Give its speed in kilometres per hour. Pause and try it.", E('15 ÷ 0.5'), "30 minutes is half an hour. 30 kilometres per hour.", g('30 km/h')),
     L.rec('How do you find average speed over a whole journey?', "Speed is distance divided by time. Average speed is the total distance divided by the total time. Do not just average the speeds. If speeds are given for parts of a journey, work out the time for each part first, using time equals distance divided by speed. Keep the time units consistent.", ['Average = total D ÷ total T', 'T = D ÷ S for each part', 'Do not average the speeds', 'Same time units'])
@@ -872,18 +872,18 @@
       S("The big box gives more per pound. Same answer.", g('Big box wins'))
     ]),
     SC('Three offers', 'Example 3: comparing more than 2', [
-      S("Juice comes in 3 sizes. 500 millilitres for 90p. 1 litre for £1.65. 1.5 litres for £2.40. Convert to pence per hundred millilitres. 90 divided by 5 is 18. 1 65 over 10 is 16 and a half. 2 40 over 15 is 16.", E('500 mL: 18p per 100 mL') + E('1 L: 16.5p per 100 mL') + E('1.5 L: 16p per 100 mL')),
+      S("Juice comes in 3 sizes. 500 millilitres for 90p. 1 litre for £1.65. 1.5 litres for £2.40. Convert to pence per hundred millilitres. 90 divided by 5 is 18. 1 65 over 10 is 16 and 1/2. 2 40 over 15 is 16.", E('500 mL: 18p per 100 mL') + E('1 L: 16.5p per 100 mL') + E('1.5 L: 16p per 100 mL')),
       S("The biggest bottle is the cheapest per hundred millilitres.", g('1.5 L is the best buy'))
     ]),
     SC('Not always the big one', 'Example 4: a surprise', [
-      S("Bigger is not always better. A shop has a special offer. Pasta, 500 grams for £1, or a family pack of 1 and a half kilograms for £3.50. Per hundred grams, the small pack is 20p. The big pack is about 23p. The small 1 is better value.", E('500 g: 20p per 100 g') + E('1.5 kg: 23.3p per 100 g') + g('Small pack wins'))
+      S("Bigger is not always better. A shop has a special offer. Pasta, 500 grams for £1, or a family pack of 1 and 1/2 kilograms for £3.50. Per hundred grams, the small pack is 20p. The big pack is about 23p. The small 1 is better value.", E('500 g: 20p per 100 g') + E('1.5 kg: 23.3p per 100 g') + g('Small pack wins'))
     ]),
     SC('Special offers', 'Example 5: 3 for 2', [
       S("A shop offers 3 for the price of 2 on tins that cost 80p each. 3 tins cost £1.60. That is about 53p per tin. A normal price is 80p. So the offer is the better buy, if you need 3 tins.", E('2 × 80p = £1.60 for 3') + g('≈ 53p each'))
     ]),
     SC('Watch out!', 'Common mistakes, with examples', [
       S("Mistake one. Comparing the total prices. Cheese costs £2.50 for 250 grams, or 4 50 for 500. Wrong: 2 50 is cheaper, so buy that. But it is less cheese. Price per hundred grams. £1 against 90p. The large block is better.", r('£2.50 < £4.50, so small  ✗') + g('100p against 90p per 100 g: large  ✓')),
-      S("Mistake two. Mixing units. Pasta is one pound for five hundred grams, or one pound eighty for one point five kilograms. Wrong: compare five hundred and one point five. Change to grams. One thousand five hundred. Twenty pence against twelve pence per hundred grams.", r('500 against 1.5  ✗') + g('20p against 12p per 100 g  ✓')),
+      S("Mistake two. Mixing units. Pasta is £1 for 500 grams, or £1.80 for 1.5 kilograms. Wrong: compare 501.5. Change to grams. 1,500. 20p against 12p per hundred grams.", r('500 against 1.5  ✗') + g('20p against 12p per 100 g  ✓')),
       S("Mistake three. Thinking the bigger pack is always cheaper. Pasta is £1 for 500 grams, or 3 50 for 1.5 kilograms. Wrong: the family pack must be cheaper. 20p against 23.3 pence per hundred grams. The small pack wins.", r('big pack must be cheaper  ✗') + g('20p against 23.3p per 100 g: small  ✓'))
     ]),
     SC('In real life', 'Supermarkets', [
@@ -902,22 +902,22 @@
       S("The shape of the line tells a story. Let's learn to read it. There are 3 kinds of section.", V.list(['Going up: moving away', 'Flat: stopped', 'Going down: coming back']))
     ]),
     SC('Reading a graph', 'Example 1: a walk', [
-      S("A girl walks for 1 hour, and covers 4 kilometres. The line rises steadily. She then stops for half an hour, to eat lunch. The line is flat. Then she walks back, taking 1 and a half hours. The line goes down to 0.", E('0–1 h: up 4 km') + E('1–1.5 h: flat') + E('1.5–3 h: back down'))
+      S("A girl walks for 1 hour, and covers 4 kilometres. The line rises steadily. She then stops for half an hour, to eat lunch. The line is flat. Then she walks back, taking 1 and 1/2 hours. The line goes down to 0.", E('0–1 h: up 4 km') + E('1–1.5 h: flat') + E('1.5–3 h: back down'))
     ]),
     SC('Speed', 'Example 2: the gradient', [
       S("The steepness of the line is the speed. Gradient is the change in distance divided by the change in time. That is exactly the formula for speed. So the gradient of a distance-time graph is the speed.", E('Gradient = speed', 'g')),
       S("In the first hour, she walked 4 kilometres. 4 divided by 1 is 4 kilometres per hour.", g('4 ÷ 1 = 4 km/h')),
-      S("On the way back, 4 kilometres took 1 and a half hours. 4 divided by 1.5 is 2.67 kilometres per hour. Slower, so the line is less steep.", E('4 ÷ 1.5 ≈ 2.67 km/h'))
+      S("On the way back, 4 kilometres took 1 and 1/2 hours. 4 divided by 1.5 is 2.67 kilometres per hour. Slower, so the line is less steep.", E('4 ÷ 1.5 ≈ 2.67 km/h'))
     ]),
     SC('Steeper means faster', 'Example 3: comparing', [
       S("2 cyclists. Line A rises 10 kilometres in 1 hour. Line B rises 15 kilometres in 1 hour. B is steeper. So B is faster. 10 kilometres per hour, and 15 kilometres per hour.", E('A: 10 km/h') + E('B: 15 km/h', 'g'))
     ]),
     SC('Drawing a graph', 'Example 4: from a description', [
-      S("A bus leaves the depot, drives 30 kilometres in half an hour, waits for 15 minutes, then drives 20 kilometres more in half an hour. Plot the points. Start at 0, 0. Then half an hour, 30 kilometres. Then 3 quarters of an hour, 30 kilometres, which is flat. Then 1 hour and 15 minutes, 50 kilometres.", E('(0, 0)') + E('(0.5, 30)') + E('(0.75, 30)') + E('(1.25, 50)')),
+      S("A bus leaves the depot, drives 30 kilometres in half an hour, waits for 15 minutes, then drives 20 kilometres more in half an hour. Plot the points. Start at 0, 0. Then half an hour, 30 kilometres. Then 3/4 of an hour, 30 kilometres, which is flat. Then 1 hour and 15 minutes, 50 kilometres.", E('(0, 0)') + E('(0.5, 30)') + E('(0.75, 30)') + E('(1.25, 50)')),
       S("Join the points with straight lines, using a ruler.", V.rule('Join with straight lines.'))
     ]),
     SC('Average speed', 'Example 5: the whole trip', [
-      S("The average speed for the bus is the total distance divided by the total time. 50 kilometres in 1 and a quarter hours. 50 divided by 1.25 is 40 kilometres per hour. The wait is included in the time.", E('50 ÷ 1.25') + g('= 40 km/h'))
+      S("The average speed for the bus is the total distance divided by the total time. 50 kilometres in 1 and 1/4 hours. 50 divided by 1.25 is 40 kilometres per hour. The wait is included in the time.", E('50 ÷ 1.25') + g('= 40 km/h'))
     ]),
     SC('Meeting', 'Example 6: when lines cross', [
       S("If 2 journeys are drawn on the same graph, the point where the lines cross is where the 2 travellers meet. Read the time on the bottom, and the distance up the side.", V.note('Crossing point: they meet'))
@@ -1051,14 +1051,14 @@
   N('How do you find the volume and surface area of compound solids?', 'how to split a solid into simple parts, such as a cylinder with a cone or hemisphere on top.', [
     SC('Compound solids', 'Start with the basics', [
       S("A compound solid is made by joining simple solids together. Think of an ice cream cone with a scoop on top, or a pencil shape, a cylinder with a cone at the end. To find its volume, we find the volume of each part and add them.", V.rule('Split, find each, add.')),
-      S("Here are the formulas we will need. Cylinder, pi r squared h. Cone, one third pi r squared h. Sphere, 4 thirds pi r cubed. A hemisphere is half a sphere, so 2 thirds pi r cubed.", V.list(['Cylinder: π r² h', 'Cone: ⅓ π r² h', 'Sphere: ⁴⁄₃ π r³', 'Hemisphere: ⅔ π r³']))
+      S("Here are the formulas we will need. Cylinder, pi r squared h. Cone, 1/3 pi r squared h. Sphere, 4/3 pi r cubed. A hemisphere is half a sphere, so 2/3 pi r cubed.", V.list(['Cylinder: π r² h', 'Cone: ⅓ π r² h', 'Sphere: ⁴⁄₃ π r³', 'Hemisphere: ⅔ π r³']))
     ]),
     SC('Cylinder and cone', 'Example 1: a pencil shape', [
       S("A cylinder with radius 3 and height 8 has a cone on top, with the same radius and height 4. Cylinder volume is pi times 9 times 8. That is about 226.2.", E('π × 3² × 8 ≈ 226.2')),
-      S("Cone volume is 1 third times pi times 9 times 4. About 37.7. Add them. About 264 cubic centimetres.", E('⅓ × π × 9 × 4 ≈ 37.7') + g('≈ 264 cm³'))
+      S("Cone volume is 1/3 times pi times 9 times 4. About 37.7. Add them. About 264 cubic centimetres.", E('⅓ × π × 9 × 4 ≈ 37.7') + g('≈ 264 cm³'))
     ]),
     SC('Hemisphere', 'Example 2: a capsule', [
-      S("A medicine capsule is a cylinder with a hemisphere on each end. Radius 2, and the cylinder part is 6 long. Cylinder, pi times 4 times 6, about 75.4. 2 hemispheres make 1 whole sphere. 4 thirds times pi times 8, about 33.5.", E('π × 4 × 6 ≈ 75.4') + E('⁴⁄₃ × π × 8 ≈ 33.5')),
+      S("A medicine capsule is a cylinder with a hemisphere on each end. Radius 2, and the cylinder part is 6 long. Cylinder, pi times 4 times 6, about 75.4. 2 hemispheres make 1 whole sphere. 4/3 times pi times 8, about 33.5.", E('π × 4 × 6 ≈ 75.4') + E('⁴⁄₃ × π × 8 ≈ 33.5')),
       S("Add. About 108.9 cubic centimetres.", g('≈ 108.9 cm³'))
     ]),
     SC('Subtracting', 'Example 3: a hollow', [
@@ -1070,15 +1070,15 @@
       S("The flat circle where they join is hidden inside, so it is not counted.", V.rule('Do not count joined faces.'))
     ]),
     SC('Watch out!', 'Common mistakes, with examples', [
-      S("Mistake one. Using the whole height for the cone. A cylinder of height 8 has a cone of height 4 on top, with radius 3. Wrong: the cone has height 12, 1 third pi times 9 times 12, 113. The cone is only 4 tall. 1 third pi times 9 times 4, 37.7.", r('⅓ × π × 9 × 12 ≈ 113.1  ✗') + g('⅓ × π × 9 × 4 ≈ 37.7  ✓')),
+      S("Mistake one. Using the whole height for the cone. A cylinder of height 8 has a cone of height 4 on top, with radius 3. Wrong: the cone has height 12, 1/3 pi times 9 times 12, 113. The cone is only 4 tall. 1/3 pi times 9 times 4, 37.7.", r('⅓ × π × 9 × 12 ≈ 113.1  ✗') + g('⅓ × π × 9 × 4 ≈ 37.7  ✓')),
       S("Mistake two. Counting faces that are joined. 2 cubes of side 2 are stuck together, face to face. Wrong: 12 faces, each of area 4, 48. The 2 touching faces are hidden. 10 faces. 40.", r('12 × 4 = 48  ✗') + g('10 × 4 = 40  ✓')),
-      S("Mistake three. Treating a hemisphere as a whole sphere. A hemisphere has radius 3. Wrong: 4 thirds pi times 27, 113. A hemisphere is half a sphere. 56.5.", r('⁴⁄₃π × 27 ≈ 113.1  ✗') + g('½ × ⁴⁄₃π × 27 ≈ 56.5  ✓'))
+      S("Mistake three. Treating a hemisphere as a whole sphere. A hemisphere has radius 3. Wrong: 4/3 pi times 27, 113. A hemisphere is half a sphere. 56.5.", r('⁴⁄₃π × 27 ≈ 113.1  ✗') + g('½ × ⁴⁄₃π × 27 ≈ 56.5  ✓'))
     ]),
     SC('In real life', 'Silos and rockets', [
       S("A grain silo is a cylinder with a cone or dome on top. Engineers add the volumes to know how much grain it can hold.", V.note('Silo: cylinder + dome'))
     ]),
     L.turn("Your turn! Number one. A cylinder has volume 60 and a cone on top has volume 20. What is the total? Pause and try it.", E('60 + 20'), "Eighty.", g('80 cm³')),
-    L.turn("Your turn! Number two. Write the volume of a hemisphere of radius 3. Pause and try it.", E('⅔ × π × 27'), "2 thirds times pi times 27. 18 pi, about 56.5.", g('≈ 56.5 cm³')),
+    L.turn("Your turn! Number two. Write the volume of a hemisphere of radius 3. Pause and try it.", E('⅔ × π × 27'), "2/3 times pi times 27. 18 pi, about 56.5.", g('≈ 56.5 cm³')),
     L.turn("Your turn! Number three. Is the joined circle counted in the surface area of a cone on a cylinder? Pause and think.", E('?'), "No, it is hidden inside.", g('Not counted')),
     L.rec('How do you find the volume and surface area of compound solids?', "Split a compound solid into simple solids, find each volume, and add. Subtract any hole. A hemisphere is half a sphere. For surface area, count only the faces you can see, and leave out the faces that are joined together.", ['Split into solids', 'Add or subtract volumes', 'Hemisphere is ½ sphere', 'Skip joined faces'])
   ]);
@@ -1101,7 +1101,7 @@
     ]),
     SC('Volume', 'Example 4: cubic units', [
       S("A cube 1 metre each way. In centimetres, it is 100 by 100 by 100. 1 million cubic centimetres.", E('1 m³ = 100³ = 1 000 000 cm³', 'g')),
-      S("And 1 cubic centimetre is a thousand cubic millimetres. And 1 cubic centimetre equals 1 millilitre. 1,000 cubic centimetres is 1 litre.", E('1 cm³ = 1000 mm³') + E('1000 cm³ = 1 litre'))
+      S("And 1 cubic centimetre is 1,000 cubic millimetres. And 1 cubic centimetre equals 1 millilitre. 1,000 cubic centimetres is 1 litre.", E('1 cm³ = 1000 mm³') + E('1000 cm³ = 1 litre'))
     ]),
     SC('Mixed units', 'Example 5: a problem', [
       S("A room is 4 metres by 3 metres. The carpet is sold per square centimetre. Area of the room is 12 square metres. Multiply by 10,000. 120,000 square centimetres.", E('4 × 3 = 12 m²') + g('12 × 10 000 = 120 000 cm²'))
@@ -1112,7 +1112,7 @@
       S("Mistake three: multiplying when you should divide. Smaller unit, bigger number.", V.rule('Smaller unit, bigger number.'))
     ]),
     SC('In real life', 'Land and water', [
-      S("Land is measured in hectares. 1 hectare is 10,000 square metres. A football pitch is about 3 quarters of a hectare.", E('1 hectare = 10 000 m²'))
+      S("Land is measured in hectares. 1 hectare is 10,000 square metres. A football pitch is about 3/4 of a hectare.", E('1 hectare = 10 000 m²'))
     ]),
     L.turn("Your turn! Number one. Change 2 square metres to square centimetres. Pause and try it.", E('2 m² → cm²'), "Multiply by 10,000. 20,000.", g('20 000 cm²')),
     L.turn("Your turn! Number two. Change 300 square millimetres to square centimetres. Pause and try it.", E('300 mm² → cm²'), "Divide by 100. 3.", g('3 cm²')),

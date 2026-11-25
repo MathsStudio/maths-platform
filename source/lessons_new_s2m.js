@@ -93,7 +93,7 @@
         ["A girl on the ground looks up at the top of a tree. She looks up from the horizontal, so it is an angle of elevation.", ['Looking up', 'g|Angle of elevation']]),
       E('The matching angle',
         ["The angle of depression from the top of a lighthouse to a boat is 25 degrees. What is the angle of elevation from the boat to the top? They are alternate angles, so they are equal. 25 degrees.", ['Alternate angles are equal', 'g|Elevation = 25°']]),
-      E('Finding a third angle',
+      E('Finding 1/3 angle',
         ["From the top of a cliff the angle of depression to a boat is 35 degrees. In the right-angled triangle, the angle at the top, between the cliff and the line of sight, is 90 minus 35. That is 55 degrees.", ['Angle with the vertical: 90 − 35', 'g|= 55°']]),
       E('Angles in the triangle',
         ["The angle of elevation of a kite from a boy is 40 degrees. The triangle has a right angle at the ground below the kite. The angle at the kite is 180 minus 90 minus 40, which is 50 degrees.", ['180 − 90 − 40', 'g|= 50°']])],

@@ -71,7 +71,7 @@
       S("The time for a pendulum is T equals 2 times the square root of L. To get L out, first divide by 2. T over 2 equals root L. Now square both sides. L equals T over 2, all squared.", E('T = 2√L') + E('T/2 = √L') + g('L = (T/2)²'))
     ]),
     SC('Kinetic energy', 'Example 4: v squared', [
-      S("E equals a half m v squared. Multiply both sides by 2. 2 E equals m v squared. Divide by m. 2 E over m equals v squared. Square root. v equals the square root of 2 E over m.", E('E = ½mv²') + E('2E = mv²') + g('v = √(2E/m)'))
+      S("E equals 1/2 m v squared. Multiply both sides by 2. 2 E equals m v squared. Divide by m. 2 E over m equals v squared. Square root. v equals the square root of 2 E over m.", E('E = ½mv²') + E('2E = mv²') + g('v = √(2E/m)'))
     ]),
     SC('A square and a number', 'Example 5: make x the subject', [
       S("y equals x squared plus 3. Subtract 3. y minus 3 equals x squared. Square root. x equals the square root of y minus 3.", E('y = x² + 3') + g('x = √(y − 3)'))
@@ -135,7 +135,7 @@
       S("Make x the subject. Step one. Multiply both sides by x minus 3, to clear the fraction. y bracket x minus 3 equals 2 x plus 1.", E('y(x − 3) = 2x + 1')),
       S("Step two. Expand the bracket. y x minus 3 y equals 2 x plus 1. Step three. Collect all the x terms on 1 side. Subtract 2 x. y x minus 2 x minus 3 y equals 1. Add 3 y. y x minus 2 x equals 1 plus 3 y.", E('yx − 3y = 2x + 1') + E('yx − 2x = 1 + 3y')),
       S("Step four. Factorise the left side. x bracket y minus 2 equals 1 plus 3 y. Step five. Divide. x equals 1 plus 3 y, over y minus 2.", E('x(y − 2) = 1 + 3y') + g('x = (1 + 3y)/(y − 2)')),
-      S("Check with y equals 5. Then x would be 16 over 3. Put x equals 16 thirds into the original. 2 times 16 thirds plus 1 is 35 thirds. 16 thirds minus 3 is 7 thirds. 35 thirds divided by 7 thirds is 5. It matches.", V.rule('Check with a number.'))
+      S("Check with y equals 5. Then x would be 16 over 3. Put x equals 16/3 into the original. 2 times 16/3 plus 1 is 35/3. 16/3 minus 3 is 7/3. 35/3 divided by 7/3 is 5. It matches.", V.rule('Check with a number.'))
     ]),
     SC('Watch out!', 'Common mistakes, with examples', [
       S("Mistake one. Trying to divide before factorising. 5 x minus 2 x equals 9. Wrong: divide the 5 x by 5 and say x minus 2 x equals 9 over 5. Instead, factorise. x bracket 5 minus 2 equals 9. x times 3 is 9. x equals 3.", r('5x − 2x = 9 → x − 2x = 9/5  ✗') + g('x(5 − 2) = 9 → x = 3  ✓')),

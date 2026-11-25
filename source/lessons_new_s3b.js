@@ -260,10 +260,10 @@
       S("A lovely check. The HCF times the LCM equals the product of the 2 numbers. 12 times 420 is 5,040. 60 times 84 is 5,040. It matches.", E('12 × 420 = 60 × 84 = 5040 ✓'))
     ]),
     SC('Using it', 'Example 9: simplifying a fraction', [
-      S("The HCF helps simplify fractions. 60 over 84. Divide the top and bottom by the HCF, 12. 60 over 12 is 5. 84 over 12 is 7. So 60 over 84 is 5 sevenths.", E('60/84 = 5/7', 'g'))
+      S("The HCF helps simplify fractions. 60 over 84. Divide the top and bottom by the HCF, 12. 60 over 12 is 5. 84 over 12 is 7. So 60 over 84 is 5/7.", E('60/84 = 5/7', 'g'))
     ]),
     SC('Adding fractions', 'Example 10: the LCM as a common denominator', [
-      S("The LCM gives the best common denominator. To add a sixth and a quarter, the lowest common multiple of 6 and 4 is 12. A sixth is 2 twelfths. A quarter is 3 twelfths. Add. 5 twelfths.", E('1/6 + 1/4 = 2/12 + 3/12') + g('= 5/12'))
+      S("The LCM gives the best common denominator. To add 1/6 and 1/4, the lowest common multiple of 6 and 4 is 12. 1/6 is 2/12. 1/4 is 3/12. Add. 5/12.", E('1/6 + 1/4 = 2/12 + 3/12') + g('= 5/12'))
     ]),
     SC('Watch out!', 'Common mistakes, with examples', [
       S("Mistake one. Mixing up HCF and LCM. 6 and 8. Wrong: the highest common factor is 24. A common factor can never be bigger than the smaller number. The HCF is 2. The lowest common multiple is 24.", r('HCF(6, 8) = 24  ✗') + g('HCF = 2 and LCM = 24  ✓')),

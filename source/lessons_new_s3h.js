@@ -24,7 +24,7 @@
     ]),
     SC('Predicting', 'Example 4: reading from the line', [
       S("Use the line to estimate the mark for a student who revised 6 hours. Find 6 on the bottom axis. Go up to the line. Then go across to the mark axis. We read about 17.", g('6 hours → about 17 marks')),
-      S("Or the other way. What revision time gives a mark of 10? Find 10 on the mark axis. Go across to the line. Then down. About 2 and a half hours.", g('Mark 10 → about 2.5 hours'))
+      S("Or the other way. What revision time gives a mark of 10? Find 10 on the mark axis. Go across to the line. Then down. About 2 and 1/2 hours.", g('Mark 10 → about 2.5 hours'))
     ]),
     SC('Equation', 'Example 5: the equation of the line', [
       S("The line of best fit is a straight line, so it has an equation of the form y equals m x plus c. The gradient is about 2. The line crosses the mark axis at about 4. So the equation is roughly mark equals 2 times hours plus 4.", E('y ≈ 2x + 4', 'g')),
@@ -57,31 +57,31 @@
       S("It lets us find the median and the quartiles for grouped data, even when we do not know the exact values.", V.note('For grouped data'))
     ]),
     SC('A table', 'Example 1: heights of 100 people', [
-      S("Here are the heights of 100 people, in groups. From 140 up to a hundred and 50, 5 people. Up to a hundred and 60, 20. Up to a hundred and 70, 40. Up to a hundred and 80, 25. Up to a hundred and 90, 10. 5 plus 20 plus 40 plus 25 plus 10 is 100.", V.tbl([['140 < h ≤ 150', '5'], ['150 < h ≤ 160', '20'], ['160 < h ≤ 170', '40'], ['170 < h ≤ 180', '25'], ['180 < h ≤ 190', '10']], ['Height (cm)', 'Frequency']))
+      S("Here are the heights of 100 people, in groups. From 140 up to 150, 5 people. Up to 160, 20. Up to 170, 40. Up to 180, 25. Up to 190, 10. 5 plus 20 plus 40 plus 25 plus 10 is 100.", V.tbl([['140 < h ≤ 150', '5'], ['150 < h ≤ 160', '20'], ['160 < h ≤ 170', '40'], ['170 < h ≤ 180', '25'], ['180 < h ≤ 190', '10']], ['Height (cm)', 'Frequency']))
     ]),
     SC('Running total', 'Example 2: the cumulative column', [
       S("Add as you go. First group, 5. Second group, 5 plus 20, 25. Third group, 25 plus 40, 65. Fourth, 65 plus 25, 90. Fifth, 90 plus 10, 100. The last running total must equal the total number of people.", V.tbl([['≤ 150', '5'], ['≤ 160', '25'], ['≤ 170', '65'], ['≤ 180', '90'], ['≤ 190', '100']], ['Height up to', 'Cumulative frequency'])),
       S("Check. The last number is 100, the total. Good.", V.rule('Last number = total.'))
     ]),
     SC('Plotting', 'Example 3: the curve', [
-      S("Plot each cumulative frequency against the upper end of its group. At a hundred and 50, 5. At a hundred and 60, 25. At a hundred and 70, 65. At a hundred and 80, 90. At a hundred and 90, a hundred. Also plot 0 at a hundred and 40, because nobody is shorter.", V.list(['(140, 0)', '(150, 5)', '(160, 25)', '(170, 65)', '(180, 90)', '(190, 100)'])),
+      S("Plot each cumulative frequency against the upper end of its group. At 150, 5. At 160, 25. At 170, 65. At 180, 90. At 190, 100. Also plot 0 at 140, because nobody is shorter.", V.list(['(140, 0)', '(150, 5)', '(160, 25)', '(170, 65)', '(180, 90)', '(190, 100)'])),
       S("Join the points with a smooth curve, a gentle S shape. The curve always goes up, and never down.", V.rule('Smooth curve, always rising.'))
     ]),
     SC('Median', 'Example 4: the middle value', [
-      S("The median is the middle. With a hundred people, the middle is the fiftieth. On the vertical axis, find 50. Go across to the curve. Then go down to the height axis. We read about a hundred and 66 centimetres.", E('Median position: 100 ÷ 2 = 50') + g('Median ≈ 166 cm')),
-      S("We can check with the table. 25 people are shorter than a hundred and 60. 65 are shorter than a hundred and 70. 50 is between, so the median is between 60 and 70. A hundred and 66 makes sense.", V.rule('Check it falls in the right group.'))
+      S("The median is the middle. With 100 people, the middle is the fiftieth. On the vertical axis, find 50. Go across to the curve. Then go down to the height axis. We read about 166 centimetres.", E('Median position: 100 ÷ 2 = 50') + g('Median ≈ 166 cm')),
+      S("We can check with the table. 25 people are shorter than 160. 65 are shorter than 170. 50 is between, so the median is between 60 and 70. 166 makes sense.", V.rule('Check it falls in the right group.'))
     ]),
     SC('Quartiles', 'Example 5: lower, upper and interquartile range', [
-      S("The lower quartile is a quarter of the way up. 25 out of a hundred. At 25 on the axis, the curve is at a hundred and 60. The upper quartile is 3 quarters of the way, 75. At 75, the curve gives about a hundred and 74.", E('Lower quartile (25th) ≈ 160') + E('Upper quartile (75th) ≈ 174')),
-      S("The interquartile range is the upper quartile minus the lower quartile. A hundred and 74 minus a hundred and 60. 14 centimetres. It tells us the spread of the middle half of the people.", g('IQR = 174 − 160 = 14 cm'))
+      S("The lower quartile is 1/4 of the way up. 25 out of 100. At 25 on the axis, the curve is at 160. The upper quartile is 3/4 of the way, 75. At 75, the curve gives about 174.", E('Lower quartile (25th) ≈ 160') + E('Upper quartile (75th) ≈ 174')),
+      S("The interquartile range is the upper quartile minus the lower quartile. 174 minus 160. 14 centimetres. It tells us the spread of the middle half of the people.", g('IQR = 174 − 160 = 14 cm'))
     ]),
     SC('Reading a count', 'Example 6: how many are shorter than 175 cm?', [
-      S("Find a hundred and 75 on the bottom axis. Go up to the curve. Go across. We read about 78. So about 78 people are shorter than a hundred and 75. Then 22 are taller than that.", g('About 78 shorter'))
+      S("Find 175 on the bottom axis. Go up to the curve. Go across. We read about 78. So about 78 people are shorter than 175. Then 22 are taller than that.", g('About 78 shorter'))
     ]),
     SC('Watch out!', 'Common mistakes, with examples', [
-      S("Mistake one. Plotting at the middle of the group instead of the upper end. The first group is a hundred and 40 to a hundred and 50, with 5 people. Wrong: plot 5 at a hundred and 45. But the 5 people are all at most a hundred and 50. The point is a hundred and 50, 5.", r('(145, 5)  ✗') + g('(150, 5)  ✓')),
-      S("Mistake two. Plotting the frequencies instead of the running totals. For the second group, the frequency is 20. Wrong: plot 20 at a hundred and 60. But 25 people are at most a hundred and 60. The cumulative frequency is 25.", r('(160, 20)  ✗') + g('(160, 25)  ✓')),
-      S("Mistake three. Finding the median at the wrong height. With a hundred people, the median is the fiftieth. Wrong: read the height axis at half of the largest height, 95. The median is half of the number of people, 50, read from the vertical axis.", r('Half of 190 = 95  ✗') + g('Half of 100 = 50  ✓'))
+      S("Mistake one. Plotting at the middle of the group instead of the upper end. The first group is 140 to 150, with 5 people. Wrong: plot 5 at 145. But the 5 people are all at most 150. The point is 150, 5.", r('(145, 5)  ✗') + g('(150, 5)  ✓')),
+      S("Mistake two. Plotting the frequencies instead of the running totals. For the second group, the frequency is 20. Wrong: plot 20 at 160. But 25 people are at most 160. The cumulative frequency is 25.", r('(160, 20)  ✗') + g('(160, 25)  ✓')),
+      S("Mistake three. Finding the median at the wrong height. With 100 people, the median is the fiftieth. Wrong: read the height axis at half of the largest height, 95. The median is half of the number of people, 50, read from the vertical axis.", r('Half of 190 = 95  ✗') + g('Half of 100 = 50  ✓'))
     ]),
     SC('In real life', 'Exam results', [
       S("Schools use cumulative frequency to find the median mark, and how many pupils are below a pass mark. The steep part of the curve is where most pupils are.", V.note('Steep curve: many values'))
@@ -89,7 +89,7 @@
     L.turn("Your turn! Number one. Frequencies are 4, 9, 7. Write the cumulative frequencies. Pause and try it.", E('4, 9, 7'), "4, 13, 20.", g('4, 13, 20')),
     L.turn("Your turn! Number two. There are 80 values. At which cumulative frequency do you read the median? Pause and try it.", E('n = 80'), "Half of 80. 40.", g('40')),
     L.turn("Your turn! Number three. The upper quartile is 42 and the lower quartile is 30. What is the interquartile range? Pause and try it.", E('42 − 30'), "Twelve.", g('12')),
-    L.rec('How do you draw and use cumulative frequency graphs?', "Cumulative frequency is a running total. Plot each total at the upper end of its group, and join with a smooth curve. The median is at half of the total, the quartiles at a quarter and 3 quarters. The interquartile range is the upper quartile minus the lower quartile.", ['Running totals', 'Plot at the upper end', 'Median at n ÷ 2', 'IQR = UQ − LQ'])
+    L.rec('How do you draw and use cumulative frequency graphs?', "Cumulative frequency is a running total. Plot each total at the upper end of its group, and join with a smooth curve. The median is at half of the total, the quartiles at 1/4 and 3/4. The interquartile range is the upper quartile minus the lower quartile.", ['Running totals', 'Plot at the upper end', 'Median at n ÷ 2', 'IQR = UQ − LQ'])
   ]);
 
   /* ---- averages ---- */
@@ -143,18 +143,18 @@
       S("Check. 13 plus 5 plus 7 plus 5 is 30. All the students are accounted for.", V.rule('Everything adds to the total.'))
     ]),
     SC('Probabilities', 'Example 2: picking a student at random', [
-      S("What is the probability that a random student plays football and basketball? 5 out of 30, 1 sixth. What is the probability that a student plays only basketball? 7 out of 30.", E('P(both) = 5/30 = 1/6') + E('P(basketball only) = 7/30')),
-      S("What is the probability that a student plays neither? 5 out of 30, 1 sixth.", E('P(neither) = 5/30 = 1/6'))
+      S("What is the probability that a random student plays football and basketball? 5 out of 30, 1/6. What is the probability that a student plays only basketball? 7 out of 30.", E('P(both) = 5/30 = 1/6') + E('P(basketball only) = 7/30')),
+      S("What is the probability that a student plays neither? 5 out of 30, 1/6.", E('P(neither) = 5/30 = 1/6'))
     ]),
     SC('The or rule', 'Example 3: football or basketball', [
-      S("The probability that a student plays football or basketball, or both. Use the rule. Football, 18 over 30. Basketball, 12 over 30. Both, 5 over 30. 18 plus 12 minus 5 is 25. So 25 over 30, 5 sixths.", E('18/30 + 12/30 − 5/30 = 25/30') + g('= 5/6')),
+      S("The probability that a student plays football or basketball, or both. Use the rule. Football, 18 over 30. Basketball, 12 over 30. Both, 5 over 30. 18 plus 12 minus 5 is 25. So 25 over 30, 5/6.", E('18/30 + 12/30 − 5/30 = 25/30') + g('= 5/6')),
       S("Check with the Venn diagram. 13 plus 5 plus 7 is 25. It matches.", V.rule('Check with the diagram.'))
     ]),
     SC('Cards', 'Example 4: a pack of 52', [
       S("A card is picked from a pack of 52. What is the probability it is a heart or a king? Hearts, 13. Kings, 4. The king of hearts is both, 1. 13 plus 4 minus 1 is 16. 16 over 52, which is 4 thirteenths.", E('13 + 4 − 1 = 16') + g('P = 16/52 = 4/13'))
     ]),
     SC('Mutually exclusive', 'Example 5: no overlap', [
-      S("If 2 events cannot happen together, they are called mutually exclusive. A card cannot be a heart and a spade at the same time. Then there is no overlap, and we just add. Heart or spade is 13 plus 13 over 52, 26 over 52, a half.", E('P(heart or spade) = 26/52 = 1/2', 'g'))
+      S("If 2 events cannot happen together, they are called mutually exclusive. A card cannot be a heart and a spade at the same time. Then there is no overlap, and we just add. Heart or spade is 13 plus 13 over 52, 26 over 52, 1/2.", E('P(heart or spade) = 26/52 = 1/2', 'g'))
     ]),
     SC('Watch out!', 'Common mistakes, with examples', [
       S("Mistake one. Adding the 2 totals without taking away the overlap. 30 students, 18 play football, 12 play basketball, 5 both. Wrong: football or basketball is 18 plus 12, 30, so all 30 students. But we counted the 5 twice. Take it away once. 25.", r('18 + 12 = 30  ✗') + g('18 + 12 − 5 = 25  ✓')),
@@ -173,7 +173,7 @@
       S("2 events are independent if 1 does not affect the other. Tossing a coin and rolling a dice are independent. The coin has no effect on the dice. For independent events, to find the probability of both happening, multiply.", E('P(A and B) = P(A) × P(B)', 'g'))
     ]),
     SC('A coin and a dice', 'Example 1: head and a 6', [
-      S("The probability of a head is 1 half. The probability of a 6 is 1 sixth. Both, one half times 1 sixth is 1 twelfth.", E('1/2 × 1/6') + g('= 1/12'))
+      S("The probability of a head is 1/2. The probability of a 6 is 1/6. Both, 1/2 times 1/6 is 1/12.", E('1/2 × 1/6') + g('= 1/12'))
     ]),
     SC('A tree diagram', 'Example 2: a spinner twice', [
       S("A spinner lands on red with probability 0.3, and on blue with probability 0.7. It is spun twice. Draw a tree. The first spin has 2 branches, red and blue. From each, a second spin has 2 more branches. Write the probability on every branch.", V.tbl([['Red', '0.3'], ['Blue', '0.7']], ['First spin', 'Probability'])),
@@ -186,20 +186,20 @@
     ]),
     SC('Without replacement', 'Example 4: a bag of counters', [
       S("A bag has 5 red and 3 blue counters. 2 are taken out, 1 after the other, without putting the first back. Now the events are not independent. The first pick changes what is left. First, the probability of red is 5 out of 8.", E('P(R first) = 5/8')),
-      S("If the first was red, then there are 4 red and 3 blue left, 7 in all. The probability of red again is 4 out of 7. So 2 reds is 5 eighths times 4 sevenths. 20 over 56, which simplifies to 5 fourteenths.", E('5/8 × 4/7 = 20/56') + g('= 5/14'))
+      S("If the first was red, then there are 4 red and 3 blue left, 7 in all. The probability of red again is 4 out of 7. So 2 reds is 5/8 times 4/7. 20 over 56, which simplifies to 5 fourteenths.", E('5/8 × 4/7 = 20/56') + g('= 5/14'))
     ]),
     SC('One of each', 'Example 5: red and blue', [
-      S("Red then blue. 5 eighths times 3 sevenths, 15 over 56. Blue then red. 3 eighths times 5 sevenths, 15 over 56. One of each. Add the routes. 30 over 56, 15 over 28.", E('RB = BR = 15/56') + g('Total = 15/28'))
+      S("Red then blue. 5/8 times 3/7, 15 over 56. Blue then red. 3/8 times 5/7, 15 over 56. One of each. Add the routes. 30 over 56, 15 over 28.", E('RB = BR = 15/56') + g('Total = 15/28'))
     ]),
     SC('At least one', 'Example 6: the shortcut', [
       S("What is the probability of at least 1 blue? It is easier to find the opposite, no blues, which is 2 reds. That is 5 fourteenths. Then 1 minus 5 fourteenths is 9 fourteenths.", E('P(at least 1 blue) = 1 − 5/14') + g('= 9/14'))
     ]),
     SC('Watch out!', 'Common mistakes, with examples', [
       S("Mistake one. Adding along the branches instead of multiplying. The probability of red is 0.3. Wrong: red then red is 0.3 plus 0.3, 0.6. That is more than the chance of 1 red. Multiply. 0.09.", r('0.3 + 0.3 = 0.6  ✗') + g('0.3 × 0.3 = 0.09  ✓')),
-      S("Mistake two. Forgetting that without replacement, the numbers change. 5 red and 3 blue. Wrong: probability of 2 reds is 5 eighths times 5 eighths. But after taking a red, only 4 reds are left out of 7 counters. 5 eighths times 4 sevenths.", r('5/8 × 5/8 = 25/64  ✗') + g('5/8 × 4/7 = 5/14  ✓')),
+      S("Mistake two. Forgetting that without replacement, the numbers change. 5 red and 3 blue. Wrong: probability of 2 reds is 5/8 times 5/8. But after taking a red, only 4 reds are left out of 7 counters. 5/8 times 4/7.", r('5/8 × 5/8 = 25/64  ✗') + g('5/8 × 4/7 = 5/14  ✓')),
       S("Mistake three. Forgetting a route. Probability of exactly 1 red with the spinner. Wrong: only red then blue, 0.21. There is also blue then red. Add both. 0.42.", r('P(RB) only = 0.21  ✗') + g('0.21 + 0.21 = 0.42  ✓'))
     ]),
-    L.turn("Your turn! Number one. A fair coin is tossed twice. What is the probability of 2 heads? Pause and try it.", E('1/2 × 1/2'), "One quarter.", g('1/4')),
+    L.turn("Your turn! Number one. A fair coin is tossed twice. What is the probability of 2 heads? Pause and try it.", E('1/2 × 1/2'), "1/4.", g('1/4')),
     L.turn("Your turn! Number two. The chance of rain is 0.2 on each of 2 days. What is the probability it rains on both? Pause and try it.", E('0.2 × 0.2'), "0.04.", g('0.04')),
     L.turn("Your turn! Number three. Using the same chance, what is the probability it rains on neither day? Pause and try it.", E('0.8 × 0.8'), "0.8 times 0.8. 0.64.", g('0.64')),
     L.rec('How do you use independent events and tree diagrams?', "For independent events, multiply the probabilities to find the chance of both. On a tree diagram, multiply along the branches, and add the routes that give the outcome you want. When items are not replaced, the second probability changes. The probabilities of all routes add up to 1.", ['Along: multiply', 'Routes: add', 'Without replacement: numbers change', 'All routes add to 1'])
@@ -214,30 +214,30 @@
       S("A spinner is spun 200 times. It lands on red 52 times. The relative frequency of red is 52 over 200. 0.26.", E('52 ÷ 200') + g('= 0.26'))
     ]),
     SC('More trials', 'Example 2: how reliable?', [
-      S("After 10 spins, red came up 4 times, 0.4. After a hundred spins, 27 times, 0.27. After a thousand, 258 times, 0.258. As the number of trials grows, the relative frequency settles down towards the true probability. More trials means a more reliable estimate.", V.tbl([['10', '0.4'], ['100', '0.27'], ['1000', '0.258']], ['Trials', 'Rel. freq']))
+      S("After 10 spins, red came up 4 times, 0.4. After 100 spins, 27 times, 0.27. After 1,000, 258 times, 0.258. As the number of trials grows, the relative frequency settles down towards the true probability. More trials means a more reliable estimate.", V.tbl([['10', '0.4'], ['100', '0.27'], ['1000', '0.258']], ['Trials', 'Rel. freq']))
     ]),
     SC('Expected outcomes', 'Example 3: predicting', [
-      S("If the probability of an event is p, and we try n times, we expect it to happen n times p. A fair dice, probability of a 6 is 1 sixth. Roll it 60 times. Expect 60 times 1 sixth, 10 sixes.", E('Expected = n × p', 'g') + E('60 × 1/6 = 10')),
+      S("If the probability of an event is p, and we try n times, we expect it to happen n times p. A fair dice, probability of a 6 is 1/6. Roll it 60 times. Expect 60 times 1/6, 10 sixes.", E('Expected = n × p', 'g') + E('60 × 1/6 = 10')),
       S("Expect does not mean it will happen exactly. We might get 9 sixes, or 12. It is the average we would get over many rolls.", V.rule('Expected is not exact.'))
     ]),
     SC('Using relative frequency', 'Example 4: a biased dice', [
       S("A biased dice is rolled 150 times. 6 comes up 45 times. The relative frequency is 45 over 150, 0.3. If it is rolled 600 times, we expect 600 times 0.3, 180 sixes.", E('45 ÷ 150 = 0.3') + g('600 × 0.3 = 180'))
     ]),
     SC('Fair or not', 'Example 5: testing a coin', [
-      S("A coin is tossed 100 times, and gives 63 heads. A fair coin should give about 50. 63 is a bit far. Maybe the coin is biased. But we cannot be sure. We should do many more trials. After a thousand tosses, if it gives 620 heads, we would be much more suspicious.", E('Expected 50, got 63')),
+      S("A coin is tossed 100 times, and gives 63 heads. A fair coin should give about 50. 63 is a bit far. Maybe the coin is biased. But we cannot be sure. We should do many more trials. After 1,000 tosses, if it gives 620 heads, we would be much more suspicious.", E('Expected 50, got 63')),
       S("A big difference after many trials is stronger evidence than a small difference after few.", V.rule('More trials, stronger evidence.'))
     ]),
     SC('Watch out!', 'Common mistakes, with examples', [
       S("Mistake one. Dividing by the wrong total. A spinner gives red 52 times in 200 spins. Wrong: 52 divided by 100, 0.52. We must divide by the number of trials, 200. 0.26.", r('52 ÷ 100 = 0.52  ✗') + g('52 ÷ 200 = 0.26  ✓')),
       S("Mistake two. Thinking expected means exactly. A fair coin tossed 10 times. Wrong: it must give exactly 5 heads. It might give 4, or 7. 5 is just the average we expect over many sets of 10.", r('Exactly 5 heads  ✗') + g('About 5 heads on average  ✓')),
-      S("Mistake three. Multiplying by the wrong number. The probability of rain is 0.2. For a hundred days, wrong: a hundred divided by 0.2, 500 days. The expected number of rainy days is a hundred times 0.2. 20 days.", r('100 ÷ 0.2 = 500  ✗') + g('100 × 0.2 = 20  ✓'))
+      S("Mistake three. Multiplying by the wrong number. The probability of rain is 0.2. For 100 days, wrong: 100 divided by 0.2, 500 days. The expected number of rainy days is 100 times 0.2. 20 days.", r('100 ÷ 0.2 = 500  ✗') + g('100 × 0.2 = 20  ✓'))
     ]),
     SC('In real life', 'Quality control', [
       S("A factory tests a sample of 500 phones and finds 10 faulty. The relative frequency of faults is 10 over 500, 0.02. In a batch of 20,000, they expect 400 faulty phones.", g('20 000 × 0.02 = 400'))
     ]),
     L.turn("Your turn! Number one. A pin lands point up 18 times out of 60. What is the relative frequency? Pause and try it.", E('18 ÷ 60'), "Zero point three.", g('0.3')),
     L.turn("Your turn! Number two. The probability of winning a game is 0.25. How many wins do you expect in 80 games? Pause and try it.", E('80 × 0.25'), "Twenty.", g('20')),
-    L.turn("Your turn! Number three. Why is a relative frequency from a thousand trials better than from 10? Pause and think.", E('?'), "Because more trials give a more reliable estimate.", g('More trials: more reliable')),
+    L.turn("Your turn! Number three. Why is a relative frequency from 1,000 trials better than from 10? Pause and think.", E('?'), "Because more trials give a more reliable estimate.", g('More trials: more reliable')),
     L.rec('How do you use relative frequency and expected outcomes?', "Relative frequency is the number of times an event happened divided by the number of trials. More trials give a more reliable estimate of the probability. The expected number of times an event happens is the number of trials times the probability. Expected means on average, not exact.", ['Rel. freq = f ÷ n', 'More trials: more reliable', 'Expected = n × p', 'Expected is not exact'])
   ]);
 
@@ -255,7 +255,7 @@
     ]),
     SC('Stratified sampling', 'Example 3: keeping the proportions', [
       S("A school has 600 pupils. 240 in S1, 200 in S2, 160 in S3. We want a sample of 60, with the same proportions. This is called stratified sampling.", V.tbl([['S1', '240'], ['S2', '200'], ['S3', '160']], ['Year', 'Pupils'])),
-      S("Step one. The sample fraction. 60 out of 600, 1 tenth. Step two. Take 1 tenth of each year. S1, 24. S2, 20. S3, 16.", E('60 ÷ 600 = 1/10') + g('S1: 24, S2: 20, S3: 16')),
+      S("Step one. The sample fraction. 60 out of 600, 1/10. Step two. Take 1/10 of each year. S1, 24. S2, 20. S3, 16.", E('60 ÷ 600 = 1/10') + g('S1: 24, S2: 20, S3: 16')),
       S("Check. 24 plus 20 plus 16 is 60.", E('24 + 20 + 16 = 60 ✓'))
     ]),
     SC('Good questions', 'Example 4: leading questions', [

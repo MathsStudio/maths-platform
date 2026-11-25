@@ -38,7 +38,7 @@
       S("A quick check. The hypotenuse is always the longest side. If your hypotenuse comes out smaller than another side, you have subtracted when you should have added.", V.rule('Hypotenuse is the longest side.'))
     ]),
     SC('A ladder', 'Example 5: a real problem', [
-      S("A ladder 5 metres long leans against a wall. The foot of the ladder is 1 and a half metres from the wall. How high up the wall does it reach? Draw it. The wall and ground make a right angle. The ladder is the hypotenuse, 5 metres.", E('Hypotenuse = 5, base = 1.5, height = ?')),
+      S("A ladder 5 metres long leans against a wall. The foot of the ladder is 1 and 1/2 metres from the wall. How high up the wall does it reach? Draw it. The wall and ground make a right angle. The ladder is the hypotenuse, 5 metres.", E('Hypotenuse = 5, base = 1.5, height = ?')),
       S("The height is a shorter side, so we subtract. Height squared plus 1.5 squared equals 5 squared. 1.5 squared is 2.25. Height squared equals 25 minus 2.25.", E('h² + 1.5² = 5²') + E('h² = 25 − 2.25 = 22.75')),
       S("Square root. The height is 4.77, to 2 decimal places. About 4.8 metres up the wall.", g('h = √22.75 ≈ 4.77 m'))
     ]),
@@ -99,8 +99,8 @@
       S("If the diagonal is more than 5, the corner is too wide. If less than 5, the corner is too narrow.", V.rule('Diagonal 5 m: a perfect corner.'))
     ]),
     SC('Watch out!', 'Common mistakes, with examples', [
-      S("Mistake one. Using the wrong side as the hypotenuse. Test 6, 8 and 10. Wrong: 10 squared plus 6 squared equals 8 squared. That is 1 36 against 64. The longest side must be the hypotenuse. 6 squared plus 8 squared is a hundred, and 10 squared is a hundred.", r('10² + 6² = 136 ≠ 8² = 64  ✗') + g('6² + 8² = 100 = 10²  ✓')),
-      S("Mistake two. Adding the sides before squaring. Wrong: 6 plus 8, all squared, is 1 96. Square each side first, then add. 36 plus 64 is a hundred.", r('(6 + 8)² = 196  ✗') + g('6² + 8² = 100  ✓')),
+      S("Mistake one. Using the wrong side as the hypotenuse. Test 6, 8 and 10. Wrong: 10 squared plus 6 squared equals 8 squared. That is 1 36 against 64. The longest side must be the hypotenuse. 6 squared plus 8 squared is 100, and 10 squared is 100.", r('10² + 6² = 136 ≠ 8² = 64  ✗') + g('6² + 8² = 100 = 10²  ✓')),
+      S("Mistake two. Adding the sides before squaring. Wrong: 6 plus 8, all squared, is 1 96. Square each side first, then add. 36 plus 64 is 100.", r('(6 + 8)² = 196  ✗') + g('6² + 8² = 100  ✓')),
       S("Mistake three. Assuming a triangle is right-angled because it looks it. Sides 5, 6 and 8. Wrong: it looks square, so it is right-angled. Test. 25 plus 36 is 61. 8 squared is 64. They are not equal. No right angle.", r('looks square, so right-angled  ✗') + g('61 ≠ 64, not right-angled  ✓'))
     ]),
     L.turn("Your turn! Number one. Is a triangle with sides 9, 40 and 41 right-angled? Pause and try it.", E('9, 40, 41'), "81 plus sixteen hundred is sixteen hundred and 81. 41 squared is sixteen hundred and 81. Yes.", g('Right-angled ✓')),
