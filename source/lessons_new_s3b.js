@@ -5,10 +5,10 @@
   function N(title, goal, scenes) { L.full(title, scenes); return L.ep(title, goal, []); }
 
   /* ---- full version of the old short lesson (shown in S3 topics 845/846) ---- */
-  N('Brackets, factorising and equations', 'how to factorise expressions, find the two brackets of a quadratic step by step, and use brackets to solve equations.', [
+  N('Brackets, factorising and equations', 'how to factorise expressions, find the 2 brackets of a quadratic step by step, and use brackets to solve equations.', [
     SC('Factorising', 'Start with the basics', [
       S("Factorising puts an expression back into brackets. It is the reverse of expanding. When we expand, 3 bracket x plus 2 becomes 3 x plus 6. When we factorise, 3 x plus 6 goes back to 3 bracket x plus 2.", E('3(x + 2)', 'b') + V.rule('Expand ↔ Factorise')),
-      S("We will do four things in this lesson. Take out a common factor. Factorise a quadratic by finding two special numbers. Use the same idea to solve a quadratic equation. And solve equations that have brackets.", V.list(['Common factors', 'Quadratics: find two numbers', 'Solve quadratics', 'Equations with brackets']))
+      S("We will do 4 things in this lesson. Take out a common factor. Factorise a quadratic by finding 2 special numbers. Use the same idea to solve a quadratic equation. And solve equations that have brackets.", V.list(['Common factors', 'Quadratics: find 2 numbers', 'Solve quadratics', 'Equations with brackets']))
     ]),
     SC('Common factor', 'Example 1: 6x + 9', [
       S("Look for a number that divides into every term. 6 and 9 both divide by 3. Take 3 outside. 6 x divided by 3 is 2 x. 9 divided by 3 is 3.", E('6x + 9') + g('= 3(2x + 3)')),
@@ -19,11 +19,11 @@
     ]),
     SC('Quadratics', 'What is a quadratic?', [
       S("A quadratic has an x squared term, an x term, and a number. For example, x squared plus 5 x plus 6. Many quadratics factorise into 2 brackets, like x plus 2, times x plus 3.", E('x² + 5x + 6', 'b')),
-      S("How do we find the two brackets? Let us expand x plus 2 times x plus 3, and watch what happens. x squared, plus 3 x, plus 2 x, plus 6. That is x squared plus 5 x plus 6.", E('(x + 2)(x + 3) = x² + 3x + 2x + 6') + g('= x² + 5x + 6')),
-      S("Look at the numbers two and three. They multiply to give six, the last number. And they add to give five, the number in front of x. That is the secret. To factorise, we work backwards and find those two numbers.", V.rule('× to the last number, + to the middle number.'))
+      S("How do we find the 2 brackets? Let us expand x plus 2 times x plus 3, and watch what happens. x squared, plus 3 x, plus 2 x, plus 6. That is x squared plus 5 x plus 6.", E('(x + 2)(x + 3) = x² + 3x + 2x + 6') + g('= x² + 5x + 6')),
+      S("Look at the numbers 2 and 3. They multiply to give 6, the last number. And they add to give 5, the number in front of x. That is the secret. To factorise, we work backwards and find those 2 numbers.", V.rule('× to the last number, + to the middle number.'))
     ]),
     SC('Finding the numbers', 'Example 3: x² + 5x + 6, step by step', [
-      S("Step one. Look at the last number, six. List the pairs of whole numbers that multiply to make six. One and six. Two and three.", E('1 × 6 = 6') + E('2 × 3 = 6')),
+      S("Step one. Look at the last number, 6. List the pairs of whole numbers that multiply to make 6. 1 and 6. 2 and 3.", E('1 × 6 = 6') + E('2 × 3 = 6')),
       S("Step two. Add each pair. 1 plus 6 is 7. 2 plus 3 is 5. We need 5, the middle number. So the pair is 2 and 3.", E('1 + 6 = 7 ✗', 'r') + g('2 + 3 = 5 ✓')),
       S("Step three. Write the brackets. x plus 2, times x plus 3. Check by expanding, as we did before. It works.", g('x² + 5x + 6 = (x + 2)(x + 3)'))
     ]),
@@ -38,7 +38,7 @@
     SC('Negative last number', 'Example 6: x² + 2x − 15', [
       S("Now the last number is negative 15. A negative product means 1 number is positive and 1 is negative. Pairs that multiply to 15 in size. 1 and 15. 3 and 5. We need them to add to plus 2. Try minus 3 and plus 5. They multiply to minus 15, and add to plus 2.", V.tbl([['−1, 15', '14'], ['1, −15', '−14'], ['−3, 5', '2 ✓'], ['3, −5', '−2']], ['Multiply to −15', 'Add'])),
       S("So x minus 3, times x plus 5.", g('(x − 3)(x + 5)')),
-      S("A tip. When the last number is negative, the bigger of the two numbers takes the sign of the middle number.", V.rule('Last number negative: one + and one −.'))
+      S("A tip. When the last number is negative, the bigger of the 2 numbers takes the sign of the middle number.", V.rule('Last number negative: 1 + and 1 −.'))
     ]),
     SC('Difference of squares', 'Example 7: x² − 9', [
       S("There is no x term here. Think of it as x squared plus 0 x minus 9. We need 2 numbers that multiply to minus 9 and add to 0. 3 and minus 3. So x minus 3, times x plus 3.", E('x² − 9') + g('= (x − 3)(x + 3)'))
@@ -66,13 +66,13 @@
     L.turn("Your turn! Number two. Factorise x squared minus 8 x plus 15. Both numbers are negative. Pause and try it.", E('x² − 8x + 15'), "Minus 3 and minus 5 multiply to 15 and add to minus 8. So x minus 3, times x minus 5.", g('(x − 3)(x − 5)')),
     L.turn("Your turn! Number three. Solve x squared plus x minus 6 equals 0. Factorise first. Pause and try it.", E('x² + x − 6 = 0'), "Minus 2 and plus 3 multiply to minus 6 and add to 1. So x minus 2, times x plus 3, equals 0. x is 2 or minus 3.", g('x = 2 or x = −3')),
     L.turn("Your turn! Number four. Solve 3 bracket x plus 4, equals 2 bracket x minus 1, plus 20. Pause and try it.", E('3(x + 4) = 2(x − 1) + 20'), "3 x plus 12 equals 2 x plus 18. So x is 6.", g('x = 6')),
-    L.rec('How do you use brackets and factorising to solve equations?', "To factorise, take out the highest common factor. For a quadratic x squared plus b x plus c, find two numbers that multiply to c and add to b, and put them in two brackets. Check by expanding. To solve a quadratic, make it equal zero, factorise, and set each bracket equal to zero. For equations with brackets, expand first, then solve.", ['Take out the HCF', 'Quadratic: × to c, + to b', 'Check by expanding', 'Each bracket = 0'])
+    L.rec('How do you use brackets and factorising to solve equations?', "To factorise, take out the highest common factor. For a quadratic x squared plus b x plus c, find 2 numbers that multiply to c and add to b, and put them in 2 brackets. Check by expanding. To solve a quadratic, make it equal 0, factorise, and set each bracket equal to 0. For equations with brackets, expand first, then solve.", ['Take out the HCF', 'Quadratic: × to c, + to b', 'Check by expanding', 'Each bracket = 0'])
   ]);
 
   N('How do you expand brackets, including negatives?', 'how to multiply every term inside a bracket and handle minus signs.', [
     SC('Brackets', 'Start with the basics', [
       S("A bracket groups terms together. The number outside tells us to multiply everything inside. 3 bracket x plus 4 means 3 times x, and 3 times 4. We say we expand the bracket.", E('3(x + 4)', 'b')),
-      S("The rule is simple. Multiply the outside by every term inside, one at a time.", V.rule('Outside × every term inside.'))
+      S("The rule is simple. Multiply the outside by every term inside, 1 at a time.", V.rule('Outside × every term inside.'))
     ]),
     SC('Positive', 'Example 1: 3(x + 4)', [
       S("3 times x is 3 x. 3 times 4 is 12. So 3 bracket x plus 4 equals 3 x plus 12.", E('3(x + 4)') + g('= 3x + 12'))
@@ -126,14 +126,14 @@
   N('How do you expand two brackets?', 'how to multiply 2 brackets, using FOIL or a grid.', [
     SC('Two brackets', 'Start with the basics', [
       S("Now we multiply 2 brackets together. For example, x plus 2, times x plus 3. Every term in the first bracket must multiply every term in the second.", E('(x + 2)(x + 3)', 'b')),
-      S("There are four multiplications. A handy memory aid is FOIL. First, Outside, Inside, Last.", V.list(['First × First', 'Outside × Outside', 'Inside × Inside', 'Last × Last']))
+      S("There are 4 multiplications. A handy memory aid is FOIL. First, Outside, Inside, Last.", V.list(['First × First', 'Outside × Outside', 'Inside × Inside', 'Last × Last']))
     ]),
     SC('FOIL', 'Example 1: (x + 2)(x + 3)', [
       S("First, x times x is x squared. Outside, x times 3 is 3 x. Inside, 2 times x is 2 x. Last, 2 times 3 is 6.", E('x² + 3x + 2x + 6')),
       S("Collect the middle terms. 3 x plus 2 x is 5 x. The answer is x squared plus 5 x plus 6.", g('x² + 5x + 6'))
     ]),
     SC('A grid', 'Example 2: the same in a grid', [
-      S("A grid does the same job. Write one bracket across the top and the other down the side. Multiply each pair. Then add up everything inside.", V.tbl([['x', 'x²', '3x'], ['2', '2x', '6']], ['×', 'x', '3'])),
+      S("A grid does the same job. Write 1 bracket across the top and the other down the side. Multiply each pair. Then add up everything inside.", V.tbl([['x', 'x²', '3x'], ['2', '2x', '6']], ['×', 'x', '3'])),
       S("Same answer. Use whichever you prefer, but be consistent.", g('x² + 5x + 6'))
     ]),
     SC('With a minus', 'Example 3: (x − 4)(x + 5)', [
@@ -151,11 +151,11 @@
     ]),
     SC('A picture of why', 'The area model', [
       S("Why do we need 4 multiplications? Picture a rectangle with sides x plus 2, and x plus 3. Cut it into 4 pieces. 1 big square of x by x, which is x squared. 2 strips, x by 3, and x by 2. And 1 small rectangle, 2 by 3, which is 6.", V.tbl([['x²', '3x'], ['2x', '6']], ['', 'x', '3'])),
-      S("Add the areas of all four pieces. x squared, plus 3 x, plus 2 x, plus 6. That is x squared plus 5 x plus 6. So each piece is one of the four products. We never miss 1 when we use the grid.", V.rule('Four pieces, four products.'))
+      S("Add the areas of all 4 pieces. x squared, plus 3 x, plus 2 x, plus 6. That is x squared plus 5 x plus 6. So each piece is one of the 4 products. We never miss 1 when we use the grid.", V.rule('4 pieces, 4 products.'))
     ]),
     SC('Perfect difference', 'Example 7: (x + 5)(x − 5)', [
       S("This is a special case. First, x squared. Outside, x times minus 5 is minus 5 x. Inside, 5 times x is plus 5 x. Last, 5 times minus 5 is minus 25. The middle terms cancel. We are left with x squared minus 25.", E('x² − 5x + 5x − 25') + g('= x² − 25')),
-      S("So a sum times a difference gives a difference of two squares. Remember this. We will use it for factorising.", V.rule('(x + a)(x − a) = x² − a²'))
+      S("So a sum times a difference gives a difference of 2 squares. Remember this. We will use it for factorising.", V.rule('(x + a)(x − a) = x² − a²'))
     ]),
     SC('A number in front', 'Example 8: (3x − 2)(x + 4)', [
       S("Step one, First. 3 x times x is 3 x squared. Step two, Outside. 3 x times 4 is 12 x. Step three, Inside. Minus 2 times x is minus 2 x. Step four, Last. Minus 2 times 4 is minus 8.", E('3x² + 12x − 2x − 8')),
@@ -163,7 +163,7 @@
     ]),
     SC('Watch out!', 'Common mistakes, with examples', [
       S("Mistake one. Squaring each term. Expand x plus 4, all squared. Wrong: x squared plus 16. The middle term has gone. Write it as 2 brackets. x squared plus 4 x plus 4 x plus 16. x squared plus 8 x plus 16.", r('(x + 4)² = x² + 16  ✗') + g('(x + 4)² = x² + 8x + 16  ✓')),
-      S("Mistake two. Missing one of the four products. Expand x plus 2, times x plus 3. Wrong: x squared plus 6. That only multiplies first by first, and last by last. We also need the outside and inside. x squared plus 3 x plus 2 x plus 6. x squared plus 5 x plus 6.", r('(x + 2)(x + 3) = x² + 6  ✗') + g('= x² + 3x + 2x + 6 = x² + 5x + 6  ✓')),
+      S("Mistake two. Missing one of the 4 products. Expand x plus 2, times x plus 3. Wrong: x squared plus 6. That only multiplies first by first, and last by last. We also need the outside and inside. x squared plus 3 x plus 2 x plus 6. x squared plus 5 x plus 6.", r('(x + 2)(x + 3) = x² + 6  ✗') + g('= x² + 3x + 2x + 6 = x² + 5x + 6  ✓')),
       S("Mistake three. Sign errors. Expand x minus 3, times x minus 2. Wrong: the last term is minus 6. Minus 3 times minus 2 is plus 6. And the middle is minus 2 x minus 3 x, minus 5 x.", r('x² − 5x − 6  ✗') + g('x² − 5x + 6  ✓'))
     ]),
     SC('In real life', 'Areas', [
@@ -224,7 +224,7 @@
     L.turn("Your turn! Number one. Factorise 8 x plus 12. Pause and try it.", E('8x + 12'), "4 bracket 2 x plus 3.", g('4(2x + 3)')),
     L.turn("Your turn! Number two. Factorise x squared minus 7 x. Pause and try it.", E('x² − 7x'), "x bracket x minus 7.", g('x(x − 7)')),
     L.turn("Your turn! Number three. Factorise fully 10 x squared plus 15 x. Pause and try it.", E('10x² + 15x'), "5 x bracket 2 x plus 3.", g('5x(2x + 3)')),
-    L.rec('How do you factorise fully?', "Factorising is the reverse of expanding. Find the highest common factor of all the terms, numbers and letters, and take it outside the bracket. Divide each term by it. Check by expanding. A square minus a square factorises into two brackets.", ['Find the HCF', 'Divide each term', 'Check by expanding', 'a² − b² = (a − b)(a + b)'])
+    L.rec('How do you factorise fully?', "Factorising is the reverse of expanding. Find the highest common factor of all the terms, numbers and letters, and take it outside the bracket. Divide each term by it. Check by expanding. A square minus a square factorises into 2 brackets.", ['Find the HCF', 'Divide each term', 'Check by expanding', 'a² − b² = (a − b)(a + b)'])
   ]);
 
   N('How do you find the highest common factor and the lowest common multiple?', 'how to find HCF and LCM using prime factors.', [
@@ -256,8 +256,8 @@
       S("Let us use prime factors for bigger numbers, very carefully. Step one. Break down 60. 60 is 2 times 30. 30 is 2 times 15. 15 is 3 times 5. So 60 is 2 times 2 times 3 times 5.", E('60 = 2 × 2 × 3 × 5')),
       S("Step two. Break down 84. 84 is 2 times 42. 42 is 2 times 21. 21 is 3 times 7. So 84 is 2 times 2 times 3 times 7.", E('84 = 2 × 2 × 3 × 7')),
       S("Step three, the highest common factor. Which primes do they both have? 2, 2 and 3. Multiply. 2 times 2 times 3 is 12.", g('HCF = 2 × 2 × 3 = 12')),
-      S("Step four, the lowest common multiple. Take every prime, the most times it appears in either number. Two, 2, 3, 5 and 7. Multiply. 2 times 2 is 4. Times 3 is 12. Times 5 is 60. Times 7 is 420.", g('LCM = 2 × 2 × 3 × 5 × 7 = 420')),
-      S("A lovely check. The HCF times the LCM equals the product of the two numbers. 12 times 420 is 5,040. 60 times 84 is 5,040. It matches.", E('12 × 420 = 60 × 84 = 5040 ✓'))
+      S("Step four, the lowest common multiple. Take every prime, the most times it appears in either number. 2, 2, 3, 5 and 7. Multiply. 2 times 2 is 4. Times 3 is 12. Times 5 is 60. Times 7 is 420.", g('LCM = 2 × 2 × 3 × 5 × 7 = 420')),
+      S("A lovely check. The HCF times the LCM equals the product of the 2 numbers. 12 times 420 is 5,040. 60 times 84 is 5,040. It matches.", E('12 × 420 = 60 × 84 = 5040 ✓'))
     ]),
     SC('Using it', 'Example 9: simplifying a fraction', [
       S("The HCF helps simplify fractions. 60 over 84. Divide the top and bottom by the HCF, 12. 60 over 12 is 5. 84 over 12 is 7. So 60 over 84 is 5 sevenths.", E('60/84 = 5/7', 'g'))
@@ -271,7 +271,7 @@
       S("Mistake three. Missing a prime factor. Write 12 as a product of primes. Wrong: 2 times 3, which is 6. 12 is 2 times 2 times 3. Write every prime.", r('12 = 2 × 3  ✗') + g('12 = 2 × 2 × 3  ✓'))
     ]),
     L.turn("Your turn! Number one. Find the HCF of 8 and 12. Pause and try it.", E('HCF(8, 12)'), "Four.", g('4')),
-    L.turn("Your turn! Number two. Find the LCM of six and eight. Pause and try it.", E('LCM(6, 8)'), "Twenty-four.", g('24')),
+    L.turn("Your turn! Number two. Find the LCM of 6 and 8. Pause and try it.", E('LCM(6, 8)'), "Twenty-four.", g('24')),
     L.turn("Your turn! Number three. 2 lights flash every 10 seconds and every 15 seconds. When do they flash together? Pause and try it.", E('LCM(10, 15)'), "Thirty seconds.", g('30 s')),
     L.rec('How do you find the HCF and LCM?', "The highest common factor is the biggest number that divides both. The lowest common multiple is the smallest number in both times tables. Write each number as a product of primes. For HCF, multiply the primes they share. For LCM, take the most of each prime.", ['HCF: shared primes', 'LCM: most of each prime', 'HCF ≤ smaller number', 'LCM ≥ bigger number'])
   ]);

@@ -20,8 +20,8 @@
     return [
       XV('Laws of indices', 'Simplify ' + pw(2, 5) + ' × ' + pw(2, 3) + '.', ['Both powers have the same base, 2.', 'When you multiply powers with the same base, add the indices: 5 + 3 = 8.', 'So ' + pw(2, 5) + ' × ' + pw(2, 3) + ' = ' + pw(2, 8) + '.'], pw(2, 8),
         function () { return table([['Multiply', 'add the indices'], ['Divide', 'subtract the indices'], [pw('a', 0), '1'], [pw('a', -1), '1 ÷ a']], ['Rule', 'What to do']); },
-        'Scientists write huge and tiny numbers as powers, so they can multiply them without writing every zero.', 'the rules for multiplying and dividing powers.',
-        ['The rules only work when the bases are the same.', 'Any non-zero number to the power 0 is 1. A negative index means “one over”.'],
+        'Scientists write huge and tiny numbers as powers, so they can multiply them without writing every 0.', 'the rules for multiplying and dividing powers.',
+        ['The rules only work when the bases are the same.', 'Any non-0 number to the power 0 is 1. A negative index means “1 over”.'],
         ['Example 1: ' + pw(3, 4) + ' × ' + pw(3, 2) + ' = ' + pw(3, 6) + '.', 'Example 2: ' + pw(5, 7) + ' ÷ ' + pw(5, 3) + ' = ' + pw(5, 4) + '.', 'Example 3: ' + pw(2, -3) + ' = 1/8.'])
     ];
   }
@@ -38,7 +38,7 @@
     return [
       XV('Improper fractions and mixed numbers', 'Write 17/5 as a mixed number.', ['Divide the numerator by the denominator: 17 ÷ 5 = 3 remainder 2.', 'The whole number is 3.', 'The remainder 2 goes over the denominator 5.', 'So 17/5 = 3 2/5.'], '17/5 = 3 2/5',
         function () { return table([['17/5', '3 whole ones and 2/5'], ['3 2/5', '3 × 5 + 2 = 17, so 17/5']], ['Form', 'Meaning']); },
-        'Three and two fifths of a pizza is more than one pizza, so it is a mixed number.', 'how to change between improper fractions and mixed numbers.',
+        '3 and 2 fifths of a pizza is more than 1 pizza, so it is a mixed number.', 'how to change between improper fractions and mixed numbers.',
         ['An improper fraction has a numerator bigger than its denominator.', 'To go back: whole × denominator + numerator, over the same denominator.'],
         ['Example 1: 7/2 = 3 1/2.', 'Example 2: 2 3/4 = 11/4.', 'Example 3: 13/3 = 4 1/3.'])
     ];
@@ -99,9 +99,9 @@
   }
   function L_angname() {
     return [
-      sl('Naming angles with three letters', ['An angle is named with three letters. The middle letter is the corner, where the two lines meet.', 'The angle at corner R between points P and Z is ∠PRZ. You can also write it ∠ZRP.', 'A small curved arc shows which angle you mean.'],
+      sl('Naming angles with three letters', ['An angle is named with 3 letters. The middle letter is the corner, where the 2 lines meet.', 'The angle at corner R between points P and Z is ∠PRZ. You can also write it ∠ZRP.', 'A small curved arc shows which angle you mean.'],
         BT.hs ? svg(260, 140, 'An angle at point R between points P and Z', '<line x1="130" y1="118" x2="190" y2="68" style="stroke:var(--fg);stroke-width:2.5"/><line x1="130" y1="118" x2="208" y2="118" style="stroke:var(--fg);stroke-width:2.5"/><path d="M152 118 A22 22 0 0 0 146 102" style="fill:none;stroke:var(--accent);stroke-width:3"/>' + txt(122, 136, 'R', 15, 'middle', ';font-weight:700') + txt(196, 62, 'P', 15, 'middle', ';font-weight:700') + txt(220, 123, 'Z', 15, 'middle', ';font-weight:700'), 260) : '',
-        'Maps and diagrams use letters so everybody knows exactly which angle is meant.', 'how to name an angle with three letters.',
+        'Maps and diagrams use letters so everybody knows exactly which angle is meant.', 'how to name an angle with 3 letters.',
         ['The middle letter is always the corner.', 'Both ∠PRZ and ∠ZRP name the same angle.'], ['Example 1: Lines meeting at B between A and C: ∠ABC.', 'Example 2: The angle at corner Q between P and R is ∠PQR.', 'Example 3: ∠XYZ has its corner at Y.'])
     ];
   }
@@ -110,7 +110,7 @@
       XV('Measuring with a protractor', 'Measure the angle between the thick arm and the red line.', ['Put the centre of the protractor on the corner of the angle.', 'Line the base line up with the arm.', 'Find the 0 on the arm and use the scale that starts there.', 'Read where the red line crosses that scale: 40°.'], '40°',
         function () { return P.protPic(40, false); },
         'Builders and designers use a protractor to measure and draw exact angles.', 'how to read the correct scale on a protractor.',
-        ['Two scales run in opposite directions. Use the one that starts at 0 on the arm.', 'Check: an acute angle is under 90°, an obtuse angle is between 90° and 180°.'],
+        ['2 scales run in opposite directions. Use the one that starts at 0 on the arm.', 'Check: an acute angle is under 90°, an obtuse angle is between 90° and 180°.'],
         ['Example 1: A small angle reads about 30°.', 'Example 2: An obtuse angle reads about 120°.', 'Example 3: A straight line is 180°.'])
     ];
   }
@@ -118,7 +118,7 @@
     return [
       XV('Complementary and supplementary angles', 'Find the angle that is complementary to 35°, and the angle that is supplementary to 35°.', ['Complementary angles add up to 90°: 90° − 35° = 55°.', 'Supplementary angles add up to 180°: 180° − 35° = 145°.'], '55° and 145°',
         function () { return table([['Complementary', '90°', '90° − 35° = 55°'], ['Supplementary', '180°', '180° − 35° = 145°']], ['Pair', 'Total', 'Example']); },
-        'A set square makes a right angle, which splits into two complementary angles.', 'what complementary and supplementary mean.',
+        'A set square makes a right angle, which splits into 2 complementary angles.', 'what complementary and supplementary mean.',
         ['Complementary: forms a right angle. Supplementary: forms a straight line.', 'With algebra: x + 2x = 90 gives 3x = 90, so x = 30.'],
         ['Example 1: 90° − 20° = 70°.', 'Example 2: 180° − 120° = 60°.', 'Example 3: x and 2x supplementary: 3x = 180, x = 60.'])
     ];
@@ -127,9 +127,9 @@
     return [
       XV('Constructing a triangle with a compass', 'Construct a triangle with sides 6 cm, 4 cm and 5 cm.', ['Draw the 6 cm base AB with a ruler.', 'Set the compass to 4 cm. Put the point on A and draw an arc.', 'Set the compass to 5 cm. Put the point on B and draw a second arc.', 'Where the arcs cross is the third corner. Join it to A and B.'], 'A triangle with sides 6, 4 and 5',
         function () { return P.arcPic(6, 4, 5); },
-        'Architects and engineers draw accurate triangles for roof frames and bridges.', 'how to construct a triangle from three sides.',
-        ['The two shorter sides must add up to more than the longest, or the arcs will not meet.', 'Two sides and the angle between them (SAS), or two angles and a side (ASA), also fix one exact triangle.'],
-        ['Example 1: 3, 4, 5 works because 3 + 4 > 5.', 'Example 2: 2, 3, 7 does not work because 2 + 3 < 7.', 'Example 3: Three angles only give the shape, not the size.'])
+        'Architects and engineers draw accurate triangles for roof frames and bridges.', 'how to construct a triangle from 3 sides.',
+        ['The 2 shorter sides must add up to more than the longest, or the arcs will not meet.', '2 sides and the angle between them (SAS), or 2 angles and a side (ASA), also fix 1 exact triangle.'],
+        ['Example 1: 3, 4, 5 works because 3 + 4 > 5.', 'Example 2: 2, 3, 7 does not work because 2 + 3 < 7.', 'Example 3: 3 angles only give the shape, not the size.'])
     ];
   }
   function L_solid() {
@@ -142,19 +142,19 @@
   }
   function L_sample() {
     return [
-      sl('Fair samples and survey questions', ['We usually ask a sample, not everybody. A fair sample is chosen at random and is large enough.', 'Asking only your friends, or only one group, gives a biased sample.', 'A fair question is neutral. A leading question pushes people towards one answer.'],
+      sl('Fair samples and survey questions', ['We usually ask a sample, not everybody. A fair sample is chosen at random and is large enough.', 'Asking only your friends, or only one group, gives a biased sample.', 'A fair question is neutral. A leading question pushes people towards 1 answer.'],
         table([['Random, large, mixed', 'Fair'], ['Only friends or one team', 'Biased'], ['Too few people', 'Unreliable'], ['“Don’t you agree it’s awful?”', 'Leading']], ['Sample or question', 'Verdict']),
-        'Polls before an election ask a few thousand people chosen to represent everyone.', 'how to tell a fair sample and a fair question from a biased one.',
+        'Polls before an election ask a few thousand people chosen to represent everyone.', 'how to tell a fair sample and a fair question from a biased 1.',
         ['A bigger random sample is more reliable.', 'Always think about who was left out.'],
         ['Example 1: 30 random pupils is fairer than 3 friends.', 'Example 2: “How would you rate the lunches?” is fair.', 'Example 3: A survey outside a sports shop is biased towards sport fans.'])
     ];
   }
   function L_tally() {
     return [
-      sl('Tally charts and two-way tables', ['A tally chart records data as it is collected. Four lines with a fifth across them make a group of 5.', 'A two-way table sorts people by two features at once, with totals for each row and column.', 'Use the totals to find a missing number.'],
+      sl('Tally charts and two-way tables', ['A tally chart records data as it is collected. 4 lines with a fifth across them make a group of 5.', 'A 2-way table sorts people by 2 features at once, with totals for each row and column.', 'Use the totals to find a missing number.'],
         table([['Boys', '14', '6', '20'], ['Girls', '10', '?', '17'], ['Total', '24', '', '37']], ['', 'Walk', 'Bus', 'Total']),
         'A school survey on travel can be recorded with tallies and then sorted by year group in a two-way table.', 'how to count a tally and use a two-way table.',
-        ['Count the groups of 5 first, then the single lines.', 'Each row and column adds up to its total.'], ['Example 1: one group of five plus three single lines is 5 + 3 = 8.', 'Example 2: 17 − 10 = 7 girls take the bus.', 'Example 3: Add the column totals to check the grand total.'])
+        ['Count the groups of 5 first, then the single lines.', 'Each row and column adds up to its total.'], ['Example 1: 1 group of 5 plus 3 single lines is 5 + 3 = 8.', 'Example 2: 17 − 10 = 7 girls take the bus.', 'Example 3: Add the column totals to check the grand total.'])
     ];
   }
   function L_trend() {
@@ -178,7 +178,7 @@
       XV('Estimating by rounding to 1 significant figure', 'Estimate 48.7 × 5.2.', ['Round each number to 1 significant figure: 48.7 → 50 and 5.2 → 5.', 'Multiply the rounded numbers: 50 × 5 = 250.', 'So 48.7 × 5.2 is about 250. (The exact answer is 253.24.)'], '≈ 250',
         function () { return table([['48.7', '50'], ['5.2', '5'], ['50 × 5', '250']], ['Number', 'Rounded to 1 s.f.']); },
         'Checking a bill in your head uses estimating to spot big mistakes.', 'how to estimate a calculation quickly.',
-        ['The first non-zero digit is the 1st significant figure.', 'An estimate is a check, not an exact answer.'], ['Example 1: 612 ÷ 29 ≈ 600 ÷ 30 = 20.', 'Example 2: 0.48 × 19.6 ≈ 0.5 × 20 = 10.', 'Example 3: 3,980 + 5,120 ≈ 4,000 + 5,000 = 9,000.'])
+        ['The first non-0 digit is the 1st significant figure.', 'An estimate is a check, not an exact answer.'], ['Example 1: 612 ÷ 29 ≈ 600 ÷ 30 = 20.', 'Example 2: 0.48 × 19.6 ≈ 0.5 × 20 = 10.', 'Example 3: 3,980 + 5,120 ≈ 4,000 + 5,000 = 9,000.'])
     ];
   }
   function L_areaconv() {
@@ -191,30 +191,30 @@
   }
   function L_fq() {
     return [
-      XV('Factorising quadratics', 'Factorise x² + 7x + 12.', ['Find two numbers that multiply to 12 and add to 7.', '3 × 4 = 12 and 3 + 4 = 7.', 'So x² + 7x + 12 = (x + 3)(x + 4).', 'Check by expanding: x² + 4x + 3x + 12 = x² + 7x + 12.'], '(x + 3)(x + 4)',
+      XV('Factorising quadratics', 'Factorise x² + 7x + 12.', ['Find 2 numbers that multiply to 12 and add to 7.', '3 × 4 = 12 and 3 + 4 = 7.', 'So x² + 7x + 12 = (x + 3)(x + 4).', 'Check by expanding: x² + 4x + 3x + 12 = x² + 7x + 12.'], '(x + 3)(x + 4)',
         function () { return table([['Multiply to', '12 (the number)'], ['Add to', '7 (the x term)'], ['Numbers', '3 and 4']], ['Clue', 'Value']); },
         'Quadratics describe the path of a ball and the area of a rectangle.', 'how to factorise x² + bx + c.',
-        ['If the number term is negative, the two numbers have different signs.', 'Always check by expanding the brackets.'], ['Example 1: x² + 5x + 6 = (x + 2)(x + 3).', 'Example 2: x² − 2x − 8 = (x − 4)(x + 2).', 'Example 3: x² − 9x + 20 = (x − 4)(x − 5).'])
+        ['If the number term is negative, the 2 numbers have different signs.', 'Always check by expanding the brackets.'], ['Example 1: x² + 5x + 6 = (x + 2)(x + 3).', 'Example 2: x² − 2x − 8 = (x − 4)(x + 2).', 'Example 3: x² − 9x + 20 = (x − 4)(x − 5).'])
     ];
   }
   function L_sq() {
     return [
-      XV('Solving quadratics by factorising', 'Solve x² − 5x + 6 = 0.', ['Factorise: (x − 2)(x − 3) = 0.', 'If two things multiply to 0, one of them is 0.', 'x − 2 = 0 gives x = 2. x − 3 = 0 gives x = 3.'], 'x = 2 or x = 3',
+      XV('Solving quadratics by factorising', 'Solve x² − 5x + 6 = 0.', ['Factorise: (x − 2)(x − 3) = 0.', 'If 2 things multiply to 0, one of them is 0.', 'x − 2 = 0 gives x = 2. x − 3 = 0 gives x = 3.'], 'x = 2 or x = 3',
         function () { return table([['(x − 2)(x − 3) = 0', 'x − 2 = 0 or x − 3 = 0'], ['Solutions', 'x = 2 or x = 3']], ['Step', 'Working']); },
         'Finding when a thrown ball lands is a quadratic equation.', 'how to solve a quadratic equation by factorising.',
-        ['The equation must equal 0 first.', 'A quadratic can have two solutions.'], ['Example 1: (x + 1)(x − 4) = 0 gives x = −1 or x = 4.', 'Example 2: x² = 49 gives x = 7 or x = −7.', 'Example 3: Check by substituting back.'])
+        ['The equation must equal 0 first.', 'A quadratic can have 2 solutions.'], ['Example 1: (x + 1)(x − 4) = 0 gives x = −1 or x = 4.', 'Example 2: x² = 49 gives x = 7 or x = −7.', 'Example 3: Check by substituting back.'])
     ];
   }
 
   var META = {
     'Writing numbers as powers': { tags: ['Writing numbers as powers'], story: 'A video file doubles in size each time it is copied with extra detail: 2, 4, 8, 16, 32. Those numbers are the powers of 2, and computer memory is built on them.',
-      insight: ['A power is a short way to write repeated multiplication. The base is the number you multiply and the index counts how many times, so 3⁴ means four 3s multiplied together.', 'To write a number as a power, divide by the base again and again and count the steps. Watch out for 2³, which is 8, not 6.'] },
-    'Laws of indices': { tags: ['Laws of indices'], story: 'Scientists write the distance to the Sun as a power of 10 so they can multiply and divide huge numbers without writing every zero.',
-      insight: ['When you multiply powers with the same base, you add the indices. When you divide, you subtract. This works because each index counts how many copies of the base there are.', 'The rules only work for the same base. Any non-zero number to the power 0 equals 1, and a negative index means one over the positive power.'] },
-    'Multiples and factors in context': { tags: ['Multiples and factors in context'], story: 'Two buses leave a station at the same moment. One returns every 6 minutes and the other every 8 minutes. Working out when they next leave together is a multiples problem.',
-      insight: ['Ask what the problem wants. If things repeat and meet again, you want the lowest common multiple. If you cut or share into equal pieces, you want the highest common factor.', 'List multiples or factors of both numbers and find the first or biggest one they have in common.'] },
+      insight: ['A power is a short way to write repeated multiplication. The base is the number you multiply and the index counts how many times, so 3⁴ means 4 3s multiplied together.', 'To write a number as a power, divide by the base again and again and count the steps. Watch out for 2³, which is 8, not 6.'] },
+    'Laws of indices': { tags: ['Laws of indices'], story: 'Scientists write the distance to the Sun as a power of 10 so they can multiply and divide huge numbers without writing every 0.',
+      insight: ['When you multiply powers with the same base, you add the indices. When you divide, you subtract. This works because each index counts how many copies of the base there are.', 'The rules only work for the same base. Any non-0 number to the power 0 equals 1, and a negative index means 1 over the positive power.'] },
+    'Multiples and factors in context': { tags: ['Multiples and factors in context'], story: '2 buses leave a station at the same moment. 1 returns every 6 minutes and the other every 8 minutes. Working out when they next leave together is a multiples problem.',
+      insight: ['Ask what the problem wants. If things repeat and meet again, you want the lowest common multiple. If you cut or share into equal pieces, you want the highest common factor.', 'List multiples or factors of both numbers and find the first or biggest 1 they have in common.'] },
     'Improper fractions and mixed numbers': { tags: ['Improper fractions and mixed numbers'], story: 'You eat 3 whole pizzas and 2 fifths of another. As a mixed number that is 3 2/5, and as an improper fraction it is 17/5.',
-      insight: ['A mixed number and an improper fraction are two ways of writing the same amount. Dividing the numerator by the denominator gives the whole number, and the remainder is the new numerator.', 'To go back, multiply the whole number by the denominator and add the numerator.'] },
+      insight: ['A mixed number and an improper fraction are 2 ways of writing the same amount. Dividing the numerator by the denominator gives the whole number, and the remainder is the new numerator.', 'To go back, multiply the whole number by the denominator and add the numerator.'] },
     'Percentage increase and decrease': { tags: ['Percentage increase and decrease'], story: 'A jacket costs £60 and the shop takes 25% off. A quarter of £60 is £15, so you pay £45.',
       insight: ['To change an amount by a percentage, work out the percentage first, then add it on for an increase or take it off for a decrease.', 'Quick percentages help: 10% is a tenth, 25% is a quarter and 50% is a half.'] },
     'Wages and VAT': { tags: ['Wages and VAT'], story: 'A cafe worker earns £12 an hour. For extra hours on a Sunday she gets time and a half. When she buys a phone, 20% VAT is already in the price.',
@@ -223,36 +223,36 @@
       insight: ['Money in adds to the balance and money out takes away from it. Start at the opening balance and work down the rows.', 'To check, add all the money in, subtract all the money out, and see if you reach the final balance.'] },
     'Budgeting with a monthly income': { tags: ['Budgeting'], story: 'Jo wants to save for a holiday. She lists her income, takes off rent, bills, food and travel, and sees how much is left to save.',
       insight: ['A budget compares income with spending. Add the spending first, then subtract from the income.', 'Percentages show how much of your income goes on each item, which helps you decide where to cut back.'] },
-    'Days and dates': { tags: ['Days and dates'], story: 'A parcel is posted on 20 March and arrives on 8 April. Counting the days across two months is a dates problem.',
-      insight: ['Count the days left in the first month, then add the days into the next. Remember how many days each month has.', 'To find an end date, keep subtracting the month lengths until you are within one month.'] },
-    'Time zones': { tags: ['Time zones'], story: 'A video call between London and Tokyo has to fit in both working days, because Tokyo is nine hours ahead.',
-      insight: ['Places east of London are ahead, so add hours. Places west are behind, so subtract hours.', 'If you pass 24:00, the date moves on by one day. Write times on the 24-hour clock to avoid mixing up am and pm.'] },
-    'Naming angles with three letters': { tags: ['Naming angles'], story: 'On a diagram with many lines, saying “the angle” is not enough. Mathematicians name an angle with three letters, like ∠PRZ, so everybody knows which one is meant.',
-      insight: ['The middle letter is the corner where the two lines meet. The other two letters are points on each line.', 'Both ∠PRZ and ∠ZRP describe the same angle, but ∠RPZ would be a different angle at P.'] },
+    'Days and dates': { tags: ['Days and dates'], story: 'A parcel is posted on 20 March and arrives on 8 April. Counting the days across 2 months is a dates problem.',
+      insight: ['Count the days left in the first month, then add the days into the next. Remember how many days each month has.', 'To find an end date, keep subtracting the month lengths until you are within 1 month.'] },
+    'Time zones': { tags: ['Time zones'], story: 'A video call between London and Tokyo has to fit in both working days, because Tokyo is 9 hours ahead.',
+      insight: ['Places east of London are ahead, so add hours. Places west are behind, so subtract hours.', 'If you pass 24:00, the date moves on by 1 day. Write times on the 24-hour clock to avoid mixing up am and pm.'] },
+    'Naming angles with three letters': { tags: ['Naming angles'], story: 'On a diagram with many lines, saying “the angle” is not enough. Mathematicians name an angle with 3 letters, like ∠PRZ, so everybody knows which one is meant.',
+      insight: ['The middle letter is the corner where the 2 lines meet. The other 2 letters are points on each line.', 'Both ∠PRZ and ∠ZRP describe the same angle, but ∠RPZ would be a different angle at P.'] },
     'Measuring with a protractor': { tags: ['Measuring angles with a protractor'], story: 'A carpenter cutting a roof timber uses a protractor to check that the angle is exactly right before the saw touches the wood.',
-      insight: ['A protractor has two scales running in opposite directions. Use the scale that starts at 0 on the arm of the angle.', 'Check that your answer makes sense: an acute angle is under 90° and an obtuse angle is between 90° and 180°.'] },
-    'Complementary and supplementary angles': { tags: ['Complementary and supplementary angles'], story: 'A set square has a right angle. If you draw a line from the corner into the square, you split the right angle into two complementary angles.',
+      insight: ['A protractor has 2 scales running in opposite directions. Use the scale that starts at 0 on the arm of the angle.', 'Check that your answer makes sense: an acute angle is under 90° and an obtuse angle is between 90° and 180°.'] },
+    'Complementary and supplementary angles': { tags: ['Complementary and supplementary angles'], story: 'A set square has a right angle. If you draw a line from the corner into the square, you split the right angle into 2 complementary angles.',
       insight: ['Complementary angles add up to 90°, so they make a right angle. Supplementary angles add up to 180°, so they make a straight line.', 'With algebra, add the angles and set them equal to 90 or 180, then solve.'] },
     'Constructing a triangle with a compass': { tags: ['Constructing triangles'], story: 'A roof frame builder draws a full-size triangle on the floor with a long ruler and a string compass to make sure every beam fits.',
-      insight: ['To construct a triangle from three sides, draw one side as the base, then draw arcs from each end with the other two lengths. The arcs cross at the third corner.', 'If the two shorter sides do not add up to more than the longest, the arcs never meet and no triangle exists.'] },
+      insight: ['To construct a triangle from 3 sides, draw 1 side as the base, then draw arcs from each end with the other 2 lengths. The arcs cross at the third corner.', 'If the 2 shorter sides do not add up to more than the longest, the arcs never meet and no triangle exists.'] },
     'Prisms and pyramids': { tags: ['Prisms and pyramids'], story: 'A tent is a triangular prism and the pyramids of Giza are square-based pyramids. Counting faces, vertices and edges tells you which solid you have.',
       insight: ['A prism has the same cross-section all the way along. A pyramid has a base and tapers to a point.', 'Check your counts with Euler’s rule: faces plus vertices minus edges equals 2.'] },
-    'Fair samples and survey questions': { tags: ['Fair samples', 'Sample size', 'Survey questions'], story: 'Before an election, pollsters ask a few thousand people chosen to represent the whole country, not just the people who walk past one office.',
+    'Fair samples and survey questions': { tags: ['Fair samples', 'Sample size', 'Survey questions'], story: 'Before an election, pollsters ask a few thousand people chosen to represent the whole country, not just the people who walk past 1 office.',
       insight: ['A fair sample is chosen at random, is big enough, and includes different kinds of people. Asking only friends gives a biased sample.', 'A fair question is neutral. A leading question pushes people towards an answer, so it gives unreliable data.'] },
     'Tally charts and two-way tables': { tags: ['Tally charts', 'Two-way tables'], story: 'A school survey counts how pupils travel. Tallies record the answers as they come in, and a two-way table sorts them by boys and girls.',
-      insight: ['A tally uses groups of five so counting is quick. A two-way table has totals for every row and column.', 'Because totals must agree, a missing number can always be found by subtracting from a total.'] },
+      insight: ['A tally uses groups of 5 so counting is quick. A 2-way table has totals for every row and column.', 'Because totals must agree, a missing number can always be found by subtracting from a total.'] },
     'Describing trends and spotting misleading graphs': { tags: ['Trends in graphs', 'Misleading graphs'], story: 'A newspaper graph starts its axis at 80 so a small rise looks huge. A careful reader checks the axis before believing the picture.',
       insight: ['A trend is the overall pattern over time. Say whether it rises, falls, stays steady or changes direction.', 'A fair graph has a title, labelled axes and an even scale that starts at 0.'] },
     'Relative frequency and expected outcomes': { tags: ['Relative frequency', 'Expected outcomes'], story: 'A factory tests 200 bulbs and 6 fail. The relative frequency of a faulty bulb is 0.03, which helps the factory predict how many will fail in a batch of 10,000.',
       insight: ['Relative frequency is the number of times something happens divided by the number of trials. More trials give a better estimate of probability.', 'Expected number is probability multiplied by the number of trials. It is an average, not a promise.'] },
     'Estimating by rounding to 1 significant figure': { tags: ['Estimating by rounding'], story: 'Before paying a bill of 48.7 × 5.2, you can estimate 50 × 5 = 250 in your head to check it is about right.',
-      insight: ['Round each number to 1 significant figure, then do the easy calculation. The first non-zero digit is the first significant figure.', 'An estimate is a check on the size of an answer. If your calculator gives 2,532 you know something went wrong.'] },
+      insight: ['Round each number to 1 significant figure, then do the easy calculation. The first non-0 digit is the first significant figure.', 'An estimate is a check on the size of an answer. If your calculator gives 2,532 you know something went wrong.'] },
     'Converting units of area and volume': { tags: ['Converting units of area and volume'], story: 'A carpet is sold by the square metre, but the room is measured in centimetres. Converting units of area correctly avoids buying the wrong amount.',
       insight: ['For area, the length factor is squared. 1 m = 100 cm, so 1 m² = 100 × 100 = 10,000 cm². For volume it is cubed.', 'The common mistake is to use 100 for area. Draw a 1 m square made of 100 by 100 small squares to see why.'] },
     'Factorising quadratics': { tags: ['Factorising quadratics'], story: 'The area of a rectangular garden is x² + 7x + 12. Factorising gives the side lengths (x + 3) and (x + 4).',
-      insight: ['To factorise x² + bx + c, find two numbers that multiply to c and add to b. Then write them in two brackets.', 'Check by expanding the brackets. If the signs are wrong, the middle term will not match.'] },
+      insight: ['To factorise x² + bx + c, find 2 numbers that multiply to c and add to b. Then write them in 2 brackets.', 'Check by expanding the brackets. If the signs are wrong, the middle term will not match.'] },
     'Solving quadratics by factorising': { tags: ['Solving quadratics'], story: 'When a ball is thrown up and comes down, the times when it is at ground level are the solutions of a quadratic equation.',
-      insight: ['Rearrange so the equation equals 0, factorise, then use the fact that if two things multiply to 0, one of them must be 0.', 'A quadratic can have two solutions, so give both.'] }
+      insight: ['Rearrange so the equation equals 0, factorise, then use the fact that if 2 things multiply to 0, one of them must be 0.', 'A quadratic can have 2 solutions, so give both.'] }
   };
 
   var LESS = [

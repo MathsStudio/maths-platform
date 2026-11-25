@@ -5,21 +5,21 @@
   function N(title, goal, scenes) { L.full(title, scenes); return L.ep(title, goal, []); }
 
   /* ---- scatter graphs ---- */
-  N('How do you draw and use scatter graphs and the line of best fit?', 'how to show two sets of data on a scatter graph, describe the correlation, and use a line of best fit to predict.', [
+  N('How do you draw and use scatter graphs and the line of best fit?', 'how to show 2 sets of data on a scatter graph, describe the correlation, and use a line of best fit to predict.', [
     SC('Scatter graphs', 'Start with the basics', [
-      S("A scatter graph shows two sets of numbers at once. Each person or thing is one dot. The across value goes along the bottom, and the up value goes up the side. We use it to see if the two things are linked.", V.note('One dot for each person')),
+      S("A scatter graph shows 2 sets of numbers at once. Each person or thing is 1 dot. The across value goes along the bottom, and the up value goes up the side. We use it to see if the 2 things are linked.", V.note('One dot for each person')),
       S("For example, for each student we could plot the hours they revised, along the bottom, against their test mark, up the side. If students who revise more score higher, the dots will rise from left to right.", E('Hours revised vs test mark', 'b'))
     ]),
     SC('Plotting', 'Example 1: a table of data', [
       S("Here is some data. 6 students. Hours of revision, and mark out of 20. 1 hour, 6 marks. 2 hours, 8. 3 hours, 11. 4 hours, 12. 5 hours, 15. 7 hours, 19.", V.tbl([['1', '6'], ['2', '8'], ['3', '11'], ['4', '12'], ['5', '15'], ['7', '19']], ['Hours', 'Mark'])),
-      S("To plot a point, go along to the hours, then up to the mark. The first point is one across and six up. Put a small cross. Do this for all six. Do not join the points with lines.", V.rule('Crosses, not joined up.'))
+      S("To plot a point, go along to the hours, then up to the mark. The first point is 1 across and 6 up. Put a small cross. Do this for all 6. Do not join the points with lines.", V.rule('Crosses, not joined up.'))
     ]),
     SC('Correlation', 'Example 2: describing the pattern', [
       S("Look at the shape of the dots. They go up from left to right. More revision, higher marks. We call this positive correlation. If the dots went down from left to right, it would be negative correlation. If they were scattered with no pattern, there is no correlation.", V.tbl([['Up to the right', 'Positive'], ['Down to the right', 'Negative'], ['No pattern', 'None']], ['Dots', 'Correlation'])),
       S("Strong or weak? If the dots are close to a line, the correlation is strong. If they are spread out, it is weak. Our dots are close to a line. So it is strong positive correlation.", g('Strong positive correlation'))
     ]),
     SC('Line of best fit', 'Example 3: drawing it', [
-      S("A line of best fit is a straight line that goes through the middle of the dots. Step one. Use a ruler. Step two. Try to have about the same number of dots above and below the line. Step three. The line does not need to go through any particular dot, and it does not have to start at zero.", V.list(['Ruler, straight line', 'Balance: dots above and below', 'Through the middle of the pattern'])),
+      S("A line of best fit is a straight line that goes through the middle of the dots. Step one. Use a ruler. Step two. Try to have about the same number of dots above and below the line. Step three. The line does not need to go through any particular dot, and it does not have to start at 0.", V.list(['Ruler, straight line', 'Balance: dots above and below', 'Through the middle of the pattern'])),
       S("For our data, the line passes close to the points 1, 6, and 7, 19. It goes up by about 2 marks for every extra hour.", E('Gradient ≈ 13 ÷ 6 ≈ 2 marks per hour'))
     ]),
     SC('Predicting', 'Example 4: reading from the line', [
@@ -47,7 +47,7 @@
     L.turn("Your turn! Number one. As temperature rises, more cold drinks are sold. What type of correlation is this? Pause and think.", E('Temperature vs sales'), "Positive correlation.", g('Positive')),
     L.turn("Your turn! Number two. As the age of a laptop increases, its value goes down. What type of correlation? Pause and think.", E('Age vs value'), "Negative correlation.", g('Negative')),
     L.turn("Your turn! Number three. A line of best fit is y equals 2 x plus 4. Predict y when x is 5. Pause and try it.", E('y = 2(5) + 4'), "10 plus 4, 14.", g('14')),
-    L.rec('How do you draw and use scatter graphs and the line of best fit?', "A scatter graph plots two sets of data as crosses. The correlation can be positive, negative or none, and strong or weak. A line of best fit is a straight line through the middle of the data. Use it to predict values inside the range of the data. Correlation does not mean causation.", ['Plot crosses', 'Positive, negative or none', 'Ruler line through the middle', 'Predict inside the data'])
+    L.rec('How do you draw and use scatter graphs and the line of best fit?', "A scatter graph plots 2 sets of data as crosses. The correlation can be positive, negative or none, and strong or weak. A line of best fit is a straight line through the middle of the data. Use it to predict values inside the range of the data. Correlation does not mean causation.", ['Plot crosses', 'Positive, negative or none', 'Ruler line through the middle', 'Predict inside the data'])
   ]);
 
   /* ---- cumulative frequency ---- */
@@ -86,24 +86,24 @@
     SC('In real life', 'Exam results', [
       S("Schools use cumulative frequency to find the median mark, and how many pupils are below a pass mark. The steep part of the curve is where most pupils are.", V.note('Steep curve: many values'))
     ]),
-    L.turn("Your turn! Number one. Frequencies are four, nine, seven. Write the cumulative frequencies. Pause and try it.", E('4, 9, 7'), "4, 13, 20.", g('4, 13, 20')),
+    L.turn("Your turn! Number one. Frequencies are 4, 9, 7. Write the cumulative frequencies. Pause and try it.", E('4, 9, 7'), "4, 13, 20.", g('4, 13, 20')),
     L.turn("Your turn! Number two. There are 80 values. At which cumulative frequency do you read the median? Pause and try it.", E('n = 80'), "Half of 80. 40.", g('40')),
     L.turn("Your turn! Number three. The upper quartile is 42 and the lower quartile is 30. What is the interquartile range? Pause and try it.", E('42 − 30'), "Twelve.", g('12')),
-    L.rec('How do you draw and use cumulative frequency graphs?', "Cumulative frequency is a running total. Plot each total at the upper end of its group, and join with a smooth curve. The median is at half of the total, the quartiles at a quarter and three quarters. The interquartile range is the upper quartile minus the lower quartile.", ['Running totals', 'Plot at the upper end', 'Median at n ÷ 2', 'IQR = UQ − LQ'])
+    L.rec('How do you draw and use cumulative frequency graphs?', "Cumulative frequency is a running total. Plot each total at the upper end of its group, and join with a smooth curve. The median is at half of the total, the quartiles at a quarter and 3 quarters. The interquartile range is the upper quartile minus the lower quartile.", ['Running totals', 'Plot at the upper end', 'Median at n ÷ 2', 'IQR = UQ − LQ'])
   ]);
 
   /* ---- averages ---- */
-  N('How do you find the mean, median, mode and range, including from a frequency table?', 'how to calculate averages from a list and from a table, and how to choose the best one.', [
+  N('How do you find the mean, median, mode and range, including from a frequency table?', 'how to calculate averages from a list and from a table, and how to choose the best 1.', [
     SC('Averages', 'Start with the basics', [
-      S("An average is a single number that represents a whole set of data. There are three kinds. The mean, the median and the mode. And the range tells us the spread.", V.list(['Mean: add up, divide by how many', 'Median: the middle value', 'Mode: the most common', 'Range: biggest minus smallest']))
+      S("An average is a single number that represents a whole set of data. There are 3 kinds. The mean, the median and the mode. And the range tells us the spread.", V.list(['Mean: add up, divide by how many', 'Median: the middle value', 'Mode: the most common', 'Range: biggest minus smallest']))
     ]),
     SC('From a list', 'Example 1: 3, 5, 5, 8, 9', [
       S("The mean. Add them up. 3 plus 5 plus 5 plus 8 plus 9 is 30. There are 5 numbers. 30 divided by 5 is 6.", E('(3 + 5 + 5 + 8 + 9) ÷ 5 = 30 ÷ 5') + g('Mean = 6')),
       S("The median. The numbers are already in order. The middle 1 is the third. 5. The mode is the number that appears most. 5 appears twice. The range is 9 minus 3. 6.", g('Median = 5') + g('Mode = 5') + g('Range = 9 − 3 = 6'))
     ]),
     SC('Order first', 'Example 2: the median must be in order', [
-      S("Find the median of seven, two, nine, four, five. First put them in order. Two, four, five, seven, nine. Now the middle one, the third, is five.", E('2, 4, 5, 7, 9') + g('Median = 5')),
-      S("With an even number of values, take the number halfway between the two middle ones. For 2, 4, 6, 10. The middle ones are 4 and 6. Halfway is 5.", E('2, 4, 6, 10 → median 5'))
+      S("Find the median of 7, 2, 9, 4, 5. First put them in order. 2, 4, 5, 7, 9. Now the middle 1, the third, is 5.", E('2, 4, 5, 7, 9') + g('Median = 5')),
+      S("With an even number of values, take the number halfway between the 2 middle ones. For 2, 4, 6, 10. The middle ones are 4 and 6. Halfway is 5.", E('2, 4, 6, 10 → median 5'))
     ]),
     SC('Frequency tables', 'Example 3: the table', [
       S("A table can show how many times each score happened. A score of 1, 2 people. 2, 3 people. 3, 5. 4, 4. 5, 1. That is 15 people altogether.", V.tbl([['1', '2'], ['2', '3'], ['3', '5'], ['4', '4'], ['5', '1']], ['Score', 'Frequency']))
@@ -121,20 +121,20 @@
     ]),
     SC('Watch out!', 'Common mistakes, with examples', [
       S("Mistake one. Finding the mean of a frequency table by ignoring the frequencies. Scores 1 to 5 with frequencies 2, 3, 5, 4 and 1. Wrong: add the scores, 1 plus 2 plus 3 plus 4 plus 5, 15, and divide by 5. 3. But there were 15 people, not 5. Multiply each score by its frequency. 44, divided by 15. 2.93.", r('(1+2+3+4+5) ÷ 5 = 3  ✗') + g('44 ÷ 15 ≈ 2.93  ✓')),
-      S("Mistake two. Not putting the numbers in order before finding the median. The data is seven, two, nine, four, five. Wrong: the middle one of the list as written is nine. But we must sort first. Two, four, five, seven, nine. The median is five.", r('7, 2, 9, 4, 5 → 9  ✗') + g('2, 4, 5, 7, 9 → 5  ✓')),
-      S("Mistake three. Giving the frequency as the mode. In the table, the score three has a frequency of five. Wrong: the mode is five. The mode is the score that is most common, three, not how many times it happened.", r('Mode = 5  ✗') + g('Mode = 3  ✓'))
+      S("Mistake two. Not putting the numbers in order before finding the median. The data is 7, 2, 9, 4, 5. Wrong: the middle one of the list as written is 9. But we must sort first. 2, 4, 5, 7, 9. The median is 5.", r('7, 2, 9, 4, 5 → 9  ✗') + g('2, 4, 5, 7, 9 → 5  ✓')),
+      S("Mistake three. Giving the frequency as the mode. In the table, the score 3 has a frequency of 5. Wrong: the mode is 5. The mode is the score that is most common, 3, not how many times it happened.", r('Mode = 5  ✗') + g('Mode = 3  ✓'))
     ]),
     L.turn("Your turn! Number one. Find the mean of 4, 6, 6, 9, 10. Pause and try it.", E('4, 6, 6, 9, 10'), "35 divided by 5 is 7.", g('7')),
     L.turn("Your turn! Number two. Find the median of 11, 3, 8, 5, 1. Pause and try it.", E('11, 3, 8, 5, 1'), "Order them. 1, 3, 5, 8, 11. The middle is 5.", g('5')),
-    L.turn("Your turn! Number three. A table shows score two with frequency four, and score five with frequency six. Find the mean. Pause and try it.", E('2 × 4 + 5 × 6'), "8 plus 30 is 38. Total frequency 10. 3.8.", g('3.8')),
+    L.turn("Your turn! Number three. A table shows score 2 with frequency 4, and score 5 with frequency 6. Find the mean. Pause and try it.", E('2 × 4 + 5 × 6'), "8 plus 30 is 38. Total frequency 10. 3.8.", g('3.8')),
     L.rec('How do you find the mean, median, mode and range?', "The mean is the total divided by how many values. The median is the middle value of an ordered list. The mode is the most common value. The range is the biggest minus the smallest. For a frequency table, multiply each value by its frequency to find the total, then divide by the total frequency.", ['Mean: total ÷ count', 'Median: order first', 'Mode: most common', 'Table: value × frequency'])
   ]);
 
   /* ---- Venn / overlapping events ---- */
-  N('How do you use Venn diagrams and the or rule for overlapping events?', 'how to count and find probabilities when two events can happen together.', [
+  N('How do you use Venn diagrams and the or rule for overlapping events?', 'how to count and find probabilities when 2 events can happen together.', [
     SC('Overlapping', 'Start with the basics', [
-      S("Sometimes two events can both happen. A student can play football and play basketball. A card can be a heart and a king. The overlap is the part where both happen. We use a Venn diagram, two overlapping circles, to show this.", V.note('Two overlapping circles')),
-      S("The overlap is the part that is in both circles. The probability of one event or the other is not just the two probabilities added, because we would count the overlap twice.", E('P(A or B) = P(A) + P(B) − P(A and B)', 'g'))
+      S("Sometimes 2 events can both happen. A student can play football and play basketball. A card can be a heart and a king. The overlap is the part where both happen. We use a Venn diagram, 2 overlapping circles, to show this.", V.note('Two overlapping circles')),
+      S("The overlap is the part that is in both circles. The probability of 1 event or the other is not just the 2 probabilities added, because we would count the overlap twice.", E('P(A or B) = P(A) + P(B) − P(A and B)', 'g'))
     ]),
     SC('A Venn diagram', 'Example 1: building it, step by step', [
       S("In a class of 30, 18 play football, 12 play basketball, and 5 play both. Step one. Draw 2 overlapping circles. Step two. Fill in the overlap first. 5 play both.", E('Both: 5')),
@@ -147,45 +147,45 @@
       S("What is the probability that a student plays neither? 5 out of 30, 1 sixth.", E('P(neither) = 5/30 = 1/6'))
     ]),
     SC('The or rule', 'Example 3: football or basketball', [
-      S("The probability that a student plays football or basketball, or both. Use the rule. Football, 18 over 30. Basketball, 12 over 30. Both, five over 30. 18 plus 12 minus 5 is 25. So 25 over 30, 5 sixths.", E('18/30 + 12/30 − 5/30 = 25/30') + g('= 5/6')),
+      S("The probability that a student plays football or basketball, or both. Use the rule. Football, 18 over 30. Basketball, 12 over 30. Both, 5 over 30. 18 plus 12 minus 5 is 25. So 25 over 30, 5 sixths.", E('18/30 + 12/30 − 5/30 = 25/30') + g('= 5/6')),
       S("Check with the Venn diagram. 13 plus 5 plus 7 is 25. It matches.", V.rule('Check with the diagram.'))
     ]),
     SC('Cards', 'Example 4: a pack of 52', [
-      S("A card is picked from a pack of 52. What is the probability it is a heart or a king? Hearts, 13. Kings, 4. The king of hearts is both, one. 13 plus 4 minus 1 is 16. 16 over 52, which is 4 thirteenths.", E('13 + 4 − 1 = 16') + g('P = 16/52 = 4/13'))
+      S("A card is picked from a pack of 52. What is the probability it is a heart or a king? Hearts, 13. Kings, 4. The king of hearts is both, 1. 13 plus 4 minus 1 is 16. 16 over 52, which is 4 thirteenths.", E('13 + 4 − 1 = 16') + g('P = 16/52 = 4/13'))
     ]),
     SC('Mutually exclusive', 'Example 5: no overlap', [
       S("If 2 events cannot happen together, they are called mutually exclusive. A card cannot be a heart and a spade at the same time. Then there is no overlap, and we just add. Heart or spade is 13 plus 13 over 52, 26 over 52, a half.", E('P(heart or spade) = 26/52 = 1/2', 'g'))
     ]),
     SC('Watch out!', 'Common mistakes, with examples', [
-      S("Mistake one. Adding the two totals without taking away the overlap. 30 students, 18 play football, 12 play basketball, 5 both. Wrong: football or basketball is 18 plus 12, 30, so all 30 students. But we counted the five twice. Take it away once. 25.", r('18 + 12 = 30  ✗') + g('18 + 12 − 5 = 25  ✓')),
+      S("Mistake one. Adding the 2 totals without taking away the overlap. 30 students, 18 play football, 12 play basketball, 5 both. Wrong: football or basketball is 18 plus 12, 30, so all 30 students. But we counted the 5 twice. Take it away once. 25.", r('18 + 12 = 30  ✗') + g('18 + 12 − 5 = 25  ✓')),
       S("Mistake two. Writing the total in the circle instead of the only part. 18 play football, but 5 of those are in the overlap. Wrong: write 18 in the football only part. That would make the football circle total 23. Write 13.", r('Football only: 18  ✗') + g('Football only: 13  ✓')),
-      S("Mistake three. Forgetting the students outside both circles. Wrong: the numbers inside add to 25, so the answer for neither is 0. There are 30 students in total. The five outside the circles play neither.", r('Neither = 0  ✗') + g('Neither = 30 − 25 = 5  ✓'))
+      S("Mistake three. Forgetting the students outside both circles. Wrong: the numbers inside add to 25, so the answer for neither is 0. There are 30 students in total. The 5 outside the circles play neither.", r('Neither = 0  ✗') + g('Neither = 30 − 25 = 5  ✓'))
     ]),
     L.turn("Your turn! Number one. 20 people. 10 like tea, 8 like coffee, 3 like both. How many like only tea? Pause and try it.", E('10 − 3'), "Seven.", g('7')),
     L.turn("Your turn! Number two. In the same group, how many like neither? Pause and try it.", E('20 − (7 + 3 + 5)'), "Tea only 7, both 3, coffee only 5. 15. 20 minus 15 is 5.", g('5')),
-    L.turn("Your turn! Number three. P of A is zero point four, P of B is zero point five, P of A and B is zero point two. Find P of A or B. Pause and try it.", E('0.4 + 0.5 − 0.2'), "Zero point seven.", g('0.7')),
+    L.turn("Your turn! Number three. P of A is 0.4, P of B is 0.5, P of A and B is 0.2. Find P of A or B. Pause and try it.", E('0.4 + 0.5 − 0.2'), "Zero point seven.", g('0.7')),
     L.rec('How do you use Venn diagrams and the or rule?', "A Venn diagram shows overlapping groups. Fill in the overlap first, then the only parts by subtracting, then the outside. The probability of A or B is the probability of A plus the probability of B minus the probability of both. If the events cannot happen together, just add.", ['Fill in the overlap first', 'Only parts: subtract', 'A or B = A + B − both', 'Check totals'])
   ]);
 
   /* ---- independent events and trees ---- */
   N('How do you use independent events and tree diagrams?', 'how to multiply probabilities along branches and add the routes.', [
     SC('Independent events', 'Start with the basics', [
-      S("Two events are independent if one does not affect the other. Tossing a coin and rolling a dice are independent. The coin has no effect on the dice. For independent events, to find the probability of both happening, multiply.", E('P(A and B) = P(A) × P(B)', 'g'))
+      S("2 events are independent if 1 does not affect the other. Tossing a coin and rolling a dice are independent. The coin has no effect on the dice. For independent events, to find the probability of both happening, multiply.", E('P(A and B) = P(A) × P(B)', 'g'))
     ]),
     SC('A coin and a dice', 'Example 1: head and a 6', [
       S("The probability of a head is 1 half. The probability of a 6 is 1 sixth. Both, one half times 1 sixth is 1 twelfth.", E('1/2 × 1/6') + g('= 1/12'))
     ]),
     SC('A tree diagram', 'Example 2: a spinner twice', [
-      S("A spinner lands on red with probability zero point three, and on blue with probability zero point seven. It is spun twice. Draw a tree. The first spin has two branches, red and blue. From each, a second spin has two more branches. Write the probability on every branch.", V.tbl([['Red', '0.3'], ['Blue', '0.7']], ['First spin', 'Probability'])),
-      S("To find the probability of a route, multiply along the branches. Red then red is 0 point 3 times 0 point 3, 0 point 0 9. Red then blue is 0 point 3 times 0 point 7, 0 point 2 1. Blue then red is the same, 0 point 2 1. Blue then blue is 0 point 7 times 0 point 7, 0 point 4 9.", V.tbl([['RR', '0.09'], ['RB', '0.21'], ['BR', '0.21'], ['BB', '0.49']], ['Route', 'Probability'])),
-      S("Check. The four routes must add to 1. 0 point 0 9 plus 0 point 2 1 plus 0 point 2 1 plus 0 point 4 9 is 1.", E('0.09 + 0.21 + 0.21 + 0.49 = 1 ✓'))
+      S("A spinner lands on red with probability 0.3, and on blue with probability 0.7. It is spun twice. Draw a tree. The first spin has 2 branches, red and blue. From each, a second spin has 2 more branches. Write the probability on every branch.", V.tbl([['Red', '0.3'], ['Blue', '0.7']], ['First spin', 'Probability'])),
+      S("To find the probability of a route, multiply along the branches. Red then red is 0.3 times 0.3, 0.09. Red then blue is 0.3 times 0.7, 0.21. Blue then red is the same, 0.21. Blue then blue is 0.7 times 0.7, 0.49.", V.tbl([['RR', '0.09'], ['RB', '0.21'], ['BR', '0.21'], ['BB', '0.49']], ['Route', 'Probability'])),
+      S("Check. The 4 routes must add to 1. 0.09 plus 0.21 plus 0.21 plus 0.49 is 1.", E('0.09 + 0.21 + 0.21 + 0.49 = 1 ✓'))
     ]),
     SC('Adding the routes', 'Example 3: exactly 1 red', [
-      S("What is the probability of exactly 1 red? That can happen 2 ways. Red then blue, or blue then red. Each route is multiplied along the branches. We add the routes. 0 point 2 1 plus 0 point 2 1 is 0 point 4 2.", E('P(RB) + P(BR) = 0.21 + 0.21') + g('= 0.42')),
+      S("What is the probability of exactly 1 red? That can happen 2 ways. Red then blue, or blue then red. Each route is multiplied along the branches. We add the routes. 0.21 plus 0.21 is 0.42.", E('P(RB) + P(BR) = 0.21 + 0.21') + g('= 0.42')),
       S("The rule is along the branches multiply, between different routes add.", V.rule('Along: multiply.  Between routes: add.'))
     ]),
     SC('Without replacement', 'Example 4: a bag of counters', [
-      S("A bag has five red and three blue counters. Two are taken out, one after the other, without putting the first back. Now the events are not independent. The first pick changes what is left. First, the probability of red is five out of eight.", E('P(R first) = 5/8')),
+      S("A bag has 5 red and 3 blue counters. 2 are taken out, 1 after the other, without putting the first back. Now the events are not independent. The first pick changes what is left. First, the probability of red is 5 out of 8.", E('P(R first) = 5/8')),
       S("If the first was red, then there are 4 red and 3 blue left, 7 in all. The probability of red again is 4 out of 7. So 2 reds is 5 eighths times 4 sevenths. 20 over 56, which simplifies to 5 fourteenths.", E('5/8 × 4/7 = 20/56') + g('= 5/14'))
     ]),
     SC('One of each', 'Example 5: red and blue', [
@@ -195,14 +195,14 @@
       S("What is the probability of at least 1 blue? It is easier to find the opposite, no blues, which is 2 reds. That is 5 fourteenths. Then 1 minus 5 fourteenths is 9 fourteenths.", E('P(at least 1 blue) = 1 − 5/14') + g('= 9/14'))
     ]),
     SC('Watch out!', 'Common mistakes, with examples', [
-      S("Mistake one. Adding along the branches instead of multiplying. The probability of red is 0 point 3. Wrong: red then red is 0 point 3 plus 0 point 3, 0 point 6. That is more than the chance of 1 red. Multiply. 0 point 0 9.", r('0.3 + 0.3 = 0.6  ✗') + g('0.3 × 0.3 = 0.09  ✓')),
+      S("Mistake one. Adding along the branches instead of multiplying. The probability of red is 0.3. Wrong: red then red is 0.3 plus 0.3, 0.6. That is more than the chance of 1 red. Multiply. 0.09.", r('0.3 + 0.3 = 0.6  ✗') + g('0.3 × 0.3 = 0.09  ✓')),
       S("Mistake two. Forgetting that without replacement, the numbers change. 5 red and 3 blue. Wrong: probability of 2 reds is 5 eighths times 5 eighths. But after taking a red, only 4 reds are left out of 7 counters. 5 eighths times 4 sevenths.", r('5/8 × 5/8 = 25/64  ✗') + g('5/8 × 4/7 = 5/14  ✓')),
-      S("Mistake three. Forgetting a route. Probability of exactly one red with the spinner. Wrong: only red then blue, zero point two one. There is also blue then red. Add both. Zero point four two.", r('P(RB) only = 0.21  ✗') + g('0.21 + 0.21 = 0.42  ✓'))
+      S("Mistake three. Forgetting a route. Probability of exactly 1 red with the spinner. Wrong: only red then blue, 0.21. There is also blue then red. Add both. 0.42.", r('P(RB) only = 0.21  ✗') + g('0.21 + 0.21 = 0.42  ✓'))
     ]),
-    L.turn("Your turn! Number one. A fair coin is tossed twice. What is the probability of two heads? Pause and try it.", E('1/2 × 1/2'), "One quarter.", g('1/4')),
-    L.turn("Your turn! Number two. The chance of rain is 0 point 2 on each of 2 days. What is the probability it rains on both? Pause and try it.", E('0.2 × 0.2'), "Zero point zero four.", g('0.04')),
-    L.turn("Your turn! Number three. Using the same chance, what is the probability it rains on neither day? Pause and try it.", E('0.8 × 0.8'), "0 point 8 times 0 point 8. 0 point 6 4.", g('0.64')),
-    L.rec('How do you use independent events and tree diagrams?', "For independent events, multiply the probabilities to find the chance of both. On a tree diagram, multiply along the branches, and add the routes that give the outcome you want. When items are not replaced, the second probability changes. The probabilities of all routes add up to one.", ['Along: multiply', 'Routes: add', 'Without replacement: numbers change', 'All routes add to 1'])
+    L.turn("Your turn! Number one. A fair coin is tossed twice. What is the probability of 2 heads? Pause and try it.", E('1/2 × 1/2'), "One quarter.", g('1/4')),
+    L.turn("Your turn! Number two. The chance of rain is 0.2 on each of 2 days. What is the probability it rains on both? Pause and try it.", E('0.2 × 0.2'), "0.04.", g('0.04')),
+    L.turn("Your turn! Number three. Using the same chance, what is the probability it rains on neither day? Pause and try it.", E('0.8 × 0.8'), "0.8 times 0.8. 0.64.", g('0.64')),
+    L.rec('How do you use independent events and tree diagrams?', "For independent events, multiply the probabilities to find the chance of both. On a tree diagram, multiply along the branches, and add the routes that give the outcome you want. When items are not replaced, the second probability changes. The probabilities of all routes add up to 1.", ['Along: multiply', 'Routes: add', 'Without replacement: numbers change', 'All routes add to 1'])
   ]);
 
   /* ---- relative frequency ---- */
@@ -211,32 +211,32 @@
       S("Sometimes we cannot work out a probability by counting equal outcomes. Think of a biased dice, or whether a drawing pin lands point up. Instead, we do an experiment. The relative frequency is the number of times the event happened, divided by the number of trials.", E('Relative frequency = frequency ÷ number of trials', 'g'))
     ]),
     SC('An experiment', 'Example 1: a spinner', [
-      S("A spinner is spun 200 times. It lands on red 52 times. The relative frequency of red is 52 over 200. 0 point 2 6.", E('52 ÷ 200') + g('= 0.26'))
+      S("A spinner is spun 200 times. It lands on red 52 times. The relative frequency of red is 52 over 200. 0.26.", E('52 ÷ 200') + g('= 0.26'))
     ]),
     SC('More trials', 'Example 2: how reliable?', [
-      S("After 10 spins, red came up 4 times, 0 point 4. After a hundred spins, 27 times, 0 point 2 7. After a thousand, 258 times, 0 point 2 5 8. As the number of trials grows, the relative frequency settles down towards the true probability. More trials means a more reliable estimate.", V.tbl([['10', '0.4'], ['100', '0.27'], ['1000', '0.258']], ['Trials', 'Rel. freq']))
+      S("After 10 spins, red came up 4 times, 0.4. After a hundred spins, 27 times, 0.27. After a thousand, 258 times, 0.258. As the number of trials grows, the relative frequency settles down towards the true probability. More trials means a more reliable estimate.", V.tbl([['10', '0.4'], ['100', '0.27'], ['1000', '0.258']], ['Trials', 'Rel. freq']))
     ]),
     SC('Expected outcomes', 'Example 3: predicting', [
       S("If the probability of an event is p, and we try n times, we expect it to happen n times p. A fair dice, probability of a 6 is 1 sixth. Roll it 60 times. Expect 60 times 1 sixth, 10 sixes.", E('Expected = n × p', 'g') + E('60 × 1/6 = 10')),
       S("Expect does not mean it will happen exactly. We might get 9 sixes, or 12. It is the average we would get over many rolls.", V.rule('Expected is not exact.'))
     ]),
     SC('Using relative frequency', 'Example 4: a biased dice', [
-      S("A biased dice is rolled 150 times. 6 comes up 45 times. The relative frequency is 45 over 150, 0 point 3. If it is rolled 600 times, we expect 600 times 0 point 3, 180 sixes.", E('45 ÷ 150 = 0.3') + g('600 × 0.3 = 180'))
+      S("A biased dice is rolled 150 times. 6 comes up 45 times. The relative frequency is 45 over 150, 0.3. If it is rolled 600 times, we expect 600 times 0.3, 180 sixes.", E('45 ÷ 150 = 0.3') + g('600 × 0.3 = 180'))
     ]),
     SC('Fair or not', 'Example 5: testing a coin', [
       S("A coin is tossed 100 times, and gives 63 heads. A fair coin should give about 50. 63 is a bit far. Maybe the coin is biased. But we cannot be sure. We should do many more trials. After a thousand tosses, if it gives 620 heads, we would be much more suspicious.", E('Expected 50, got 63')),
       S("A big difference after many trials is stronger evidence than a small difference after few.", V.rule('More trials, stronger evidence.'))
     ]),
     SC('Watch out!', 'Common mistakes, with examples', [
-      S("Mistake one. Dividing by the wrong total. A spinner gives red 52 times in 200 spins. Wrong: 52 divided by 100, 0 point 5 2. We must divide by the number of trials, 200. 0 point 2 6.", r('52 ÷ 100 = 0.52  ✗') + g('52 ÷ 200 = 0.26  ✓')),
+      S("Mistake one. Dividing by the wrong total. A spinner gives red 52 times in 200 spins. Wrong: 52 divided by 100, 0.52. We must divide by the number of trials, 200. 0.26.", r('52 ÷ 100 = 0.52  ✗') + g('52 ÷ 200 = 0.26  ✓')),
       S("Mistake two. Thinking expected means exactly. A fair coin tossed 10 times. Wrong: it must give exactly 5 heads. It might give 4, or 7. 5 is just the average we expect over many sets of 10.", r('Exactly 5 heads  ✗') + g('About 5 heads on average  ✓')),
-      S("Mistake three. Multiplying by the wrong number. The probability of rain is 0 point 2. For a hundred days, wrong: a hundred divided by 0 point 2, 500 days. The expected number of rainy days is a hundred times 0 point 2. 20 days.", r('100 ÷ 0.2 = 500  ✗') + g('100 × 0.2 = 20  ✓'))
+      S("Mistake three. Multiplying by the wrong number. The probability of rain is 0.2. For a hundred days, wrong: a hundred divided by 0.2, 500 days. The expected number of rainy days is a hundred times 0.2. 20 days.", r('100 ÷ 0.2 = 500  ✗') + g('100 × 0.2 = 20  ✓'))
     ]),
     SC('In real life', 'Quality control', [
-      S("A factory tests a sample of 500 phones and finds 10 faulty. The relative frequency of faults is 10 over 500, 0 point 0 2. In a batch of 20,000, they expect 400 faulty phones.", g('20 000 × 0.02 = 400'))
+      S("A factory tests a sample of 500 phones and finds 10 faulty. The relative frequency of faults is 10 over 500, 0.02. In a batch of 20,000, they expect 400 faulty phones.", g('20 000 × 0.02 = 400'))
     ]),
     L.turn("Your turn! Number one. A pin lands point up 18 times out of 60. What is the relative frequency? Pause and try it.", E('18 ÷ 60'), "Zero point three.", g('0.3')),
-    L.turn("Your turn! Number two. The probability of winning a game is 0 point 2 5. How many wins do you expect in 80 games? Pause and try it.", E('80 × 0.25'), "Twenty.", g('20')),
+    L.turn("Your turn! Number two. The probability of winning a game is 0.25. How many wins do you expect in 80 games? Pause and try it.", E('80 × 0.25'), "Twenty.", g('20')),
     L.turn("Your turn! Number three. Why is a relative frequency from a thousand trials better than from 10? Pause and think.", E('?'), "Because more trials give a more reliable estimate.", g('More trials: more reliable')),
     L.rec('How do you use relative frequency and expected outcomes?', "Relative frequency is the number of times an event happened divided by the number of trials. More trials give a more reliable estimate of the probability. The expected number of times an event happens is the number of trials times the probability. Expected means on average, not exact.", ['Rel. freq = f ÷ n', 'More trials: more reliable', 'Expected = n × p', 'Expected is not exact'])
   ]);
@@ -259,13 +259,13 @@
       S("Check. 24 plus 20 plus 16 is 60.", E('24 + 20 + 16 = 60 ✓'))
     ]),
     SC('Good questions', 'Example 4: leading questions', [
-      S("A leading question pushes people towards one answer. Compare. Do you agree that the awful new cafeteria food is rubbish? That is leading. A fair question is. How would you rate the new cafeteria food? Very good, good, fair, poor, very poor.", r('Do you agree the food is rubbish?') + g('How would you rate the food?'))
+      S("A leading question pushes people towards 1 answer. Compare. Do you agree that the awful new cafeteria food is rubbish? That is leading. A fair question is. How would you rate the new cafeteria food? Very good, good, fair, poor, very poor.", r('Do you agree the food is rubbish?') + g('How would you rate the food?'))
     ]),
     SC('Answer boxes', 'Example 5: no overlaps, no gaps', [
       S("When we give answer boxes, they must not overlap, and must not leave gaps. Ages 10 to 20, 20 to 30. Someone aged 20 fits in both. Better. 10 to 19, 20 to 29, 30 to 39. Every whole age fits in exactly 1 box.", r('10–20, 20–30') + g('10–19, 20–29, 30–39'))
     ]),
     SC('Fair questions', 'Example 6: one thing at a time', [
-      S("Ask one thing per question. Do you like football and swimming? If someone likes one but not the other, they cannot answer. Ask two questions. Also, include a choice like none or other, so everyone has an answer that fits.", r('Do you like football and swimming?') + g('Q1: football? Q2: swimming?'))
+      S("Ask one thing per question. Do you like football and swimming? If someone likes 1 but not the other, they cannot answer. Ask 2 questions. Also, include a choice like none or other, so everyone has an answer that fits.", r('Do you like football and swimming?') + g('Q1: football? Q2: swimming?'))
     ]),
     SC('Watch out!', 'Common mistakes, with examples', [
       S("Mistake one. Asking a convenient group. To find out how often people in a town use the library, a student asks people leaving the library. Wrong: this gives only users. Nearly everyone will say often. Ask people in the high street, chosen randomly.", r('Asking people at the library  ✗') + g('Random people in the high street  ✓')),

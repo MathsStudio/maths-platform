@@ -6,7 +6,7 @@
 
   N('How do you solve inequalities, including with brackets and negative numbers?', 'how to solve inequalities and when to flip the sign.', [
     SC('Inequalities', 'Start with the basics', [
-      S("An inequality compares two things that are not equal. The symbols are: less than, greater than, less than or equal to, and greater than or equal to. The open end of the symbol points to the bigger side.", V.list(['x < 5: x is less than 5', 'x > 5: x is greater than 5', 'x ≤ 5: less than or equal to', 'x ≥ 5: greater than or equal to'])),
+      S("An inequality compares 2 things that are not equal. The symbols are: less than, greater than, less than or equal to, and greater than or equal to. The open end of the symbol points to the bigger side.", V.list(['x < 5: x is less than 5', 'x > 5: x is greater than 5', 'x ≤ 5: less than or equal to', 'x ≥ 5: greater than or equal to'])),
       S("We solve an inequality almost like an equation. We do the same to both sides. There is just one special rule, which we will meet soon.", V.rule('Same to both sides.'))
     ]),
     SC('Simple', 'Example 1: 2x + 3 < 11', [
@@ -38,14 +38,14 @@
       S("A second way, if you dislike dividing by a negative. Add 2 x to both sides, and subtract 11. 3 minus 11 is minus 8, so minus 8 is at least 2 x. Then x is at most minus 4. Same answer, and no flip needed.", V.note('Or move x to the positive side'))
     ]),
     SC('Double inequalities', 'Example 9: −3 < 2x + 1 ≤ 9', [
-      S("Sometimes x is trapped between 2 values. Do the same step to all three parts. Subtract 1 from each part. Minus 4 is less than 2 x, which is at most 8.", E('−3 < 2x + 1 ≤ 9') + E('−4 < 2x ≤ 8')),
-      S("Divide all three parts by 2. Minus 2 is less than x, which is at most 4. x is bigger than minus 2, and no bigger than 4.", g('−2 < x ≤ 4')),
+      S("Sometimes x is trapped between 2 values. Do the same step to all 3 parts. Subtract 1 from each part. Minus 4 is less than 2 x, which is at most 8.", E('−3 < 2x + 1 ≤ 9') + E('−4 < 2x ≤ 8')),
+      S("Divide all 3 parts by 2. Minus 2 is less than x, which is at most 4. x is bigger than minus 2, and no bigger than 4.", g('−2 < x ≤ 4')),
       S("The whole numbers that fit are minus 1, 0, 1, 2, 3 and 4. Minus 2 is not included, because of the less than sign. 4 is included, because of the less than or equal sign.", g('−1, 0, 1, 2, 3, 4'))
     ]),
     SC('Watch out!', 'Common mistakes, with examples', [
       S("Mistake one. Forgetting to flip the sign. Solve minus 2 x is less than 10. Wrong: x is less than minus 5. We divided by a negative number, so the sign must turn round. x is greater than minus 5. Check with 0. Minus 2 times 0 is 0, which is less than 10.", r('−2x < 10 → x < −5  ✗') + g('x > −5  ✓')),
       S("Mistake two. Writing the answer as an equation. Solve x plus 3 is less than 7. Wrong: x equals 4. The answer is a range of values. x is less than 4. Check with 5. 5 plus 3 is 8, which is not less than 7.", r('x = 4  ✗') + g('x < 4  ✓')),
-      S("Mistake three. Using the wrong circle on the number line. Show x is at least two. Wrong: a hollow circle at two. At least means two is included. Use a filled circle.", r('x ≥ 2 with a hollow circle  ✗') + g('x ≥ 2 with a filled circle  ✓'))
+      S("Mistake three. Using the wrong circle on the number line. Show x is at least 2. Wrong: a hollow circle at 2. At least means 2 is included. Use a filled circle.", r('x ≥ 2 with a hollow circle  ✗') + g('x ≥ 2 with a filled circle  ✓'))
     ]),
     SC('In real life', 'Speed limits', [
       S("A lift can carry at most 800 kilograms. If each person weighs about 80 kilograms, then 80 times n is at most 800, so n is at most 10.", g('80n ≤ 800 → n ≤ 10'))
@@ -81,8 +81,8 @@
     ]),
     SC('A longer one', 'Example 7: V = ⅓πr²h, make r the subject', [
       S("This is the volume of a cone. We want r on its own. Go slowly, 1 step at a time. Step one. Get rid of the fraction. Multiply both sides by 3. 3 V equals pi r squared h.", E('V = ⅓πr²h') + E('3V = πr²h')),
-      S("Step two. r squared is multiplied by pi and by h. Divide both sides by pi h. Three V over pi h equals r squared.", E('3V/(πh) = r²')),
-      S("Step three. Square root both sides. r equals the square root of three V over pi h. The square root covers the whole fraction.", g('r = √(3V/(πh))')),
+      S("Step two. r squared is multiplied by pi and by h. Divide both sides by pi h. 3 V over pi h equals r squared.", E('3V/(πh) = r²')),
+      S("Step three. Square root both sides. r equals the square root of 3 V over pi h. The square root covers the whole fraction.", g('r = √(3V/(πh))')),
       S("Step four. Check with numbers. A cone with radius 3 and height 4 has volume pi times 9 times 4 over 3, which is 12 pi. Put V equals 12 pi, h equals 4 into the new formula. 3 times 12 pi is 36 pi. Over pi times 4 is 9. The square root of 9 is 3. We get radius 3 back.", E('√(36π/(4π)) = √9 = 3 ✓'))
     ]),
     SC('Two steps with a root', 'Example 8: v² = u² + 2as, make u the subject', [
@@ -105,7 +105,7 @@
 
   N('How do you change the subject when the letter appears twice?', 'how to collect the terms and factorise to get the subject on its own.', [
     SC('Twice', 'Start with the basics', [
-      S("Sometimes the letter we want appears twice in the formula. Like a x plus b equals c x plus d. Then we cannot just undo one thing. Instead, we collect all the terms with that letter on one side, and everything else on the other. Then we factorise.", V.rule('Collect. Factorise. Divide.'))
+      S("Sometimes the letter we want appears twice in the formula. Like a x plus b equals c x plus d. Then we cannot just undo one thing. Instead, we collect all the terms with that letter on 1 side, and everything else on the other. Then we factorise.", V.rule('Collect. Factorise. Divide.'))
     ]),
     SC('Simple', 'Example 1: make x the subject of ax + b = cx + d', [
       S("Move the x terms to the left, and the others to the right. a x minus c x equals d minus b.", E('ax − cx = d − b')),
@@ -138,17 +138,17 @@
       S("Check with y equals 5. Then x would be 16 over 3. Put x equals 16 thirds into the original. 2 times 16 thirds plus 1 is 35 thirds. 16 thirds minus 3 is 7 thirds. 35 thirds divided by 7 thirds is 5. It matches.", V.rule('Check with a number.'))
     ]),
     SC('Watch out!', 'Common mistakes, with examples', [
-      S("Mistake one. Trying to divide before factorising. 5 x minus 2 x equals 9. Wrong: divide the five x by 5 and say x minus 2 x equals 9 over 5. Instead, factorise. x bracket 5 minus 2 equals 9. x times 3 is 9. x equals 3.", r('5x − 2x = 9 → x − 2x = 9/5  ✗') + g('x(5 − 2) = 9 → x = 3  ✓')),
+      S("Mistake one. Trying to divide before factorising. 5 x minus 2 x equals 9. Wrong: divide the 5 x by 5 and say x minus 2 x equals 9 over 5. Instead, factorise. x bracket 5 minus 2 equals 9. x times 3 is 9. x equals 3.", r('5x − 2x = 9 → x − 2x = 9/5  ✗') + g('x(5 − 2) = 9 → x = 3  ✓')),
       S("Mistake two. Sign errors when moving terms. a x plus b equals c x plus d. Wrong: a x plus c x equals d minus b. Moving c x across the equals sign changes its sign. a x minus c x equals d minus b.", r('ax + cx = d − b  ✗') + g('ax − cx = d − b  ✓')),
       S("Mistake three. Forgetting to expand the bracket. y bracket x minus 3. Wrong: y x minus 3. The y multiplies both terms. y x minus 3 y.", r('y(x − 3) = yx − 3  ✗') + g('y(x − 3) = yx − 3y  ✓'))
     ]),
     SC('In real life', 'Lens formulae', [
-      S("Many science formulae have the same letter twice. Rearranging them with this method lets a scientist find any unknown, whichever one they have not measured.", V.note('Rearranging is a science skill'))
+      S("Many science formulae have the same letter twice. Rearranging them with this method lets a scientist find any unknown, whichever 1 they have not measured.", V.note('Rearranging is a science skill'))
     ]),
-    L.turn("Your turn! Number one. In a x equals b x plus c, collect the x terms on one side. Pause and try it.", E('ax = bx + c'), "a x minus b x equals c.", g('ax − bx = c')),
+    L.turn("Your turn! Number one. In a x equals b x plus c, collect the x terms on 1 side. Pause and try it.", E('ax = bx + c'), "a x minus b x equals c.", g('ax − bx = c')),
     L.turn("Your turn! Number two. Factorise the left side of that. Pause and try it.", E('ax − bx'), "x bracket a minus b.", g('x(a − b)')),
     L.turn("Your turn! Number three. So what is x? Pause and try it.", E('x(a − b) = c'), "x equals c over a minus b.", g('x = c/(a − b)')),
-    L.rec('How do you change the subject when the letter appears twice?', "When the letter appears more than once, collect all the terms containing it on one side and everything else on the other. Factorise to take the letter out as a common factor. Then divide by the bracket. Expand any brackets first.", ['Expand brackets', 'Collect the letter on one side', 'Factorise', 'Divide by the bracket'])
+    L.rec('How do you change the subject when the letter appears twice?', "When the letter appears more than once, collect all the terms containing it on 1 side and everything else on the other. Factorise to take the letter out as a common factor. Then divide by the bracket. Expand any brackets first.", ['Expand brackets', 'Collect the letter on one side', 'Factorise', 'Divide by the bracket'])
   ]);
 
   L.use(846, ['How do you solve linear equations?', 'How do you create and solve simple equations?', 'Equations with fractions', 'How do you solve inequalities, including with brackets and negative numbers?', 'Changing the subject and inequations', 'How do you change the subject of a formula with powers and roots?', 'How do you change the subject when the letter appears twice?', 'Brackets, factorising and equations']);

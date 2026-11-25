@@ -10,36 +10,36 @@
   LS('Calculating with decimals', 'how to multiply and divide decimals, and use estimation to place the point.', {
     intro: ['Decimals in calculations', 'Same methods, careful with the point', "We multiply and divide decimals with the same methods as whole numbers. The key is putting the decimal point in the right place.", V.rule('Estimate first, so you know where the point goes.')],
     ex: [['Multiplying by a whole number', '4.6 × 7', [["46 times 7 is 322. The question has 1 decimal place, so the answer has 1: 32.2.", E('46 × 7 = 322 → 4.6 × 7 = 32.2', 'g')]]],
-      ['Decimal × decimal', '0.6 × 0.07', [["6 times 7 is 42. There are 3 decimal places in the question altogether, so 0 point 0 4 2.", E('0.6 × 0.07 = 0.042', 'g')]]],
+      ['Decimal × decimal', '0.6 × 0.07', [["6 times 7 is 42. There are 3 decimal places in the question altogether, so 0.042.", E('0.6 × 0.07 = 0.042', 'g')]]],
       ['Dividing by a whole number', '9.36 ÷ 4', [["Use short division, keeping the point in line. 4 into 9 is 2, remainder 1. 4 into 13 is 3, remainder 1. 4 into 16 is 4. 2.34.", E('9.36 ÷ 4 = 2.34', 'g')]]],
       ['Dividing by a decimal', '7.2 ÷ 0.3', [["Multiply both numbers by 10 so you divide by a whole number: 72 divided by 3 is 24.", E('7.2 ÷ 0.3 = 72 ÷ 3 = 24', 'g')]]]],
     real: ['Shopping', "3.5 kilograms of apples at £1.20 a kilogram costs £4.20.", E('3.5 × £1.20 = £4.20', 'g')],
-    turn: ["Your turn! Work out 2.4 times 0 point 5. Pause and try it.", E('2.4 × 0.5'), "24 times 5 is 120. 2 decimal places: 1.20, which is 1.2.", E('1.2', 'g')],
+    turn: ["Your turn! Work out 2.4 times 0.5. Pause and try it.", E('2.4 × 0.5'), "24 times 5 is 120. 2 decimal places: 1.20, which is 1.2.", E('1.2', 'g')],
     rec: ["Multiply as whole numbers, then put back the total decimal places. Divide with the point in line. To divide by a decimal, multiply both numbers by 10 first.", ['× : count decimal places', '÷ : keep the point in line', '÷ decimal: scale both by 10', 'Estimate first']],
     deep: ['Multiplying both numbers in a division by 10 keeps the answer the same, because the ratio between them doesn’t change.', 'Multiplying by a number less than 1 makes the answer smaller: 0.6 × 0.07 is tiny.']
   });
 
   LS('Rounding and estimating', 'how to round to the nearest 10, 100, 1,000 and to decimal places, and estimate calculations.', {
-    intro: ['Rounding', 'Simpler numbers', "Rounding replaces a number with a simpler one close to it. The rule: look at the next digit; five or more rounds up.", V.rule('Next digit 5 or more: round up.')],
+    intro: ['Rounding', 'Simpler numbers', "Rounding replaces a number with a simpler 1 close to it. The rule: look at the next digit; 5 or more rounds up.", V.rule('Next digit 5 or more: round up.')],
     ex: [['Whole numbers', '36,482', [["To the nearest 10: 36,000, 480. Hundred: 36,000, 500. Thousand: 36,000.", V.tbl([['10', '36,480'], ['100', '36,500'], ['1,000', '36,000']], ['Nearest', 'Rounded'])]]],
       ['Decimals', '7.846', [["To 1 decimal place: 7.8. To 2 decimal places: 7.85.", E('7.846 → 7.8 (1 d.p.) → 7.85 (2 d.p.)', 'g')]]],
       ['Estimating', '387 × 52', [["Round to 400 times 50: 20,000. The exact answer, 20,000, 124, is close.", E('387 × 52 ≈ 400 × 50 = 20,000', 'g')]]]],
     real: ['Crowds', "A stadium crowd of 42,000, 718 is reported as about 43,000.", E('42,718 → 43,000', 'g')],
     turn: ["Your turn! Round 16.95 to 1 decimal place. Pause and try it.", E('16.95'), "The next digit is 5, so round up: 17.0.", E('17.0', 'g')],
-    rec: ["Look at the digit after the one you round to: five or more rounds up. Round to one significant figure to estimate calculations.", ['Find the place', 'Look at the next digit', 'Round up or keep', 'Estimate with easy numbers']],
+    rec: ["Look at the digit after the one you round to: 5 or more rounds up. Round to 1 significant figure to estimate calculations.", ['Find the place', 'Look at the next digit', 'Round up or keep', 'Estimate with easy numbers']],
     deep: ['Rounding is about which number is nearer, so 5 rounds up by agreement because it is exactly halfway.', 'Rounding 9s carries: 16.95 to 1 d.p. becomes 17.0, not 16.10.']
   });
 
   /* ---------- 802 ---------- */
   LS('Negative numbers', 'how to order and calculate with negative numbers.', {
-    intro: ['Below zero', 'The number line', "Negative numbers are less than zero. On a number line they sit to the left of zero. The further left, the smaller.", V.nl(-6, 6, { marks: [[-4, 22], [3, 150]] })],
-    ex: [['Ordering', 'Smallest to largest', [["Order four, negative seven, zero, negative two: negative seven, negative two, zero, four.", E('−7 < −2 < 0 < 4', 'g')]]],
+    intro: ['Below zero', 'The number line', "Negative numbers are less than 0. On a number line they sit to the left of 0. The further left, the smaller.", V.nl(-6, 6, { marks: [[-4, 22], [3, 150]] })],
+    ex: [['Ordering', 'Smallest to largest', [["Order 4, negative 7, 0, negative 2: negative 7, negative 2, 0, 4.", E('−7 < −2 < 0 < 4', 'g')]]],
       ['Adding and subtracting', 'Moving on the line', [["Negative 3 add 8: move 8 right to 5. 2 take away 6: move 6 left to negative 4.", E('−3 + 8 = 5 · 2 − 6 = −4', 'g')]]],
-      ['Two signs', 'Minus a negative', [["Subtracting a negative is the same as adding. Five take away negative three is eight.", E('5 − (−3) = 5 + 3 = 8', 'g')]]],
+      ['Two signs', 'Minus a negative', [["Subtracting a negative is the same as adding. 5 take away negative 3 is 8.", E('5 − (−3) = 5 + 3 = 8', 'g')]]],
       ['Multiplying and dividing', 'Sign rules', [["Same signs give a positive; different signs give a negative. Negative 4 times negative 5 is 20. Negative 18 divided by 3 is negative 6.", E('−4 × −5 = 20 · −18 ÷ 3 = −6', 'g')]]]],
     real: ['Temperature', "It was negative 5 degrees at night and rose by 12 degrees. The temperature became 7 degrees.", E('−5 + 12 = 7°C', 'g')],
-    turn: ["Your turn! Work out negative six take away four. Pause and try it.", E('−6 − 4'), "Start at negative 6 and move 4 left: negative 10.", E('−10', 'g')],
-    rec: ["Negative numbers are left of zero. Adding moves right, subtracting moves left. Subtracting a negative means add. Same signs multiply to positive.", ['Left of zero = negative', '+ moves right, − moves left', '− (−) = +', 'Same signs ×: +']],
+    turn: ["Your turn! Work out negative 6 take away 4. Pause and try it.", E('−6 − 4'), "Start at negative 6 and move 4 left: negative 10.", E('−10', 'g')],
+    rec: ["Negative numbers are left of 0. Adding moves right, subtracting moves left. Subtracting a negative means add. Same signs multiply to positive.", ['Left of zero = negative', '+ moves right, − moves left', '− (−) = +', 'Same signs ×: +']],
     deep: ['Taking away a debt is like being given money, which is why subtracting a negative adds.', '−7 is smaller than −2, even though 7 is bigger than 2.']
   });
 
@@ -52,7 +52,7 @@
     real: ['Computers', "Computer memory comes in powers of 2: 256, 512, 1,024.", E('2⁸ = 256 · 2¹⁰ = 1,024', 'g')],
     turn: ["Your turn! Write 60 as a product of prime factors. Pause and try it.", E('60 = ?'), "60 is 2 times 2 times 3 times 5: 2 squared times 3 times 5.", E('2² × 3 × 5', 'g')],
     rec: ["Powers are repeated multiplication; roots undo them. Use a factor tree to write numbers as products of primes, and use them to find the HCF and LCM.", ['aⁿ: a multiplied n times', '√ and ∛ undo powers', 'Factor tree to primes', 'HCF: shared primes · LCM: highest powers']],
-    deep: ['Every whole number has exactly one prime factorisation, like a fingerprint.', '2⁵ is 32, not 10. The power is not a multiplier.']
+    deep: ['Every whole number has exactly 1 prime factorisation, like a fingerprint.', '2⁵ is 32, not 10. The power is not a multiplier.']
   });
 
   LS('Powers, negatives and BODMAS', 'how to use the order of operations with powers and negative numbers.', {
@@ -72,7 +72,7 @@
     ex: [['Wholes and parts', '2 1/3 + 1 1/2', [["Add the wholes: 3. Add the fractions with a common denominator: 2 sixths plus 3 sixths is 5 sixths. 3 and 5 sixths.", E('3 + 5/6 = 3 5/6', 'g')]]],
       ['Carrying a whole', '1 3/4 + 2 2/3', [["Wholes: 3. Fractions: 9 twelfths plus 8 twelfths is 17 twelfths, which is 1 and 5 twelfths. Total: 4 and 5 twelfths.", E('3 + 1 5/12 = 4 5/12', 'g')]]],
       ['Subtracting', '5 1/4 − 2 2/3', [["Change to improper fractions: 21 quarters take away 8 thirds. Common denominator 12: 63 twelfths take away 32 twelfths is 31 twelfths: 2 and 7 twelfths.", E('63/12 − 32/12 = 31/12 = 2 7/12', 'g')]]]],
-    real: ['Wood', "A plank is four and a half metres. A piece of one and three quarters metres is cut off. Two and three quarters metres are left.", E('4 1/2 − 1 3/4 = 2 3/4 m', 'g')],
+    real: ['Wood', "A plank is 4 and a half metres. A piece of 1 and 3 quarters metres is cut off. 2 and 3 quarters metres are left.", E('4 1/2 − 1 3/4 = 2 3/4 m', 'g')],
     turn: ["Your turn! Work out 3 and 2 fifths plus 1 and 1 half. Pause and try it.", E('3 2/5 + 1 1/2'), "Wholes: 4. Fractions: 4 tenths plus 5 tenths is 9 tenths. 4 and 9 tenths.", E('4 9/10', 'g')],
     rec: ["Add or subtract the wholes and the fractions, using a common denominator. If subtracting is awkward, change to improper fractions first.", ['Common denominator', 'Wholes and fractions separately', 'Carry if the fraction is over 1', 'Or use improper fractions']],
     deep: ['Changing to improper fractions always works, even when the fraction part is too small to subtract.', 'When the fraction part adds to more than 1, carry a whole into the whole-number part.']
@@ -83,7 +83,7 @@
     ex: [['Cancelling first', '4/9 × 3/8', [["4 and 8 share a factor of 4; 3 and 9 share 3. Cancel: 1 third times 1 half is 1 sixth.", E('4/9 × 3/8 = 1/3 × 1/2 = 1/6', 'g')]]],
       ['Dividing', 'Keep, change, flip', [["3 quarters divided by 2 fifths: keep 3 quarters, change to multiply, flip to 5 halves. 15 eighths, which is 1 and 7 eighths.", E('3/4 × 5/2 = 15/8 = 1 7/8', 'g')]]],
       ['Mixed numbers', 'Change first', [["2 and a half times 1 and a third: 5 halves times 4 thirds is 20 sixths, which is 3 and 1 third.", E('5/2 × 4/3 = 20/6 = 3 1/3', 'g')]]]],
-    real: ['Recipes', "A recipe needs three quarters of a cup of sugar. Two thirds of the recipe needs half a cup.", E('2/3 × 3/4 = 1/2', 'g')],
+    real: ['Recipes', "A recipe needs 3 quarters of a cup of sugar. 2 thirds of the recipe needs half a cup.", E('2/3 × 3/4 = 1/2', 'g')],
     turn: ["Your turn! Work out 5 sixths divided by 5 twelfths. Pause and try it.", E('5/6 ÷ 5/12'), "Flip to 12 fifths: 5 sixths times 12 fifths is 60 thirtieths, which is 2.", E('2', 'g')],
     rec: ["Multiply tops and bottoms, cancelling first where you can. To divide, keep the first, change to multiply, flip the second. Change mixed numbers to improper fractions first.", ['× : tops × tops, bottoms × bottoms', 'Cancel to save work', '÷ : keep, change, flip', 'Mixed → improper first']],
     deep: ['Dividing by a fraction is the same as multiplying by its reciprocal, because they undo each other.', 'Never multiply mixed numbers part by part: 2½ × 1⅓ is not 2 × 1 plus ½ × ⅓.']
@@ -93,7 +93,7 @@
   LS('Percentages of amounts', 'how to find any percentage of an amount, with and without a calculator.', {
     intro: ['A percentage of an amount', 'Two methods', "Build the percentage from 10%, 5% and 1%, or multiply by the percentage as a decimal.", V.cards(['Build: 10%, 5%, 1%', 'Decimal: × 0.36'], ['b', 'g'])],
     ex: [['Building', '36% of £250', [["10% is £25, so 30% is 75. 1% is £2.50, so 6% is 15. 36% is £90.", E('£75 + £15 = £90', 'g')]]],
-      ['Decimal multiplier', '36% of £250', [["36% is 0 point 3 6. 0 point 3 6 times 250 is 90.", E('0.36 × 250 = 90', 'g')]]],
+      ['Decimal multiplier', '36% of £250', [["36% is 0.36. 0.36 times 250 is 90.", E('0.36 × 250 = 90', 'g')]]],
       ['Fractions help', '12.5% of 64', [["12 and a half per cent is 1 eighth. 1 eighth of 64 is 8.", E('12.5% = 1/8 → 64 ÷ 8 = 8', 'g')]]]],
     real: ['VAT', "VAT is 20%. On a £75 item, VAT is £15, so the price is £90.", E('20% of £75 = £15', 'g')],
     turn: ["Your turn! Find 17% of 300. Pause and try it.", E('17% of 300'), "10% is 30, 7% is 21. 51.", E('51', 'g')],
@@ -102,38 +102,38 @@
   });
 
   LS('Percentage increase and decrease', 'how to increase or decrease an amount by a percentage.', {
-    intro: ['Changing by a percentage', 'Up or down', "To increase, add the percentage on. To decrease, take it off. A multiplier does it in one step.", V.cards(['Increase: × 1.15', 'Decrease: × 0.85'], ['g', 'b'])],
+    intro: ['Changing by a percentage', 'Up or down', "To increase, add the percentage on. To decrease, take it off. A multiplier does it in 1 step.", V.cards(['Increase: × 1.15', 'Decrease: × 0.85'], ['g', 'b'])],
     ex: [['Decrease', '15% off £80', [["15% of 80 is 12. 80 take away 12 is £68.", E('£80 − £12 = £68', 'g')]]],
       ['Increase', '6% rise on £350', [["6% of 350 is 21. The new amount is £371.", E('£350 + £21 = £371', 'g')]]],
-      ['Multipliers', 'One step', [["15% off leaves 85%: times 0 point 8 5. A 6% rise is 106%: times 1.06.", E('80 × 0.85 = 68 · 350 × 1.06 = 371', 'g')]]],
-      ['Percentage change', 'Change ÷ original', [["A price rose from 50 to £60. The change is £10. 10 divided by 50 is 0 point 2: a 20% increase.", E('10 ÷ 50 × 100 = 20%', 'g')]]]],
+      ['Multipliers', 'One step', [["15% off leaves 85%: times 0.85. A 6% rise is 106%: times 1.06.", E('80 × 0.85 = 68 · 350 × 1.06 = 371', 'g')]]],
+      ['Percentage change', 'Change ÷ original', [["A price rose from 50 to £60. The change is £10. 10 divided by 50 is 0.2: a 20% increase.", E('10 ÷ 50 × 100 = 20%', 'g')]]]],
     turn: ["Your turn! Decrease 200 by 30%. Pause and try it.", E('200 − 30%'), "30% of 200 is 60. 200 take away 60 is 140.", E('140', 'g')],
     rec: ["Find the percentage and add or subtract it, or multiply by 1 plus or minus the percentage as a decimal. Percentage change is change over original.", ['Increase: add on', 'Decrease: take off', 'Multiplier: 1 ± rate', 'Change ÷ original × 100']],
-    deep: ['A multiplier combines finding the percentage and adding it on into one step.', 'A 10% rise then a 10% fall does not return to the start: £100 → £110 → £99.']
+    deep: ['A multiplier combines finding the percentage and adding it on into 1 step.', 'A 10% rise then a 10% fall does not return to the start: £100 → £110 → £99.']
   });
 
   /* ---------- 805 ---------- */
   LS('Simplifying and sharing in a ratio', 'how to simplify ratios and share amounts in a given ratio.', {
     intro: ['Ratio', 'Comparing parts', "A ratio compares amounts. 5 red to 10 blue is written 5 to 10. Ratios can be simplified like fractions.", E('5 : 10 = 1 : 2', 'g')],
-    ex: [['Simplifying', 'Divide by the HCF', [["24 to 36: the highest common factor is 12. Divide both: two to 3.", E('24 : 36 = 2 : 3', 'g')]]],
-      ['Three-part ratios', '12 : 18 : 30', [["Divide all three by 6: 2 to 3 to 5.", E('12 : 18 : 30 = 2 : 3 : 5', 'g')]]],
-      ['Sharing', '£180 in 2 : 3 : 4', [["Total parts: 9. 1 part: 180 divided by 9 is £20. Shares: 40, 60 and £80.", E('£40 · £60 · £80', 'g') + V.rule('Add the parts, find one part, multiply.')]]],
+    ex: [['Simplifying', 'Divide by the HCF', [["24 to 36: the highest common factor is 12. Divide both: 2 to 3.", E('24 : 36 = 2 : 3', 'g')]]],
+      ['Three-part ratios', '12 : 18 : 30', [["Divide all 3 by 6: 2 to 3 to 5.", E('12 : 18 : 30 = 2 : 3 : 5', 'g')]]],
+      ['Sharing', '£180 in 2 : 3 : 4', [["Total parts: 9. 1 part: 180 divided by 9 is £20. Shares: 40, 60 and £80.", E('£40 · £60 · £80', 'g') + V.rule('Add the parts, find 1 part, multiply.')]]],
       ['From one share', 'Find the total', [["The ratio of boys to girls is 3 to 4, and there are 15 boys. 1 part is 5, so there are 20 girls and 35 pupils.", E('3 parts = 15 → 1 part = 5 → total 35', 'g')]]]],
     real: ['Mixing paint', "Blue and yellow paint mixed in the ratio 2 to 5 makes green. For 7 litres you need 2 litres of blue and 5 of yellow.", E('2 : 5 → 2 l and 5 l', 'g')],
     turn: ["Your turn! Share 72 sweets in the ratio 5 to 3. Pause and try it.", E('72 in 5 : 3'), "8 parts, so 1 part is 9. 45 and 27.", E('45 and 27', 'g')],
-    rec: ["Simplify a ratio by dividing every part by the same number. To share, add the parts, find one part, then multiply.", ['Simplify: ÷ by the HCF', 'Add the parts', 'Total ÷ parts = one part', 'Check shares add to the total']],
+    rec: ["Simplify a ratio by dividing every part by the same number. To share, add the parts, find 1 part, then multiply.", ['Simplify: ÷ by the HCF', 'Add the parts', 'Total ÷ parts = one part', 'Check shares add to the total']],
     deep: ['A ratio is about parts, not amounts: 2 : 3 could be 2 and 3, or 200 and 300.', 'Read which share the question asks for: the first part, the second, or the difference.']
   });
 
-  LS('Direct proportion', 'how to solve problems where two quantities increase together at the same rate.', {
-    intro: ['Direct proportion', 'Double one, double the other', "Two quantities are in direct proportion if they grow together at the same rate: double one and the other doubles.", V.tbl([['1', '£2.40'], ['2', '£4.80'], ['5', '£12']], ['Tickets', 'Cost'])],
+  LS('Direct proportion', 'how to solve problems where 2 quantities increase together at the same rate.', {
+    intro: ['Direct proportion', 'Double one, double the other', "2 quantities are in direct proportion if they grow together at the same rate: double 1 and the other doubles.", V.tbl([['1', '£2.40'], ['2', '£4.80'], ['5', '£12']], ['Tickets', 'Cost'])],
     ex: [['The unitary method', 'Find one first', [["5 notebooks cost £6.50. 1 costs £1.30. So 8 cost £10.40.", E('£6.50 ÷ 5 = £1.30 → × 8 = £10.40', 'g')]]],
       ['Recipes', 'Scaling', [["A recipe for 4 uses 300 grams of flour. For 10 people: 75 grams per person, times 10 is 750 grams.", E('300 ÷ 4 × 10 = 750 g', 'g')]]],
       ['Best buy', 'Compare one unit', [["500 grams for £2 or 750 grams for £2.85? Per hundred grams: 40p and 38p. The bigger pack is better value.", E('40p vs 38p per 100 g', 'g')]]]],
     real: ['Fuel', "A car uses 6 litres of fuel to go 100 kilometres. For 250 kilometres it needs 15 litres.", E('6 × 2.5 = 15 l', 'g')],
     turn: ["Your turn! 3 pens cost £2.70. How much do 7 cost? Pause and try it.", E('£2.70 ÷ 3 × 7'), "1 costs 90p. 7 cost £6.30.", E('£6.30', 'g')],
-    rec: ["In direct proportion, find the value of one, then multiply. Use it for recipes, prices and best buys.", ['Grow together at the same rate', 'Unitary method: find one', 'Then multiply', 'Compare per unit for best buys']],
-    deep: ['In direct proportion, the ratio between the two quantities always stays the same.', 'Not everything is proportional: a taxi with a fixed charge plus a price per mile is not.']
+    rec: ["In direct proportion, find the value of 1, then multiply. Use it for recipes, prices and best buys.", ['Grow together at the same rate', 'Unitary method: find 1', 'Then multiply', 'Compare per unit for best buys']],
+    deep: ['In direct proportion, the ratio between the 2 quantities always stays the same.', 'Not everything is proportional: a taxi with a fixed charge plus a price per mile is not.']
   });
 
   /* ---------- 806 ---------- */
@@ -161,7 +161,7 @@
 
   LS('Best buys, interest and exchange', 'how to compare deals, and use exchange rates and interest.', {
     intro: ['Making money decisions', 'Compare fairly', "To compare deals, compare the same quantity: price per item, per gram or per litre.", V.rule('Compare like with like.')],
-    ex: [['Best buy', 'Price per unit', [["2 litres of juice for £1.80, or 3 litres for £2.64? Per litre: 90p and 88p. The three-litre bottle is better value.", E('90p vs 88p per litre', 'g')]]],
+    ex: [['Best buy', 'Price per unit', [["2 litres of juice for £1.80, or 3 litres for £2.64? Per litre: 90p and 88p. The 3-litre bottle is better value.", E('90p vs 88p per litre', 'g')]]],
       ['Offers', 'Three for two', [["3 for the price of 2: you pay for 2 items but get 3, so each costs 2 thirds of the price.", E('3 for 2 → each ⅔ price', 'g')]]],
       ['Exchange', 'Euros', [["If £1 is 1 euro 16, £300 is 348 euros. 87 euros is £75.", E('£300 × 1.16 = €348 · €87 ÷ 1.16 = £75', 'g')]]],
       ['Comparing interest', 'Which account?', [["Account A pays three per cent; account B pays two point five per cent plus a ten pound bonus. On four hundred pounds for one year: A gives twelve pounds, B gives twenty. B is better here.", E('A: £12 · B: £10 + £10 = £20', 'g')]]]],
@@ -176,7 +176,7 @@
     ex: [['Speed', 'D ÷ T', [["A cyclist rides 45 kilometres in 3 hours: 15 kilometres per hour.", E('45 ÷ 3 = 15 km/h', 'g')]]],
       ['Distance', 'S × T', [["A train travels at 120 kilometres per hour for 2 and a half hours: 300 kilometres.", E('120 × 2.5 = 300 km', 'g')]]],
       ['Time', 'D ÷ S', [["A car travels 192 kilometres at 64 kilometres per hour: 3 hours.", E('192 ÷ 64 = 3 h', 'g')]]],
-      ['Minutes', 'Change to hours', [["20 minutes is a third of an hour. At 60 kilometres per hour, you travel 20 kilometres. 45 minutes is 0 point 7 5 hours.", E('20 min = ⅓ h · 45 min = 0.75 h', 'g')]]]],
+      ['Minutes', 'Change to hours', [["20 minutes is a third of an hour. At 60 kilometres per hour, you travel 20 kilometres. 45 minutes is 0.75 hours.", E('20 min = ⅓ h · 45 min = 0.75 h', 'g')]]]],
     real: ['A journey', "Glasgow to Edinburgh is 75 kilometres. At 60 kilometres per hour it takes 1 hour 15 minutes.", E('75 ÷ 60 = 1.25 h = 1 h 15 min', 'g')],
     turn: ["Your turn! How far do you walk in 30 minutes at 5 kilometres per hour? Pause and try it.", E('5 × 0.5'), "30 minutes is half an hour: 2 and a half kilometres.", E('2.5 km', 'g')],
     rec: ["Speed is distance divided by time. Rearrange for distance or time. Always change minutes into hours first.", ['S = D ÷ T', 'D = S × T', 'T = D ÷ S', 'Minutes → hours']],
@@ -187,7 +187,7 @@
     intro: ['Distance–time graphs', 'A journey as a picture', "Time goes along the bottom and distance up the side. The line shows where someone was at each moment.", V.note('Steeper line = faster')],
     ex: [['Reading the graph', 'Sloping, flat, steep', [["A sloping line means moving. A flat line means stopped. A steeper line means faster.", V.cards(['Sloping: moving', 'Flat: stopped', 'Steep: fast'], ['b', 'p', 'g'])]]],
       ['Working out speed', 'From a section', [["If a line goes from 0 to 12 kilometres in 1 hour, the speed is 12 kilometres per hour.", E('12 km ÷ 1 h = 12 km/h', 'g')]]],
-      ['A return journey', 'Coming back', [["When the line comes back down to zero, the person is returning home. Work out speed the same way.", E('Line back down = returning', 'g')]]]],
+      ['A return journey', 'Coming back', [["When the line comes back down to 0, the person is returning home. Work out speed the same way.", E('Line back down = returning', 'g')]]]],
     turn: ["Your turn! A flat section lasts 30 minutes. What happened? Pause and think.", E('?'), "The distance didn't change, so they stopped for 30 minutes.", E('Stopped for 30 min', 'g')],
     rec: ["On a distance–time graph, sloping lines show movement, flat lines show a stop and steeper lines show faster speeds. Speed is distance over time for each section.", ['Sloping: moving', 'Flat: stopped', 'Steeper: faster', 'Speed = change in D ÷ change in T']],
     deep: ['The gradient of a distance–time graph is the speed.', 'Read the scales carefully: each square is not always 1 unit.']
@@ -261,7 +261,7 @@
     deep: ['Most angle problems are solved by spotting which fact applies, then subtracting from the total.', 'Always state the reason, like "angles on a straight line", not just the number.']
   });
 
-  LS('Parallel lines', 'the angle facts for a line crossing two parallel lines.', {
+  LS('Parallel lines', 'the angle facts for a line crossing 2 parallel lines.', {
     intro: ['Parallel lines', 'Crossed by a transversal', "When a line crosses 2 parallel lines, it makes pairs of angles that are equal or add to 180 degrees.", V.note('Corresponding (F), alternate (Z), co-interior (C)')],
     ex: [['Corresponding angles', 'F shape: equal', [["Corresponding angles are in matching positions at each crossing. They are equal.", E('a = b', 'g')]]],
       ['Alternate angles', 'Z shape: equal', [["Alternate angles sit inside the parallel lines, on opposite sides. They are equal.", E('a = b', 'g')]]],
@@ -271,25 +271,25 @@
     deep: ['These rules work because the transversal crosses both parallel lines at the same angle.', 'Only use them when the lines are marked parallel.']
   });
 
-  LS('Polygon angles, bearings and coordinates', 'how to find angles in polygons, use bearings and plot coordinates in four quadrants.', {
-    intro: ['Three geometry skills', 'Polygons, bearings, coordinates', "This lesson brings together angles inside polygons, three-figure bearings, and coordinates in all four quadrants.", V.list(['Polygon angles', 'Bearings', 'Coordinates'])],
+  LS('Polygon angles, bearings and coordinates', 'how to find angles in polygons, use bearings and plot coordinates in 4 quadrants.', {
+    intro: ['Three geometry skills', 'Polygons, bearings, coordinates', "This lesson brings together angles inside polygons, 3-figure bearings, and coordinates in all 4 quadrants.", V.list(['Polygon angles', 'Bearings', 'Coordinates'])],
     ex: [['Interior angles', '(n − 2) × 180°', [["A pentagon's angles add to 3 times 180: 540 degrees. A regular pentagon's angles are 108 each.", E('540° ÷ 5 = 108°', 'g')]]],
       ['Exterior angles', 'Add to 360°', [["The exterior angles of any polygon add to 360 degrees. A regular hexagon's exterior angle is 60 degrees.", E('360° ÷ 6 = 60°', 'g')]]],
       ['Bearings', 'Clockwise from north', [["Bearings are measured clockwise from north, with 3 figures. South-west is 2 2 5 degrees.", E('SW = 225°', 'g')]]],
-      ['Four quadrants', 'Negative coordinates', [["Points can have negative coordinates. Negative three, two is three left and two up.", E('(−3, 2): 3 left, 2 up', 'g')]]]],
+      ['Four quadrants', 'Negative coordinates', [["Points can have negative coordinates. Negative 3, 2 is 3 left and 2 up.", E('(−3, 2): 3 left, 2 up', 'g')]]]],
     turn: ["Your turn! What is each exterior angle of a regular octagon? Pause and try it.", E('360° ÷ 8'), "Forty-five degrees.", E('45°', 'g')],
-    rec: ["Interior angles add to n minus 2 times 180. Exterior angles add to 360. Bearings go clockwise from north with 3 figures. Coordinates go across, then up, including negatives.", ['Interior: (n − 2) × 180°', 'Exterior: total 360°', 'Bearings: clockwise from N', '(x, y) in four quadrants']],
+    rec: ["Interior angles add to n minus 2 times 180. Exterior angles add to 360. Bearings go clockwise from north with 3 figures. Coordinates go across, then up, including negatives.", ['Interior: (n − 2) × 180°', 'Exterior: total 360°', 'Bearings: clockwise from N', '(x, y) in 4 quadrants']],
     deep: ['Walking round any polygon you turn through 1 full turn, which is why exterior angles add to 360°.', 'Always write bearings with 3 figures: 045°, not 45°.']
   });
 
   /* ---------- 811 ---------- */
-  LS('Four-quadrant coordinates and reflection', 'how to plot points in all four quadrants and reflect shapes in the axes.', {
+  LS('Four-quadrant coordinates and reflection', 'how to plot points in all 4 quadrants and reflect shapes in the axes.', {
     intro: ['Four quadrants', 'Negative coordinates', "The axes cross at the origin. Going left or down gives negative coordinates.", E('(x, y): across, then up or down', 'g')],
-    ex: [['Plotting', 'Four points', [["Two, three is in the top right. Negative two, three is top left. Negative two, negative three is bottom left. Two, negative three is bottom right.", V.tbl([['(2, 3)', 'top right'], ['(−2, 3)', 'top left'], ['(−2, −3)', 'bottom left'], ['(2, −3)', 'bottom right']], ['Point', 'Quadrant'])]]],
-      ['Reflect in the y-axis', 'x changes sign', [["Reflecting in the y-axis flips left and right: four, one becomes negative four, one.", E('(4, 1) → (−4, 1)', 'g')]]],
-      ['Reflect in the x-axis', 'y changes sign', [["Reflecting in the x-axis flips up and down: four, one becomes four, negative one.", E('(4, 1) → (4, −1)', 'g')]]],
-      ['Reflect in y = x', 'Swap the coordinates', [["Reflecting in the line y equals x swaps the coordinates: four, one becomes one, four.", E('(4, 1) → (1, 4)', 'g')]]]],
-    turn: ["Your turn! Reflect negative three, five in the x-axis. Pause and think.", E('(−3, 5)'), "The y-coordinate changes sign: negative three, negative five.", E('(−3, −5)', 'g')],
+    ex: [['Plotting', 'Four points', [["2, 3 is in the top right. Negative 2, 3 is top left. Negative 2, negative 3 is bottom left. 2, negative 3 is bottom right.", V.tbl([['(2, 3)', 'top right'], ['(−2, 3)', 'top left'], ['(−2, −3)', 'bottom left'], ['(2, −3)', 'bottom right']], ['Point', 'Quadrant'])]]],
+      ['Reflect in the y-axis', 'x changes sign', [["Reflecting in the y-axis flips left and right: 4, 1 becomes negative 4, 1.", E('(4, 1) → (−4, 1)', 'g')]]],
+      ['Reflect in the x-axis', 'y changes sign', [["Reflecting in the x-axis flips up and down: 4, 1 becomes 4, negative 1.", E('(4, 1) → (4, −1)', 'g')]]],
+      ['Reflect in y = x', 'Swap the coordinates', [["Reflecting in the line y equals x swaps the coordinates: 4, 1 becomes 1, 4.", E('(4, 1) → (1, 4)', 'g')]]]],
+    turn: ["Your turn! Reflect negative 3, 5 in the x-axis. Pause and think.", E('(−3, 5)'), "The y-coordinate changes sign: negative 3, negative 5.", E('(−3, −5)', 'g')],
     rec: ["Coordinates go across then up, and can be negative. Reflecting in the y-axis changes the sign of x; in the x-axis, the sign of y; in y = x, swap them.", ['Across, then up', 'y-axis: x changes sign', 'x-axis: y changes sign', 'y = x: swap']],
     deep: ['A reflection keeps each point the same distance from the mirror line, which is why only one coordinate changes sign.', 'The x-axis is horizontal: reflecting in it changes y, not x.']
   });
@@ -300,7 +300,7 @@
       ['Scale drawings', 'Scale 1 : 50', [["On a scale of 1 to 50, 1 centimetre on the drawing is 50 centimetres in real life. A wall drawn 8 centimetres long is 4 metres.", E('8 × 50 = 400 cm = 4 m', 'g')]]],
       ['Map scales', '1 : 25,000', [["On a 1 to 25,000 map, 4 centimetres is 100,000 centimetres, which is 1 kilometre.", E('4 cm → 1 km', 'g')]]]],
     turn: ["Your turn! On a 1 to 100 plan, a room is 6 centimetres long. How long is the real room? Pause and try it.", E('6 × 100'), "600 centimetres, which is 6 metres.", E('6 m', 'g')],
-    rec: ["Count lines of symmetry and how many times a shape fits onto itself in a turn. For scale drawings, multiply by the scale and change units.", ['Lines of symmetry: fold test', 'Order: matches in one turn', 'Scale 1 : n → × n', 'Convert the units']],
+    rec: ["Count lines of symmetry and how many times a shape fits onto itself in a turn. For scale drawings, multiply by the scale and change units.", ['Lines of symmetry: fold test', 'Order: matches in 1 turn', 'Scale 1 : n → × n', 'Convert the units']],
     deep: ['Every shape has rotational order at least 1, because it always fits after a full turn.', 'After multiplying by the scale, convert to sensible units: 400 cm is 4 m.']
   });
 
@@ -310,17 +310,17 @@
     ex: [['An example', '4, 9, 6, 9, 12', [["Mean: 40 divided by 5 is 8. Median: in order 4, 6, 9, 9, 12; middle is 9. Mode: 9. Range: 12 take away 4 is 8.", E('Mean 8 · Median 9 · Mode 9 · Range 8', 'g')]]],
       ['Even number of values', 'Median between two', [["For 3, 5, 8, 10, the middle 2 are 5 and 8. The median is halfway: 6.5.", E('(5 + 8) ÷ 2 = 6.5', 'g')]]],
       ['Comparing groups', 'Average and spread', [["Class A has mean 62 and range 30. Class B has mean 65 and range 12. B did better on average and were more consistent.", E('B: higher mean, smaller range', 'g')]]]],
-    turn: ["Your turn! Find the median of seven, two, nine, four, five. Pause and try it.", E('2, 4, 5, 7, 9'), "In order, the middle is five.", E('5', 'g')],
-    rec: ["Use the mean, median or mode for a typical value and the range for spread. Compare groups using one average and the range.", ['Mean: total ÷ count', 'Median: middle in order', 'Mode: most common', 'Range: spread']],
+    turn: ["Your turn! Find the median of 7, 2, 9, 4, 5. Pause and try it.", E('2, 4, 5, 7, 9'), "In order, the middle is 5.", E('5', 'g')],
+    rec: ["Use the mean, median or mode for a typical value and the range for spread. Compare groups using 1 average and the range.", ['Mean: total ÷ count', 'Median: middle in order', 'Mode: most common', 'Range: spread']],
     deep: ['The median is not affected by 1 very big or very small value, so it is better when there are outliers.', 'When comparing, mention both an average and the spread.']
   });
 
   LS('Probability and relative frequency', 'how to calculate probability and estimate it from experiments.', {
-    intro: ['Probability', 'From 0 to 1', "Probability measures how likely something is, from zero, impossible, to one, certain.", V.cards(['0 impossible', '0.5 even', '1 certain'], ['b', 'p', 'g'])],
+    intro: ['Probability', 'From 0 to 1', "Probability measures how likely something is, from 0, impossible, to 1, certain.", V.cards(['0 impossible', '0.5 even', '1 certain'], ['b', 'p', 'g'])],
     ex: [['Theoretical probability', 'Equally likely outcomes', [["A bag has 4 red and 6 blue counters. The probability of red is 4 out of 10: 2 fifths.", E('P(red) = 4/10 = 2/5', 'g')]]],
-      ['The complement', 'Not happening', [["The probability of not red is one take away two fifths: three fifths.", E('P(not red) = 1 − 2/5 = 3/5', 'g')]]],
-      ['Relative frequency', 'From an experiment', [["A drawing pin lands point up 36 times in 50 throws. The relative frequency is 36 fiftieths: 0 point 7 2.", E('36 ÷ 50 = 0.72', 'g')]]],
-      ['Expected results', 'Predict', [["If the probability of rain is 0 point 3, in 30 days we expect about 9 rainy days.", E('0.3 × 30 = 9', 'g')]]]],
+      ['The complement', 'Not happening', [["The probability of not red is 1 take away 2 fifths: 3 fifths.", E('P(not red) = 1 − 2/5 = 3/5', 'g')]]],
+      ['Relative frequency', 'From an experiment', [["A drawing pin lands point up 36 times in 50 throws. The relative frequency is 36 fiftieths: 0.72.", E('36 ÷ 50 = 0.72', 'g')]]],
+      ['Expected results', 'Predict', [["If the probability of rain is 0.3, in 30 days we expect about 9 rainy days.", E('0.3 × 30 = 9', 'g')]]]],
     turn: ["Your turn! A fair dice is rolled 60 times. About how many sixes would you expect? Pause and try it.", E('1/6 × 60'), "Ten sixes.", E('10', 'g')],
     rec: ["Probability is ways it can happen over total outcomes. The complement is 1 minus it. Relative frequency comes from experiments and gets more reliable with more trials.", ['P = ways ÷ total', 'P(not) = 1 − P', 'Relative frequency from trials', 'Expected = P × trials']],
     deep: ['More trials make the relative frequency closer to the true probability.', 'Expected results are an estimate, not a guarantee: you might get 8 or 12 sixes.']
@@ -331,8 +331,8 @@
     intro: ['Nets', 'A solid unfolded', "A net is a solid opened out flat. Its area is the surface area of the solid.", LK.grid(4, 3, function (i, j) { return (j === 1 || i === 1) ? true : 'skip'; }, { u: 36, alt: 'A cross-shaped net' })],
     ex: [['Cuboid', 'Three pairs of faces', [["A cuboid 6 by 4 by 3: top and bottom 24 each, front and back 18 each, sides 12 each. Total 108 square centimetres.", E('2(24 + 18 + 12) = 108 cm²', 'g')]]],
       ['Cube', 'Six equal squares', [["A cube with 5 centimetre edges: 6 times 25 is 150 square centimetres.", E('6 × 25 = 150 cm²', 'g')]]],
-      ['Triangular prism', 'Two triangles, three rectangles', [["Add the two triangle ends and the three rectangles. Each face is found with its own area formula.", E('SA = 2 triangles + 3 rectangles', 'g')]]]],
-    turn: ["Your turn! What is the surface area of a cube with three centimetre edges? Pause and try it.", E('6 × 9'), "54 square centimetres.", E('54 cm²', 'g')],
+      ['Triangular prism', '2 triangles, 3 rectangles', [["Add the 2 triangle ends and the 3 rectangles. Each face is found with its own area formula.", E('SA = 2 triangles + 3 rectangles', 'g')]]]],
+    turn: ["Your turn! What is the surface area of a cube with 3 centimetre edges? Pause and try it.", E('6 × 9'), "54 square centimetres.", E('54 cm²', 'g')],
     rec: ["Surface area is the total area of all faces. Draw or imagine the net, find each face's area, and add them.", ['Draw the net', 'Area of each face', 'Add them all', 'Units: cm²']],
     deep: ['The net shows every face exactly once, so adding its parts gives the total surface.', 'Don’t mix up surface area (cm²) with volume (cm³).']
   });

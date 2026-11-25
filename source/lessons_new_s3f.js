@@ -7,14 +7,14 @@
   N("How do you use Pythagoras' theorem to find a missing side?", 'how to find the hypotenuse or a shorter side of a right-angled triangle, step by step.', [
     SC('Right-angled triangles', 'Start with the basics', [
       S("A right-angled triangle has 1 corner that is exactly 90 degrees, like the corner of a book. The side opposite the right angle is special. It is the longest side, and it is called the hypotenuse. The other 2 sides are called the shorter sides, or the legs.", V.list(['Right angle: 90°', 'Hypotenuse: longest side, opposite the right angle', 'Two shorter sides'])),
-      S("Pythagoras discovered a rule that links the three sides. Square the two shorter sides and add them. You get the square of the hypotenuse. We write a squared plus b squared equals c squared, where c is the hypotenuse.", E('a² + b² = c²', 'g'))
+      S("Pythagoras discovered a rule that links the 3 sides. Square the 2 shorter sides and add them. You get the square of the hypotenuse. We write a squared plus b squared equals c squared, where c is the hypotenuse.", E('a² + b² = c²', 'g'))
     ]),
     SC('Seeing it work', 'A triangle with sides 3, 4 and 5', [
       S("Let us test the rule on a triangle with sides 3, 4 and 5. The hypotenuse is 5, the longest. 3 squared is 9. 4 squared is 16. 9 plus 16 is 25. And 5 squared is 25. The rule works.", E('3² + 4² = 9 + 16 = 25') + g('5² = 25 ✓')),
-      S("Think of it as squares. Draw a real square on each side. The area of the two small squares, 9 and 16, add up to the area of the big square, 25. That is what Pythagoras says.", V.rule('Small squares add to the big square.'))
+      S("Think of it as squares. Draw a real square on each side. The area of the 2 small squares, 9 and 16, add up to the area of the big square, 25. That is what Pythagoras says.", V.rule('Small squares add to the big square.'))
     ]),
     SC('Finding the hypotenuse', 'Example 1: sides 6 and 8, step by step', [
-      S("Step one. Draw or imagine the triangle. The two shorter sides are six and eight. We want the hypotenuse, so call it c.", E('a = 6, b = 8, c = ?')),
+      S("Step one. Draw or imagine the triangle. The 2 shorter sides are 6 and 8. We want the hypotenuse, so call it c.", E('a = 6, b = 8, c = ?')),
       S("Step two. Write the rule. a squared plus b squared equals c squared. Put in the numbers. 6 squared plus 8 squared equals c squared.", E('6² + 8² = c²')),
       S("Step three. Work out the squares. 6 squared is 36. 8 squared is 64. Add them. 100. So c squared equals 100.", E('36 + 64 = 100') + E('c² = 100')),
       S("Step four. Take the square root, because we want c, not c squared. The square root of 100 is 10. The hypotenuse is 10. And it is bigger than both shorter sides, as it should be.", g('c = √100 = 10'))
@@ -43,7 +43,7 @@
       S("Square root. The height is 4.77, to 2 decimal places. About 4.8 metres up the wall.", g('h = √22.75 ≈ 4.77 m'))
     ]),
     SC('On a grid', 'Example 6: distance between 2 points', [
-      S("Pythagoras also gives the distance between 2 points. Take the points 1, 2, and 7, 10. Across, the difference in x is 7 minus 1, 6. Up, the difference in y is 10 minus 2, 8. These form the two shorter sides of a right-angled triangle.", E('Across: 7 − 1 = 6') + E('Up: 10 − 2 = 8')),
+      S("Pythagoras also gives the distance between 2 points. Take the points 1, 2, and 7, 10. Across, the difference in x is 7 minus 1, 6. Up, the difference in y is 10 minus 2, 8. These form the 2 shorter sides of a right-angled triangle.", E('Across: 7 − 1 = 6') + E('Up: 10 − 2 = 8')),
       S("The distance is the hypotenuse. 6 squared plus 8 squared is 36 plus 64, 100. Square root. The distance is 10.", g('Distance = √100 = 10'))
     ]),
     SC('Watch out!', 'Common mistakes, with examples', [
@@ -63,11 +63,11 @@
 
   N('How do you check for a right angle and use Pythagorean triples?', 'how to test whether a triangle has a right angle, and how to recognise common whole-number triangles.', [
     SC('The reverse', 'Start with the basics', [
-      S("Pythagoras says that in a right-angled triangle, a squared plus b squared equals c squared. The rule also works in reverse. If the three sides of a triangle satisfy a squared plus b squared equals c squared, then the triangle must have a right angle.", E('a² + b² = c²  ⟺  right angle', 'g')),
-      S("This lets us test a triangle, even when we cannot see an angle. We only need the three side lengths.", V.rule('Test with the three sides.'))
+      S("Pythagoras says that in a right-angled triangle, a squared plus b squared equals c squared. The rule also works in reverse. If the 3 sides of a triangle satisfy a squared plus b squared equals c squared, then the triangle must have a right angle.", E('a² + b² = c²  ⟺  right angle', 'g')),
+      S("This lets us test a triangle, even when we cannot see an angle. We only need the 3 side lengths.", V.rule('Test with the 3 sides.'))
     ]),
     SC('The test', 'The steps', [
-      S("Step one. Find the longest side. That is the one that would be the hypotenuse. Step two. Square the two shorter sides and add them. Step three. Square the longest side. Step four. Compare. If they are equal, there is a right angle.", V.list(['Longest side is c', 'a² + b²', 'c²', 'Equal? Right angle.']))
+      S("Step one. Find the longest side. That is the one that would be the hypotenuse. Step two. Square the 2 shorter sides and add them. Step three. Square the longest side. Step four. Compare. If they are equal, there is a right angle.", V.list(['Longest side is c', 'a² + b²', 'c²', 'Equal? Right angle.']))
     ]),
     SC('A yes', 'Example 1: sides 6, 8 and 10', [
       S("The longest side is 10. 6 squared plus 8 squared is 36 plus 64, 100. 10 squared is 100. They are equal. So the triangle has a right angle.", E('6² + 8² = 100') + E('10² = 100') + g('Right-angled ✓'))
@@ -84,7 +84,7 @@
     ]),
     SC('Triples', 'Pythagorean triples', [
       S("Sets of 3 whole numbers that fit a squared plus b squared equals c squared are called Pythagorean triples. The most famous is 3, 4, 5. Others are 5, 12, 13. 8, 15, 17. 7, 24, 25.", V.list(['3, 4, 5', '5, 12, 13', '8, 15, 17', '7, 24, 25'])),
-      S("Learn the first two. They often appear in exam questions, and they save you from a calculator.", V.rule('Learn 3-4-5 and 5-12-13.'))
+      S("Learn the first 2. They often appear in exam questions, and they save you from a calculator.", V.rule('Learn 3-4-5 and 5-12-13.'))
     ]),
     SC('Multiples', 'Example 5: scaling a triple', [
       S("If you multiply every number in a triple by the same amount, you get another triple. 3, 4, 5 times 2 is 6, 8, 10. Times 3 is 9, 12, 15. Times 10 is 30, 40, 50. They are all right-angled.", E('3,4,5 → 6,8,10 → 9,12,15 → 30,40,50')),
@@ -95,8 +95,8 @@
       S("Check by calculating. 26 squared minus 10 squared is 676 minus 100, 576. The square root is 24. It matches.", E('676 − 100 = 576 = 24² ✓'))
     ]),
     SC('A builder', 'Example 7: a square corner', [
-      S("A builder wants to check that a corner of a foundation is a true right angle. She measures 3 metres along 1 wall, and 4 metres along the other. If the distance between those two marks is exactly 5 metres, the corner is square. This is the 3, 4, 5 triple.", E('3 m, 4 m, 5 m')),
-      S("If the diagonal is more than five, the corner is too wide. If less than five, the corner is too narrow.", V.rule('Diagonal 5 m: a perfect corner.'))
+      S("A builder wants to check that a corner of a foundation is a true right angle. She measures 3 metres along 1 wall, and 4 metres along the other. If the distance between those 2 marks is exactly 5 metres, the corner is square. This is the 3, 4, 5 triple.", E('3 m, 4 m, 5 m')),
+      S("If the diagonal is more than 5, the corner is too wide. If less than 5, the corner is too narrow.", V.rule('Diagonal 5 m: a perfect corner.'))
     ]),
     SC('Watch out!', 'Common mistakes, with examples', [
       S("Mistake one. Using the wrong side as the hypotenuse. Test 6, 8 and 10. Wrong: 10 squared plus 6 squared equals 8 squared. That is 1 36 against 64. The longest side must be the hypotenuse. 6 squared plus 8 squared is a hundred, and 10 squared is a hundred.", r('10² + 6² = 136 ≠ 8² = 64  ✗') + g('6² + 8² = 100 = 10²  ✓')),
@@ -104,9 +104,9 @@
       S("Mistake three. Assuming a triangle is right-angled because it looks it. Sides 5, 6 and 8. Wrong: it looks square, so it is right-angled. Test. 25 plus 36 is 61. 8 squared is 64. They are not equal. No right angle.", r('looks square, so right-angled  ✗') + g('61 ≠ 64, not right-angled  ✓'))
     ]),
     L.turn("Your turn! Number one. Is a triangle with sides 9, 40 and 41 right-angled? Pause and try it.", E('9, 40, 41'), "81 plus sixteen hundred is sixteen hundred and 81. 41 squared is sixteen hundred and 81. Yes.", g('Right-angled ✓')),
-    L.turn("Your turn! Number two. Is a triangle with sides four, five and six right-angled? Pause and try it.", E('4, 5, 6'), "16 plus 25 is 41. 6 squared is 36. Not equal. No.", g('Not right-angled')),
+    L.turn("Your turn! Number two. Is a triangle with sides 4, 5 and 6 right-angled? Pause and try it.", E('4, 5, 6'), "16 plus 25 is 41. 6 squared is 36. Not equal. No.", g('Not right-angled')),
     L.turn("Your turn! Number three. 3, 4, 5 is a triple. Write the triple that is 5 times bigger. Pause and try it.", E('5 × (3, 4, 5)'), "15, 20, 25.", g('15, 20, 25')),
-    L.rec('How do you check for a right angle and use Pythagorean triples?', "If a squared plus b squared equals c squared for the three sides, with c the longest, the triangle has a right angle. If a squared plus b squared is less than c squared, it is obtuse, and if it is more, it is acute. Whole-number sets that work, like 3, 4, 5 and 5, 12, 13, are Pythagorean triples. Multiples of a triple also work.", ['Longest side is c', 'a² + b² = c²: right angle', '3-4-5 and 5-12-13', 'Multiples work too'])
+    L.rec('How do you check for a right angle and use Pythagorean triples?', "If a squared plus b squared equals c squared for the 3 sides, with c the longest, the triangle has a right angle. If a squared plus b squared is less than c squared, it is obtuse, and if it is more, it is acute. Whole-number sets that work, like 3, 4, 5 and 5, 12, 13, are Pythagorean triples. Multiples of a triple also work.", ['Longest side is c', 'a² + b² = c²: right angle', '3-4-5 and 5-12-13', 'Multiples work too'])
   ]);
 
   N('How do you give exact answers using surds in Pythagoras questions?', 'how to leave a square root in its exact form and simplify it.', [
@@ -138,7 +138,7 @@
     ]),
     SC('A square and its diagonal', 'Example 5: side 4', [
       S("A square has side 4. Its diagonal splits it into 2 right-angled triangles. Diagonal squared is 16 plus 16, 32. 32 is 16 times 2. So the diagonal is 4 root 2.", E('d² = 16 + 16 = 32') + g('d = 4√2')),
-      S("A neat fact. The diagonal of any square is the side times root two.", V.rule('Diagonal = side × √2'))
+      S("A neat fact. The diagonal of any square is the side times root 2.", V.rule('Diagonal = side × √2'))
     ]),
     SC('An equilateral triangle', 'Example 6: the height', [
       S("An equilateral triangle has all sides 6. Draw the height. It cuts the base in half, 3 and 3. Now there is a right-angled triangle with hypotenuse 6, and a shorter side 3. Height squared plus 3 squared equals 6 squared. Height squared is 36 minus 9, 27.", E('h² + 3² = 6²') + E('h² = 27')),
@@ -150,8 +150,8 @@
       S("Mistake three. Rounding too early. The diagonal of a square of side 5. Wrong: root 50 is 7.1, then use 7.1 in the next step. 7.1 squared is 50.41, not 50. Keep 5 root 2. 5 root 2 squared is 25 times 2, 50.", r('√50 ≈ 7.1, 7.1² = 50.41  ✗') + g('(5√2)² = 25 × 2 = 50  ✓'))
     ]),
     L.turn("Your turn! Number one. Simplify root 18. Pause and try it.", E('√18'), "18 is 9 times 2. Root 9 is 3. 3 root 2.", g('3√2')),
-    L.turn("Your turn! Number two. A right-angled triangle has shorter sides three and three. Give the hypotenuse as a surd in simplest form. Pause and try it.", E('3² + 3²'), "18. Root 18 is 3 root 2.", g('3√2')),
-    L.turn("Your turn! Number three. Find the diagonal of a square with side five, as a surd. Pause and try it.", E('5² + 5²'), "50. Root 50 is 5 root 2.", g('5√2')),
+    L.turn("Your turn! Number two. A right-angled triangle has shorter sides 3 and 3. Give the hypotenuse as a surd in simplest form. Pause and try it.", E('3² + 3²'), "18. Root 18 is 3 root 2.", g('3√2')),
+    L.turn("Your turn! Number three. Find the diagonal of a square with side 5, as a surd. Pause and try it.", E('5² + 5²'), "50. Root 50 is 5 root 2.", g('5√2')),
     L.rec('How do you give exact answers using surds in Pythagoras questions?', "A surd is an exact square root that is not a whole number. Leave answers as surds when asked for an exact answer. To simplify, find the biggest square number that divides the number, split the root, and take the square root of the square. For example, root 50 is 5 root 2. The diagonal of a square is its side times root 2.", ['Exact: keep the root', 'Biggest square factor', '√50 = 5√2', 'Square diagonal = side × √2'])
   ]);
 

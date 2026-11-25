@@ -51,10 +51,10 @@
       hints: ['When you divide powers with the same base, subtract the indices.'], explain: pw(b, hi) + ' ÷ ' + pw(b, lo) + ' = ' + pw(b, hi - lo) + '. Subtract the indices: ' + hi + ' − ' + lo + ' = ' + (hi - lo) + '.' },
       mcStr(pw(b, hi - lo), [pw(b, hi + lo), pw(b, hi / lo), pw(b, hi * lo)])); }
     if (kind === 'zero') return Q({ tag: 'Laws of indices', text: 'What is the value of <b>' + pw(b, 0) + '</b>?', answer: '1',
-      hints: ['Any number to the power 0 is the same.', pw(b, 3) + ' ÷ ' + pw(b, 3) + ' = 1, and by the index rule that is also ' + pw(b, 0) + '.'], explain: 'Any non-zero number to the power 0 equals 1, so ' + pw(b, 0) + ' = 1.' });
+      hints: ['Any number to the power 0 is the same.', pw(b, 3) + ' ÷ ' + pw(b, 3) + ' = 1, and by the index rule that is also ' + pw(b, 0) + '.'], explain: 'Any non-0 number to the power 0 equals 1, so ' + pw(b, 0) + ' = 1.' });
     var e = rnd(1, 3), den = Math.pow(b, e);
     return mk({ tag: 'Laws of indices', text: 'Write <b>' + pw(b, -e) + '</b> as a fraction.',
-      hints: ['A negative index means “one over” the positive power.'], explain: pw(b, -e) + ' = 1 ÷ ' + pw(b, e) + ' = 1/' + den + '.' }, mcStr('1/' + den, ['-' + den, '1/' + (den + b), String(den)]));
+      hints: ['A negative index means “1 over” the positive power.'], explain: pw(b, -e) + ' = 1 ÷ ' + pw(b, e) + ' = 1/' + den + '.' }, mcStr('1/' + den, ['-' + den, '1/' + (den + b), String(den)]));
   }
 
   /* ================= MULTIPLES AND FACTORS IN CONTEXT ================= */
@@ -66,8 +66,8 @@
       return Q({ tag: 'Multiples and factors in context', text: who[2] + a + ' ' + who[1] + who[3] + b + ' ' + who[1] + '. They both start together. After how many ' + who[1] + ' will they next go <b>together</b>?', answer: String(l),
         hints: ['“Together again” means a number both times divide into. That is a common multiple.', 'You want the lowest common multiple (LCM) of ' + a + ' and ' + b + '.'], explain: 'The multiples of ' + a + ' and ' + b + ' first meet at ' + l + ', the LCM. They go together again after ' + l + ' ' + who[1] + '.' });
     }
-    return Q({ tag: 'Multiples and factors in context', text: 'A builder cuts two planks, ' + a + ' cm and ' + b + ' cm long, into equal pieces with no wood left over. What is the <b>longest</b> each piece can be, in cm?', answer: String(g),
-      hints: ['The length must divide into both ' + a + ' and ' + b + ' exactly. That is a common factor.', 'The longest one is the highest common factor (HCF).'], explain: 'The HCF of ' + a + ' and ' + b + ' is ' + g + ', so each piece can be ' + g + ' cm long.' });
+    return Q({ tag: 'Multiples and factors in context', text: 'A builder cuts 2 planks, ' + a + ' cm and ' + b + ' cm long, into equal pieces with no wood left over. What is the <b>longest</b> each piece can be, in cm?', answer: String(g),
+      hints: ['The length must divide into both ' + a + ' and ' + b + ' exactly. That is a common factor.', 'The longest 1 is the highest common factor (HCF).'], explain: 'The HCF of ' + a + ' and ' + b + ' is ' + g + ', so each piece can be ' + g + ' cm long.' });
   }
 
   /* ================= WAGES, VAT, BUDGETS, STATEMENTS ================= */
@@ -101,7 +101,7 @@
     var final = open; rows.forEach(function (r) { final += (r.inn || 0) - (r.out || 0); });
     var totOut = 0; rows.forEach(function (r) { totOut += r.out || 0; });
     if (Math.random() < 0.5) return Q({ tag: 'Bank statements', text: 'Look at the bank statement. What is the <b>final balance</b>, in pounds?', pic: stmtPic(open, rows), answer: T(final),
-      hints: ['Start from the opening balance. Add money in, take away money out.', 'Work down the rows one at a time.'], explain: 'Opening ' + gbp(open) + ' plus money in minus money out gives ' + gbp(final) + '.' });
+      hints: ['Start from the opening balance. Add money in, take away money out.', 'Work down the rows 1 at a time.'], explain: 'Opening ' + gbp(open) + ' plus money in minus money out gives ' + gbp(final) + '.' });
     return Q({ tag: 'Bank statements', text: 'How much money was <b>paid out</b> in total on this statement, in pounds?', pic: stmtPic(open, rows), answer: T(totOut),
       hints: ['Only use the “Out” column. Ignore the “In” column.'], explain: 'Add the Out column: ' + gbp(totOut) + '.' });
   }
@@ -148,7 +148,7 @@
     s += txt(vx - 14, vy + 18, V, 15, 'middle', ';font-weight:700') + txt(lA[0].toFixed(1), (lA[1] + 5).toFixed(1), A, 15, 'middle', ';font-weight:700') + txt(lC[0].toFixed(1), (lC[1] + 5).toFixed(1), C, 15, 'middle', ';font-weight:700');
     var ans = '∠' + A + V + C;
     return mk({ tag: 'Naming angles', text: 'Which name describes the <b>marked angle</b>? (The middle letter is the corner where the angle is.)', pic: svg(260, 140, 'Two lines meeting at point ' + V + ' with an angle marked, ends labelled ' + A + ' and ' + C, s, 260),
-      hints: ['An angle is named with three letters. The middle letter is the point where the two lines meet.', 'Here the lines meet at ' + V + ', so ' + V + ' goes in the middle.'], explain: 'The lines meet at ' + V + ', so ' + V + ' is the middle letter: ' + ans + ' (or ∠' + C + V + A + ').' },
+      hints: ['An angle is named with 3 letters. The middle letter is the point where the 2 lines meet.', 'Here the lines meet at ' + V + ', so ' + V + ' goes in the middle.'], explain: 'The lines meet at ' + V + ', so ' + V + ' is the middle letter: ' + ans + ' (or ∠' + C + V + A + ').' },
       mcStr(ans, ['∠' + V + A + C, '∠' + A + C + V, '∠' + V + C + A]));
   }
   function protPic(theta, flip) {
@@ -167,7 +167,7 @@
     var theta = rnd(3, 34) * 5, flip = Math.random() < 0.5;
     if (lv <= 1 && theta % 10) theta -= 5, theta = Math.max(20, theta);
     return Q({ tag: 'Measuring angles with a protractor', text: 'Read the size of the angle between the thick <b>arm</b> and the red line, in degrees. ' + (flip ? 'The arm points to the <b>left</b>.' : 'The arm points to the <b>right</b>.'), pic: protPic(theta, flip), answer: String(theta),
-      hints: ['Start at the 0 on the arm. Use the scale that begins with 0 on the arm.', 'The two scales run in opposite directions. Pick the one that has 0 on the arm.'], explain: 'The thick arm lies on 0° of one scale. Following that scale up to the red line gives ' + theta + '°.' });
+      hints: ['Start at the 0 on the arm. Use the scale that begins with 0 on the arm.', 'The 2 scales run in opposite directions. Pick the one that has 0 on the arm.'], explain: 'The thick arm lies on 0° of 1 scale. Following that scale up to the red line gives ' + theta + '°.' });
   }
   function gCompSupp(lv) {
     var comp = Math.random() < 0.5, tot = comp ? 90 : 180, a = comp ? rnd(10, 80) : rnd(20, 160), nm = comp ? 'complementary' : 'supplementary';
@@ -182,21 +182,21 @@
     function arc(px, rr, th) { var a1 = th - 0.22, a2 = th + 0.22, x1 = px + rr * sc * Math.cos(a1), y1 = ay - rr * sc * Math.sin(a1), x2 = px + rr * sc * Math.cos(a2), y2 = ay - rr * sc * Math.sin(a2); return '<path d="M' + x1.toFixed(1) + ' ' + y1.toFixed(1) + ' A' + (rr * sc) + ' ' + (rr * sc) + ' 0 0 0 ' + x2.toFixed(1) + ' ' + y2.toFixed(1) + '" style="fill:none;stroke:var(--accent);stroke-width:2.5"/>'; }
     var s = '<line x1="' + ax + '" y1="' + ay + '" x2="' + bx + '" y2="' + ay + '" style="' + STROKE + '"/>' + arc(ax, r1, thA) + arc(bx, r2, thB);
     s += '<circle cx="' + ax + '" cy="' + ay + '" r="4" style="fill:var(--fg)"/><circle cx="' + bx + '" cy="' + ay + '" r="4" style="fill:var(--fg)"/>' + txt(ax, ay + 20, 'A', 14) + txt(bx, ay + 20, 'B', 14) + txt((ax + bx) / 2, ay + 20, L + ' cm', 12);
-    return svg(260, 176, 'A base line AB with two arcs, one from each end, crossing above the line', s, 260);
+    return svg(260, 176, 'A base line AB with 2 arcs, 1 from each end, crossing above the line', s, 260);
   }
   function gConstruct(lv) {
     var kind = pick(['exists', 'which', 'arcs']);
     if (kind === 'exists') { var a = rnd(3, 9), b = rnd(3, 9), ok = Math.random() < 0.5, c = ok ? rnd(Math.abs(a - b) + 1, a + b - 1) : (Math.random() < 0.5 ? a + b + rnd(1, 3) : Math.max(1, Math.abs(a - b) - rnd(0, 1)));
       if (ok && c <= Math.abs(a - b)) c = Math.abs(a - b) + 1; ok = (a + b > c) && (a + c > b) && (b + c > a);
-      return mk({ tag: 'Constructing triangles', text: 'Can a triangle be drawn with sides <b>' + a + ' cm, ' + b + ' cm and ' + c + ' cm</b>?', hints: ['The two shorter sides must add up to more than the longest side, or the arcs will not meet.'],
-        explain: ok ? 'The two shorter sides add to more than the longest, so the arcs meet and the triangle can be drawn.' : 'The two shorter sides do not add to more than the longest, so the arcs cannot meet. No triangle.' }, { options: ['Yes', 'No'], answer: ok ? 'Yes' : 'No' }); }
-    if (kind === 'which') return mk({ tag: 'Constructing triangles', text: 'Which measurements are <b>enough</b> to construct one exact triangle?', hints: ['Three angles give the shape but not the size.', 'Sides and angles together can fix both the shape and the size.'],
-      explain: 'Three sides (SSS), two sides and the angle between them (SAS) or two angles and a side (ASA) fix one exact triangle. Three angles only give the shape, not the size.' },
+      return mk({ tag: 'Constructing triangles', text: 'Can a triangle be drawn with sides <b>' + a + ' cm, ' + b + ' cm and ' + c + ' cm</b>?', hints: ['The 2 shorter sides must add up to more than the longest side, or the arcs will not meet.'],
+        explain: ok ? 'The 2 shorter sides add to more than the longest, so the arcs meet and the triangle can be drawn.' : 'The 2 shorter sides do not add to more than the longest, so the arcs cannot meet. No triangle.' }, { options: ['Yes', 'No'], answer: ok ? 'Yes' : 'No' }); }
+    if (kind === 'which') return mk({ tag: 'Constructing triangles', text: 'Which measurements are <b>enough</b> to construct one exact triangle?', hints: ['3 angles give the shape but not the size.', 'Sides and angles together can fix both the shape and the size.'],
+      explain: '3 sides (SSS), 2 sides and the angle between them (SAS) or 2 angles and a side (ASA) fix 1 exact triangle. 3 angles only give the shape, not the size.' },
       mcStr('Two sides and the angle between them', ['Three angles only', 'One side and one angle', 'Two angles only']));
     var L = pick([5, 6, 7]), r1 = pick([4, 5]), r2 = pick([4, 5]);
     return mk({ tag: 'Constructing triangles', text: 'To construct a triangle with sides ' + L + ' cm, ' + r1 + ' cm and ' + r2 + ' cm, you draw the ' + L + ' cm base AB first. What do you draw next?', pic: arcPic(L, r1, r2),
       hints: ['You need a third corner that is ' + r1 + ' cm from A and ' + r2 + ' cm from B.', 'A compass draws a curve at a fixed distance from a point.'], explain: 'Set the compass to ' + r1 + ' cm and draw an arc from A. Then set it to ' + r2 + ' cm and draw an arc from B. Where the arcs cross is the third corner.' },
-      mcStr('Two arcs with a compass, one from each end of AB', ['A straight line at 90° to AB', 'A circle with AB as the diameter', 'Two lines at 60° from AB']));
+      mcStr('2 arcs with a compass, 1 from each end of AB', ['A straight line at 90° to AB', 'A circle with AB as the diameter', 'Two lines at 60° from AB']));
   }
   function gSolidKind() {
     var base = pick([['triangular', 3], ['square', 4], ['pentagonal', 5], ['hexagonal', 6]]), prism = Math.random() < 0.5, n = base[1], nm = base[0] + ' ' + (prism ? 'prism' : 'pyramid');
@@ -224,8 +224,8 @@
   function gSurveyQ() {
     var ts = [['school uniform', 'Do you agree that the awful school uniform should be changed?', 'What do you think about the school uniform?'], ['homework', 'Surely too much homework is bad for you, isn’t it?', 'How much time do you spend on homework each night?'],
       ['school lunches', 'Don’t you think the new lunch menu is brilliant?', 'How would you rate the new lunch menu: poor, fair, good or very good?']], t = pick(ts);
-    return mk({ tag: 'Survey questions', text: 'You are writing a questionnaire about <b>' + t[0] + '</b>. Which question is <b>fair</b> (not leading)?', hints: ['A leading question pushes people towards one answer. A fair question lets people give their own view.'],
-      explain: 'A fair question uses neutral words. The other question pushes the person towards one answer.' }, { options: shuffle([t[2], t[1]]), answer: t[2] });
+    return mk({ tag: 'Survey questions', text: 'You are writing a questionnaire about <b>' + t[0] + '</b>. Which question is <b>fair</b> (not leading)?', hints: ['A leading question pushes people towards 1 answer. A fair question lets people give their own view.'],
+      explain: 'A fair question uses neutral words. The other question pushes the person towards 1 answer.' }, { options: shuffle([t[2], t[1]]), answer: t[2] });
   }
   function tallyMarks(n) { var s = '', x = 0; for (var g = 0; g < Math.floor(n / 5); g++) { for (var i = 0; i < 4; i++) s += '<line x1="' + (x + i * 6) + '" y1="-10" x2="' + (x + i * 6) + '" y2="8" style="stroke:var(--fg);stroke-width:2"/>'; s += '<line x1="' + (x - 3) + '" y1="5" x2="' + (x + 21) + '" y2="-7" style="stroke:var(--fg);stroke-width:2"/>'; x += 34; } for (var j = 0; j < n % 5; j++) s += '<line x1="' + (x + j * 6) + '" y1="-10" x2="' + (x + j * 6) + '" y2="8" style="stroke:var(--fg);stroke-width:2"/>'; return s; }
   function gTally() {
@@ -235,7 +235,7 @@
     var text = kind === 'one' ? 'How many chose <b>' + cats[i] + '</b>?' : kind === 'total' ? 'How many people were asked <b>altogether</b>?' : 'How many <b>more</b> chose ' + cats[i] + ' than ' + cats[j] + '? (If fewer, give a negative number.)';
     var ans = kind === 'one' ? vals[i] : kind === 'total' ? tot : vals[i] - vals[j];
     return Q({ tag: 'Tally charts', text: 'Look at the tally chart. ' + text, pic: svg(300, 130, 'A tally chart for ' + cats.join(', '), s, 300), answer: String(ans),
-      hints: ['Each group of five is four lines with one line across them.', 'Count the groups of 5, then add the single lines.'], explain: kind === 'one' ? cats[i] + ' = ' + vals[i] + '.' : kind === 'total' ? vals.join(' + ') + ' = ' + tot + '.' : vals[i] + ' − ' + vals[j] + ' = ' + ans + '.' });
+      hints: ['Each group of 5 is 4 lines with 1 line across them.', 'Count the groups of 5, then add the single lines.'], explain: kind === 'one' ? cats[i] + ' = ' + vals[i] + '.' : kind === 'total' ? vals.join(' + ') + ' = ' + tot + '.' : vals[i] + ' − ' + vals[j] + ' = ' + ans + '.' });
   }
   function gTwoWay() {
     var a = rnd(5, 18), b = rnd(5, 18), c = rnd(5, 18), d = rnd(5, 18), rows = ['Boys', 'Girls'], cols = ['Walk', 'Bus'], v = [[a, b], [c, d]], hide = pick([[0, 0], [0, 1], [1, 0], [1, 1]]);
@@ -244,7 +244,7 @@
     for (i = 0; i < 2; i++) { s += txt(10, 50 + i * 28, rows[i], 13, 'start', ';font-weight:700'); for (j = 0; j < 2; j++) s += txt(cx[j], 50 + i * 28, (i === hide[0] && j === hide[1]) ? '?' : String(v[i][j]), 14, 'middle', (i === hide[0] && j === hide[1]) ? ';font-weight:700;fill:var(--accent)' : ''); s += txt(cx[2], 50 + i * 28, String(v[i][0] + v[i][1]), 14); }
     s += txt(10, 106, 'Total', 13, 'start', ';font-weight:700') + txt(cx[0], 106, String(a + c), 14) + txt(cx[1], 106, String(b + d), 14) + txt(cx[2], 106, String(a + b + c + d), 14);
     s += '<line x1="6" y1="30" x2="260" y2="30" style="stroke:var(--line);stroke-width:1.5"/><line x1="6" y1="92" x2="260" y2="92" style="stroke:var(--line);stroke-width:1.5"/><line x1="140" y1="6" x2="140" y2="116" style="stroke:var(--line);stroke-width:1" opacity="0"/>';
-    return Q({ tag: 'Two-way tables', text: 'The two-way table shows how pupils travel to school. Find the <b>missing number</b> (the ?).', pic: svg(270, 120, 'A two-way table of boys and girls against walk and bus with one missing value', s, 300), answer: String(v[hide[0]][hide[1]]),
+    return Q({ tag: 'Two-way tables', text: 'The two-way table shows how pupils travel to school. Find the <b>missing number</b> (the ?).', pic: svg(270, 120, 'A 2-way table of boys and girls against walk and bus with 1 missing value', s, 300), answer: String(v[hide[0]][hide[1]]),
       hints: ['Each row adds up to its total, and each column adds up to its total.', 'Use the row or the column that has the ? and only one other number missing.'], explain: 'Use the totals. The missing number is ' + v[hide[0]][hide[1]] + '.' });
   }
   function gTrend() {
@@ -255,11 +255,11 @@
     vals.forEach(function (v, ii) { var x = 60 + ii * 50, y = 120 - v / 100 * 100; pts.push(x + ',' + y); s += '<circle cx="' + x + '" cy="' + y + '" r="4" style="fill:var(--accent)"/>' + txt(x, 138, months[ii], 11); });
     s += '<polyline points="' + pts.join(' ') + '" style="fill:none;stroke:var(--accent);stroke-width:2.5"/>';
     var names = { up: 'It rises steadily', down: 'It falls steadily', peak: 'It rises, then falls', dip: 'It falls, then rises' };
-    return mk({ tag: 'Trends in graphs', text: 'The line graph shows the number of ice creams sold each month. Which sentence <b>describes the trend</b>?', pic: svg(340, 148, 'A line graph over six months. ' + names[shape], s, 340), hints: ['Follow the line from left to right. Is it going up, going down, or changing direction?'],
+    return mk({ tag: 'Trends in graphs', text: 'The line graph shows the number of ice creams sold each month. Which sentence <b>describes the trend</b>?', pic: svg(340, 148, 'A line graph over 6 months. ' + names[shape], s, 340), hints: ['Follow the line from left to right. Is it going up, going down, or changing direction?'],
       explain: names[shape] + '.' }, mcStr(names[shape], Object.keys(names).filter(function (x) { return x !== shape; }).map(function (x) { return names[x]; })));
   }
   function gMislead() {
-    var items = [['A bar chart’s vertical axis starts at 80 instead of 0.', 'Small differences look much bigger than they are'], ['A graph has no labels or title on its axes.', 'Nobody can tell what the numbers mean'], ['A pictogram uses a big picture for one value and a tiny picture for another.', 'The sizes of the pictures make the values look different from the data'],
+    var items = [['A bar chart’s vertical axis starts at 80 instead of 0.', 'Small differences look much bigger than they are'], ['A graph has no labels or title on its axes.', 'Nobody can tell what the numbers mean'], ['A pictogram uses a big picture for 1 value and a tiny picture for another.', 'The sizes of the pictures make the values look different from the data'],
       ['A line graph squashes the scale so a big rise looks flat.', 'A real change looks smaller than it is']], t = pick(items);
     return mk({ tag: 'Misleading graphs', text: t[0] + ' Why can this be <b>misleading</b>?', hints: ['Think about what a reader sees at a glance compared with the real numbers.'], explain: t[1] + '. A good graph has a fair scale, clear labels and a title.' },
       mcStr(t[1], items.filter(function (x) { return x !== t; }).map(function (x) { return x[1]; })));
@@ -317,7 +317,7 @@
     if (p === q) q += 1; if (q === 0) q = 1;
     var b = -(p + q), c = p * q, lo = Math.min(p, q), hi = Math.max(p, q), f = function (a) { return 'x = ' + (a < 0 ? M + (-a) : a); };
     var ans = f(lo) + ' or ' + f(hi);
-    return mk({ tag: 'Solving quadratics', text: 'Solve <b>' + quad(b, c) + ' = 0</b>.', hints: ['Factorise first: find two numbers that multiply to ' + c + ' and add to ' + b + '.', 'Then set each bracket equal to 0.'], explain: quad(b, c) + ' = (x ' + (-p >= 0 ? '+ ' + (-p) : M + ' ' + p) + ')(x ' + (-q >= 0 ? '+ ' + (-q) : M + ' ' + q) + ') = 0, so ' + ans + '.' },
+    return mk({ tag: 'Solving quadratics', text: 'Solve <b>' + quad(b, c) + ' = 0</b>.', hints: ['Factorise first: find 2 numbers that multiply to ' + c + ' and add to ' + b + '.', 'Then set each bracket equal to 0.'], explain: quad(b, c) + ' = (x ' + (-p >= 0 ? '+ ' + (-p) : M + ' ' + p) + ')(x ' + (-q >= 0 ? '+ ' + (-q) : M + ' ' + q) + ') = 0, so ' + ans + '.' },
       mcStr(ans, [f(-lo) + ' or ' + f(-hi), f(lo) + ' or ' + f(-hi), f(lo + 1) + ' or ' + f(hi - 1)]));
   }
 

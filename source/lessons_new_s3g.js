@@ -25,15 +25,15 @@
     ]),
     SC('Exact answers', 'Example 3: in terms of π', [
       S("Sometimes a question asks for the answer in terms of pi. This means leave pi in the answer, and do not use a calculator for it. It is the exact answer. A circle has radius 3. The circumference is 2 times pi times 3. 6 pi. The area is pi times 9. 9 pi.", E('C = 2π(3) = 6π', 'g') + E('A = π(3²) = 9π', 'g')),
-      S("Write the number first, then pi. Six pi, not pi six. Exact answers are neat, and they have no rounding error.", V.rule('Number first, then π.'))
+      S("Write the number first, then pi. 6 pi, not pi 6. Exact answers are neat, and they have no rounding error.", V.rule('Number first, then π.'))
     ]),
     SC('Semicircle', 'Example 4: a half circle with diameter 10', [
-      S("A semicircle is half a circle. Its perimeter has two parts. The curved edge, which is half of the circumference. And the straight edge across the diameter. Do not forget that one.", V.list(['Curved edge: ½ × πd', 'Straight edge: d'])),
+      S("A semicircle is half a circle. Its perimeter has 2 parts. The curved edge, which is half of the circumference. And the straight edge across the diameter. Do not forget that one.", V.list(['Curved edge: ½ × πd', 'Straight edge: d'])),
       S("Curved part: half of pi times 10, which is 5 pi, about 15.7. Straight part: 10. Add them. 5 pi plus 10, about 25.7 centimetres.", E('½ × π × 10 = 5π ≈ 15.7') + g('Perimeter = 5π + 10 ≈ 25.7 cm')),
       S("The area of a semicircle with diameter 10. The radius is 5. Half of pi times 25. That is 12 and a half pi, about 39.3.", E('A = ½ × π × 5² = 12.5π') + g('≈ 39.3 cm²'))
     ]),
     SC('Quarter circle', 'Example 5: radius 8', [
-      S("A quarter circle has a curved edge that is a quarter of the circumference, and 2 straight edges, each a radius. The full circumference is 2 pi times 8, 16 pi. A quarter of that is 4 pi, about 12.57. The two straight edges are 8 plus 8, 16.", E('¼ × 16π = 4π ≈ 12.57') + E('8 + 8 = 16')),
+      S("A quarter circle has a curved edge that is a quarter of the circumference, and 2 straight edges, each a radius. The full circumference is 2 pi times 8, 16 pi. A quarter of that is 4 pi, about 12.57. The 2 straight edges are 8 plus 8, 16.", E('¼ × 16π = 4π ≈ 12.57') + E('8 + 8 = 16')),
       S("Perimeter is about 28.6. The area is a quarter of pi times 64. That is 16 pi, about 50.3.", g('Perimeter ≈ 28.6 cm') + g('Area = 16π ≈ 50.3 cm²'))
     ]),
     SC('A wheel', 'Example 6: how many turns?', [
@@ -49,9 +49,9 @@
       S("A pizza with diameter 30 centimetres has area pi times 15 squared, 225 pi, about 707 square centimetres. A pizza of diameter 40 has area pi times 400, about 1,257. It is only a third bigger across, but the area is nearly 2 times bigger. That is why bigger pizzas can be better value.", g('30 cm: ≈ 707 cm²') + g('40 cm: ≈ 1257 cm²'))
     ]),
     L.turn("Your turn! Number one. Find the circumference of a circle with diameter 14 centimetres, to 1 decimal place. Pause and try it.", E('C = π × 14'), "Pi times 14 is 44.0. About 44 centimetres.", g('C ≈ 44.0 cm')),
-    L.turn("Your turn! Number two. Find the area of a circle with radius two, in terms of pi. Pause and try it.", E('A = π × 2²'), "Pi times 4. 4 pi.", g('A = 4π cm²')),
-    L.turn("Your turn! Number three. Find the perimeter of a semicircle with diameter eight, to one decimal place. Pause and try it.", E('4π + 8'), "The curved part is 4 pi, 12.6. Plus the straight edge, 8. 20.6.", g('≈ 20.6 cm')),
-    L.rec('How do you find the circumference and area of a circle?', "The circumference is pi times the diameter, or two pi r. The area is pi r squared, and the radius is half the diameter. Leave pi in the answer when asked for an exact answer. For semicircles and quarter circles, take the fraction of the circle for the curved edge, and add the straight edges.", ['C = πd = 2πr', 'A = πr²', 'Halve the diameter for r', 'Add the straight edges'])
+    L.turn("Your turn! Number two. Find the area of a circle with radius 2, in terms of pi. Pause and try it.", E('A = π × 2²'), "Pi times 4. 4 pi.", g('A = 4π cm²')),
+    L.turn("Your turn! Number three. Find the perimeter of a semicircle with diameter 8, to 1 decimal place. Pause and try it.", E('4π + 8'), "The curved part is 4 pi, 12.6. Plus the straight edge, 8. 20.6.", g('≈ 20.6 cm')),
+    L.rec('How do you find the circumference and area of a circle?', "The circumference is pi times the diameter, or 2 pi r. The area is pi r squared, and the radius is half the diameter. Leave pi in the answer when asked for an exact answer. For semicircles and quarter circles, take the fraction of the circle for the curved edge, and add the straight edges.", ['C = πd = 2πr', 'A = πr²', 'Halve the diameter for r', 'Add the straight edges'])
   ]);
 
   N('How do you work backwards from the circumference or area of a circle?', 'how to find the radius or diameter when the circumference or area is given.', [
@@ -97,7 +97,7 @@
 
   N('How do you find arc length and sector area?', 'how to find part of the circumference or area using a fraction of the circle.', [
     SC('Sectors and arcs', 'Start with the basics', [
-      S("Cut a slice of pizza from the centre. The slice is called a sector. The curved edge of the slice is called an arc. The two straight edges are radii.", V.list(['Sector: a slice of the circle', 'Arc: the curved edge', 'Two radii: the straight edges'])),
+      S("Cut a slice of pizza from the centre. The slice is called a sector. The curved edge of the slice is called an arc. The 2 straight edges are radii.", V.list(['Sector: a slice of the circle', 'Arc: the curved edge', '2 radii: the straight edges'])),
       S("The big idea is that a sector is a fraction of the whole circle. The fraction is the angle at the centre divided by 360, because a full circle is 360 degrees.", E('Fraction = angle ÷ 360', 'g'))
     ]),
     SC('Fractions', 'Example 1: from angles to fractions', [
@@ -116,7 +116,7 @@
       S("The area of the whole circle is pi times 64. 3 eighths of that is 24 pi. About 75.4.", E('3/8 × 64π = 24π') + g('Area ≈ 75.40'))
     ]),
     SC('Perimeter of a sector', 'Example 5: do not forget the radii', [
-      S("The perimeter of the sector in Example two is the arc, plus the two straight edges. The arc is 2 pi, about 6.28. The two radii are 6 plus 6, 12. The perimeter is about 18.28 centimetres.", E('Arc ≈ 6.28') + E('Radii = 6 + 6 = 12') + g('Perimeter ≈ 18.28 cm'))
+      S("The perimeter of the sector in Example two is the arc, plus the 2 straight edges. The arc is 2 pi, about 6.28. The 2 radii are 6 plus 6, 12. The perimeter is about 18.28 centimetres.", E('Arc ≈ 6.28') + E('Radii = 6 + 6 = 12') + g('Perimeter ≈ 18.28 cm'))
     ]),
     SC('Backwards', 'Example 6: finding the angle', [
       S("An arc of length 5 pi is part of a circle with radius 12. What angle is at the centre? First the whole circumference. 2 pi times 12, 24 pi. The fraction is 5 pi over 24 pi, which is 5 twenty-fourths.", E('C = 24π') + E('Fraction = 5π/24π = 5/24')),
@@ -126,14 +126,14 @@
       S("A pizza has radius 15 centimetres, and is cut into 8 equal slices. Each slice has angle 45 degrees, 1 eighth. The whole pizza has area pi times 225. 1 eighth of that is about 88.4 square centimetres per slice.", E('225π ÷ 8 ≈ 88.4') + g('1 slice ≈ 88.4 cm²'))
     ]),
     SC('Watch out!', 'Common mistakes, with examples', [
-      S("Mistake one. Forgetting the two straight edges when asked for the perimeter of a sector. A sector has radius 6 and angle 60. Wrong: the perimeter is just the arc, 6.28. But the perimeter goes all the way around the slice, including both straight edges. Add 12. 18.28.", r('Perimeter = 6.28  ✗') + g('6.28 + 6 + 6 = 18.28  ✓')),
+      S("Mistake one. Forgetting the 2 straight edges when asked for the perimeter of a sector. A sector has radius 6 and angle 60. Wrong: the perimeter is just the arc, 6.28. But the perimeter goes all the way around the slice, including both straight edges. Add 12. 18.28.", r('Perimeter = 6.28  ✗') + g('6.28 + 6 + 6 = 18.28  ✓')),
       S("Mistake two. Using the area formula for the arc, or the other way round. Radius 6 and angle 60. Wrong: arc equals a sixth of pi r squared, which is a sixth of 36 pi, 6 pi, about 18.85. That is the sector area. The arc is a sixth of the circumference, a sixth of 12 pi, 2 pi, 6.28.", r('Arc = 1/6 × π × 6² ≈ 18.85  ✗') + g('Arc = 1/6 × 2π × 6 ≈ 6.28  ✓')),
       S("Mistake three. Using the diameter as the radius. A pizza has diameter 30. Wrong: use r equals 30, area of a slice is 1 eighth of pi times 900, which is 354. Halve the diameter first. r is 15. 1 eighth of 225 pi is 88.4.", r('r = 30  ✗  → 353.4') + g('r = 15  ✓  → 88.4'))
     ]),
     L.turn("Your turn! Number one. What fraction of a circle is a sector with angle 45 degrees? Pause and try it.", E('45/360'), "One eighth.", g('1/8')),
     L.turn("Your turn! Number two. Find the arc length for radius 10 and angle 90 degrees, in terms of pi. Pause and try it.", E('1/4 × 2π × 10'), "A quarter of 20 pi is 5 pi.", g('5π cm')),
-    L.turn("Your turn! Number three. Find the area of a semicircle sector with radius four, in terms of pi. Pause and try it.", E('180°, r = 4'), "A half of pi times 16. 8 pi.", g('8π cm²')),
-    L.rec('How do you find arc length and sector area?', "A sector is a fraction of a circle, the angle divided by 360. The arc length is that fraction of the circumference. The sector area is that fraction of the area. The perimeter of a sector also includes the two radii. To find an angle, find the fraction first.", ['Fraction = angle ÷ 360', 'Arc: fraction of 2πr', 'Area: fraction of πr²', 'Perimeter: add the radii'])
+    L.turn("Your turn! Number three. Find the area of a semicircle sector with radius 4, in terms of pi. Pause and try it.", E('180°, r = 4'), "A half of pi times 16. 8 pi.", g('8π cm²')),
+    L.rec('How do you find arc length and sector area?', "A sector is a fraction of a circle, the angle divided by 360. The arc length is that fraction of the circumference. The sector area is that fraction of the area. The perimeter of a sector also includes the 2 radii. To find an angle, find the fraction first.", ['Fraction = angle ÷ 360', 'Arc: fraction of 2πr', 'Area: fraction of πr²', 'Perimeter: add the radii'])
   ]);
 
   L.use(850, ['How do you find the circumference and area of a circle, exactly and as a decimal?', 'How do you work backwards from the circumference or area of a circle?', 'How do you find arc length and sector area?', 'Circle theorems', 'Chords and tangent lengths', 'Circles, similarity and solids']);
@@ -141,7 +141,7 @@
   /* ================= 851 ================= */
   N('How do you use scale drawings and map scales?', 'how to read a scale such as 1 : 50 000 and change between drawing lengths and real lengths.', [
     SC('Scales', 'Start with the basics', [
-      S("A scale drawing shows a real thing at a different size. A map shows a whole town on one page. An architect's plan shows a house on a sheet of paper. The scale tells us how the drawing and the real thing compare.", V.note('Same shape, different size')),
+      S("A scale drawing shows a real thing at a different size. A map shows a whole town on 1 page. An architect's plan shows a house on a sheet of paper. The scale tells us how the drawing and the real thing compare.", V.note('Same shape, different size')),
       S("A scale is written as a ratio. 1 to 50,000 means that one unit on the map stands for 50,000 of the same unit in real life. 1 centimetre on the map is 50,000 centimetres on the ground.", E('1 : 50 000', 'b') + V.rule('1 cm on the map = 50 000 cm real.'))
     ]),
     SC('Map to real', 'Example 1: 3 cm on a 1 : 50 000 map', [
@@ -184,7 +184,7 @@
 
   N('How do you use area and volume scale factors for similar shapes?', 'how lengths, areas and volumes change when a shape is enlarged, and how to work backwards.', [
     SC('Similar shapes', 'Start with the basics', [
-      S("Two shapes are similar if one is an enlargement of the other. They have the same shape, but different sizes. The linear scale factor tells us how many times bigger every length is. If a length of two becomes six, the scale factor is three.", E('Scale factor k = new length ÷ old length', 'g')),
+      S("2 shapes are similar if 1 is an enlargement of the other. They have the same shape, but different sizes. The linear scale factor tells us how many times bigger every length is. If a length of 2 becomes 6, the scale factor is 3.", E('Scale factor k = new length ÷ old length', 'g')),
       S("The big question of this lesson is what happens to the area and the volume. They do not grow in the same way as the lengths.", V.note('Lengths, areas and volumes grow differently'))
     ]),
     SC('Area', 'Example 1: k = 3', [
@@ -206,7 +206,7 @@
     ]),
     SC('Working backwards', 'Example 5: from areas to k', [
       S("2 similar shapes have areas 20 and 45 square centimetres. Find the linear scale factor. Step one. The area scale factor is 45 over 20, which is 9 over 4. Step two. Take the square root to get the linear factor. The square root of 9 over 4 is 3 over 2.", E('45 ÷ 20 = 9/4') + g('k = √(9/4) = 3/2')),
-      S("So the lengths of the bigger shape are one and a half times the lengths of the smaller.", V.note('Lengths ×1.5'))
+      S("So the lengths of the bigger shape are 1 and a half times the lengths of the smaller.", V.note('Lengths ×1.5'))
     ]),
     SC('From volumes', 'Example 6: cube roots', [
       S("2 similar solids have volumes 24 and 81. Find the length scale factor. The volume scale factor is 81 over 24, which is 27 over 8. Take the cube root. The cube root of 27 is 3. The cube root of 8 is 2. So k is 3 over 2.", E('81 ÷ 24 = 27/8') + g('k = ∛(27/8) = 3/2'))
@@ -216,22 +216,22 @@
     ]),
     SC('Watch out!', 'Common mistakes, with examples', [
       S("Mistake one. Using the length scale factor for the area. A shape has area 8, and is enlarged by scale factor 3. Wrong: 8 times 3, 24. That would only be right if we only stretched in 1 direction. The area is multiplied by 3 squared, 9. 8 times 9 is 72.", r('8 × 3 = 24  ✗') + g('8 × 3² = 72  ✓')),
-      S("Mistake two. Not square rooting when going from an area ratio. Two similar shapes have areas in the ratio nine to one. Wrong: the lengths are in the ratio nine to one. The area ratio is the square of the length ratio. So the lengths are in the ratio three to one, the square root of nine.", r('Lengths 9 : 1  ✗') + g('Lengths √9 : √1 = 3 : 1  ✓')),
+      S("Mistake two. Not square rooting when going from an area ratio. 2 similar shapes have areas in the ratio 9 to 1. Wrong: the lengths are in the ratio 9 to 1. The area ratio is the square of the length ratio. So the lengths are in the ratio 3 to 1, the square root of 9.", r('Lengths 9 : 1  ✗') + g('Lengths √9 : √1 = 3 : 1  ✓')),
       S("Mistake three. Square rooting a volume ratio. Volumes are in the ratio 8 to 1. Wrong: the length ratio is the square root of 8, about 2.8. For volumes we use the cube root. The cube root of 8 is 2. The lengths are in the ratio 2 to 1.", r('√8 ≈ 2.83  ✗') + g('∛8 = 2  ✓'))
     ]),
     SC('In real life', 'Why giants cannot exist', [
       S("A person twice as tall has 4 times the skin area, but 8 times the volume, and so about 8 times the weight. Bones scale with area, but weight scales with volume. This is why a human 10 times taller would break their own legs. Area and volume scale factors explain real limits in nature.", V.note('Weight grows as k³, bones as k²'))
     ]),
     L.turn("Your turn! Number one. A shape has area 10. It is enlarged with scale factor 4. What is the new area? Pause and try it.", E('10 × 4²'), "4 squared is 16. 10 times 16 is 160.", g('160')),
-    L.turn("Your turn! Number two. 2 similar solids have volumes 8 and 64. What is the length scale factor? Pause and try it.", E('64 ÷ 8 = 8'), "The volume factor is eight. The cube root of eight is two.", g('k = 2')),
-    L.turn("Your turn! Number three. 2 similar shapes have areas in the ratio 16 to 25. What is the ratio of their lengths? Pause and try it.", E('16 : 25'), "Square root both. Four to five.", g('4 : 5')),
+    L.turn("Your turn! Number two. 2 similar solids have volumes 8 and 64. What is the length scale factor? Pause and try it.", E('64 ÷ 8 = 8'), "The volume factor is 8. The cube root of 8 is 2.", g('k = 2')),
+    L.turn("Your turn! Number three. 2 similar shapes have areas in the ratio 16 to 25. What is the ratio of their lengths? Pause and try it.", E('16 : 25'), "Square root both. 4 to 5.", g('4 : 5')),
     L.rec('How do you use area and volume scale factors?', "For similar shapes with length scale factor k, the area scale factor is k squared and the volume scale factor is k cubed. To go from an area ratio to a length ratio, take the square root. From a volume ratio, take the cube root.", ['Length: k', 'Area: k²', 'Volume: k³', 'Backwards: √ or ∛'])
   ]);
 
   N('How do you measure and calculate with bearings?', 'how to give directions as three-figure bearings, find back bearings and solve journey problems.', [
     SC('Bearings', 'Start with the basics', [
-      S("A bearing is a way of giving a direction, as an angle. It is always measured from north, and always measured clockwise. It is always written with three figures.", V.list(['From north', 'Clockwise', 'Three figures'])),
-      S("North is zero zero zero degrees. East is zero nine zero. South is one eight zero. West is two seven zero. Between them, the angles fill in. North east is zero four five.", V.tbl([['North', '000°'], ['East', '090°'], ['South', '180°'], ['West', '270°']], ['Direction', 'Bearing']))
+      S("A bearing is a way of giving a direction, as an angle. It is always measured from north, and always measured clockwise. It is always written with 3 figures.", V.list(['From north', 'Clockwise', 'Three figures'])),
+      S("North is 0 0 0 degrees. East is 0 9 0. South is 1 8 0. West is 2 7 0. Between them, the angles fill in. North east is 0 4 5.", V.tbl([['North', '000°'], ['East', '090°'], ['South', '180°'], ['West', '270°']], ['Direction', 'Bearing']))
     ]),
     SC('Reading', 'Example 1: what the bearing means', [
       S("Bearing 1 3 0. Stand at the point. Face north. Turn clockwise through a hundred and 30 degrees. That is a direction a little east of south. That is the way you are looking.", E('130°: past east (090°), before south (180°)'))
@@ -254,19 +254,19 @@
       S("The east distance is the opposite side. 10 times sine of 60. That is 8.66 kilometres. Check with Pythagoras. 5 squared plus 8.66 squared is 25 plus 75, 100. Square root, 10. Correct.", E('East = 10 × sin 60° ≈ 8.66 km') + E('5² + 8.66² ≈ 100 ✓'))
     ]),
     SC('Drawing', 'Example 6: scale drawing', [
-      S("To draw a bearing, place a protractor at the point, with zero pointing north. Measure the angle clockwise. Mark it, and draw a line of the right length at the chosen scale. Always draw a north line at every point first.", V.rule('Draw a north line at every point.'))
+      S("To draw a bearing, place a protractor at the point, with 0 pointing north. Measure the angle clockwise. Mark it, and draw a line of the right length at the chosen scale. Always draw a north line at every point first.", V.rule('Draw a north line at every point.'))
     ]),
     SC('Watch out!', 'Common mistakes, with examples', [
-      S("Mistake one. Measuring from east, as in graphs, instead of from north. Due east is a bearing of zero nine zero. Wrong: calling due east zero degrees. Zero degrees is north. A ship going east is on bearing zero nine zero, not zero zero zero.", r('East = 000°  ✗') + g('East = 090°  ✓')),
+      S("Mistake one. Measuring from east, as in graphs, instead of from north. Due east is a bearing of 0 9 0. Wrong: calling due east 0 degrees. 0 degrees is north. A ship going east is on bearing 0 9 0, not 0 0 0.", r('East = 000°  ✗') + g('East = 090°  ✓')),
       S("Mistake two. Not writing 3 figures. A bearing of 45 degrees is written 0 4 5. Wrong: 45. And 7 degrees is 0 0 7. Wrong: 7. Examiners expect 3 figures.", r('45°  ✗   7°  ✗') + g('045°  ✓   007°  ✓')),
       S("Mistake three. Not reducing a back bearing. The bearing of B from A is 2 5 0. Wrong: add 1 80 to get 4 3 0, and give that as the answer. Bearings go up to 359. Subtract 360. 70. 0 7 0. Or, since it is over 1 80, just subtract 1 80. 70. Same answer.", r('250 + 180 = 430°  ✗') + g('430 − 360 = 070°  ✓'))
     ]),
     SC('In real life', 'Ships and planes', [
-      S("Ships, aircraft and walkers use bearings. A pilot is told to fly on a heading of two four zero. Air traffic control can then predict where the plane will be. Bearings use the same idea as the compass on a phone.", V.note('Pilots, sailors, walkers'))
+      S("Ships, aircraft and walkers use bearings. A pilot is told to fly on a heading of 2 4 0. Air traffic control can then predict where the plane will be. Bearings use the same idea as the compass on a phone.", V.note('Pilots, sailors, walkers'))
     ]),
     L.turn("Your turn! Number one. What is the back bearing of a line with bearing 60? Pause and try it.", E('060°'), "60 plus 1 80 is 2 4 0.", g('240°')),
     L.turn("Your turn! Number two. Write a direction of 80 degrees as a 3-figure bearing. Pause and try it.", E('80°'), "Zero eight zero.", g('080°')),
-    L.turn("Your turn! Number three. A walker goes six kilometres on bearing zero nine zero, then eight kilometres on bearing one eight zero. How far is she from the start? Pause and try it.", E('6² + 8²'), "East, then south, a right angle. 36 plus 64 is 100. 10 kilometres.", g('10 km')),
+    L.turn("Your turn! Number three. A walker goes 6 kilometres on bearing 0 9 0, then 8 kilometres on bearing 1 8 0. How far is she from the start? Pause and try it.", E('6² + 8²'), "East, then south, a right angle. 36 plus 64 is 100. 10 kilometres.", g('10 km')),
     L.rec('How do you measure and calculate with bearings?', "A bearing is an angle measured clockwise from north, written with 3 figures. The back bearing is found by adding or subtracting 180. For journeys, draw a north line at every point, make a triangle, and use Pythagoras or trigonometry. Sine gives the east distance and cosine gives the north distance from a bearing.", ['Clockwise from north', 'Three figures', 'Back bearing ±180', 'North and east: cos and sin'])
   ]);
 

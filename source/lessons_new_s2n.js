@@ -5,10 +5,10 @@
   var H = BT.fxh, E = H.E, M = H.M, T = H.T, LS = H.LS, L = BT.L, F = BT.F;
   var h = function (x) { return 'h|' + x; };
 
-  LS('Pythagoras: finding the hypotenuse', 'how to find the longest side of a right-angled triangle when you know the two shorter sides.', 'Finding the hypotenuse',
+  LS('Pythagoras: finding the hypotenuse', 'how to find the longest side of a right-angled triangle when you know the 2 shorter sides.', 'Finding the hypotenuse',
     E('The theorem',
-      ["In a right-angled triangle, the longest side is called the hypotenuse. It is opposite the right angle. Pythagoras' theorem says the square of the hypotenuse equals the sum of the squares of the other two sides.", [h(F.rt({ a: 'a', b: 'b', c: 'c', hi: 'c' })), 'c² = a² + b²', 'c is the hypotenuse']],
-      ["To find the hypotenuse, square the two shorter sides and add. Then take the square root. The answer must be longer than both of the other sides.", ['Square, add, square root', 'Hypotenuse is the longest side']]),
+      ["In a right-angled triangle, the longest side is called the hypotenuse. It is opposite the right angle. Pythagoras' theorem says the square of the hypotenuse equals the sum of the squares of the other 2 sides.", [h(F.rt({ a: 'a', b: 'b', c: 'c', hi: 'c' })), 'c² = a² + b²', 'c is the hypotenuse']],
+      ["To find the hypotenuse, square the 2 shorter sides and add. Then take the square root. The answer must be longer than both of the other sides.", ['Square, add, square root', 'Hypotenuse is the longest side']]),
     [E('A whole-number answer',
         ["A right-angled triangle has shorter sides of 3 and 4 centimetres. Find the hypotenuse. 3 squared is 9. 4 squared is 16. 9 plus 16 is 25. The square root of 25 is 5 centimetres.", [h(F.rt({ a: '4 cm', b: '3 cm', c: 'c', hi: 'c' })), 'c² = 3² + 4²', 'c² = 9 + 16 = 25', 'g|c = √25 = 5 cm']]),
       E('Not a whole number',
@@ -19,13 +19,13 @@
         ["Is it sensible? 13 is longer than 12 and longer than 5. The hypotenuse is always the longest side, so the answer is sensible.", ['13 > 12 and 13 > 5', 'g|Sensible ✓']])],
     [M('Forgetting the square root', "Mistake one: stopping at c squared. The sum of the squares gives c squared, so take the square root at the end.", 'c = 25 ✗', 'c = √25 = 5 ✓'),
      M('Adding the sides', "Mistake two: adding the sides instead of squaring first. 3 plus 4 is not the same as the square root of 3 squared plus 4 squared.", 'c = 3 + 4 = 7 ✗', 'c = √(9 + 16) = 5 ✓')],
-    ["Builders check corners are square with the three, four, five rule. If one side is three, another is four, and the diagonal is exactly five, the corner is a right angle. A TV screen's diagonal is found the same way.", ['3, 4, 5 triangle', '6, 8, 10 also works']],
+    ["Builders check corners are square with the 3, 4, 5 rule. If 1 side is 3, another is 4, and the diagonal is exactly 5, the corner is a right angle. A TV screen's diagonal is found the same way.", ['3, 4, 5 triangle', '6, 8, 10 also works']],
     [T('A right-angled triangle has shorter sides of 6 cm and 8 cm. Find the hypotenuse.', "6 squared is 36. 8 squared is 64. The sum is 100. The square root is 10 centimetres.", ['c² = 6² + 8²', 'c² = 36 + 64 = 100', 'c = √100'], '10 cm', F.rt({ a: '8 cm', b: '6 cm', c: 'c', hi: 'c' })),
      T('A rectangle is 9 cm by 12 cm. Find the length of its diagonal.', "The diagonal is the hypotenuse of a right-angled triangle. 9 squared is 81. 12 squared is 144. The sum is 225. The square root is 15 centimetres.", ['d² = 9² + 12²', 'd² = 81 + 144 = 225', 'd = √225'], '15 cm'),
      T('The shorter sides of a right-angled triangle are 4 m and 7 m. Find the hypotenuse to 1 decimal place.', "4 squared is 16. 7 squared is 49. The sum is 65. The square root of 65 is 8.1 metres.", ['c² = 4² + 7²', 'c² = 16 + 49 = 65', 'c = √65'], '8.1 m')],
     ["Square. Add. Square root. The hypotenuse is the longest.", ['c² = a² + b²', 'Square root at the end', 'Check c is longest']]);
 
-  LS('Pythagoras: finding a shorter side', 'how to find one of the two shorter sides when you know the hypotenuse and the other side.', 'Finding a shorter side',
+  LS('Pythagoras: finding a shorter side', 'how to find one of the 2 shorter sides when you know the hypotenuse and the other side.', 'Finding a shorter side',
     E('Subtract instead of add',
       ["When you know the hypotenuse and want a shorter side, you subtract. Start from c squared equals a squared plus b squared. Then a squared equals c squared minus b squared.", ['a² = c² − b²', 'Square, SUBTRACT, square root', 'Answer must be shorter than c']]),
     [E('A shorter side',
@@ -46,7 +46,7 @@
 
   LS('Is the triangle right-angled?', 'how to use Pythagoras\' theorem to test whether a triangle has a right angle.', 'Is the triangle right-angled?',
     E('The test',
-      ["To test a triangle, take the longest side and square it. Then add the squares of the other two sides. If the two answers are equal, the triangle is right-angled. If not, it is not.", ['Longest² = sum of the other squares?', 'Equal → right-angled', 'Not equal → not right-angled']]),
+      ["To test a triangle, take the longest side and square it. Then add the squares of the other 2 sides. If the 2 answers are equal, the triangle is right-angled. If not, it is not.", ['Longest² = sum of the other squares?', 'Equal → right-angled', 'Not equal → not right-angled']]),
     [E('A right-angled triangle',
         ["Is a triangle with sides of 5, 12 and 13 centimetres right-angled? The longest side is 13. 13 squared is 169. 5 squared plus 12 squared is 25 plus 144, which is 169. They are equal, so yes.", ['13² = 169', '5² + 12² = 25 + 144 = 169', 'g|Equal → right-angled ✓']]),
       E('Not right-angled',
@@ -55,29 +55,29 @@
         ["If the longest side squared is less than the sum of the other squares, all angles are acute. If it is more, the triangle has an obtuse angle. For 6, 7 and 9, 81 is less than 85, so the triangle is acute.", ['81 < 85', 'g|All angles acute']]),
       E('Checking a corner',
         ["A builder measures a corner. 1 wall is 90 centimetres, the other is 120, and the diagonal is 150. Is the corner square? 90 squared is 8,100. 120 squared is 14,400. They add to 22,500. 150 squared is 22,500. Equal, so yes.", ['90² + 120² = 8100 + 14 400 = 22 500', '150² = 22 500', 'g|Square corner ✓']])],
-    [M('Using the wrong side', "Mistake one: squaring a short side on its own. The test must compare the longest side squared with the other two squares added.", '5² = 25 vs 12² + 13² ✗', '13² vs 5² + 12² ✓'),
-     M('Only comparing the sides', "Mistake two: guessing from the side lengths without calculating. Sides like six, seven and nine look similar to a right-angled triangle but fail the test.", '6, 7, 9 looks right-angled ✗', '81 ≠ 85, not right-angled ✓')],
+    [M('Using the wrong side', "Mistake one: squaring a short side on its own. The test must compare the longest side squared with the other 2 squares added.", '5² = 25 vs 12² + 13² ✗', '13² vs 5² + 12² ✓'),
+     M('Only comparing the sides', "Mistake two: guessing from the side lengths without calculating. Sides like 6, 7 and 9 look similar to a right-angled triangle but fail the test.", '6, 7, 9 looks right-angled ✗', '81 ≠ 85, not right-angled ✓')],
     ["Surveyors and carpenters test corners with a cord measuring 3, 4 and 5 units. Because 3 squared plus 4 squared equals 5 squared, the corner is exactly 90 degrees.", ['9 + 16 = 25', '3, 4, 5 → right angle']],
     [T('Is a triangle with sides 8 cm, 15 cm and 17 cm right-angled?', "The longest is 17. 17 squared is 289. 8 squared plus 15 squared is 64 plus 225, which is 289. Equal, so yes.", ['17² = 289', '8² + 15² = 64 + 225 = 289', 'Equal'], 'Yes, right-angled'),
      T('Is a triangle with sides 7 cm, 10 cm and 12 cm right-angled?', "The longest is 12. 12 squared is 144. 7 squared plus 10 squared is 49 plus 100, which is 149. Not equal, so no.", ['12² = 144', '7² + 10² = 49 + 100 = 149', 'Not equal'], 'No'),
      T('A triangle has sides 9, 40 and 41. Is it right-angled?', "The longest is 41. 41 squared is 1,681. 9 squared plus 40 squared is 81 plus 1,600, 1,681. Equal, so yes.", ['41² = 1681', '9² + 40² = 81 + 1600 = 1681', 'Equal'], 'Yes, right-angled')],
-    ["Longest squared against the other two added.", ['Equal → right angle', 'Not equal → no right angle', 'Always use the longest']]);
+    ["Longest squared against the other 2 added.", ['Equal → right angle', 'Not equal → no right angle', 'Always use the longest']]);
 
   LS('The parts of a circle', 'the names of the parts of a circle: centre, radius, diameter, circumference, chord, arc, sector, segment and tangent.', 'Parts of a circle',
     E('The names',
       ["The centre is the middle point. The radius goes from the centre to the edge. The diameter goes across through the centre, so it is twice the radius. The circumference is the distance around the edge.", [h(F.cdia('d', 'r')), 'Radius r', 'Diameter d = 2r', 'Circumference = distance round']],
-      ["A chord is a straight line joining two points on the circle. An arc is part of the circumference. A sector is a slice like a pizza slice. A segment is the region between a chord and its arc. A tangent is a line that just touches the circle.", ['Chord: straight line across', 'Arc: curved part of edge', 'Sector: slice from centre', 'Segment: between chord and arc', 'Tangent: touches at one point']]),
+      ["A chord is a straight line joining 2 points on the circle. An arc is part of the circumference. A sector is a slice like a pizza slice. A segment is the region between a chord and its arc. A tangent is a line that just touches the circle.", ['Chord: straight line across', 'Arc: curved part of edge', 'Sector: slice from centre', 'Segment: between chord and arc', 'Tangent: touches at 1 point']]),
     [E('Radius and diameter',
         ["A circle has a diameter of 12 centimetres. What is the radius? The radius is half the diameter. 6 centimetres.", ['r = d ÷ 2', 'g|r = 6 cm']]),
       E('From the radius',
         ["A circle has a radius of 9 metres. What is the diameter? The diameter is twice the radius. 18 metres.", ['d = 2 × r', 'g|d = 18 m']]),
       E('Which part?',
-        ["A straight line joins two points on a circle but does not pass through the centre. It is a chord. If it did pass through the centre, it would be a diameter, which is the longest chord.", ['Not through centre: chord', 'Through centre: diameter (longest chord)']]),
+        ["A straight line joins 2 points on a circle but does not pass through the centre. It is a chord. If it did pass through the centre, it would be a diameter, which is the longest chord.", ['Not through centre: chord', 'Through centre: diameter (longest chord)']]),
       E('Naming a slice',
-        ["The slice of a circle between two radii and an arc is a sector. A slice cut off by a chord, away from the centre, is a segment.", ['Two radii + arc: sector', 'Chord + arc: segment']])],
+        ["The slice of a circle between 2 radii and an arc is a sector. A slice cut off by a chord, away from the centre, is a segment.", ['2 radii + arc: sector', 'Chord + arc: segment']])],
     [M('Confusing radius and diameter', "Mistake one: mixing up radius and diameter. The diameter is the full width, twice the radius.", 'd = 5, r = 10 ✗', 'r = 5, d = 10 ✓'),
      M('Sector and segment', "Mistake two: swapping sector and segment. A sector touches the centre, like a pizza slice. A segment is cut off by a chord.", 'Chord slice = sector ✗', 'Chord slice = segment ✓')],
-    ["A bicycle wheel has a hub at the centre, spokes that are radii, and a rim that is the circumference. The diameter of the wheel decides how far one turn takes you.", ['Spokes: radii', 'Rim: circumference']],
+    ["A bicycle wheel has a hub at the centre, spokes that are radii, and a rim that is the circumference. The diameter of the wheel decides how far 1 turn takes you.", ['Spokes: radii', 'Rim: circumference']],
     [T('A circle has a radius of 7.5 cm. What is its diameter?', "The diameter is twice the radius. 7.5 times 2 is 15 centimetres.", ['d = 2 × 7.5'], '15 cm'),
      T('A circle has a diameter of 9 cm. What is its radius?', "The radius is half the diameter. 4.5 centimetres.", ['r = 9 ÷ 2'], '4.5 cm'),
      T('What is the name for the longest chord of a circle?', "The longest chord passes through the centre. It is the diameter.", ['Through the centre'], 'The diameter')],
@@ -94,13 +94,13 @@
         ["A circle has a circumference of 31.4 centimetres. What is its diameter? Divide the circumference by pi. 31.4 divided by 3.14 is 10 centimetres.", ['C = π × d', 'd = 31.4 ÷ 3.14', 'g|d = 10 cm']]),
       E('A wheel',
         ["A wheel has a diameter of 60 centimetres. How far does it travel in 1 turn? Pi times 60 is about 188.5 centimetres. In 10 turns it travels 1,885 centimetres, about 18.9 metres.", ['C = π × 60 = 188.5 cm', '10 turns: 1885 cm', 'g|= 18.9 m']])],
-    [M('Using the radius with pi times d', "Mistake one: putting the radius into pi times diameter. If you have the radius, double it first, or use two pi r.", 'C = π × 5 = 15.7 ✗', 'C = 2 × π × 5 = 31.4 ✓'),
+    [M('Using the radius with pi times d', "Mistake one: putting the radius into pi times diameter. If you have the radius, double it first, or use 2 pi r.", 'C = π × 5 = 15.7 ✗', 'C = 2 × π × 5 = 31.4 ✓'),
      M('Mixing units', "Mistake two: leaving out the units, or giving square units. The circumference is a length, so use centimetres, not square centimetres.", 'C = 31.4 cm² ✗', 'C = 31.4 cm ✓')],
     ["A bike wheel with a diameter of 70 centimetres has a circumference of about 220 centimetres. Each full turn moves the bike forward that far, so a hundred turns is about 220 metres.", ['C = π × 70 ≈ 220 cm', '100 turns ≈ 220 m']],
     [T('Find the circumference of a circle of diameter 8 cm. Give your answer to 1 decimal place.', "Pi times 8 is 25.1 centimetres.", ['C = π × 8', 'C = 25.1'], '25.1 cm'),
      T('Find the circumference of a circle of radius 6 cm. Give your answer to 1 decimal place.', "2 times pi times 6 is 12 pi, 37.7 centimetres.", ['C = 2 × π × 6', 'C = 12π', 'C = 37.7'], '37.7 cm'),
      T('A circle has circumference 50 cm. Find its diameter to 1 decimal place.', "Divide by pi. 50 divided by pi is 15.9 centimetres.", ['d = C ÷ π', 'd = 50 ÷ π', 'd = 15.9'], '15.9 cm')],
-    ["Diameter times pi. Or two pi r.", ['C = πd', 'C = 2πr', 'Units: cm']]);
+    ["Diameter times pi. Or 2 pi r.", ['C = πd', 'C = 2πr', 'Units: cm']]);
 
   LS('Area of a circle', 'how to find the area of a circle from its radius.', 'Area of a circle',
     E('The formula',
@@ -132,13 +132,13 @@
       E('A different angle',
         ["A sector has an angle of 60 degrees and a radius of 10 centimetres. The fraction is 60 over 360, 1 sixth. The area is pi times 100, which is 314.2. 1 sixth is 52.4 square centimetres.", ['Fraction = 60/360 = 1/6', 'A = π × 10² = 314.2', 'g|Sector = 314.2 ÷ 6 = 52.4 cm²']]),
       E('The perimeter of a sector',
-        ["The perimeter of a sector is the arc plus the two radii. For the sixty-degree sector, the arc is 1 sixth of 20 pi, which is 10.5. Add 2 radii, 20. The perimeter is 30.5 centimetres.", ['Arc = 62.8 ÷ 6 = 10.5', '2 radii = 20', 'g|Perimeter = 30.5 cm']])],
+        ["The perimeter of a sector is the arc plus the 2 radii. For the sixty-degree sector, the arc is 1 sixth of 20 pi, which is 10.5. Add 2 radii, 20. The perimeter is 30.5 centimetres.", ['Arc = 62.8 ÷ 6 = 10.5', '2 radii = 20', 'g|Perimeter = 30.5 cm']])],
     [M('Forgetting the fraction', "Mistake one: giving the whole circle's area or circumference. A sector is only a part. Multiply by the fraction.", 'Sector = π × 6² = 113.1 ✗', 'Sector = 1/4 × 113.1 = 28.3 ✓'),
-     M('Forgetting the radii in a perimeter', "Mistake two: giving only the arc as the perimeter. The edge of a sector also has two straight sides.", 'Perimeter = 10.5 ✗', 'Perimeter = 10.5 + 20 = 30.5 ✓')],
+     M('Forgetting the radii in a perimeter', "Mistake two: giving only the arc as the perimeter. The edge of a sector also has 2 straight sides.", 'Perimeter = 10.5 ✗', 'Perimeter = 10.5 + 20 = 30.5 ✓')],
     ["A slice of pizza is a sector. If a pizza of radius 15 centimetres is cut into 8 equal slices, each slice has an angle of 45 degrees, and an area of 1 eighth of the pizza.", ['360 ÷ 8 = 45°', 'Slice = 1/8 of 707 ≈ 88 cm²']],
     [T('Find the length of the arc of a sector with angle 120° and radius 9 cm. Give your answer to 1 decimal place.', "The fraction is 1 third. The circumference is 2 pi times 9, 18 pi, 56.5. 1 third is 18.8 centimetres.", ['Fraction = 120/360 = 1/3', 'C = 2π × 9 = 56.5', 'Arc = 56.5 ÷ 3 = 18.8'], '18.8 cm', F.circle('sector', { deg: 120, r: '9 cm' })),
      T('Find the area of a sector with angle 45° and radius 8 cm. Give your answer to 1 decimal place.', "The fraction is 1 eighth. The area is pi times 64, 201.1. 1 eighth is 25.1 square centimetres.", ['Fraction = 45/360 = 1/8', 'A = π × 8² = 201.1', 'Sector = 201.1 ÷ 8 = 25.1'], '25.1 cm²'),
-     T('A sector has angle 180° and radius 5 cm. Find its perimeter to 1 decimal place.', "The arc is half of 10 pi, 15.7. Add the two radii, 10. The perimeter is 25.7 centimetres.", ['Arc = 31.4 ÷ 2 = 15.7', 'Radii = 10', 'Perimeter = 25.7'], '25.7 cm')],
+     T('A sector has angle 180° and radius 5 cm. Find its perimeter to 1 decimal place.', "The arc is half of 10 pi, 15.7. Add the 2 radii, 10. The perimeter is 25.7 centimetres.", ['Arc = 31.4 ÷ 2 = 15.7', 'Radii = 10', 'Perimeter = 25.7'], '25.7 cm')],
     ["Fraction of the circle: angle over 360.", ['Arc = fraction × 2πr', 'Sector = fraction × πr²', 'Perimeter includes 2 radii']]);
 
   L.use(830, ['How do you use Pythagoras’ theorem?', 'Pythagoras: finding the hypotenuse', 'Pythagoras: finding a shorter side', 'Is the triangle right-angled?', 'The parts of a circle', 'Circumference of a circle', 'Area of a circle', 'Arc length and sector area', 'How do you find arc lengths and sector areas?']);

@@ -14,11 +14,11 @@
     ]),
     SC('Why simultaneous?', 'The meaning of the word', [
       S("The word simultaneous means at the same time. Both equations must be true at the same time, with the same values of x and y. The answer is the one pair that fits both.", V.rule('Both true at the same time.')),
-      S("Usually, two equations with two unknowns give exactly one pair of answers.", V.note('Two equations, two unknowns'))
+      S("Usually, 2 equations with 2 unknowns give exactly 1 pair of answers.", V.note('2 equations, 2 unknowns'))
     ]),
     SC('The graph', 'Example 2: what the solution looks like', [
-      S("Each equation is a straight line on a graph. Every point on a line is a pair that works for that equation. The point where the two lines cross is on both lines. So it is the pair that works for both. That crossing point is the solution.", V.rule('The lines cross at the solution.')),
-      S("For our two equations, the lines cross at the point six, four.", g('Cross at (6, 4)'))
+      S("Each equation is a straight line on a graph. Every point on a line is a pair that works for that equation. The point where the 2 lines cross is on both lines. So it is the pair that works for both. That crossing point is the solution.", V.rule('The lines cross at the solution.')),
+      S("For our 2 equations, the lines cross at the point 6, 4.", g('Cross at (6, 4)'))
     ]),
     SC('Real life', 'Example 3: pens and pencils', [
       S("Sam buys some pens and some pencils. 10 items in total, so pens plus pencils is 10. He has 2 more pens than pencils, so pens minus pencils is 2. It is exactly our pair of equations. 6 pens and 4 pencils.", E('p + q = 10') + E('p − q = 2') + g('6 pens, 4 pencils'))
@@ -32,35 +32,35 @@
     ]),
     SC('Listing pairs', 'Example 6: a careful search', [
       S("Let us find a solution without any fancy method, just by listing. Solve x plus y equals 7, and x minus y equals 1. Step one. List every pair of whole numbers that add to 7.", E('x + y = 7')),
-      S("One and six. Two and five. Three and four. Four and three. Five and two. Six and one.", V.tbl([['1', '6'], ['2', '5'], ['3', '4'], ['4', '3'], ['5', '2'], ['6', '1']], ['x', 'y'])),
+      S("1 and 6. 2 and 5. 3 and 4. 4 and 3. 5 and 2. 6 and 1.", V.tbl([['1', '6'], ['2', '5'], ['3', '4'], ['4', '3'], ['5', '2'], ['6', '1']], ['x', 'y'])),
       S("Step two. For each pair, work out x minus y, and see if it equals 1. 1 minus 6 is minus 5. 2 minus 5 is minus 3. 3 minus 4 is minus 1. 4 minus 3 is 1. That is the one we want.", E('4 − 3 = 1 ✓') + g('x = 4, y = 3')),
       S("Step three. Check in both equations. 4 plus 3 is 7. 4 minus 3 is 1. Both true. This method works, but it is slow for big numbers. That is why we will learn faster methods.", V.rule('Listing works, but is slow.'))
     ]),
     SC('Drawing both lines', 'Example 7: the graph, step by step', [
       S("Now let us see the graph for x plus y equals 10, and x minus y equals 2. To draw a line, we only need a few points. For x plus y equals 10, choose x equals 0. Then y is 10. Choose x equals 5. Then y is 5. Choose x equals 10. Then y is 0.", V.tbl([['0', '10'], ['5', '5'], ['10', '0']], ['x', 'y'])),
       S("For x minus y equals 2, choose y equals 0. Then x is 2. Choose y equals 2. Then x is 4. Choose y equals 4. Then x is 6.", V.tbl([['2', '0'], ['4', '2'], ['6', '4']], ['x', 'y'])),
-      S("Plot both sets of points and join each with a ruler. Look where the two lines cross. The crossing point is six, four. That is the same answer as before. It is on both lines, so it satisfies both equations.", g('Cross at (6, 4)')),
-      S("Why only one crossing point? Two different straight lines can only cross once. So there is only one solution.", V.note('Two straight lines cross once'))
+      S("Plot both sets of points and join each with a ruler. Look where the 2 lines cross. The crossing point is 6, 4. That is the same answer as before. It is on both lines, so it satisfies both equations.", g('Cross at (6, 4)')),
+      S("Why only one crossing point? 2 different straight lines can only cross once. So there is only one solution.", V.note('Two straight lines cross once'))
     ]),
     SC('What can go wrong', 'Example 8: no solution or too many', [
       S("Sometimes 2 lines never cross. They are parallel. For example, y equals 2 x plus 1, and y equals 2 x plus 5, have the same gradient. There is no pair that fits both. Such equations have no solution.", E('y = 2x + 1') + E('y = 2x + 5') + r('Parallel: no solution')),
-      S("In this course, the questions will almost always have exactly one solution. But it is good to know why.", V.rule('Parallel lines never meet.'))
+      S("In this course, the questions will almost always have exactly 1 solution. But it is good to know why.", V.rule('Parallel lines never meet.'))
     ]),
     SC('Watch out!', 'Common mistakes, with examples', [
       S("Mistake one. Checking only one equation. Is x equals 3, y equals 2 a solution of x plus y equals 5 and 2 x minus y equals 3? The first works. Wrong: so it is a solution. Check the second too. 6 minus 2 is 4, not 3. It fails, so it is not a solution.", r('3 + 2 = 5 ✓ so solution  ✗') + g('2(3) − 2 = 4 ≠ 3, not a solution  ✓')),
       S("Mistake two. Giving only x. Solve x plus y equals 10 and x minus y equals 2. Wrong: x equals 6. A solution has 2 values. y is 4.", r('x = 6  ✗  (incomplete)') + g('x = 6 and y = 4  ✓')),
-      S("Mistake three. Treating 1 equation as if it gave the answer. x plus y equals 10 on its own has many pairs, like 5 and 5. Wrong: x equals 5 and y equals 5. That fails the second equation, 5 minus 5 is 0, not 2. The pair must fit both. Six and 4.", r('x = 5, y = 5  ✗') + g('x = 6, y = 4 fits both  ✓'))
+      S("Mistake three. Treating 1 equation as if it gave the answer. x plus y equals 10 on its own has many pairs, like 5 and 5. Wrong: x equals 5 and y equals 5. That fails the second equation, 5 minus 5 is 0, not 2. The pair must fit both. 6 and 4.", r('x = 5, y = 5  ✗') + g('x = 6, y = 4 fits both  ✓'))
     ]),
     L.turn("Your turn! Number one. Is x equals 4, y equals 1 a solution of x plus y equals 5, and x minus y equals 3? Pause and try it.", E('x + y = 5, x − y = 3'), "4 plus 1 is 5. 4 minus 1 is 3. Yes, it is a solution.", g('Yes ✓')),
     L.turn("Your turn! Number two. Find the pair that fits x plus y equals 8, and x minus y equals 2. Pause and try it.", E('x + y = 8, x − y = 2'), "5 and 3. 5 plus 3 is 8, 5 minus 3 is 2.", g('x = 5, y = 3')),
-    L.turn("Your turn! Number three. Where do the graphs of 2 equations meet, if the solution is x equals 2, y equals 7? Pause and think.", E('?'), "At the point two, seven.", g('(2, 7)')),
-    L.rec('What are simultaneous equations and what does the solution mean?', "Simultaneous equations are two equations with two unknowns that must both be true at the same time. The solution is the one pair of values that fits both. On a graph, it is where the two lines cross. Always check your answer in both equations.", ['Two equations, two unknowns', 'Both true together', 'Lines cross at the solution', 'Check both'])
+    L.turn("Your turn! Number three. Where do the graphs of 2 equations meet, if the solution is x equals 2, y equals 7? Pause and think.", E('?'), "At the point 2, 7.", g('(2, 7)')),
+    L.rec('What are simultaneous equations and what does the solution mean?', "Simultaneous equations are 2 equations with 2 unknowns that must both be true at the same time. The solution is the one pair of values that fits both. On a graph, it is where the 2 lines cross. Always check your answer in both equations.", ['2 equations, 2 unknowns', 'Both true together', 'Lines cross at the solution', 'Check both'])
   ]);
 
-  N('How do you solve simultaneous equations by substitution?', 'how to replace one letter with an expression and solve step by step.', [
+  N('How do you solve simultaneous equations by substitution?', 'how to replace 1 letter with an expression and solve step by step.', [
     SC('Substitution', 'Start with the basics', [
       S("Substitution means replacing. If we know that y equals 2 x plus 1, then wherever we see y, we can write 2 x plus 1 instead. This turns 2 unknowns into 1.", E('y = 2x + 1', 'b') + V.rule('Replace y with its expression.')),
-      S("Here is the plan. One, get one letter on its own. Two, replace that letter in the other equation. Three, solve for the other letter. Four, put the answer back to find the first. Five, check.", V.list(['Letter on its own', 'Replace in other equation', 'Solve', 'Find the other letter', 'Check']))
+      S("Here is the plan. 1, get 1 letter on its own. 2, replace that letter in the other equation. 3, solve for the other letter. 4, put the answer back to find the first. 5, check.", V.list(['Letter on its own', 'Replace in other equation', 'Solve', 'Find the other letter', 'Check']))
     ]),
     SC('Example 1', 'y = 2x + 1 and 3x + y = 11', [
       S("The first equation already has y on its own. In the second equation, replace y with 2 x plus 1. 3 x plus bracket 2 x plus 1, equals 11.", E('3x + (2x + 1) = 11')),
@@ -89,7 +89,7 @@
       S("Step three. Expand the bracket. 8 times 4 is 32. 8 times minus c is minus 8 c. So 32 minus 8 c plus 5 c equals 26. Collect the c terms. Minus 8 c plus 5 c is minus 3 c.", E('32 − 8c + 5c = 26') + E('32 − 3c = 26')),
       S("Step four. Subtract 32 from both sides. Minus 3 c equals minus 6. Divide by minus 3. c equals 2.", E('−3c = −6') + g('c = 2')),
       S("Step five. Find a. a equals 4 minus 2, which is 2. 2 adults and 2 children. Check the money. 2 times 8 is 16. 2 times 5 is 10. 16 plus 10 is 26. Correct.", g('2 adults, 2 children') + E('16 + 10 = 26 ✓')),
-      S("Always ask if the answer makes sense. Two adults and two children is a sensible answer. A negative number of people would tell us we had made a mistake.", V.rule('Does the answer make sense?'))
+      S("Always ask if the answer makes sense. 2 adults and 2 children is a sensible answer. A negative number of people would tell us we had made a mistake.", V.rule('Does the answer make sense?'))
     ]),
     SC('A number in front', 'Example 6: y = 3x and x + y = 12', [
       S("Let us do another one, very slowly. y equals 3 x, and x plus y equals 12. Step one. Is a letter on its own? Yes. y equals 3 x.", E('y = 3x') + E('x + y = 12')),
@@ -116,12 +116,12 @@
       S("Mistake three. Not checking both equations. A student says x equals 4 and y equals 2 for 2 x plus y equals 9 and 3 x minus 2 y equals 10. Check the first. 8 plus 2 is 10, not 9. It fails. The correct answer is y equals 1. 8 plus 1 is 9. 12 minus 2 is 10.", r('2(4) + 2 = 10 ≠ 9  ✗') + g('(4, 1): 8 + 1 = 9 and 12 − 2 = 10  ✓'))
     ]),
     SC('In real life', 'Comparing plans', [
-      S("Two phone plans can be written as two equations. Substituting one into the other finds the number of minutes where they cost the same.", V.note('Where do the costs match?'))
+      S("2 phone plans can be written as 2 equations. Substituting 1 into the other finds the number of minutes where they cost the same.", V.note('Where do the costs match?'))
     ]),
     L.turn("Your turn! Number one. Solve y equals x plus 3, and x plus y equals 9. Replace y first. Pause and try it.", E('y = x + 3, x + y = 9'), "x plus x plus 3 is 9. 2 x is 6. x is 3, and y is 6.", g('x = 3, y = 6')),
     L.turn("Your turn! Number two. Solve x equals 2 y, and x plus y equals 12. Pause and try it.", E('x = 2y, x + y = 12'), "2 y plus y is 12. 3 y is 12. y is 4, and x is 8.", g('x = 8, y = 4')),
     L.turn("Your turn! Number three. Solve y equals 3 x minus 1, and y equals x plus 5. Pause and try it.", E('y = 3x − 1, y = x + 5'), "3 x minus 1 equals x plus 5. 2 x is 6. x is 3, and y is 8.", g('x = 3, y = 8')),
-    L.rec('How do you solve simultaneous equations by substitution?', "Get one letter on its own. Replace it in the other equation, using brackets. Solve for the remaining letter, then substitute back to find the first. Check in both equations, and ask whether the answer makes sense.", ['Letter on its own', 'Replace using brackets', 'Solve, then substitute back', 'Check both'])
+    L.rec('How do you solve simultaneous equations by substitution?', "Get 1 letter on its own. Replace it in the other equation, using brackets. Solve for the remaining letter, then substitute back to find the first. Check in both equations, and ask whether the answer makes sense.", ['Letter on its own', 'Replace using brackets', 'Solve, then substitute back', 'Check both'])
   ]);
 
   L.use(848, ['What are simultaneous equations and what does the solution mean?', 'Solving by graph', 'How do you solve simultaneous equations by substitution?', 'Solving by elimination', 'Simultaneous equations']);

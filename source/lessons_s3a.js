@@ -18,10 +18,10 @@
   });
 
   LS('How do you write a number as a product of its prime factors?', 'how to use factor trees and division to write numbers as products of primes.', {
-    intro: ['Prime factors', 'Building blocks', "Every whole number greater than one can be written as a product of primes in exactly one way.", E('90 = 2 × 3 × 3 × 5', 'g')],
+    intro: ['Prime factors', 'Building blocks', "Every whole number greater than 1 can be written as a product of primes in exactly one way.", E('90 = 2 × 3 × 3 × 5', 'g')],
     ex: [['Factor tree', '90', [["Split 90 into 9 and 10. 9 is 3 times 3; 10 is 2 times 5. So 2 times 3 squared times 5.", E('90 = 2 × 3² × 5', 'g')]]],
       ['Repeated division', '168', [["Divide by the smallest prime repeatedly: 168, 84, 42, 21, then by 3: 7. 2 cubed times 3 times 7.", E('168 = 2³ × 3 × 7', 'g')]]],
-      ['HCF from primes', '90 and 168', [["Shared primes: one two and one three. HCF is six.", E('HCF = 2 × 3 = 6', 'g')]]],
+      ['HCF from primes', '90 and 168', [["Shared primes: 1 2 and 1 3. HCF is 6.", E('HCF = 2 × 3 = 6', 'g')]]],
       ['LCM from primes', '90 and 168', [["Use the highest power of each prime: 2 cubed, 3 squared, 5, 7: 2,520.", E('LCM = 2³ × 3² × 5 × 7 = 2,520', 'g')]]]],
     real: ['Codes', "Internet security uses the fact that it is very hard to find the prime factors of huge numbers.", V.note('Big primes keep messages safe')],
     turn: ["Your turn! Write 120 as a product of prime factors. Pause and try it.", E('120 = ?'), "2 cubed times 3 times 5.", E('2³ × 3 × 5', 'g')],
@@ -33,7 +33,7 @@
     intro: ['Percentage change', 'Compare with the original', "Percentage change tells us how big a change is compared with where we started.", E('% change = change ÷ original × 100', 'g')],
     ex: [['Increase', '£48 to £54', [["The change is six pounds. Six divided by forty-eight times one hundred: twelve point five per cent increase.", E('6 ÷ 48 × 100 = 12.5%', 'g')]]],
       ['Decrease', '1,250 to 1,000', [["The change is 250. 250 divided by 1,250: 20% decrease.", E('250 ÷ 1,250 × 100 = 20%', 'g')]]],
-      ['Applying a change', 'Multipliers', [["Increase 320 by 15%: times 1.15, 368. Decrease it by 15%: times 0 point 8 5, 272.", E('320 × 1.15 = 368 · 320 × 0.85 = 272', 'g')]]],
+      ['Applying a change', 'Multipliers', [["Increase 320 by 15%: times 1.15, 368. Decrease it by 15%: times 0.85, 272.", E('320 × 1.15 = 368 · 320 × 0.85 = 272', 'g')]]],
       ['Profit and loss', 'Percentage profit', [["Bought for £40, sold for 52: a £12 profit, 30%.", E('12 ÷ 40 × 100 = 30%', 'g')]]]],
     real: ['Population', "A town grew from 18,000 to 19,800: an increase of 10%.", E('1,800 ÷ 18,000 × 100 = 10%', 'g')],
     turn: ["Your turn! A price falls from £80 to £68. What is the percentage decrease? Pause and try it.", E('12 ÷ 80 × 100'), "Fifteen per cent.", E('15%', 'g')],
@@ -42,7 +42,7 @@
   });
 
   LS('How do you convert currencies?', 'how to convert money between currencies using exchange rates.', {
-    intro: ['Exchange rates', 'Different money', "An exchange rate tells you how much of one currency you get for one unit of another.", E('£1 = €1.16 · £1 = $1.27', 'g')],
+    intro: ['Exchange rates', 'Different money', "An exchange rate tells you how much of 1 currency you get for 1 unit of another.", E('£1 = €1.16 · £1 = $1.27', 'g')],
     ex: [['Pounds to euros', 'Multiply', [["Three hundred and fifty pounds at one point one six euros per pound: four hundred and six euros.", E('350 × 1.16 = €406', 'g')]]],
       ['Euros to pounds', 'Divide', [["232 euros divided by 1.16: £200.", E('232 ÷ 1.16 = £200', 'g')]]],
       ['Comparing prices', 'Where is cheaper?', [["Trainers cost £75 in Glasgow or 85 euros in Paris. 85 euros is £73.28, so Paris is slightly cheaper.", E('€85 ÷ 1.16 ≈ £73.28', 'g')]]],
@@ -61,7 +61,7 @@
       ['Patterns of shapes', 'Matchsticks', [["Triangles in a row use 3, 5, 7 matchsticks: 2 n plus 1.", E('M = 2n + 1', 'g')]]]],
     turn: ["Your turn! Find the nth term of 2, 8, 14, 20. Pause and try it.", E('2, 8, 14, 20'), "The difference is 6. 6 n gives 6, so take 4: 6 n minus 4.", E('6n − 4', 'g')],
     rec: ["Find the common difference; it goes in front of n. Adjust with a constant so the first term matches. Use the formula for any term.", ['Common difference', 'd × n', 'Adjust to the first term', 'Substitute n']],
-    deep: ['The common difference is the gradient if you plotted the sequence.', 'Check your formula with at least two terms.']
+    deep: ['The common difference is the gradient if you plotted the sequence.', 'Check your formula with at least 2 terms.']
   });
 
   LS('How do you simplify algebraic terms?', 'how to collect like terms and simplify products and quotients of terms.', {
@@ -81,7 +81,7 @@
       ['With powers', 'x = 3', [["2 x squared: square first, 9, then double: 18. Not 6 squared.", E('2x² = 2 × 9 = 18', 'g')]]],
       ['With negatives', 'x = −2', [["x squared plus 3 x: 4 plus negative 6 is negative 2.", E('(−2)² + 3(−2) = 4 − 6 = −2', 'g')]]],
       ['Formulae', 'v = u + at', [["With u 10, a 3, t 5: 10 plus 15 is 25.", E('v = 10 + 3 × 5 = 25', 'g')]]]],
-    turn: ["Your turn! Find three p squared minus q when p is two and q is five. Pause and try it.", E('3p² − q'), "3 times 4 is 12, take away 5 is 7.", E('7', 'g')],
+    turn: ["Your turn! Find 3 p squared minus q when p is 2 and q is 5. Pause and try it.", E('3p² − q'), "3 times 4 is 12, take away 5 is 7.", E('7', 'g')],
     rec: ["Replace each letter with its value, in brackets if negative, then use BODMAS. Powers come before multiplying.", ['Replace each letter', 'Brackets round negatives', 'BODMAS', 'Powers before ×']],
     deep: ['Putting negatives in brackets stops sign mistakes when squaring.', '2x² means 2 × x², not (2x)².']
   });
@@ -93,7 +93,7 @@
       ['Both sides', '7x − 5 = 3x + 11', [["Subtract 3 x: 4 x minus 5 equals 11. Add 5: 4 x equals 16. x equals 4.", E('x = 4', 'g')]]],
       ['Fractions', 'x/3 + 2 = 6', [["Subtract 2: x over 3 equals 4. Multiply by 3: x equals 12.", E('x = 12', 'g')]]]],
     turn: ["Your turn! Solve 5, bracket, x plus 1, equals 3 x plus 17. Pause and try it.", E('5(x + 1) = 3x + 17'), "5 x plus 5 equals 3 x plus 17. 2 x equals 12. x equals 6.", E('x = 6', 'g')],
-    rec: ["Expand brackets, collect the letter on one side, then undo operations in reverse order. Check by substituting.", ['Expand brackets', 'Letters to one side', 'Undo + and −, then × and ÷', 'Check']],
+    rec: ["Expand brackets, collect the letter on 1 side, then undo operations in reverse order. Check by substituting.", ['Expand brackets', 'Letters to one side', 'Undo + and −, then × and ÷', 'Check']],
     deep: ['Every step keeps the equation balanced, so the solution never changes.', 'When moving a term, change its sign: you are subtracting it from both sides.']
   });
 
@@ -114,29 +114,29 @@
       ['Using it', '10 miles', [["3 plus 18: £21.", E('C = 3 + 1.8 × 10 = £21', 'g')]]],
       ['Working backwards', 'How far?', [["A fare of £30: 3 plus 1.8 m equals 30, so m is 15 miles.", E('1.8m = 27 → m = 15', 'g')]]],
       ['Rearranging', 'Change the subject', [["From C equals 3 plus 1.8 m: m equals C minus 3, over 1.8.", E('m = (C − 3) ÷ 1.8', 'g')]]]],
-    real: ['Mobile phone', "A plan costs £8 a month plus 10p per minute over the limit: C equals 8 plus 0 point 1 m.", E('C = 8 + 0.1m', 'g')],
+    real: ['Mobile phone', "A plan costs £8 a month plus 10p per minute over the limit: C equals 8 plus 0.1 m.", E('C = 8 + 0.1m', 'g')],
     turn: ["Your turn! Write a formula for the total cost T of n cinema tickets at £7.50 each plus a £2 booking fee. Pause and try it.", E('T = ?'), "T equals 7.5 n plus 2.", E('T = 7.5n + 2', 'g')],
     rec: ["Write a formula by spotting the fixed part and the part that changes. Substitute to use it; rearrange to find another quantity.", ['Fixed part + changing part', 'Substitute values', 'Solve to work backwards', 'Rearrange to change subject']],
     deep: ['A formula like C = 3 + 1.8m is a straight-line graph: 3 is the start, 1.8 the rate.', 'Say what each letter means and what units it uses.']
   });
 
   LS('How do you construct triangles?', 'how to construct triangles accurately with a ruler, protractor and compasses.', {
-    intro: ['Constructing triangles', 'Accurate drawing', "To construct a triangle accurately, you need three facts. Depending on what you know, use a ruler and protractor, or a ruler and compasses.", V.list(['Three sides: compasses', 'Two sides and the angle between: protractor', 'Two angles and a side: protractor'])],
-    ex: [['Three sides', '5 cm, 7 cm, 8 cm', [["Draw the eight centimetre base. Open compasses to five centimetres and draw an arc from one end. Open to seven and draw an arc from the other end. Join to where the arcs cross.", V.rule('Base first, then arcs that cross.')]]],
+    intro: ['Constructing triangles', 'Accurate drawing', "To construct a triangle accurately, you need 3 facts. Depending on what you know, use a ruler and protractor, or a ruler and compasses.", V.list(['3 sides: compasses', '2 sides and the angle between: protractor', '2 angles and a side: protractor'])],
+    ex: [['Three sides', '5 cm, 7 cm, 8 cm', [["Draw the 8 centimetre base. Open compasses to 5 centimetres and draw an arc from 1 end. Open to 7 and draw an arc from the other end. Join to where the arcs cross.", V.rule('Base first, then arcs that cross.')]]],
       ['Two sides and an angle', 'SAS', [["Draw a 6 centimetre base. At 1 end measure 50 degrees with a protractor and draw a line 9 centimetres long. Join the ends.", E('6 cm, 50°, 9 cm', 'g')]]],
       ['Two angles and a side', 'ASA', [["Draw a 7 centimetre base. Measure 40 degrees at 1 end and 65 at the other. Extend the lines until they meet.", E('40°, 7 cm, 65°', 'g')]]],
-      ['Can it be drawn?', 'The triangle rule', [["Sides three, four and nine can't make a triangle: the two shorter sides must add up to more than the longest.", E('3 + 4 < 9 → impossible', 'b')]]]],
+      ['Can it be drawn?', 'The triangle rule', [["Sides 3, 4 and 9 can't make a triangle: the 2 shorter sides must add up to more than the longest.", E('3 + 4 < 9 → impossible', 'b')]]]],
     turn: ["Your turn! Can you construct a triangle with sides 5, 6 and 12? Pause and think.", E('5 + 6 vs 12'), "No: 5 plus 6 is 11, which is less than 12.", E('No', 'g')],
-    rec: ["Choose the method from the facts you have. Draw the base first. Use compasses for three sides, a protractor for angles. Check the two shorter sides add to more than the longest.", ['SSS: compasses', 'SAS and ASA: protractor', 'Base first', 'Shorter sides > longest']],
+    rec: ["Choose the method from the facts you have. Draw the base first. Use compasses for 3 sides, a protractor for angles. Check the 2 shorter sides add to more than the longest.", ['SSS: compasses', 'SAS and ASA: protractor', 'Base first', 'Shorter sides > longest']],
     deep: ['Compass arcs show every point at a fixed distance, so where they cross is exactly the right corner.', 'Leave construction arcs showing: they prove the triangle is accurate.']
   });
 
   LS('What are the properties of 3D objects?', 'how to describe 3D objects by faces, edges, vertices, nets and cross-sections.', {
     intro: ['3D properties', 'Describing solids', "We describe 3D objects by their faces, edges and vertices, the shapes of their faces, their nets and their cross-sections.", cubes([[2, 2], [2, 2]])],
-    ex: [['Counting', 'Faces, edges, vertices', [["A triangular prism has five faces, nine edges and six vertices. A square-based pyramid has five faces, eight edges and five vertices.", V.tbl([['Cube', '6', '12', '8'], ['Triangular prism', '5', '9', '6'], ['Square pyramid', '5', '8', '5'], ['Tetrahedron', '4', '6', '4']], ['Solid', 'F', 'E', 'V'])]]],
+    ex: [['Counting', 'Faces, edges, vertices', [["A triangular prism has 5 faces, 9 edges and 6 vertices. A square-based pyramid has 5 faces, 8 edges and 5 vertices.", V.tbl([['Cube', '6', '12', '8'], ['Triangular prism', '5', '9', '6'], ['Square pyramid', '5', '8', '5'], ['Tetrahedron', '4', '6', '4']], ['Solid', 'F', 'E', 'V'])]]],
       ['Euler’s formula', 'F + V − E = 2', [["For any polyhedron, faces plus vertices minus edges equals 2. Cube: 6 plus 8 minus 12 is 2.", E('F + V − E = 2', 'g')]]],
       ['Cross-sections', 'Slices', [["A prism has the same cross-section everywhere. A cylinder's cross-section is a circle; a cone's gets smaller towards the top.", V.cards(['Prism: constant', 'Cylinder: circle', 'Cone: shrinking circle'], ['b', 'p', 'g'])]]],
-      ['Planes of symmetry', 'Mirror slices', [["A plane of symmetry cuts a solid into two mirror halves. A cube has nine.", E('cube: 9 planes of symmetry', 'g')]]]],
+      ['Planes of symmetry', 'Mirror slices', [["A plane of symmetry cuts a solid into 2 mirror halves. A cube has 9.", E('cube: 9 planes of symmetry', 'g')]]]],
     turn: ["Your turn! A solid has 8 faces and 12 vertices. How many edges? Pause and use Euler's formula.", E('8 + 12 − E = 2'), "E is eighteen.", E('18 edges', 'g')],
     rec: ["Describe solids by faces, edges and vertices, face shapes, nets, cross-sections and planes of symmetry. For polyhedra, F + V − E = 2.", ['F, E, V', 'Euler: F + V − E = 2', 'Cross-sections', 'Planes of symmetry']],
     deep: ['Euler’s formula is a surprising rule that holds for every solid with flat faces and no holes.', 'Count edges carefully: each edge is shared by 2 faces.']
@@ -148,7 +148,7 @@
       ['Isosceles triangle', 'Base angles equal', [["An isosceles triangle with a top angle of 36 degrees has 2 base angles of 72.", E('(180° − 36°) ÷ 2 = 72°', 'g')]]],
       ['Quadrilateral', 'Missing angle', [["Angles of 90, 115 and 75: the fourth is 80.", E('360° − 280° = 80°', 'g')]]],
       ['Special quadrilaterals', 'Using properties', [["In a parallelogram, opposite angles are equal and neighbours add to 180. If 1 angle is 65, the others are 115, 65, 115.", E('65°, 115°, 65°, 115°', 'g')]]],
-      ['Exterior angle of a triangle', 'Equals the two opposite', [["An exterior angle of a triangle equals the two interior angles opposite it added together.", E('ext = a + b', 'g')]]]],
+      ['Exterior angle of a triangle', 'Equals the two opposite', [["An exterior angle of a triangle equals the 2 interior angles opposite it added together.", E('ext = a + b', 'g')]]]],
     turn: ["Your turn! A kite has angles of 110, 110 and 60. Find the fourth. Pause and try it.", E('360° − 280°'), "Eighty degrees.", E('80°', 'g')],
     rec: ["Triangle angles add to 180; quadrilateral angles to 360. Use properties like equal base angles and equal opposite angles.", ['Triangle: 180°', 'Quadrilateral: 360°', 'Isosceles: equal base angles', 'Parallelogram: opposite angles equal']],
     deep: ['A quadrilateral splits into 2 triangles, which is why its angles add to 2 × 180°.', 'Mark equal angles and sides on the diagram before calculating.']
@@ -161,19 +161,19 @@
       ['Finding k', 'new ÷ old', [["A side of 8 becomes 14. The scale factor is 14 divided by 8: 1.75.", E('k = 14 ÷ 8 = 1.75', 'g')]]],
       ['Effect on area', 'Square it', [["With scale factor 3, the area becomes 9 times bigger: 8 square centimetres becomes 72.", E('8 × 3² = 72 cm²', 'g')]]]],
     real: ['Models and maps', "A model car is built at a scale of 1 to 43. A real car 4.3 metres long is a 10 centimetre model.", E('430 cm ÷ 43 = 10 cm', 'g')],
-    turn: ["Your turn! A photo nine centimetres wide is reduced to six centimetres. What is the scale factor? Pause and try it.", E('6 ÷ 9'), "Two thirds.", E('k = ⅔', 'g')],
+    turn: ["Your turn! A photo 9 centimetres wide is reduced to 6 centimetres. What is the scale factor? Pause and try it.", E('6 ÷ 9'), "Two thirds.", E('k = ⅔', 'g')],
     rec: ["Multiply every length by the linear scale factor. Find it by dividing a new length by the matching old length. Areas scale by k squared.", ['New = old × k', 'k = new ÷ old', 'k > 1 enlarges, k < 1 reduces', 'Area × k²']],
     deep: ['Angles never change in an enlargement, only lengths.', 'Area does not scale by k: a scale factor of 2 makes areas 4 times bigger.']
   });
 
   LS('What is symmetry in 2D shapes?', 'line symmetry and rotational symmetry in 2D shapes.', {
     intro: ['Symmetry', 'Two kinds', "A shape has line symmetry if it folds onto itself along a mirror line. It has rotational symmetry if it fits onto itself during a turn.", V.cards(['Line: fold', 'Rotational: turn'], ['b', 'g'])],
-    ex: [['Lines of symmetry', 'Regular polygons', [["A regular polygon has as many lines of symmetry as sides: a regular hexagon has six.", E('regular n-gon: n lines', 'g')]]],
-      ['Order of rotational symmetry', 'Times it fits', [["The order is how many times it fits onto itself in a full turn. A regular hexagon has order six; a rectangle has order two.", V.tbl([['Square', '4', '4'], ['Rectangle', '2', '2'], ['Rhombus', '2', '2'], ['Kite', '1', '1'], ['Parallelogram', '0', '2']], ['Shape', 'Lines', 'Order'])]]],
+    ex: [['Lines of symmetry', 'Regular polygons', [["A regular polygon has as many lines of symmetry as sides: a regular hexagon has 6.", E('regular n-gon: n lines', 'g')]]],
+      ['Order of rotational symmetry', 'Times it fits', [["The order is how many times it fits onto itself in a full turn. A regular hexagon has order 6; a rectangle has order 2.", V.tbl([['Square', '4', '4'], ['Rectangle', '2', '2'], ['Rhombus', '2', '2'], ['Kite', '1', '1'], ['Parallelogram', '0', '2']], ['Shape', 'Lines', 'Order'])]]],
       ['Completing a shape', 'Reflect in the line', [["To complete a symmetrical shape, reflect each point across the mirror line, the same distance on the other side.", LK.grid(8, 4, function (i, j) { return (i === 2 && j <= 2) || (i === 3 && j === 2) || (i === 5 && j <= 2) || (i === 4 && j === 2); }, { u: 30, mirror: 4, alt: 'A symmetrical shape' })]]],
-      ['Letters', 'Symmetry around us', [["H has two lines and order two. S has no lines but order two. Z also has order two.", V.cards(['H: 2 lines, order 2', 'S: 0 lines, order 2'], ['b', 'p'])]]]],
-    turn: ["Your turn! How many lines of symmetry does an equilateral triangle have, and what is its order? Pause and think.", E('?'), "Three lines and order three.", E('3 lines · order 3', 'g')],
-    rec: ["Line symmetry: the shape folds onto itself. Rotational symmetry: it fits onto itself as it turns. Regular polygons have as many lines and as high an order as they have sides.", ['Line: mirror fold', 'Order: fits in one turn', 'Regular n-gon: n and n', 'Complete by reflecting']],
+      ['Letters', 'Symmetry around us', [["H has 2 lines and order 2. S has no lines but order 2. Z also has order 2.", V.cards(['H: 2 lines, order 2', 'S: 0 lines, order 2'], ['b', 'p'])]]]],
+    turn: ["Your turn! How many lines of symmetry does an equilateral triangle have, and what is its order? Pause and think.", E('?'), "3 lines and order 3.", E('3 lines · order 3', 'g')],
+    rec: ["Line symmetry: the shape folds onto itself. Rotational symmetry: it fits onto itself as it turns. Regular polygons have as many lines and as high an order as they have sides.", ['Line: mirror fold', 'Order: fits in 1 turn', 'Regular n-gon: n and n', 'Complete by reflecting']],
     deep: ['Every shape has rotational order at least 1, because a full turn always fits.', 'A parallelogram has rotational symmetry but no lines of symmetry.']
   });
 
@@ -184,7 +184,7 @@
       ['Reading charts', 'Trends', [["A line graph of temperatures rising from January to July shows an upward trend, then falling in autumn.", V.note('Describe the trend in words')]]],
       ['Misleading graphs', 'Be careful', [["A bar chart whose axis starts at 90 makes small differences look huge. Always check the scale.", V.note('Check the scale starts sensibly')]]]],
     turn: ["Your turn! Team X has a median of 12 goals and an IQR of 3; Team Y has a median of 12 and an IQR of 9. Compare them. Pause and think.", E('?'), "They score the same on average, but Team X is more consistent.", E('Same average · X more consistent', 'g')],
-    rec: ["Compare data with one average and one measure of spread, in context. Describe trends in charts, and check scales for misleading displays.", ['Average: which is higher?', 'Spread: which is more consistent?', 'Use context words', 'Check the scales']],
+    rec: ["Compare data with 1 average and 1 measure of spread, in context. Describe trends in charts, and check scales for misleading displays.", ['Average: which is higher?', 'Spread: which is more consistent?', 'Use context words', 'Check the scales']],
     deep: ['A good comparison always mentions both an average and a spread.', 'Write conclusions in context: "Class B scored higher on average", not just "69 > 64".']
   });
 })();

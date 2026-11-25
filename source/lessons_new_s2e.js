@@ -31,7 +31,7 @@
     rec: ["Build a percentage from 10%, 5% and 1%.", ['10% = ÷ 10, 1% = ÷ 100', '5% = half of 10%', '2.5% = half of 5%', 'Add the pieces together']]
   });
 
-  fx('Writing one amount as a percentage of another', 'how to write one amount as a percentage of another, including amounts in different units.', {
+  fx('Writing one amount as a percentage of another', 'how to write 1 amount as a percentage of another, including amounts in different units.', {
     head: 'One amount as a percentage',
     basics: [['Part over whole', [
       ["To write 1 amount as a percentage of another, write it as a fraction: the part on the top and the whole on the bottom. Then change the fraction to a percentage by multiplying by 100.", ['part ÷ whole × 100', 'Part on top, whole on the bottom']],
@@ -39,21 +39,21 @@
     ex: [
       ['18 out of 24', [
         ["Aisha scores 18 out of 24. What percentage is that? Write the fraction: 18 over 24. Simplify by dividing top and bottom by 6. That gives 3 quarters.", ['18/24', '18/24 = 3/4']],
-        ["3 quarters is 0 point 7 5. Multiply by 100 to get 75%. Check: 3 quarters of 24 is 18.", ['3 ÷ 4 = 0.75', '0.75 × 100', 'g|75%']]]],
+        ["3 quarters is 0.75. Multiply by 100 to get 75%. Check: 3 quarters of 24 is 18.", ['3 ÷ 4 = 0.75', '0.75 × 100', 'g|75%']]]],
       ['Seven out of eight', [
         ["Seven out of eight. Divide seven by eight to get zero point eight seven five. Multiply by one hundred. That is eighty-seven point five per cent.", ['7 ÷ 8 = 0.875', 'g|0.875 × 100 = 87.5%']]]],
       ['A discount', [
-        ["A jacket is £40. It is reduced by £6. What percentage is the reduction? The part is 6, the whole is 40. 6 divided by 40 is 0 point 1 5. That is 15%.", ['6 ÷ 40 = 0.15', 'g|0.15 × 100 = 15%']]]],
+        ["A jacket is £40. It is reduced by £6. What percentage is the reduction? The part is 6, the whole is 40. 6 divided by 40 is 0.15. That is 15%.", ['6 ÷ 40 = 0.15', 'g|0.15 × 100 = 15%']]]],
       ['Different units', [
-        ["What percentage of 2 metres is 40 centimetres? The units are different, so change 2 metres to 200 centimetres. Then 40 over 200 is 0 point 2. That is 20%.", ['2 m = 200 cm', '40 ÷ 200 = 0.2', 'g|0.2 × 100 = 20%']]]]],
+        ["What percentage of 2 metres is 40 centimetres? The units are different, so change 2 metres to 200 centimetres. Then 40 over 200 is 0.2. That is 20%.", ['2 m = 200 cm', '40 ÷ 200 = 0.2', 'g|0.2 × 100 = 20%']]]]],
     mist: [
       ['Dividing the wrong way round', "Mistake one: dividing the whole by the part. 18 out of 24 is 18 divided by 24, not 24 divided by 18. That would give a percentage over 100, which cannot be right for a score.", ['r|24 ÷ 18 = 1.33 → 133% ✗', 'g|18 ÷ 24 = 0.75 → 75% ✓']],
       ['Mixing the units', "Mistake two: using different units. 40 centimetres out of 2 metres is not 40 divided by 2. Change both to centimetres first.", ['r|40 ÷ 2 × 100 = 2000% ✗', 'g|40 ÷ 200 × 100 = 20% ✓']]],
-    real: ['In real life', "Test scores, discounts and surveys are all shown as percentages. If 12 out of 30 pupils walk to school, 12 divided by 30 is 0 point 4, which is 40%.", ['12 ÷ 30 = 0.4', '= 40% walk']],
+    real: ['In real life', "Test scores, discounts and surveys are all shown as percentages. If 12 out of 30 pupils walk to school, 12 divided by 30 is 0.4, which is 40%.", ['12 ÷ 30 = 0.4', '= 40% walk']],
     turns: [
       { q: 'Write 9 out of 25 as a percentage.', say: "Write the fraction 9 over 25. Multiply top and bottom by 4 to get 36 over 100. So it is 36%.", work: ['9/25', '9/25 = 36/100', '= 36%'], ans: ['g|36%'] },
-      { q: 'A shop sells 48 of its 60 cakes. What percentage were sold?', say: "The part is 48 and the whole is 60. 48 divided by 60 is 0 point 8. Multiplying by 100 gives 80%.", work: ['48 ÷ 60 = 0.8', '0.8 × 100 = 80%'], ans: ['g|80%'] },
-      { q: 'What percentage of 2 metres is 30 centimetres?', say: "The units are different. 2 metres is 200 centimetres. 30 over 200 is 0 point 1 5. That is 15%.", work: ['2 m = 200 cm', '30 ÷ 200 = 0.15', '0.15 × 100 = 15%'], ans: ['g|15%'] }],
+      { q: 'A shop sells 48 of its 60 cakes. What percentage were sold?', say: "The part is 48 and the whole is 60. 48 divided by 60 is 0.8. Multiplying by 100 gives 80%.", work: ['48 ÷ 60 = 0.8', '0.8 × 100 = 80%'], ans: ['g|80%'] },
+      { q: 'What percentage of 2 metres is 30 centimetres?', say: "The units are different. 2 metres is 200 centimetres. 30 over 200 is 0.15. That is 15%.", work: ['2 m = 200 cm', '30 ÷ 200 = 0.15', '0.15 × 100 = 15%'], ans: ['g|15%'] }],
     rec: ["Part divided by whole, times 100.", ['Write part over whole', 'Divide, then × 100', 'Same units first', 'Check by finding the percentage of the whole']]
   });
 
@@ -61,30 +61,30 @@
     head: 'Increase and decrease with a multiplier',
     basics: [['The multiplier', [
       ["To increase an amount by a percentage, we find the new percentage of the old amount. A 15% rise gives 115% of the old price. As a decimal, that is 1.15. This is the multiplier.", ['Increase 15%: 100% + 15% = 115%', 'Multiplier 1.15']],
-      ["To decrease, take the percentage away from 100%. A 20% fall leaves 80%, a multiplier of 0 point 8. Then multiply the old amount by the multiplier.", ['Decrease 20%: 100% − 20% = 80%', 'Multiplier 0.8']]]]],
+      ["To decrease, take the percentage away from 100%. A 20% fall leaves 80%, a multiplier of 0.8. Then multiply the old amount by the multiplier.", ['Decrease 20%: 100% − 20% = 80%', 'Multiplier 0.8']]]]],
     ex: [
       ['A price rise', [
         ["A jacket costs £60. The price goes up by 15%. What is the new price? 100 plus 15 is 115%. The multiplier is 1.15.", ['100% + 15% = 115%', 'Multiplier = 1.15']],
         ["60 times 1.15 is £69.", ['60 × 1.15', 'g|= £69']]]],
       ['A sale', [
-        ["A bag costs £50. It is reduced by 20%. What is the sale price? 100 minus 20 is 80%. The multiplier is 0 point 8.", ['100% − 20% = 80%', 'Multiplier = 0.8']],
-        ["50 times 0 point 8 is £40.", ['50 × 0.8', 'g|= £40']]]],
+        ["A bag costs £50. It is reduced by 20%. What is the sale price? 100 minus 20 is 80%. The multiplier is 0.8.", ['100% − 20% = 80%', 'Multiplier = 0.8']],
+        ["50 times 0.8 is £40.", ['50 × 0.8', 'g|= £40']]]],
       ['Finding the multiplier', [
-        ["What multiplier is used to decrease an amount by 35%? 100 minus 35 is 65. As a decimal, 0 point 6 5.", ['100 − 35 = 65', 'g|Multiplier = 0.65']]]],
+        ["What multiplier is used to decrease an amount by 35%? 100 minus 35 is 65. As a decimal, 0.65.", ['100 − 35 = 65', 'g|Multiplier = 0.65']]]],
       ['A phone', [
         ["A phone costs £250. The price rises by 12%. The multiplier is 1.12. 250 times 1.12 is £280.", ['250 × 1.12', 'g|= £280']]]]],
     mist: [
-      ['Using the percentage as the multiplier', "Mistake one: multiplying by the percentage itself. A 15% rise is not times 0 point 1 5. That finds the rise only, £9, not the new price.", ['r|60 × 0.15 = £9 ✗', 'g|60 × 1.15 = £69 ✓']],
+      ['Using the percentage as the multiplier', "Mistake one: multiplying by the percentage itself. A 15% rise is not times 0.15. That finds the rise only, £9, not the new price.", ['r|60 × 0.15 = £9 ✗', 'g|60 × 1.15 = £69 ✓']],
       ['Using the wrong direction', "Mistake two: using 1.2 for a decrease. A 20% decrease must make the amount smaller, so the multiplier must be less than 1.", ['r|50 × 1.2 = £60 ✗', 'g|50 × 0.8 = £40 ✓']]],
     real: ['In real life', "Value added tax of 20% is added to many prices. A chair costs £35 before tax. The multiplier is 1.2. 35 times 1.2 is £42.", ['35 × 1.2', '= £42']],
     turns: [
       { q: 'Increase £80 by 25%.', say: "100 plus 25 is 125%. The multiplier is 1.25. 80 times 1.25 is £100.", work: ['100% + 25% = 125%', 'Multiplier = 1.25', '80 × 1.25 = 100'], ans: ['g|£100'] },
-      { q: 'Decrease £150 by 40%.', say: "100 minus 40 is 60%. The multiplier is 0 point 6. 150 times 0 point 6 is £90.", work: ['100% − 40% = 60%', 'Multiplier = 0.6', '150 × 0.6 = 90'], ans: ['g|£90'] },
+      { q: 'Decrease £150 by 40%.', say: "100 minus 40 is 60%. The multiplier is 0.6. 150 times 0.6 is £90.", work: ['100% − 40% = 60%', 'Multiplier = 0.6', '150 × 0.6 = 90'], ans: ['g|£90'] },
       { q: 'A monthly wage of £1,200 rises by 3 and a half per cent. What is the new wage?', say: "One hundred plus three point five is one hundred and three point five per cent. The multiplier is one point zero three five. One thousand two hundred times one point zero three five is one thousand two hundred and forty-two pounds.", work: ['100% + 3.5% = 103.5%', 'Multiplier = 1.035', '1200 × 1.035 = 1242'], ans: ['g|£1,242'] }],
-    rec: ["Increase: multiplier above one. Decrease: multiplier below one.", ['Increase: 100% + the percentage', 'Decrease: 100% − the percentage', 'Change to a decimal for the multiplier', 'New amount = old amount × multiplier']]
+    rec: ["Increase: multiplier above 1. Decrease: multiplier below 1.", ['Increase: 100% + the percentage', 'Decrease: 100% − the percentage', 'Change to a decimal for the multiplier', 'New amount = old amount × multiplier']]
   });
 
-  fx('Finding a percentage change', 'how to find the percentage increase or decrease between two amounts.', {
+  fx('Finding a percentage change', 'how to find the percentage increase or decrease between 2 amounts.', {
     head: 'Percentage change',
     basics: [['The formula', [
       ["To find a percentage change, first find the change: the new amount minus the old amount. Then divide the change by the original amount. Then multiply by 100.", ['change = new − old', '% change = change ÷ original × 100']],
@@ -92,21 +92,21 @@
     ex: [
       ['A bike', [
         ["A bike costs £200 and is sold for 250. What is the percentage increase? The change is 250 minus 200, which is £50.", ['250 − 200 = 50']],
-        ["Divide by the original: 50 divided by 200 is 0 point 2 5. Multiply by 100. The increase is 25%.", ['50 ÷ 200 = 0.25', 'g|0.25 × 100 = 25%']]]],
+        ["Divide by the original: 50 divided by 200 is 0.25. Multiply by 100. The increase is 25%.", ['50 ÷ 200 = 0.25', 'g|0.25 × 100 = 25%']]]],
       ['A fall in price', [
-        ["A coat is reduced from £80 to 60. The change is £20 down. 20 divided by 80 is 0 point 2 5. The decrease is 25%.", ['80 − 60 = 20', '20 ÷ 80 = 0.25', 'g|25% decrease']]]],
+        ["A coat is reduced from £80 to 60. The change is £20 down. 20 divided by 80 is 0.25. The decrease is 25%.", ['80 − 60 = 20', '20 ÷ 80 = 0.25', 'g|25% decrease']]]],
       ['Profit', [
-        ["A trader buys a scarf for £8 and sells it for £10. The profit is £2. 2 divided by 8 is 0 point 2 5. The percentage profit is 25%.", ['10 − 8 = 2', '2 ÷ 8 = 0.25', 'g|25% profit']]]],
+        ["A trader buys a scarf for £8 and sells it for £10. The profit is £2. 2 divided by 8 is 0.25. The percentage profit is 25%.", ['10 − 8 = 2', '2 ÷ 8 = 0.25', 'g|25% profit']]]],
       ['Up and down are not the same', [
         ["A price goes from 80 to 100. That is 20 over 80, a 25% rise. Now it goes back from 100 to 80. That is 20 over 100, a 20% fall. The percentages are different because the original is different.", ['80 → 100: 20 ÷ 80 = 25% up', '100 → 80: 20 ÷ 100 = 20% down']]]]],
     mist: [
       ['Dividing by the new amount', "Mistake one: dividing by the new amount. For 200 rising to 250, 50 divided by 250 gives 20%. That is wrong. Divide by the original, 200.", ['r|50 ÷ 250 = 20% ✗', 'g|50 ÷ 200 = 25% ✓']],
       ['Forgetting to say increase or decrease', "Mistake two: giving just the number. 80 down to 60 is a decrease of 25%. Say whether it is an increase or a decrease.", ['r|Answer: 25% ✗ (up or down?)', 'g|25% decrease ✓']]],
-    real: ['In real life', "News reports use percentage change all the time. If a town has 2,400 people and grows to 3,000, the change is 600. 600 divided by 2,400 is 0 point 2 5. The population grew by 25%.", ['600 ÷ 2400 = 0.25', '25% growth']],
+    real: ['In real life', "News reports use percentage change all the time. If a town has 2,400 people and grows to 3,000, the change is 600. 600 divided by 2,400 is 0.25. The population grew by 25%.", ['600 ÷ 2400 = 0.25', '25% growth']],
     turns: [
-      { q: 'A price rises from £50 to £65. What is the percentage increase?', say: "The change is 65 minus 50, which is 15. 15 divided by 50 is 0 point 3. Multiply by 100. The increase is 30%.", work: ['65 − 50 = 15', '15 ÷ 50 = 0.3', '0.3 × 100 = 30%'], ans: ['g|30% increase'] },
-      { q: 'A TV goes from £90 down to £72 in a sale. What is the percentage decrease?', say: "The change is 90 minus 72, which is 18. 18 divided by 90 is 0 point 2. The decrease is 20%.", work: ['90 − 72 = 18', '18 ÷ 90 = 0.2', '0.2 × 100 = 20%'], ans: ['g|20% decrease'] },
-      { q: 'A village has 2,400 people. 5 years later it has 3,000. What is the percentage increase?', say: "The change is 3,000 minus 2,400, which is 600. 600 divided by 2,400 is 0 point 2 5. The increase is 25%.", work: ['3000 − 2400 = 600', '600 ÷ 2400 = 0.25', '0.25 × 100 = 25%'], ans: ['g|25% increase'] }],
+      { q: 'A price rises from £50 to £65. What is the percentage increase?', say: "The change is 65 minus 50, which is 15. 15 divided by 50 is 0.3. Multiply by 100. The increase is 30%.", work: ['65 − 50 = 15', '15 ÷ 50 = 0.3', '0.3 × 100 = 30%'], ans: ['g|30% increase'] },
+      { q: 'A TV goes from £90 down to £72 in a sale. What is the percentage decrease?', say: "The change is 90 minus 72, which is 18. 18 divided by 90 is 0.2. The decrease is 20%.", work: ['90 − 72 = 18', '18 ÷ 90 = 0.2', '0.2 × 100 = 20%'], ans: ['g|20% decrease'] },
+      { q: 'A village has 2,400 people. 5 years later it has 3,000. What is the percentage increase?', say: "The change is 3,000 minus 2,400, which is 600. 600 divided by 2,400 is 0.25. The increase is 25%.", work: ['3000 − 2400 = 600', '600 ÷ 2400 = 0.25', '0.25 × 100 = 25%'], ans: ['g|25% increase'] }],
     rec: ["Change divided by the original, times 100.", ['Change = new − old', 'Divide by the ORIGINAL', '× 100', 'Say increase or decrease']]
   });
 
@@ -128,7 +128,7 @@
         ["One thousand pounds at five per cent for two years. Simple interest gives fifty pounds a year, so one hundred pounds and a total of one thousand one hundred. Compound interest gives one thousand times one point zero five squared, which is one thousand, one hundred and two pounds fifty. Compound is better by two pounds fifty.", ['Simple: 1000 + 100 = £1,100', 'Compound: 1000 × 1.05² = £1,102.50']]]]],
     mist: [
       ['Using simple interest for compound', "Mistake one: working out compound interest as simple. 500 at 4% for 2 years is not 500 plus 2 lots of 20. With compound interest, year 2 earns interest on 520.", ['r|500 + 20 + 20 = £540 ✗', 'g|500 × 1.04² = £540.80 ✓']],
-      ['Leaving out the one', "Mistake two: using 0 point 0 4 as the multiplier. For growth, the multiplier is 1 plus the rate, 1.04.", ['r|500 × 0.04² ✗', 'g|500 × 1.04² ✓']]],
+      ['Leaving out the one', "Mistake two: using 0.04 as the multiplier. For growth, the multiplier is 1 plus the rate, 1.04.", ['r|500 × 0.04² ✗', 'g|500 × 1.04² ✓']]],
     real: ['In real life', "Savings accounts use compound interest. Loans and credit cards do too, which is why debts can grow quickly. Simple interest is used for some short loans.", ['Savings: compound growth', 'Loans: compound too']],
     turns: [
       { q: 'Find the simple interest on £800 at 3% a year for 4 years.', say: "3% of 800 is £24 each year. Over 4 years, that is 4 times 24, £96.", work: ['3% of £800 = 0.03 × 800 = £24 a year', '4 × 24 = £96'], ans: ['g|£96'] },
@@ -144,8 +144,8 @@
       ["Then compare the percentages. The biggest percentage is the best result. Always compare like with like.", ['Compare % with %']]]]],
     ex: [
       ['Two tests', [
-        ["In test 1 you score 36 out of 45. In test 2 you score 52 out of 80. Which is the better result? Test 1: 36 divided by 45 is 0 point 8, which is 80%.", ['36 ÷ 45 = 0.8', '= 80%']],
-        ["Test 2: 52 divided by 80 is 0 point 6 5, which is 65%. 80 is higher than 65, so test 1 is better.", ['52 ÷ 80 = 0.65', '= 65%', 'g|Test 1 is better']]]],
+        ["In test 1 you score 36 out of 45. In test 2 you score 52 out of 80. Which is the better result? Test 1: 36 divided by 45 is 0.8, which is 80%.", ['36 ÷ 45 = 0.8', '= 80%']],
+        ["Test 2: 52 divided by 80 is 0.65, which is 65%. 80 is higher than 65, so test 1 is better.", ['52 ÷ 80 = 0.65', '= 65%', 'g|Test 1 is better']]]],
       ['Close results', [
         ["Seven out of eight, or twenty-two out of twenty-five? Seven over eight is eighty-seven point five per cent. Twenty-two over twenty-five is eighty-eight per cent. The second is slightly better.", ['7/8 = 87.5%', '22/25 = 88%', 'g|22/25 is better']]]],
       ['Two discounts', [
@@ -157,7 +157,7 @@
       ['Comparing a percentage with an amount', "Mistake two: comparing 15% with £11. They are different things. Find 15% of the price in pounds, or change £11 to a percentage, before comparing.", ['r|15 > 11 ✗', 'g|£12 > £11 ✓']]],
     real: ['In real life', "Sports teams, exam boards and shops all compare using percentages. A player who scores nine goals from twelve shots has seventy-five per cent accuracy. Another scoring fifteen from twenty-four has about sixty-two point five per cent.", ['9/12 = 75%', '15/24 = 62.5%']],
     turns: [
-      { q: 'Amy scores 21 out of 30. Ben scores 34 out of 50. Who did better?', say: "Amy: 21 divided by 30 is 0 point 7, which is 70%. Ben: 34 divided by 50 is 0 point 6 8, which is 68%. 70 is bigger than 68, so Amy did better.", work: ['Amy: 21 ÷ 30 = 0.7 = 70%', 'Ben: 34 ÷ 50 = 0.68 = 68%', '70% > 68%'], ans: ['g|Amy did better'] },
+      { q: 'Amy scores 21 out of 30. Ben scores 34 out of 50. Who did better?', say: "Amy: 21 divided by 30 is 0.7, which is 70%. Ben: 34 divided by 50 is 0.68, which is 68%. 70 is bigger than 68, so Amy did better.", work: ['Amy: 21 ÷ 30 = 0.7 = 70%', 'Ben: 34 ÷ 50 = 0.68 = 68%', '70% > 68%'], ans: ['g|Amy did better'] },
       { q: 'Shop A takes 15% off an £80 coat. Shop B takes £11 off the same coat. Which shop gives the bigger saving?', say: "10% of 80 is £8. 5% is £4. So 15% is £12. 12 is more than 11, so shop A saves more.", work: ['10% of £80 = £8', '5% = £4', '15% = 8 + 4 = £12', '£12 > £11'], ans: ['g|Shop A'] },
       { q: '12 out of 16 pupils in class A passed. 15 out of 24 pupils in class B passed. Which class had the better pass rate?', say: "Class A: twelve divided by sixteen is zero point seven five, seventy-five per cent. Class B: fifteen divided by twenty-four is zero point six two five, sixty-two point five per cent. Seventy-five is bigger, so class A had the better pass rate.", work: ['A: 12 ÷ 16 = 0.75 = 75%', 'B: 15 ÷ 24 = 0.625 = 62.5%', '75% > 62.5%'], ans: ['g|Class A'] }],
     rec: ["Change to percentages before comparing.", ['Part ÷ whole × 100', 'Compare % with %', 'Bigger percentage is better', 'Percentage of a price can be changed to pounds']]

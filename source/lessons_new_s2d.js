@@ -8,7 +8,7 @@
     head: 'Adding and subtracting fractions',
     basics: [['Same denominator first', [
       ["The denominator tells us the size of the pieces. We can only add or subtract pieces that are the same size. So first we change the fractions so they have the same denominator. This is called a common denominator.", ['n|Same size pieces first', '1/2 + 1/3: halves and thirds are different sizes']],
-      ["Find the lowest common multiple of the denominators. Change each fraction to an equivalent one with that denominator. Then add or subtract the numerators only, and keep the denominator the same.", ['1. Common denominator (LCM)', '2. Make equivalent fractions', '3. Add or subtract the tops', '4. Simplify']]]]],
+      ["Find the lowest common multiple of the denominators. Change each fraction to an equivalent 1 with that denominator. Then add or subtract the numerators only, and keep the denominator the same.", ['1. Common denominator (LCM)', '2. Make equivalent fractions', '3. Add or subtract the tops', '4. Simplify']]]]],
     ex: [
       ['1 half add 1 third', [
         ["The denominators are 2 and 3. The lowest common multiple is 6. 1 half is 3 sixths, because we multiply the top and the bottom by 3. 1 third is 2 sixths, because we multiply top and bottom by 2.", ['LCM of 2 and 3 = 6', '1/2 = 3/6', '1/3 = 2/6']],
@@ -37,7 +37,7 @@
     head: 'Multiplying and dividing fractions',
     basics: [['Multiplying', [
       ["To multiply fractions, multiply the numerators together and multiply the denominators together. 2 thirds times 3 quarters is 2 times 3 over 3 times 4. That is 6 twelfths, which simplifies to a half.", ['2/3 × 3/4 = (2 × 3)/(3 × 4)', '= 6/12 = 1/2']],
-      ["We can often make it easier by cancelling first. The three on the top and the three on the bottom cancel. That leaves two over four, which is a half.", ['2/3 × 3/4 → cancel the 3s', '= 2/4 = 1/2']]]],
+      ["We can often make it easier by cancelling first. The 3 on the top and the 3 on the bottom cancel. That leaves 2 over 4, which is a half.", ['2/3 × 3/4 → cancel the 3s', '= 2/4 = 1/2']]]],
       ['Dividing', [
       ["To divide by a fraction, we flip the second fraction upside down and multiply. This is the reciprocal. 2 thirds divided by 4 fifths becomes 2 thirds times 5 quarters.", ['2/3 ÷ 4/5', '= 2/3 × 5/4']],
       ["Multiply across: 2 times 5 is 10, and 3 times 4 is 12. 10 twelfths simplifies to 5 sixths. We flip only the second fraction, the one we divide by.", ['= 10/12', 'g|= 5/6']]]]],
@@ -52,13 +52,13 @@
         ["2 and a quarter divided by 1 and a half. Change to improper fractions: 9 quarters divided by 3 halves. Flip the second fraction and multiply.", ['2 1/4 = 9/4', '1 1/2 = 3/2', '9/4 ÷ 3/2 = 9/4 × 2/3']],
         ["9 times 2 is 18. 4 times 3 is 12. 18 twelfths simplifies to 3 halves, which is 1 and a half.", ['= 18/12 = 3/2', 'g|= 1 1/2']]]]],
     mist: [
-      ['Flipping the wrong fraction', "Mistake one: flipping the first fraction, or both. Two thirds divided by 4 fifths. Wrong: 3 halves times 4 fifths. We only flip the second fraction. The first stays the same.", ['r|2/3 ÷ 4/5 = 3/2 × 4/5 ✗', 'g|2/3 ÷ 4/5 = 2/3 × 5/4 ✓']],
+      ['Flipping the wrong fraction', "Mistake one: flipping the first fraction, or both. 2 thirds divided by 4 fifths. Wrong: 3 halves times 4 fifths. We only flip the second fraction. The first stays the same.", ['r|2/3 ÷ 4/5 = 3/2 × 4/5 ✗', 'g|2/3 ÷ 4/5 = 2/3 × 5/4 ✓']],
       ['Multiplying mixed numbers part by part', "Mistake two: multiplying the whole numbers and fractions separately. 1 and a half times 2 and 2 thirds is not 1 times 2 plus a half times 2 thirds. Change to improper fractions first.", ['r|1 1/2 × 2 2/3 = (1 × 2) + (1/2 × 2/3) ✗', 'g|3/2 × 8/3 = 4 ✓']]],
     real: ['In real life', "You have 3 and a half litres of juice. Each glass holds a quarter of a litre. How many glasses? 3 and a half is 7 halves. 7 halves divided by a quarter is 7 halves times 4. That is 28 halves, which is 14 glasses.", ['3 1/2 ÷ 1/4 = 7/2 × 4/1', '= 28/2 = 14 glasses']],
     turns: [
       { q: 'Work out 3 quarters times 2 fifths.', task: '3/4 × 2/5', say: "Multiply the numerators: 3 times 2 is 6. Multiply the denominators: 4 times 5 is 20. 6 twentieths. Divide the top and the bottom by 2 to get 3 tenths.", work: ['3 × 2 = 6', '4 × 5 = 20', '6/20 = 3/10'], ans: ['g|3/10'] },
       { q: 'Work out 5 sixths divided by 2 thirds.', task: '5/6 ÷ 2/3', say: "Flip the second fraction and multiply. 5 sixths times 3 halves. 5 times 3 is 15. 6 times 2 is 12. 15 twelfths simplifies to 5 quarters, which is 1 and a quarter.", work: ['5/6 ÷ 2/3 = 5/6 × 3/2', '5 × 3 = 15 and 6 × 2 = 12', '15/12 = 5/4 = 1 1/4'], ans: ['g|1 1/4'] },
-      { q: 'A batch of biscuits needs two thirds of a cup of sugar. You have four and a half cups. How many batches can you make?', say: "We divide 4 and a half by 2 thirds. 4 and a half is 9 halves. 9 halves divided by 2 thirds is 9 halves times 3 halves. 9 times 3 is 27. 2 times 2 is 4. 27 quarters is 6 and 3 quarters. So 6 full batches, and 3 quarters of another.", work: ['4 1/2 = 9/2', '9/2 ÷ 2/3 = 9/2 × 3/2', '= 27/4', '= 6 3/4'], ans: ['g|6 full batches (6 3/4)'] }],
+      { q: 'A batch of biscuits needs 2 thirds of a cup of sugar. You have 4 and a half cups. How many batches can you make?', say: "We divide 4 and a half by 2 thirds. 4 and a half is 9 halves. 9 halves divided by 2 thirds is 9 halves times 3 halves. 9 times 3 is 27. 2 times 2 is 4. 27 quarters is 6 and 3 quarters. So 6 full batches, and 3 quarters of another.", work: ['4 1/2 = 9/2', '9/2 ÷ 2/3 = 9/2 × 3/2', '= 27/4', '= 6 3/4'], ans: ['g|6 full batches (6 3/4)'] }],
     rec: ["Multiply across. To divide, flip the second fraction and multiply.", ['Multiply the tops and the bottoms', 'Cancel before multiplying if you can', 'Divide: flip the second fraction, then multiply', 'Mixed numbers: change to improper fractions first', 'Simplify the answer']]
   });
 
@@ -79,11 +79,11 @@
         ["The cyclists are 1 quarter of 5 eighths. That is 5 thirty-seconds. Bus riders are 5 eighths minus 5 thirty-seconds: 20 thirty-seconds minus 5 thirty-seconds, which is 15 thirty-seconds.", ['1/4 × 5/8 = 5/32', '5/8 − 5/32 = 20/32 − 5/32', 'g|15/32 take the bus']]]]],
     mist: [
       ['Taking the second fraction of the original', "Mistake one: taking the second fraction of the whole amount. Aisha had £60 and spent a third. She then spends a quarter of what is left. Wrong: a quarter of 60 is 15. A quarter of the £40 left is 10.", ['r|1/4 of 60 = 15 ✗', 'g|1/4 of 40 = 10 ✓']],
-      ['Adding the fractions to find what is left', "Mistake two: adding one third and one quarter and saying the rest is five twelfths. The second fraction is a fraction of a smaller amount, so you cannot add the fractions directly.", ['r|1/3 + 1/4 = 7/12 spent ✗', 'n|1/4 is of what is left, not of the whole']]],
-    real: ['In real life', "Budgeting uses this idea. You spend a third of your wages on rent. Then you save a quarter of what is left. The savings are one quarter of two thirds of your wages, which is one sixth of your wages.", ['2/3 × 1/4 = 2/12 = 1/6']],
+      ['Adding the fractions to find what is left', "Mistake two: adding one third and one quarter and saying the rest is 5 twelfths. The second fraction is a fraction of a smaller amount, so you cannot add the fractions directly.", ['r|1/3 + 1/4 = 7/12 spent ✗', 'n|1/4 is of what is left, not of the whole']]],
+    real: ['In real life', "Budgeting uses this idea. You spend a third of your wages on rent. Then you save a quarter of what is left. The savings are one quarter of 2 thirds of your wages, which is one sixth of your wages.", ['2/3 × 1/4 = 2/12 = 1/6']],
     turns: [
       { q: 'Sam has £48. He spends 1 quarter on lunch, then 1 third of what is left on a book. How much does he have left?', say: "1 quarter of 48 is 12. So £36 are left. 1 third of 36 is 12 for the book. 36 minus 12 leaves £24.", work: ['1/4 of 48 = 12', '48 − 12 = 36 left', '1/3 of 36 = 12', '36 − 12 = 24'], ans: ['g|£24'] },
-      { q: 'A tank is two fifths used in the morning. In the afternoon one quarter of what is left is used. What fraction of the tank is left?', say: "After the morning, 3 fifths are left. 1 quarter of 3 fifths is 3 twentieths used in the afternoon. 3 fifths is 12 twentieths. 12 twentieths minus 3 twentieths is 9 twentieths.", work: ['1 − 2/5 = 3/5 left', '1/4 × 3/5 = 3/20 used', '3/5 = 12/20', '12/20 − 3/20 = 9/20'], ans: ['g|9/20 left'] },
+      { q: 'A tank is 2 fifths used in the morning. In the afternoon one quarter of what is left is used. What fraction of the tank is left?', say: "After the morning, 3 fifths are left. 1 quarter of 3 fifths is 3 twentieths used in the afternoon. 3 fifths is 12 twentieths. 12 twentieths minus 3 twentieths is 9 twentieths.", work: ['1 − 2/5 = 3/5 left', '1/4 × 3/5 = 3/20 used', '3/5 = 12/20', '12/20 − 3/20 = 9/20'], ans: ['g|9/20 left'] },
       { q: 'A bag has 72 sweets. 1 third are red. 3 eighths of the rest are green. How many are green?', say: "1 third of 72 is 24 red sweets. That leaves 48. 3 eighths of 48: 48 divided by 8 is 6, and 6 times 3 is 18. So 18 sweets are green.", work: ['1/3 of 72 = 24 red', '72 − 24 = 48 left', '48 ÷ 8 = 6', '6 × 3 = 18'], ans: ['g|18 green'] }],
     rec: ["Each new fraction is taken from what is left.", ['Find the first part', 'Subtract to find what is left', 'Take the next fraction of what is left', 'Do not add fractions of different wholes']]
   });
@@ -92,27 +92,27 @@
     head: 'Standard form',
     basics: [['What is standard form?', [
       ["Standard form is a way to write very big or very small numbers neatly. It is a number between 1 and 10, times a power of 10. We write a times 10 to the power n, where a is at least 1 and less than 10.", ['a × 10ⁿ', 'n|1 ≤ a < 10, n is a whole number']],
-      ["Big numbers have a positive power. Small numbers, less than one, have a negative power. The power tells us how many places the decimal point has moved.", ['Big: positive power', 'Small: negative power']]]]],
+      ["Big numbers have a positive power. Small numbers, less than 1, have a negative power. The power tells us how many places the decimal point has moved.", ['Big: positive power', 'Small: negative power']]]]],
     ex: [
       ['A large number', [
         ["Write 4 million 500,000 in standard form. Put the point to make a number between 1 and 10: 4.5. The point has moved 6 places to the left. So the power is positive 6.", ['4,500,000', '4.5 | 000000: moved 6 places']],
         ["4.5 times 10 to the six.", ['g|4,500,000 = 4.5 × 10⁶']]]],
       ['A small number', [
-        ["Write 0 point 0 0 0 7 2 in standard form. The first number must be between 1 and 10, so we want 7.2. The point moves 4 places to the right. Moving right for a small number gives a negative power.", ['0.00072', 'Point moves 4 places right']],
+        ["Write 0.00072 in standard form. The first number must be between 1 and 10, so we want 7.2. The point moves 4 places to the right. Moving right for a small number gives a negative power.", ['0.00072', 'Point moves 4 places right']],
         ["7.2 times 10 to the minus 4.", ['g|0.00072 = 7.2 × 10⁻⁴']]]],
       ['Back to an ordinary number', [
-        ["Write 3.08 times 10 to the five as an ordinary number. The power is 5, so move the point 5 places to the right. Add zeros to fill the places.", ['3.08 × 10⁵', '3.08 → 308000.']],
+        ["Write 3.08 times 10 to the 5 as an ordinary number. The power is 5, so move the point 5 places to the right. Add zeros to fill the places.", ['3.08 × 10⁵', '3.08 → 308000.']],
         ["The answer is 308,000.", ['g|308,000']]]],
       ['Which is bigger?', [
-        ["Compare 3 times 10 to the five and 8 times 10 to the four. Look at the powers first. 5 is bigger than 4, so the first number is bigger. Check: 300,000 against 80,000.", ['3 × 10⁵ = 300,000', '8 × 10⁴ = 80,000', 'g|3 × 10⁵ is bigger']]]]],
+        ["Compare 3 times 10 to the 5 and 8 times 10 to the four. Look at the powers first. 5 is bigger than 4, so the first number is bigger. Check: 300,000 against 80,000.", ['3 × 10⁵ = 300,000', '8 × 10⁴ = 80,000', 'g|3 × 10⁵ is bigger']]]]],
     mist: [
-      ['The first number is not between 1 and 10', "Mistake one: a number like 45 times 10 to the five. The first number must be between 1 and 10. 4.5 times 10 to the six is correct.", ['r|45 × 10⁵ ✗', 'g|4.5 × 10⁶ ✓']],
-      ['Wrong sign on the power', "Mistake two: using a positive power for a small number. Zero point 0 0 4 is 4 times 10 to the minus 3, not 10 to the three.", ['r|0.004 = 4 × 10³ ✗', 'g|0.004 = 4 × 10⁻³ ✓']]],
+      ['The first number is not between 1 and 10', "Mistake one: a number like 45 times 10 to the five. The first number must be between 1 and 10. 4.5 times 10 to the 6 is correct.", ['r|45 × 10⁵ ✗', 'g|4.5 × 10⁶ ✓']],
+      ['Wrong sign on the power', "Mistake two: using a positive power for a small number. 0 point 0 0 4 is 4 times 10 to the minus 3, not 10 to the three.", ['r|0.004 = 4 × 10³ ✗', 'g|0.004 = 4 × 10⁻³ ✓']]],
     real: ['In real life', "Scientists use standard form all the time. The Sun is about 150 million kilometres from the Earth: 1.5 times 10 to the eight. A red blood cell is about 7 times 10 to the minus 6 metres across.", ['1.5 × 10⁸ km', '7 × 10⁻⁶ m']],
     turns: [
       { q: 'Write 62,000 in standard form.', task: '62,000', say: "Put the point to make a number between 1 and 10: 6.2. The point moves 4 places to the left. So the power is 4. The answer is 6.2 times 10 to the four.", work: ['62,000 → 6.2', 'The point moved 4 places left', 'Power = 4'], ans: ['g|6.2 × 10⁴'] },
-      { q: 'Write zero point zero zero three five in standard form.', task: '0.0035', say: "We want a number between 1 and 10: 3.5. The point moves 3 places to the right. For a small number, that is a negative power. 3.5 times 10 to the minus 3.", work: ['0.0035 → 3.5', 'The point moved 3 places right', 'Power = −3'], ans: ['g|3.5 × 10⁻³'] },
-      { q: 'Write 2.9 times 10 to the minus 2 as an ordinary number.', task: '2.9 × 10⁻²', say: "A negative power means a small number. Move the point 2 places to the left. 2.9 becomes 0 point 0 2 9.", work: ['Power −2: move the point 2 places left', '2.9 → 0.029'], ans: ['g|0.029'] }],
+      { q: 'Write 0.0035 in standard form.', task: '0.0035', say: "We want a number between 1 and 10: 3.5. The point moves 3 places to the right. For a small number, that is a negative power. 3.5 times 10 to the minus 3.", work: ['0.0035 → 3.5', 'The point moved 3 places right', 'Power = −3'], ans: ['g|3.5 × 10⁻³'] },
+      { q: 'Write 2.9 times 10 to the minus 2 as an ordinary number.', task: '2.9 × 10⁻²', say: "A negative power means a small number. Move the point 2 places to the left. 2.9 becomes 0.029.", work: ['Power −2: move the point 2 places left', '2.9 → 0.029'], ans: ['g|0.029'] }],
     rec: ["Standard form: a number from 1 up to 10, times a power of 10.", ['a × 10ⁿ with 1 ≤ a < 10', 'Big numbers: positive power', 'Small numbers: negative power', 'The power counts the places the point moves']]
   });
 
@@ -135,9 +135,9 @@
         ["Add three times ten to the four and five times ten to the three. We cannot just add the front numbers when the powers are different. Write them as ordinary numbers. Thirty thousand and five thousand.", ['3 × 10⁴ = 30,000', '5 × 10³ = 5,000']],
         ["35,000. In standard form, that is 3.5 times 10 to the four.", ['30,000 + 5,000 = 35,000', 'g|3.5 × 10⁴']]]]],
     mist: [
-      ['Multiplying the powers', "Mistake one: multiplying the powers. 10 to the 3 times 10 to the five is 10 to the eight. Add the powers, do not multiply them.", ['r|10³ × 10⁵ = 10¹⁵ ✗', 'g|10³ × 10⁵ = 10⁸ ✓']],
+      ['Multiplying the powers', "Mistake one: multiplying the powers. 10 to the 3 times 10 to the 5 is 10 to the eight. Add the powers, do not multiply them.", ['r|10³ × 10⁵ = 10¹⁵ ✗', 'g|10³ × 10⁵ = 10⁸ ✓']],
       ['Leaving the answer untidy', "Mistake two: leaving 15 times 10 to the seven. It looks right, but the front number is bigger than 10. Change it to 1.5 times 10 to the eight.", ['r|15 × 10⁷ (not standard form) ✗', 'g|1.5 × 10⁸ ✓']]],
-    real: ['In real life', "Light travels at 3 times 10 to the five kilometres each second. In 500 seconds, which is 5 times 10 to the 2, it travels 3 times 5, which is 15, times 10 to the seven kilometres. That is 1.5 times 10 to the eight kilometres, the distance to the Sun.", ['(3 × 10⁵) × (5 × 10²) = 15 × 10⁷', 'g|= 1.5 × 10⁸ km']],
+    real: ['In real life', "Light travels at 3 times 10 to the 5 kilometres each second. In 500 seconds, which is 5 times 10 to the 2, it travels 3 times 5, which is 15, times 10 to the 7 kilometres. That is 1.5 times 10 to the 8 kilometres, the distance to the Sun.", ['(3 × 10⁵) × (5 × 10²) = 15 × 10⁷', 'g|= 1.5 × 10⁸ km']],
     turns: [
       { q: 'Work out 4 times 10 to the 3, multiplied by 2 times 10 to the four.', task: '(4 × 10³) × (2 × 10⁴)', say: "Multiply the front numbers: 4 times 2 is 8. Add the powers: 3 plus 4 is 7. The answer is 8 times 10 to the seven.", work: ['4 × 2 = 8', '3 + 4 = 7'], ans: ['g|8 × 10⁷'] },
       { q: 'Work out 5 times 10 to the 6, multiplied by 4 times 10 to the two. Give the answer in standard form.', task: '(5 × 10⁶) × (4 × 10²)', say: "Multiply the front numbers: 5 times 4 is 20. Add the powers: 6 plus 2 is 8. That gives 20 times 10 to the eight. 20 is 2 times 10, so the power goes up by 1. 2 times 10 to the nine.", work: ['5 × 4 = 20', '6 + 2 = 8', '20 × 10⁸', '20 = 2 × 10, so 2 × 10⁹'], ans: ['g|2 × 10⁹'] },
@@ -145,28 +145,28 @@
     rec: ["Multiply: multiply the fronts and add the powers. Divide: divide the fronts and subtract the powers.", ['× : fronts multiply, powers add', '÷ : fronts divide, powers subtract', 'Tidy so the front is from 1 up to 10', 'Adding: write as ordinary numbers first']]
   });
 
-  fx('Index laws and negative indices', 'the laws for multiplying and dividing powers, and what zero and negative powers mean.', {
+  fx('Index laws and negative indices', 'the laws for multiplying and dividing powers, and what 0 and negative powers mean.', {
     head: 'Index laws',
     basics: [['The laws', [
       ["The index, or power, tells us how many times to multiply. When we multiply powers with the same base, we add the indices. When we divide powers with the same base, we subtract the indices. When we raise a power to a power, we multiply the indices.", ['aᵐ × aⁿ = aᵐ⁺ⁿ', 'aᵐ ÷ aⁿ = aᵐ⁻ⁿ', '(aᵐ)ⁿ = aᵐⁿ']],
-      ["Two special cases. Any number to the power zero is one. A negative power means one over the positive power.", ['a⁰ = 1', 'a⁻ⁿ = 1/aⁿ']]]]],
+      ["2 special cases. Any number to the power 0 is 1. A negative power means 1 over the positive power.", ['a⁰ = 1', 'a⁻ⁿ = 1/aⁿ']]]]],
     ex: [
       ['Multiplying and dividing', [
-        ["2 to the 5 times 2 to the three. The bases are the same, so add the indices: 5 plus 3 is 8. 2 to the eight is 256.", ['2⁵ × 2³ = 2⁵⁺³', '= 2⁸', 'g|= 256']],
+        ["2 to the 5 times 2 to the three. The bases are the same, so add the indices: 5 plus 3 is 8. 2 to the 8 is 256.", ['2⁵ × 2³ = 2⁵⁺³', '= 2⁸', 'g|= 256']],
         ["5 to the 7 divided by 5 to the four. Subtract the indices: 7 minus 4 is 3. 5 cubed is 125.", ['5⁷ ÷ 5⁴ = 5⁷⁻⁴', '= 5³', 'g|= 125']]]],
       ['A power of a power', [
         ["3 squared, all cubed. That means 3 squared times 3 squared times 3 squared. Multiply the indices: 2 times 3 is 6.", ['(3²)³ = 3²ˣ³', '= 3⁶', 'g|= 729']]]],
       ['Zero and negative indices', [
-        ["7 to the zero is 1. Any number to the power 0 is 1. 2 to the minus 3 is 1 over 2 cubed. 2 cubed is 8, so it is 1 eighth.", ['7⁰ = 1', '2⁻³ = 1/2³ = 1/8']],
-        ["10 to the minus 2 is 1 over 10 squared, which is 1 over 100. That is 0 point 0 1. Negative powers give small numbers, not negative numbers.", ['10⁻² = 1/10² = 1/100', 'g|= 0.01']]]],
+        ["7 to the 0 is 1. Any number to the power 0 is 1. 2 to the minus 3 is 1 over 2 cubed. 2 cubed is 8, so it is 1 eighth.", ['7⁰ = 1', '2⁻³ = 1/2³ = 1/8']],
+        ["10 to the minus 2 is 1 over 10 squared, which is 1 over 100. That is 0.01. Negative powers give small numbers, not negative numbers.", ['10⁻² = 1/10² = 1/100', 'g|= 0.01']]]],
       ['With letters', [
         ["Simplify 3 x squared times 4 x cubed. Multiply the numbers: 3 times 4 is 12. Add the powers of x: 2 plus 3 is 5.", ['3x² × 4x³', '3 × 4 = 12', 'x² × x³ = x⁵', 'g|12x⁵']]]]],
     mist: [
-      ['Multiplying the bases', "Mistake one: multiplying the bases. 2 cubed times 2 to the four is not 4 to the seven. The base stays 2. The answer is 2 to the seven.", ['r|2³ × 2⁴ = 4⁷ ✗', 'g|2³ × 2⁴ = 2⁷ ✓']],
-      ['Negative index means negative number', "Mistake two: thinking a negative index gives a negative answer. Two to the minus 3 is 1 eighth. It is a small positive number.", ['r|2⁻³ = −8 ✗', 'g|2⁻³ = 1/8 ✓']]],
+      ['Multiplying the bases', "Mistake one: multiplying the bases. 2 cubed times 2 to the 4 is not 4 to the seven. The base stays 2. The answer is 2 to the seven.", ['r|2³ × 2⁴ = 4⁷ ✗', 'g|2³ × 2⁴ = 2⁷ ✓']],
+      ['Negative index means negative number', "Mistake two: thinking a negative index gives a negative answer. 2 to the minus 3 is 1 eighth. It is a small positive number.", ['r|2⁻³ = −8 ✗', 'g|2⁻³ = 1/8 ✓']]],
     real: ['In real life', "Computers store data in powers of 2. 1 kilobyte is 2 to the 10 bytes, which is 1,024. 2 to the 10 times 2 to the 10 is 2 to the 20, which is about 1 million bytes, or 1 megabyte.", ['2¹⁰ = 1024', '2¹⁰ × 2¹⁰ = 2²⁰ ≈ 1,000,000']],
     turns: [
-      { q: 'Work out 3 to the 4 times 3 squared.', task: '3⁴ × 3²', say: "The bases are the same, so add the indices. 4 plus 2 is 6. 3 to the six is 729.", work: ['3⁴ × 3² = 3⁴⁺²', '= 3⁶', '3⁶ = 729'], ans: ['g|729'] },
+      { q: 'Work out 3 to the 4 times 3 squared.', task: '3⁴ × 3²', say: "The bases are the same, so add the indices. 4 plus 2 is 6. 3 to the 6 is 729.", work: ['3⁴ × 3² = 3⁴⁺²', '= 3⁶', '3⁶ = 729'], ans: ['g|729'] },
       { q: 'Work out 6 to the 9 divided by 6 to the seven.', task: '6⁹ ÷ 6⁷', say: "The bases are the same, so subtract the indices. 9 minus 7 is 2. 6 squared is 36.", work: ['6⁹ ÷ 6⁷ = 6⁹⁻⁷', '= 6²', '6² = 36'], ans: ['g|36'] },
       { q: 'Work out 4 to the minus 2, as a fraction.', task: '4⁻²', say: "A negative index means 1 over the positive power. So it is 1 over 4 squared. 4 squared is 16. The answer is 1 sixteenth.", work: ['4⁻² = 1/4²', '4² = 16', '= 1/16'], ans: ['g|1/16'] }],
     rec: ["Same base: add when multiplying, subtract when dividing.", ['aᵐ × aⁿ = aᵐ⁺ⁿ', 'aᵐ ÷ aⁿ = aᵐ⁻ⁿ', '(aᵐ)ⁿ = aᵐⁿ', 'a⁰ = 1', 'a⁻ⁿ = 1/aⁿ']]
@@ -182,7 +182,7 @@
         ["A pipe is 250 millimetres, plus or minus 5. The smallest allowed length is 250 minus 5, which is 245.", ['250 ± 5 mm', '250 − 5 = 245']],
         ["The largest is 250 plus 5, which is 255. Any pipe from 245 to 255 millimetres is accepted.", ['250 + 5 = 255', 'g|245 mm to 255 mm']]]],
       ['Is it acceptable?', [
-        ["A bolt should be 25 millimetres, plus or minus 0 point 2. The range is from 24.8 to 25.2. Is a bolt of 24.7 acceptable?", ['25 − 0.2 = 24.8', '25 + 0.2 = 25.2']],
+        ["A bolt should be 25 millimetres, plus or minus 0.2. The range is from 24.8 to 25.2. Is a bolt of 24.7 acceptable?", ['25 − 0.2 = 24.8', '25 + 0.2 = 25.2']],
         ["24.7 is less than 24.8, so it is outside the range. The bolt is rejected.", ['24.7 < 24.8', 'g|Rejected']]]],
       ['How big is the range?', [
         ["The total range is the largest minus the smallest. For 50 plus or minus 2, that is 52 minus 48, which is 4. It is twice the tolerance.", ['52 − 48 = 4', 'Range = 2 × tolerance', 'g|Range = 4']]]]],
@@ -191,8 +191,8 @@
       ['Mixing up the target and the range', "Mistake two: reading the range as the tolerance. The tolerance is how far from the target. The whole range is twice that.", ['Tolerance = 2', 'Range = 48 to 52 = 4 wide']]],
     real: ['In real life', "Factories use tolerance for every part. A phone case that is slightly too big will not fit. In medicine, a tablet must contain the right dose, plus or minus a very small tolerance.", ['Part length 80 ± 0.1 mm', '79.9 mm to 80.1 mm']],
     turns: [
-      { q: 'A plank is 40 centimetres, plus or minus 0 point 3. Find the smallest and largest acceptable lengths.', say: "The smallest length is 40 minus 0 point 3, which is 39.7. The largest length is 40 plus 0 point 3, which is 40.3.", work: ['40 − 0.3 = 39.7', '40 + 0.3 = 40.3'], ans: ['g|39.7 cm to 40.3 cm'] },
-      { q: 'A shaft should be 12 millimetres, plus or minus 0 point 1 5. Is a shaft of 12.18 acceptable?', say: "The smallest allowed is 12 minus 0 point 1 5, which is 11.85. The largest allowed is 12 plus 0 point 1 5, which is 12.15. 12.18 is bigger than 12.15, so it is outside the range.", work: ['12 − 0.15 = 11.85', '12 + 0.15 = 12.15', '12.18 > 12.15: outside the range'], ans: ['g|No, it is rejected'] },
+      { q: 'A plank is 40 centimetres, plus or minus 0.3. Find the smallest and largest acceptable lengths.', say: "The smallest length is 40 minus 0.3, which is 39.7. The largest length is 40 plus 0.3, which is 40.3.", work: ['40 − 0.3 = 39.7', '40 + 0.3 = 40.3'], ans: ['g|39.7 cm to 40.3 cm'] },
+      { q: 'A shaft should be 12 millimetres, plus or minus 0.15. Is a shaft of 12.18 acceptable?', say: "The smallest allowed is 12 minus 0.15, which is 11.85. The largest allowed is 12 plus 0.15, which is 12.15. 12.18 is bigger than 12.15, so it is outside the range.", work: ['12 − 0.15 = 11.85', '12 + 0.15 = 12.15', '12.18 > 12.15: outside the range'], ans: ['g|No, it is rejected'] },
       { q: 'A rod is 150 millimetres with a tolerance of 2 millimetres. How wide is the range of acceptable lengths?', say: "The smallest is 150 minus 2, which is 148. The largest is 150 plus 2, which is 152. The range is the difference: 4 millimetres.", work: ['150 − 2 = 148', '150 + 2 = 152', '152 − 148 = 4'], ans: ['g|4 mm'] }],
     rec: ["Tolerance is how far a value can be above or below the target.", ['Smallest = target − tolerance', 'Largest = target + tolerance', 'Outside the range: rejected', 'Range = 2 × tolerance']]
   });

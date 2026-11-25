@@ -9,7 +9,7 @@
     L.full(T, [
       SC('Powers', 'Start with the basics', [
         S("Imagine you want to write 2 times 2 times 2 times 2 times 2. It is long. There is a short way to write it. We write 2 to the power 5. This short way is called a power.", E('2 × 2 × 2 × 2 × 2 = 2⁵', 'g')),
-        S("A power has two parts. The big number at the bottom is called the base. It is the number we multiply. The small raised number is called the index. It tells us how many times the base is written in the multiplication.", E('3⁴') + V.cols([V.card('Base: 3', 'b', true), V.card('Index: 4', 'g', true)], 2)),
+        S("A power has 2 parts. The big number at the bottom is called the base. It is the number we multiply. The small raised number is called the index. It tells us how many times the base is written in the multiplication.", E('3⁴') + V.cols([V.card('Base: 3', 'b', true), V.card('Index: 4', 'g', true)], 2)),
         S("So 3 to the power 4 means 4 threes multiplied together. 3 times 3 times 3 times 3.", E('3⁴ = 3 × 3 × 3 × 3', 'b'))
       ]),
       SC('Evaluating powers', 'Example 1: 3⁴', [
@@ -35,13 +35,13 @@
       SC('Watch out!', 'Three common mistakes', [
         S("Mistake one: multiplying the base by the index. 2 to the power 7 is not 2 times 7. It is 2 multiplied by itself 7 times.", r('2⁷ = 14  ✗') + g('2⁷ = 128  ✓')),
         S("Mistake two: squaring a number by doubling it. 3 squared is 3 times 3, which is 9. It is not 6.", r('3² = 6  ✗') + g('3² = 9  ✓')),
-        S("Mistake three: mixing up the base and the index. Two to the power three is eight. Three to the power two is nine. They are different.", E('2³ = 8') + E('3² = 9'))
+        S("Mistake three: mixing up the base and the index. 2 to the power 3 is 8. 3 to the power 2 is 9. They are different.", E('2³ = 8') + E('3² = 9'))
       ]),
       SC('In real life', 'Doubling', [
         S("A bacterium splits in 2 every hour. After 1 hour there are 2. After 2 hours there are 4. After 10 hours there are 2 to the power 10, which is 1,024 bacteria. 1 bacterium becomes more than a thousand in just 10 hours.", g('2¹⁰ = 1,024'))
       ]),
       L.turn("Your turn! Number one. Write 243 as a power of 3. Pause and try it.", E('243 = 3^?'), "Keep multiplying by 3. 3, 9, 27, 81, 243. That is 5 threes. So 3 to the power 5.", g('243 = 3⁵')),
-      L.turn("Your turn! Number two. What is four to the power three? Pause and try it.", E('4³'), "4 times 4 is 16. 16 times 4 is 64.", g('4³ = 64')),
+      L.turn("Your turn! Number two. What is 4 to the power 3? Pause and try it.", E('4³'), "4 times 4 is 16. 16 times 4 is 64.", g('4³ = 64')),
       L.turn("Your turn! Number three. Write 1,000 as a power of 10. Pause and try it.", E('1,000 = 10^?'), "1,000 has 3 zeros after the one. So 10 to the power 3.", g('10³')),
       L.rec(T, "A power multiplies the base by itself as many times as the index says. To write a number as a power, keep multiplying by the base, and count. Some numbers can be written as a power in more than one way. Take care. The index counts the multiplications, it is not multiplied.", ['Base and index', 'aⁿ: a × a × … n times', 'Divide or multiply repeatedly to find n', 'Some numbers have several forms'])
     ]);
@@ -53,8 +53,8 @@
     L.full(T, [
       SC('Prime factors', 'Start with the basics', [
         S("First, what is a prime number? A prime number has exactly 2 factors: 1, and itself. 2, 3, 5, 7, 11 and 13 are all prime. 9 is not prime, because 3 goes into it.", E('2, 3, 5, 7, 11, 13, 17, 19 …', 'b')),
-        S("The number one is not prime, because it only has one factor. And two is the only even prime number.", V.rule('Prime: exactly two factors.')),
-        S("Here is a wonderful fact. Every whole number bigger than one can be written as a product of primes, in exactly one way. Primes are the building blocks of all numbers. A product just means a multiplication.", E('90 = 2 × 3 × 3 × 5', 'g'))
+        S("The number one is not prime, because it only has 1 factor. And 2 is the only even prime number.", V.rule('Prime: exactly 2 factors.')),
+        S("Here is a wonderful fact. Every whole number bigger than 1 can be written as a product of primes, in exactly one way. Primes are the building blocks of all numbers. A product just means a multiplication.", E('90 = 2 × 3 × 3 × 5', 'g'))
       ]),
       SC('The factor tree', 'Example 1: 90', [
         S("A factor tree is one way to find the prime factors. Start with 90. Split it into any 2 factors. 9 times 10 works.", E('90 = 9 × 10')),
@@ -69,15 +69,15 @@
       ]),
       SC('HCF from prime factors', 'Example 3: 90 and 168', [
         S("Prime factors give us a neat way to find the highest common factor. Write both numbers as products of primes. 90 is 2 times 3 squared times 5. 168 is 2 cubed times 3 times 7.", E('90 = 2 × 3² × 5') + E('168 = 2³ × 3 × 7')),
-        S("The common factors are the primes that appear in both. Both have a 2. Both have a 3. Take the lowest power of each. One 2, and 1 3. Multiply them. 2 times 3 is 6.", g('HCF = 2 × 3 = 6'))
+        S("The common factors are the primes that appear in both. Both have a 2. Both have a 3. Take the lowest power of each. 1 2, and 1 3. Multiply them. 2 times 3 is 6.", g('HCF = 2 × 3 = 6'))
       ]),
       SC('LCM from prime factors', 'Example 4: 90 and 168', [
-        S("For the lowest common multiple, we use every prime that appears in either number, with the highest power of each. The highest power of two is two cubed. The highest power of three is three squared. Five and seven appear once each.", E('2³ × 3² × 5 × 7')),
+        S("For the lowest common multiple, we use every prime that appears in either number, with the highest power of each. The highest power of 2 is 2 cubed. The highest power of 3 is 3 squared. 5 and 7 appear once each.", E('2³ × 3² × 5 × 7')),
         S("Multiply them. 8 times 9 is 72. 72 times 5 is 360. 360 times 7 is 2,000, 520.", g('LCM = 2,520'))
       ]),
       SC('Watch out!', 'Three common mistakes', [
         S("Mistake one: stopping before all the factors are prime. If you write 90 as 9 times 10, you are not finished. 9 and 10 are not prime.", r('90 = 9 × 10  ✗') + g('90 = 2 × 3² × 5  ✓')),
-        S("Mistake two: thinking one is prime. It is not. It has only one factor. Never put one in a list of prime factors.", V.rule('One is not prime.')),
+        S("Mistake two: thinking 1 is prime. It is not. It has only one factor. Never put 1 in a list of prime factors.", V.rule('One is not prime.')),
         S("Mistake three: forgetting to use powers. 2 times 2 times 2 should be written as 2 cubed. It saves space, and it makes comparing easier.", E('2 × 2 × 2 × 3 = 2³ × 3', 'g'))
       ]),
       SC('In real life', 'Secret codes', [
@@ -86,7 +86,7 @@
       L.turn("Your turn! Number one. Write 120 as a product of prime factors. Pause and try it.", E('120 = ?'), "120 divided by 2 is 60, then 30, then 15. 15 is 3 times 5. So 2 cubed times 3 times 5.", g('120 = 2³ × 3 × 5')),
       L.turn("Your turn! Number two. Write 84 as a product of prime factors. Pause and try it.", E('84 = ?'), "84 divided by 2 is 42, then 21. 21 is 3 times 7. So 2 squared times 3 times 7.", g('84 = 2² × 3 × 7')),
       L.turn("Your turn! Number three. Use the prime factors of 90 and 120 to find the highest common factor. Pause and try it.", E('90 = 2 × 3² × 5') + E('120 = 2³ × 3 × 5'), "The lowest powers are 2, 3 and 5. Multiply them. 2 times 3 times 5 is 30.", g('HCF = 30')),
-      L.rec(T, "A prime number has exactly two factors. Every number can be written as a product of primes in just one way. Use a factor tree or repeated division until every factor is prime. Write repeats as powers. The highest common factor uses the lowest powers of the shared primes. The lowest common multiple uses the highest powers of all the primes.", ['Factor tree or division', 'End with primes only', 'Use index form', 'HCF: shared, lowest powers', 'LCM: all, highest powers'])
+      L.rec(T, "A prime number has exactly 2 factors. Every number can be written as a product of primes in just one way. Use a factor tree or repeated division until every factor is prime. Write repeats as powers. The highest common factor uses the lowest powers of the shared primes. The lowest common multiple uses the highest powers of all the primes.", ['Factor tree or division', 'End with primes only', 'Use index form', 'HCF: shared, lowest powers', 'LCM: all, highest powers'])
     ]);
   })();
 
@@ -104,28 +104,28 @@
       ]),
       SC('Percentage decrease', 'Example 2: 1,250 to 1,000', [
         S("The number of visitors to a museum falls from 1,000, 250 to 1,000. The change is 250.", E('1,250 − 1,000 = 250')),
-        S("Divide by the original, which is the bigger number this time. 250 divided by 1,000, 250 is 0 point 2. That is 20%. A 20% decrease.", g('250 ÷ 1,250 × 100 = 20%'))
+        S("Divide by the original, which is the bigger number this time. 250 divided by 1,000, 250 is 0.2. That is 20%. A 20% decrease.", g('250 ÷ 1,250 × 100 = 20%'))
       ]),
       SC('Applying a change', 'Example 3: multipliers', [
         S("Now the other way round. We know the percentage, and we want the new amount. Increase 320 by 15%. There is a quick way. The original is 100%. Add 15. That makes 115%. As a decimal, 1.15.", E('100% + 15% = 115% = 1.15')),
         S("Multiply by the multiplier. 320 times 1.15 is 368.", g('320 × 1.15 = 368')),
-        S("For a decrease, take away. 100% minus 15 is 85%, which is 0 point 8 5. 320 times 0 point 8 5 is 272.", g('320 × 0.85 = 272'))
+        S("For a decrease, take away. 100% minus 15 is 85%, which is 0.85. 320 times 0.85 is 272.", g('320 × 0.85 = 272'))
       ]),
       SC('Profit and loss', 'Example 4: percentage profit', [
         S("A trader buys a bike for £40 and sells it for £52. The profit is £12. What is that as a percentage? Always divide by the cost price, which is where we started.", E('52 − 40 = 12')),
-        S("12 divided by 40 is 0 point 3. Multiply by 100. The profit is 30%.", g('12 ÷ 40 × 100 = 30%'))
+        S("12 divided by 40 is 0.3. Multiply by 100. The profit is 30%.", g('12 ÷ 40 × 100 = 30%'))
       ]),
       SC('Watch out!', 'Three common mistakes', [
         S("Mistake one: dividing by the new value instead of the original. In example one, dividing 6 by 54 would give the wrong answer.", r('6 ÷ 54  ✗') + g('6 ÷ 48  ✓')),
         S("Mistake two: forgetting to multiply by one hundred. Zero point one two five is a decimal. It must be turned into twelve point five per cent.", r('0.125%  ✗') + g('12.5%  ✓')),
-        S("Mistake three: using the wrong multiplier. A 15% decrease is times 0 point 8 5, not 0 point 1 5.", r('× 0.15  ✗') + g('× 0.85  ✓'))
+        S("Mistake three: using the wrong multiplier. A 15% decrease is times 0.85, not 0.15.", r('× 0.15  ✗') + g('× 0.85  ✓'))
       ]),
       SC('In real life', 'Population', [
-        S("A town grows from 18,000 people to 19,000, 800. The change is 1,000, 800. Divide by the original, 18,000. That is 0 point 1. So the population grew by 10%.", g('1,800 ÷ 18,000 × 100 = 10%'))
+        S("A town grows from 18,000 people to 19,000, 800. The change is 1,000, 800. Divide by the original, 18,000. That is 0.1. So the population grew by 10%.", g('1,800 ÷ 18,000 × 100 = 10%'))
       ]),
-      L.turn("Your turn! Number one. A price falls from £80 to £68. What is the percentage decrease? Pause and try it.", E('80 → 68'), "The change is £12. 12 divided by 80 is 0 point 1 5. That is 15%.", g('12 ÷ 80 × 100 = 15%')),
+      L.turn("Your turn! Number one. A price falls from £80 to £68. What is the percentage decrease? Pause and try it.", E('80 → 68'), "The change is £12. 12 divided by 80 is 0.15. That is 15%.", g('12 ÷ 80 × 100 = 15%')),
       L.turn("Your turn! Number two. Increase £250 by 12%. Pause and try it.", E('250 × 1.12'), "The multiplier is 1.12. 250 times 1.12 is £280.", g('£280')),
-      L.turn("Your turn! Number three. A phone costs £600. It is reduced by 20%. What is the sale price? Pause and try it.", E('600 × 0.8'), "The multiplier is 0 point 8. 600 times 0 point 8 is £480.", g('£480')),
+      L.turn("Your turn! Number three. A phone costs £600. It is reduced by 20%. What is the sale price? Pause and try it.", E('600 × 0.8'), "The multiplier is 0.8. 600 times 0.8 is £480.", g('£480')),
       L.rec(T, "To find a percentage change, work out the change, divide by the original, and multiply by 100. To apply a percentage change, use a multiplier. For an increase, add the percentage to 100. For a decrease, take it away. Always divide by the original amount, not the new 1.", ['Change = new − original', '÷ original × 100', 'Increase: × (1 + r)', 'Decrease: × (1 − r)'])
     ]);
   })();
@@ -140,7 +140,7 @@
       ]),
       SC('Pounds to euros', 'Example 1: multiply', [
         S("How many euros do you get for three hundred and fifty pounds? One pound gives one point one six euros. So three hundred and fifty pounds gives three hundred and fifty times one point one six.", E('£350 × 1.16')),
-        S("350 times 1 is 350. 350 times 0 point 1 6 is 56. Add them. 406 euros.", g('350 × 1.16 = €406')),
+        S("350 times 1 is 350. 350 times 0.16 is 56. Add them. 406 euros.", g('350 × 1.16 = €406')),
         S("A good check: you should get more euros than pounds, because £1 buys more than 1 euro. 406 is bigger than 350. Good.", V.rule('£1 buys more than €1, so expect more euros.'))
       ]),
       SC('Euros to pounds', 'Example 2: divide', [
@@ -193,7 +193,7 @@
         S("We can also check whether a number is in the sequence. Is 111 in it? Solve 4 n plus 3 equals 111. 4 n is 108. So n is 27. It is a whole number, so yes. It is the twenty-seventh term.", E('4n + 3 = 111') + E('n = 27 ✓', 'g'))
       ]),
       SC('Patterns of shapes', 'Example 4: matchsticks', [
-        S("Patterns can be made of shapes. One triangle uses three matchsticks. Two triangles in a row use five. Three triangles use seven.", V.cards(['3', '5', '7'], ['b'], true)),
+        S("Patterns can be made of shapes. 1 triangle uses 3 matchsticks. 2 triangles in a row use 5. 3 triangles use 7.", V.cards(['3', '5', '7'], ['b'], true)),
         S("The difference is 2, so the formula starts with 2 n. 2 n gives 2, 4, 6. We need 3, 5, 7, so add 1. The number of matchsticks is 2 n plus 1.", g('M = 2n + 1'))
       ]),
       SC('Watch out!', 'Three common mistakes', [
@@ -212,7 +212,7 @@
     var T = 'How do you simplify algebraic terms?';
     L.full(T, [
       SC('Algebra', 'Start with the basics', [
-        S("In algebra we use letters to stand for numbers. A term is one piece of an expression, like three x, or five y, or seven. The number in front of the letter is called the coefficient.", E('3x', 'b') + V.cols([V.card('Coefficient: 3', 'g', true), V.card('Letter: x', 'b', true)], 2)),
+        S("In algebra we use letters to stand for numbers. A term is 1 piece of an expression, like 3 x, or 5 y, or 7. The number in front of the letter is called the coefficient.", E('3x', 'b') + V.cols([V.card('Coefficient: 3', 'g', true), V.card('Letter: x', 'b', true)], 2)),
         S("Think of the letter as an object. 3 x is 3 apples. 5 x is 5 apples. 3 apples plus 5 apples is 8 apples. So 3 x plus 5 x is 8 x.", E('3x + 5x = 8x', 'g')),
         S("But apples and bananas do not mix. 3 x plus 5 y cannot be made shorter. They are different kinds of thing. Terms that have exactly the same letters and powers are called like terms. Only like terms can be added or subtracted.", E('3x + 5y   stays as it is', 'b'))
       ]),
@@ -223,7 +223,7 @@
       ]),
       SC('Different powers', 'Example 2: x and x squared', [
         S("Now simplify 2 x squared plus 3 x plus x squared. Is x squared the same kind of thing as x? No. x squared means x times x. It is a different term. So we only collect the x squared terms together.", E('2x² + 3x + x²')),
-        S("2 x squared plus 1 x squared makes 3 x squared. The three x stays on its own.", g('3x² + 3x'))
+        S("2 x squared plus 1 x squared makes 3 x squared. The 3 x stays on its own.", g('3x² + 3x'))
       ]),
       SC('Multiplying terms', 'Example 3: 3 a b times 4 a', [
         S("When we multiply terms, we multiply the numbers first. 3 times 4 is 12. Then we multiply the letters. a times a is a squared. And b stays as b.", E('3ab × 4a')),
@@ -231,12 +231,12 @@
       ]),
       SC('Dividing terms', 'Example 4: cancelling', [
         S("To divide, write it as a fraction and cancel. 12 x squared y divided by 4 x. 12 divided by 4 is 3. x squared divided by x leaves 1 x. And y stays.", E('12x²y ÷ 4x')),
-        S("The answer is three x y.", g('12x²y ÷ 4x = 3xy'))
+        S("The answer is 3 x y.", g('12x²y ÷ 4x = 3xy'))
       ]),
       SC('Watch out!', 'Three common mistakes', [
         S("Mistake one: adding unlike terms. 3 x plus 2 y is not 5 x y.", r('3x + 2y = 5xy  ✗') + g('3x + 2y stays  ✓')),
-        S("Mistake two: forgetting the invisible one. x is one x. So five x minus x is four x, not five.", r('5x − x = 5  ✗') + g('5x − x = 4x  ✓')),
-        S("Mistake three: mixing up addition and multiplication. x plus x is two x. But x times x is x squared.", E('x + x = 2x') + E('x × x = x²'))
+        S("Mistake two: forgetting the invisible 1. x is 1 x. So 5 x minus x is 4 x, not 5.", r('5x − x = 5  ✗') + g('5x − x = 4x  ✓')),
+        S("Mistake three: mixing up addition and multiplication. x plus x is 2 x. But x times x is x squared.", E('x + x = 2x') + E('x × x = x²'))
       ]),
       SC('In real life', 'Perimeter', [
         S("A rectangle has sides of length a and b. Its perimeter is a plus b plus a plus b. Collect the like terms. That is 2 a plus 2 b. Algebra gives a short rule for any rectangle.", g('a + b + a + b = 2a + 2b'))
@@ -244,7 +244,7 @@
       L.turn("Your turn! Number one. Simplify 5 p minus 2 q plus 3 p plus q. Pause and try it.", E('5p − 2q + 3p + q'), "5 p plus 3 p is 8 p. Minus 2 q plus q is minus q. So 8 p minus q.", g('8p − q')),
       L.turn("Your turn! Number two. Simplify 4 x times 3 y. Pause and try it.", E('4x × 3y'), "4 times 3 is 12. x times y is x y. So 12 x y.", g('12xy')),
       L.turn("Your turn! Number three. Simplify 20 a squared divided by 5 a. Pause and try it.", E('20a² ÷ 5a'), "20 divided by 5 is 4. a squared over a is a. So 4 a.", g('4a')),
-      L.rec(T, "Like terms have the same letters and powers. Add or subtract their coefficients. When multiplying, multiply the numbers and add the powers of each letter. When dividing, cancel. A letter on its own has a coefficient of one.", ['Like terms: same letters and powers', 'Add the numbers in front', 'Multiply: numbers, then letters', 'Divide: cancel'])
+      L.rec(T, "Like terms have the same letters and powers. Add or subtract their coefficients. When multiplying, multiply the numbers and add the powers of each letter. When dividing, cancel. A letter on its own has a coefficient of 1.", ['Like terms: same letters and powers', 'Add the numbers in front', 'Multiply: numbers, then letters', 'Divide: cancel'])
     ]);
   })();
 
@@ -261,7 +261,7 @@
         S("Do the multiplications first. 20 minus 6. That is 14.", g('20 − 6 = 14'))
       ]),
       SC('With powers', 'Example 2: x = 3', [
-        S("Find the value of 2 x squared when x is 3. Powers come before multiplying. So square the three first. 3 squared is 9. Then double it. 18.", E('2x² = 2 × 3² = 2 × 9') + g('= 18')),
+        S("Find the value of 2 x squared when x is 3. Powers come before multiplying. So square the 3 first. 3 squared is 9. Then double it. 18.", E('2x² = 2 × 3² = 2 × 9') + g('= 18')),
         S("A common slip is to double first. 2 times 3 is 6, and 6 squared is 36. That is wrong. The square only applies to the x.", r('(2 × 3)² = 36  ✗'))
       ]),
       SC('With negatives', 'Example 3: x = −2', [
@@ -279,7 +279,7 @@
       SC('In real life', 'Temperature', [
         S("To change Celsius to Fahrenheit, we use F equals 1.8 C plus 32. When C is 25, 1.8 times 25 is 45. Add 32. 77 degrees.", g('F = 1.8 × 25 + 32 = 77'))
       ]),
-      L.turn("Your turn! Number one. Find three p squared minus q, when p is two and q is five. Pause and try it.", E('3p² − q'), "2 squared is 4. 3 times 4 is 12. 12 minus 5 is 7.", g('7')),
+      L.turn("Your turn! Number one. Find 3 p squared minus q, when p is 2 and q is 5. Pause and try it.", E('3p² − q'), "2 squared is 4. 3 times 4 is 12. 12 minus 5 is 7.", g('7')),
       L.turn("Your turn! Number two. Find x squared minus 4 x, when x is negative 3. Pause and try it.", E('x² − 4x, x = −3'), "Negative 3 squared is 9. 4 times negative 3 is negative 12. 9 minus negative 12 is 21.", g('9 + 12 = 21')),
       L.turn("Your turn! Number three. Use A equals half b h with b equal to 10 and h equal to 6. Pause and try it.", E('A = ½bh'), "Half of 10 is 5. 5 times 6 is 30.", g('A = 30')),
       L.rec(T, "Replace each letter with its value, using brackets round negative numbers. Then follow the order of operations. Powers come before multiplying. A number next to a letter means multiply.", ['Replace each letter', 'Brackets round negatives', 'BODMAS', 'Powers before ×'])
@@ -291,8 +291,8 @@
     var T = 'How do you solve linear equations?';
     L.full(T, [
       SC('Linear equations', 'Start with the basics', [
-        S("An equation says that two things are equal. A linear equation has an unknown letter, with no powers. We want to find the number that makes it true. Think of a pair of balance scales. Both sides weigh the same.", E('3x + 4 = 19', 'b')),
-        S("The golden rule is to keep the scales balanced. Whatever you do to one side, you must do to the other. We use opposite operations to undo things. The opposite of add is subtract. The opposite of multiply is divide.", V.cols([V.card('+ ↔ −', 'g', true), V.card('× ↔ ÷', 'g', true)], 2))
+        S("An equation says that 2 things are equal. A linear equation has an unknown letter, with no powers. We want to find the number that makes it true. Think of a pair of balance scales. Both sides weigh the same.", E('3x + 4 = 19', 'b')),
+        S("The golden rule is to keep the scales balanced. Whatever you do to 1 side, you must do to the other. We use opposite operations to undo things. The opposite of add is subtract. The opposite of multiply is divide.", V.cols([V.card('+ ↔ −', 'g', true), V.card('× ↔ ÷', 'g', true)], 2))
       ]),
       SC('Two steps', 'Example 1: 3x + 4 = 19', [
         S("We want x on its own. Undo things in the reverse order. The last thing done to x was adding 4. So subtract 4 from both sides. 19 minus 4 is 15.", E('3x + 4 = 19') + E('3x = 15')),
@@ -322,7 +322,7 @@
       L.turn("Your turn! Number one. Solve 5, bracket, x plus 1, equals 3 x plus 17. Pause and try it.", E('5(x + 1) = 3x + 17'), "Expand to get 5 x plus 5. Subtract 3 x. 2 x plus 5 equals 17. 2 x equals 12. x is 6.", g('x = 6')),
       L.turn("Your turn! Number two. Solve 4 x minus 9 equals 23. Pause and try it.", E('4x − 9 = 23'), "Add 9. 4 x equals 32. Divide by 4. x is 8.", g('x = 8')),
       L.turn("Your turn! Number three. Solve x over 5 plus 3 equals 7. Pause and try it.", E('x/5 + 3 = 7'), "Subtract 3. x over 5 equals 4. Multiply by 5. x is 20.", g('x = 20')),
-      L.rec(T, "A linear equation is a balance. Do the same to both sides. Expand any brackets. Collect the letters on one side. Then undo operations in reverse order, add and subtract first, then multiply and divide. Always check by substituting your answer.", ['Expand brackets', 'Letters to one side', 'Undo + and −, then × and ÷', 'Check by substituting'])
+      L.rec(T, "A linear equation is a balance. Do the same to both sides. Expand any brackets. Collect the letters on 1 side. Then undo operations in reverse order, add and subtract first, then multiply and divide. Always check by substituting your answer.", ['Expand brackets', 'Letters to one side', 'Undo + and −, then × and ÷', 'Check by substituting'])
     ]);
   })();
 
@@ -331,7 +331,7 @@
     var T = 'How do you create and solve simple equations?';
     L.full(T, [
       SC('Words to equations', 'Start with the basics', [
-        S("Many problems are written in words. We can turn them into an equation and solve it. This is one of the most useful skills in maths. There are four steps.", V.list(['Choose a letter for the unknown', 'Write the equation', 'Solve it', 'Answer the question in words'])),
+        S("Many problems are written in words. We can turn them into an equation and solve it. This is one of the most useful skills in maths. There are 4 steps.", V.list(['Choose a letter for the unknown', 'Write the equation', 'Solve it', 'Answer the question in words'])),
         S("The first step matters most. Write down what your letter stands for, such as, let n be the number. Then every piece of the story becomes a piece of the equation.", E('Let n = the number', 'b'))
       ]),
       SC('Think of a number', 'Example 1', [
@@ -352,7 +352,7 @@
       ]),
       SC('Watch out!', 'Three common mistakes', [
         S("Mistake one: not saying what the letter means. Always begin with let n be, so you remember what you are finding.", V.rule('Let n be …')),
-        S("Mistake two: stopping at the value of the letter. In the rectangle, w is six, but the question asked for the length too.", V.rule('Answer the question that was asked.')),
+        S("Mistake two: stopping at the value of the letter. In the rectangle, w is 6, but the question asked for the length too.", V.rule('Answer the question that was asked.')),
         S("Mistake three: skipping the check. Put your answer back into the story. Does it make sense?", V.rule('Check it fits the story.'))
       ]),
       SC('In real life', 'Sharing a bill', [
@@ -371,7 +371,7 @@
     L.full(T, [
       SC('Formulae', 'Start with the basics', [
         S("A formula is a rule that connects quantities, using letters. For example, the perimeter of a rectangle is 2 l plus 2 w. Here l is the length and w is the width. You can use it for any rectangle in the world.", E('P = 2l + 2w', 'g')),
-        S("Most formulae have two parts. A fixed part that never changes, and a changing part that depends on something. Spotting these two parts is how you write a formula.", V.cols([V.card('Fixed part', 'b', true), V.card('Changing part', 'g', true)], 2))
+        S("Most formulae have 2 parts. A fixed part that never changes, and a changing part that depends on something. Spotting these 2 parts is how you write a formula.", V.cols([V.card('Fixed part', 'b', true), V.card('Changing part', 'g', true)], 2))
       ]),
       SC('Writing a formula', 'Example 1: a taxi', [
         S("A taxi charges £3 to start. Then it charges £1.80 for every mile. Let m be the number of miles and C be the total cost. The fixed part is 3. The changing part is 1.8 times m.", E('Fixed: 3') + E('Changing: 1.8 × m')),
@@ -394,12 +394,12 @@
         S("Mistake three: mixing units. If the rate is in pounds per mile, the distance must be in miles, not kilometres.", V.rule('Keep the units matching.'))
       ]),
       SC('In real life', 'Mobile phone', [
-        S("A phone plan costs £8 a month plus 10p for each extra minute. With m extra minutes, the cost is 8 plus 0 point 1 m. For 40 extra minutes, that is 8 plus 4, which is £12.", E('C = 8 + 0.1m') + g('m = 40 → £12'))
+        S("A phone plan costs £8 a month plus 10p for each extra minute. With m extra minutes, the cost is 8 plus 0.1 m. For 40 extra minutes, that is 8 plus 4, which is £12.", E('C = 8 + 0.1m') + g('m = 40 → £12'))
       ]),
       L.turn("Your turn! Number one. Write a formula for the cost T of n cinema tickets at £7.50 each, plus a £2 booking fee. Pause and try it.", E('T = ?'), "The changing part is 7.5 times n. The fixed part is 2. So T equals 7.5 n plus 2.", g('T = 7.5n + 2')),
-      L.turn("Your turn! Number two. Use your formula to find the cost of four tickets. Pause and try it.", E('T = 7.5 × 4 + 2'), "7.5 times 4 is 30. Plus 2 is £32.", g('£32')),
+      L.turn("Your turn! Number two. Use your formula to find the cost of 4 tickets. Pause and try it.", E('T = 7.5 × 4 + 2'), "7.5 times 4 is 30. Plus 2 is £32.", g('£32')),
       L.turn("Your turn! Number three. The total was £47. How many tickets? Pause and try it.", E('7.5n + 2 = 47'), "Subtract 2. 7.5 n equals 45. Divide by 7.5. n is 6 tickets.", g('n = 6')),
-      L.rec(T, "A formula connects quantities with letters. To write one, find the fixed part and the changing part. To use one, substitute values. To work backwards, solve an equation. To rearrange, change the subject. Always say what each letter means.", ['Fixed part + changing part', 'Substitute values', 'Solve to work backwards', 'Rearrange to change subject'])
+      L.rec(T, "A formula connects quantities with letters. To write 1, find the fixed part and the changing part. To use 1, substitute values. To work backwards, solve an equation. To rearrange, change the subject. Always say what each letter means.", ['Fixed part + changing part', 'Substitute values', 'Solve to work backwards', 'Rearrange to change subject'])
     ]);
   })();
   /* ---- Construct triangles ---- */
@@ -407,30 +407,30 @@
     var T = 'How do you construct triangles?';
     L.full(T, [
       SC('Constructing triangles', 'Start with the basics', [
-        S("To construct a triangle means to draw it accurately. You need a sharp pencil, a ruler, a protractor and a pair of compasses. What you do depends on the facts you are given.", V.list(['Three sides: use compasses', 'Two sides and the angle between: use a protractor', 'Two angles and a side: use a protractor'])),
+        S("To construct a triangle means to draw it accurately. You need a sharp pencil, a ruler, a protractor and a pair of compasses. What you do depends on the facts you are given.", V.list(['3 sides: use compasses', '2 sides and the angle between: use a protractor', '2 angles and a side: use a protractor'])),
         S("The rule for every method is the same. Draw the base first. Then build the rest of the triangle from the ends of the base. Never rub out your construction lines or arcs. They show that your drawing is accurate.", V.rule('Base first. Keep the arcs.'))
       ]),
       SC('Three sides', 'Example 1: 5 cm, 7 cm, 8 cm', [
-        S("Draw the longest side as the base. It is eight centimetres. Mark the two ends.", E('Base: 8 cm')),
-        S("Open the compasses to five centimetres, using the ruler. Put the point on the left end, and draw an arc above the line.", E('Arc of radius 5 cm from the left end', 'b')),
-        S("Now open the compasses to seven centimetres. Put the point on the right end, and draw a second arc. It must cross the first one.", E('Arc of radius 7 cm from the right end', 'b')),
-        S("Where the arcs cross is the third corner. Join it to both ends of the base with a ruler. You have a triangle with sides five, seven and eight.", g('Join to the crossing point'))
+        S("Draw the longest side as the base. It is 8 centimetres. Mark the 2 ends.", E('Base: 8 cm')),
+        S("Open the compasses to 5 centimetres, using the ruler. Put the point on the left end, and draw an arc above the line.", E('Arc of radius 5 cm from the left end', 'b')),
+        S("Now open the compasses to 7 centimetres. Put the point on the right end, and draw a second arc. It must cross the first 1.", E('Arc of radius 7 cm from the right end', 'b')),
+        S("Where the arcs cross is the third corner. Join it to both ends of the base with a ruler. You have a triangle with sides 5, 7 and 8.", g('Join to the crossing point'))
       ]),
       SC('Two sides and an angle', 'Example 2: 6 cm, 50°, 9 cm', [
-        S("We know two sides and the angle between them. Draw the six centimetre side as the base. Put the centre of the protractor on the left end. Line up the zero line with the base.", E('Base: 6 cm')),
+        S("We know 2 sides and the angle between them. Draw the 6 centimetre side as the base. Put the centre of the protractor on the left end. Line up the 0 line with the base.", E('Base: 6 cm')),
         S("Find 50 degrees on the scale and make a small dot. Be careful to read the correct scale, starting from 0 on the base line. Draw a line from the end through the dot, 9 centimetres long.", E('50° at the left end') + E('Line of length 9 cm', 'b')),
         S("Finally join the end of that line to the other end of the base. That completes the triangle.", g('Join the ends'))
       ]),
       SC('Two angles and a side', 'Example 3: 40°, 7 cm, 65°', [
         S("Draw a 7 centimetre base. At the left end, measure 40 degrees and draw a long line. At the right end, measure 65 degrees and draw another long line. Make them cross.", E('40° at one end') + E('65° at the other end', 'b')),
-        S("Where the two lines meet is the third corner. The third angle is whatever is left. 180 minus 40 minus 65 is 75 degrees. You can measure it to check your drawing.", g('Third angle = 75°'))
+        S("Where the 2 lines meet is the third corner. The third angle is whatever is left. 180 minus 40 minus 65 is 75 degrees. You can measure it to check your drawing.", g('Third angle = 75°'))
       ]),
       SC('Can it be drawn?', 'Example 4: the triangle rule', [
-        S("Not every set of three lengths makes a triangle. Try sides of three, four and nine. The two short sides cannot reach each other. The rule is that the two shorter sides must add up to more than the longest side.", E('3 + 4 = 7') + r('7 < 9  →  impossible')),
+        S("Not every set of 3 lengths makes a triangle. Try sides of 3, 4 and 9. The 2 short sides cannot reach each other. The rule is that the 2 shorter sides must add up to more than the longest side.", E('3 + 4 = 7') + r('7 < 9  →  impossible')),
         S("Now try 4, 5 and 8. 4 plus 5 is 9. That is more than 8. So this triangle can be drawn.", g('4 + 5 = 9 > 8  ✓'))
       ]),
       SC('Watch out!', 'Three common mistakes', [
-        S("Mistake one: reading the wrong scale on the protractor. It has two scales. Start from the zero that lies on your base line.", V.rule('Zero on the base line.')),
+        S("Mistake one: reading the wrong scale on the protractor. It has 2 scales. Start from the 0 that lies on your base line.", V.rule('0 on the base line.')),
         S("Mistake two: rubbing out the arcs. Keep them. They are the proof of an accurate construction.", V.rule('Keep the arcs.')),
         S("Mistake three: a blunt pencil or a slipping ruler. A thick line can easily be a millimetre out. Use a sharp pencil.", V.rule('Sharp pencil, steady hand.'))
       ]),
@@ -438,9 +438,9 @@
         S("Builders use triangles because they are rigid. A rectangle can lean sideways, but a triangle cannot change shape. A roof truss is built from triangles. The lengths of the beams are chosen using exactly this triangle rule.", V.note('Triangles are rigid'))
       ]),
       L.turn("Your turn! Number one. Can you construct a triangle with sides 5, 6 and 12? Pause and think.", E('5 + 6 vs 12'), "5 plus 6 is 11. That is less than 12. So no, it is impossible.", g('No')),
-      L.turn("Your turn! Number two. Which tool do you use to draw a triangle when you know all three sides? Pause and think.", E('SSS → ?'), "Compasses. You draw two arcs that cross.", g('Compasses')),
+      L.turn("Your turn! Number two. Which tool do you use to draw a triangle when you know all 3 sides? Pause and think.", E('SSS → ?'), "Compasses. You draw 2 arcs that cross.", g('Compasses')),
       L.turn("Your turn! Number three. A triangle has angles of 40 and 65 degrees. What is the third angle? Pause and try it.", E('180 − 40 − 65'), "180 minus 105 is 75 degrees.", g('75°')),
-      L.rec(T, "Choose the method from the facts you have. Draw the base first. Use compasses when you know three sides, and a protractor when you know angles. Keep your construction lines. The two shorter sides must always add up to more than the longest.", ['SSS: compasses', 'SAS and ASA: protractor', 'Base first', 'Shorter sides > longest'])
+      L.rec(T, "Choose the method from the facts you have. Draw the base first. Use compasses when you know 3 sides, and a protractor when you know angles. Keep your construction lines. The 2 shorter sides must always add up to more than the longest.", ['SSS: compasses', 'SAS and ASA: protractor', 'Base first', 'Shorter sides > longest'])
     ]);
   })();
 
@@ -449,12 +449,12 @@
     var T = 'What are the properties of 3D objects?';
     L.full(T, [
       SC('3D objects', 'Start with the basics', [
-        S("A 3D object is a solid. You can hold it. We describe solids using 3 words. Faces, edges and vertices.", V.cols([V.card('Face: a flat surface', 'b', true), V.card('Edge: where two faces meet', 'g', true), V.card('Vertex: a corner', 'p', true)], 3)),
+        S("A 3D object is a solid. You can hold it. We describe solids using 3 words. Faces, edges and vertices.", V.cols([V.card('Face: a flat surface', 'b', true), V.card('Edge: where 2 faces meet', 'g', true), V.card('Vertex: a corner', 'p', true)], 3)),
         S("Vertices is the plural of vertex. Think of a cube, like a dice. It has 6 faces, 12 edges and 8 vertices.", V.tbl([['Cube', '6', '12', '8']], ['Solid', 'Faces', 'Edges', 'Vertices']))
       ]),
       SC('Counting', 'Example 1: prisms and pyramids', [
-        S("A triangular prism looks like a tent. It has two triangle ends and three rectangles. That is five faces. It has nine edges and six vertices.", V.tbl([['Triangular prism', '5', '9', '6']], ['Solid', 'F', 'E', 'V'])),
-        S("A square-based pyramid has a square base and four triangle sides. That is five faces. It has eight edges and five vertices. And a tetrahedron, with four triangle faces, has six edges and four vertices.", V.tbl([['Square pyramid', '5', '8', '5'], ['Tetrahedron', '4', '6', '4']], ['Solid', 'F', 'E', 'V']))
+        S("A triangular prism looks like a tent. It has 2 triangle ends and 3 rectangles. That is 5 faces. It has 9 edges and 6 vertices.", V.tbl([['Triangular prism', '5', '9', '6']], ['Solid', 'F', 'E', 'V'])),
+        S("A square-based pyramid has a square base and 4 triangle sides. That is 5 faces. It has 8 edges and 5 vertices. And a tetrahedron, with 4 triangle faces, has 6 edges and 4 vertices.", V.tbl([['Square pyramid', '5', '8', '5'], ['Tetrahedron', '4', '6', '4']], ['Solid', 'F', 'E', 'V']))
       ]),
       SC('Euler’s formula', 'Example 2: a surprising rule', [
         S("Here is something wonderful. For any solid with flat faces, faces plus vertices minus edges always equals 2. This is called Euler's formula. Euler is said, oi-ler.", E('F + V − E = 2', 'g')),
@@ -465,10 +465,10 @@
         S("Slice a cylinder across, and you get a circle. Slice a cone across, and you get a circle too, but the circles get smaller towards the point.", V.cards(['Cylinder: circle', 'Cone: shrinking circle'], ['b', 'g']))
       ]),
       SC('Planes of symmetry', 'Example 4: mirror slices', [
-        S("A plane of symmetry is a flat slice that cuts a solid into two mirror images. A cuboid with a square end has five. A cube has nine. Three go through the middle of opposite faces, and six go through opposite edges.", E('Cube: 9 planes of symmetry', 'g'))
+        S("A plane of symmetry is a flat slice that cuts a solid into 2 mirror images. A cuboid with a square end has 5. A cube has 9. 3 go through the middle of opposite faces, and 6 go through opposite edges.", E('Cube: 9 planes of symmetry', 'g'))
       ]),
       SC('Nets', 'Example 5: unfolding', [
-        S("A net is a solid unfolded flat. A cube has a net made of six squares. When you fold it up, the squares make the faces. A net must have the right shapes, and they must fold without overlapping.", V.note('A net folds up into the solid'))
+        S("A net is a solid unfolded flat. A cube has a net made of 6 squares. When you fold it up, the squares make the faces. A net must have the right shapes, and they must fold without overlapping.", V.note('A net folds up into the solid'))
       ]),
       SC('Watch out!', 'Three common mistakes', [
         S("Mistake one: forgetting hidden faces and edges. Count the ones at the back and the bottom too.", V.rule('Count the hidden ones.')),
@@ -479,7 +479,7 @@
         S("Boxes of cereal are cuboids, and sweets often come in triangular prisms, like a chocolate bar box. Designers draw the net first, cut it from a single sheet of card, and fold it into a box.", V.note('Packaging starts as a net'))
       ]),
       L.turn("Your turn! Number one. A solid has 8 faces and 12 vertices. How many edges? Pause and use Euler's formula.", E('8 + 12 − E = 2'), "8 plus 12 is 20. 20 minus E equals 2. So E is 18.", g('18 edges')),
-      L.turn("Your turn! Number two. How many faces does a square-based pyramid have? Pause and think.", E('?'), "One square base, and four triangles. Five faces.", g('5')),
+      L.turn("Your turn! Number two. How many faces does a square-based pyramid have? Pause and think.", E('?'), "1 square base, and 4 triangles. 5 faces.", g('5')),
       L.turn("Your turn! Number three. What shape is the cross-section of a cylinder, cut across? Pause and think.", E('?'), "A circle.", g('A circle')),
       L.rec(T, "Describe solids by faces, edges and vertices. A prism has the same cross-section all the way along. A net folds up into a solid. A plane of symmetry slices a solid into mirror halves. For any solid with flat faces, F plus V minus E equals 2.", ['F, E, V', 'Euler: F + V − E = 2', 'Cross-sections', 'Nets and planes of symmetry'])
     ]);
@@ -494,7 +494,7 @@
         S("Here is the big idea. The angles inside any triangle add up to 180 degrees. The angles inside any quadrilateral, that is a 4-sided shape, add up to 360.", V.tbl([['Triangle', '180°'], ['Quadrilateral', '360°']], ['Shape', 'Angles add to']))
       ]),
       SC('Missing angle in a triangle', 'Example 1', [
-        S("A triangle has angles of 52 and 79 degrees. Find the third. First add the two we know. 52 plus 79 is 131.", E('52 + 79 = 131')),
+        S("A triangle has angles of 52 and 79 degrees. Find the third. First add the 2 we know. 52 plus 79 is 131.", E('52 + 79 = 131')),
         S("Now take it from 180. 180 minus 131 is 49.", g('180 − 131 = 49°'))
       ]),
       SC('Isosceles triangles', 'Example 2: equal base angles', [
@@ -503,14 +503,14 @@
       ]),
       SC('Missing angle in a quadrilateral', 'Example 3', [
         S("A quadrilateral has angles of 90, 115 and 75. Add them. 90 plus 115 is 205. Plus 75 is 280.", E('90 + 115 + 75 = 280')),
-        S("The four angles must make 360. 360 minus 280 is 80 degrees.", g('360 − 280 = 80°'))
+        S("The 4 angles must make 360. 360 minus 280 is 80 degrees.", g('360 − 280 = 80°'))
       ]),
       SC('Special quadrilaterals', 'Example 4: parallelogram', [
         S("In a parallelogram, opposite angles are equal. And the angles next to each other add up to 180. If 1 angle is 65, the one opposite is also 65. The neighbours are 180 minus 65, which is 115.", E('65°, 115°, 65°, 115°', 'g')),
         S("Check. 65 plus 115 plus 65 plus 115 is 360.", E('= 360° ✓'))
       ]),
       SC('Exterior angles', 'Example 5: extending a side', [
-        S("Extend 1 side of a triangle. The angle outside is called an exterior angle. It is equal to the two interior angles opposite it, added together. If those two are 40 and 55, the exterior angle is 95.", E('ext = a + b') + g('40 + 55 = 95°'))
+        S("Extend 1 side of a triangle. The angle outside is called an exterior angle. It is equal to the 2 interior angles opposite it, added together. If those 2 are 40 and 55, the exterior angle is 95.", E('ext = a + b') + g('40 + 55 = 95°'))
       ]),
       SC('Watch out!', 'Three common mistakes', [
         S("Mistake one: using 360 for a triangle. Triangles use 180.", r('Triangle: 360°  ✗') + g('Triangle: 180°  ✓')),
@@ -518,12 +518,12 @@
         S("Mistake three: not showing your subtraction. Write 180 minus the angles you know.", V.rule('Show: 180 − …'))
       ]),
       SC('In real life', 'Roof angles', [
-        S("A builder cuts a triangular roof gable. The two sloping angles are each 35 degrees. The top angle must be 180 minus 70, which is 110 degrees. The saw is set to cut it.", g('180 − 70 = 110°'))
+        S("A builder cuts a triangular roof gable. The 2 sloping angles are each 35 degrees. The top angle must be 180 minus 70, which is 110 degrees. The saw is set to cut it.", g('180 − 70 = 110°'))
       ]),
       L.turn("Your turn! Number one. A kite has angles of 110, 110 and 60. Find the fourth. Pause and try it.", E('360 − 280'), "110 plus 110 plus 60 is 280. 360 minus 280 is 80 degrees.", g('80°')),
       L.turn("Your turn! Number two. An isosceles triangle has a top angle of 40 degrees. Find each base angle. Pause and try it.", E('(180 − 40) ÷ 2'), "140 divided by 2 is 70 degrees.", g('70°')),
       L.turn("Your turn! Number three. A parallelogram has an angle of 70 degrees. What is the angle next to it? Pause and try it.", E('180 − 70'), "Neighbouring angles add to 180. So 110 degrees.", g('110°')),
-      L.rec(T, "Triangle angles add up to 180 degrees. Quadrilateral angles add up to 360. Use properties such as equal base angles in an isosceles triangle, and equal opposite angles in a parallelogram. An exterior angle equals the two interior angles opposite it.", ['Triangle: 180°', 'Quadrilateral: 360°', 'Isosceles: equal base angles', 'Parallelogram: opposite angles equal'])
+      L.rec(T, "Triangle angles add up to 180 degrees. Quadrilateral angles add up to 360. Use properties such as equal base angles in an isosceles triangle, and equal opposite angles in a parallelogram. An exterior angle equals the 2 interior angles opposite it.", ['Triangle: 180°', 'Quadrilateral: 360°', 'Isosceles: equal base angles', 'Parallelogram: opposite angles equal'])
     ]);
   })();
 
@@ -533,7 +533,7 @@
     L.full(T, [
       SC('Scale factor', 'Start with the basics', [
         S("When you enlarge a photo, every length gets longer by the same amount. The number you multiply by is the linear scale factor. It is often called k.", E('new length = old length × k', 'g')),
-        S("If k is bigger than one, the shape gets bigger. That is an enlargement. If k is between zero and one, the shape gets smaller. That is a reduction. If k is one, nothing changes.", V.cols([V.card('k > 1: bigger', 'g', true), V.card('0 < k < 1: smaller', 'b', true)], 2)),
+        S("If k is bigger than 1, the shape gets bigger. That is an enlargement. If k is between 0 and 1, the shape gets smaller. That is a reduction. If k is 1, nothing changes.", V.cols([V.card('k > 1: bigger', 'g', true), V.card('0 < k < 1: smaller', 'b', true)], 2)),
         S("Notice that the shape stays the same. Angles do not change. Only the lengths change. Shapes like this are called similar.", V.rule('Angles stay the same.'))
       ]),
       SC('Enlargement', 'Example 1: k = 3', [
@@ -548,7 +548,7 @@
         S("14 divided by 8 is 1.75. It is bigger than 1, so it is an enlargement. Always match the same side in both shapes.", g('k = 1.75'))
       ]),
       SC('Effect on area', 'Example 4: k squared', [
-        S("Now the surprise. Areas do not multiply by k. They multiply by k squared. Why? Because area has two lengths multiplied together, and both are scaled.", E('area × k²', 'g')),
+        S("Now the surprise. Areas do not multiply by k. They multiply by k squared. Why? Because area has 2 lengths multiplied together, and both are scaled.", E('area × k²', 'g')),
         S("A shape with area 8 square centimetres is enlarged with scale factor 3. The new area is 8 times 3 squared. 3 squared is 9. 8 times 9 is 72 square centimetres.", g('8 × 9 = 72 cm²'))
       ]),
       SC('Watch out!', 'Three common mistakes', [
@@ -559,10 +559,10 @@
       SC('In real life', 'Models and maps', [
         S("A model car is made at a scale of 1 to 43. A real car is 4.3 metres long. That is 430 centimetres. Divide by 43. The model is 10 centimetres long.", g('430 ÷ 43 = 10 cm'))
       ]),
-      L.turn("Your turn! Number one. A photo nine centimetres wide is reduced to six centimetres. What is the scale factor? Pause and try it.", E('6 ÷ 9'), "6 divided by 9 simplifies to 2 thirds.", g('k = ⅔')),
-      L.turn("Your turn! Number two. A triangle has an area of five square centimetres. It is enlarged with scale factor four. What is the new area? Pause and try it.", E('5 × 4²'), "4 squared is 16. 5 times 16 is 80 square centimetres.", g('80 cm²')),
-      L.turn("Your turn! Number three. A line of 15 centimetres is reduced with scale factor 0 point 4. How long is it now? Pause and try it.", E('15 × 0.4'), "15 times 0 point 4 is 6 centimetres.", g('6 cm')),
-      L.rec(T, "Multiply every length by the linear scale factor. To find the scale factor, divide a new length by the matching old length. A scale factor above one enlarges. Below one it reduces. Areas multiply by k squared. Angles stay the same.", ['New = old × k', 'k = new ÷ old', 'k > 1 enlarges, k < 1 reduces', 'Area × k²'])
+      L.turn("Your turn! Number one. A photo 9 centimetres wide is reduced to 6 centimetres. What is the scale factor? Pause and try it.", E('6 ÷ 9'), "6 divided by 9 simplifies to 2 thirds.", g('k = ⅔')),
+      L.turn("Your turn! Number two. A triangle has an area of 5 square centimetres. It is enlarged with scale factor 4. What is the new area? Pause and try it.", E('5 × 4²'), "4 squared is 16. 5 times 16 is 80 square centimetres.", g('80 cm²')),
+      L.turn("Your turn! Number three. A line of 15 centimetres is reduced with scale factor 0.4. How long is it now? Pause and try it.", E('15 × 0.4'), "15 times 0.4 is 6 centimetres.", g('6 cm')),
+      L.rec(T, "Multiply every length by the linear scale factor. To find the scale factor, divide a new length by the matching old length. A scale factor above 1 enlarges. Below 1 it reduces. Areas multiply by k squared. Angles stay the same.", ['New = old × k', 'k = new ÷ old', 'k > 1 enlarges, k < 1 reduces', 'Area × k²'])
     ]);
   })();
 
@@ -571,38 +571,38 @@
     var T = 'What is symmetry in 2D shapes?';
     L.full(T, [
       SC('Symmetry', 'Start with the basics', [
-        S("Symmetry is when a shape looks the same after something is done to it. There are two kinds. Line symmetry, and rotational symmetry.", V.cards(['Line symmetry: fold', 'Rotational symmetry: turn'], ['b', 'g'])),
-        S("A shape has line symmetry if you can fold it along a line so that the two halves match exactly. The fold line is called a line of symmetry, or a mirror line.", V.rule('Fold it: both halves match.')),
-        S("A shape has rotational symmetry if you can turn it round a centre point, less than a full turn, and it fits back onto itself. The number of times it fits during one full turn is called the order.", V.rule('Order: fits in one full turn.'))
+        S("Symmetry is when a shape looks the same after something is done to it. There are 2 kinds. Line symmetry, and rotational symmetry.", V.cards(['Line symmetry: fold', 'Rotational symmetry: turn'], ['b', 'g'])),
+        S("A shape has line symmetry if you can fold it along a line so that the 2 halves match exactly. The fold line is called a line of symmetry, or a mirror line.", V.rule('Fold it: both halves match.')),
+        S("A shape has rotational symmetry if you can turn it round a centre point, less than a full turn, and it fits back onto itself. The number of times it fits during 1 full turn is called the order.", V.rule('Order: fits in 1 full turn.'))
       ]),
       SC('Lines of symmetry', 'Example 1: regular polygons', [
-        S("A regular polygon has all sides and angles equal. It has as many lines of symmetry as it has sides. A square has four. A regular hexagon has six. An equilateral triangle has three.", E('Regular n-gon: n lines', 'g'))
+        S("A regular polygon has all sides and angles equal. It has as many lines of symmetry as it has sides. A square has 4. A regular hexagon has 6. An equilateral triangle has 3.", E('Regular n-gon: n lines', 'g'))
       ]),
       SC('Order of rotation', 'Example 2: a table', [
-        S("Regular polygons also have rotational symmetry equal to their number of sides. A square has order four. A rectangle fits onto itself twice in a full turn, so its order is two. A kite fits only once, so its order is one, and that means no rotational symmetry.", V.tbl([['Square', '4', '4'], ['Rectangle', '2', '2'], ['Rhombus', '2', '2'], ['Kite', '1', '1'], ['Parallelogram', '0', '2']], ['Shape', 'Lines', 'Order']))
+        S("Regular polygons also have rotational symmetry equal to their number of sides. A square has order 4. A rectangle fits onto itself twice in a full turn, so its order is 2. A kite fits only once, so its order is 1, and that means no rotational symmetry.", V.tbl([['Square', '4', '4'], ['Rectangle', '2', '2'], ['Rhombus', '2', '2'], ['Kite', '1', '1'], ['Parallelogram', '0', '2']], ['Shape', 'Lines', 'Order']))
       ]),
       SC('Surprise!', 'Example 3: the parallelogram', [
-        S("Look at the parallelogram in the table. It has no lines of symmetry. You cannot fold it to match. But it does have rotational symmetry of order two. Turn it half a turn, and it fits.", V.rule('No lines, but order 2.')),
-        S("So a shape can have one kind of symmetry without the other. Always check both.", V.rule('Check both kinds.'))
+        S("Look at the parallelogram in the table. It has no lines of symmetry. You cannot fold it to match. But it does have rotational symmetry of order 2. Turn it half a turn, and it fits.", V.rule('No lines, but order 2.')),
+        S("So a shape can have 1 kind of symmetry without the other. Always check both.", V.rule('Check both kinds.'))
       ]),
       SC('Completing a shape', 'Example 4: reflecting', [
         S("To complete a symmetrical shape, reflect each point across the mirror line. Each point must be the same distance from the line, on the opposite side. Count the squares from the line to the point, then count the same number on the other side.", V.rule('Same distance, other side.'))
       ]),
       SC('Letters', 'Example 5: symmetry in the alphabet', [
-        S("Look at capital letters. The letter H has two lines of symmetry and order two. The letter S has no lines, but order two. The letter A has one line and order one.", V.cards(['H: 2 lines, order 2', 'S: 0 lines, order 2', 'A: 1 line, order 1'], ['b', 'p', 'g']))
+        S("Look at capital letters. The letter H has 2 lines of symmetry and order 2. The letter S has no lines, but order 2. The letter A has 1 line and order 1.", V.cards(['H: 2 lines, order 2', 'S: 0 lines, order 2', 'A: 1 line, order 1'], ['b', 'p', 'g']))
       ]),
       SC('Watch out!', 'Three common mistakes', [
-        S("Mistake one: drawing a diagonal on a rectangle. A rectangle has only two lines of symmetry. Neither is a diagonal. A diagonal does not fold it onto itself.", r('Rectangle: 4 lines  ✗') + g('Rectangle: 2 lines  ✓')),
-        S("Mistake two: forgetting order one. Every shape fits onto itself after a full turn. So the order is always at least one. Order one means no rotational symmetry.", V.rule('Order 1 = none.')),
+        S("Mistake one: drawing a diagonal on a rectangle. A rectangle has only 2 lines of symmetry. Neither is a diagonal. A diagonal does not fold it onto itself.", r('Rectangle: 4 lines  ✗') + g('Rectangle: 2 lines  ✓')),
+        S("Mistake two: forgetting order 1. Every shape fits onto itself after a full turn. So the order is always at least 1. Order 1 means no rotational symmetry.", V.rule('Order 1 = none.')),
         S("Mistake three: mixing up lines and order. Lines count the folds. Order counts the turns.", V.cols([V.card('Lines: folds', 'b', true), V.card('Order: turns', 'g', true)], 2))
       ]),
       SC('In real life', 'Logos and patterns', [
-        S("Many logos, flags and tiling patterns use symmetry. Recycling signs have order three. Snowflakes have order six. Spotting symmetry helps designers create balanced patterns.", V.note('Symmetry makes things look balanced'))
+        S("Many logos, flags and tiling patterns use symmetry. Recycling signs have order 3. Snowflakes have order 6. Spotting symmetry helps designers create balanced patterns.", V.note('Symmetry makes things look balanced'))
       ]),
-      L.turn("Your turn! Number one. How many lines of symmetry does an equilateral triangle have, and what is its order? Pause and think.", E('?'), "Three lines, and order three.", g('3 lines · order 3')),
-      L.turn("Your turn! Number two. What is the order of rotational symmetry of a rhombus? Pause and think.", E('?'), "Half a turn makes it fit. So order two.", g('Order 2')),
-      L.turn("Your turn! Number three. Does a regular pentagon have five lines of symmetry? Pause and think.", E('?'), "Yes. A regular polygon has as many lines as sides. Five lines, and order five.", g('Yes: 5 lines')),
-      L.rec(T, "Line symmetry means the shape folds onto itself. Rotational symmetry means it fits onto itself as it turns, and the order counts how many times in a full turn. Regular polygons have as many lines and as high an order as they have sides. To complete a shape, reflect each point the same distance from the mirror line.", ['Line: mirror fold', 'Order: fits in one turn', 'Regular n-gon: n and n', 'Complete by reflecting'])
+      L.turn("Your turn! Number one. How many lines of symmetry does an equilateral triangle have, and what is its order? Pause and think.", E('?'), "3 lines, and order 3.", g('3 lines · order 3')),
+      L.turn("Your turn! Number two. What is the order of rotational symmetry of a rhombus? Pause and think.", E('?'), "Half a turn makes it fit. So order 2.", g('Order 2')),
+      L.turn("Your turn! Number three. Does a regular pentagon have 5 lines of symmetry? Pause and think.", E('?'), "Yes. A regular polygon has as many lines as sides. 5 lines, and order 5.", g('Yes: 5 lines')),
+      L.rec(T, "Line symmetry means the shape folds onto itself. Rotational symmetry means it fits onto itself as it turns, and the order counts how many times in a full turn. Regular polygons have as many lines and as high an order as they have sides. To complete a shape, reflect each point the same distance from the mirror line.", ['Line: mirror fold', 'Order: fits in 1 turn', 'Regular n-gon: n and n', 'Complete by reflecting'])
     ]);
   })();
 
@@ -641,7 +641,7 @@
       L.turn("Your turn! Number one. Team X has a median of 12 goals and a range of 3. Team Y has a median of 12 and a range of 9. Compare them. Pause and think.", E('?'), "They score the same on average. But Team X is more consistent, because its range is smaller.", g('Same average · X more consistent')),
       L.turn("Your turn! Number two. A bar chart axis starts at 50 instead of 0. Why is that a problem? Pause and think.", E('?'), "It makes small differences look much bigger than they really are.", g('Exaggerates differences')),
       L.turn("Your turn! Number three. Class P has a mean of 70 and a range of 20. Class Q has a mean of 75 and a range of 35. Which class scored higher, and which was more consistent? Pause and think.", E('?'), "Class Q scored higher on average, because 75 is bigger than 70. Class P was more consistent, because 20 is smaller than 35.", g('Q higher · P more consistent')),
-      L.rec(T, "To compare data, use one average and one measure of spread, and say what they mean in context. Describe trends in charts in words. Check the scales of graphs for anything misleading. A smaller spread means more consistent data.", ['Average: which is higher?', 'Spread: which is more consistent?', 'Use context words', 'Check the scales'])
+      L.rec(T, "To compare data, use 1 average and 1 measure of spread, and say what they mean in context. Describe trends in charts in words. Check the scales of graphs for anything misleading. A smaller spread means more consistent data.", ['Average: which is higher?', 'Spread: which is more consistent?', 'Use context words', 'Check the scales'])
     ]);
   })();
   /* ---- Surds ---- */
@@ -673,7 +673,7 @@
       ]),
       SC('Watch out!', 'Three common mistakes', [
         S("Mistake one: adding what is under the root. Root 9 plus root 16 is 3 plus 4, which is 7. It is not root 25, which is 5.", r('√9 + √16 = √25  ✗') + g('= 3 + 4 = 7  ✓')),
-        S("Mistake two: stopping early. Root eight is two root two, because four goes in. Always check that no square number is left inside.", V.rule('Use the biggest square factor.')),
+        S("Mistake two: stopping early. Root 8 is 2 root 2, because 4 goes in. Always check that no square number is left inside.", V.rule('Use the biggest square factor.')),
         S("Mistake three: adding unlike surds. Root 2 plus root 3 is not root 5.", r('√2 + √3 = √5  ✗'))
       ]),
       SC('In real life', 'Diagonals', [
@@ -692,7 +692,7 @@
     L.full(T, [
       SC('Compound change', 'Start with the basics', [
         S("Some things grow by a percentage each year, like a population or an investment. Others shrink by a percentage, like the value of a car. This is called compound change, because each change is on the new amount.", V.cols([V.card('Growth', 'g', true), V.card('Depreciation: shrinking', 'r', true)], 2)),
-        S("The key is the multiplier. Growth of 3% each year means the new amount is 103% of the old. That is a multiplier of 1.03. Shrinking by 18% means keeping 82%, a multiplier of 0 point 8 2.", E('+3% → × 1.03') + E('−18% → × 0.82')),
+        S("The key is the multiplier. Growth of 3% each year means the new amount is 103% of the old. That is a multiplier of 1.03. Shrinking by 18% means keeping 82%, a multiplier of 0.82.", E('+3% → × 1.03') + E('−18% → × 0.82')),
         S("To repeat the change for several years, use a power. Multiply the start by the multiplier, raised to the number of years.", E('value = start × multiplierⁿ', 'g'))
       ]),
       SC('Growth', 'Example 1: a town', [
@@ -700,8 +700,8 @@
         S("On the calculator, 1.03 to the power 5 is about 1.1619. Times 20,000 is about 23,000, 200. The calculator gives 23,185.", g('≈ 23,185 people'))
       ]),
       SC('Depreciation', 'Example 2: a car', [
-        S("A car costs £16,000, and loses 18% of its value each year. What is it worth after 3 years? The multiplier is 0 point 8 2. The power is 3.", E('16,000 × 0.82³')),
-        S("0 point 8 2 cubed is about 0 point 5 5 1. Times 16,000 is about £8,822.", g('≈ £8,822'))
+        S("A car costs £16,000, and loses 18% of its value each year. What is it worth after 3 years? The multiplier is 0.82. The power is 3.", E('16,000 × 0.82³')),
+        S("0.82 cubed is about 0.551. Times 16,000 is about £8,822.", g('≈ £8,822'))
       ]),
       SC('How many years?', 'Example 3: doubling', [
         S("How long does an investment take to double at 7% a year? We try different powers of 1.07. To the power 10, it is 1.97. Not quite 2. To the power 11, it is 2.1. That is over 2.", E('1.07¹⁰ ≈ 1.97') + E('1.07¹¹ ≈ 2.10')),
@@ -709,15 +709,15 @@
       ]),
       SC('Watch out!', 'Three common mistakes', [
         S("Mistake one: adding the percentages. 3 years at 18% off is not 54% off. The amount lost gets smaller each year.", r('3 × 18% = 54%  ✗') + g('× 0.82³  ✓')),
-        S("Mistake two: using the rate as the multiplier. For a 3% rise, use 1.03, not 0 point 0 3.", r('× 0.03  ✗') + g('× 1.03  ✓')),
+        S("Mistake two: using the rate as the multiplier. For a 3% rise, use 1.03, not 0.03.", r('× 0.03  ✗') + g('× 1.03  ✓')),
         S("Mistake three: multiplying by the number of years. Use a power, not a times.", r('1.03 × 5  ✗') + g('1.03⁵  ✓'))
       ]),
       SC('In real life', 'Savings and cars', [
         S("The same idea shows up in both savings and cars. Money in a savings account grows, so it is compound growth. A new car loses value quickest in its first year. That is why people buy second-hand cars.", V.note('Same idea, different multiplier'))
       ]),
       L.turn("Your turn! Number one. A painting worth £5,000 increases by 10% a year. What is it worth after 2 years? Pause and try it.", E('5,000 × 1.1²'), "1.1 squared is 1.21. 5,000 times 1.21 is £6,050.", g('£6,050')),
-      L.turn("Your turn! Number two. What multiplier do you use for a 12% decrease? Pause and think.", E('?'), "100 minus 12 is 88. As a decimal, 0 point 8 8.", g('0.88')),
-      L.turn("Your turn! Number three. A phone worth £400 loses 20% a year. What is it worth after 2 years? Pause and try it.", E('400 × 0.8²'), "0 point 8 squared is 0 point 6 4. 400 times that is £256.", g('£256')),
+      L.turn("Your turn! Number two. What multiplier do you use for a 12% decrease? Pause and think.", E('?'), "100 minus 12 is 88. As a decimal, 0.88.", g('0.88')),
+      L.turn("Your turn! Number three. A phone worth £400 loses 20% a year. What is it worth after 2 years? Pause and try it.", E('400 × 0.8²'), "0.8 squared is 0.64. 400 times that is £256.", g('£256')),
       L.rec(T, "For compound growth, multiply by 1 plus the rate for each year. For depreciation, multiply by 1 minus the rate. Use a power for many years. Each change is on the new amount, so you cannot just add the percentages.", ['Growth: × (1 + r)ⁿ', 'Depreciation: × (1 − r)ⁿ', 'Each year on the new value', 'Trial and improvement for years'])
     ]);
   })();
@@ -736,16 +736,16 @@
       ]),
       SC('Using the formula', 'Example 2: 1 calculation', [
         S("The formula does it all in 1 go. 2,000 times 1.05 to the power 3. That is £2,315.25. The same.", g('2,000 × 1.05³ = £2,315.25')),
-        S("The interest earned is the final amount minus the start. 2 thousand 3 hundred and fifteen 25 minus 2,000 is £315.25.", E('A − P = £315.25'))
+        S("The interest earned is the final amount minus the start. 2 thousand 3 hundred and 15 25 minus 2,000 is £315.25.", E('A − P = £315.25'))
       ]),
       SC('Compared with simple', 'Example 3: the difference', [
-        S("With simple interest, 5% of 2,000 is £100 a year. In 3 years, that is £300. Compound interest gave 3 hundred and fifteen 25. That is £15.25 more, and the gap grows every year.", E('Simple: £300') + g('Compound: £315.25'))
+        S("With simple interest, 5% of 2,000 is £100 a year. In 3 years, that is £300. Compound interest gave 3 hundred and 15 25. That is £15.25 more, and the gap grows every year.", E('Simple: £300') + g('Compound: £315.25'))
       ]),
       SC('Monthly rates', 'Example 4: more often', [
         S("Sometimes interest is added every month. A loan at one per cent a month, for twelve months, uses one point zero one to the power twelve. That is about one point one two seven. So the yearly growth is about twelve point seven per cent, more than twelve.", E('1.01¹² ≈ 1.127') + g('≈ 12.7% a year'))
       ]),
       SC('Watch out!', 'Three common mistakes', [
-        S("Mistake one: using the rate as a multiplier. 5% is 1.05, not 0 point 0 5.", r('× 0.05  ✗') + g('× 1.05  ✓')),
+        S("Mistake one: using the rate as a multiplier. 5% is 1.05, not 0.05.", r('× 0.05  ✗') + g('× 1.05  ✓')),
         S("Mistake two: forgetting to subtract the principal when you want the interest. The formula gives the total, not just the interest.", V.rule('Interest = A − P')),
         S("Mistake three: multiplying by the years. Use a power.", r('2,000 × 1.05 × 3  ✗') + g('2,000 × 1.05³  ✓'))
       ]),
@@ -754,7 +754,7 @@
       ]),
       L.turn("Your turn! Number one. Find the value of £1,000 after 2 years at 4% compound interest. Pause and try it.", E('1,000 × 1.04²'), "1.04 squared is 1.0816. So £1,081.60.", g('£1,081.60')),
       L.turn("Your turn! Number two. How much interest was earned? Pause and try it.", E('1,081.60 − 1,000'), "£81.60.", g('£81.60')),
-      L.turn("Your turn! Number three. What is the multiplier for three point five per cent interest? Pause and think.", E('?'), "1 plus 0 point 0 3 5 is 1.035.", g('1.035')),
+      L.turn("Your turn! Number three. What is the multiplier for three point five per cent interest? Pause and think.", E('?'), "1 plus 0.035 is 1.035.", g('1.035')),
       L.rec(T, "Compound interest is added to the balance each period, so you earn interest on interest. Use the amount, times 1 plus the rate, to the power of the number of periods. Interest earned is the final amount minus the start. It always beats simple interest after the first period.", ['A = P(1 + r)ⁿ', 'Interest on interest', 'More than simple interest', 'Interest = A − P'])
     ]);
   })();
@@ -775,7 +775,7 @@
         S("Basic tax is 20% of 37,500. That is 7,500. Higher tax is 40% of 5,000. That is 2,000. Add them. £9,500.", E('20% × 37,500 = 7,500') + E('40% × 5,000 = 2,000') + g('Total tax = £9,500'))
       ]),
       SC('Effective rate', 'Example 3: the overall percentage', [
-        S("What percentage of the whole salary is that? 9,500 divided by 55,000 is about 0 point 1 7. That is about 17%. This is called the effective rate.", g('9,500 ÷ 55,000 ≈ 17%'))
+        S("What percentage of the whole salary is that? 9,500 divided by 55,000 is about 0.17. That is about 17%. This is called the effective rate.", g('9,500 ÷ 55,000 ≈ 17%'))
       ]),
       SC('Watch out!', 'Three common mistakes', [
         S("Mistake one: charging the higher rate on all the income. Only the slice above the limit is taxed at the higher rate.", r('40% × 42,500  ✗') + g('Each band its own rate  ✓')),
@@ -798,7 +798,7 @@
     L.full(T, [
       SC('Density', 'Start with the basics', [
         S("Which is heavier, a kilogram of feathers or a kilogram of iron? They are the same, of course. But a kilogram of feathers takes up much more space. Density tells us how much mass is packed into each unit of space.", E('Density = Mass ÷ Volume', 'g')),
-        S("We often use grams for mass and cubic centimetres for volume. So density is in grams per cubic centimetre. Water has a density of one. Things with a density below one float on water. Things above one sink.", V.cols([V.card('Below 1: floats', 'g', true), V.card('Above 1: sinks', 'b', true)], 2))
+        S("We often use grams for mass and cubic centimetres for volume. So density is in grams per cubic centimetre. Water has a density of 1. Things with a density below 1 float on water. Things above 1 sink.", V.cols([V.card('Below 1: floats', 'g', true), V.card('Above 1: sinks', 'b', true)], 2))
       ]),
       SC('Finding density', 'Example 1: a metal block', [
         S("A block has a mass of 1,350 grams. Its volume is 500 cubic centimetres. Divide the mass by the volume.", E('1,350 ÷ 500')),
@@ -809,8 +809,8 @@
         S("19.3 times 10 is 193 grams.", g('193 g'))
       ]),
       SC('Finding volume', 'Example 3: ice', [
-        S("Ice has a density of 0 point 9 2. What volume has 460 grams of ice? Volume equals mass divided by density.", E('V = M ÷ D')),
-        S("460 divided by 0 point 9 2 is 500 cubic centimetres.", g('500 cm³'))
+        S("Ice has a density of 0.92. What volume has 460 grams of ice? Volume equals mass divided by density.", E('V = M ÷ D')),
+        S("460 divided by 0.92 is 500 cubic centimetres.", g('500 cm³'))
       ]),
       SC('The triangle trick', 'A memory aid', [
         S("Here is a helpful trick. Draw a triangle with mass on top, and density and volume at the bottom. Cover the one you want. If you cover density, you see mass over volume. If you cover mass, you see density times volume.", V.cols([V.card('Mass on top', 'b', true), V.card('Density × Volume below', 'g', true)], 2))
@@ -826,8 +826,8 @@
       SC('In real life', 'Floating ships', [
         S("A steel ship floats, even though steel is dense. The ship is mostly air inside. Its overall density is less than water. That is how enormous ships can float.", V.note('Overall density decides'))
       ]),
-      L.turn("Your turn! Number one. A stone has a mass of 240 grams and a volume of 80 cubic centimetres. What is its density? Pause and try it.", E('240 ÷ 80'), "Three grams per cubic centimetre.", g('3 g/cm³')),
-      L.turn("Your turn! Number two. A liquid has a density of 0 point 8. Find the mass of 500 cubic centimetres. Pause and try it.", E('0.8 × 500'), "Four hundred grams.", g('400 g')),
+      L.turn("Your turn! Number one. A stone has a mass of 240 grams and a volume of 80 cubic centimetres. What is its density? Pause and try it.", E('240 ÷ 80'), "3 grams per cubic centimetre.", g('3 g/cm³')),
+      L.turn("Your turn! Number two. A liquid has a density of 0.8. Find the mass of 500 cubic centimetres. Pause and try it.", E('0.8 × 500'), "Four hundred grams.", g('400 g')),
       L.turn("Your turn! Number three. A town has 12,000 people and covers 4 square kilometres. What is its population density? Pause and try it.", E('12,000 ÷ 4'), "3,000 people per square kilometre.", g('3,000 per km²')),
       L.rec(T, "Density is mass divided by volume. Rearrange it to find mass, which is density times volume, or volume, which is mass divided by density. Other rates, like population density, divide 1 quantity by another. Keep the units matching.", ['D = M ÷ V', 'M = D × V', 'V = M ÷ D', 'Units: g/cm³'])
     ]);
@@ -899,12 +899,12 @@
         S("Mistake three: cubing wrongly. r cubed means r times r times r, not r times 3.", r('6³ = 18  ✗') + g('6³ = 216  ✓'))
       ]),
       SC('In real life', 'Ice cream', [
-        S("An ice cream cone holds its volume of ice cream, plus a half sphere of ice cream on top. A shop works out how much ice cream each portion needs, using exactly these two formulae.", V.note('Cone + hemisphere'))
+        S("An ice cream cone holds its volume of ice cream, plus a half sphere of ice cream on top. A shop works out how much ice cream each portion needs, using exactly these 2 formulae.", V.note('Cone + hemisphere'))
       ]),
       L.turn("Your turn! Number one. Find the volume of a cone with radius 5 and height 12, in terms of pi. Pause and try it.", E('⅓ × π × 25 × 12'), "25 times 12 is 300. A third is 100. So 100 pi.", g('100π ≈ 314')),
-      L.turn("Your turn! Number two. Find the volume of a sphere with radius three, in terms of pi. Pause and try it.", E('⁴⁄₃ × π × 27'), "4 thirds of 27 is 36. So 36 pi.", g('36π')),
+      L.turn("Your turn! Number two. Find the volume of a sphere with radius 3, in terms of pi. Pause and try it.", E('⁴⁄₃ × π × 27'), "4 thirds of 27 is 36. So 36 pi.", g('36π')),
       L.turn("Your turn! Number three. A pyramid has a base area of 40 and height 9. Find its volume. Pause and try it.", E('⅓ × 40 × 9'), "40 times 9 is 360. A third is 120.", g('120')),
-      L.rec(T, "Cones and pyramids are one third of the matching cylinder or prism. A sphere's volume is four thirds pi r cubed. A hemisphere is half of that. Always use the perpendicular height.", ['Cone: ⅓πr²h', 'Pyramid: ⅓ base × h', 'Sphere: ⁴⁄₃πr³', 'Hemisphere: half'])
+      L.rec(T, "Cones and pyramids are one third of the matching cylinder or prism. A sphere's volume is 4 thirds pi r cubed. A hemisphere is half of that. Always use the perpendicular height.", ['Cone: ⅓πr²h', 'Pyramid: ⅓ base × h', 'Sphere: ⁴⁄₃πr³', 'Hemisphere: half'])
     ]);
   })();
 
@@ -913,11 +913,11 @@
     var T = 'Surface area of cones and spheres';
     L.full(T, [
       SC('Surface area', 'Start with the basics', [
-        S("Surface area is the total area of the outside of a solid. Think of the paper you would need to wrap it. For a cone, there is a curved part and a flat circle at the bottom. A sphere has one curved surface.", V.tbl([['Cone curved', 'πrl'], ['Cone total', 'πrl + πr²'], ['Sphere', '4πr²']], ['Surface', 'Area'])),
+        S("Surface area is the total area of the outside of a solid. Think of the paper you would need to wrap it. For a cone, there is a curved part and a flat circle at the bottom. A sphere has 1 curved surface.", V.tbl([['Cone curved', 'πrl'], ['Cone total', 'πrl + πr²'], ['Sphere', '4πr²']], ['Surface', 'Area'])),
         S("In the cone formula, l is the slant height. That is the length from the tip down the sloping side to the edge. It is not the straight up height.", V.rule('l = slant height'))
       ]),
       SC('Slant height', 'Example 1: Pythagoras', [
-        S("Often you are given the straight up height, and need to find the slant height. A cone has radius three and height four. The slant height is the longest side of a right-angled triangle. Use Pythagoras.", E('l² = 3² + 4²')),
+        S("Often you are given the straight up height, and need to find the slant height. A cone has radius 3 and height 4. The slant height is the longest side of a right-angled triangle. Use Pythagoras.", E('l² = 3² + 4²')),
         S("9 plus 16 is 25. The square root of 25 is 5. The slant height is 5.", g('l = 5'))
       ]),
       SC('Cone surface area', 'Example 2: r = 3, l = 5', [
@@ -938,10 +938,10 @@
       SC('In real life', 'Party hats', [
         S("A party hat is a cone with no base. To find how much card is needed, we use only pi r l. A hat with radius 6 and slant height 15 needs 90 pi square centimetres of card, about 283.", g('π × 6 × 15 = 90π ≈ 283 cm²'))
       ]),
-      L.turn("Your turn! Number one. Find the surface area of a sphere with radius two, in terms of pi. Pause and try it.", E('4π × 2²'), "4 times 4 is 16. So 16 pi.", g('16π ≈ 50.3')),
+      L.turn("Your turn! Number one. Find the surface area of a sphere with radius 2, in terms of pi. Pause and try it.", E('4π × 2²'), "4 times 4 is 16. So 16 pi.", g('16π ≈ 50.3')),
       L.turn("Your turn! Number two. A cone has radius 5 and slant height 13. Find its curved surface area. Pause and try it.", E('π × 5 × 13'), "65 pi, about 204 square centimetres.", g('65π ≈ 204 cm²')),
       L.turn("Your turn! Number three. A cone has radius 5 and height 12. Find the slant height. Pause and try it.", E('√(5² + 12²)'), "25 plus a hundred and 44 is a hundred and 69. The square root is 13.", g('13')),
-      L.rec(T, "A cone's curved surface is pi r l, where l is the slant height. Add pi r squared for the base. A sphere's surface area is four pi r squared. Use Pythagoras to find a slant height. Do not forget the flat face on a solid hemisphere.", ['Cone curved: πrl', 'Add the base πr²', 'Sphere: 4πr²', 'Slant height by Pythagoras'])
+      L.rec(T, "A cone's curved surface is pi r l, where l is the slant height. Add pi r squared for the base. A sphere's surface area is 4 pi r squared. Use Pythagoras to find a slant height. Do not forget the flat face on a solid hemisphere.", ['Cone curved: πrl', 'Add the base πr²', 'Sphere: 4πr²', 'Slant height by Pythagoras'])
     ]);
   })();
   /* ---- Common factors and difference of two squares ---- */
@@ -950,7 +950,7 @@
     L.full(T, [
       SC('Factorising', 'Start with the basics', [
         S("Expanding means removing brackets. Factorising is the opposite. It means putting the brackets back. It is like finding the factors of a number, but with letters.", E('3(x + 2) = 3x + 6') + E('3x + 6 = 3(x + 2)', 'g')),
-        S("There are two methods in this lesson. First, always look for a common factor. Second, check for something called a difference of two squares.", V.cols([V.card('1. Common factor', 'b', true), V.card('2. Difference of 2 squares', 'g', true)], 2))
+        S("There are 2 methods in this lesson. First, always look for a common factor. Second, check for something called a difference of 2 squares.", V.cols([V.card('1. Common factor', 'b', true), V.card('2. Difference of 2 squares', 'g', true)], 2))
       ]),
       SC('Common factor', 'Example 1: 8x² + 12x', [
         S("Look at the numbers, 8 and 12. The highest number that goes into both is 4. Look at the letters. Both terms have at least 1 x. So the highest common factor is 4 x.", E('HCF of 8x² and 12x = 4x')),
@@ -958,7 +958,7 @@
         S("Check by expanding. 4 x times 2 x is 8 x squared. 4 x times 3 is 12 x. It matches.", E('4x × 2x + 4x × 3 ✓'))
       ]),
       SC('Difference of two squares', 'Example 2: x² − 49', [
-        S("Here is a special pattern. Something squared, minus something else squared. We call it a difference of two squares. The rule is, a squared minus b squared equals a plus b, times a minus b.", E('a² − b² = (a + b)(a − b)', 'g')),
+        S("Here is a special pattern. Something squared, minus something else squared. We call it a difference of 2 squares. The rule is, a squared minus b squared equals a plus b, times a minus b.", E('a² − b² = (a + b)(a − b)', 'g')),
         S("Look at x squared minus 49. x squared is x squared. And 49 is 7 squared. So a is x and b is 7.", E('x² − 7²')),
         S("The answer is x plus 7, times x minus 7.", g('(x + 7)(x − 7)'))
       ]),
@@ -970,7 +970,7 @@
         S("Now look inside. x squared minus 9 is a difference of 2 squares. 9 is 3 squared. So the full answer is 2, times x plus 3, times x minus 3.", g('2(x + 3)(x − 3)'))
       ]),
       SC('Watch out!', 'Three common mistakes', [
-        S("Mistake one: not taking out the highest common factor. If you only take out two x, you are not finished.", r('8x² + 12x = 2x(4x + 6)  ✗') + g('= 4x(2x + 3)  ✓')),
+        S("Mistake one: not taking out the highest common factor. If you only take out 2 x, you are not finished.", r('8x² + 12x = 2x(4x + 6)  ✗') + g('= 4x(2x + 3)  ✓')),
         S("Mistake two: using the rule on a sum. x squared plus 49 cannot be factorised this way. It must be a difference, a minus sign.", r('x² + 49  ✗  not (x + 7)(x + 7)')),
         S("Mistake three: forgetting to check. Expand your brackets. You must get back to where you started.", V.rule('Always check by expanding.'))
       ]),
@@ -980,7 +980,7 @@
       L.turn("Your turn! Number one. Factorise x squared minus 100. Pause and try it.", E('x² − 100'), "100 is 10 squared. So x plus 10, times x minus 10.", g('(x + 10)(x − 10)')),
       L.turn("Your turn! Number two. Factorise 6 x squared plus 9 x. Pause and try it.", E('6x² + 9x'), "The highest common factor is 3 x. 3 x, bracket, 2 x plus 3.", g('3x(2x + 3)')),
       L.turn("Your turn! Number three. Factorise 3 x squared minus 12 completely. Pause and try it.", E('3x² − 12'), "Take out 3. x squared minus 4. That is x plus 2, times x minus 2. So 3, times x plus 2, times x minus 2.", g('3(x + 2)(x − 2)')),
-      L.rec(T, "Always take out the highest common factor first. Then look for a difference of two squares. a squared minus b squared is a plus b, times a minus b. Check by expanding. A sum of two squares cannot be factorised this way.", ['HCF first', 'a² − b²', '= (a + b)(a − b)', 'Check by expanding'])
+      L.rec(T, "Always take out the highest common factor first. Then look for a difference of 2 squares. a squared minus b squared is a plus b, times a minus b. Check by expanding. A sum of 2 squares cannot be factorised this way.", ['HCF first', 'a² − b²', '= (a + b)(a − b)', 'Check by expanding'])
     ]);
   })();
 
@@ -998,7 +998,7 @@
         S("So the answer is x plus 3, times x plus 4.", g('(x + 3)(x + 4)'))
       ]),
       SC('Negative last number', 'Example 2: x² + 2x − 15', [
-        S("Now the last number is negative 15. The two numbers must have different signs, 1 positive and 1 negative. They multiply to negative 15, and add to 2. Try 5 and negative 3. 5 times negative 3 is negative 15. 5 plus negative 3 is 2.", E('5 × (−3) = −15') + E('5 + (−3) = 2', 'g')),
+        S("Now the last number is negative 15. The 2 numbers must have different signs, 1 positive and 1 negative. They multiply to negative 15, and add to 2. Try 5 and negative 3. 5 times negative 3 is negative 15. 5 plus negative 3 is 2.", E('5 × (−3) = −15') + E('5 + (−3) = 2', 'g')),
         S("So the answer is x plus 5, times x minus 3.", g('(x + 5)(x − 3)'))
       ]),
       SC('Negative middle', 'Example 3: x² − 9x + 20', [
@@ -1010,8 +1010,8 @@
         S("So either x plus 5 is 0, which gives x equals negative 5. Or x minus 3 is 0, which gives x equals 3. There are 2 solutions.", g('x = −5   or   x = 3'))
       ]),
       SC('Watch out!', 'Three common mistakes', [
-        S("Mistake one: getting the signs wrong. Check your two numbers both multiply and add correctly.", V.rule('× to the last, + to the middle.')),
-        S("Mistake two: giving only one solution. A quadratic equation usually has two.", V.rule('Two brackets, two answers.')),
+        S("Mistake one: getting the signs wrong. Check your 2 numbers both multiply and add correctly.", V.rule('× to the last, + to the middle.')),
+        S("Mistake two: giving only one solution. A quadratic equation usually has 2.", V.rule('2 brackets, 2 answers.')),
         S("Mistake three: not checking. Expand your brackets and make sure you get the original.", V.rule('Expand to check.'))
       ]),
       SC('In real life', 'Areas', [
@@ -1020,7 +1020,7 @@
       L.turn("Your turn! Number one. Factorise x squared plus x minus 20. Pause and try it.", E('x² + x − 20'), "We need numbers that multiply to negative 20 and add to 1. 5 and negative 4. So x plus 5, times x minus 4.", g('(x + 5)(x − 4)')),
       L.turn("Your turn! Number two. Factorise x squared minus 7 x plus 10. Pause and try it.", E('x² − 7x + 10'), "Multiply to 10, add to negative 7. Negative 2 and negative 5. So x minus 2, times x minus 5.", g('(x − 2)(x − 5)')),
       L.turn("Your turn! Number three. Solve x squared minus 9 x plus 20 equals 0. Pause and try it.", E('(x − 4)(x − 5) = 0'), "x minus 4 is 0, or x minus 5 is 0. So x is 4 or 5.", g('x = 4 or 5')),
-      L.rec(T, "To factorise x squared plus b x plus c, find two numbers that multiply to c and add to b. If c is negative, the numbers have different signs. If c is positive, they share the sign of b. Check by expanding. To solve, set each bracket to zero.", ['× to c', '+ to b', 'Watch the signs', 'Each bracket = 0 to solve'])
+      L.rec(T, "To factorise x squared plus b x plus c, find 2 numbers that multiply to c and add to b. If c is negative, the numbers have different signs. If c is positive, they share the sign of b. Check by expanding. To solve, set each bracket to 0.", ['× to c', '+ to b', 'Watch the signs', 'Each bracket = 0 to solve'])
     ]);
   })();
 
@@ -1030,7 +1030,7 @@
     L.full(T, [
       SC('Fractions in equations', 'Start with the basics', [
         S("Fractions can make equations look scary. But there is a trick. We multiply to get rid of the fractions. This is called clearing the fractions. Then it is an ordinary equation.", V.rule('Multiply every term to clear the fractions.')),
-        S("What do we multiply by? The denominator. If there is more than one denominator, we multiply by the lowest common multiple. The most important rule is to multiply every term, on both sides.", V.rule('Every term. Both sides.'))
+        S("What do we multiply by? The denominator. If there is more than 1 denominator, we multiply by the lowest common multiple. The most important rule is to multiply every term, on both sides.", V.rule('Every term. Both sides.'))
       ]),
       SC('One fraction', 'Example 1: x/4 = 7', [
         S("x over 4 equals 7. Multiply both sides by 4. x equals 28.", E('x/4 = 7') + g('x = 28'))
@@ -1048,7 +1048,7 @@
         S("Expand the brackets. 4 x minus 2 equals 3 x plus 12. Subtract 3 x. x minus 2 equals 12. Add 2. x equals 14.", E('4x − 2 = 3x + 12') + g('x = 14'))
       ]),
       SC('Watch out!', 'Three common mistakes', [
-        S("Mistake one: not multiplying every term. In x over 3 plus 2, the two must also be multiplied by 3.", r('x + 2 = 9 × 3  ✗') + g('x + 6 = 27  ✓')),
+        S("Mistake one: not multiplying every term. In x over 3 plus 2, the 2 must also be multiplied by 3.", r('x + 2 = 9 × 3  ✗') + g('x + 6 = 27  ✓')),
         S("Mistake two: forgetting brackets. 2 times 2 x minus 1 needs brackets, so that both parts get multiplied.", V.rule('Use brackets.')),
         S("Mistake three: adding denominators. x over 2 plus x over 3 is not x over 5.", r('x/2 + x/3 = x/5  ✗'))
       ]),
@@ -1067,7 +1067,7 @@
     var T = 'Changing the subject and inequations';
     L.full(T, [
       SC('Changing the subject', 'Start with the basics', [
-        S("In a formula, the subject is the letter on its own on one side. In A equals pi r squared, A is the subject. Changing the subject means rearranging the formula so that a different letter is on its own.", E('A = πr²  →  r = √(A ÷ π)', 'g')),
+        S("In a formula, the subject is the letter on its own on 1 side. In A equals pi r squared, A is the subject. Changing the subject means rearranging the formula so that a different letter is on its own.", E('A = πr²  →  r = √(A ÷ π)', 'g')),
         S("We use the same method as for solving equations. Do the same to both sides, and undo the operations in reverse order. The only difference is that we are working with letters.", V.rule('Same to both sides. Undo in reverse.'))
       ]),
       SC('One step', 'Example 1: P = 4s', [
@@ -1080,7 +1080,7 @@
         S("To make r the subject of A equals pi r squared, divide by pi first. A over pi equals r squared. Now undo the square with a square root. r equals the square root of A over pi.", E('A ÷ π = r²') + g('r = √(A ÷ π)'))
       ]),
       SC('Inequations', 'Example 4: 5 − 2x < 11', [
-        S("An inequation uses a sign like less than or greater than instead of equals. We solve it in the same way. But there is one special rule. If you multiply or divide by a negative number, you must flip the sign.", V.rule('Negative × or ÷: flip the sign.')),
+        S("An inequation uses a sign like less than or greater than instead of equals. We solve it in the same way. But there is 1 special rule. If you multiply or divide by a negative number, you must flip the sign.", V.rule('Negative × or ÷: flip the sign.')),
         S("Solve 5 minus 2 x is less than 11. Subtract 5. Negative 2 x is less than 6. Now divide by negative 2. The sign flips. x is greater than negative 3.", E('−2x < 6') + g('x > −3'))
       ]),
       SC('Checking an inequation', 'Why flip?', [
@@ -1089,7 +1089,7 @@
       SC('Watch out!', 'Three common mistakes', [
         S("Mistake one: forgetting to flip the sign when dividing by a negative. This is the most common slip.", V.rule('Divide by a negative: flip.')),
         S("Mistake two: undoing in the wrong order. Undo adding and subtracting first. Then undo multiplying and dividing.", V.rule('Add/subtract first.')),
-        S("Mistake three: leaving a part out. In y minus 5 over 3, the five and the y are both divided by 3.", V.rule('Brackets: (y − 5) ÷ 3'))
+        S("Mistake three: leaving a part out. In y minus 5 over 3, the 5 and the y are both divided by 3.", V.rule('Brackets: (y − 5) ÷ 3'))
       ]),
       SC('In real life', 'Fuel formula', [
         S("A car uses a formula, D equals M times G, where D is distance, M is miles per gallon, and G is gallons. To find how many gallons you need, make G the subject. G equals D over M. For a journey of 300 miles at 50 miles per gallon, that is 6 gallons.", g('G = 300 ÷ 50 = 6'))
@@ -1107,34 +1107,34 @@
     L.full(T, [
       SC('Gradients', 'Start with the basics', [
         S("The gradient of a line tells us how steep it is. It is the rise divided by the run. In y equals m x plus c, m is the gradient and c is where the line crosses the y-axis.", E('y = mx + c', 'g') + V.cols([V.card('m: gradient', 'b', true), V.card('c: y-intercept', 'p', true)], 2)),
-        S("Two special relationships matter. Parallel lines never meet, like railway tracks. They have the same gradient. Perpendicular lines meet at a right angle. Their gradients multiply to give negative one.", V.cards(['Parallel: m₁ = m₂', 'Perpendicular: m₁ × m₂ = −1'], ['b', 'g']))
+        S("2 special relationships matter. Parallel lines never meet, like railway tracks. They have the same gradient. Perpendicular lines meet at a right angle. Their gradients multiply to give negative 1.", V.cards(['Parallel: m₁ = m₂', 'Perpendicular: m₁ × m₂ = −1'], ['b', 'g']))
       ]),
       SC('Parallel', 'Example 1: same gradient', [
         S("y equals 3 x plus 1, and y equals 3 x minus 4. Both have a gradient of 3. So they are parallel. They only differ in where they cross the y-axis.", E('m = 3 for both', 'g'))
       ]),
       SC('Perpendicular', 'Example 2: negative reciprocal', [
-        S("A line has gradient two. What is the gradient of a perpendicular line? Flip the number upside down, and change the sign. Two is two over one. Flip it. One over two. Change the sign. Negative a half.", E('2 → ½ → −½')),
+        S("A line has gradient 2. What is the gradient of a perpendicular line? Flip the number upside down, and change the sign. 2 is 2 over 1. Flip it. 1 over 2. Change the sign. Negative a half.", E('2 → ½ → −½')),
         S("Check. 2 times negative a half is negative 1. Correct.", g('2 × (−½) = −1 ✓'))
       ]),
       SC('Another one', 'Example 3: gradient −3', [
-        S("What is perpendicular to gradient negative three? Negative three is negative three over one. Flip it. One over negative three. Change the sign. Positive one third.", E('−3 → 1/3', 'g'))
+        S("What is perpendicular to gradient negative 3? Negative 3 is negative 3 over 1. Flip it. 1 over negative 3. Change the sign. Positive one third.", E('−3 → 1/3', 'g'))
       ]),
       SC('Finding an equation', 'Example 4: through a point', [
         S("Find the line parallel to y equals 2 x plus 1 that goes through the point 3, 11. Parallel means the gradient is 2. So y equals 2 x plus c.", E('y = 2x + c')),
         S("Put in the point. x is 3 and y is 11. 11 equals 6 plus c. So c is 5.", E('11 = 6 + c') + g('y = 2x + 5'))
       ]),
       SC('Watch out!', 'Three common mistakes', [
-        S("Mistake one: changing only the sign. The perpendicular to gradient two is negative a half, not negative two.", r('−2  ✗') + g('−½  ✓')),
-        S("Mistake two: flipping but forgetting the sign change. The perpendicular to a half is negative two, not two.", V.rule('Flip AND change the sign.')),
-        S("Mistake three: mixing the two rules. Parallel means equal. Perpendicular means negative reciprocal.", V.cols([V.card('Parallel: equal', 'b', true), V.card('Perpendicular: −1/m', 'g', true)], 2))
+        S("Mistake one: changing only the sign. The perpendicular to gradient 2 is negative a half, not negative 2.", r('−2  ✗') + g('−½  ✓')),
+        S("Mistake two: flipping but forgetting the sign change. The perpendicular to a half is negative 2, not 2.", V.rule('Flip AND change the sign.')),
+        S("Mistake three: mixing the 2 rules. Parallel means equal. Perpendicular means negative reciprocal.", V.cols([V.card('Parallel: equal', 'b', true), V.card('Perpendicular: −1/m', 'g', true)], 2))
       ]),
       SC('In real life', 'Road layouts', [
-        S("City planners use these rules. Streets in a grid are parallel to each other, and cross other streets at right angles. On a map with coordinates, the gradient shows whether a new street will be perpendicular to an existing one.", V.note('Maps use gradients'))
+        S("City planners use these rules. Streets in a grid are parallel to each other, and cross other streets at right angles. On a map with coordinates, the gradient shows whether a new street will be perpendicular to an existing 1.", V.note('Maps use gradients'))
       ]),
-      L.turn("Your turn! Number one. What is the gradient of a line perpendicular to y equals negative 3 x plus 2? Pause and think.", E('?'), "The negative reciprocal of negative three. One third.", g('⅓')),
-      L.turn("Your turn! Number two. Is y equals 4 x minus 1 parallel to y equals 4 x plus 6? Pause and think.", E('?'), "Both have gradient four. Yes, they are parallel.", g('Yes')),
+      L.turn("Your turn! Number one. What is the gradient of a line perpendicular to y equals negative 3 x plus 2? Pause and think.", E('?'), "The negative reciprocal of negative 3. One third.", g('⅓')),
+      L.turn("Your turn! Number two. Is y equals 4 x minus 1 parallel to y equals 4 x plus 6? Pause and think.", E('?'), "Both have gradient 4. Yes, they are parallel.", g('Yes')),
       L.turn("Your turn! Number three. Find the line parallel to y equals 5 x minus 2 through the point 1, 9. Pause and try it.", E('y = 5x + c'), "Put in 1 and 9. 9 equals 5 plus c. So c is 4. y equals 5 x plus 4.", g('y = 5x + 4')),
-      L.rec(T, "Parallel lines share the same gradient. Perpendicular gradients multiply to negative one. To find one, flip the gradient upside down and change the sign. To find an equation through a point, find the gradient, then substitute the point to find c.", ['Parallel: same m', 'Perpendicular: −1/m', 'Substitute a point for c', 'Check with a sketch'])
+      L.rec(T, "Parallel lines share the same gradient. Perpendicular gradients multiply to negative 1. To find 1, flip the gradient upside down and change the sign. To find an equation through a point, find the gradient, then substitute the point to find c.", ['Parallel: same m', 'Perpendicular: −1/m', 'Substitute a point for c', 'Check with a sketch'])
     ]);
   })();
 
@@ -1143,7 +1143,7 @@
     var T = 'Lines in the form ax + by = c';
     L.full(T, [
       SC('Another form', 'Start with the basics', [
-        S("So far we have written lines as y equals m x plus c. But lines can be written another way. a x plus b y equals c. For example, two x plus 3 y equals 12. Both forms describe straight lines.", E('2x + 3y = 12', 'b')),
+        S("So far we have written lines as y equals m x plus c. But lines can be written another way. a x plus b y equals c. For example, 2 x plus 3 y equals 12. Both forms describe straight lines.", E('2x + 3y = 12', 'b')),
         S("To see the gradient, we rearrange into y equals m x plus c. That is just like changing the subject. We make y the subject.", V.rule('Make y the subject.'))
       ]),
       SC('Rearranging', 'Example 1: 2x + 3y = 12', [
@@ -1162,8 +1162,8 @@
       ]),
       SC('Watch out!', 'Three common mistakes', [
         S("Mistake one: forgetting to divide every term. In 3 y equals negative 2 x plus 12, all of the right side is divided by 3.", r('y = −2x + 4  ✗') + g('y = −⅔x + 4  ✓')),
-        S("Mistake two: sign errors when moving a term across. Subtracting two x gives negative two x.", V.rule('Move it: change the sign.')),
-        S("Mistake three: mixing up the two intercepts. Set x to zero to get the y-intercept. Set y to zero to get the x-intercept.", V.cols([V.card('x = 0 → y-intercept', 'b', true), V.card('y = 0 → x-intercept', 'g', true)], 2))
+        S("Mistake two: sign errors when moving a term across. Subtracting 2 x gives negative 2 x.", V.rule('Move it: change the sign.')),
+        S("Mistake three: mixing up the 2 intercepts. Set x to 0 to get the y-intercept. Set y to 0 to get the x-intercept.", V.cols([V.card('x = 0 → y-intercept', 'b', true), V.card('y = 0 → x-intercept', 'g', true)], 2))
       ]),
       SC('In real life', 'Budget lines', [
         S("A school has £20 to spend. Pencils cost £2 a pack, and pens cost £4 a pack. The equation 2 p plus 4 n equals 20 shows every possible combination. 10 packs of pencils and no pens, or 5 packs of pens and no pencils. And many mixes in between.", g('2p + 4n = 20'))
@@ -1171,7 +1171,7 @@
       L.turn("Your turn! Number one. Where does 5 x plus 2 y equals 20 cross the y-axis? Pause and try it.", E('x = 0'), "2 y equals 20. y is 10. At 0, 10.", g('(0, 10)')),
       L.turn("Your turn! Number two. Where does it cross the x-axis? Pause and try it.", E('y = 0'), "5 x equals 20. x is 4. At 4, 0.", g('(4, 0)')),
       L.turn("Your turn! Number three. Rearrange x plus y equals 7 into y equals m x plus c. Pause and try it.", E('x + y = 7'), "Subtract x. y equals negative x plus 7. The gradient is negative 1.", g('y = −x + 7')),
-      L.rec(T, "Rearrange a x plus b y equals c into y equals m x plus c to read the gradient. Find the intercepts by setting x to zero, then y to zero. Substitute a point to test whether it is on the line.", ['Rearrange for m', 'x = 0 → y-intercept', 'y = 0 → x-intercept', 'Substitute to test'])
+      L.rec(T, "Rearrange a x plus b y equals c into y equals m x plus c to read the gradient. Find the intercepts by setting x to 0, then y to 0. Substitute a point to test whether it is on the line.", ['Rearrange for m', 'x = 0 → y-intercept', 'y = 0 → x-intercept', 'Substitute to test'])
     ]);
   })();
 
@@ -1180,13 +1180,13 @@
     var T = 'Solving by graph';
     L.full(T, [
       SC('Simultaneous equations', 'Start with the basics', [
-        S("Sometimes we have two equations, with two unknowns, x and y. We want values that work in both equations at the same time. These are called simultaneous equations.", V.list(['Two equations', 'Two unknowns', 'One pair of values that fits both'])),
-        S("Here is the picture. Each equation is a straight line. A point on a line fits that equation. A point on both lines fits both. So the solution is where the two lines cross.", V.note('Crossing point = solution'))
+        S("Sometimes we have 2 equations, with 2 unknowns, x and y. We want values that work in both equations at the same time. These are called simultaneous equations.", V.list(['Two equations', 'Two unknowns', 'One pair of values that fits both'])),
+        S("Here is the picture. Each equation is a straight line. A point on a line fits that equation. A point on both lines fits both. So the solution is where the 2 lines cross.", V.note('Crossing point = solution'))
       ]),
       SC('Example', 'Example 1: y = x + 1 and y = 7 − x', [
         S("First draw y equals x plus 1. It crosses the y-axis at 1, and goes up 1 for each one across. Mark a few points. 0, 1. 1, 2. 2, 3. 3, 4.", E('(0,1) (1,2) (2,3) (3,4)')),
         S("Now draw y equals 7 minus x. It crosses the y-axis at 7, and goes down as x goes up. Mark a few points. 0, 7. 1, 6. 2, 5. 3, 4.", E('(0,7) (1,6) (2,5) (3,4)')),
-        S("Both tables include the point three, four. That is where the lines cross. So x is three and y is four.", g('x = 3, y = 4'))
+        S("Both tables include the point 3, 4. That is where the lines cross. So x is 3 and y is 4.", g('x = 3, y = 4'))
       ]),
       SC('Check', 'Example 2: substitute', [
         S("Always check in both equations. In y equals x plus 1, 3 plus 1 is 4. True. In y equals 7 minus x, 7 minus 3 is 4. True. Both work.", E('4 = 3 + 1 ✓') + E('4 = 7 − 3 ✓', 'g'))
@@ -1198,16 +1198,16 @@
         S("Sometimes the lines cross between grid lines, so the reading is only approximate. A graph gives a picture, and a good estimate. For an exact answer, we use algebra, which is the next lesson.", V.note('Graphs can be approximate'))
       ]),
       SC('Watch out!', 'Three common mistakes', [
-        S("Mistake one: only checking one equation. The point must work in both.", V.rule('Check both.')),
+        S("Mistake one: only checking 1 equation. The point must work in both.", V.rule('Check both.')),
         S("Mistake two: reading x and y the wrong way round. The first number is x, the second is y.", V.rule('(x, y)')),
-        S("Mistake three: drawing lines carelessly. Use a ruler, and plot at least three points to check the line is straight.", V.rule('Ruler, three points.'))
+        S("Mistake three: drawing lines carelessly. Use a ruler, and plot at least 3 points to check the line is straight.", V.rule('Ruler, 3 points.'))
       ]),
       SC('In real life', 'Comparing plans', [
         S("2 phone plans. Plan A costs £5 plus £2 per gigabyte. Plan B costs a flat £11. Draw both lines. They cross at 3 gigabytes. Below 3 gigabytes plan A is cheaper. Above it, plan B is cheaper.", g('Cross at 3 GB'))
       ]),
       L.turn("Your turn! Number one. The lines y equals 2 x and y equals x plus 3 cross where? Pause and think.", E('2x = x + 3'), "2 x equals x plus 3, so x is 3. y is 6. They cross at 3, 6.", g('(3, 6)')),
-      L.turn("Your turn! Number two. Do y equals x plus 2 and y equals x minus 1 have a solution? Pause and think.", E('?'), "Both have gradient one. They are parallel. No solution.", g('No solution')),
-      L.turn("Your turn! Number three. The lines cross at two, five. What are x and y? Pause and think.", E('(2, 5)'), "x is two and y is five.", g('x = 2, y = 5')),
+      L.turn("Your turn! Number two. Do y equals x plus 2 and y equals x minus 1 have a solution? Pause and think.", E('?'), "Both have gradient 1. They are parallel. No solution.", g('No solution')),
+      L.turn("Your turn! Number three. The lines cross at 2, 5. What are x and y? Pause and think.", E('(2, 5)'), "x is 2 and y is 5.", g('x = 2, y = 5')),
       L.rec(T, "To solve simultaneous equations by graph, draw both lines and read the crossing point. Check it in both equations. Parallel lines have no solution. Graph readings can be approximate, algebra gives exact answers.", ['Draw both lines', 'Read the crossing point', 'Check in both', 'Parallel: none'])
     ]);
   })();
@@ -1217,7 +1217,7 @@
     var T = 'Solving by elimination';
     L.full(T, [
       SC('Elimination', 'Start with the basics', [
-        S("Graphs can be slow and inexact. Algebra is quicker. One algebra method is elimination. We add or subtract the two equations so that one of the letters disappears. Then we solve for the other letter.", E('Add or subtract to remove one letter', 'g')),
+        S("Graphs can be slow and inexact. Algebra is quicker. 1 algebra method is elimination. We add or subtract the 2 equations so that one of the letters disappears. Then we solve for the other letter.", E('Add or subtract to remove one letter', 'g')),
         S("The rule is simple. If the matching letters have the same sign, subtract. If they have different signs, add. A helpful memory is, same signs subtract, different signs add.", V.cols([V.card('Same signs: subtract', 'b', true), V.card('Different signs: add', 'g', true)], 2))
       ]),
       SC('Subtracting', 'Example 1: 3x + y = 11 and x + y = 5', [
@@ -1247,7 +1247,7 @@
       L.turn("Your turn! Number one. Solve x plus y equals 10 and x minus y equals 4. Pause and try it.", E('x + y = 10') + E('x − y = 4'), "Add them. 2 x equals 14. x is 7. y is 3.", g('x = 7, y = 3')),
       L.turn("Your turn! Number two. Solve 2x + y = 9 and x + y = 5. Pause and try it.", E('2x + y = 9') + E('x + y = 5'), "Subtract. x equals 4. Then y is 1.", g('x = 4, y = 1')),
       L.turn("Your turn! Number three. Solve x + 2y = 8 and 3x − 2y = 4. Pause and try it.", E('x + 2y = 8') + E('3x − 2y = 4'), "The y terms have different signs, so add. 4 x equals 12. x is 3. Then 3 plus 2 y equals 8, so y is 2 and a half.", g('x = 3, y = 2.5')),
-      L.rec(T, "Make the coefficients of one letter match, by multiplying every term if needed. Subtract if the signs are the same, and add if they differ. Solve for one letter, substitute back to find the other, and check in both equations.", ['Match one coefficient', 'Same signs: subtract', 'Different signs: add', 'Substitute and check'])
+      L.rec(T, "Make the coefficients of 1 letter match, by multiplying every term if needed. Subtract if the signs are the same, and add if they differ. Solve for 1 letter, substitute back to find the other, and check in both equations.", ['Match one coefficient', 'Same signs: subtract', 'Different signs: add', 'Substitute and check'])
     ]);
   })();
 
@@ -1256,7 +1256,7 @@
     var T = 'Simultaneous equations';
     L.full(T, [
       SC('Real problems', 'Start with the basics', [
-        S("Many real problems have two unknown numbers. To solve them, we write two equations, and solve them together. Here is the plan.", V.list(['Choose two letters', 'Write two equations', 'Eliminate one letter', 'Answer in context'])),
+        S("Many real problems have 2 unknown numbers. To solve them, we write 2 equations, and solve them together. Here is the plan.", V.list(['Choose two letters', 'Write two equations', 'Eliminate one letter', 'Answer in context'])),
         S("The most important step is the first. Say clearly what each letter stands for, such as let a be the price of an adult ticket in pounds.", E('Let a = adult price (£)', 'b'))
       ]),
       SC('Tickets', 'Example 1: adults and children', [
@@ -1281,8 +1281,8 @@
       ]),
       L.turn("Your turn! Number one. 2 numbers add to 22 and differ by 4. What are they? Pause and try it.", E('x + y = 22, x − y = 4'), "Add. 2 x equals 26. x is 13. y is 9.", g('13 and 9')),
       L.turn("Your turn! Number two. A pen and a pencil cost £1. 2 pens and a pencil cost £1.60. Find the cost of a pen. Pause and try it.", E('p + n = 100') + E('2p + n = 160'), "Subtract. p is 60p. The pencil is 40p.", g('Pen 60p, pencil 40p')),
-      L.turn("Your turn! Number three. Why do we need two equations for two unknowns? Pause and think.", E('?'), "One equation has many answers. A second equation narrows it down to one pair of values.", g('Two unknowns need two equations')),
-      L.rec(T, "Define two letters. Write two equations from the information. Solve by elimination or substitution. Then answer the question in context, and check in both equations. You need as many equations as unknowns.", ['Two letters', 'Two equations', 'Eliminate or substitute', 'Check and answer'])
+      L.turn("Your turn! Number three. Why do we need 2 equations for 2 unknowns? Pause and think.", E('?'), "1 equation has many answers. A second equation narrows it down to 1 pair of values.", g('Two unknowns need two equations')),
+      L.rec(T, "Define 2 letters. Write 2 equations from the information. Solve by elimination or substitution. Then answer the question in context, and check in both equations. You need as many equations as unknowns.", ['Two letters', 'Two equations', 'Eliminate or substitute', 'Check and answer'])
     ]);
   })();
   /* ---- SOH CAH TOA ---- */
@@ -1290,9 +1290,9 @@
     var T = 'SOH CAH TOA';
     L.full(T, [
       SC('Trigonometry', 'Start with the basics', [
-        S("Trigonometry connects the angles and sides of right-angled triangles. It lets us find a side we cannot measure, like the height of a tree. First we must name the three sides.", V.cols([V.card('Hypotenuse: longest, opposite the right angle', 'b', true), V.card('Opposite: across from the angle', 'g', true), V.card('Adjacent: next to the angle', 'p', true)], 3)),
+        S("Trigonometry connects the angles and sides of right-angled triangles. It lets us find a side we cannot measure, like the height of a tree. First we must name the 3 sides.", V.cols([V.card('Hypotenuse: longest, opposite the right angle', 'b', true), V.card('Opposite: across from the angle', 'g', true), V.card('Adjacent: next to the angle', 'p', true)], 3)),
         S("The names depend on which angle we are using. The hypotenuse never changes. But the opposite and adjacent swap if you use the other angle. So always mark the angle first.", V.rule('Mark the angle first, then label the sides.')),
-        S("There are three ratios. Sine is opposite over hypotenuse. Cosine is adjacent over hypotenuse. Tangent is opposite over adjacent. A memory aid is SOH, CAH, TOA.", V.tbl([['SOH', 'sin = O ÷ H'], ['CAH', 'cos = A ÷ H'], ['TOA', 'tan = O ÷ A']], ['', 'Ratio']))
+        S("There are 3 ratios. Sine is opposite over hypotenuse. Cosine is adjacent over hypotenuse. Tangent is opposite over adjacent. A memory aid is SOH, CAH, TOA.", V.tbl([['SOH', 'sin = O ÷ H'], ['CAH', 'cos = A ÷ H'], ['TOA', 'tan = O ÷ A']], ['', 'Ratio']))
       ]),
       SC('Opposite from hypotenuse', 'Example 1: sin', [
         S("Angle 40 degrees. Hypotenuse 12. Find the opposite side. We have O and H, so we use SOH. Sine of 40 equals opposite over 12.", E('sin 40° = O ÷ 12')),
@@ -1327,9 +1327,9 @@
     var T = 'Finding an angle';
     L.full(T, [
       SC('Inverse trigonometry', 'Start with the basics', [
-        S("In the last lesson we found sides. Now we find angles. If we know two sides of a right-angled triangle, we can find an angle. We use the inverse button on the calculator.", E('θ = sin⁻¹(O ÷ H)', 'g')),
+        S("In the last lesson we found sides. Now we find angles. If we know 2 sides of a right-angled triangle, we can find an angle. We use the inverse button on the calculator.", E('θ = sin⁻¹(O ÷ H)', 'g')),
         S("Think of it as undoing. Sine takes an angle and gives a ratio. Inverse sine takes a ratio and gives back the angle. The buttons are written sine to the minus 1, cosine to the minus 1 and tangent to the minus 1.", V.cols([V.card('sin → ratio', 'b', true), V.card('sin⁻¹ → angle', 'g', true)], 2)),
-        S("There are three steps. Label the sides you know. Choose the ratio. Then use the inverse function.", V.list(['Label O, A, H', 'Choose SOH, CAH or TOA', 'Divide the two sides', 'Use the inverse button']))
+        S("There are 3 steps. Label the sides you know. Choose the ratio. Then use the inverse function.", V.list(['Label O, A, H', 'Choose SOH, CAH or TOA', 'Divide the two sides', 'Use the inverse button']))
       ]),
       SC('Using tan', 'Example 1: O = 5, A = 5', [
         S("Opposite 5, adjacent 5. We know O and A, so we use TOA. Tangent of the angle is 5 over 5, which is 1. The angle is tan to the minus 1 of 1. 45 degrees.", E('tan θ = 5 ÷ 5 = 1') + g('θ = tan⁻¹(1) = 45°'))
@@ -1338,24 +1338,24 @@
         S("Opposite 7, hypotenuse 14. We use SOH. Sine of the angle is 7 over 14, which is a half. The angle is sine to the minus 1 of a half. 30 degrees.", E('sin θ = 7 ÷ 14 = 0.5') + g('θ = 30°'))
       ]),
       SC('Using cos', 'Example 3: A = 4, H = 9', [
-        S("Adjacent 4, hypotenuse 9. We use CAH. Cosine of the angle is 4 over 9. That is about 0 point 4 4 4. Press cosine to the minus 1. The angle is about 63.6 degrees.", E('cos θ = 4 ÷ 9') + g('θ ≈ 63.6°'))
+        S("Adjacent 4, hypotenuse 9. We use CAH. Cosine of the angle is 4 over 9. That is about 0.444. Press cosine to the minus 1. The angle is about 63.6 degrees.", E('cos θ = 4 ÷ 9') + g('θ ≈ 63.6°'))
       ]),
       SC('Real life', 'Example 4: a ramp', [
-        S("A ramp rises 1.2 metres over a horizontal distance of 5 metres. What angle is it? Rise is opposite. Horizontal distance is adjacent. So we use TOA. Tangent of the angle is 1.2 over 5, which is 0 point 2 4.", E('tan θ = 1.2 ÷ 5 = 0.24')),
-        S("Tan to the minus 1 of 0 point 2 4 is about 13.5 degrees.", g('θ ≈ 13.5°'))
+        S("A ramp rises 1.2 metres over a horizontal distance of 5 metres. What angle is it? Rise is opposite. Horizontal distance is adjacent. So we use TOA. Tangent of the angle is 1.2 over 5, which is 0.24.", E('tan θ = 1.2 ÷ 5 = 0.24')),
+        S("Tan to the minus 1 of 0.24 is about 13.5 degrees.", g('θ ≈ 13.5°'))
       ]),
       SC('Watch out!', 'Three common mistakes', [
         S("Mistake one: using the normal button, not the inverse. To find an angle, you need sine to the minus 1, not sine.", r('sin(0.5)  ✗') + g('sin⁻¹(0.5) = 30°  ✓')),
         S("Mistake two: dividing the sides the wrong way up. For sine, it is opposite divided by hypotenuse.", V.rule('Opposite ÷ hypotenuse, not the other way.')),
-        S("Mistake three: not checking if the answer is sensible. In a right-angled triangle, the sine and cosine of an angle are never bigger than one.", V.rule('sin and cos: between 0 and 1.'))
+        S("Mistake three: not checking if the answer is sensible. In a right-angled triangle, the sine and cosine of an angle are never bigger than 1.", V.rule('sin and cos: between 0 and 1.'))
       ]),
       SC('In real life', 'Safe ladders', [
         S("Ladders should lean at about 75 degrees. A 4 metre ladder with its foot 1 metre from the wall. Adjacent is 1, hypotenuse is 4. Cosine is a quarter. The angle is about 76 degrees. That is safe.", g('cos⁻¹(1 ÷ 4) ≈ 75.5°'))
       ]),
-      L.turn("Your turn! Number one. Opposite eight, adjacent eight. What is the angle? Pause and think.", E('tan⁻¹(8 ÷ 8)'), "The ratio is 1. Tan to the minus 1 of 1 is 45 degrees.", g('45°')),
-      L.turn("Your turn! Number two. Opposite three, hypotenuse six. Find the angle. Pause and try it.", E('sin⁻¹(3 ÷ 6)'), "3 over 6 is a half. Sine to the minus 1 of a half is 30 degrees.", g('30°')),
+      L.turn("Your turn! Number one. Opposite 8, adjacent 8. What is the angle? Pause and think.", E('tan⁻¹(8 ÷ 8)'), "The ratio is 1. Tan to the minus 1 of 1 is 45 degrees.", g('45°')),
+      L.turn("Your turn! Number two. Opposite 3, hypotenuse 6. Find the angle. Pause and try it.", E('sin⁻¹(3 ÷ 6)'), "3 over 6 is a half. Sine to the minus 1 of a half is 30 degrees.", g('30°')),
       L.turn("Your turn! Number three. Adjacent 5, hypotenuse 10. Find the angle. Pause and try it.", E('cos⁻¹(5 ÷ 10)'), "A half again. Cosine to the minus 1 of a half is 60 degrees.", g('60°')),
-      L.rec(T, "Label the sides you know. Choose the ratio that uses them. Divide to get a number. Then use the inverse function to find the angle. Sine and cosine ratios are always between zero and one in a right-angled triangle.", ['Label O, A, H', 'Choose the ratio', 'Divide the sides', 'Use sin⁻¹, cos⁻¹ or tan⁻¹'])
+      L.rec(T, "Label the sides you know. Choose the ratio that uses them. Divide to get a number. Then use the inverse function to find the angle. Sine and cosine ratios are always between 0 and 1 in a right-angled triangle.", ['Label O, A, H', 'Choose the ratio', 'Divide the sides', 'Use sin⁻¹, cos⁻¹ or tan⁻¹'])
     ]);
   })();
 
@@ -1365,17 +1365,17 @@
     L.full(T, [
       SC('Circle theorems', 'Start with the basics', [
         S("Circles have some beautiful angle rules. These are called circle theorems. First, some words. The centre is the middle. The radius goes from the centre to the edge. The diameter goes across through the centre. The circumference is the edge itself.", V.cols([V.card('Radius', 'b', true), V.card('Diameter = 2 × radius', 'g', true)], 2)),
-        S("A chord is a straight line joining two points on the circle. A tangent is a line that just touches the circle at one point. An arc is part of the circumference.", V.cols([V.card('Chord', 'p', true), V.card('Tangent', 'g', true), V.card('Arc', 'b', true)], 3))
+        S("A chord is a straight line joining 2 points on the circle. A tangent is a line that just touches the circle at 1 point. An arc is part of the circumference.", V.cols([V.card('Chord', 'p', true), V.card('Tangent', 'g', true), V.card('Arc', 'b', true)], 3))
       ]),
       SC('The four rules', 'The big list', [
-        S("Here are the four rules for this lesson. We will look at each one in turn.", V.list(['Angle in a semicircle = 90°', 'Tangent meets radius at 90°', 'Angle at centre = 2 × angle at edge', 'Angles on the same arc are equal']))
+        S("Here are the 4 rules for this lesson. We will look at each one in turn.", V.list(['Angle in a semicircle = 90°', 'Tangent meets radius at 90°', 'Angle at centre = 2 × angle at edge', 'Angles on the same arc are equal']))
       ]),
       SC('Semicircle', 'Rule 1: angle in a semicircle', [
         S("Draw a triangle inside a circle, with the diameter as 1 side. The angle at the opposite corner, on the edge, is always 90 degrees. It does not matter where that corner is.", E('Angle in a semicircle = 90°', 'g')),
         S("Example. A triangle in a semicircle has 1 angle of 35 degrees. The angle in the semicircle is 90. So the third angle is 180 minus 90 minus 35. That is 55 degrees.", g('180 − 90 − 35 = 55°'))
       ]),
       SC('Tangent', 'Rule 2: tangent and radius', [
-        S("A tangent touches the circle at one point. At that point, the radius makes a right angle with the tangent. They are perpendicular.", E('Tangent ⊥ radius', 'g')),
+        S("A tangent touches the circle at 1 point. At that point, the radius makes a right angle with the tangent. They are perpendicular.", E('Tangent ⊥ radius', 'g')),
         S("Example. A tangent meets a radius, and the radius makes an angle of 30 degrees with another line from the centre. The angle between the tangent and the radius is 90. This lets us find missing angles in a triangle.", V.note('Tangent and radius: 90°'))
       ]),
       SC('Centre and edge', 'Rule 3: twice the angle', [
@@ -1383,15 +1383,15 @@
         S("If the angle at the edge is 40 degrees, the angle at the centre is 80 degrees. If the angle at the centre is 100, the angle at the edge is 50.", E('2 × 40° = 80°') + E('100° ÷ 2 = 50°'))
       ]),
       SC('Same arc', 'Rule 4: equal angles', [
-        S("Angles made at the edge by the same two points are equal, as long as they are on the same side. Imagine a chord, and several angles looking at it from the same side of the circle. They are all the same.", E('Same arc → equal angles', 'g'))
+        S("Angles made at the edge by the same 2 points are equal, as long as they are on the same side. Imagine a chord, and several angles looking at it from the same side of the circle. They are all the same.", E('Same arc → equal angles', 'g'))
       ]),
       SC('Radii make isosceles triangles', 'A handy fact', [
-        S("Two radii are equal. So a triangle made of two radii and a chord is isosceles. Its base angles are equal. This fact is used all the time to find missing angles.", V.note('Two radii → isosceles triangle'))
+        S("2 radii are equal. So a triangle made of 2 radii and a chord is isosceles. Its base angles are equal. This fact is used all the time to find missing angles.", V.note('Two radii → isosceles triangle'))
       ]),
       SC('Watch out!', 'Three common mistakes', [
         S("Mistake one: forgetting to give a reason. In these questions, always say which theorem you used.", V.rule('State the theorem.')),
         S("Mistake two: using the centre rule when the angles are on different arcs. Check they stand on the same arc.", V.rule('Same arc.')),
-        S("Mistake three: halving and doubling the wrong way. The centre angle is the bigger one.", r('Edge = 2 × centre  ✗') + g('Centre = 2 × edge  ✓'))
+        S("Mistake three: halving and doubling the wrong way. The centre angle is the bigger 1.", r('Edge = 2 × centre  ✗') + g('Centre = 2 × edge  ✓'))
       ]),
       L.turn("Your turn! Number one. A triangle is drawn in a semicircle with 1 angle of 35 degrees. What is the third angle? Pause and think.", E('180 − 90 − 35'), "The angle in a semicircle is 90. So the third is 55 degrees.", g('55°')),
       L.turn("Your turn! Number two. The angle at the centre is 120 degrees. What is the angle at the edge on the same arc? Pause and try it.", E('120 ÷ 2'), "Half of 120. 60 degrees.", g('60°')),
@@ -1405,8 +1405,8 @@
     var T = 'Chords and tangent lengths';
     L.full(T, [
       SC('Chords and tangents', 'Start with the basics', [
-        S("A chord is a straight line joining two points on a circle. Here is a useful fact. If you draw a line from the centre, at right angles to a chord, it cuts the chord exactly in half.", V.rule('Perpendicular from the centre bisects the chord.')),
-        S("This gives us a right-angled triangle. The radius is the hypotenuse. Half the chord is one short side. The distance from the centre to the chord is the other short side. So we can use Pythagoras.", E('r² = (½ chord)² + d²', 'g'))
+        S("A chord is a straight line joining 2 points on a circle. Here is a useful fact. If you draw a line from the centre, at right angles to a chord, it cuts the chord exactly in half.", V.rule('Perpendicular from the centre bisects the chord.')),
+        S("This gives us a right-angled triangle. The radius is the hypotenuse. Half the chord is 1 short side. The distance from the centre to the chord is the other short side. So we can use Pythagoras.", E('r² = (½ chord)² + d²', 'g'))
       ]),
       SC('Distance to a chord', 'Example 1: radius 10, chord 16', [
         S("A circle has radius 10. A chord is 16 long. Half the chord is 8. The distance d from the centre is a short side. Hypotenuse squared is 100. 8 squared is 64. 100 minus 64 is 36.", E('d² = 10² − 8² = 36')),
@@ -1421,7 +1421,7 @@
         S("A point is 17 centimetres from the centre of a circle of radius 8. The tangent length squared is 17 squared minus 8 squared. 289 minus 64 is 225. The root is 15.", E('17² − 8² = 225') + g('Tangent = 15 cm'))
       ]),
       SC('Two tangents', 'Example 4: equal lengths', [
-        S("From one outside point, you can draw two tangents to the same circle. They have equal lengths. That is a handy fact to find a missing length.", V.note('Tangents from a point are equal'))
+        S("From 1 outside point, you can draw 2 tangents to the same circle. They have equal lengths. That is a handy fact to find a missing length.", V.note('Tangents from a point are equal'))
       ]),
       SC('Watch out!', 'Three common mistakes', [
         S("Mistake one: forgetting to double the half-chord. We find half. The question asks for the whole chord.", V.rule('Double the half chord.')),
@@ -1433,8 +1433,8 @@
       ]),
       L.turn("Your turn! Number one. A chord is 6 centimetres from the centre of a circle of radius 10. How long is the chord? Pause and try it.", E('2 × √(100 − 36)'), "100 minus 36 is 64. The root is 8. Double it. 16 centimetres.", g('16 cm')),
       L.turn("Your turn! Number two. A point is 10 centimetres from the centre of a circle of radius 6. Find the tangent length. Pause and try it.", E('√(100 − 36)'), "64. The root is 8 centimetres.", g('8 cm')),
-      L.turn("Your turn! Number three. Two tangents are drawn from a point. One has length seven. How long is the other? Pause and think.", E('?'), "Tangents from a point are equal. Seven.", g('7')),
-      L.rec(T, "A perpendicular from the centre bisects a chord. A tangent meets a radius at a right angle. Use Pythagoras in the right-angled triangle, taking care over which side is the hypotenuse. Double the half-chord at the end. Tangents from one point are equal.", ['Centre ⊥ chord bisects it', 'Tangent ⊥ radius', 'Use Pythagoras', 'Equal tangents from a point'])
+      L.turn("Your turn! Number three. 2 tangents are drawn from a point. 1 has length 7. How long is the other? Pause and think.", E('?'), "Tangents from a point are equal. 7.", g('7')),
+      L.rec(T, "A perpendicular from the centre bisects a chord. A tangent meets a radius at a right angle. Use Pythagoras in the right-angled triangle, taking care over which side is the hypotenuse. Double the half-chord at the end. Tangents from 1 point are equal.", ['Centre ⊥ chord bisects it', 'Tangent ⊥ radius', 'Use Pythagoras', 'Equal tangents from a point'])
     ]);
   })();
 
@@ -1443,8 +1443,8 @@
     var T = 'Similar triangles';
     L.full(T, [
       SC('Similar triangles', 'Start with the basics', [
-        S("Two shapes are similar if one is an enlargement of the other. They have the same shape but not the same size. For triangles, this means the angles are equal, and the sides are all in the same ratio.", V.note('Equal angles → sides in the same ratio')),
-        S("There is a shortcut. If 2 angles in 1 triangle equal 2 angles in another, the triangles are similar. The third angle must be equal too, because angles add up to 180.", V.rule('Two equal angles are enough.'))
+        S("2 shapes are similar if 1 is an enlargement of the other. They have the same shape but not the same size. For triangles, this means the angles are equal, and the sides are all in the same ratio.", V.note('Equal angles → sides in the same ratio')),
+        S("There is a shortcut. If 2 angles in 1 triangle equal 2 angles in another, the triangles are similar. The third angle must be equal too, because angles add up to 180.", V.rule('2 equal angles are enough.'))
       ]),
       SC('Matching sides', 'Example 1: the scale factor', [
         S("2 similar triangles. We match sides that are opposite equal angles. Suppose a side of 6 matches a side of 15. The scale factor is 15 divided by 6. That is 2.5.", E('k = 15 ÷ 6') + g('k = 2.5'))
@@ -1456,7 +1456,7 @@
         S("If we want to go from the big triangle to the small 1, we divide by 2.5. A side of 25 in the big triangle matches a side of 10 in the small 1.", E('25 ÷ 2.5 = 10'))
       ]),
       SC('Nested triangles', 'Example 4: parallel lines', [
-        S("Sometimes a smaller triangle sits inside a bigger one. This happens when a line is drawn parallel to one side. The two triangles share an angle, and have equal angles from the parallel lines. So they are similar.", V.note('Parallel line → similar triangles')),
+        S("Sometimes a smaller triangle sits inside a bigger 1. This happens when a line is drawn parallel to 1 side. The 2 triangles share an angle, and have equal angles from the parallel lines. So they are similar.", V.note('Parallel line → similar triangles')),
         S("Be careful. In the big triangle, use the whole side, not just the bit beyond the parallel line.", V.rule('Use whole side lengths.'))
       ]),
       SC('Shadows', 'Example 5: real life', [
@@ -1468,7 +1468,7 @@
         S("Mistake three: nested triangles, using only the small bit. Use the whole side of the big triangle.", V.rule('Whole side.'))
       ]),
       L.turn("Your turn! Number one. A side of 8 in 1 triangle matches a side of 12 in a similar 1. A side of 10 matches what? Pause and try it.", E('10 × 12 ÷ 8'), "The scale factor is 1.5. 10 times 1.5 is 15.", g('15')),
-      L.turn("Your turn! Number two. Two triangles have two equal angles. Are they similar? Pause and think.", E('?'), "Yes. Two equal angles are enough, because the third angle is also equal.", g('Yes')),
+      L.turn("Your turn! Number two. 2 triangles have 2 equal angles. Are they similar? Pause and think.", E('?'), "Yes. 2 equal angles are enough, because the third angle is also equal.", g('Yes')),
       L.turn("Your turn! Number three. A tree casts a 10 metre shadow. A 2 metre pole casts a 4 metre shadow. How tall is the tree? Pause and try it.", E('2 × 10 ÷ 4'), "The scale factor is 2 and a half. 2 times 2 and a half is 5 metres.", g('5 m')),
       L.rec(T, "Show that the angles are equal. Match corresponding sides, opposite equal angles. Find the scale factor, which is new divided by old. Then multiply or divide. In nested triangles, use the full side lengths.", ['Equal angles', 'Match corresponding sides', 'k = new ÷ old', '× or ÷ by k'])
     ]);
@@ -1514,7 +1514,7 @@
     var T = 'Standard deviation';
     L.full(T, [
       SC('Standard deviation', 'Start with the basics', [
-        S("The range tells us how spread out data is, but it only uses two values. Standard deviation uses all the data. It measures how far the values are from the mean, on average. A small standard deviation means the data is close to the mean. A big one means it is spread out.", V.cards(['Small: consistent', 'Large: spread out'], ['g', 'b'])),
+        S("The range tells us how spread out data is, but it only uses 2 values. Standard deviation uses all the data. It measures how far the values are from the mean, on average. A small standard deviation means the data is close to the mean. A big 1 means it is spread out.", V.cards(['Small: consistent', 'Large: spread out'], ['g', 'b'])),
         S("There are 4 steps. Find the mean. Find how far each value is from the mean, and square it. Add up the squares, and divide by n minus 1. Then take the square root.", V.list(['Find the mean', 'Square each distance from the mean', 'Add and divide by n − 1', 'Square root']))
       ]),
       SC('Step 1', 'Example: 4, 6, 8, 10', [
@@ -1539,8 +1539,8 @@
       SC('In real life', 'Quality control', [
         S("Factories check their products. If a machine makes screws with a mean length of 20 millimetres, the standard deviation tells them how many screws are likely to be too short or too long. A small standard deviation means almost all screws are right.", V.note('Small s means reliable'))
       ]),
-      L.turn("Your turn! Number one. 2 classes have the same mean, but standard deviations of 4 and 10. Which is more consistent? Pause and think.", E('?'), "The class with standard deviation four. It is smaller.", g('s = 4')),
-      L.turn("Your turn! Number two. Data: two, four, six. The mean is four. Find the sum of the squared distances. Pause and try it.", E('(−2)² + 0² + 2²'), "4 plus 0 plus 4 is 8.", g('8')),
+      L.turn("Your turn! Number one. 2 classes have the same mean, but standard deviations of 4 and 10. Which is more consistent? Pause and think.", E('?'), "The class with standard deviation 4. It is smaller.", g('s = 4')),
+      L.turn("Your turn! Number two. Data: 2, 4, 6. The mean is 4. Find the sum of the squared distances. Pause and try it.", E('(−2)² + 0² + 2²'), "4 plus 0 plus 4 is 8.", g('8')),
       L.turn("Your turn! Number three. Use that to find the standard deviation. Pause and try it.", E('√(8 ÷ 2)'), "8 divided by 2 is 4. The square root is 2.", g('s = 2')),
       L.rec(T, "Find the mean. Find the distance of each value from the mean and square it. Add them up, divide by n minus 1, and take the square root. A smaller standard deviation means more consistent data. Compare means and standard deviations together, in context.", ['Find the mean', 'Square each distance', 'Sum ÷ (n − 1)', 'Square root'])
     ]);
@@ -1551,13 +1551,13 @@
     var T = 'Quartiles and box plots';
     L.full(T, [
       SC('Box plots', 'Start with the basics', [
-        S("A box plot is a neat picture of how data is spread. It uses five numbers. The smallest value, the lower quartile, the median, the upper quartile, and the largest value.", V.cards(['Min', 'Q1', 'Median', 'Q3', 'Max'], ['b', 'p', 'g', 'p', 'b'], true)),
-        S("The median is the middle value. It splits the data in 2 halves. The lower quartile, Q1, is the middle of the lower half. The upper quartile, Q3, is the middle of the upper half. Each quarter of the data lies between these numbers.", V.rule('Quartiles split the data into four equal parts.'))
+        S("A box plot is a neat picture of how data is spread. It uses 5 numbers. The smallest value, the lower quartile, the median, the upper quartile, and the largest value.", V.cards(['Min', 'Q1', 'Median', 'Q3', 'Max'], ['b', 'p', 'g', 'p', 'b'], true)),
+        S("The median is the middle value. It splits the data in 2 halves. The lower quartile, Q1, is the middle of the lower half. The upper quartile, Q3, is the middle of the upper half. Each quarter of the data lies between these numbers.", V.rule('Quartiles split the data into 4 equal parts.'))
       ]),
       SC('Finding the five numbers', 'Example 1: 2, 4, 5, 7, 9, 11, 14', [
         S("The data is already in order. There are 7 values. The smallest is 2. The largest is 14. The median is the middle, the fourth value. That is 7.", E('Min = 2') + E('Max = 14') + E('Median = 7')),
         S("Now the lower half. These are the numbers below the median. 2, 4, 5. The middle 1 is 4. That is Q1. The upper half is 9, 11, 14. The middle is 11. That is Q3.", E('Q1 = 4') + E('Q3 = 11')),
-        S("So the five numbers are 2, 4, 7, 11, 14.", g('2, 4, 7, 11, 14'))
+        S("So the 5 numbers are 2, 4, 7, 11, 14.", g('2, 4, 7, 11, 14'))
       ]),
       SC('Interquartile range', 'Example 2: the spread of the middle half', [
         S("The interquartile range is Q3 minus Q1. 11 minus 4 is 7. It tells us how spread out the middle half of the data is. It is not affected by extreme values.", E('IQR = 11 − 4') + g('IQR = 7'))
@@ -1566,19 +1566,19 @@
         S("Draw a number line. Draw a box from Q1 to Q3. Draw a line inside the box at the median. Then draw lines, called whiskers, from the box out to the smallest and largest values.", V.note('Box: Q1 to Q3  ·  Whiskers: min and max'))
       ]),
       SC('Comparing', 'Example 4: 2 box plots', [
-        S("To compare two box plots, compare the medians to see which is typically higher. Then compare the interquartile ranges. A shorter box means more consistent data.", V.cols([V.card('Median: typical value', 'b', true), V.card('IQR: consistency', 'g', true)], 2)),
+        S("To compare 2 box plots, compare the medians to see which is typically higher. Then compare the interquartile ranges. A shorter box means more consistent data.", V.cols([V.card('Median: typical value', 'b', true), V.card('IQR: consistency', 'g', true)], 2)),
         S("For example, class A has a median of 60 and an IQR of 10. Class B has a median of 55 and an IQR of 20. Class A scored higher on average, and was more consistent.", g('A: higher and more consistent'))
       ]),
       SC('Watch out!', 'Three common mistakes', [
-        S("Mistake one: not ordering the data first. Always put the numbers in order before you find any of the five numbers.", V.rule('Order first.')),
+        S("Mistake one: not ordering the data first. Always put the numbers in order before you find any of the 5 numbers.", V.rule('Order first.')),
         S("Mistake two: including the median in the halves when there is an odd number of values. Leave it out.", V.rule('Odd n: leave the median out.')),
         S("Mistake three: drawing the boxes on different scales. To compare box plots, use the same axis.", V.rule('Same scale.'))
       ]),
       SC('In real life', 'Test results', [
-        S("Schools use box plots to compare results between classes. A box plot shows the typical score and the spread in one small picture, so teachers can see at a glance how two classes compare.", V.note('One picture, five numbers'))
+        S("Schools use box plots to compare results between classes. A box plot shows the typical score and the spread in 1 small picture, so teachers can see at a glance how 2 classes compare.", V.note('1 picture, 5 numbers'))
       ]),
       L.turn("Your turn! Number one. Q1 is 12 and Q3 is 20. What is the interquartile range? Pause and try it.", E('20 − 12'), "Eight.", g('8')),
-      L.turn("Your turn! Number two. Find the median of 3, 5, 6, 8, 10. Pause and try it.", E('3, 5, 6, 8, 10'), "The middle value is six.", g('6')),
+      L.turn("Your turn! Number two. Find the median of 3, 5, 6, 8, 10. Pause and try it.", E('3, 5, 6, 8, 10'), "The middle value is 6.", g('6')),
       L.turn("Your turn! Number three. A box plot has a shorter box than another. What does that tell you? Pause and think.", E('?'), "Its data is more consistent.", g('More consistent')),
       L.rec(T, "Order the data. Find the minimum, Q1, median, Q3 and maximum. Draw the box from Q1 to Q3, and whiskers to the extremes. The interquartile range is Q3 minus Q1. Compare medians for the typical value, and interquartile ranges for consistency.", ['Order the data', 'Five-number summary', 'Box Q1 to Q3', 'Compare median and IQR'])
     ]);
@@ -1589,35 +1589,35 @@
     var T = 'Vectors as journeys';
     L.full(T, [
       SC('Vectors', 'Start with the basics', [
-        S("A vector describes a movement. It has a size and a direction. We write it as a column of two numbers. The top number says how far across, and the bottom number says how far up.", E('(3, 2) means 3 right, 2 up', 'g')),
+        S("A vector describes a movement. It has a size and a direction. We write it as a column of 2 numbers. The top number says how far across, and the bottom number says how far up.", E('(3, 2) means 3 right, 2 up', 'g')),
         S("Negative numbers mean the other way. A negative top number is left. A negative bottom number is down.", V.cols([V.card('Positive across: right', 'g', true), V.card('Negative across: left', 'b', true)], 2))
       ]),
       SC('Reading a vector', 'Example 1', [
-        S("The vector five, negative one. Five across is five right. Negative one up is one down. So it is five right and one down.", g('(5, −1): 5 right, 1 down'))
+        S("The vector 5, negative 1. 5 across is 5 right. Negative 1 up is 1 down. So it is 5 right and 1 down.", g('(5, −1): 5 right, 1 down'))
       ]),
       SC('Adding vectors', 'Example 2: 1 journey after another', [
-        S("Walk three right and two up. Then walk one right and four up. In total you have gone four right and six up. To add vectors, add the tops, and add the bottoms.", E('(3, 2) + (1, 4)') + g('= (3 + 1, 2 + 4) = (4, 6)'))
+        S("Walk 3 right and 2 up. Then walk 1 right and 4 up. In total you have gone 4 right and 6 up. To add vectors, add the tops, and add the bottoms.", E('(3, 2) + (1, 4)') + g('= (3 + 1, 2 + 4) = (4, 6)'))
       ]),
       SC('Multiplying by a number', 'Example 3: scaling', [
         S("2 times the vector 3, 2. Multiply both numbers by 2. 6, 4. It is twice as long, and goes in the same direction.", g('2 × (3, 2) = (6, 4)'))
       ]),
       SC('Negative vectors', 'Example 4: going back', [
-        S("The negative of three, two is negative three, negative two. It is the same size, but goes the opposite way. It takes you back to where you started.", E('(3, 2) + (−3, −2) = (0, 0)', 'g'))
+        S("The negative of 3, 2 is negative 3, negative 2. It is the same size, but goes the opposite way. It takes you back to where you started.", E('(3, 2) + (−3, −2) = (0, 0)', 'g'))
       ]),
       SC('Subtracting', 'Example 5: a take away', [
         S("To subtract, take away both parts. 5, 4 minus 2, 1. 5 minus 2 is 3. 4 minus 1 is 3. The answer is 3, 3.", g('(5, 4) − (2, 1) = (3, 3)'))
       ]),
       SC('Watch out!', 'Three common mistakes', [
         S("Mistake one: writing the numbers the wrong way round. Across is on top, up is on the bottom.", V.rule('Across on top, up below.')),
-        S("Mistake two: adding the top of one to the bottom of the other. Add tops with tops and bottoms with bottoms.", V.rule('Tops with tops.')),
+        S("Mistake two: adding the top of 1 to the bottom of the other. Add tops with tops and bottoms with bottoms.", V.rule('Tops with tops.')),
         S("Mistake three: forgetting the sign of a negative component when you add.", V.rule('Mind the signs.'))
       ]),
       SC('In real life', 'Navigation', [
         S("A boat sails 5 kilometres east and 2 north. Then 3 east and 1 south. The total journey is 5 plus 3, which is 8 east. And 2 minus 1, which is 1 north. Pilots and sailors add vectors like this all the time.", g('(5, 2) + (3, −1) = (8, 1)'))
       ]),
-      L.turn("Your turn! Number one. Add the vectors two, negative three and negative five, one. Pause and try it.", E('(2, −3) + (−5, 1)'), "2 plus negative 5 is negative 3. Negative 3 plus 1 is negative 2.", g('(−3, −2)')),
-      L.turn("Your turn! Number two. Work out 3 times the vector 2, negative 1. Pause and try it.", E('3 × (2, −1)'), "Six, negative three.", g('(6, −3)')),
-      L.turn("Your turn! Number three. Describe the vector negative four, two in words. Pause and think.", E('(−4, 2)'), "Four left and two up.", g('4 left, 2 up')),
+      L.turn("Your turn! Number one. Add the vectors 2, negative 3 and negative 5, 1. Pause and try it.", E('(2, −3) + (−5, 1)'), "2 plus negative 5 is negative 3. Negative 3 plus 1 is negative 2.", g('(−3, −2)')),
+      L.turn("Your turn! Number two. Work out 3 times the vector 2, negative 1. Pause and try it.", E('3 × (2, −1)'), "6, negative 3.", g('(6, −3)')),
+      L.turn("Your turn! Number three. Describe the vector negative 4, 2 in words. Pause and think.", E('(−4, 2)'), "4 left and 2 up.", g('4 left, 2 up')),
       L.rec(T, "A vector gives movement across and up, written as a column. Add vectors by adding the tops and adding the bottoms. Multiplying by a number scales the vector. A negative vector goes the opposite way.", ['(across, up)', 'Add tops, add bottoms', '× k: k times as long', 'Negative: opposite way'])
     ]);
   })();
@@ -1627,8 +1627,8 @@
     var T = 'The magnitude of a vector';
     L.full(T, [
       SC('Magnitude', 'Start with the basics', [
-        S("The magnitude of a vector is its length. How long is the movement, in a straight line? The across part and the up part make the two short sides of a right-angled triangle. The straight line is the hypotenuse. So we use Pythagoras.", E('|(a, b)| = √(a² + b²)', 'g')),
-        S("The magnitude is written with two straight lines either side of the vector.", V.rule('|v| means the length of v'))
+        S("The magnitude of a vector is its length. How long is the movement, in a straight line? The across part and the up part make the 2 short sides of a right-angled triangle. The straight line is the hypotenuse. So we use Pythagoras.", E('|(a, b)| = √(a² + b²)', 'g')),
+        S("The magnitude is written with 2 straight lines either side of the vector.", V.rule('|v| means the length of v'))
       ]),
       SC('A 3-4-5 vector', 'Example 1', [
         S("The vector 3, 4. 3 squared is 9. 4 squared is 16. 9 plus 16 is 25. The square root is 5.", E('3² + 4² = 25') + g('|(3, 4)| = 5'))
@@ -1644,7 +1644,7 @@
         S("The distance is the magnitude. 36 plus 64 is 100. The root is 10. A and B are 10 units apart.", g('Distance = 10'))
       ]),
       SC('Watch out!', 'Three common mistakes', [
-        S("Mistake one: adding the parts instead of using Pythagoras. The magnitude of three, four is five, not seven.", r('3 + 4 = 7  ✗') + g('√25 = 5  ✓')),
+        S("Mistake one: adding the parts instead of using Pythagoras. The magnitude of 3, 4 is 5, not 7.", r('3 + 4 = 7  ✗') + g('√25 = 5  ✓')),
         S("Mistake two: forgetting the square root at the end.", r('25  ✗') + g('5  ✓')),
         S("Mistake three: squaring a negative wrongly. Negative 6 squared is 36, not negative 36.", V.rule('(−6)² = 36'))
       ]),
@@ -1652,9 +1652,9 @@
         S("A drone flies 5 metres east and 12 metres north. The straight line back to the start is 13 metres. That is the magnitude. It is the shortest way home.", g('√(25 + 144) = 13 m'))
       ]),
       L.turn("Your turn! Number one. Find the magnitude of 5, 12. Pause and try it.", E('√(25 + 144)'), "25 plus 144 is 169. The root is 13.", g('13')),
-      L.turn("Your turn! Number two. Find the magnitude of negative eight, six. Pause and try it.", E('√(64 + 36)'), "A hundred. The root is 10.", g('10')),
+      L.turn("Your turn! Number two. Find the magnitude of negative 8, 6. Pause and try it.", E('√(64 + 36)'), "A hundred. The root is 10.", g('10')),
       L.turn("Your turn! Number three. Find the distance from the point 0, 0 to the point 9, 12. Pause and try it.", E('√(81 + 144)'), "225. The root is 15.", g('15')),
-      L.rec(T, "Square the components, add them, and take the square root. Negative components give the same magnitude, because squaring removes the sign. The distance between two points is the magnitude of the vector between them.", ['Square each part', 'Add', 'Square root', 'Distance between points'])
+      L.rec(T, "Square the components, add them, and take the square root. Negative components give the same magnitude, because squaring removes the sign. The distance between 2 points is the magnitude of the vector between them.", ['Square each part', 'Add', 'Square root', 'Distance between points'])
     ]);
   })();
 })();
