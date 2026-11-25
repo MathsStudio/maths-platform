@@ -39724,6 +39724,11 @@ S.extraMakers = function (n, level) {
     });
     return s + '</div>';
   };
+
+  FL.sh.letter = function (ch, sym) { var s = tx(80, 105, ch, 110, '#2b2340', 800) + (sym ? '<line x1="80" y1="10" x2="80" y2="125" stroke="#d64545" stroke-width="4" stroke-dasharray="8 5"/>' : ''); return svg(160, 135, 'The letter ' + ch, s, 220); };
+  FL.sh.pair = function (a, b) { var s = tx(55, 105, a, 100, '#2b2340', 800) + '<line x1="140" y1="10" x2="140" y2="125" stroke="#d64545" stroke-width="4" stroke-dasharray="8 5"/>' + tx(225, 105, b, 100, '#2b2340', 800) + tx(140, 135, 'mirror line', 11, '#d64545', 800); return svg(280, 145, a + ' and its mirror image ' + b, s, 320); };
+  FL.sh.circ = function () { var s = '', i, j; for (i = 0; i < 3; i++) for (j = 0; j < 3; j++) s += '<circle cx="' + (30 + i * 40) + '" cy="' + (30 + j * 40) + '" r="19" fill="#ff8fab" stroke="#2b2340" stroke-width="2.5"/>'; return svg(150, 150, 'Circles leave gaps', s, 200); };
+  FL.sh.sq = function () { var s = '', i, j; for (i = 0; i < 3; i++) for (j = 0; j < 3; j++) s += '<rect x="' + (10 + i * 40) + '" y="' + (10 + j * 40) + '" width="40" height="40" fill="' + ((i + j) % 2 ? '#ffd23f' : '#7cc4ff') + '" stroke="#2b2340" stroke-width="2.5"/>'; return svg(150, 150, 'Squares fit with no gaps', s, 200); };
   /* a pictogram: one row per label, one picture per `key` items, half picture for a half */
   FL.pictogram = function (rows, icon, key) {
     var h = '<div style="display:grid;gap:6px;justify-items:start;font-weight:800;color:' + INK + ';background:#fff;border:3px solid ' + INK + ';border-radius:14px;padding:8px 12px"><div style="font-size:1.05rem">Key: ' + icon + ' = ' + key + '</div>';
@@ -43185,8 +43190,8 @@ S.extraMakers = function (n, level) {
       ] },
     learn: [
       { title: 'What is tessellation?', char: 'pirate', screens: [
-        W('A tessellation covers a floor with shapes: no gaps and no overlaps. Squares tessellate.', P('sea', '', ROW(['square', 'square', 'square'], 60))),
-        W('Circles leave gaps between them, so they do not tessellate.', P('sea', '', ROW(['circle', 'circle', 'circle'], 60))),
+        W('A tessellation covers a floor with shapes: no gaps and no overlaps. Squares tessellate.', P('sea', '', FL.sh.sq())),
+        W('Circles leave gaps between them, so they do not tessellate.', P('sea', '', FL.sh.circ())),
         TG('Do rectangles tessellate?', P('sea', '', SH('rectangle', null, 110)), ['Yes', 'No'], 'Yes', 'Think of a brick wall.', 'Yes.'),
         TG('Do regular hexagons tessellate?', P('sea', '', SH('hexagon', null, 110)), ['Yes', 'No'], 'Yes', 'Think of a honeycomb.', 'Yes.'),
         Y('Do circles tessellate?', P('sea', '', SH('circle', null, 110)), ['Yes', 'No'], 'No', 'Are there gaps?', 'No, they leave gaps.'),
@@ -45206,7 +45211,7 @@ S.extraMakers = function (n, level) {
   function rowBars(items) { return '<div style="display:grid;gap:8px;justify-items:center">' + items.map(function (x) { return '<div style="display:flex;align-items:center;gap:10px"><b style="min-width:80px;text-align:right;color:#fff">' + x[0] + '</b>' + bar(x[1], x[2]) + '</div>'; }).join('') + '</div>'; }
   function pies(list) { return '<div style="display:flex;gap:18px;justify-content:center;flex-wrap:wrap;align-items:center">' + list.map(function (p, i) { return (i ? '<b style="font-size:3rem;color:#2b2340;background:#fff;border-radius:12px;padding:0 10px">=</b>' : '') + '<div style="text-align:center;max-width:190px;color:#2b2340">' + FL.pie(p[0], p[1]) + '<div style="margin-top:6px">'+ '<div style="display:inline-flex;flex-direction:column;align-items:center;font-size:2rem;line-height:1.05;font-weight:800;color:#2b2340;background:#fff;border:3px solid #2b2340;border-radius:12px;padding:4px 14px"><span>' + p[1] + '</span><span style="border-top:4px solid #2b2340;width:100%;text-align:center">' + p[0] + '</span></div>' + '</div></div>'; }).join('') + '</div>'; }
   function sym(kind) { var lines = { square: ['<line x1="50" y1="14" x2="50" y2="86"/>', '<line x1="14" y1="50" x2="86" y2="50"/>', '<line x1="14" y1="14" x2="86" y2="86"/>', '<line x1="86" y1="14" x2="14" y2="86"/>'], rectangle: ['<line x1="50" y1="14" x2="50" y2="86"/>', '<line x1="12" y1="50" x2="88" y2="50"/>'], triangle: ['<line x1="50" y1="14" x2="50" y2="90"/>'] }, body = { square: '<rect x="24" y="24" width="52" height="52" fill="#ffd166" stroke="' + INK + '" stroke-width="3"/>', rectangle: '<rect x="14" y="30" width="72" height="40" fill="#ffd166" stroke="' + INK + '" stroke-width="3"/>', triangle: '<polygon points="50,22 18,78 82,78" fill="#ffd166" stroke="' + INK + '" stroke-width="3"/>', lshape: '<polygon points="24,22 50,22 50,56 78,56 78,78 24,78" fill="#ffd166" stroke="' + INK + '" stroke-width="3"/>' };
-    return '<svg viewBox="0 0 100 100" role="img" aria-label="' + kind + (lines[kind] ? ' with ' + lines[kind].length + ' lines of symmetry' : ' with no line of symmetry') + '" style="width:110px;max-width:100%;height:auto">' + body[kind] + '<g stroke="#e63946" stroke-width="3" stroke-dasharray="6 4">' + (lines[kind] || []).join('') + '</g></svg>'; }
+    return '<svg viewBox="0 0 100 100" role="img" aria-label="' + kind + (lines[kind] ? ' with ' + lines[kind].length + ' lines of symmetry' : ' with no line of symmetry') + '" style="width:230px;max-width:100%;height:auto">' + body[kind] + '<g stroke="#e63946" stroke-width="3" stroke-dasharray="6 4">' + (lines[kind] || []).join('') + '</g></svg>'; }
   function symRow(ks) { return '<div style="display:flex;gap:14px;justify-content:center;flex-wrap:wrap">' + ks.map(function (k) { return '<div style="text-align:center;font-weight:800;color:#fff">' + sym(k[0]) + '<div>' + k[1] + '</div></div>'; }).join('') + '</div>'; }
   /* rows: ['w', say, pic] watch; ['t'|'u', say, pic, tip, options, answer, explain] together or your turn */
   function WL(title, char, bg, rows) {
@@ -47359,7 +47364,7 @@ S.extraMakers = function (n, level) {
 
   P(407, 'learn2', { ch: 'frog', bg: 'pond',
     way: 'We measure length in millimetres (mm), centimetres (cm), metres (m) and kilometres (km). Use a small unit for small things.|' + FL.p4.tbl([['10 mm', '1 cm'], ['100 cm', '1 m'], ['1000 m', '1 km']], ['Small unit', 'Big unit']),
-    ex: ['A line starts at 3 cm and ends at 11 cm. How long?|Take the start from the end.;11 - 3 = 8.|8 cm|11 - 3', 'Which unit for the length of a bus: cm or m?|A bus is long.|m|bus: m'],
+    ex: ['A line starts at 3 cm and ends at 11 cm. How long?|Take the start from the end.;11 - 3 = 8.|8 cm|11 - 3', 'Which unit for the length of a bus: cm or m?|A bus is long.|m|' + '<div style="text-align:center;font-weight:800;font-size:1.6em">🚌<br>about 10 m</div>' + '],
     mist: 'Start at 0. If the object starts at 3 take 3 away from the end number.|end - start',
     real: 'A worm starts at 2 cm and ends at 9 cm on a ruler. How long?|7 cm|9 cm,11 cm,2 cm|9 - 2.|9 - 2',
     qs: ['Ends at 12 starts at 0. Length?|12 cm|11 cm,13 cm,0 cm|Read the end.', 'Starts at 4 ends at 10. Length?|6 cm|10 cm,14 cm,4 cm|10 - 4.', 'Starts at 7 ends at 15. Length?|8 cm|15 cm,22 cm,7 cm|15 - 7.', 'Unit for the length of a pencil?|cm|m,km,mm|Small.', 'Unit for the distance to the next town?|km|cm,m,mm|Far.', 'Unit for the width of your finger?|mm|km,m,cm|Tiny.', 'Which is longer: 1 m or 90 cm?|1 m|90 cm|100 cm.', 'A rope is 50 cm. 15 cm is cut off. Length now?|35 cm|65 cm,45 cm,15 cm|50 - 15.'],
@@ -47421,22 +47426,22 @@ S.extraMakers = function (n, level) {
     t: 'Estimating measures|How can I make a sensible estimate of a measure?|To estimate, compare with something you know. A door is about 2 m tall. A bag of sugar is about 1 kg. A cup holds about 250 ml.|about 2 m',
     words: 'estimate=a sensible guess=🤔;about=close to=≈;benchmark=a known size to compare with=📌;sensible=makes sense=✅',
     see: ['Your hand span is about 15 cm.|15 cm', 'A bag of sugar is 1 kg. A big bottle of milk is 2 litres.|1 kg,2 l', 'A door is about 2 m tall.|2 m'],
-    ex3: ['About how long is a pencil? 15 cm or 15 m?|A pencil is small.|15 cm|cm', 'About how heavy is an apple? 100 g or 100 kg?|Light.|100 g|g', 'About how much does a mug hold? 250 ml or 250 l?|Small.|250 ml|ml'],
+    ex3: ['About how long is a pencil? 15 cm or 15 m?|A pencil is small.|15 cm|' + '<div style="text-align:center;font-weight:800;font-size:1.6em">✏️<br>15 cm</div>' + ', 'About how heavy is an apple? 100 g or 100 kg?|Light.|100 g|' + '<div style="text-align:center;font-weight:800;font-size:1.6em">🍎<br>100 g</div>' + ', 'About how much does a mug hold? 250 ml or 250 l?|Small.|250 ml|' + '<div style="text-align:center;font-weight:800;font-size:1.6em">☕<br>250 ml</div>' + '],
     mist: 'Check the unit. A sensible answer needs the right size and the right unit.|size and unit',
-    chk: 'A bus is about how long: 10 m or 10 cm?|10 m|10 cm,10 mm|Very long.|bus',
+    chk: 'A bus is about how long: 10 m or 10 cm?|10 m|10 cm,10 mm|Very long.|' + '<div style="text-align:center;font-weight:800;font-size:1.6em">🚌<br>a bus</div>',
     rem: 'Compare with something you know. Check the answer is sensible.|benchmark',
     way: 'Use a ruler, a kilogram bag and a litre bottle as benchmarks.|1 kg, 1 l, 1 m',
-    ex: ['About how tall is a child? 120 cm or 120 m?|About 1 m and a bit.|120 cm|cm', 'About how much does a cat weigh? 4 kg or 4 g?|A cat is heavy.|4 kg|kg'],
-    real: 'About how much does a bath hold? 100 l or 100 ml?|100 l|100 ml|A lot.|bath',
+    ex: ['About how tall is a child? 120 cm or 120 m?|About 1 m and a bit.|120 cm|' + '<div style="text-align:center;font-weight:800;font-size:1.6em">🧒<br>120 cm</div>' + ', 'About how much does a cat weigh? 4 kg or 4 g?|A cat is heavy.|4 kg|' + '<div style="text-align:center;font-weight:800;font-size:1.6em">🐱<br>4 kg</div>' + '],
+    real: 'About how much does a bath hold? 100 l or 100 ml?|100 l|100 ml|A lot.|' + '<div style="text-align:center;font-weight:800;font-size:1.6em">🛁<br>a bath</div>',
     qs: ['A table is about…|1 m|1 cm,1 km,1 mm|Metre.', 'A bag of sugar weighs about…|1 kg|1 g,10 kg,100 g|Kilogram.', 'A teaspoon holds about…|5 ml|5 l,50 l,500 ml|Small.', 'The distance to school could be…|1 km|1 mm,1 cm,10 cm|Far.', 'A paper clip is about…|3 cm|3 m,30 m,3 km|Small.', 'A swimming pool holds…|lots of litres|a few ml,a spoon,a cup|Big.', 'A pencil weighs about…|5 g|5 kg,50 kg,500 kg|Light.', 'A kitchen floor is about…|4 m long|4 cm long,4 km long,4 mm long|Metres.'],
     gen: function g(lv) { var P = [['a pencil', 'cm', 15], ['a classroom', 'm', 8], ['a feather', 'g', 1], ['a child', 'kg', 30], ['a cup of water', 'ml', 250], ['a bath of water', 'l', 150], ['a football pitch', 'm', 100], ['a bag of sugar', 'kg', 1]], p = pick(P), all = ['mm', 'cm', 'm', 'km', 'g', 'kg', 'ml', 'l']; var grp = { mm: 'L', cm: 'L', m: 'L', km: 'L', g: 'M', kg: 'M', ml: 'C', l: 'C' }; var same = all.filter(function (x) { return x !== p[1] && grp[x] === grp[p[1]]; }); return mc('Estimating', 'Which unit would you use to measure <b>' + p[0] + '</b>?', p[1], same.concat(all.filter(function (x) { return grp[x] !== grp[p[1]]; })), 'Think: length, mass or capacity? Then how big?', p[0] + ' is measured in ' + p[1] + '.'); } });
 
   /* ===== 408 Shape, position and movement ===== */
   P(408, 'learn1', { ch: 'rocket', bg: 'space',
     way: 'A shape tessellates if copies fit together with no gaps and no overlaps. Squares, rectangles, triangles and hexagons do.|' + FL.sh.tess(),
-    ex: ['Do squares tessellate?|Squares fit together with no gaps.|Yes|squares', 'Do circles tessellate?|Circles leave gaps.|No|circles'],
+    ex: ['Do squares tessellate?|Squares fit together with no gaps.|Yes|' + FL.sh.sq(), 'Do circles tessellate?|Circles leave gaps.|No|' + FL.sh.circ()],
     mist: 'No gaps and no overlaps. Circles leave gaps, so they do not tessellate.|no gaps',
-    real: 'A bathroom wall uses square tiles. Why do they work well?|They tessellate|They are round,They leave gaps,They overlap|No gaps.|squares',
+    real: 'A bathroom wall uses square tiles. Why do they work well?|They tessellate|They are round,They leave gaps,They overlap|No gaps.|' + FL.sh.sq(),
     qs: ['Do rectangles tessellate?|Yes|No|Rows of rectangles.', 'Do triangles tessellate?|Yes|No|They fit in rows.', 'Do circles tessellate?|No|Yes|Gaps.', 'Do regular hexagons tessellate?|Yes|No|Honeycomb.', 'Do regular pentagons tessellate?|No|Yes|They leave gaps.', 'Do regular octagons tessellate on their own?|No|Yes|Gaps.', 'What does tessellate mean?|fit together with no gaps|have 4 sides,be round,be bigger|Pattern.', 'Which tessellates?|square|circle,pentagon,octagon|No gaps.'],
     gen: function g(lv) { var Y = ['square', 'rectangle', 'triangle', 'hexagon'], N = ['circle', 'pentagon', 'octagon'], yes = r(0, 1), s = yes ? pick(Y) : pick(N); return mc('Tessellation', 'Does a regular <b>' + s + '</b> tessellate?', yes ? 'Yes' : 'No', [yes ? 'No' : 'Yes'], 'Check for gaps.', 'A ' + s + (yes ? ' fits together with no gaps.' : ' leaves gaps or overlaps.'), SH([s], 90)); } });
 
@@ -47452,7 +47457,7 @@ S.extraMakers = function (n, level) {
     way: 'A right angle is a square corner. It is a quarter turn. We mark it with a small square.|' + FL.sh.right(),
     ex: ['How many right angles has a square?|A square has 4 square corners.|4|4 corners', 'How many right angles has a rectangle?|A rectangle has 4 square corners.|4|4 corners'],
     mist: 'A right angle is exactly a square corner. Slanted corners are not right angles.|square corner',
-    real: 'The corner of a book is a right angle. How many right angles on its cover?|4|2,3,1|A rectangle.|book',
+    real: 'The corner of a book is a right angle. How many right angles on its cover?|4|2,3,1|A rectangle.|' + '<div style="text-align:center;font-weight:800;font-size:1.6em">📖<br>a book</div>',
     qs: ['A right angle is a…|quarter turn|half turn,full turn,third turn|Square corner.', 'Right angles in a square?|4|2,3,0|4 corners.', 'Right angles in a rectangle?|4|2,3,0|4 corners.', 'A triangle with one square corner has how many right angles?|1|0,2,3|One.', 'A circle has how many right angles?|0|1,2,4|No corners.', 'Is the corner of this page a right angle?|Yes|No|Square corner.', 'How many right angles in a half turn?|2|1,3,4|2 quarter turns.', 'How many right angles in a full turn?|4|2,3,1|4 quarter turns.'],
     gen: function g(lv) { var P = [['square', 4], ['rectangle', 4], ['right-angled triangle', 1], ['circle', 0], ['equilateral triangle', 0]], p = pick(P); return mc('Right angles', 'How many <b>right angles</b> does a <b>' + p[0] + '</b> have?', p[1], [0, 1, 2, 3, 4].filter(function (x) { return x !== p[1]; }), 'Count the square corners.', 'A ' + p[0] + ' has ' + p[1] + ' right angle' + (p[1] === 1 ? '' : 's') + '.', p[0] === 'right-angled triangle' || p[0] === 'equilateral triangle' ? SH(['triangle'], 90) : SH([p[0]], 90)); } });
 
@@ -47468,15 +47473,15 @@ S.extraMakers = function (n, level) {
     way: '2D shapes are flat. We name them by their sides and corners. 3D shapes are solid. We describe them by their faces, edges and vertices.|' + FL.sh.shapes(),
     ex: ['How many sides has a hexagon?|Hexa means 6.|6|6', 'How many faces has a cube?|A cube is like a dice.|6|6'],
     mist: 'Sides belong to 2D shapes. Faces belong to 3D shapes.|2D sides, 3D faces',
-    real: 'A dice is a cube. How many faces and how many corners has it?|6 faces, 8 corners|6 faces and 6 corners,8 faces and 6 corners,4 faces and 8 corners|Cube.|dice',
+    real: 'A dice is a cube. How many faces and how many corners has it?|6 faces, 8 corners|6 faces and 6 corners,8 faces and 6 corners,4 faces and 8 corners|Cube.|' + '<div style="text-align:center;font-weight:800;font-size:1.6em">🎲<br>a dice</div>',
     qs: ['How many sides has a pentagon?|5|4,6,8|Penta = 5.', 'How many sides has an octagon?|8|6,10,5|Octa = 8.', 'How many edges has a cube?|12|6,8,10|12.', 'How many vertices has a cube?|8|6,12,4|8.', 'How many faces has a cuboid?|6|4,8,12|6.', 'Which 3D shape can roll and has no edges?|sphere|cube,cuboid,pyramid|Round.', 'How many faces has a square-based pyramid?|5|4,6,8|4 triangles + 1 square.', 'How many faces has a cylinder?|3|2,4,6|2 circles + 1 curved.'],
     gen: function g(lv) { var P = [['cube', 6, 12, 8], ['cuboid', 6, 12, 8], ['square-based pyramid', 5, 8, 5]], p = pick(P), k = r(1, 3), nm = ['faces', 'edges', 'vertices'][k - 1]; return mc('Describing 3D shapes', 'How many <b>' + nm + '</b> has a <b>' + p[0] + '</b>?', p[k], [p[k] + 1, p[k] - 1, p[k] + 2], 'Count carefully.', 'A ' + p[0] + ' has ' + p[k] + ' ' + nm + '.', SH([p[0].indexOf('pyramid') >= 0 ? 'pyramid' : p[0]], 90)); } });
 
   P(408, 'learn6', { ch: 'rocket', bg: 'space',
     way: 'A line of symmetry is a fold line. Both halves match exactly. Some shapes have more than one.|' + FL.sh.sym(),
-    ex: ['How many lines of symmetry has a square?|Fold across, down and both corners.|4|4 lines', 'Does the letter A have a line of symmetry?|Fold down the middle.|Yes|A'],
+    ex: ['How many lines of symmetry has a square?|Fold across, down and both corners.|4|4 lines', 'Does the letter A have a line of symmetry?|Fold down the middle.|Yes|' + FL.sh.letter('A', true)],
     mist: 'A rectangle has 2 lines of symmetry, not 4. A diagonal does not make matching halves.|rectangle: 2',
-    real: 'A butterfly has matching wings. How many lines of symmetry?|1|2,4,0|Down the middle.|butterfly',
+    real: 'A butterfly has matching wings. How many lines of symmetry?|1|2,4,0|Down the middle.|' + '<div style="text-align:center;font-weight:800;font-size:1.6em">🦋<br>a butterfly</div>',
     qs: ['Lines of symmetry in a square?|4|2,1,0|4.', 'Lines of symmetry in a rectangle?|2|4,1,0|2.', 'Lines of symmetry in an equilateral triangle?|3|1,2,0|3.', 'Does a circle have lines of symmetry?|Yes, lots|No,Only 1|Any diameter.', 'Does the letter H have a line of symmetry?|Yes|No|Yes.', 'Does the letter F have a line of symmetry?|No|Yes|No.', 'A heart has how many lines of symmetry?|1|2,0,4|1.', 'A line of symmetry makes two halves that…|match|differ,are bigger,are smaller|Mirror.'],
     gen: function g(lv) { var P = [['square', 4], ['rectangle', 2], ['equilateral triangle', 3], ['regular pentagon', 5]], p = pick(lv ? P : P.slice(0, 3)); return mc('Symmetry', 'How many lines of symmetry has a <b>' + p[0] + '</b>?', p[1], [p[1] + 1, p[1] - 1 || 6, 0, 1].filter(function (x) { return x !== p[1]; }), 'Fold it every way.', 'A ' + p[0] + ' has ' + p[1] + ' lines.', SH([p[0].replace(/equilateral |regular /, '')], 90)); } });
 
@@ -47498,13 +47503,13 @@ S.extraMakers = function (n, level) {
     t: 'Reflection|How do I draw a reflection?|A reflection is a mirror image. Every point is the same distance from the mirror line, on the other side.|2 squares → 2 squares',
     words: 'reflection=a mirror image=🪞;mirror line=the line of symmetry=📏;image=the reflected shape=🖼️;distance=how far from the line=↔️',
     see: ['A shape sits 2 squares from the mirror line.|2 squares', 'Its reflection is 2 squares from the line on the other side.|2 squares', 'Left becomes right. The shape is flipped.|⇄'],
-    ex3: ['A dot is 3 squares left of the mirror line. Where is its reflection?|Same distance on the other side.|3 squares right|3 ⇄ 3', 'A point is 1 square above a horizontal line. Reflection?|1 square below.|1 square below|1 ⇅ 1', 'The reflection of the letter b is…|Left and right swap.|d|b ⇄ d'],
+    ex3: ['A dot is 3 squares left of the mirror line. Where is its reflection?|Same distance on the other side.|3 squares right|3 ⇄ 3', 'A point is 1 square above a horizontal line. Reflection?|1 square below.|1 square below|1 ⇅ 1', 'The reflection of the letter b is…|Left and right swap.|d|' + FL.sh.pair('b', 'd')],
     mist: 'The reflection is the same distance from the line, not the same side.|other side',
     chk: 'A point is 4 squares right of the mirror line. Reflection?|4 squares left|2 squares left,4 squares right,8 squares left|Same distance.|4',
     rem: 'Same distance, other side of the mirror line.|same distance',
     way: 'Put a small mirror on the line and look at the shape.|' + FL.sh.mirror(),
-    ex: ['A point is 2 squares from the line. Its reflection is how far from the line?|Same.|2 squares|2', 'Reflect the letter p across a vertical line.|Left and right swap.|q|p ⇄ q'],
-    real: 'You see yourself 1 m in front of a mirror. How far behind the mirror does your image seem?|1 m|2 m,0 m,0.5 m|Same distance.|mirror',
+    ex: ['A point is 2 squares from the line. Its reflection is how far from the line?|Same.|2 squares|2', 'Reflect the letter p across a vertical line.|Left and right swap.|q|' + FL.sh.pair('p', 'q')],
+    real: 'You see yourself 1 m in front of a mirror. How far behind the mirror does your image seem?|1 m|2 m,0 m,0.5 m|Same distance.|' + '<div style="text-align:center;font-weight:800;font-size:1.6em">🪞<br>a mirror</div>',
     qs: ['A dot is 5 squares from the mirror line. Its reflection is how far from the line?|5 squares|10 squares,0 squares,2 squares|Same.', 'A dot is 1 square from the line. Reflection distance?|1 square|2 squares,0 squares|Same.', 'A reflection is a…|mirror image|turn,slide,shrink|Mirror.', 'Reflect a dot 3 squares left. It is now…|3 squares right|3 squares left,6 squares right|Other side.', 'The mirror line is also called…|line of symmetry|compass,grid,scale|Fold line.', 'A shape and its reflection are the…|same size|bigger,smaller,different|Mirror.', 'Reflect a dot that is on the line. Where is it?|on the line|2 squares away,1 square away|Distance 0.', 'Reflect a dot 4 squares above the line. It is now…|4 squares below|4 squares above,8 squares below|Other side.'],
     gen: function g(lv) { var d = r(1, lv ? 8 : 5), dir = pick(['left', 'right']); return mc('Reflection', 'A point is <b>' + d + ' square' + (d > 1 ? 's' : '') + ' to the ' + dir + '</b> of the mirror line. How far is its reflection from the line?', d + ' square' + (d > 1 ? 's' : ''), [(d * 2) + ' squares', (d + 1) + ' squares', d - 1 ? (d - 1) + ' squares' : '0 squares'], 'The reflection is the same distance away.', 'It is ' + d + ' square' + (d > 1 ? 's' : '') + ' on the other side.'); } });
 
@@ -47543,7 +47548,7 @@ S.extraMakers = function (n, level) {
     way: 'A Venn diagram uses overlapping circles. Things in both groups go in the overlap. A Carroll diagram uses a grid with yes and no.|overlap = both rules',
     ex: ['Circles: even, more than 10. Where does 12 go?|12 is even and more than 10.|the overlap|both', 'Where does 7 go: even, more than 10?|7 is odd and less than 10.|outside both|neither'],
     mist: 'Check both rules for every item. An item can go in one circle, both or neither.|both rules',
-    real: 'Sort animals: has legs, has wings. A bird has both. Where does it go?|the overlap|legs only,wings only,outside|Both.|bird',
+    real: 'Sort animals: has legs, has wings. A bird has both. Where does it go?|the overlap|legs only,wings only,outside|Both.|' + '<div style="text-align:center;font-weight:800;font-size:1.6em">🐦<br>a bird</div>',
     qs: ['Even / more than 10. Where is 14?|overlap|even only,more than 10 only|Both.', 'Even / more than 10. Where is 3?|outside both|even only,overlap|Neither.', 'Even / more than 10. Where is 8?|even only|overlap,more than 10 only|Even, not over 10.', 'Even / more than 10. Where is 15?|more than 10 only|even only,overlap|Odd, over 10.', 'Carroll: odd or even. Where is 21?|odd|even|Ends in 1.', 'Carroll: odd or even. Where is 38?|even|odd|Ends in 8.', 'A square is a 2D shape with corners. In the overlap?|Yes|No|Both.', 'The overlap holds things that…|are in both groups|are in neither,are in one,are small|Both.'],
     gen: function g(lv) { var n = r(1, lv ? 30 : 20), ev = n % 2 === 0, big = n > 10, ans = ev && big ? 'overlap' : ev ? 'even only' : big ? 'more than 10 only' : 'outside both'; return mc('Venn diagrams', 'A Venn diagram has circles for <b>even</b> and <b>more than 10</b>. Where does <b>' + n + '</b> go?', ans, ['even only', 'more than 10 only', 'overlap', 'outside both'].filter(function (x) { return x !== ans; }), 'Check both rules.', n + ' is ' + (ev ? 'even' : 'odd') + ' and ' + (big ? '' : 'not ') + 'more than 10.'); } });
 

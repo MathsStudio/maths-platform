@@ -77,6 +77,11 @@
     });
     return s + '</div>';
   };
+
+  FL.sh.letter = function (ch, sym) { var s = tx(80, 105, ch, 110, '#2b2340', 800) + (sym ? '<line x1="80" y1="10" x2="80" y2="125" stroke="#d64545" stroke-width="4" stroke-dasharray="8 5"/>' : ''); return svg(160, 135, 'The letter ' + ch, s, 220); };
+  FL.sh.pair = function (a, b) { var s = tx(55, 105, a, 100, '#2b2340', 800) + '<line x1="140" y1="10" x2="140" y2="125" stroke="#d64545" stroke-width="4" stroke-dasharray="8 5"/>' + tx(225, 105, b, 100, '#2b2340', 800) + tx(140, 135, 'mirror line', 11, '#d64545', 800); return svg(280, 145, a + ' and its mirror image ' + b, s, 320); };
+  FL.sh.circ = function () { var s = '', i, j; for (i = 0; i < 3; i++) for (j = 0; j < 3; j++) s += '<circle cx="' + (30 + i * 40) + '" cy="' + (30 + j * 40) + '" r="19" fill="#ff8fab" stroke="#2b2340" stroke-width="2.5"/>'; return svg(150, 150, 'Circles leave gaps', s, 200); };
+  FL.sh.sq = function () { var s = '', i, j; for (i = 0; i < 3; i++) for (j = 0; j < 3; j++) s += '<rect x="' + (10 + i * 40) + '" y="' + (10 + j * 40) + '" width="40" height="40" fill="' + ((i + j) % 2 ? '#ffd23f' : '#7cc4ff') + '" stroke="#2b2340" stroke-width="2.5"/>'; return svg(150, 150, 'Squares fit with no gaps', s, 200); };
   /* a pictogram: one row per label, one picture per `key` items, half picture for a half */
   FL.pictogram = function (rows, icon, key) {
     var h = '<div style="display:grid;gap:6px;justify-items:start;font-weight:800;color:' + INK + ';background:#fff;border:3px solid ' + INK + ';border-radius:14px;padding:8px 12px"><div style="font-size:1.05rem">Key: ' + icon + ' = ' + key + '</div>';

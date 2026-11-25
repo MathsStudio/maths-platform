@@ -402,8 +402,8 @@
       ] },
     learn: [
       { title: 'What is tessellation?', char: 'pirate', screens: [
-        W('A tessellation covers a floor with shapes: no gaps and no overlaps. Squares tessellate.', P('sea', '', ROW(['square', 'square', 'square'], 60))),
-        W('Circles leave gaps between them, so they do not tessellate.', P('sea', '', ROW(['circle', 'circle', 'circle'], 60))),
+        W('A tessellation covers a floor with shapes: no gaps and no overlaps. Squares tessellate.', P('sea', '', FL.sh.sq())),
+        W('Circles leave gaps between them, so they do not tessellate.', P('sea', '', FL.sh.circ())),
         TG('Do rectangles tessellate?', P('sea', '', SH('rectangle', null, 110)), ['Yes', 'No'], 'Yes', 'Think of a brick wall.', 'Yes.'),
         TG('Do regular hexagons tessellate?', P('sea', '', SH('hexagon', null, 110)), ['Yes', 'No'], 'Yes', 'Think of a honeycomb.', 'Yes.'),
         Y('Do circles tessellate?', P('sea', '', SH('circle', null, 110)), ['Yes', 'No'], 'No', 'Are there gaps?', 'No, they leave gaps.'),
