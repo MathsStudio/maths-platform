@@ -8,28 +8,28 @@
     head: 'Positive and negative numbers',
     basics: [['The number line', [
       ["Negative numbers are the numbers below zero. On a number line, positive numbers are to the right of zero and negative numbers are to the left. The further left, the smaller the number.", [nl(-6, 6), 'n|Right = bigger, left = smaller']],
-      ["Adding a positive number moves us right. Taking away a positive number moves us left. And there is a surprise: taking away a negative number moves us right, because two minus signs make a plus.", ['+ positive: move right', '− positive: move left', '− negative: move right (− − = +)']]]]],
+      ["Adding a positive number moves us right. Taking away a positive number moves us left. And there is a surprise: taking away a negative number moves us right, because 2 minus signs make a plus.", ['+ positive: move right', '− positive: move left', '− negative: move right (− − = +)']]]]],
     ex: [
       ['Three add negative five', [
         ["Start at three on the number line. Adding a negative number is the same as taking away. So we move five steps to the left.", [nl(-6, 6, 3, -2), '3 + (−5) = 3 − 5']],
-        ["Three take away five lands on minus two. We pass through zero on the way.", ['3 − 5 = −2', 'g|3 + (−5) = −2']]]],
-      ['Minus four take away three', [
-        ["Start at minus four. We take away three, so we move three steps left.", [nl(-8, 2, -4, -7), '−4 − 3']],
-        ["Minus four then three more to the left is minus seven. When both numbers are negative, we add the sizes and keep the minus sign.", ['4 + 3 = 7', 'g|−4 − 3 = −7']]]],
+        ["3 take away 5 lands on minus 2. We pass through 0 on the way.", ['3 − 5 = −2', 'g|3 + (−5) = −2']]]],
+      ['Minus 4 take away 3', [
+        ["Start at minus 4. We take away 3, so we move 3 steps left.", [nl(-8, 2, -4, -7), '−4 − 3']],
+        ["Minus 4 then 3 more to the left is minus 7. When both numbers are negative, we add the sizes and keep the minus sign.", ['4 + 3 = 7', 'g|−4 − 3 = −7']]]],
       ['Five take away negative two', [
-        ["Take away a negative is the same as add a positive. The two minus signs next to each other turn into a plus. So five minus negative two is five plus two.", ['5 − (−2)', '− (−2) becomes + 2']],
-        ["Five plus two is seven. We moved right, not left.", ['5 + 2 = 7', 'g|5 − (−2) = 7']]]],
-      ['Minus six take away negative nine', [
-        ["Two minus signs together make a plus. So this is minus six plus nine.", ['−6 − (−9)', '= −6 + 9']],
-        ["From minus six, move nine steps right. We pass zero and land on three. Nine take away six gives the size, and the answer is positive because nine is bigger.", ['9 − 6 = 3', 'g|−6 − (−9) = 3']]]]],
+        ["Take away a negative is the same as add a positive. The 2 minus signs next to each other turn into a plus. So 5 minus negative 2 is 5 plus 2.", ['5 − (−2)', '− (−2) becomes + 2']],
+        ["5 plus 2 is 7. We moved right, not left.", ['5 + 2 = 7', 'g|5 − (−2) = 7']]]],
+      ['Minus 6 take away negative 9', [
+        ["2 minus signs together make a plus. So this is minus 6 plus 9.", ['−6 − (−9)', '= −6 + 9']],
+        ["From minus 6, move 9 steps right. We pass 0 and land on 3. 9 take away 6 gives the size, and the answer is positive because 9 is bigger.", ['9 − 6 = 3', 'g|−6 − (−9) = 3']]]]],
     mist: [
-      ['Ignoring the double sign', "Mistake one: treating two minus signs as one. Work out five minus negative two. Wrong: five minus two is three. But minus negative two is plus two. The answer is seven.", ['r|5 − (−2) = 3 ✗', 'g|5 − (−2) = 5 + 2 = 7 ✓']],
-      ['Adding the sizes when signs differ', "Mistake two: adding all the digits. Work out minus three plus eight. Wrong: minus eleven. Start at minus three and move eight right. That is plus five.", ['r|−3 + 8 = −11 ✗', 'g|−3 + 8 = 5 ✓']]],
-    real: ['In real life', "At night the temperature is minus three degrees. By midday it has risen by eight degrees. Minus three plus eight is five degrees. In a bank account, an overdraft of forty pounds is minus forty. Paying in twenty-five pounds gives minus fifteen.", ['−3 + 8 = 5 °C', '−40 + 25 = −15 (£)']],
+      ['Ignoring the double sign', "Mistake one: treating 2 minus signs as 1. Work out 5 minus negative 2. Wrong: 5 minus 2 is 3. But minus negative 2 is plus 2. The answer is 7.", ['r|5 − (−2) = 3 ✗', 'g|5 − (−2) = 5 + 2 = 7 ✓']],
+      ['Adding the sizes when signs differ', "Mistake two: adding all the digits. Work out minus 3 plus 8. Wrong: minus 11. Start at minus 3 and move 8 right. That is plus 5.", ['r|−3 + 8 = −11 ✗', 'g|−3 + 8 = 5 ✓']]],
+    real: ['In real life', "At night the temperature is minus 3 degrees. By midday it has risen by 8 degrees. Minus 3 plus 8 is 5 degrees. In a bank account, an overdraft of £40 is minus 40. Paying in £25 gives minus 15.", ['−3 + 8 = 5 °C', '−40 + 25 = −15 (£)']],
     turns: [
-      { q: 'Work out minus seven plus four.', task: '−7 + 4', say: "Start at minus seven. Adding four moves us four steps to the right. Minus seven plus four lands on minus three. We are still below zero.", work: ['−7 + 4', '7 − 4 = 3 (the sizes)', 'The bigger size is negative, so the answer is −3'], fig: nl(-8, 2, -7, -3), ans: ['g|−7 + 4 = −3'] },
-      { q: 'Work out three minus negative six.', task: '3 − (−6)', say: "Two minus signs make a plus. So three minus negative six is three plus six. That is nine.", work: ['3 − (−6)', '− (−6) becomes + 6', '3 + 6 = 9'], ans: ['g|3 − (−6) = 9'] },
-      { q: 'The temperature falls from four degrees to minus six degrees. By how many degrees did it fall?', say: "We want the difference between four and minus six. That is four minus negative six. Two minus signs make a plus, so four plus six. The temperature fell by ten degrees.", work: ['4 − (−6)', '= 4 + 6', '= 10'], fig: nl(-8, 6, 4, -6), ans: ['g|It fell by 10 °C'] }],
+      { q: 'Work out minus 7 plus 4.', task: '−7 + 4', say: "Start at minus 7. Adding 4 moves us 4 steps to the right. Minus 7 plus 4 lands on minus 3. We are still below 0.", work: ['−7 + 4', '7 − 4 = 3 (the sizes)', 'The bigger size is negative, so the answer is −3'], fig: nl(-8, 2, -7, -3), ans: ['g|−7 + 4 = −3'] },
+      { q: 'Work out 3 minus negative 6.', task: '3 − (−6)', say: "2 minus signs make a plus. So 3 minus negative 6 is 3 plus 6. That is 9.", work: ['3 − (−6)', '− (−6) becomes + 6', '3 + 6 = 9'], ans: ['g|3 − (−6) = 9'] },
+      { q: 'The temperature falls from 4 degrees to minus 6 degrees. By how many degrees did it fall?', say: "We want the difference between 4 and minus 6. That is 4 minus negative 6. 2 minus signs make a plus, so 4 plus 6. The temperature fell by 10 degrees.", work: ['4 − (−6)', '= 4 + 6', '= 10'], fig: nl(-8, 6, 4, -6), ans: ['g|It fell by 10 °C'] }],
     rec: ["Use the number line, and watch the signs.", ['Right = bigger, left = smaller', 'Add a positive: move right', 'Take away a positive: move left', 'Take away a negative = add a positive', 'Different signs: subtract the sizes']]
   });
 
@@ -39,25 +39,25 @@
       ["Multiplying and dividing follow the same simple rules. First ignore the signs and do the calculation. Then decide the sign of the answer.", ['n|1. Calculate with the sizes', 'n|2. Decide the sign']],
       ["If the two signs are the same, the answer is positive. If the two signs are different, the answer is negative. This works for multiplication and for division.", ['same signs: positive', 'different signs: negative', '(+)(+) = +   (−)(−) = +', '(+)(−) = −   (−)(+) = −']]]]],
     ex: [
-      ['Six times negative four', [
-        ["Ignore the signs. Six times four is twenty-four. The signs are different, a positive and a negative, so the answer is negative.", ['6 × 4 = 24', 'signs different: negative']],
-        ["Six times negative four is minus twenty-four.", ['g|6 × (−4) = −24']]]],
-      ['Negative five times negative seven', [
-        ["Ignore the signs. Five times seven is thirty-five. Both numbers are negative. The signs are the same, so the answer is positive.", ['5 × 7 = 35', 'signs the same: positive']],
-        ["Negative five times negative seven is plus thirty-five.", ['g|(−5) × (−7) = 35']]]],
+      ['6 times negative 4', [
+        ["Ignore the signs. 6 times 4 is 24. The signs are different, a positive and a negative, so the answer is negative.", ['6 × 4 = 24', 'signs different: negative']],
+        ["6 times negative 4 is minus 24.", ['g|6 × (−4) = −24']]]],
+      ['Negative 5 times negative 7', [
+        ["Ignore the signs. 5 times 7 is 35. Both numbers are negative. The signs are the same, so the answer is positive.", ['5 × 7 = 35', 'signs the same: positive']],
+        ["Negative 5 times negative 7 is plus 35.", ['g|(−5) × (−7) = 35']]]],
       ['Division', [
-        ["Minus thirty-six divided by nine. Thirty-six divided by nine is four. The signs are different, so the answer is negative.", ['−36 ÷ 9', '36 ÷ 9 = 4', 'g|−36 ÷ 9 = −4']],
-        ["Minus forty-eight divided by minus six. Forty-eight divided by six is eight. The signs are the same, so the answer is positive.", ['−48 ÷ (−6)', '48 ÷ 6 = 8', 'g|−48 ÷ (−6) = 8']]]],
+        ["Minus 36 divided by 9. 36 divided by 9 is 4. The signs are different, so the answer is negative.", ['−36 ÷ 9', '36 ÷ 9 = 4', 'g|−36 ÷ 9 = −4']],
+        ["Minus 48 divided by minus 6. 48 divided by 6 is 8. The signs are the same, so the answer is positive.", ['−48 ÷ (−6)', '48 ÷ 6 = 8', 'g|−48 ÷ (−6) = 8']]]],
       ['More than two numbers', [
-        ["Work out negative two times three times negative five. Do it in order. Negative two times three is minus six. Then minus six times minus five is plus thirty.", ['(−2) × 3 = −6', '(−6) × (−5) = 30', 'g|(−2) × 3 × (−5) = 30']]]]],
+        ["Work out negative 2 times 3 times negative 5. Do it in order. Negative 2 times 3 is minus 6. Then minus 6 times minus 5 is plus 30.", ['(−2) × 3 = −6', '(−6) × (−5) = 30', 'g|(−2) × 3 × (−5) = 30']]]]],
     mist: [
-      ['Negative times negative', "Mistake one: thinking negative times negative is negative. Work out negative three times negative four. Wrong: minus twelve. The signs are the same, so the answer is plus twelve.", ['r|(−3) × (−4) = −12 ✗', 'g|(−3) × (−4) = 12 ✓']],
-      ['Squaring a negative', "Mistake two: a negative number squared. Negative five squared means negative five times negative five. That is plus twenty-five. A square is never negative.", ['r|(−5)² = −25 ✗', 'g|(−5)² = (−5) × (−5) = 25 ✓']]],
-    real: ['In real life', "You owe your friend fifteen pounds each week for four weeks. Each week is minus fifteen, so four weeks is four times minus fifteen, which is minus sixty. The temperature on a mountain falls three degrees every hour. After five hours, the change is five times minus three, which is minus fifteen degrees.", ['4 × (−15) = −60 (£)', '5 × (−3) = −15 (°C)']],
+      ['Negative times negative', "Mistake one: thinking negative times negative is negative. Work out negative 3 times negative 4. Wrong: minus 12. The signs are the same, so the answer is plus 12.", ['r|(−3) × (−4) = −12 ✗', 'g|(−3) × (−4) = 12 ✓']],
+      ['Squaring a negative', "Mistake two: a negative number squared. Negative 5 squared means negative 5 times negative 5. That is plus 25. A square is never negative.", ['r|(−5)² = −25 ✗', 'g|(−5)² = (−5) × (−5) = 25 ✓']]],
+    real: ['In real life', "You owe your friend £15 each week for 4 weeks. Each week is minus 15, so 4 weeks is 4 times minus 15, which is minus 60. The temperature on a mountain falls 3 degrees every hour. After 5 hours, the change is 5 times minus 3, which is minus 15 degrees.", ['4 × (−15) = −60 (£)', '5 × (−3) = −15 (°C)']],
     turns: [
-      { q: 'Work out negative eight times five.', task: '(−8) × 5', say: "Ignore the signs. Eight times five is forty. The signs are different, so the answer is negative. The answer is minus forty.", work: ['8 × 5 = 40', 'Different signs: negative'], ans: ['g|(−8) × 5 = −40'] },
-      { q: 'Work out negative twelve divided by negative three.', task: '(−12) ÷ (−3)', say: "Ignore the signs. Twelve divided by three is four. Both numbers are negative, so the signs are the same. The answer is positive four.", work: ['12 ÷ 3 = 4', 'Same signs: positive'], ans: ['g|(−12) ÷ (−3) = 4'] },
-      { q: 'Work out negative four times negative two times negative three.', task: '(−4) × (−2) × (−3)', say: "Take it in two steps. Negative four times negative two is plus eight. Then plus eight times negative three is minus twenty-four. Three negative signs make a negative answer.", work: ['(−4) × (−2) = 8', '8 × (−3) = −24'], ans: ['g|−24'] }],
+      { q: 'Work out negative 8 times 5.', task: '(−8) × 5', say: "Ignore the signs. 8 times 5 is 40. The signs are different, so the answer is negative. The answer is minus 40.", work: ['8 × 5 = 40', 'Different signs: negative'], ans: ['g|(−8) × 5 = −40'] },
+      { q: 'Work out negative 12 divided by negative 3.', task: '(−12) ÷ (−3)', say: "Ignore the signs. 12 divided by 3 is 4. Both numbers are negative, so the signs are the same. The answer is positive 4.", work: ['12 ÷ 3 = 4', 'Same signs: positive'], ans: ['g|(−12) ÷ (−3) = 4'] },
+      { q: 'Work out negative 4 times negative 2 times negative 3.', task: '(−4) × (−2) × (−3)', say: "Take it in 2 steps. Negative 4 times negative 2 is plus 8. Then plus 8 times negative 3 is minus 24. 3 negative signs make a negative answer.", work: ['(−4) × (−2) = 8', '8 × (−3) = −24'], ans: ['g|−24'] }],
     rec: ["Calculate with the sizes, then decide the sign.", ['Same signs: positive answer', 'Different signs: negative answer', 'Works for × and ÷', '(−5)² = 25, never −25', 'Do more than two numbers in steps']]
   });
 
@@ -65,51 +65,51 @@
     head: 'Multiplying decimals',
     basics: [['The method', [
       ["To multiply decimals, first ignore the decimal points and multiply the numbers as if they were whole numbers. Then count how many digits are after the decimal points in the question, altogether.", ['n|1. Ignore the points: multiply', 'n|2. Count the decimal places in the question', 'n|3. Put that many in the answer']],
-      ["Finally put the same number of decimal places in the answer. Check with a quick estimate. If you multiply zero point six by zero point four, six times four is twenty-four, and there are two decimal places in total. So zero point two four.", ['0.6 × 0.4', '6 × 4 = 24', '2 decimal places', 'g|0.24']]]]],
+      ["Finally put the same number of decimal places in the answer. Check with a quick estimate. If you multiply 0 point 6 by 0 point 4, 6 times 4 is 24, and there are 2 decimal places in total. So 0 point 2 4.", ['0.6 × 0.4', '6 × 4 = 24', '2 decimal places', 'g|0.24']]]]],
     ex: [
-      ['Two point five times zero point one two', [
-        ["Ignore the points. Twenty-five times twelve. Twenty-five times ten is two hundred and fifty. Twenty-five times two is fifty. Together that is three hundred.", ['25 × 12', '25 × 10 = 250', '25 × 2 = 50', '250 + 50 = 300']],
-        ["Count the decimal places in the question: one in two point five, two in zero point one two. That is three altogether. So the answer has three decimal places: zero point three zero zero. That is zero point three.", ['1 + 2 = 3 decimal places', '300 → 0.300', 'g|2.5 × 0.12 = 0.3']]]],
-      ['Four point seven times two point three', [
-        ["Ignore the points. Forty-seven times twenty-three. Forty-seven times three is one hundred and forty-one. Forty-seven times twenty is nine hundred and forty. Add them.", ['47 × 3 = 141', '47 × 20 = 940', '141 + 940 = 1081']],
-        ["There is one decimal place in each number, so two in total. One thousand and eighty-one becomes ten point eight one. Estimate: five times two is ten, so the answer is sensible.", ['1 + 1 = 2 decimal places', '1081 → 10.81', 'g|4.7 × 2.3 = 10.81']]]],
-      ['Zero point zero four five times zero point two', [
-        ["Ignore the points. Forty-five times two is ninety. There are three decimal places in zero point zero four five and one in zero point two. That is four places altogether.", ['45 × 2 = 90', '3 + 1 = 4 decimal places']],
-        ["Ninety needs four decimal places. We add zeros in front: zero point zero zero nine zero. That is zero point zero zero nine.", ['90 → 0.0090', 'g|0.045 × 0.2 = 0.009']]]]],
+      ['2.5 times 0 point 1 2', [
+        ["Ignore the points. 25 times 12. 25 times 10 is 250. 25 times 2 is 50. Together that is 300.", ['25 × 12', '25 × 10 = 250', '25 × 2 = 50', '250 + 50 = 300']],
+        ["Count the decimal places in the question: one in 2.5, 2 in 0 point 1 2. That is 3 altogether. So the answer has 3 decimal places: 0 point 3 0 0. That is 0 point 3.", ['1 + 2 = 3 decimal places', '300 → 0.300', 'g|2.5 × 0.12 = 0.3']]]],
+      ['4.7 times 2.3', [
+        ["Ignore the points. 47 times 23. 47 times 3 is 141. 47 times 20 is 940. Add them.", ['47 × 3 = 141', '47 × 20 = 940', '141 + 940 = 1081']],
+        ["There is 1 decimal place in each number, so 2 in total. 1,081 becomes 10.81. Estimate: 5 times 2 is 10, so the answer is sensible.", ['1 + 1 = 2 decimal places', '1081 → 10.81', 'g|4.7 × 2.3 = 10.81']]]],
+      ['0 point 0 4 5 times 0 point 2', [
+        ["Ignore the points. 45 times 2 is 90. There are 3 decimal places in 0 point 0 4 5 and 1 in 0 point 2. That is 4 places altogether.", ['45 × 2 = 90', '3 + 1 = 4 decimal places']],
+        ["90 needs 4 decimal places. We add zeros in front: 0 point 0 0 9 0. That is 0 point 0 0 9.", ['90 → 0.0090', 'g|0.045 × 0.2 = 0.009']]]]],
     mist: [
-      ['Counting the places wrongly', "Mistake one: not counting the decimal places. Work out zero point three times zero point two. Wrong: zero point six. Three times two is six, but there are two decimal places in total. So the answer is zero point zero six.", ['r|0.3 × 0.2 = 0.6 ✗', 'g|0.3 × 0.2 = 0.06 ✓']],
+      ['Counting the places wrongly', "Mistake one: not counting the decimal places. Work out 0 point 3 times 0 point 2. Wrong: 0 point 6. 3 times 2 is 6, but there are 2 decimal places in total. So the answer is 0 point 0 6.", ['r|0.3 × 0.2 = 0.6 ✗', 'g|0.3 × 0.2 = 0.06 ✓']],
       ['Lining the points up', "Mistake two: lining up the decimal points, as in addition. For multiplying, the points do not need to line up. Multiply as whole numbers, then count the places.", ['n|Adding: line up the points', 'n|Multiplying: do not line up the points']]],
-    real: ['In real life', "Fabric costs two pounds thirty-five a metre. You need one point six metres. Multiply two point three five by one point six. Two hundred and thirty-five times sixteen is three thousand, seven hundred and sixty. Three decimal places gives three point seven six. So the fabric costs three pounds seventy-six.", ['2.35 × 1.6', '235 × 16 = 3760', 'g|£3.76']],
+    real: ['In real life', "Fabric costs £2.35 a metre. You need 1.6 metres. Multiply 2.35 by 1.6. 235 times 16 is 3,000, 760. 3 decimal places gives 3.76. So the fabric costs £3.76.", ['2.35 × 1.6', '235 × 16 = 3760', 'g|£3.76']],
     turns: [
-      { q: 'Work out zero point seven times zero point eight.', task: '0.7 × 0.8', say: "Ignore the points. Seven times eight is fifty-six. There is one decimal place in each number, two altogether. Fifty-six with two decimal places is zero point five six.", work: ['7 × 8 = 56', '1 + 1 = 2 decimal places', '56 → 0.56'], ans: ['g|0.56'] },
-      { q: 'Work out one point two times zero point three five.', task: '1.2 × 0.35', say: "Ignore the points. Twelve times thirty-five. Twelve times thirty is three hundred and sixty. Twelve times five is sixty. Together that is four hundred and twenty. There are three decimal places in the question. So zero point four two zero, which is zero point four two.", work: ['12 × 35', '12 × 30 = 360', '12 × 5 = 60', '360 + 60 = 420', '1 + 2 = 3 decimal places: 0.420'], ans: ['g|0.42'] },
-      { q: 'Ribbon costs two pounds thirty-five a metre. How much is one point six metres?', say: "Multiply two point three five by one point six. Ignore the points: two hundred and thirty-five times sixteen. Two hundred and thirty-five times ten is two thousand three hundred and fifty. Two hundred and thirty-five times six is one thousand four hundred and ten. Add them to get three thousand seven hundred and sixty. There are three decimal places, so three point seven six. The ribbon costs three pounds seventy-six.", work: ['2.35 × 1.6', '235 × 10 = 2350', '235 × 6 = 1410', '2350 + 1410 = 3760', '3 decimal places: 3.760'], ans: ['g|£3.76'] }],
+      { q: 'Work out 0 point 7 times 0 point 8.', task: '0.7 × 0.8', say: "Ignore the points. 7 times 8 is 56. There is 1 decimal place in each number, two altogether. 56 with 2 decimal places is 0 point 5 6.", work: ['7 × 8 = 56', '1 + 1 = 2 decimal places', '56 → 0.56'], ans: ['g|0.56'] },
+      { q: 'Work out 1.2 times 0 point 3 5.', task: '1.2 × 0.35', say: "Ignore the points. 12 times 35. 12 times 30 is 360. 12 times 5 is 60. Together that is 420. There are 3 decimal places in the question. So 0 point 4 2 0, which is 0 point 4 2.", work: ['12 × 35', '12 × 30 = 360', '12 × 5 = 60', '360 + 60 = 420', '1 + 2 = 3 decimal places: 0.420'], ans: ['g|0.42'] },
+      { q: 'Ribbon costs £2.35 a metre. How much is 1.6 metres?', say: "Multiply 2.35 by 1.6. Ignore the points: 235 times 16. 235 times 10 is 2,350. 235 times 6 is 1,410. Add them to get 3,760. There are 3 decimal places, so 3.76. The ribbon costs £3.76.", work: ['2.35 × 1.6', '235 × 10 = 2350', '235 × 6 = 1410', '2350 + 1410 = 3760', '3 decimal places: 3.760'], ans: ['g|£3.76'] }],
     rec: ["Multiply as whole numbers, then count the decimal places.", ['Ignore the decimal points', 'Multiply the whole numbers', 'Count the decimal places in the question', 'Put that many in the answer', 'Check with an estimate']]
   });
 
   fx('How do you divide to three decimal places?', 'how to divide with decimals and round the answer to three decimal places.', {
     head: 'Dividing decimals',
     basics: [['Make the divisor a whole number', [
-      ["Dividing by a decimal is awkward. So we make the number we are dividing by a whole number. We do this by multiplying both numbers by ten, or a hundred, or a thousand. Both numbers must be multiplied by the same amount.", ['4.8 ÷ 0.6', '× 10 both: 48 ÷ 6', 'n|Multiply BOTH by the same power of 10']],
-      ["The answer does not change, because we scaled both numbers the same way. Forty-eight divided by six is easy: eight.", ['48 ÷ 6 = 8', 'g|4.8 ÷ 0.6 = 8']]]]],
+      ["Dividing by a decimal is awkward. So we make the number we are dividing by a whole number. We do this by multiplying both numbers by 10, or a hundred, or a thousand. Both numbers must be multiplied by the same amount.", ['4.8 ÷ 0.6', '× 10 both: 48 ÷ 6', 'n|Multiply BOTH by the same power of 10']],
+      ["The answer does not change, because we scaled both numbers the same way. 48 divided by 6 is easy: 8.", ['48 ÷ 6 = 8', 'g|4.8 ÷ 0.6 = 8']]]]],
     ex: [
-      ['Seven point two divided by zero point zero four', [
-        ["Zero point zero four needs multiplying by one hundred to become four. So multiply both numbers by one hundred. Seven point two becomes seven hundred and twenty.", ['7.2 ÷ 0.04', '× 100 both', '720 ÷ 4']],
-        ["Seven hundred and twenty divided by four is one hundred and eighty. Check: zero point zero four goes into seven point two many times, because it is so small.", ['720 ÷ 4 = 180', 'g|7.2 ÷ 0.04 = 180']]]],
-      ['Five divided by seven, to three decimal places', [
-        ["Seven goes into five zero times. Put a decimal point and add zeros. Seven goes into fifty seven times, which makes forty-nine, remainder one. Then ten: once, remainder three. Then thirty: four times, remainder two. Then twenty: twice, remainder six.", ['5 ÷ 7', '50 ÷ 7 = 7 r 1', '10 ÷ 7 = 1 r 3', '30 ÷ 7 = 4 r 2', '20 ÷ 7 = 2 r 6']],
+      ['7.2 divided by 0 point 0 4', [
+        ["0 point 0 4 needs multiplying by 100 to become 4. So multiply both numbers by 100. 7.2 becomes 720.", ['7.2 ÷ 0.04', '× 100 both', '720 ÷ 4']],
+        ["720 divided by 4 is 180. Check: 0 point 0 4 goes into 7.2 many times, because it is so small.", ['720 ÷ 4 = 180', 'g|7.2 ÷ 0.04 = 180']]]],
+      ['5 divided by 7, to 3 decimal places', [
+        ["7 goes into 5 0 times. Put a decimal point and add zeros. 7 goes into 57 times, which makes 49, remainder 1. Then 10: once, remainder 3. Then 30: 4 times, remainder 2. Then 20: twice, remainder 6.", ['5 ÷ 7', '50 ÷ 7 = 7 r 1', '10 ÷ 7 = 1 r 3', '30 ÷ 7 = 4 r 2', '20 ÷ 7 = 2 r 6']],
         ["So far zero point seven one four two. For three decimal places we need the fourth digit as the decider. The fourth digit is two, which is less than five. So the third digit stays: zero point seven one four.", ['0.7142…', 'Decider = 2: stay the same', 'g|5 ÷ 7 ≈ 0.714 (3 d.p.)']]]],
-      ['Two point five divided by zero point three', [
-        ["Multiply both by ten. Two point five becomes twenty-five, and zero point three becomes three. Twenty-five divided by three.", ['2.5 ÷ 0.3', '× 10 both: 25 ÷ 3']],
-        ["Three goes into twenty-five eight times, making twenty-four, remainder one. Then ten: three times, remainder one. The threes go on forever: eight point three three three three. To three decimal places, the decider is three, so it stays.", ['25 ÷ 3 = 8 r 1', '10 ÷ 3 = 3 r 1', 'g|≈ 8.333 (3 d.p.)']]]]],
+      ['2.5 divided by 0 point 3', [
+        ["Multiply both by 10. 2.5 becomes 25, and 0 point 3 becomes 3. 25 divided by 3.", ['2.5 ÷ 0.3', '× 10 both: 25 ÷ 3']],
+        ["3 goes into twenty-5 8 times, making 24, remainder 1. Then 10: 3 times, remainder 1. The threes go on forever: 8.3333. To 3 decimal places, the decider is 3, so it stays.", ['25 ÷ 3 = 8 r 1', '10 ÷ 3 = 3 r 1', 'g|≈ 8.333 (3 d.p.)']]]]],
     mist: [
-      ['Moving the point in one number only', "Mistake one: changing only one of the numbers. Work out four point eight divided by zero point six. Wrong: four point eight divided by six, which is zero point eight. You must multiply both numbers by ten. Forty-eight divided by six is eight.", ['r|4.8 ÷ 0.6 = 4.8 ÷ 6 = 0.8 ✗', 'g|48 ÷ 6 = 8 ✓']],
-      ['Thinking division makes smaller', "Mistake two: expecting the answer to be smaller. Dividing by a number smaller than one makes the answer bigger. Six divided by zero point five is twelve, because there are twelve halves in six.", ['6 ÷ 0.5 = 12', 'n|Dividing by less than 1 gives a bigger answer']]],
-    real: ['In real life', "A jug holds seven point five litres of juice. Each glass holds zero point two five litres. How many glasses can be filled? Multiply both numbers by one hundred: seven hundred and fifty divided by twenty-five is thirty glasses.", ['7.5 ÷ 0.25', '750 ÷ 25 = 30', 'g|30 glasses']],
+      ['Moving the point in one number only', "Mistake one: changing only one of the numbers. Work out 4.8 divided by 0 point 6. Wrong: 4.8 divided by 6, which is 0 point 8. You must multiply both numbers by 10. 48 divided by 6 is 8.", ['r|4.8 ÷ 0.6 = 4.8 ÷ 6 = 0.8 ✗', 'g|48 ÷ 6 = 8 ✓']],
+      ['Thinking division makes smaller', "Mistake two: expecting the answer to be smaller. Dividing by a number smaller than 1 makes the answer bigger. 6 divided by 0 point 5 is 12, because there are 12 halves in 6.", ['6 ÷ 0.5 = 12', 'n|Dividing by less than 1 gives a bigger answer']]],
+    real: ['In real life', "A jug holds 7.5 litres of juice. Each glass holds 0 point 2 5 litres. How many glasses can be filled? Multiply both numbers by 100: 750 divided by 25 is 30 glasses.", ['7.5 ÷ 0.25', '750 ÷ 25 = 30', 'g|30 glasses']],
     turns: [
-      { q: 'Work out nine point six divided by zero point eight.', task: '9.6 ÷ 0.8', say: "Multiply both numbers by ten. Nine point six becomes ninety-six, zero point eight becomes eight. Ninety-six divided by eight is twelve.", work: ['× 10 both: 96 ÷ 8', '96 ÷ 8 = 12'], ans: ['g|12'] },
-      { q: 'Work out three divided by zero point zero seven, to three decimal places.', task: '3 ÷ 0.07', say: "Multiply both numbers by one hundred. Three becomes three hundred, zero point zero seven becomes seven. Three hundred divided by seven is forty-two, remainder six. Then sixty divided by seven is eight, remainder four. Then forty divided by seven is five, remainder five. Then fifty divided by seven is seven. The next digit is one, so the decider is one, and the answer is forty-two point eight five seven.", work: ['× 100 both: 300 ÷ 7', '300 ÷ 7 = 42 r 6', '60 ÷ 7 = 8 r 4', '40 ÷ 7 = 5 r 5', '50 ÷ 7 = 7 r 1: 42.857…'], ans: ['g|≈ 42.857 (3 d.p.)'] },
-      { q: 'Work out four point two divided by zero point one five.', task: '4.2 ÷ 0.15', say: "Multiply both numbers by one hundred. Four point two becomes four hundred and twenty. Zero point one five becomes fifteen. Four hundred and twenty divided by fifteen. Fifteen times twenty is three hundred, leaving one hundred and twenty. Fifteen times eight is one hundred and twenty. So twenty-eight.", work: ['× 100 both: 420 ÷ 15', '15 × 20 = 300', '420 − 300 = 120', '15 × 8 = 120'], ans: ['g|28'] }],
-    rec: ["Make the divisor a whole number by multiplying both numbers by the same power of ten.", ['Multiply both numbers by 10, 100 or 1000', 'Divide as normal', 'Add zeros to carry on after the point', 'Look at the 4th digit to round to 3 d.p.', 'Dividing by less than 1 gives a bigger answer']]
+      { q: 'Work out 9.6 divided by 0 point 8.', task: '9.6 ÷ 0.8', say: "Multiply both numbers by 10. 9.6 becomes 96, 0 point 8 becomes 8. 96 divided by 8 is 12.", work: ['× 10 both: 96 ÷ 8', '96 ÷ 8 = 12'], ans: ['g|12'] },
+      { q: 'Work out 3 divided by 0 point 0 7, to 3 decimal places.', task: '3 ÷ 0.07', say: "Multiply both numbers by 100. 3 becomes 300, 0 point 0 7 becomes 7. 300 divided by 7 is 42, remainder 6. Then 60 divided by 7 is 8, remainder 4. Then 40 divided by 7 is 5, remainder 5. Then 50 divided by 7 is 7. The next digit is 1, so the decider is 1, and the answer is 42.857.", work: ['× 100 both: 300 ÷ 7', '300 ÷ 7 = 42 r 6', '60 ÷ 7 = 8 r 4', '40 ÷ 7 = 5 r 5', '50 ÷ 7 = 7 r 1: 42.857…'], ans: ['g|≈ 42.857 (3 d.p.)'] },
+      { q: 'Work out 4.2 divided by 0 point 1 5.', task: '4.2 ÷ 0.15', say: "Multiply both numbers by 100. 4.2 becomes 420. 0 point 1 5 becomes 15. 420 divided by 15. 15 times 20 is 300, leaving 120. 15 times 8 is 120. So 28.", work: ['× 100 both: 420 ÷ 15', '15 × 20 = 300', '420 − 300 = 120', '15 × 8 = 120'], ans: ['g|28'] }],
+    rec: ["Make the divisor a whole number by multiplying both numbers by the same power of 10.", ['Multiply both numbers by 10, 100 or 1000', 'Divide as normal', 'Add zeros to carry on after the point', 'Look at the 4th digit to round to 3 d.p.', 'Dividing by less than 1 gives a bigger answer']]
   });
 })();
