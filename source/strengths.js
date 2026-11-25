@@ -382,7 +382,7 @@
     [/fraction/i, 'Share a pizza or a bar of chocolate and ask what fraction each person gets, or what ¾ of 12 slices is.'],
     [/ratio|proportion/i, 'Mix a drink in a ratio such as 1 : 4, or scale a recipe for more people.'],
     [/percent/i, 'Look at sale signs together and work out the new price after 10% or 25% off.'],
-    [/decimal/i, 'Compare prices in pounds and pence, or measure heights in metres to two decimal places.'],
+    [/decimal/i, 'Compare prices in pounds and pence, or measure heights in metres to 2 decimal places.'],
     [/money|finance/i, 'Plan a small shopping budget and work out the change from a £20 note.'],
     [/time|speed/i, 'Use a bus or train timetable to work out how long a journey takes.'],
     [/measure|area|volume|perimeter|solid/i, 'Measure a room or a box and work out its area, perimeter or volume.'],

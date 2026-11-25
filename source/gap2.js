@@ -56,7 +56,7 @@
       return mk({ tag: 'Solid shapes', text: 'Which one of these solid shapes is <b>not a prism</b>?', hints: ['A prism has the same shape (cross-section) all the way along its length.'], explain: 'A ' + no[0] + ' is not a prism.' }, { options: opts, answer: no[0] });
     }
     var s = pick(SHAPES.filter(function (x) { return x[2] > 0 && x[3] > 0; })), q = pick(['faces', 'edges', 'vertices']), idx = { faces: 1, edges: 2, vertices: 3 }[q], ans = s[idx];
-    return mk({ tag: 'Solid shapes', text: 'How many <b>' + q + '</b> does a <b>' + s[0] + '</b> have?', hints: ['Picture the shape, or count on a model. Faces are flat surfaces, edges are where two faces meet, vertices are corners.'], explain: 'A ' + s[0] + ' has ' + s[1] + ' faces, ' + s[2] + ' edges and ' + s[3] + ' vertices.' }, mcStr(String(ans), [String(ans + 1), String(ans + 2), String(Math.max(1, ans - 1))]));
+    return mk({ tag: 'Solid shapes', text: 'How many <b>' + q + '</b> does a <b>' + s[0] + '</b> have?', hints: ['Picture the shape, or count on a model. Faces are flat surfaces, edges are where 2 faces meet, vertices are corners.'], explain: 'A ' + s[0] + ' has ' + s[1] + ' faces, ' + s[2] + ' edges and ' + s[3] + ' vertices.' }, mcStr(String(ans), [String(ans + 1), String(ans + 2), String(Math.max(1, ans - 1))]));
   }
   function gReflectName(lv) {
     var kind = pick(['sq', 'tri', 'rt']);
@@ -65,7 +65,7 @@
       tri: ['a right-angled triangle', 'along its shorter side (a side next to the right angle)', 'an isosceles triangle', ['a rectangle', 'a square', 'a parallelogram']],
       rt: ['a right-angled triangle', 'along its longest side (the hypotenuse)', 'a kite', ['a square', 'a rectangle', 'a rhombus']]
     }[kind];
-    if (kind === 'sq') return mk({ tag: 'Reflection', text: 'A square is joined to its mirror image reflected <b>' + items[1] + '</b>. What shape do the two squares make together?', hints: ['Sketch it: two squares side by side.'], explain: 'Two squares side by side make a rectangle.' }, mcStr('a rectangle', ['a square', 'a triangle', 'a rhombus']));
+    if (kind === 'sq') return mk({ tag: 'Reflection', text: 'A square is joined to its mirror image reflected <b>' + items[1] + '</b>. What shape do the 2 squares make together?', hints: ['Sketch it: 2 squares side by side.'], explain: '2 squares side by side make a rectangle.' }, mcStr('a rectangle', ['a square', 'a triangle', 'a rhombus']));
     return mk({ tag: 'Reflection', text: 'A <b>' + items[0] + '</b> is reflected in a mirror line <b>' + items[1] + '</b>. The shape and its reflection are joined. What shape do they make together?', hints: ['Sketch the shape and its reflection.'], explain: 'Together they make ' + items[2] + '.' }, mcStr(items[2], items[3].concat(['a trapezium'])));
   }
   function gCircleSq(lv) {

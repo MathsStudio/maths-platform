@@ -18,7 +18,7 @@
   /* ---------- 1 Place value: rounding decimals, estimating ---------- */
   lab([null, 1, 701], 'x_rounddec', 'Round the decimal', ['', 'Round each decimal to the nearest whole number or tenth.', 'Round each decimal to the given number of decimal places.'], function (v) { return function () {
     var dp = v === 1 ? pick([0, 1]) : pick([1, 2]), x = rnd(100, 99999) / (v === 1 ? 100 : 1000), f = Math.pow(10, dp), r = Math.round(x * f) / f;
-    var place = dp === 0 ? 'the nearest whole number' : dp === 1 ? 'one decimal place' : 'two decimal places';
+    var place = dp === 0 ? 'the nearest whole number' : dp === 1 ? 'one decimal place' : '2 decimal places';
     return { vis: big(T(x)), q: 'Round <b>' + T(x) + '</b> to ' + place + '.', answer: r.toFixed(dp), wrong: [(r + 1 / f).toFixed(dp), (r - 1 / f).toFixed(dp), (Math.floor(x * f) / f === r ? Math.ceil(x * f) / f : Math.floor(x * f) / f).toFixed(dp)],
       explain: 'Look at the next digit. ' + (Math.round(x * f * 10) % 10 >= 5 ? 'It is 5 or more, so round up.' : 'It is 4 or less, so round down.') + ' The answer is ' + r.toFixed(dp) + '.' };
   }; });
@@ -129,7 +129,7 @@
     var P = function (x) { return '£' + (Math.round(x * 100) % 100 === 0 ? String(Math.round(x)).replace(/\B(?=(\d{3})+$)/g, ',') : (Math.round(x * 100) / 100).toFixed(2)); }, k = rnd(0, 2);
     if (v === 0) {
       if (k === 0) { var m = rnd(3, 30) * 10, y = m * 12; return { vis: big(P(m) + ' a month'), q: 'A standing order pays <b>' + P(m) + '</b> every month. How much is paid in a year?', answer: P(y), wrong: [P(m * 52), P(m * 10), P(m + 12)], explain: 'A monthly payment is made 12 times a year. ' + m + ' × 12 = ' + P(y) + '.' }; }
-      if (k === 1) { var a = rnd(40, 80), b = rnd(40, 80), c = rnd(40, 80), t = a + b + c; while (t % 3) { c++; t++; } return { vis: big(P(a) + ', ' + P(b) + ', ' + P(c)), q: 'Direct debit payments for three months are ' + P(a) + ', ' + P(b) + ' and ' + P(c) + '. What is the mean monthly payment?', answer: P(t / 3), wrong: [P(t), P(t / 3 + 3), P(t / 2)], explain: 'Add: ' + a + ' + ' + b + ' + ' + c + ' = ' + t + '. Divide by 3: ' + P(t / 3) + '.' }; }
+      if (k === 1) { var a = rnd(40, 80), b = rnd(40, 80), c = rnd(40, 80), t = a + b + c; while (t % 3) { c++; t++; } return { vis: big(P(a) + ', ' + P(b) + ', ' + P(c)), q: 'Direct debit payments for 3 months are ' + P(a) + ', ' + P(b) + ' and ' + P(c) + '. What is the mean monthly payment?', answer: P(t / 3), wrong: [P(t), P(t / 3 + 3), P(t / 2)], explain: 'Add: ' + a + ' + ' + b + ' + ' + c + ' = ' + t + '. Divide by 3: ' + P(t / 3) + '.' }; }
       var bal = rnd(40, 90) * 10, out = rnd(10, 30) * 10, dd = rnd(2, 8) * 5, inn = rnd(60, 120) * 10, fin = bal - out - dd + inn;
       return { vis: big('Balance ' + P(bal)), q: 'An account has <b>' + P(bal) + '</b>. A standing order of ' + P(out) + ' and a direct debit of ' + P(dd) + ' are paid out. Then ' + P(inn) + ' of wages arrive. What is the balance?', answer: P(fin), wrong: [P(bal + out + dd + inn), P(bal - out - dd), P(bal - out + inn)], explain: bal + ' − ' + out + ' − ' + dd + ' + ' + inn + ' = ' + P(fin) + '.' };
     }
@@ -215,7 +215,7 @@
   lab([null, 10, 710], 'x_prime', 'Prime spotter', ['', 'Which number is prime?', 'Which number is prime?'], function (v) { return function () {
     var isP = function (x) { if (x < 2) return false; for (var d = 2; d * d <= x; d++) if (x % d === 0) return false; return true; }, lim = v === 1 ? 50 : 100, p, w = [];
     do p = rnd(11, lim); while (!isP(p)); while (w.length < 3) { var x = rnd(9, lim); if (!isP(x) && x % 2 && w.indexOf(x) < 0) w.push(x); }
-    return { vis: '', q: 'Which of these numbers is <b>prime</b>?', answer: String(p), wrong: w.map(String), explain: p + ' has exactly two factors, 1 and ' + p + '. ' + w.map(function (x) { for (var d = 3; d < x; d++) if (x % d === 0) return x + ' = ' + d + ' × ' + x / d; return ''; }).join(', ') + '.' };
+    return { vis: '', q: 'Which of these numbers is <b>prime</b>?', answer: String(p), wrong: w.map(String), explain: p + ' has exactly 2 factors, 1 and ' + p + '. ' + w.map(function (x) { for (var d = 3; d < x; d++) if (x % d === 0) return x + ' = ' + d + ' × ' + x / d; return ''; }).join(', ') + '.' };
   }; });
   lab([null, null, 710], 'x_sqcube', 'Square and cube numbers', ['', '', 'Work out squares, cubes and square roots.'], function () { return function () {
     var k = rnd(0, 2), n = rnd(2, k === 1 ? 6 : 12), ans, q, w;
@@ -246,12 +246,12 @@
   }; });
   var NETS_OK = [[[0, 1], [1, 0], [1, 1], [1, 2], [1, 3], [2, 1]], [[0, 0], [1, 0], [1, 1], [1, 2], [1, 3], [2, 3]], [[0, 0], [0, 1], [1, 1], [1, 2], [1, 3], [2, 3]], [[0, 0], [0, 1], [0, 2], [1, 2], [1, 3], [1, 4]]];
   var NETS_BAD = [[[0, 0], [0, 1], [0, 2], [0, 3], [0, 4], [1, 0]], [[0, 0], [1, 0], [0, 1], [1, 1], [0, 2], [1, 2]], [[0, 1], [1, 0], [1, 1], [1, 2], [2, 1], [2, 2]], [[0, 0], [0, 1], [1, 0], [1, 1], [2, 0], [3, 0]]];
-  lab([null, 13, 713], 'x_nets', 'Will it fold?', ['', 'Will these six squares fold into a cube?'], function () { return function () {
+  lab([null, 13, 713], 'x_nets', 'Will it fold?', ['', 'Will these 6 squares fold into a cube?'], function () { return function () {
     var ok = rnd(0, 1), net = pick(ok ? NETS_OK : NETS_BAD), set = {}; net.forEach(function (c) { set[c[0] + ',' + c[1]] = 1; });
     var cols = Math.max.apply(null, net.map(function (c) { return c[1]; })) + 1, rows = Math.max.apply(null, net.map(function (c) { return c[0]; })) + 1;
-    var vis = LK.grid(cols, rows, function (i, j) { return set[j + ',' + i] ? true : 'skip'; }, { u: 36, alt: 'Six squares joined edge to edge' });
+    var vis = LK.grid(cols, rows, function (i, j) { return set[j + ',' + i] ? true : 'skip'; }, { u: 36, alt: '6 squares joined edge to edge' });
     return { vis: vis, q: 'Will this net fold into a cube?', answer: ok ? 'Yes, it makes a cube' : 'No, faces overlap', wrong: [ok ? 'No, faces overlap' : 'Yes, it makes a cube'], keepOrder: true,
-      explain: ok ? 'Fold the squares up round the base: each one lands on a different face.' : 'When you fold it, two squares land on the same face, so one face is missing.' };
+      explain: ok ? 'Fold the squares up round the base: each one lands on a different face.' : 'When you fold it, 2 squares land on the same face, so one face is missing.' };
   }; });
   /* ---------- 9 Problem solving: choose the calculation ---------- */
   lab([509, 9, 709], 'x_whichop', 'Problem detective', ['Read each problem and pick the calculation that solves it.', 'Read each problem and pick the calculation that solves it.', 'Read each two-step problem and pick the calculation that solves it.'], function (v) { return function () {
@@ -312,7 +312,7 @@
   }; });
   lab([null, null, null], 'x_scale', 'Scale factor', [''], function () { return function () {
     var k = pick([2, 3, 1.5, 0.5, 2.5, 4]), a = rnd(2, 12) * 2, b = rnd(2, 10) * 2, ask = rnd(0, 2);
-    if (ask === 0) return { vis: V.cards([a + ' cm → ' + T(a * k) + ' cm', b + ' cm → ?'], ['b', 'p']), q: 'Two shapes are similar. A side of ' + a + ' cm becomes ' + T(a * k) + ' cm. What does a side of ' + b + ' cm become?', answer: T(b * k) + ' cm', wrong: [T(b + a * k - a) + ' cm', T(b / k) + ' cm', T(b * k * k) + ' cm'], explain: 'Scale factor: ' + T(a * k) + ' ÷ ' + a + ' = ' + T(k) + '. ' + b + ' × ' + T(k) + ' = ' + T(b * k) + ' cm.' };
+    if (ask === 0) return { vis: V.cards([a + ' cm → ' + T(a * k) + ' cm', b + ' cm → ?'], ['b', 'p']), q: '2 shapes are similar. A side of ' + a + ' cm becomes ' + T(a * k) + ' cm. What does a side of ' + b + ' cm become?', answer: T(b * k) + ' cm', wrong: [T(b + a * k - a) + ' cm', T(b / k) + ' cm', T(b * k * k) + ' cm'], explain: 'Scale factor: ' + T(a * k) + ' ÷ ' + a + ' = ' + T(k) + '. ' + b + ' × ' + T(k) + ' = ' + T(b * k) + ' cm.' };
     if (ask === 1) return { vis: big(a + ' → ' + T(a * k)), q: 'A length of ' + a + ' cm becomes ' + T(a * k) + ' cm. What is the scale factor?', answer: T(k), wrong: [T(a * k - a), T(1 / k), T(k * 2)], explain: 'Scale factor = new ÷ original = ' + T(a * k) + ' ÷ ' + a + ' = ' + T(k) + '.' };
     return { vis: big('k = ' + T(k)), q: 'A shape with area ' + a + ' cm² is enlarged by scale factor ' + T(k) + '. What is the new area?', answer: T(a * k * k) + ' cm²', wrong: [T(a * k) + ' cm²', T(a * k * 3) + ' cm²', T(a + k) + ' cm²'], explain: 'Areas scale by k²: ' + a + ' × ' + T(k * k) + ' = ' + T(a * k * k) + ' cm².' };
   }; });

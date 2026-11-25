@@ -147,7 +147,7 @@
     var lA = pt(vx, vy, L + 14, ba), lC = pt(vx, vy, L + 14, ba + a);
     s += txt(vx - 14, vy + 18, V, 15, 'middle', ';font-weight:700') + txt(lA[0].toFixed(1), (lA[1] + 5).toFixed(1), A, 15, 'middle', ';font-weight:700') + txt(lC[0].toFixed(1), (lC[1] + 5).toFixed(1), C, 15, 'middle', ';font-weight:700');
     var ans = '∠' + A + V + C;
-    return mk({ tag: 'Naming angles', text: 'Which name describes the <b>marked angle</b>? (The middle letter is the corner where the angle is.)', pic: svg(260, 140, 'Two lines meeting at point ' + V + ' with an angle marked, ends labelled ' + A + ' and ' + C, s, 260),
+    return mk({ tag: 'Naming angles', text: 'Which name describes the <b>marked angle</b>? (The middle letter is the corner where the angle is.)', pic: svg(260, 140, '2 lines meeting at point ' + V + ' with an angle marked, ends labelled ' + A + ' and ' + C, s, 260),
       hints: ['An angle is named with 3 letters. The middle letter is the point where the 2 lines meet.', 'Here the lines meet at ' + V + ', so ' + V + ' goes in the middle.'], explain: 'The lines meet at ' + V + ', so ' + V + ' is the middle letter: ' + ans + ' (or ∠' + C + V + A + ').' },
       mcStr(ans, ['∠' + V + A + C, '∠' + A + C + V, '∠' + V + C + A]));
   }
@@ -172,7 +172,7 @@
   function gCompSupp(lv) {
     var comp = Math.random() < 0.5, tot = comp ? 90 : 180, a = comp ? rnd(10, 80) : rnd(20, 160), nm = comp ? 'complementary' : 'supplementary';
     if (lv >= 2 && Math.random() < 0.6) { var k = pick([2, 3, 4]), x = Math.round(tot / (k + 1)); tot = x * (k + 1);
-      return Q({ tag: 'Complementary and supplementary angles', text: 'Two ' + nm + ' angles are ' + 'x° and ' + k + 'x°. (They add up to ' + tot + '°.) Find <b>x</b>.', answer: String(x),
+      return Q({ tag: 'Complementary and supplementary angles', text: '2 ' + nm + ' angles are ' + 'x° and ' + k + 'x°. (They add up to ' + tot + '°.) Find <b>x</b>.', answer: String(x),
         hints: ['Write an equation: x + ' + k + 'x = ' + tot + '.', 'Combine the x terms first.'], explain: (k + 1) + 'x = ' + tot + ', so x = ' + tot + ' ÷ ' + (k + 1) + ' = ' + x + '.' }); }
     return Q({ tag: 'Complementary and supplementary angles', text: (comp ? 'Complementary angles add up to 90°.' : 'Supplementary angles add up to 180°.') + ' What angle is ' + nm + ' to <b>' + a + '°</b>?', answer: String(tot - a),
       hints: ['Subtract the angle from ' + tot + '°.'], explain: tot + '° − ' + a + '° = ' + (tot - a) + '°.' });
@@ -190,13 +190,13 @@
       if (ok && c <= Math.abs(a - b)) c = Math.abs(a - b) + 1; ok = (a + b > c) && (a + c > b) && (b + c > a);
       return mk({ tag: 'Constructing triangles', text: 'Can a triangle be drawn with sides <b>' + a + ' cm, ' + b + ' cm and ' + c + ' cm</b>?', hints: ['The 2 shorter sides must add up to more than the longest side, or the arcs will not meet.'],
         explain: ok ? 'The 2 shorter sides add to more than the longest, so the arcs meet and the triangle can be drawn.' : 'The 2 shorter sides do not add to more than the longest, so the arcs cannot meet. No triangle.' }, { options: ['Yes', 'No'], answer: ok ? 'Yes' : 'No' }); }
-    if (kind === 'which') return mk({ tag: 'Constructing triangles', text: 'Which measurements are <b>enough</b> to construct one exact triangle?', hints: ['3 angles give the shape but not the size.', 'Sides and angles together can fix both the shape and the size.'],
+    if (kind === 'which') return mk({ tag: 'Constructing triangles', text: 'Which measurements are <b>enough</b> to construct 1 exact triangle?', hints: ['3 angles give the shape but not the size.', 'Sides and angles together can fix both the shape and the size.'],
       explain: '3 sides (SSS), 2 sides and the angle between them (SAS) or 2 angles and a side (ASA) fix 1 exact triangle. 3 angles only give the shape, not the size.' },
-      mcStr('Two sides and the angle between them', ['Three angles only', 'One side and one angle', 'Two angles only']));
+      mcStr('2 sides and the angle between them', ['3 angles only', '1 side and 1 angle', '2 angles only']));
     var L = pick([5, 6, 7]), r1 = pick([4, 5]), r2 = pick([4, 5]);
     return mk({ tag: 'Constructing triangles', text: 'To construct a triangle with sides ' + L + ' cm, ' + r1 + ' cm and ' + r2 + ' cm, you draw the ' + L + ' cm base AB first. What do you draw next?', pic: arcPic(L, r1, r2),
-      hints: ['You need a third corner that is ' + r1 + ' cm from A and ' + r2 + ' cm from B.', 'A compass draws a curve at a fixed distance from a point.'], explain: 'Set the compass to ' + r1 + ' cm and draw an arc from A. Then set it to ' + r2 + ' cm and draw an arc from B. Where the arcs cross is the third corner.' },
-      mcStr('2 arcs with a compass, 1 from each end of AB', ['A straight line at 90° to AB', 'A circle with AB as the diameter', 'Two lines at 60° from AB']));
+      hints: ['You need 1/3 corner that is ' + r1 + ' cm from A and ' + r2 + ' cm from B.', 'A compass draws a curve at a fixed distance from a point.'], explain: 'Set the compass to ' + r1 + ' cm and draw an arc from A. Then set it to ' + r2 + ' cm and draw an arc from B. Where the arcs cross is the third corner.' },
+      mcStr('2 arcs with a compass, 1 from each end of AB', ['A straight line at 90° to AB', 'A circle with AB as the diameter', '2 lines at 60° from AB']));
   }
   function gSolidKind() {
     var base = pick([['triangular', 3], ['square', 4], ['pentagonal', 5], ['hexagonal', 6]]), prism = Math.random() < 0.5, n = base[1], nm = base[0] + ' ' + (prism ? 'prism' : 'pyramid');
@@ -212,7 +212,7 @@
     var qs = [['the favourite sport of pupils in the school', 'Ask 40 pupils chosen at random from the school roll', ['Ask only the pupils in the football team', 'Ask 3 of your friends', 'Ask the pupils waiting outside the gym']],
       ['how people in a town travel to work', 'Ask 100 people chosen at random from the electoral roll', ['Ask people at the bus station', 'Ask only your neighbours', 'Ask people leaving a cycle shop']],
       ['the favourite lunch of pupils in S2', 'Ask a random sample of S2 pupils from every class', ['Ask only pupils in the lunch queue', 'Ask the first 5 pupils you see', 'Ask only your own class']],
-      ['how many hours teenagers sleep', 'Survey a random sample of teenagers from different schools', ['Survey only members of the school choir', 'Survey only pupils who arrive late', 'Survey one teenager']]], q = pick(qs);
+      ['how many hours teenagers sleep', 'Survey a random sample of teenagers from different schools', ['Survey only members of the school choir', 'Survey only pupils who arrive late', 'Survey 1 teenager']]], q = pick(qs);
     return mk({ tag: 'Fair samples', text: 'You want to find out <b>' + q[0] + '</b>. Which sample is the <b>fairest</b>?', hints: ['A fair sample is chosen at random, covers different people, and is not too small.'],
       explain: 'A random sample that covers different people gives every person an equal chance and avoids bias. The other samples leave out important groups or are too small.' }, mcStr(q[1], q[2]));
   }
@@ -310,7 +310,7 @@
     var p = pick([-6, -5, -4, -3, -2, -1, 1, 2, 3, 4, 5, 6, 7]), q = pick([-7, -5, -4, -3, -2, -1, 1, 2, 3, 4, 5, 8]);
     var b = p + q, c = p * q, ans = '(' + lin('x', p) + ')(' + lin('x', q) + ')';
     var wrong = ['(' + lin('x', -p) + ')(' + lin('x', -q) + ')', '(' + lin('x', p) + ')(' + lin('x', -q) + ')', '(' + lin('x', p + 1) + ')(' + lin('x', q - 1) + ')'];
-    return mk({ tag: 'Factorising quadratics', text: 'Factorise <b>' + quad(b, c) + '</b>.', hints: ['Find two numbers that multiply to give ' + c + ' and add to give ' + b + '.', 'Put those numbers in the brackets: (x + ...)(x + ...).'], explain: 'The numbers are ' + p + ' and ' + q + ': ' + p + ' × ' + q + ' = ' + c + ' and ' + p + ' + ' + q + ' = ' + b + '. So ' + quad(b, c) + ' = ' + ans + '.' }, mcStr(ans, wrong));
+    return mk({ tag: 'Factorising quadratics', text: 'Factorise <b>' + quad(b, c) + '</b>.', hints: ['Find 2 numbers that multiply to give ' + c + ' and add to give ' + b + '.', 'Put those numbers in the brackets: (x + ...)(x + ...).'], explain: 'The numbers are ' + p + ' and ' + q + ': ' + p + ' × ' + q + ' = ' + c + ' and ' + p + ' + ' + q + ' = ' + b + '. So ' + quad(b, c) + ' = ' + ans + '.' }, mcStr(ans, wrong));
   }
   function gSolveQuad() {
     var p = pick([-5, -4, -3, -2, -1, 1, 2, 3, 4, 5, 6]), q = pick([-6, -3, -2, 1, 2, 3, 4, 7]);

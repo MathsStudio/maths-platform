@@ -118,7 +118,7 @@
   function gNetFaces(lv) {
     var ans = pick(solidNames(lv)), what = pick(['faces', 'faces', 'edges', 'vertices']), key = what === 'faces' ? 'faces' : what === 'edges' ? 'edges' : 'verts', n = SOLIDS[ans][key];
     return Q({ tag: 'Nets of solids', text: 'This net folds to make a <b>' + ans + '</b>. How many <b>' + what + '</b> will the solid have?', pic: netPic(ans), answer: String(n),
-      hints: what === 'faces' ? ['Each flat shape on the net becomes one face.', 'Count the shapes on the net.'] : ['Picture the folded solid.', what === 'edges' ? 'An edge is where two faces meet.' : 'A vertex is a corner where edges meet.'],
+      hints: what === 'faces' ? ['Each flat shape on the net becomes one face.', 'Count the shapes on the net.'] : ['Picture the folded solid.', what === 'edges' ? 'An edge is where 2 faces meet.' : 'A vertex is a corner where edges meet.'],
       explain: 'A ' + ans + ' has ' + SOLIDS[ans].faces + ' faces, ' + SOLIDS[ans].edges + ' edges and ' + SOLIDS[ans].verts + ' vertices, so the answer is ' + n + '.' });
   }
   function gNetClue(lv) {
@@ -318,7 +318,7 @@
   }
   function gRuler(lv) {
     if (lv <= 1) { var len = rnd(6, 23) / 2; return Q({ tag: 'Measuring with a ruler', text: 'How long is the strip? Read the ruler and give the length in <b>centimetres</b>.', pic: rulerPic(0, len * 10), answer: T(len),
-      hints: ['The strip starts at 0. Read the number where it ends.', 'The small marks are millimetres. The middle mark between two numbers is half a centimetre.'], explain: 'The strip ends ' + (len % 1 ? 'half way past ' + Math.floor(len) : 'exactly on ' + len) + ', so it is ' + T(len) + ' cm long.' }); }
+      hints: ['The strip starts at 0. Read the number where it ends.', 'The small marks are millimetres. The middle mark between 2 numbers is half a centimetre.'], explain: 'The strip ends ' + (len % 1 ? 'half way past ' + Math.floor(len) : 'exactly on ' + len) + ', so it is ' + T(len) + ' cm long.' }); }
     var st = pick([0, 0, 10, 20, 30]), ln = rnd(25, 84), end = st + ln;
     return Q({ tag: 'Measuring with a ruler', text: st ? 'How long is the strip? It does <b>not</b> start at 0. Give the length in <b>centimetres</b>.' : 'How long is the strip? Give the length in <b>centimetres</b>, to the nearest millimetre.', pic: rulerPic(st, end), answer: T(ln / 10),
       hints: st ? ['Read where the strip starts and where it ends.', 'Subtract the start reading from the end reading.'] : ['Read the whole centimetres, then count the small marks. Each small mark is 1 millimetre, or 0.1 cm.', 'Write the length as cm and tenths of a cm.'],
@@ -359,12 +359,12 @@
   function factorText(n) { var d = smallest(n); return n + ' = ' + d + ' × ' + n / d; }
   function gSpotPrime(lv) {
     var p = pick(prs(lv)), cs = shuffle(comps(lv)).slice(0, 3), opts = shuffle([p].concat(cs));
-    return mk({ tag: 'Prime numbers', text: 'Which of these numbers is a <b>prime number</b>?', hints: ['A prime number has exactly two factors: 1 and itself.', 'Look for a factor for each number. Try 2, 3, 5 and 7.'],
+    return mk({ tag: 'Prime numbers', text: 'Which of these numbers is a <b>prime number</b>?', hints: ['A prime number has exactly 2 factors: 1 and itself.', 'Look for a factor for each number. Try 2, 3, 5 and 7.'],
       explain: p + ' is prime. ' + cs.map(factorText).join(', ') + ', so those are not prime.' }, { options: opts.map(String), answer: String(p) });
   }
   function gPrimeYN(lv) {
     var prime = Math.random() < 0.45, n = prime ? pick(prs(lv)) : pick(comps(lv));
-    return yn({ tag: 'Prime numbers', text: 'Is <b>' + n + '</b> a prime number?', hints: ['A prime number has only two factors: 1 and itself.', 'Test for a factor. Try dividing by 2, 3, 5 and 7.'],
+    return yn({ tag: 'Prime numbers', text: 'Is <b>' + n + '</b> a prime number?', hints: ['A prime number has only 2 factors: 1 and itself.', 'Test for a factor. Try dividing by 2, 3, 5 and 7.'],
       explain: prime ? n + ' cannot be divided exactly by any number other than 1 and ' + n + ', so it is prime.' : factorText(n) + ', so ' + n + ' has another factor and is not prime.' }, prime);
   }
   function nextPrime(n) { var m = n + 1; while (!isPrime(m)) m++; return m; }
@@ -437,7 +437,7 @@
         'Always say the letter first, then the number: C3.', 'To find a place, go across to the letter, then up to the number.'],
         BT.gridMap([[2, 3, 'P']], [2, 3]), 'Atlases and walking maps use grid references so people can find the same square.', 'how to give and read a grid reference.',
         ['Across first, then up. It is the same idea as coordinates, but with a letter for the column.', 'You can also count squares between two places by counting the letters or the numbers.'],
-        ['Example 1: The park is in column C, row 3, so it is at C3.', 'Example 2: Two squares to the right of C3 is E3.', 'Example 3: One square up from C3 is C4.'])
+        ['Example 1: The park is in column C, row 3, so it is at C3.', 'Example 2: 2 squares to the right of C3 is E3.', 'Example 3: One square up from C3 is C4.'])
     ];
   }
   function L_rem(lv) {
@@ -513,7 +513,7 @@
     var n = lv <= 1 ? 39 : lv === 2 ? 51 : 91, d = lv <= 1 ? 3 : lv === 2 ? 3 : 7, q = n / d;
     var why = lv <= 2 ? 'Add the digits: ' + (lv <= 1 ? '3 + 9 = 12' : '5 + 1 = 6') + ', which is in the 3 times table, so ' + n + ' is divisible by 3.' : 'Try 7: 7 × 13 = 91.';
     return [
-      XV('Testing for primes', 'Is ' + n + ' a prime number?', ['A prime has exactly two factors: 1 and itself.', n + ' is odd, so it is not divisible by 2. It does not end in 0 or 5, so it is not divisible by 5.', why, n + ' = ' + d + ' × ' + q + ', so it has another factor. ' + n + ' is not prime.'],
+      XV('Testing for primes', 'Is ' + n + ' a prime number?', ['A prime has exactly 2 factors: 1 and itself.', n + ' is odd, so it is not divisible by 2. It does not end in 0 or 5, so it is not divisible by 5.', why, n + ' = ' + d + ' × ' + q + ', so it has another factor. ' + n + ' is not prime.'],
         'No: ' + n + ' = ' + d + ' × ' + q, function () { return table([['2', 'ends in 0, 2, 4, 6 or 8'], ['3', 'digits add to a multiple of 3'], ['5', 'ends in 0 or 5'], ['7', 'try the 7 times table']], ['Test', 'Rule']); },
         'Secret codes use very large prime numbers.', 'how to test whether a number is prime.', ['You only need to test primes up to about the square root of the number.', '2 is the only even prime number. 1 is not prime.'], ['Example 1: 23 is prime.', 'Example 2: 57 = 3 × 19, so it is not prime.', 'Example 3: 97 is prime.'])
     ];
@@ -539,7 +539,7 @@
   ];
   var META = {
     'Nets of solid shapes': { tags: ['Nets of solids'], story: 'Open a cereal box very carefully along its glued edges and lay it flat. The flat shape you get is the net. Packaging designers draw the net first, because every fold has to land in exactly the right place.',
-      insight: ['A net works because each face of the solid becomes one flat shape, and the shapes stay joined along the edges that will fold together. That is why the number and kinds of shapes on a net tell you the solid before you fold anything.', 'Watch for nets that look right but will not fold: two squares that would land on top of each other, or a gap where a face is missing. Counting the faces and checking every edge joins up is a quick safety check.'] },
+      insight: ['A net works because each face of the solid becomes one flat shape, and the shapes stay joined along the edges that will fold together. That is why the number and kinds of shapes on a net tell you the solid before you fold anything.', 'Watch for nets that look right but will not fold: 2 squares that would land on top of each other, or a gap where a face is missing. Counting the faces and checking every edge joins up is a quick safety check.'] },
     'Which solid does the net make?': { tags: ['Nets of solids'], story: 'A chocolate bar in a triangular box is a triangular prism. Before it was folded, the box was a flat net with two triangles and three rectangles, cut out by a machine.',
       insight: ['Two triangles with three rectangles means a prism, because the rectangles wrap around between the two matching ends. One square with four triangles that meet at a point means a pyramid.', 'Check your answer by counting. A net always has as many shapes as the solid has faces.'] },
     'Parts of a circle': { tags: ['Parts of a circle'], story: 'A bicycle wheel has a centre where the axle sits, spokes that run from the centre to the rim like radii, and a rim that is the circumference.',
@@ -569,7 +569,7 @@
     'Best buy': { tags: ['Best buy'], story: 'At the supermarket a pack of 4 pens costs £2.00 and a pack of 6 costs £2.70. The bigger pack looks dearer, but shoppers who work out the price of one pen find the 6-pack is cheaper per pen.',
       insight: ['To compare prices fairly, compare the cost of one item, or the cost for the same amount, such as per 100 g. Dividing the price by the number in the pack does this.', 'A bigger pack is not always better value, and a cheaper pack is not always the better buy. Always work it out.'] },
     'Testing for primes': { tags: ['Prime numbers'], story: 'When you send a message or pay online, the computer scrambles it using very large prime numbers. Primes are hard to find and hard to break apart, which is why they keep information safe.',
-      insight: ['A prime has exactly two factors, so a quick way to test a number is to look for any other factor. Try the small primes 2, 3, 5 and 7 in turn. If none divides it exactly, a number below 121 is prime.', 'Remember that 1 is not prime and 2 is the only even prime. Numbers like 51 and 91 look prime but are not: 51 = 3 × 17 and 91 = 7 × 13.'] }
+      insight: ['A prime has exactly 2 factors, so a quick way to test a number is to look for any other factor. Try the small primes 2, 3, 5 and 7 in turn. If none divides it exactly, a number below 121 is prime.', 'Remember that 1 is not prime and 2 is the only even prime. Numbers like 51 and 91 look prime but are not: 51 = 3 × 17 and 91 = 7 × 13.'] }
   };
   LESS.forEach(function (e) { try { var ss = e[2](); ss.forEach(function (x) { var m = META[x.title]; if (m) { x.tags = m.tags; x.story = m.story; x.insight = m.insight; } }); BT.add(e[0], 'learn8', e[1], ss); } catch (err) { if (window.console) console.warn('bmx lesson ' + e[0], err); } });
 })();
