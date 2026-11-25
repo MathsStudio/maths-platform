@@ -46744,7 +46744,8 @@ S.extraMakers = function (n, level) {
   function pic(s) { if (s && s.charAt(0) === '<') return s; return s ? C(s.split(',').map(function (x) { return x.trim(); })) : ''; }
   function ex(s) { var p = s.split('|'); return [p[0], p[1].split(';'), p[2], pic(p[3])]; }
   function rl(s) { var p = s.split('|'); return [p[0], p[1], p[2].split(','), p[3], pic(p[4])]; }
-  function qq(s) { var p = s.split('|'); return [p[0], p[1], p[2].split(','), p[3] || 'Check each step.', pic(p[4]), '']; }
+  function fin(q) { return /…\s*$/.test(q) ? 'Finish the sentence: ' + q : q; }
+  function qq(s) { var p = s.split('|'); return [fin(p[0]), p[1], p[2].split(','), p[3] || 'Check each step.', pic(p[4]), '']; }
   function two(s) { var p = s.split('|'); return [p[0], pic(p[1])]; }
   function uniq(a, ans) { var o = [], seen = {}; seen[String(ans)] = 1; a.forEach(function (x) { x = String(x); if (!seen[x] && !/NaN|undefined/.test(x)) { seen[x] = 1; o.push(x); } }); return o.slice(0, 3); }
   FL.mcq = function (tag, q, a, ws, h, e, p) { return FL.MC(tag, q, String(a), uniq(ws, a), [h], e, p || ''); };
@@ -47268,6 +47269,7 @@ S.extraMakers = function (n, level) {
 (function () {
   'use strict';
   var FL = window.FL; if (!FL || !FL.P4) return;
+  var TL = function (n) { return FL.tally(n); }, TLR = function (rows) { return '<div style="display:grid;gap:8px;justify-items:start">' + rows.map(function (x) { return '<div style="display:flex;align-items:center;gap:10px;font-weight:800;font-size:1.3rem;color:#2b2340;background:#fff;border:3px solid #2b2340;border-radius:14px;padding:4px 12px"><span style="min-width:3.2em">' + x[0] + '</span>' + '<div style="width:' + (Math.ceil(x[1] / 5) * 70) + 'px">' + FL.tally(x[1]) + '</div><span>= ' + x[1] + '</span></div>'; }).join('') + '</div>'; };
   var P = FL.P4, r = FL.r, pick = FL.pick, mc = FL.mcq, SH = FL.shapeRow;
   function grid(rw, cl) { var s = ''; for (var i = 0; i < rw; i++) { s += '<div style="display:flex;justify-content:center">'; for (var j = 0; j < cl; j++) s += '<span style="width:26px;height:26px;background:#ffe08a;border:2px solid #2b2340;margin:-1px"></span>'; s += '</div>'; } return '<div style="margin:auto">' + s + '</div>'; }
   function rule(lo, hi, at) { var w = 300, s = '', n = hi - lo; for (var i = 0; i <= n; i++) { var x = 10 + i * (w - 20) / n; s += '<line x1="' + x + '" y1="20" x2="' + x + '" y2="' + (i % 5 === 0 ? 40 : 32) + '" stroke="#2b2340" stroke-width="2"/>' + (i % 5 === 0 ? '<text x="' + x + '" y="56" font-size="12" font-weight="800" text-anchor="middle" fill="#2b2340">' + (lo + i) + '</text>' : ''); } var ax = 10 + (at - lo) * (w - 20) / n; return '<svg viewBox="0 0 300 70" role="img" aria-label="A ruler pointing at ' + at + '" style="width:300px;max-width:100%;height:auto"><rect x="6" y="14" width="288" height="30" rx="4" fill="#ffe08a" stroke="#2b2340" stroke-width="2"/>' + s + '<rect x="' + (ax - 1.5) + '" y="0" width="3" height="14" fill="#e63946"/></svg>'; }
@@ -47449,11 +47451,11 @@ S.extraMakers = function (n, level) {
 
   /* ===== 409 Data and chance ===== */
   P(409, 'learn1', { ch: 'fox', bg: 'day',
-    way: 'We collect data and show it in a tally chart, table or bar chart. A tally mark is a line for each one. Group them in fives.|||| = 4, ~~~~ = 5',
-    ex: ['A tally shows 5 and 3 more. How many?|A group of five is 5.;5 + 3 = 8.|8|5 + 3', 'A bar chart shows red 6 and blue 9. How many more blue?|9 - 6.|3|9 - 6'],
+    way: 'We collect data and show it in a tally chart, table or bar chart. A tally mark is a line for each one. Group them in fives.|' + TLR([['4 marks', 4], ['5 marks', 5]]),
+    ex: ['A tally shows 5 and 3 more. How many?|A group of five is 5.;5 + 3 = 8.|8|' + TL(8), 'A bar chart shows red 6 and blue 9. How many more blue?|9 - 6.|3|9 - 6'],
     mist: 'Group in fives. A group of five is four lines with a line across them.|5 = four lines and a cross',
     real: 'A class vote: apples 7, bananas 5. How many children voted?|12|2,35,13|7 + 5.|7 + 5',
-    qs: ['A tally shows 5 and 2. How many?|7|52,3,10|5 + 2.', 'A tally shows 10. How many groups of 5?|2|1,3,5|10 ÷ 5.', 'Bar chart red 8, blue 5. Which is more?|red|blue|8 > 5.', 'Bar chart red 8, blue 5. How many more red?|3|13,2,4|8 - 5.', 'Bar chart 4, 6, 3. How many altogether?|13|12,14,10|4 + 6 + 3.', 'How many in this tally: 5, 5, 1?|11|10,7,15|5 + 5 + 1.', 'What is data?|information we collect|a shape,a number line,a graph only|Facts.', 'Which shows the most? 3, 9, 7|9|3,7|Biggest.'],
+    qs: ['A tally shows 5 and 2. How many?|7|52,3,10|5 + 2.|' + TL(7), 'A tally shows 10. How many groups of 5?|2|1,3,5|10 ÷ 5.|' + TL(10), 'Bar chart red 8, blue 5. Which is more?|red|blue|8 > 5.', 'Bar chart red 8, blue 5. How many more red?|3|13,2,4|8 - 5.', 'Bar chart 4, 6, 3. How many altogether?|13|12,14,10|4 + 6 + 3.', 'How many in this tally: 5, 5, 1?|11|10,7,15|5 + 5 + 1.|' + TL(11), 'What is data?|information we collect|a shape,a number line,a graph only|Facts.', 'Which shows the most? 3, 9, 7|9|3,7|Biggest.'],
     gen: function g(lv) { var a = r(3, lv ? 14 : 9), b = r(3, lv ? 14 : 9), c = r(2, lv ? 14 : 9), tot = a + b + c; return mc('Recording data', 'A bar chart shows red <b>' + a + '</b>, blue <b>' + b + '</b> and green <b>' + c + '</b>. How many <b>altogether</b>?', tot, [tot + 1, tot - 1, Math.max(a, b, c), tot + 10], 'Add all the bars.', a + ' + ' + b + ' + ' + c + ' = ' + tot + '.', bars([['red', Math.min(a, 12)], ['blue', Math.min(b, 12), '#4aa8ff'], ['green', Math.min(c, 12), '#7cc96b']])); } });
 
   P(409, 'learn2', { ch: 'fox', bg: 'day',
@@ -47481,17 +47483,17 @@ S.extraMakers = function (n, level) {
     gen: function g(lv) { var R = r(0, 10), B = 10 - R, ans = R === 0 ? 'impossible' : R === 10 ? 'certain' : R === 5 ? 'even chance' : R > 5 ? 'likely' : 'unlikely'; return mc('Chance', 'A bag has <b>' + R + ' red</b> and <b>' + B + ' blue</b> counters. You pick one without looking. How likely is <b>red</b>?', ans, ['impossible', 'unlikely', 'even chance', 'likely', 'certain'].filter(function (x) { return x !== ans; }), 'Compare red with all the counters.', R + ' of 10 are red: ' + ans + '.'); } });
 
   P(409, 'learnm1', { ch: 'fox', bg: 'day',
-    t: 'Tally charts|How do I use tally marks?|A tally mark is a line for each one counted. Make groups of five: four lines with a line across. Count in 5s then add the rest.|𝍸 = 5',
+    t: 'Tally charts|How do I use tally marks?|A tally mark is a line for each one counted. Make groups of five: four lines with a line across. Count in 5s then add the rest.|' + TL(5),
     words: 'tally=a mark for each one counted=✏️;tally chart=a table of tally marks=📋;group of five=four lines with a cross=🖐️;frequency=how many=🔢',
-    see: ['Count each one with a line.|| | |', 'The fifth line goes across the four. Now count in fives.|5, 10, 15', '2 groups of 5 and 3 more is 13.|5 + 5 + 3'],
-    ex3: ['A tally shows 2 groups of five and 4. How many?|5 + 5 + 4.|14|14', 'Draw a tally for 7.|One group of 5, then 2.|5 + 2|7', 'A tally shows 3 groups of five. How many?|3 × 5.|15|15'],
-    mist: 'Do not count every line one by one if there are groups. Count 5, 10, 15 ...|count in 5s',
-    chk: 'A tally has 3 groups of 5 and 2 lines. How many?|17|5,15,7|15 + 2.|3 × 5 + 2',
+    see: ['Count each one with a line. Here are 3 tally marks: 1, 2, 3.|' + TL(3), 'The fifth line goes across the four. Now count in fives: 5, 10, 15.|' + TL(15), '2 groups of 5 and 3 more. 5 + 5 + 3 = 13.|' + TL(13)],
+    ex3: ['A tally shows 2 groups of five and 4. How many?|5 + 5 + 4.|14|' + TL(14), 'How do we show 7 as a tally?|One group of 5, then 2 more lines.|5 + 2 = 7|' + TL(7), 'A tally shows 3 groups of five. How many?|3 × 5.|15|' + TL(15)],
+    mist: 'Do not count every line one by one if there are groups. Count 5, 10, 15 ...|' + TL(15),
+    chk: 'How many do these tally marks show?|17|5,15,7|3 groups of 5 is 15, plus 2 more.|' + TL(17),
     rem: 'Make groups of five and count in 5s.|5, 10, 15',
-    way: 'Make a tally chart of the colours of cars passing the school.|red ||, blue |||',
-    ex: ['A tally has 1 group of 5 and 3 lines. How many?|5 + 3.|8|8', 'How many groups of 5 in 20?|20 ÷ 5.|4|4'],
-    real: 'Tally the number of dogs you see: 5 and 2 more. How many?|7|52,3,10|5 + 2.|5 + 2',
-    qs: ['A group of five tallies shows…|5|4,6,1|Five.', '2 groups of five tallies show…|10|2,5,25|2 × 5.', '3 groups of five and 2 more show…|17|5,12,32|15 + 2.', '4 groups of five show…|20|4,9,45|4 × 5.', '1 group of five and 4 more show…|9|5,4,14|5 + 4.', 'How many tallies in 2 groups and 3 more?|13|5,23,8|10 + 3.', 'A tally chart shows data using…|tally marks|pictures,bars only,letters|Marks.', 'How many groups of 5 make 25?|5|4,25,2|25 ÷ 5.'],
+    way: 'Make a tally chart of the colours of cars passing the school. Every car gets one line, and every fifth line goes across. Here 5 red cars and 3 blue cars passed.|' + TLR([['Red', 5], ['Blue', 3]]),
+    ex: ['A tally has 1 group of 5 and 3 lines. How many?|5 + 3.|8|' + TL(8), 'How many groups of 5 are in this tally?|20 ÷ 5.|4|' + TL(20)],
+    real: 'Ollie tallied the dogs he saw. How many dogs?|7|52,3,10|5 + 2.|' + TL(7),
+    qs: ['This is one group of five. How many tally marks?|5|4,6,1|Four lines and a cross make 5.|' + TL(5), 'How many do these 2 groups of five show?|10|2,5,25|2 × 5 = 10.|' + TL(10), 'How many do these tally marks show?|17|5,12,32|15 + 2 = 17.|' + TL(17), 'How many do these 4 groups of five show?|20|4,9,45|4 × 5 = 20.|' + TL(20), 'How many do these tally marks show?|9|5,4,14|5 + 4 = 9.|' + TL(9), 'How many do these tally marks show?|13|5,23,8|10 + 3 = 13.|' + TL(13), 'What does a tally chart use to show data?|tally marks|pictures,bars only,letters|Marks.', 'How many groups of 5 make 25?|5|4,25,2|25 ÷ 5.|' + TL(25)],
     gen: function g(lv) { var gr = r(1, lv ? 8 : 5), x = r(0, 4), n = gr * 5 + x; return mc('Tally charts', 'A tally chart shows <b>' + gr + ' group' + (gr > 1 ? 's' : '') + ' of five</b> and <b>' + x + ' more</b>. How many in all?', n, [n + 1, n - 1, gr + x, n + 5].filter(function (v) { return v !== n; }), 'Count in 5s, then add the rest.', gr + ' × 5 + ' + x + ' = ' + n + '.', FL.tally ? FL.tally(Math.min(n, 30)) : ''); } });
 
   P(409, 'learnm2', { ch: 'fox', bg: 'day',

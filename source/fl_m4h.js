@@ -6,7 +6,8 @@
   function pic(s) { if (s && s.charAt(0) === '<') return s; return s ? C(s.split(',').map(function (x) { return x.trim(); })) : ''; }
   function ex(s) { var p = s.split('|'); return [p[0], p[1].split(';'), p[2], pic(p[3])]; }
   function rl(s) { var p = s.split('|'); return [p[0], p[1], p[2].split(','), p[3], pic(p[4])]; }
-  function qq(s) { var p = s.split('|'); return [p[0], p[1], p[2].split(','), p[3] || 'Check each step.', pic(p[4]), '']; }
+  function fin(q) { return /…\s*$/.test(q) ? 'Finish the sentence: ' + q : q; }
+  function qq(s) { var p = s.split('|'); return [fin(p[0]), p[1], p[2].split(','), p[3] || 'Check each step.', pic(p[4]), '']; }
   function two(s) { var p = s.split('|'); return [p[0], pic(p[1])]; }
   function uniq(a, ans) { var o = [], seen = {}; seen[String(ans)] = 1; a.forEach(function (x) { x = String(x); if (!seen[x] && !/NaN|undefined/.test(x)) { seen[x] = 1; o.push(x); } }); return o.slice(0, 3); }
   FL.mcq = function (tag, q, a, ws, h, e, p) { return FL.MC(tag, q, String(a), uniq(ws, a), [h], e, p || ''); };
