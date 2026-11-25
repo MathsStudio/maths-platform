@@ -52,14 +52,19 @@
     var scr = [];
     if (sp.li) { scr.push({ mode: 'watch', say: sp.li[2], pic: pn(sp.li[3]) }); (sp.li[5] || []).forEach(function (s) { scr.push({ mode: 'watch', say: strip(s[0]), pic: pn(s[1]) }); }); }
     if (sp.way) scr.push({ mode: 'watch', say: strip(sp.way[0]), pic: pn(sp.way[1]) });
+    (sp.vis || []).forEach(function (w) { scr.push({ mode: 'watch', say: strip(w[0]), pic: pn(typeof w[1] === 'function' ? w[1]() : w[1]) }); });
     (sp.watch || []).forEach(function (w) { scr.push({ mode: 'watch', say: strip(w[0]), pic: pn(w[1]) }); });
-    (sp.ex || []).forEach(function (e) { scr.push({ mode: 'watch', say: strip(e[0]) + ' ' + e[1].map(strip).join(' ') + ' ' + strip(e[2]), pic: pn(Array.isArray(e[3]) ? e[3][e[3].length - 1] : e[3]) }); });
-    qs.slice(0, 4).forEach(function (r) { var o = qo(r); scr.push({ mode: 'together', say: o.q, pic: pn(o.pic), tip: o.tip, options: o.options, answer: o.answer, explain: o.explain }); });
-    qs.slice(4, 8).forEach(function (r) { var o = qo(r); scr.push({ mode: 'turn', say: o.q, pic: pn(o.pic), tip: o.tip, options: o.options, answer: o.answer, explain: o.explain }); });
+    (sp.ex || []).forEach(function (e) {
+      var fin = strip(e[2]), qbox = '<div style="font-size:clamp(1.2rem,4.5vw,1.8rem);font-weight:800;color:#2b2340;background:#fff;border:3px solid #2b2340;border-radius:16px;padding:8px 16px;margin:0 auto 10px;max-width:92%;text-align:center;line-height:1.25">' + strip(e[0]) + '</div>', pc = pn(qbox + (Array.isArray(e[3]) ? e[3][e[3].length - 1] : e[3]));
+      /* teaching slide: the question is on screen with its answer written just below it */
+      var abox = '<div style="font-size:clamp(1.3rem,5vw,2rem);font-weight:800;color:#fff;background:#2e9e4f;border:3px solid #2b2340;border-radius:16px;padding:8px 18px;margin:10px auto 0;max-width:92%;text-align:center;line-height:1.25">Answer: ' + fin + '</div>';
+      scr.push({ mode: 'watch', say: strip(e[0]) + ' ' + e[1].map(strip).join(' ') + ' So the answer is ' + fin + '.', pic: pn('<div style="display:flex;flex-direction:column;align-items:center;gap:8px;width:100%">' + qbox + (Array.isArray(e[3]) ? e[3][e[3].length - 1] : e[3]) + abox + '</div>') }); });
+    qs.slice(0, 4).forEach(function (r) { var o = qo(r); scr.push({ mode: 'together', say: o.q, pic: pn(o.pic), tip: o.tip === 'Think about what you learned in this lesson.' ? '' : o.tip, options: o.options, answer: o.answer, explain: o.explain }); });
+    qs.slice(4, 8).forEach(function (r) { var o = qo(r); scr.push({ mode: 'turn', say: o.q, pic: pn(o.pic), tip: o.tip === 'Think about what you learned in this lesson.' ? '' : o.tip, options: o.options, answer: o.answer, explain: o.explain }); });
     if (sp.li) {
       var first = scr.filter(function (x) { return x.mode === 'watch'; }).slice(0, 7).concat(scr.filter(function (x) { return x.mode !== 'watch'; }));
       var rest = scr.filter(function (x) { return x.mode === 'watch'; }).slice(7);
-      FL.addWatch(n, [{ title: title, char: ch, screens: first.concat(rest) }]);
+      FL.addWatch(n, [{ title: title, char: ch, rem: sp.rem || (sp.li && sp.li.length && sp.li[sp.li.length - 1] && sp.li[sp.li.length - 1][0] ? strip(sp.li[sp.li.length - 1][0]) : ''), screens: first.concat(rest) }]);
     } else FL.growWatch(n, title, ch, scr);
     /* the activity for a new lesson */
     (FL._mg = FL._mg || []).push([n, sp.id, sp.gen, qs]);

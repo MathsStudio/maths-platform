@@ -16529,7 +16529,12 @@ S.extraMakers = function (n, level) {
       if (q && fp && !fp.querySelector('svg,img,table,.sv-card,.sv-big') && !fp.textContent.trim()) { fp.innerHTML = '<div class="flx-qcard">' + q.innerHTML.replace(/ ([+\u2212\u00d7\u00f7=]) /g, '\u00a0$1\u00a0') + '</div>'; qIn = true; }
       /* lessons added later mark their pictures: the question is always written for them; the first lessons show it in the picture */
       
-      var ph = tmp.innerHTML.trim(), P = stage.querySelector('.flx-pic'), T = stage.querySelector('.flx-top'), O = stage.querySelector('.flx-opts');
+      var ph = tmp.innerHTML.trim(); 
+      /* older lessons without a themed picture: show the content on the topic's own scene beside its character, never a bare cream box */
+      if (ph && ph.indexOf('flb-stage') < 0 && ph.indexOf('class="flp ') < 0 && window.FL && FL.panel && FL.THEME && FL.THEME[meta.n]) { var th0 = FL.THEME[meta.n], sy = String((steps[c.k] || {}).say || '').replace(/<[^>]*>/g, '').trim(), tx0 = ph.replace(/<style[\s\S]*?<\/style>/g, '').replace(/<svg[\s\S]*?<\/svg>/g, 'S').replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim();
+        if (sy.length > 11 && sy.length < 200 && tx0.length < 30 && !/<table/.test(ph)) ph = '<div style="width:100%;font-size:clamp(1.05rem,3.4vw,1.5rem);font-weight:800;text-align:center">' + sy + '</div>' + ph;
+        ph = '<div class="flb flb-w"><div class="flb-stage" style="line-height:1.3;border:0;background:none">' + FL.panel(th0[1], th0[0], '<div style="display:flex;flex-wrap:wrap;gap:10px;justify-content:center;align-items:center;font-weight:800;color:#2b2340;background:#fff;border:3px solid #2b2340;border-radius:16px;padding:10px 14px;max-width:96%">' + ph + '</div>') + '</div></div>'; }
+      var P = stage.querySelector('.flx-pic'), T = stage.querySelector('.flx-top'), O = stage.querySelector('.flx-opts');
       if (ph !== flPic) { flPic = ph; P.innerHTML = ph; P.classList.toggle('flx-plain', !!ph && ph.indexOf('flb-stage') < 0); P.classList.remove('flx-in'); void P.offsetWidth; P.classList.add('flx-in'); fitPic(P); }
       /* the question is written at the top as well as told, so the child can read it and then tap an answer */
       var th = q && !qIn ? '<div class="flx-q">' + q.innerHTML + '</div>' : '';
@@ -39674,6 +39679,7 @@ S.extraMakers = function (n, level) {
     balloon: function (x, y) { return '<ellipse cx="' + x + '" cy="' + (y - 3) + '" rx="11" ry="13" fill="' + pick(['#ef5b5b', '#4aa8ff', '#7cc96b', '#c48bf2']) + '" stroke="' + INK + '" stroke-width="2"/><path d="M' + x + ' ' + (y + 10) + 'q-3 6 0 10" stroke="' + INK + '" stroke-width="1.5" fill="none"/>'; },
     car: function (x, y) { return '<rect x="' + (x - 14) + '" y="' + (y - 4) + '" width="28" height="11" rx="4" fill="#ef5b5b" stroke="' + INK + '" stroke-width="2"/><path d="M' + (x - 8) + ' ' + (y - 4) + 'l4-7h9l4 7" fill="#bfe3ff" stroke="' + INK + '" stroke-width="2"/><circle cx="' + (x - 8) + '" cy="' + (y + 8) + '" r="4" fill="' + INK + '"/><circle cx="' + (x + 8) + '" cy="' + (y + 8) + '" r="4" fill="' + INK + '"/>'; },
     flower: function (x, y) { var s = ''; for (var i = 0; i < 5; i++) { var a = i * 72 * Math.PI / 180; s += '<circle cx="' + (x + 7 * Math.cos(a)).toFixed(1) + '" cy="' + (y + 7 * Math.sin(a)).toFixed(1) + '" r="6" fill="#f7a8d8" stroke="' + INK + '" stroke-width="1.5"/>'; } return s + '<circle cx="' + x + '" cy="' + y + '" r="5" fill="#ffd166" stroke="' + INK + '" stroke-width="1.5"/>'; },
+    cake: function (x, y) { return '<path d="M' + (x - 13) + ' ' + (y + 4) + 'l3 11h20l3-11z" fill="#ffb3c7" stroke="' + INK + '" stroke-width="2"/><path d="M' + (x - 14) + ' ' + (y + 4) + 'q0-12 14-12t14 12z" fill="#fff1c9" stroke="' + INK + '" stroke-width="2"/><circle cx="' + x + '" cy="' + (y - 10) + '" r="4" fill="#ef5b5b" stroke="' + INK + '" stroke-width="1.5"/>'; },
     sweet: function (x, y) { return '<path d="M' + (x - 18) + ' ' + (y - 7) + 'l8 7-8 7zM' + (x + 18) + ' ' + (y - 7) + 'l-8 7 8 7z" fill="#c48bf2" stroke="' + INK + '" stroke-width="1.5"/><circle cx="' + x + '" cy="' + y + '" r="10" fill="#c48bf2" stroke="' + INK + '" stroke-width="2"/>'; }
   };
   FL.THINGS = Object.keys(THING); FL.THING = THING; FL.CH = CH;
@@ -40001,7 +40007,7 @@ S.extraMakers = function (n, level) {
     '.flb .a-up{animation:flUp 2.6s ease-in both}' +
     '.flb .a-wig{animation:flWig 1.2s ease-in-out infinite}' +
     '.flb .a-in{animation:flIn .7s ease-out both}' +
-    '.flp{position:relative;display:flex;align-items:center;justify-content:center;gap:10px;flex-wrap:wrap;padding:14px 12px;min-height:220px;line-height:1.3}' +
+    '.flp{position:relative;display:flex;align-items:center;justify-content:center;gap:10px;flex-wrap:wrap;padding:14px 12px;min-height:220px;line-height:1.3;color:#2b2340}' +
     '.flp-ch{flex:0 0 auto;animation:flBob 2.6s ease-in-out infinite}.flp-ch svg{width:110px;height:auto}' +
     '.flp-pic>svg{flex:1 1 150px}.flp-pic{flex:1 1 200px;min-width:0;display:flex;flex-wrap:wrap;gap:8px;justify-content:center;align-items:center;animation:flPop .6s cubic-bezier(.3,1.6,.6,1) both;animation-delay:.25s}.flp-pic>*{max-width:100%}' +
     '.flp-pic .card,.flp-pic .sv-card{color:#2b2340}' +
@@ -40076,6 +40082,14 @@ S.extraMakers = function (n, level) {
      story-based lesson is another, with Watch me, Let's do it together, Your turn and a recap. */
   var NUMW = ['zero', 'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine', 'ten', 'eleven', 'twelve', 'thirteen', 'fourteen', 'fifteen', 'sixteen', 'seventeen', 'eighteen', 'nineteen', 'twenty'];
   function strip(h) { return String(h).replace(/<[^>]+>/g, ''); }
+  /* a teaching slide whose picture is only a bare word or number also shows what is being said, so nothing is narration-only */
+  function capPic(x) { var h = typeof x.pic === 'function' ? x.pic() : (x.pic || ''); if (x.mode !== 'watch' || !x.say) return h;
+    var txt = h.replace(/<style[\s\S]*?<\/style>/g, '').replace(/<svg[\s\S]*?<\/svg>/g, 'S').replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim();
+    if (/<svg|<table|<img/.test(h) && txt.length > 3) return h;
+    if (txt.length > 40 || /data-wq/.test(h) && txt.length > 40) return h;
+    var say = strip(x.say); if (say.length < 12 || say.length > 170) return h;
+    var cap = '<div style="font-size:clamp(1.05rem,3.6vw,1.5rem);font-weight:800;color:#2b2340;background:#fff;border:3px solid #2b2340;border-radius:16px;padding:8px 14px;margin:0 auto 10px;max-width:94%;text-align:center;line-height:1.25">' + say + '</div>';
+    return '<div style="display:flex;flex-direction:column;align-items:center;gap:8px;width:100%">' + cap + h + '</div>'; }
   function pic(p, ch) { var h = typeof p === 'function' ? p() : (p || '');
     if (ch && h.indexOf('class="flp ') >= 0 && h.indexOf('flp-ch') < 0) h = h.replace('<div class="flp-pic">', '<div class="flp-ch">' + FL.char(ch, 110) + '</div><div class="flp-pic">');
     return h ? '<div class="flb flb-w"><div class="flb-stage">' + h + '</div></div>' : ''; }
@@ -40094,14 +40108,15 @@ S.extraMakers = function (n, level) {
     L = BT.L;
     var sc = [], watch = [], tog = [], turn = [], tips = [];
       l.screens.forEach(function (x) {
-        var p = pic(x.pic, l.char);
+        var p = pic(capPic(x), l.char);
         if (x.mode === 'watch') { var sw0 = L.st(x.say, p); if (x.facts) sw0.facts = x.facts; watch.push(sw0); }
         else { if (x.tip && tips.length < 4) tips.push(x.tip); (x.mode === 'together' ? tog : turn).push.apply(x.mode === 'together' ? tog : turn, askSteps(x.say, p, x.options, x.answer, x.explain, x.mode === 'together' ? x.tip : '')); }
       });
       if (watch.length) sc.push(L.SC('Watch me', l.title, sw(watch)));
       if (tog.length) sc.push(L.SC('Let’s do it together', 'Try it with me', sw(tog)));
       if (turn.length) sc.push(L.SC('Your turn', 'Pause, think, then listen', sw(turn)));
-      if (tips.length) sc.push(L.rec(l.title, 'Let’s remember the tips from this lesson. ' + tips.map(strip).map(function (t) { return /[.!?…]$/.test(t) ? t : t + '.'; }).join(' '), tips.map(strip)));
+      if (l.rem && String(l.rem).trim()) { var rp = String(l.rem).split('|'), say0 = strip(rp[0]), pts = rp[1] ? strip(rp[1]).split(',').map(function (x) { return x.trim(); }).filter(Boolean) : say0.split(/(?<=[.!?])\s+/).filter(Boolean); sc.push(L.rec(l.title, 'Let\u2019s remember. ' + say0, pts.length > 1 ? pts : [say0])); }
+      else if (tips.length) sc.push(L.rec(l.title, 'Let’s remember the tips from this lesson. ' + tips.map(strip).map(function (t) { return /[.!?…]$/.test(t) ? t : t + '.'; }).join(' '), tips.map(strip)));
     return L.ep(l.title, strip(l.title).replace(/\?$/, '').toLowerCase() + '.', sc);
   }
   /* add Let's learn lessons to the end of a topic's Watch lesson list */
@@ -40118,7 +40133,7 @@ S.extraMakers = function (n, level) {
     var eps = ((BT.EP_BY_TOPIC && BT.EP_BY_TOPIC[n]) || []).map(function (x) { return typeof x === 'string' ? BT.EP[x] : x; }).filter(Boolean);
     var ep = eps.filter(function (e) { return e.title === title; })[0]; if (!ep) return false;
     var by = { watch: [], together: [], turn: [] }, tips = [];
-    screens.forEach(function (x) { var p = pic(x.pic, char);
+    screens.forEach(function (x) { var p = pic(capPic(x), char);
       if (x.mode === 'watch') by.watch.push(L.st(x.say, p));
       else { if (x.tip) tips.push(x.tip); by[x.mode].push.apply(by[x.mode], askSteps(x.say, p, x.options, x.answer, x.explain, x.mode === 'together' ? x.tip : '')); } });
     function scene(name) { return ep.scenes.filter(function (s) { return s.h === name; })[0]; }
@@ -41258,7 +41273,14 @@ S.extraMakers = function (n, level) {
   function venn(a, b, items) { var s = '<circle cx="100" cy="90" r="70" fill="#7cc4ff" fill-opacity=".35" stroke="' + INK + '" stroke-width="2.5"/><circle cx="190" cy="90" r="70" fill="#ffb03b" fill-opacity=".35" stroke="' + INK + '" stroke-width="2.5"/>' + tx(80, 14, a, 13) + tx(210, 14, b, 13);
     (items || []).forEach(function (it) { s += tx(it[1], it[2], it[0], 15); }); return svg(290, 175, 'a Venn diagram', s, 360); }
   FL.thermo = thermo; FL.grid = grid; FL.compass = compass;
-  FL.p4 = { scale: scale, fline: fline, venn: venn, gridShape: gridShape, rectCells: rectCells, rectPic: rectPic, tbl: tbl, clk: clk };
+  /* rows of things with the repeated addition beside them: show 1 = rows of, 2 = + the adding, 3 = + the answer */
+  function arr(rows, per, kind, show, op) {
+    var tot = rows * per, lines = [rows + ' rows of ' + per];
+    if (show >= 2) { var a = []; for (var i = 0; i < rows; i++) a.push(per); lines.push(a.join(' + ')); }
+    if (show >= 3) lines.push(rows + ' × ' + per + ' = ' + tot);
+    return '<div style="display:flex;align-items:center;gap:22px;justify-content:center;flex-wrap:wrap"><style>.arrp{height:210px;display:flex;align-items:center;justify-content:center}.arrp svg{height:100%!important;width:auto!important;max-width:100%!important;min-width:0!important;flex:none!important}</style><div class="arrp">' + FL.things(tot, kind || 'cake', per) + '</div><div style="font:800 1.5rem/1.5 system-ui,sans-serif;color:' + INK + ';background:#fff;border:3px solid ' + INK + ';border-radius:16px;padding:10px 16px">' + lines.join('<br>') + '</div></div>';
+  }
+  FL.p4 = { arr: arr, scale: scale, fline: fline, venn: venn, gridShape: gridShape, rectCells: rectCells, rectPic: rectPic, tbl: tbl, clk: clk };
 
   /* ================= 1. Place value: Professor Owl's number lab ================= */
   var g1 = {
@@ -41324,19 +41346,24 @@ S.extraMakers = function (n, level) {
       ['Order them', 'Smallest first.', FL.genAct(function () { return g1.order(); }, 'owl')]
     ],
     lifeLead: 'place value, rounding and temperatures below zero in the lab, the weather and on trips',
-    life: { low: [function () { var n = r(110, 490), t = Math.round(n / 10) * 10; return Q('Real life', 'A school has <b>' + n + '</b> pupils. About how many is that to the nearest 10?', t, ['Look at the ones digit.', '5 or more rounds up.'], n + ' rounds to ' + t + '.'); }, function () { var t = r(1, 6), d = r(2, 6); return Q('Real life', 'It is <b>' + t + '°C</b> in the morning. At night it is <b>' + d + '</b> degrees colder. What is the temperature at night?', t - d, ['Count down from ' + t + '.', 'Go through zero.'], t + ' − ' + d + ' = ' + (t - d) + '°C.', FL.thermo(t)); }, function () { var h = r(1, 9), t = r(0, 9), o = r(1, 9); return Q('Real life', 'A shop has <b>' + h + '</b> boxes of 100 pencils, <b>' + t + '</b> packs of 10 and <b>' + o + '</b> single pencils. How many pencils?', 100 * h + 10 * t + o, ['Hundreds, tens and ones.', 'Write the digits in order.'], (100 * h + 10 * t + o) + ' pencils.'); }], medium: [function () { var n = r(120, 949); if (n % 100 === 50) n++; var t = Math.round(n / 100) * 100; return Q('Real life', '<b>' + n + '</b> people came to the school show. About how many is that to the nearest 100?', t, ['Look at the tens digit.', '5 or more rounds up.'], n + ' rounds to ' + t + '.'); }, function () { var t = r(-4, 3), u = r(3, 8); return Q('Real life', 'At 6 am it is <b>' + t + '°C</b>. By lunch it is <b>' + u + '</b> degrees warmer. What is the temperature at lunch?', t + u, ['Count up from ' + t + '.', 'Count through zero.'], t + ' + ' + u + ' = ' + (t + u) + '°C.', FL.thermo(t)); }, function () { var s = 25 * r(1, 4), k = r(3, 5); return Q('Real life', 'Tickets are numbered in 25s: ' + s + ', ' + (s + 25) + ', ' + (s + 50) + ' … What is the ' + (k + 1) + 'th ticket number?', s + 25 * k, ['The jump is 25.', 'Keep adding 25.'], 'The ' + (k + 1) + 'th ticket is ' + (s + 25 * k) + '.'); }], high: [function () { var a = r(-6, -1), b = r(2, 6); return Q('Real life', 'In Aviemore it is <b>' + a + '°C</b>. In Glasgow it is <b>' + b + '°C</b>. How many degrees warmer is Glasgow?', b - a, ['Count up from ' + a + ' to zero, then to ' + b + '.', 'Add the two jumps.'], (-a) + ' + ' + b + ' = ' + (b - a) + ' degrees.'); }, function () { var a = r(320, 480), b = r(310, 490); var t = Math.round((a + b) / 100) * 100; return MC('Real life', 'Class trip: <b>' + a + '</b> pupils on Monday and <b>' + b + '</b> on Tuesday. Roughly how many is that altogether, to the nearest 100?', String(t), [String(t + 100), String(t - 100), String(a + b)], ['Add them first.', 'Then round to the nearest 100.'], (a + b) + ' rounds to ' + t + '.'); }, function () { var n = r(101, 989), ds = String(n).split(''); return Q('Real life', 'A bus number has <b>' + ds[0] + '</b> hundreds, <b>' + ds[1] + '</b> tens and <b>' + ds[2] + '</b> ones. What is 10 more than the bus number?', n + 10, ['Make the number first.', 'Then add one ten.'], n + ' + 10 = ' + (n + 10) + '.'); }] },
+    life: { low: [function () { var n = r(110, 490), t = Math.round(n / 10) * 10; return Q('Real life', 'A school has <b>' + n + '</b> pupils. About how many is that to the nearest 10?', t, ['Look at the ones digit.', '5 or more rounds up.'], n + ' rounds to ' + t + '.'); }, function () { var t = r(1, 6), d = r(2, 6); return Q('Real life', 'It is <b>' + t + '°C</b> in the morning. At night it is <b>' + d + '</b> degrees colder. What is the temperature at night?', t - d, ['Count down from ' + t + '.', 'Go through zero.'], t + ' − ' + d + ' = ' + (t - d) + '°C.', FL.thermo(t)); }, function () { var h = r(1, 9), t = r(0, 9), o = r(1, 9); return Q('Real life', 'A shop has <b>' + h + '</b> boxes of 100 pencils, <b>' + t + '</b> packs of 10 and <b>' + o + '</b> single pencils. How many pencils?', 100 * h + 10 * t + o, ['Hundreds, tens and ones.', 'Write the digits in order.'], (100 * h + 10 * t + o) + ' pencils.'); }], medium: [function () { var n = r(120, 949); if (n % 100 === 50) n++; var t = Math.round(n / 100) * 100; return Q('Real life', '<b>' + n + '</b> people came to the school show. About how many is that to the nearest 100?', t, ['Look at the tens digit.', '5 or more rounds up.'], n + ' rounds to ' + t + '.'); }, function () { var t = r(-4, 3), u = r(3, 8); return Q('Real life', 'At 6 am it is <b>' + t + '°C</b>. By lunch it is <b>' + u + '</b> degrees warmer. What is the temperature at lunch?', t + u, ['Count up from ' + t + '.', 'Count through zero.'], t + ' + ' + u + ' = ' + (t + u) + '°C.', FL.thermo(t)); }, function () { var s = 25 * r(1, 4), k = r(3, 5); return Q('Real life', 'Tickets are numbered in 25s: ' + s + ', ' + (s + 25) + ', ' + (s + 50) + ' … What is the ' + (k + 1) + 'th ticket number?', s + 25 * k, ['The jump is 25.', 'Keep adding 25.'], 'The ' + (k + 1) + 'th ticket is ' + (s + 25 * k) + '.'); }], high: [function () { var a = r(-6, -1), b = r(2, 6); return Q('Real life', 'In Aviemore it is <b>' + a + '°C</b>. In Glasgow it is <b>' + b + '°C</b>. How many degrees warmer is Glasgow?', b - a, ['Count up from ' + a + ' to zero, then to ' + b + '.', 'Add the two jumps.'], (-a) + ' + ' + b + ' = ' + (b - a) + ' degrees.'); }, function () { var a = r(21, 49), b = r(21, 49); var t = Math.round((a + b) / 10) * 10; return MC('Real life', 'Class trip: <b>' + a + '</b> pupils on Monday and <b>' + b + '</b> on Tuesday. Roughly how many is that altogether, to the nearest 10?', String(t), [String(t + 10), String(t - 10), String(a + b)], ['Add them first.', 'Then round to the nearest 10.'], (a + b) + ' rounds to ' + t + '.'); }, function () { var n = r(101, 989), ds = String(n).split(''); return Q('Real life', 'A bus number has <b>' + ds[0] + '</b> hundreds, <b>' + ds[1] + '</b> tens and <b>' + ds[2] + '</b> ones. What is 10 more than the bus number?', n + 10, ['Make the number first.', 'Then add one ten.'], n + ' + 10 = ' + (n + 10) + '.'); }] },
     gens: { low: [function () { return g1.seq(false); }, function () { return g1.pv(false); }, function () { return g1.rnd(false); }, function () { return g1.neg(false); }],
       medium: [function () { return g1.seq(false); }, function () { return g1.pv(true); }, function () { return g1.rnd(true); }, function () { return g1.neg(false); }, g1.order],
       high: [function () { return g1.seq(true); }, function () { return g1.pv(true); }, function () { return g1.rnd(true); }, function () { return g1.neg(true); }, g1.order] }
   });
 
   /* ================= 2. Adding and subtracting: the space station ================= */
+  /* P4 column work stays between P3 (counting on, partitioning) and P5 (big numbers, carrying, exchanging):
+     2-digit numbers, tens and ones, with no carrying and no exchanging */
+  function addPair(lo, hi, carry) { var t1 = r(lo || 1, hi || 7), o1 = r(2, 9), o2 = carry ? r(10 - o1, 9) : r(1, 9 - o1), t2 = r(1, 9 - t1 - (carry ? 1 : 0)); return [t1 * 10 + o1, t2 * 10 + o2]; }
+  function subPair(lo, hi) { var t1 = r(lo || 3, hi || 9), t2 = r(1, t1 - 1), o1 = r(2, 9), o2 = r(1, o1); return [t1 * 10 + o1, t2 * 10 + o2]; }
+  FL.p4pairs = { add: addPair, sub: subPair };
   var g2 = {
     comp: function (big) { var a = r(big ? 120 : 23, big ? 680 : 89), b = pick([9, 19, 29, 39, 49, 99, 98]); if (!big && b > 49) b = 19; var sub = r(0, 1); if (sub && a <= b) a += b; return Q('Compensating', 'What is <b>' + a + (sub ? ' − ' : ' + ') + b + '</b>?', sub ? a - b : a + b, ['' + b + ' is close to ' + (b + (b % 10 === 9 ? 1 : 2)) + '.', (sub ? 'Take away ' : 'Add ') + (b + (b % 10 === 9 ? 1 : 2)) + ', then ' + (sub ? 'add back ' : 'take away ') + (b % 10 === 9 ? 1 : 2) + '.'], a + (sub ? ' − ' : ' + ') + b + ' = ' + (sub ? a - b : a + b) + '.'); },
-    col: function (big) { var a = r(big ? 250 : 120, big ? 600 : 500), b = r(big ? 150 : 40, big ? 390 : 300); return Q('Column adding', 'What is <b>' + a + ' + ' + b + '</b>?', a + b, ['Line up the ones, tens and hundreds.', 'Add the ones first and carry any ten.'], a + ' + ' + b + ' = ' + (a + b) + '.'); },
-    colsub: function (big) { var a = r(big ? 500 : 300, big ? 999 : 900), b = r(big ? 150 : 40, big ? 490 : 290); return Q('Column subtracting', 'What is <b>' + a + ' − ' + b + '</b>?', a - b, ['Line up the columns. Start with the ones.', 'If the top digit is smaller, exchange a ten.'], a + ' − ' + b + ' = ' + (a - b) + '.'); },
-    est: function () { var a = r(110, 490), b = r(110, 490), ra = Math.round(a / 100) * 100, rb = Math.round(b / 100) * 100; return MC('Estimating', 'Estimate <b>' + a + ' + ' + b + '</b> by rounding to the nearest 100.', String(ra + rb), [ra + rb + 100, ra + rb - 100, ra + rb + 200].map(String), ['Round each number to the nearest 100.', ra + ' + ' + rb + '.'], a + ' ≈ ' + ra + ', ' + b + ' ≈ ' + rb + '. Estimate: ' + (ra + rb) + '.'); },
-    word: function () { var a = r(150, 600), b = r(40, 140), k = r(0, 1); return k ? Q('Word problems', 'The space station has <b>' + a + '</b> litres of water. The crew use <b>' + b + '</b> litres. How much is left?', a - b, ['This is taking away.', 'Use columns or count on.'], a + ' − ' + b + ' = ' + (a - b) + ' litres.') : Q('Word problems', 'A rocket flies <b>' + a + '</b> km, then <b>' + b + '</b> km more. How far altogether?', a + b, ['This is adding.', 'Add the hundreds, tens, then ones.'], a + ' + ' + b + ' = ' + (a + b) + ' km.'); }
+    col: function (big) { var p = addPair(big ? 2 : 1, big ? 6 : 5, big && r(0, 1)), a = p[0], b = p[1]; return Q('Column adding', 'What is <b>' + a + ' + ' + b + '</b>?', a + b, ['Line up the tens and the ones.', 'Add the ones first, then add the tens. If the ones make 10 or more, carry 1 ten.'], a + ' + ' + b + ' = ' + (a + b) + '.'); },
+    colsub: function (big) { var p = subPair(big ? 5 : 3, 9), a = p[0], b = p[1]; return Q('Column subtracting', 'What is <b>' + a + ' − ' + b + '</b>?', a - b, ['Line up the tens and the ones. Start with the ones.', 'Take away the ones first, then take away the tens.'], a + ' − ' + b + ' = ' + (a - b) + '.'); },
+    est: function () { var a = r(21, 89), b = r(21, 89), ra = Math.round(a / 10) * 10, rb = Math.round(b / 10) * 10; return MC('Estimating', 'Estimate <b>' + a + ' + ' + b + '</b> by rounding to the nearest 10.', String(ra + rb), [ra + rb + 10, ra + rb - 10, ra + rb + 20].map(String), ['Round each number to the nearest 10.', ra + ' + ' + rb + '.'], a + ' ≈ ' + ra + ', ' + b + ' ≈ ' + rb + '. Estimate: ' + (ra + rb) + '.'); },
+    word: function () { var k = r(0, 1), p = k ? subPair(4, 9) : addPair(2, 7), a = p[0], b = p[1]; return k ? Q('Word problems', 'The space station has <b>' + a + '</b> litres of water. The crew use <b>' + b + '</b> litres. How much is left?', a - b, ['This is taking away.', 'Subtract the ones, then the tens.'], a + ' − ' + b + ' = ' + (a - b) + ' litres.') : Q('Word problems', 'A rocket flies <b>' + a + '</b> km, then <b>' + b + '</b> km more. How far altogether?', a + b, ['This is adding.', 'Add the ones, then the tens.'], a + ' + ' + b + ' = ' + (a + b) + ' km.'); }
   };
   FL.topic({ n: 402, year: 'P4', short: 'Adding', title: 'Adding and subtracting', blurb: 'Fly to the space station with Ruby the rocket: compensating, column methods and estimating.',
     lessons: [
@@ -41350,51 +41377,52 @@ S.extraMakers = function (n, level) {
         rec: ["Round to a friendly number, work it out, then adjust.", ['Spot a number near a ten', 'Round it', 'Add or subtract', 'Adjust back']],
         deep: ['When adding, you added too much, so take away the extra.', 'When subtracting, you took too much, so add the extra back.']
       }),
-      LS('How do I add using columns?', 'how to add 3-digit numbers in columns, carrying when needed.', {
-        intro: ['Column adding', 'Line them up', "For big numbers, Ruby lines up the ones, tens and hundreds in columns. Then she adds each column, starting with the ones.", E('H T O', 'b')],
-        ex: [['No carrying', '243 + 152', [["Ones: three plus two is five. Tens: four plus five is nine. Hundreds: two plus one is three. Three hundred and ninety-five.", E('243 + 152 = 395', 'g')]]],
-          ['Carry a ten', '268 + 125', [["Ones: eight plus five is thirteen. Write three, carry one ten. Tens: six plus two plus one is nine. Hundreds: three. Three hundred and ninety-three.", E('268 + 125 = 393', 'g')]]],
-          ['Carry twice', '476 + 258', [["Ones: fourteen, write four carry one. Tens: thirteen, write three carry one. Hundreds: seven. Seven hundred and thirty-four.", E('476 + 258 = 734', 'g')]]]],
-        real: ['Space miles', "On Monday Ruby flies three hundred and forty-five kilometres, on Tuesday two hundred and eighty. Altogether: six hundred and twenty-five.", E('345 + 280 = 625', 'b')],
-        turn: ["Your turn! What is one hundred and fifty-six plus two hundred and twenty-seven? Pause and try it.", E('156 + 227'), "Ones: thirteen, carry one. Tens: eight. Hundreds: three. Three hundred and eighty-three.", E('383', 'g')],
-        rec: ["Line up the columns. Add the ones first. Carry tens to the next column.", ['Line up H, T, O', 'Start with the ones', 'Carry when 10 or more', 'Check with an estimate']],
-        deep: ['Carrying is exchanging ten ones for one ten.', 'Always line up the ones, not the first digits.']
+      LS('How do I add using columns?', 'how to add 2-digit numbers in columns, ones first and then tens.', {
+        intro: ['Column adding', 'Line them up', "Ruby lines up the tens and the ones in columns. Then she adds each column, starting with the ones on the right.", E('T O', 'b')],
+        ex: [['Add the ones, then the tens', '43 + 52', [["Ones: 3 + 2 = 5. Tens: 4 + 5 = 9. The answer is 95.", E('43 + 52 = 95', 'g')]]],
+          ['Another one', '24 + 35', [["Ones: 4 + 5 = 9. Tens: 2 + 3 = 5. The answer is 59.", E('24 + 35 = 59', 'g')]]],
+          ['Carry a ten', '47 + 35', [["Ones: 7 + 5 = 12. Write 2 and carry 1 ten to the tens column. Tens: 4 + 3 + 1 = 8. The answer is 82.", E('47 + 35 = 82', 'g')]]],
+          ['A 2-digit and a 1-digit number', '61 + 7', [["Ones: 1 + 7 = 8. Tens: just 6. The answer is 68.", E('61 + 7 = 68', 'g')]]]],
+        real: ['Space miles', "On Monday Ruby flies 34 kilometres, on Tuesday 25. Ones: 4 + 5 = 9. Tens: 3 + 2 = 5. Altogether: 59 kilometres.", E('34 + 25 = 59', 'b')],
+        turn: ["Your turn! What is 26 + 53? Pause and try it.", E('26 + 53'), "Ones: 6 + 3 = 9. Tens: 2 + 5 = 7. The answer is 79.", E('79', 'g')],
+        rec: ["Line up the tens and the ones. Add the ones first, then the tens.", ['Line up T and O', 'Start with the ones', 'Then add the tens', 'Check with an estimate']],
+        deep: ['Always line up the ones, not the first digits.', 'Adding the ones first is the same order we always use.']
       }),
-      LS('How do I subtract using columns?', 'how to subtract 3-digit numbers in columns, exchanging when needed.', {
-        intro: ['Column subtracting', 'Top take away bottom', "Ruby subtracts in columns too. Start with the ones. If the top digit is too small, exchange a ten.", E('H T O', 'b')],
-        ex: [['No exchange', '587 − 243', [["Ones: seven take away three is four. Tens: eight take away four is four. Hundreds: five take away two is three. Three hundred and forty-four.", E('587 − 243 = 344', 'g')]]],
-          ['Exchange a ten', '352 − 127', [["Ones: two take away seven? Not enough. Exchange a ten: twelve take away seven is five. Tens: four take away two is two. Hundreds: two. Two hundred and twenty-five.", E('352 − 127 = 225', 'g')]]],
-          ['Check it', 'Add back', [["Check: two hundred and twenty-five plus one hundred and twenty-seven is three hundred and fifty-two. Correct!", E('225 + 127 = 352', 'g')]]]],
-        real: ['Oxygen', "The station had four hundred and sixty oxygen tanks. One hundred and thirty-five were used. Three hundred and twenty-five are left.", E('460 − 135 = 325', 'b')],
-        turn: ["Your turn! What is four hundred and seventy-three take away two hundred and fifty-eight? Pause and try it.", E('473 − 258'), "Exchange a ten: thirteen take away eight is five. Six take away five is one. Two. Two hundred and fifteen.", E('215', 'g')],
-        rec: ["Line up the columns. Start with the ones. Exchange when the top digit is smaller.", ['Line up H, T, O', 'Start with the ones', 'Exchange 1 ten for 10 ones', 'Check by adding']],
-        deep: ['Never take the smaller digit from the bigger one in the wrong order.', 'Adding back checks a subtraction.']
+      LS('How do I subtract using columns?', 'how to subtract 2-digit numbers in columns, ones first and then tens.', {
+        intro: ['Column subtracting', 'Top take away bottom', "Ruby subtracts in columns too. The bigger number goes on top. Start with the ones, then do the tens.", E('T O', 'b')],
+        ex: [['Take away the ones, then the tens', '87 − 43', [["Ones: 7 − 3 = 4. Tens: 8 − 4 = 4. The answer is 44.", E('87 − 43 = 44', 'g')]]],
+          ['Another one', '98 − 53', [["Ones: 8 − 3 = 5. Tens: 9 − 5 = 4. The answer is 45.", E('98 − 53 = 45', 'g')]]],
+          ['Check it', 'Add back', [["Check: 44 + 43 = 87. Correct!", E('44 + 43 = 87', 'g')]]]],
+        real: ['Oxygen', "The station had 65 oxygen tanks. 24 were used. Ones: 5 − 4 = 1. Tens: 6 − 2 = 4. 41 are left.", E('65 − 24 = 41', 'b')],
+        turn: ["Your turn! What is 79 − 36? Pause and try it.", E('79 − 36'), "Ones: 9 − 6 = 3. Tens: 7 − 3 = 4. The answer is 43.", E('43', 'g')],
+        rec: ["Line up the tens and the ones. Take away the ones first, then the tens.", ['Line up T and O', 'Start with the ones', 'Then the tens', 'Check by adding']],
+        deep: ['The bigger number always goes on top.', 'Adding back checks a subtraction.']
       }),
-      LS('How can estimating help me check my answer?', 'how to round numbers to get a quick estimate.', {
-        intro: ['Estimating', 'About how many?', "Before Ruby blasts off, she estimates. Round the numbers, work out a quick answer, and use it to check.", FL.says('rocket', '298 + 403 is about…')],
-        ex: [['Round to 100', '298 + 403', [["Two hundred and ninety-eight is about three hundred. Four hundred and three is about four hundred. About seven hundred.", E('≈ 300 + 400 = 700', 'g')]]],
-          ['Check', 'Is 701 sensible?', [["The exact answer is seven hundred and one. That is close to seven hundred, so it makes sense.", E('701 ≈ 700 ✓', 'g')]]],
-          ['Spot a mistake', '512 − 189', [["About five hundred take away two hundred: three hundred. If you got five hundred and twenty-three, something went wrong!", E('≈ 300, not 523', 'g')]]]],
-        real: ['Shopping list', "Ruby buys things costing two pounds ninety-eight and four pounds ten. About seven pounds.", E('≈ £3 + £4 = £7', 'b')],
-        turn: ["Your turn! Estimate six hundred and twelve plus one hundred and ninety-five. Pause and try it.", E('612 + 195 ≈ ?'), "About six hundred plus two hundred: eight hundred.", E('≈ 800', 'g')],
-        rec: ["Round each number, work out a quick answer, then compare.", ['Round each number', 'Quick answer', 'Compare to the real answer', 'Too far off? Check again']],
+      LS('How can estimating help me check my answer?', 'how to round numbers to the nearest 10 to get a quick estimate.', {
+        intro: ['Estimating', 'About how many?', "Before Ruby blasts off, she estimates. Round the numbers to the nearest 10, work out a quick answer, and use it to check.", FL.says('rocket', '48 + 31 is about…')],
+        ex: [['Round to 10', '48 + 31', [["48 is about 50. 31 is about 30. 50 + 30 = 80. About 80.", E('≈ 50 + 30 = 80', 'g')]]],
+          ['Check', 'Is 79 sensible?', [["The exact answer is 79. That is close to 80, so it makes sense.", E('79 ≈ 80 ✓', 'g')]]],
+          ['Spot a mistake', '82 − 39', [["About 80 take away 40: 40. If you got 53, something went wrong!", E('≈ 40, not 53', 'g')]]]],
+        real: ['Shopping list', "Ruby buys things costing £2.98 and £4.10. That is about £3 + £4 = £7.", E('≈ £3 + £4 = £7', 'b')],
+        turn: ["Your turn! Estimate 62 + 29. Pause and try it.", E('62 + 29 ≈ ?'), "62 is about 60. 29 is about 30. 60 + 30 = 90.", E('≈ 90', 'g')],
+        rec: ["Round each number to the nearest 10, work out a quick answer, then compare.", ['Round each number', 'Quick answer', 'Compare to the real answer', 'Too far off? Check again']],
         deep: ['≈ means approximately equal.', 'An estimate is a check, not the final answer.']
       })
     ],
     acts: [
       ['Compensate!', 'Use the trick to add or subtract.', FL.rounds(function () { var a = r(25, 89), b = pick([9, 19, 29, 39]), sub = r(0, 1); if (sub && a <= b) a += b; var ans = sub ? a - b : a + b; return { vis: FL.says('rocket', a + (sub ? ' − ' : ' + ') + b + ' = ?'), q: 'What is ' + a + (sub ? ' − ' : ' + ') + b + '?', answer: String(ans), wrong: nums(ans, [ans + 1, ans - 1, ans + (sub ? 2 : -2)]), explain: (sub ? a + ' − ' + (b + 1) + ' + 1' : a + ' + ' + (b + 1) + ' − 1') + ' = ' + ans + '.' }; }, 6)],
-      ['Column builder', 'Add in columns.', FL.rounds(function () { var a = r(110, 580), b = r(110, 390); return { vis: '<pre style="font:800 1.8em/1.3 ui-monospace,monospace;text-align:right;display:inline-block;margin:0 auto;padding:8px 18px;border-radius:12px;background:var(--card,#fff)">  ' + a + '\n+ ' + b + '\n─────</pre>', q: 'What is ' + a + ' + ' + b + '?', answer: String(a + b), wrong: nums(a + b, [a + b + 10, a + b - 10, a + b + 100]), explain: a + ' + ' + b + ' = ' + (a + b) + '.' }; }, 6)],
-      ['Best estimate', 'Round and estimate.', FL.rounds(function () { var a = r(110, 890), b = r(110, 590), ra = Math.round(a / 100) * 100, rb = Math.round(b / 100) * 100; return { vis: FL.says('rocket', a + ' + ' + b), q: 'Which is the best estimate?', answer: String(ra + rb), wrong: [ra + rb + 100, ra + rb - 100, ra + rb + 300].map(String), explain: ra + ' + ' + rb + ' = ' + (ra + rb) + '.' }; }, 6)]
+      ['Column builder', 'Add in columns.', FL.rounds(function () { var p = addPair(1, 7), a = p[0], b = p[1]; return { vis: '<pre style="font:800 1.8em/1.3 ui-monospace,monospace;text-align:right;display:inline-block;margin:0 auto;padding:8px 18px;border-radius:12px;background:var(--card,#fff)">  ' + a + '\n+ ' + b + '\n─────</pre>', q: 'What is ' + a + ' + ' + b + '?', answer: String(a + b), wrong: nums(a + b, [a + b + 10, a + b - 10, a + b + 100]), explain: a + ' + ' + b + ' = ' + (a + b) + '.' }; }, 6)],
+      ['Best estimate', 'Round and estimate.', FL.rounds(function () { var a = r(21, 89), b = r(21, 69), ra = Math.round(a / 10) * 10, rb = Math.round(b / 10) * 10; return { vis: FL.says('rocket', a + ' + ' + b), q: 'Which is the best estimate?', answer: String(ra + rb), wrong: [ra + rb + 10, ra + rb - 10, ra + rb + 30].map(String), explain: ra + ' + ' + rb + ' = ' + (ra + rb) + '.' }; }, 6)]
     ],
     more: [
       ['Compensate!', 'Round, then adjust.', FL.genAct(function () { return g2.comp(false); }, 'rocket')],
       ['Column adding', 'Line up the digits.', FL.genAct(function () { return g2.col(true); }, 'rocket')],
-      ['Column subtracting', 'Exchange when you need to.', FL.genAct(function () { return g2.colsub(true); }, 'rocket')],
+      ['Column subtracting', 'Take away the ones, then the tens.', FL.genAct(function () { return g2.colsub(true); }, 'rocket')],
       ['Best estimate', 'Round first.', FL.genAct(function () { return g2.est(); }, 'rocket')],
       ['Space stories', 'Word problems.', FL.genAct(function () { return g2.word(); }, 'rocket')]
     ],
-    lifeLead: 'adding and subtracting within 1000, change and estimating on trips and in shops',
-    life: { low: [function () { var a = r(120, 400), b = r(100, 300); return Q('Real life', 'A train has <b>' + a + '</b> people. <b>' + b + '</b> more get on. How many are on the train now?', a + b, ['This is adding.', 'Add hundreds, tens, then ones.'], a + ' + ' + b + ' = ' + (a + b) + '.'); }, function () { var a = r(300, 900), b = r(100, 290); return Q('Real life', 'A farmer has <b>' + a + '</b> eggs. He sells <b>' + b + '</b>. How many are left?', a - b, ['This is taking away.', 'Use columns.'], a + ' − ' + b + ' = ' + (a - b) + '.'); }, function () { var a = r(25, 89), b = pick([9, 19, 29]); return Q('Real life', 'Sam has <b>' + a + '</b> stickers and gets <b>' + b + '</b> more. How many now?', a + b, ['Add ' + (b + 1) + ', then take 1 away.', 'This is compensating.'], a + ' + ' + b + ' = ' + (a + b) + '.'); }], medium: [function () { var a = r(250, 500), b = r(150, 450); return Q('Real life', 'The rocket flies <b>' + a + '</b> km on Monday and <b>' + b + '</b> km on Tuesday. How far altogether?', a + b, ['Line up the columns.', 'Carry when a column makes 10 or more.'], a + ' + ' + b + ' = ' + (a + b) + ' km.'); }, function () { var a = r(500, 999), b = r(150, 490); return Q('Real life', 'A book has <b>' + a + '</b> pages. Mia has read <b>' + b + '</b>. How many pages are left?', a - b, ['Subtract in columns.', 'Exchange if the top digit is smaller.'], a + ' − ' + b + ' = ' + (a - b) + '.'); }, function () { var a = r(110, 490), b = r(110, 490), t = Math.round(a / 100) * 100 + Math.round(b / 100) * 100; return MC('Real life', 'A shop sold <b>' + a + '</b> ice creams on Saturday and <b>' + b + '</b> on Sunday. Which is the best estimate of the total?', String(t), [String(t + 100), String(t - 100), String(t + 200)], ['Round each to the nearest 100.', 'Add the rounded numbers.'], 'About ' + t + '.'); }], high: [function () { var a = r(200, 400), b = r(100, 300), c = r(50, 150); return Q('Real life', 'A cinema had <b>' + a + '</b> people in the morning and <b>' + b + '</b> in the afternoon. <b>' + c + '</b> of them had popcorn. How many did not have popcorn?', a + b - c, ['First add the two groups.', 'Then take away the popcorn people.'], a + ' + ' + b + ' = ' + (a + b) + ', − ' + c + ' = ' + (a + b - c) + '.'); }, function () { var g = r(400, 900), a = r(100, 250), b = r(100, 250); return Q('Real life', 'The station had <b>' + g + '</b> litres of water. The crew used <b>' + a + '</b> litres on Monday and <b>' + b + '</b> on Tuesday. How much is left?', g - a - b, ['Take away both amounts.', 'Or add them first, then take away.'], g + ' − ' + (a + b) + ' = ' + (g - a - b) + ' litres.'); }, function () { var a = r(300, 600), b = r(200, 390); return Q('Real life', 'Class A collected <b>' + a + '</b> bottle tops. Class B collected <b>' + b + '</b>. How many more did Class A collect?', a - b, ['Find the difference.', 'Subtract the smaller from the bigger.'], a + ' − ' + b + ' = ' + (a - b) + '.'); }] },
+    lifeLead: 'adding and subtracting 2-digit numbers, change and estimating on trips and in shops',
+    life: { low: [function () { var p = addPair(1, 5), a = p[0], b = p[1]; return Q('Real life', 'A train has <b>' + a + '</b> people. <b>' + b + '</b> more get on. How many are on the train now?', a + b, ['This is adding.', 'Add the ones, then the tens.'], a + ' + ' + b + ' = ' + (a + b) + '.'); }, function () { var p = subPair(4, 9), a = p[0], b = p[1]; return Q('Real life', 'A farmer has <b>' + a + '</b> eggs. He sells <b>' + b + '</b>. How many are left?', a - b, ['This is taking away.', 'Use columns.'], a + ' − ' + b + ' = ' + (a - b) + '.'); }, function () { var a = r(25, 89), b = pick([9, 19, 29]); return Q('Real life', 'Sam has <b>' + a + '</b> stickers and gets <b>' + b + '</b> more. How many now?', a + b, ['Add ' + (b + 1) + ', then take 1 away.', 'This is compensating.'], a + ' + ' + b + ' = ' + (a + b) + '.'); }], medium: [function () { var p = addPair(2, 6), a = p[0], b = p[1]; return Q('Real life', 'The rocket flies <b>' + a + '</b> km on Monday and <b>' + b + '</b> km on Tuesday. How far altogether?', a + b, ['Line up the columns.', 'Add the ones, then the tens.'], a + ' + ' + b + ' = ' + (a + b) + ' km.'); }, function () { var p = subPair(5, 9), a = p[0], b = p[1]; return Q('Real life', 'A book has <b>' + a + '</b> pages. Mia has read <b>' + b + '</b>. How many pages are left?', a - b, ['Subtract in columns.', 'Take away the ones, then the tens.'], a + ' − ' + b + ' = ' + (a - b) + '.'); }, function () { var a = r(21, 89), b = r(21, 89), t = Math.round(a / 10) * 10 + Math.round(b / 10) * 10; return MC('Real life', 'A shop sold <b>' + a + '</b> ice creams on Saturday and <b>' + b + '</b> on Sunday. Which is the best estimate of the total?', String(t), [String(t + 10), String(t - 10), String(t + 20)], ['Round each to the nearest 10.', 'Add the rounded numbers.'], 'About ' + t + '.'); }], high: [function () { var p = addPair(2, 5), a = p[0], b = p[1], c = r(10, 20); return Q('Real life', 'A cinema had <b>' + a + '</b> people in the morning and <b>' + b + '</b> in the afternoon. <b>' + c + '</b> of them had popcorn. How many did not have popcorn?', a + b - c, ['First add the two groups.', 'Then take away the popcorn people.'], a + ' + ' + b + ' = ' + (a + b) + ', − ' + c + ' = ' + (a + b - c) + '.'); }, function () { var g = r(70, 99), a = r(10, 25), b = r(10, 25); return Q('Real life', 'The station had <b>' + g + '</b> litres of water. The crew used <b>' + a + '</b> litres on Monday and <b>' + b + '</b> on Tuesday. How much is left?', g - a - b, ['Take away both amounts.', 'Or add them first, then take away.'], g + ' − ' + (a + b) + ' = ' + (g - a - b) + ' litres.'); }, function () { var p = subPair(6, 9), a = p[0], b = p[1]; return Q('Real life', 'Class A collected <b>' + a + '</b> bottle tops. Class B collected <b>' + b + '</b>. How many more did Class A collect?', a - b, ['Find the difference.', 'Subtract the smaller from the bigger.'], a + ' − ' + b + ' = ' + (a - b) + '.'); }] },
     gens: { low: [function () { return g2.comp(false); }, function () { return g2.col(false); }, function () { return g2.colsub(false); }],
       medium: [function () { return g2.comp(false); }, function () { return g2.col(false); }, function () { return g2.colsub(false); }, g2.est, g2.word],
       high: [function () { return g2.comp(true); }, function () { return g2.col(true); }, function () { return g2.colsub(true); }, g2.est, g2.word] }
@@ -42687,6 +42715,17 @@ S.extraMakers = function (n, level) {
   function col(a, b, sign) { return '<pre style="font:800 1.8rem/1.3 ui-monospace,monospace;text-align:right;margin:0;padding:8px 18px;border-radius:12px;background:#fff;color:' + INK + ';border:3px solid ' + INK + '">  ' + a + '\n' + sign + ' ' + b + '\n─────</pre>'; }
   function hto(h, t, o) { var c = function (v, bg) { return '<td style="border:3px solid ' + INK + ';padding:6px 14px;font-size:1.8rem;font-weight:800;background:' + bg + '">' + v + '</td>'; };
     return '<table style="border-collapse:collapse;color:' + INK + ';text-align:center;background:#fff"><tr><th style="padding:2px 10px">H</th><th>T</th><th>O</th></tr><tr>' + c(h, '#ffe2ec') + c(t, '#e3f4ff') + c(o, '#fff1c9') + '</tr></table>'; }
+  /* a tens-and-ones column sum shown step by step: res = {t, o} digits written so far, hi = 't' / 'o' column to highlight */
+  function colS(a, b, sign, res, hi, carry, anim) {
+    a = String(a); b = String(b); res = res || {};
+    function c(v, k) { var on = hi === k; return '<td style="padding:4px 18px;font:800 2rem/1.25 ui-monospace,monospace;text-align:center;background:' + (on ? (k === 't' ? '#d4ecff' : '#ffe9a8') : '#fff') + ';color:' + INK + '">' + (v == null ? '' : v) + '</td>'; }
+    function two(x) { x = x.length < 2 ? ' ' + x : x; return [x.charAt(0).trim(), x.charAt(1)]; }
+    var A = two(a), B = two(b);
+    var sty = carry ? '<style>@keyframes cHop{0%{transform:translate(64px,70px) scale(.7);opacity:.2}35%{transform:translate(64px,0) scale(1.5);opacity:1}100%{transform:translate(0,0) scale(1);opacity:1}}.cHop{display:inline-block;animation:cHop 1.8s ease-out both}</style>' : '';
+    var cr = carry ? '<tr><td></td><td style="text-align:center;height:2.2rem;color:#e0457b;font:800 1.5rem ui-monospace,monospace"><span class="' + (anim ? 'cHop' : '') + '">' + carry + '</span></td><td></td></tr>' : '';
+    return sty + '<table style="border-collapse:collapse;background:#fff;border:3px solid ' + INK + ';border-radius:12px;color:' + INK + '"><tr><th></th><th style="padding:2px 18px;background:#d4ecff">T</th><th style="padding:2px 18px;background:#ffe9a8">O</th></tr>' + cr +
+      '<tr><td></td>' + c(A[0], 't') + c(A[1], 'o') + '</tr><tr><td style="font:800 2rem ui-monospace,monospace;padding-left:12px">' + sign + '</td>' + c(B[0], 't') + c(B[1], 'o') + '</tr>' +
+      '<tr><td colspan="3" style="border-top:4px solid ' + INK + ';height:2px;padding:0"></td></tr><tr><td></td>' + c(res.t, 't') + c(res.o, 'o') + '</tr></table>'; }
   function W(say, pic, facts) { return { mode: 'watch', say: say, pic: pic, facts: facts }; }
   function TG(say, pic, options, answer, tip, explain) { return { mode: 'together', say: say, pic: pic, options: options, answer: answer, tip: tip, explain: explain }; }
   function Y(say, pic, options, answer, tip, explain) { return { mode: 'turn', say: say, pic: pic, options: options, answer: answer, tip: tip, explain: explain }; }
@@ -42747,10 +42786,10 @@ S.extraMakers = function (n, level) {
       pages: [
         pg(P('space', 'rocket', '', 'Mission start!'), 'Ruby the rocket is flying supplies to the space station.'),
         pg(P('space', 'rocket', big('46 + 9')), 'Ruby has forty-six boxes and loads nine more. Adding nine is tricky, so she adds ten and takes one away.', Q('What is 46 + 9?', [54, 55, 56], 55, 'Forty-six and ten is fifty-six, take one: fifty-five.')),
-        pg(P('space', 'rocket', col(268, 125, '+')), 'On Monday she flies two hundred and sixty-eight kilometres, on Tuesday one hundred and twenty-five. She adds in columns.', Q('How far altogether?', [383, 393, 493], 393, 'Ones: thirteen, carry one. Tens: nine. Hundreds: three.')),
-        pg(P('space', 'rocket', col(460, 135, '−')), 'The station had four hundred and sixty oxygen tanks. One hundred and thirty-five are used.', Q('How many are left?', [325, 335, 395], 325, 'Exchange a ten for the ones column.')),
-        pg(P('space', 'rocket', big('298 + 403 ≈ 300 + 400')), 'Ruby checks with an estimate: about three hundred and four hundred is about seven hundred.'),
-        pg(P('space', 'rocket', big('701 ✓')), 'The real answer is seven hundred and one. Close to the estimate, so it makes sense!')
+        pg(P('space', 'rocket', col(34, 25, '+')), 'On Monday she flies 34 kilometres, on Tuesday 25. She adds in columns: ones first, then tens.', Q('How far altogether?', [49, 59, 69], 59, 'Ones: 4 + 5 = 9. Tens: 3 + 2 = 5.')),
+        pg(P('space', 'rocket', col(65, 24, '−')), 'The station had 65 oxygen tanks. 24 are used.', Q('How many are left?', [31, 41, 89], 41, 'Ones: 5 − 4 = 1. Tens: 6 − 2 = 4.')),
+        pg(P('space', 'rocket', big('48 + 31 ≈ 50 + 30')), 'Ruby checks with an estimate: about 50 and about 30 is about 80.'),
+        pg(P('space', 'rocket', big('79 ✓')), 'The real answer is 79. Close to the estimate, so it makes sense!')
       ] },
     learn: [
       { title: 'How can compensating help me add and subtract?', char: 'rocket', screens: [
@@ -42762,28 +42801,58 @@ S.extraMakers = function (n, level) {
         Y('What is 74 − 29?', P('space', '', big('74 − 29')), [45, 46, 55], 45, 'Take away thirty, then add one back.', 'Forty-five.')
       ] },
       { title: 'How do I add using columns?', char: 'rocket', screens: [
-        W('Two hundred and forty-three add one hundred and fifty-two. Ones: five. Tens: nine. Hundreds: three. Three hundred and ninety-five.', P('space', '', col(243, 152, '+'))),
-        W('Two hundred and sixty-eight add one hundred and twenty-five. Ones: thirteen, write three and carry one ten. Tens: nine. Hundreds: three.', P('space', '', col(268, 125, '+'))),
-        TG('What is 156 + 227?', P('space', '', col(156, 227, '+')), [373, 383, 483], 383, 'Ones: six and seven make thirteen. Carry one.', 'Three hundred and eighty-three.'),
-        TG('What is 314 + 245?', P('space', '', col(314, 245, '+')), [559, 569, 659], 559, 'No carrying needed.', 'Five hundred and fifty-nine.'),
-        Y('What is 476 + 258?', P('space', '', col(476, 258, '+')), [624, 724, 734], 734, 'Carry twice.', 'Seven hundred and thirty-four.'),
-        Y('What is 345 + 280?', P('space', '', col(345, 280, '+')), [525, 615, 625], 625, 'Tens: four and eight make twelve.', 'Six hundred and twenty-five.')
+        W('Today we add in columns. A 2-digit number has tens and ones. The number 43 has 4 tens and 3 ones.', P('space', '', colS(43, '', '+', {}, ''))),
+        W('Here is the sum 43 + 52. Write 43 on top and 52 underneath. Tens go under tens, and ones go under ones.', P('space', '', colS(43, 52, '+', {}, ''))),
+        W('Step 1: always start with the ones, on the right. The ones are 3 and 2. 3 + 2 = 5.', P('space', '', colS(43, 52, '+', {}, 'o'))),
+        W('Write the 5 under the ones column. It is the ones digit of the answer.', P('space', '', colS(43, 52, '+', { o: 5 }, 'o'))),
+        W('Step 2: now the tens. The tens are 4 and 5. 4 + 5 = 9.', P('space', '', colS(43, 52, '+', { o: 5 }, 't'))),
+        W('Write the 9 under the tens column. The answer is 95. So 43 + 52 = 95.', P('space', '', colS(43, 52, '+', { t: 9, o: 5 }, ''))),
+        W('Let us do another one: 24 + 35. Line up the tens and the ones. Ones first: 4 + 5 = 9.', P('space', '', colS(24, 35, '+', { o: 9 }, 'o'))),
+        W('Now the tens: 2 + 3 = 5. The answer is 59. So 24 + 35 = 59.', P('space', '', colS(24, 35, '+', { t: 5, o: 9 }, 't'))),
+        W('What if one number has only 1 digit? Take 61 + 7. Put the 7 under the ones. Ones: 1 + 7 = 8.', P('space', '', colS(61, 7, '+', { o: 8 }, 'o'))),
+        W('There is nothing to add to the 6 tens, so it stays as 6. The answer is 68. So 61 + 7 = 68.', P('space', '', colS(61, 7, '+', { t: 6, o: 8 }, 't'))),
+        W('Sometimes the ones add up to 10 or more. Look at 47 + 35. Start with the ones: 7 + 5 = 12.', P('space', '', colS(47, 35, '+', {}, 'o'))),
+        W('12 is 1 ten and 2 ones. Write the 2 in the ones column. The 1 ten hops across to the tens column. Watch it go!', P('space', '', colS(47, 35, '+', { o: 2 }, 'o', 1, true))),
+        W('Now add the tens: 4 + 3 + the 1 that hopped over is 8. Write 8. So 47 + 35 = 82.', P('space', '', colS(47, 35, '+', { t: 8, o: 2 }, 't', 1))),
+        W('Here is another one: 38 + 24. Ones: 8 + 4 = 12. Write 2, and the 1 ten hops to the tens.', P('space', '', colS(38, 24, '+', { o: 2 }, 'o', 1, true))),
+        W('Tens: 3 + 2 + 1 = 6. So 38 + 24 = 62.', P('space', '', colS(38, 24, '+', { t: 6, o: 2 }, 't', 1))),
+        W('Watch out! Do not forget the ten that hopped across. 47 + 35 is 82, not 72.', P('space', '', big('47 + 35 = 82 ✓'))),
+        W('Watch out! Always line up the ones under the ones. If you put the 7 under the tens, you get 61 + 70 = 131. That is wrong!', P('space', '', big('61 + 7 = 68 ✓'))),
+        W('Check with an estimate. 43 is about 40 and 52 is about 50. 40 + 50 = 90. Our answer 95 is close to 90, so it makes sense.', P('space', '', big('43 + 52 ≈ 40 + 50 = 90')))
+        ,
+        TG('What is 21 + 47?', P('space', '', colS(21, 47, '+', {}, '')), [58, 68, 78], 68, 'Ones first: 1 + 7. Then the tens: 2 + 4.', '1 + 7 = 8 and 2 + 4 = 6. So 68.'),
+        TG('What is 53 + 34?', P('space', '', colS(53, 34, '+', {}, '')), [77, 87, 97], 87, 'Ones: 3 + 4. Tens: 5 + 3.', '3 + 4 = 7 and 5 + 3 = 8. So 87.'),
+        TG('What is 27 + 15?', P('space', '', colS(27, 15, '+', {}, '')), [32, 42, 41], 42, 'Ones: 7 + 5 = 12. Write 2 and carry 1.', '7 + 5 = 12. Write 2 and carry 1. Then 2 + 1 + 1 = 4. So 42.'),
+        Y('What is 62 + 23?', P('space', '', colS(62, 23, '+', {}, '')), [75, 85, 86], 85, 'Ones: 2 + 3. Tens: 6 + 2.', '2 + 3 = 5 and 6 + 2 = 8. So 85.'),
+        Y('What is 38 + 25?', P('space', '', colS(38, 25, '+', {}, '')), [53, 63, 62], 63, 'Ones: 8 + 5 = 13. Write 3 and carry 1.', '8 + 5 = 13. Write 3 and carry 1. Then 3 + 2 + 1 = 6. So 63.'),
+        Y('What is 36 + 41?', P('space', '', colS(36, 41, '+', {}, '')), [67, 77, 87], 77, 'Ones: 6 + 1. Tens: 3 + 4.', '6 + 1 = 7 and 3 + 4 = 7. So 77.')
       ] },
       { title: 'How do I subtract using columns?', char: 'rocket', screens: [
-        W('Five hundred and eighty-seven take away two hundred and forty-three. Ones: four. Tens: four. Hundreds: three. Three hundred and forty-four.', P('space', '', col(587, 243, '−'))),
-        W('Three hundred and fifty-two take away one hundred and twenty-seven. Two take away seven? Exchange a ten: twelve take away seven is five.', P('space', '', col(352, 127, '−'))),
-        TG('What is 473 − 258?', P('space', '', col(473, 258, '−')), [215, 225, 235], 215, 'Exchange a ten for the ones.', 'Two hundred and fifteen.'),
-        TG('What is 698 − 345?', P('space', '', col(698, 345, '−')), [343, 353, 453], 353, 'No exchange needed.', 'Three hundred and fifty-three.'),
-        Y('What is 562 − 138?', P('space', '', col(562, 138, '−')), [424, 434, 436], 424, 'Two take away eight? Exchange.', 'Four hundred and twenty-four.'),
-        Y('What is 800 − 350?', P('space', '', col(800, 350, '−')), [450, 550, 500], 450, 'Count on from three hundred and fifty.', 'Four hundred and fifty.')
+        W('Now we take away in columns. The bigger number goes on top. We take the bottom number away from the top number.', P('space', '', colS(87, 43, '−', {}, ''))),
+        W('Here is the sum 87 − 43. Line up the tens and the ones. Tens under tens, ones under ones.', P('space', '', colS(87, 43, '−', {}, ''))),
+        W('Step 1: start with the ones, on the right. 7 − 3 = 4.', P('space', '', colS(87, 43, '−', {}, 'o'))),
+        W('Write the 4 under the ones column.', P('space', '', colS(87, 43, '−', { o: 4 }, 'o'))),
+        W('Step 2: now the tens. 8 − 4 = 4.', P('space', '', colS(87, 43, '−', { o: 4 }, 't'))),
+        W('Write the 4 under the tens column. The answer is 44. So 87 − 43 = 44.', P('space', '', colS(87, 43, '−', { t: 4, o: 4 }, ''))),
+        W('Let us do another one: 98 − 53. Ones first: 8 − 3 = 5.', P('space', '', colS(98, 53, '−', { o: 5 }, 'o'))),
+        W('Now the tens: 9 − 5 = 4. The answer is 45. So 98 − 53 = 45.', P('space', '', colS(98, 53, '−', { t: 4, o: 5 }, 't'))),
+        W('We can check by adding back. 45 + 53 = 98. That is the number we started with, so it is correct!', P('space', '', big('45 + 53 = 98 ✓'))),
+        W('Watch out! Take the bottom number away from the top number. Do not add them. 87 − 43 is 44, not 130.', P('space', '', big('87 − 43 = 44 ✓'))),
+        TG('What is 59 − 24?', P('space', '', colS(59, 24, '−', {}, '')), [25, 35, 83], 35, 'Ones: 9 − 4. Tens: 5 − 2.', '9 − 4 = 5 and 5 − 2 = 3. So 35.'),
+        TG('What is 68 − 32?', P('space', '', colS(68, 32, '−', {}, '')), [36, 46, 100], 36, 'Ones: 8 − 2. Tens: 6 − 3.', '8 − 2 = 6 and 6 − 3 = 3. So 36.'),
+        Y('What is 76 − 41?', P('space', '', colS(76, 41, '−', {}, '')), [35, 45, 117], 35, 'Ones: 6 − 1. Tens: 7 − 4.', '6 − 1 = 5 and 7 − 4 = 3. So 35.'),
+        Y('What is 85 − 23?', P('space', '', colS(85, 23, '−', {}, '')), [52, 62, 108], 62, 'Ones: 5 − 3. Tens: 8 − 2.', '5 − 3 = 2 and 8 − 2 = 6. So 62.')
       ] },
       { title: 'How can estimating help me check my answer?', char: 'rocket', screens: [
-        W('Two hundred and ninety-eight is about three hundred. Four hundred and three is about four hundred. So the answer is about seven hundred.', P('space', '', big('298 + 403 ≈ 700'))),
-        W('If an answer is far from the estimate, check again!', P('space', '', big('512 − 189 ≈ 300'))),
-        TG('Estimate 612 + 195.', P('space', '', big('612 + 195')), [700, 800, 900], 800, 'Round each to the nearest hundred.', 'About six hundred and two hundred: eight hundred.'),
-        TG('Estimate 489 − 210.', P('space', '', big('489 − 210')), [200, 300, 400], 300, 'About five hundred take away two hundred.', 'About three hundred.'),
-        Y('Estimate 381 + 407.', P('space', '', big('381 + 407')), [700, 800, 900], 800, 'Four hundred and four hundred.', 'About eight hundred.'),
-        Y('Lisa worked out 512 − 189 = 523. Is that sensible?', P('space', '', big('512 − 189 = 523?')), ['Yes', 'No'], 'No', 'Estimate: five hundred take away two hundred.', 'No. It should be about three hundred.')
+        W('An estimate is a quick answer that is close, but not exact. We round each number to the nearest 10 first.', P('space', '', big('48 + 31 ≈ ?'))),
+        W('48 is closer to 50 than 40, so it rounds to 50. 31 is closer to 30, so it rounds to 30.', P('space', '', big('48 ≈ 50, 31 ≈ 30'))),
+        W('Now add the rounded numbers. 50 + 30 = 80. So the answer is about 80.', P('space', '', big('48 + 31 ≈ 50 + 30 = 80'))),
+        W('The real answer is 79. That is close to our estimate of 80, so it makes sense!', P('space', '', big('79 ≈ 80 ✓'))),
+        W('If an answer is far from the estimate, check again! 82 − 39 is about 80 − 40 = 40.', P('space', '', big('82 − 39 ≈ 40'))),
+        TG('Estimate 62 + 29.', P('space', '', big('62 + 29')), [80, 90, 100], 90, 'Round each to the nearest 10.', '62 is about 60 and 29 is about 30. 60 + 30 = 90.'),
+        TG('Estimate 89 − 21.', P('space', '', big('89 − 21')), [60, 70, 80], 70, 'Round each to the nearest 10.', '89 is about 90 and 21 is about 20. 90 − 20 = 70.'),
+        Y('Estimate 38 + 41.', P('space', '', big('38 + 41')), [70, 80, 90], 80, '38 is about 40. 41 is about 40.', '40 + 40 = 80.'),
+        Y('Lisa worked out 82 − 39 = 53. Is that sensible?', P('space', '', big('82 − 39 = 53?')), ['Yes', 'No'], 'No', 'Estimate: 80 − 40.', 'No. It should be about 40.')
       ] }
     ]
   });
@@ -43131,7 +43200,8 @@ S.extraMakers = function (n, level) {
   var FL = window.FL, BT = window.BT, S = window.Studio; if (!FL || !BT || !BT.add || !S) return;
   var V = BT.sv, INK = '#2b2340', r = FL.r, pick = FL.pick, shuffle = FL.shuffle;
 
-  function big(t) { return '<div style="font-size:clamp(1.6rem,6vw,2.4rem);font-weight:800;color:' + INK + ';background:#fff;border:3px solid ' + INK + ';border-radius:16px;padding:6px 18px;text-align:center;display:inline-block">' + t + '</div>'; }
+  function stackFr(t) { return String(t).replace(/(^|[^\d\/.])(\d{1,3})\/(\d{1,3})(?![\d\/])/g, function (m, a, n, d) { return a + '<span style="display:inline-flex;flex-direction:column;align-items:center;vertical-align:middle;line-height:1.05;margin:0 .15em"><span style="padding:0 .2em">' + n + '</span><span style="border-top:.12em solid currentColor;padding:0 .2em">' + d + '</span></span>'; }); }
+  function big(t) { t = /^\s*</.test(String(t)) ? t : stackFr(t); return '<div style="font-size:clamp(1.6rem,6vw,2.4rem);font-weight:800;color:' + INK + ';background:#fff;border:3px solid ' + INK + ';border-radius:16px;padding:6px 18px;text-align:center;display:inline-block;white-space:nowrap;font-size:clamp(2rem,8vw,3.2rem)">' + t + '</div>'; }
   function cards(list) { return '<div style="display:flex;flex-wrap:wrap;gap:8px;justify-content:center">' + list.map(function (t) { return '<span style="background:#fff;border:3px solid ' + INK + ';border-radius:14px;padding:6px 12px;font-weight:800;color:' + INK + '">' + t + '</span>'; }).join('') + '</div>'; }
   /* each key word is read and explained in turn: "Bigger means more." */
   function spoken(w) { var raw = String(w[0]), pm = /\(([^)]*)\)/.exec(raw), word = raw.replace(/\s*\([^)]*\)/g, '').trim(), m = String(w[1]).trim();
@@ -43242,9 +43312,9 @@ S.extraMakers = function (n, level) {
     'In a place value chart: 4 hundreds, 7 tens and 3 ones.': 'Your turn: draw a place value chart for 625.',
     '362 is past the halfway point, 350. It is nearer 400.': 'Your turn: draw a number line from 200 to 300. Mark 280. Is it nearer 200 or 300?',
     'On a number line, −3 is 3 steps to the left of 0.': 'Your turn: draw a number line from −5 to 5. Mark −2.',
-    'Line them up in columns, ones under ones.': 'Your turn: write 145 + 32 in columns, ones under ones.',
+    'Line them up in columns, ones under ones.': 'Your turn: write 43 + 52 in columns, ones under ones.',
     'Ones: 2 take away 7 does not work. Exchange 1 ten: now 12 ones and 4 tens.': 'Your turn: write 63 − 28 in columns and exchange a ten.',
-    'Round: 298 is about 300, and 403 is about 400.': 'Your turn: draw a number line and round 512 to the nearest hundred.',
+    'Round: 48 is about 50, and 31 is about 30.': 'Your turn: draw a number line and round 82 to the nearest ten.',
     'Double 12 on a bar: 12 and 12 makes 24.': 'Your turn: draw a bar for double 15.',
     'Each crate is 2 tens. 3 crates is 6 tens.': 'Your turn: draw 4 crates with 2 tens in each. How many tens?',
     'Split 14 into 10 and 4. Three 10s is 30, three 4s is 12.': 'Your turn: draw a grid to work out 13 × 4.',
@@ -43348,9 +43418,9 @@ S.extraMakers = function (n, level) {
     '401|How do I round to the nearest 10 and 100?': 'Look at <b>362</b>. To the nearest 10, the ones digit is <b>2</b>, so it rounds down to <b>360</b>. To the nearest 100, the tens digit is <b>6</b>, so it rounds up to <b>400</b>.',
     '401|How can a thermometer help me understand negative numbers?': 'The thermometer shows <b>−3</b>. That is 3 below zero, so it is very cold.',
     '402|How can compensating help me add and subtract?': 'For <b>46 + 9</b>, add 10: <b>56</b>. That is 1 too many, so take 1 away: <b>55</b>.',
-    '402|How do I add using columns?': 'Ones: 7 + 5 = <b>12</b>. Write 2 and carry 1 ten. Tens: 4 + 3 + 1 = <b>8</b>. Hundreds: 2 + 1 = <b>3</b>. So 247 + 135 = <b>382</b>.',
-    '402|How do I subtract using columns?': 'Ones: 2 take away 7 does not work, so exchange a ten. Now 12 − 7 = <b>5</b>. Tens: 4 − 2 = <b>2</b>. Hundreds: 3 − 1 = <b>2</b>. So 352 − 127 = <b>225</b>.',
-    '402|How can estimating help me check my answer?': 'For <b>298 + 403</b>, round to <b>300 + 400 = 700</b>. The answer should be about 700.',
+    '402|How do I add using columns?': 'Ones: 3 + 2 = <b>5</b>. Tens: 4 + 5 = <b>9</b>. So 43 + 52 = <b>95</b>.',
+    '402|How do I subtract using columns?': 'Ones: 7 − 3 = <b>4</b>. Tens: 8 − 4 = <b>4</b>. So 87 − 43 = <b>44</b>.',
+    '402|How can estimating help me check my answer?': 'For <b>48 + 31</b>, round to <b>50 + 30 = 80</b>. The answer should be about 80.',
     '403|How can doubling and halving help me multiply and divide?': '<b>2 × 6 = 12</b>. Double it: <b>4 × 6 = 24</b>.',
     '403|How can I multiply a two-digit number?': 'For <b>14 × 3</b>, split 14 into 10 and 4. 10 × 3 = <b>30</b> and 4 × 3 = <b>12</b>. 30 + 12 = <b>42</b>.',
     '404|How can I compare fractions?': 'Look at <b>1/3</b> and <b>1/5</b>. Thirds are bigger pieces than fifths, so <b>1/3</b> is bigger.',
@@ -44288,42 +44358,42 @@ S.extraMakers = function (n, level) {
     ['Use a near ten, then fix the answer.', C(['+ 9 → + 10 − 1', '− 9 → − 10 + 1'])]]);
 
   LI(402, 'learn2', ['Adding in columns', 'How do I add using columns?',
-    'Write the numbers in columns: hundreds, tens and ones. Add the ones first. If they make 10 or more, carry a ten to the next column.', col(247, 135, '+'),
-    [['column', 'hundreds, tens or ones lined up', '📊'], ['carry', 'move a ten to the next column', '➡️'], ['ones first', 'always start on the right', '1️⃣'], ['total', 'the answer when you add', '➕']],
-    [['Ruby has 247 red bolts and 135 blue bolts.', C(['247', '135'])],
-      ['Line them up in columns, ones under ones.', col(247, 135, '+')],
-      ['Ones: 7 + 5 = 12, write 2 and carry 1. Tens: 4 + 3 + 1 = 8. Hundreds: 2 + 1 = 3.', B('247 + 135 = 382')]],
-    [['What is 315 + 142?', ['Ones: 5 + 2 = 7.', 'Tens: 1 + 4 = 5.', 'Hundreds: 3 + 1 = 4.'], '315 + 142 = 457', col(315, 142, '+')],
-      ['What is 168 + 254?', ['Ones: 8 + 4 = 12. Write 2, carry 1.', 'Tens: 6 + 5 + 1 = 12. Write 2, carry 1.', 'Hundreds: 1 + 2 + 1 = 4.'], '168 + 254 = 422', col(168, 254, '+')],
-      ['What is 406 + 57?', ['Line up 57 under the tens and ones.', 'Ones: 6 + 7 = 13. Write 3, carry 1.', 'Tens: 0 + 5 + 1 = 6. Hundreds: 4.'], '406 + 57 = 463', col(406, ' 57', '+')]],
+    'Write the numbers in columns: tens and ones. Add the ones first, then add the tens.', col(43, 52, '+'),
+    [['column', 'tens or ones lined up', '📊'], ['ones first', 'always start on the right', '1️⃣'], ['tens', 'groups of 10', '🔟'], ['total', 'the answer when you add', '➕']],
+    [['Ruby has 43 red bolts and 52 blue bolts.', C(['43', '52'])],
+      ['Line them up in columns, ones under ones.', col(43, 52, '+')],
+      ['Ones: 3 + 2 = 5. Tens: 4 + 5 = 9.', B('43 + 52 = 95')]],
+    [['What is 24 + 35?', ['Ones: 4 + 5 = 9.', 'Tens: 2 + 3 = 5.'], '24 + 35 = 59', col(24, 35, '+')],
+      ['What is 47 + 35?', ['Ones: 7 + 5 = 12. Write 2, carry 1 ten.', 'Tens: 4 + 3 + 1 = 8.'], '47 + 35 = 82', col(47, 35, '+')],
+      ['What is 61 + 7?', ['Put the 7 under the ones.', 'Ones: 1 + 7 = 8. Tens: 6.'], '61 + 7 = 68', col(61, ' 7', '+')]],
     ['Line up the digits by place. The ones must be under the ones.', C(['ones under ones ✓', 'line up the left ✗'])],
-    ['What is <b>125 + 234</b>?', col(125, 234, '+'), [359, 369, 459], 359, '5 + 4 = 9, 2 + 3 = 5, 1 + 2 = 3.', 'Start with the ones.'],
-    ['Ones first, carry if 10 or more, then tens, then hundreds.', C(['ones', 'tens', 'hundreds'])]]);
+    ['What is <b>25 + 34</b>?', col(25, 34, '+'), [49, 59, 69], 59, '5 + 4 = 9, 2 + 3 = 5.', 'Start with the ones.'],
+    ['Ones first, then tens.', C(['ones', 'tens'])]]);
 
   LI(402, 'learn3', ['Subtracting in columns', 'How do I subtract using columns?',
-    'Write the bigger number on top. Take away the ones first. If the top digit is too small, exchange a ten from the next column.', col(352, 127, '−'),
-    [['subtract', 'take away', '➖'], ['exchange', 'swap 1 ten for 10 ones', '🔄'], ['top number', 'the number you start with', '⬆️'], ['difference', 'the answer when you subtract', '↔️']],
-    [['The station has 352 bolts. Ruby uses 127.', C(['352', '− 127'])],
-      ['Ones: 2 take away 7 does not work. Exchange 1 ten: now 12 ones and 4 tens.', col(352, 127, '−')],
-      ['12 − 7 = 5, 4 − 2 = 2, 3 − 1 = 2.', B('352 − 127 = 225')]],
-    [['What is 486 − 152?', ['Ones: 6 − 2 = 4.', 'Tens: 8 − 5 = 3.', 'Hundreds: 4 − 1 = 3.'], '486 − 152 = 334', col(486, 152, '−')],
-      ['What is 543 − 218?', ['Ones: 3 − 8 does not work. Exchange a ten: 13 − 8 = 5.', 'Tens: now 3, and 3 − 1 = 2.', 'Hundreds: 5 − 2 = 3.'], '543 − 218 = 325', col(543, 218, '−')],
-      ['What is 760 − 35?', ['Ones: 0 − 5 does not work. Exchange a ten: 10 − 5 = 5.', 'Tens: now 5, and 5 − 3 = 2.', 'Hundreds: 7.'], '760 − 35 = 725', col(760, ' 35', '−')]],
-    ['Do not take the smaller digit from the bigger one when it is on the bottom. Exchange instead.', C(['52 − 27: 12 − 7 ✓', '7 − 2 ✗'])],
-    ['What is <b>375 − 142</b>?', col(375, 142, '−'), [233, 217, 333], 233, '5 − 2 = 3, 7 − 4 = 3, 3 − 1 = 2.', 'Start with the ones.'],
-    ['Ones first. Too small? Exchange a ten.', C(['ones', 'exchange?', 'tens', 'hundreds'])]]);
+    'Write the bigger number on top. Take away the ones first, then take away the tens.', col(87, 43, '−'),
+    [['subtract', 'take away', '➖'], ['top number', 'the number you start with', '⬆️'], ['ones first', 'always start on the right', '1️⃣'], ['difference', 'the answer when you subtract', '↔️']],
+    [['The station has 87 bolts. Ruby uses 43.', C(['87', '− 43'])],
+      ['Line them up in columns, ones under ones.', col(87, 43, '−')],
+      ['Ones: 7 − 3 = 4. Tens: 8 − 4 = 4.', B('87 − 43 = 44')]],
+    [['What is 56 − 32?', ['Ones: 6 − 2 = 4.', 'Tens: 5 − 3 = 2.'], '56 − 32 = 24', col(56, 32, '−')],
+      ['What is 98 − 53?', ['Ones: 8 − 3 = 5.', 'Tens: 9 − 5 = 4.'], '98 − 53 = 45', col(98, 53, '−')],
+      ['What is 79 − 6?', ['Put the 6 under the ones.', 'Ones: 9 − 6 = 3. Tens: 7.'], '79 − 6 = 73', col(79, ' 6', '−')]],
+    ['Take the bottom number away from the top number. Do not add.', C(['87 − 43 = 44 ✓', '87 + 43 = 130 ✗'])],
+    ['What is <b>68 − 25</b>?', col(68, 25, '−'), [33, 43, 93], 43, '8 − 5 = 3, 6 − 2 = 4.', 'Start with the ones.'],
+    ['Ones first, then tens. Check by adding.', C(['ones', 'tens', 'add back'])]]);
 
   LI(402, 'learn4', ['Estimating', 'How can estimating help me check my answer?',
-    'Estimate by rounding the numbers first. If your answer is far from the estimate, check again.', B('298 + 403<br>≈ 300 + 400 = 700'),
-    [['estimate', 'a sensible guess using easy numbers', '🤔'], ['round', 'change to the nearest 10 or 100', '🎯'], ['about (≈)', 'close to, not exact', '〰️'], ['check', 'make sure the answer makes sense', '✅']],
-    [['Ruby adds 298 and 403 fuel litres.', C(['298', '403'])],
-      ['Round: 298 is about 300, and 403 is about 400.', TR(295, 305, [298, 300])],
-      ['300 + 400 = 700, so the answer should be close to 700. It is 701.', B('≈ 700 → 701 ✓')]],
-    [['Estimate 189 + 212, then work it out.', ['189 ≈ 200 and 212 ≈ 200.', 'Estimate: 200 + 200 = 400.', 'Work it out: 401. That is close, so it makes sense.'], 'Estimate 400. Answer 401.', B('189 + 212')],
-      ['Estimate 512 − 298.', ['512 ≈ 500 and 298 ≈ 300.', '500 − 300 = 200.'], 'About 200. (The answer is 214.)', B('512 − 298')],
-      ['Sam says 395 + 210 = 405. Is that sensible?', ['Estimate: 400 + 200 = 600.', '405 is far from 600.', 'Sam made a mistake. The answer is 605.'], 'No: it should be about 600.', B('395 + 210 = 405?')]],
-    ['An estimate is close, not exact. Still work out the real answer after you estimate.', C(['estimate ≈ 600', 'answer = 605'])],
-    ['Estimate <b>396 + 204</b>.', '', [500, 600, 700], 600, '400 + 200 = 600.', 'Round each number to the nearest 100.'],
+    'Estimate by rounding the numbers to the nearest 10 first. If your answer is far from the estimate, check again.', B('48 + 31<br>≈ 50 + 30 = 80'),
+    [['estimate', 'a sensible guess using easy numbers', '🤔'], ['round', 'change to the nearest 10', '🎯'], ['about (≈)', 'close to, not exact', '〰️'], ['check', 'make sure the answer makes sense', '✅']],
+    [['Ruby adds 48 and 31 fuel litres.', C(['48', '31'])],
+      ['Round: 48 is about 50, and 31 is about 30.', TR(25, 55, [30, 50])],
+      ['50 + 30 = 80, so the answer should be close to 80. It is 79.', B('≈ 80 → 79 ✓')]],
+    [['Estimate 39 + 22, then work it out.', ['39 ≈ 40 and 22 ≈ 20.', 'Estimate: 40 + 20 = 60.', 'Work it out: 61. That is close, so it makes sense.'], 'Estimate 60. Answer 61.', B('39 + 22')],
+      ['Estimate 82 − 39.', ['82 ≈ 80 and 39 ≈ 40.', '80 − 40 = 40.'], 'About 40. (The answer is 43.)', B('82 − 39')],
+      ['Sam says 38 + 21 = 49. Is that sensible?', ['Estimate: 40 + 20 = 60.', '49 is far from 60.', 'Sam made a mistake. The answer is 59.'], 'No: it should be about 60.', B('38 + 21 = 49?')]],
+    ['An estimate is close, not exact. Still work out the real answer after you estimate.', C(['estimate ≈ 60', 'answer = 59'])],
+    ['Estimate <b>41 + 28</b>.', '', [60, 70, 80], 70, '40 + 30 = 70.', 'Round each number to the nearest 10.'],
     ['Round, add, compare with your answer.', C(['round', 'estimate', 'check'])]]);
 
   /* ========================= 403 Multiplication and division (Finn on the farm) ========================= */
@@ -44718,7 +44788,7 @@ S.extraMakers = function (n, level) {
   function grp(k, n, kind) { var o = []; for (var i = 0; i < k; i++) o.push(box(TH(n, kind, 5))); return '<div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap">' + o.join('') + '</div>'; }
   function bar(n, col) { var s = ''; for (var i = 0; i < n; i++) s += '<span style="display:inline-block;width:26px;height:26px;background:' + (col || '#ffb703') + ';border:2px solid ' + INK + ';margin-right:-2px"></span>'; return '<div style="display:flex;justify-content:center;flex-wrap:wrap">' + s + '</div>'; }
   function rowBars(items) { return '<div style="display:grid;gap:8px;justify-items:center">' + items.map(function (x) { return '<div style="display:flex;align-items:center;gap:10px"><b style="min-width:80px;text-align:right">' + x[0] + '</b>' + bar(x[1], x[2]) + '</div>'; }).join('') + '</div>'; }
-  function pies(list) { return '<div style="display:flex;gap:14px;justify-content:center;flex-wrap:wrap;align-items:center">' + list.map(function (p, i) { return (i ? '<b style="font-size:2em">=</b>' : '') + '<div style="text-align:center;font-weight:800;max-width:120px">' + FL.pie(p[0], p[1]) + '<div>' + p[1] + '/' + p[0] + '</div></div>'; }).join('') + '</div>'; }
+  function pies(list) { return '<div style="display:flex;gap:18px;justify-content:center;flex-wrap:wrap;align-items:center">' + list.map(function (p, i) { return (i ? '<b style="font-size:3rem;color:#2b2340;background:#fff;border-radius:12px;padding:0 10px">=</b>' : '') + '<div style="text-align:center;max-width:190px;color:#2b2340">' + FL.pie(p[0], p[1]) + '<div style="margin-top:6px">'+ '<div style="display:inline-flex;flex-direction:column;align-items:center;font-size:2rem;line-height:1.05;font-weight:800;color:#2b2340;background:#fff;border:3px solid #2b2340;border-radius:12px;padding:4px 14px"><span>' + p[1] + '</span><span style="border-top:4px solid #2b2340;width:100%;text-align:center">' + p[0] + '</span></div>' + '</div></div>'; }).join('') + '</div>'; }
   var ORD = ['', '1st', '2nd', '3rd', '4th', '5th', '6th', '7th', '8th', '9th', '10th', '11th', '12th', '13th', '14th', '15th', '16th', '17th', '18th', '19th', '20th'];
   var ORDW = ['', 'first', 'second', 'third', 'fourth', 'fifth', 'sixth', 'seventh', 'eighth', 'ninth', 'tenth'];
   var NAMES = ['Ava', 'Ben', 'Cara', 'Dev', 'Ella', 'Finn', 'Gus', 'Hana'];
@@ -45056,7 +45126,7 @@ S.extraMakers = function (n, level) {
   function grp(k, n, kind) { var o = []; for (var i = 0; i < k; i++) o.push(box(TH(n, kind, 5))); return '<div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap">' + o.join('') + '</div>'; }
   function bar(n, col) { var s = ''; for (var i = 0; i < n; i++) s += '<span style="display:inline-block;width:26px;height:26px;background:' + (col || '#ffb703') + ';border:2px solid ' + INK + ';margin-right:-2px"></span>'; return '<div style="display:flex;justify-content:center;flex-wrap:wrap">' + s + '</div>'; }
   function rowBars(items) { return '<div style="display:grid;gap:8px;justify-items:center">' + items.map(function (x) { return '<div style="display:flex;align-items:center;gap:10px"><b style="min-width:80px;text-align:right;color:#fff">' + x[0] + '</b>' + bar(x[1], x[2]) + '</div>'; }).join('') + '</div>'; }
-  function pies(list) { return '<div style="display:flex;gap:14px;justify-content:center;flex-wrap:wrap;align-items:center">' + list.map(function (p, i) { return (i ? '<b style="font-size:2em;color:#fff">=</b>' : '') + '<div style="text-align:center;font-weight:800;max-width:120px;color:#fff">' + FL.pie(p[0], p[1]) + '<div>' + p[1] + '/' + p[0] + '</div></div>'; }).join('') + '</div>'; }
+  function pies(list) { return '<div style="display:flex;gap:18px;justify-content:center;flex-wrap:wrap;align-items:center">' + list.map(function (p, i) { return (i ? '<b style="font-size:3rem;color:#2b2340;background:#fff;border-radius:12px;padding:0 10px">=</b>' : '') + '<div style="text-align:center;max-width:190px;color:#2b2340">' + FL.pie(p[0], p[1]) + '<div style="margin-top:6px">'+ '<div style="display:inline-flex;flex-direction:column;align-items:center;font-size:2rem;line-height:1.05;font-weight:800;color:#2b2340;background:#fff;border:3px solid #2b2340;border-radius:12px;padding:4px 14px"><span>' + p[1] + '</span><span style="border-top:4px solid #2b2340;width:100%;text-align:center">' + p[0] + '</span></div>' + '</div></div>'; }).join('') + '</div>'; }
   function sym(kind) { var lines = { square: ['<line x1="50" y1="14" x2="50" y2="86"/>', '<line x1="14" y1="50" x2="86" y2="50"/>', '<line x1="14" y1="14" x2="86" y2="86"/>', '<line x1="86" y1="14" x2="14" y2="86"/>'], rectangle: ['<line x1="50" y1="14" x2="50" y2="86"/>', '<line x1="12" y1="50" x2="88" y2="50"/>'], triangle: ['<line x1="50" y1="14" x2="50" y2="90"/>'] }, body = { square: '<rect x="24" y="24" width="52" height="52" fill="#ffd166" stroke="' + INK + '" stroke-width="3"/>', rectangle: '<rect x="14" y="30" width="72" height="40" fill="#ffd166" stroke="' + INK + '" stroke-width="3"/>', triangle: '<polygon points="50,22 18,78 82,78" fill="#ffd166" stroke="' + INK + '" stroke-width="3"/>', lshape: '<polygon points="24,22 50,22 50,56 78,56 78,78 24,78" fill="#ffd166" stroke="' + INK + '" stroke-width="3"/>' };
     return '<svg viewBox="0 0 100 100" role="img" aria-label="' + kind + (lines[kind] ? ' with ' + lines[kind].length + ' lines of symmetry' : ' with no line of symmetry') + '" style="width:110px;max-width:100%;height:auto">' + body[kind] + '<g stroke="#e63946" stroke-width="3" stroke-dasharray="6 4">' + (lines[kind] || []).join('') + '</g></svg>'; }
   function symRow(ks) { return '<div style="display:flex;gap:14px;justify-content:center;flex-wrap:wrap">' + ks.map(function (k) { return '<div style="text-align:center;font-weight:800;color:#fff">' + sym(k[0]) + '<div>' + k[1] + '</div></div>'; }).join('') + '</div>'; }
@@ -45251,14 +45321,19 @@ S.extraMakers = function (n, level) {
     var scr = [];
     if (sp.li) { scr.push({ mode: 'watch', say: sp.li[2], pic: pn(sp.li[3]) }); (sp.li[5] || []).forEach(function (s) { scr.push({ mode: 'watch', say: strip(s[0]), pic: pn(s[1]) }); }); }
     if (sp.way) scr.push({ mode: 'watch', say: strip(sp.way[0]), pic: pn(sp.way[1]) });
+    (sp.vis || []).forEach(function (w) { scr.push({ mode: 'watch', say: strip(w[0]), pic: pn(typeof w[1] === 'function' ? w[1]() : w[1]) }); });
     (sp.watch || []).forEach(function (w) { scr.push({ mode: 'watch', say: strip(w[0]), pic: pn(w[1]) }); });
-    (sp.ex || []).forEach(function (e) { scr.push({ mode: 'watch', say: strip(e[0]) + ' ' + e[1].map(strip).join(' ') + ' ' + strip(e[2]), pic: pn(Array.isArray(e[3]) ? e[3][e[3].length - 1] : e[3]) }); });
-    qs.slice(0, 4).forEach(function (r) { var o = qo(r); scr.push({ mode: 'together', say: o.q, pic: pn(o.pic), tip: o.tip, options: o.options, answer: o.answer, explain: o.explain }); });
-    qs.slice(4, 8).forEach(function (r) { var o = qo(r); scr.push({ mode: 'turn', say: o.q, pic: pn(o.pic), tip: o.tip, options: o.options, answer: o.answer, explain: o.explain }); });
+    (sp.ex || []).forEach(function (e) {
+      var fin = strip(e[2]), qbox = '<div style="font-size:clamp(1.2rem,4.5vw,1.8rem);font-weight:800;color:#2b2340;background:#fff;border:3px solid #2b2340;border-radius:16px;padding:8px 16px;margin:0 auto 10px;max-width:92%;text-align:center;line-height:1.25">' + strip(e[0]) + '</div>', pc = pn(qbox + (Array.isArray(e[3]) ? e[3][e[3].length - 1] : e[3]));
+      /* teaching slide: the question is on screen with its answer written just below it */
+      var abox = '<div style="font-size:clamp(1.3rem,5vw,2rem);font-weight:800;color:#fff;background:#2e9e4f;border:3px solid #2b2340;border-radius:16px;padding:8px 18px;margin:10px auto 0;max-width:92%;text-align:center;line-height:1.25">Answer: ' + fin + '</div>';
+      scr.push({ mode: 'watch', say: strip(e[0]) + ' ' + e[1].map(strip).join(' ') + ' So the answer is ' + fin + '.', pic: pn('<div style="display:flex;flex-direction:column;align-items:center;gap:8px;width:100%">' + qbox + (Array.isArray(e[3]) ? e[3][e[3].length - 1] : e[3]) + abox + '</div>') }); });
+    qs.slice(0, 4).forEach(function (r) { var o = qo(r); scr.push({ mode: 'together', say: o.q, pic: pn(o.pic), tip: o.tip === 'Think about what you learned in this lesson.' ? '' : o.tip, options: o.options, answer: o.answer, explain: o.explain }); });
+    qs.slice(4, 8).forEach(function (r) { var o = qo(r); scr.push({ mode: 'turn', say: o.q, pic: pn(o.pic), tip: o.tip === 'Think about what you learned in this lesson.' ? '' : o.tip, options: o.options, answer: o.answer, explain: o.explain }); });
     if (sp.li) {
       var first = scr.filter(function (x) { return x.mode === 'watch'; }).slice(0, 7).concat(scr.filter(function (x) { return x.mode !== 'watch'; }));
       var rest = scr.filter(function (x) { return x.mode === 'watch'; }).slice(7);
-      FL.addWatch(n, [{ title: title, char: ch, screens: first.concat(rest) }]);
+      FL.addWatch(n, [{ title: title, char: ch, rem: sp.rem || (sp.li && sp.li.length && sp.li[sp.li.length - 1] && sp.li[sp.li.length - 1][0] ? strip(sp.li[sp.li.length - 1][0]) : ''), screens: first.concat(rest) }]);
     } else FL.growWatch(n, title, ch, scr);
     /* the activity for a new lesson */
     (FL._mg = FL._mg || []).push([n, sp.id, sp.gen, qs]);
@@ -46668,7 +46743,7 @@ S.extraMakers = function (n, level) {
   function uniq(a, ans) { var o = [], seen = {}; seen[String(ans)] = 1; a.forEach(function (x) { x = String(x); if (!seen[x] && !/NaN|undefined/.test(x)) { seen[x] = 1; o.push(x); } }); return o.slice(0, 3); }
   FL.mcq = function (tag, q, a, ws, h, e, p) { return FL.MC(tag, q, String(a), uniq(ws, a), [h], e, p || ''); };
   FL.P4 = function (n, id, o) {
-    var spec = { id: id, ch: o.ch || 'owl', bg: o.bg || 'day', way: two(o.way), ex: o.ex.map(ex), mist: two(o.mist), real: rl(o.real), qs: o.qs.map(qq), gen: o.gen };
+    var spec = { id: id, ch: o.ch || 'owl', bg: o.bg || 'day', way: two(o.way), ex: o.ex.map(ex), mist: two(o.mist), real: rl(o.real), qs: o.qs.map(qq), gen: o.gen, vis: o.vis, rem: o.rem && !o.t ? o.rem : undefined };
     if (o.t) {
       var t = o.t.split('|'), ch = o.chk.split('|'), opts = [ch[1]].concat(ch[2].split(',')), k = opts.length > 1 ? 1 : 0;
       opts = opts.slice(k).concat(opts.slice(0, k));
@@ -46777,60 +46852,60 @@ S.extraMakers = function (n, level) {
     ex: ['What is 46 + 9?|Add 10: 56.;Take away 1: 55.|55|46 + 10 = 56', 'What is 83 - 19?|Take away 20: 63.;Add 1 back: 64.|64|83 - 20 = 63'],
     mist: 'Remember to put the extra back. 46 + 9 is 55, not 56.|+10 then -1',
     real: 'A book costs 49p. You buy 3 of them. Think: 3 × 50p take 3p.|£1.47|£1.50,£1.53,£1.40|150 - 3 = 147.|3 × 50p = 150p',
-    qs: ['34 + 9 = ?|43|44,42,33|34 + 10 - 1.', '57 + 19 = ?|76|77,75,66|57 + 20 - 1.', '72 - 9 = ?|63|62,64,61|72 - 10 + 1.', '65 - 19 = ?|46|45,47,44|65 - 20 + 1.', '48 + 11 = ?|59|58,60,49|48 + 10 + 1.', '90 - 21 = ?|69|70,68,71|90 - 20 - 1.', '125 + 99 = ?|224|225,223,214|125 + 100 - 1.', '200 - 99 = ?|101|100,102,99|200 - 100 + 1.'],
-    gen: function g(lv) { var a = r(21, lv ? 160 : 70), k = pick(lv ? [9, 19, 29, 11, 21, 99] : [9, 19, 11]), up = r(0, 1), res = up ? a + k : a - k; if (res < 1) return g(lv); var near = Math.round(k / 10) * 10 || 10; return mc('Compensating', 'What is <b>' + a + (up ? ' + ' : ' - ') + k + '</b>?', res, [res + 1, res - 1, res + 10, res - 10], 'Use ' + near + ' and adjust by ' + Math.abs(near - k) + '.', a + (up ? ' + ' : ' - ') + k + ' = ' + res + '.'); } });
+    qs: ['34 + 9 = ?|43|44,42,33|34 + 10 - 1.', '57 + 19 = ?|76|77,75,66|57 + 20 - 1.', '72 - 9 = ?|63|62,64,61|72 - 10 + 1.', '65 - 19 = ?|46|45,47,44|65 - 20 + 1.', '48 + 11 = ?|59|58,60,49|48 + 10 + 1.', '90 - 21 = ?|69|70,68,71|90 - 20 - 1.', '45 + 29 = ?|74|73,75,64|45 + 30 - 1.', '90 - 29 = ?|61|60,62,71|90 - 30 + 1.'],
+    gen: function g(lv) { var a = r(21, lv ? 89 : 70), k = pick(lv ? [9, 19, 29, 11, 21] : [9, 19, 11]), up = r(0, 1), res = up ? a + k : a - k; if (res < 1) return g(lv); var near = Math.round(k / 10) * 10 || 10; return mc('Compensating', 'What is <b>' + a + (up ? ' + ' : ' - ') + k + '</b>?', res, [res + 1, res - 1, res + 10, res - 10], 'Use ' + near + ' and adjust by ' + Math.abs(near - k) + '.', a + (up ? ' + ' : ' - ') + k + ' = ' + res + '.'); } });
 
   P(402, 'learn2', { ch: 'fox', bg: 'day',
-    way: 'Line up the digits. Add the ones first. If you get 10 or more, carry a ten to the next column.|ones first, then tens',
-    ex: ['What is 346 + 27?|Ones: 6 + 7 = 13, write 3 carry 1.;Tens: 4 + 2 + 1 = 7.;Hundreds: 3.|373|346, +27, 373', 'What is 258 + 164?|Ones: 8 + 4 = 12, write 2 carry 1.;Tens: 5 + 6 + 1 = 12, write 2 carry 1.;Hundreds: 2 + 1 + 1 = 4.|422|258, +164, 422'],
-    mist: 'Line up ones under ones. Do not add a tens digit to a ones digit.|ones, tens, hundreds',
-    real: 'A school has 238 girls and 195 boys. How many pupils?|433|423,343,443|238 + 195.|238 + 195',
-    qs: ['45 + 38 = ?|83|73,82,93|5 + 8 = 13 carry 1.', '127 + 36 = ?|163|153,162,173|7 + 6 = 13.', '256 + 145 = ?|401|391,411,301|Carry twice.', '308 + 77 = ?|385|375,395,305|8 + 7 = 15.', '419 + 283 = ?|702|692,712,602|9 + 3 = 12.', '64 + 78 = ?|142|132,152,141|4 + 8 = 12.', '350 + 275 = ?|625|525,615,635|Tens carry.', '199 + 201 = ?|400|390,410,300|99 + 1.'],
-    gen: function g(lv) { var a = r(25, lv ? 699 : 95), b = r(25, lv ? 299 : 95); return mc('Adding in columns', 'What is <b>' + a + ' + ' + b + '</b>?', a + b, [a + b + 10, a + b - 10, a + b + 100, a + b - 1], 'Add ones, then tens, then hundreds, carrying when needed.', a + ' + ' + b + ' = ' + (a + b) + '.'); } });
+    way: 'Line up the digits. Add the ones first, then add the tens.|ones first, then tens',
+    ex: ['What is 52 + 36?|Ones: 2 + 6 = 8.;Tens: 5 + 3 = 8.|88|52, +36, 88', 'What is 47 + 35?|Ones: 7 + 5 = 12. Write 2 and carry 1 ten.;Tens: 4 + 3 + 1 = 8.|82|47, +35, 82'],
+    mist: 'Line up ones under ones. Do not add a tens digit to a ones digit.|ones, tens',
+    real: 'A school has 32 girls and 45 boys. How many pupils?|77|67,87,76|32 + 45.|32 + 45',
+    qs: ['34 + 25 = ?|59|49,58,69|4 + 5 = 9 then 3 + 2 = 5.', '41 + 38 = ?|79|69,78,89|1 + 8 = 9 then 4 + 3 = 7.', '52 + 17 = ?|69|59,68,79|2 + 7 = 9 then 5 + 1 = 6.', '23 + 64 = ?|87|77,86,97|3 + 4 = 7 then 2 + 6 = 8.', '60 + 28 = ?|88|78,87,98|0 + 8 = 8 then 6 + 2 = 8.', '15 + 43 = ?|58|48,57,68|5 + 3 = 8 then 1 + 4 = 5.', '38 + 24 = ?|62|52,61,72|8 + 4 = 12, write 2 carry 1. Then 3 + 2 + 1 = 6.', '27 + 15 = ?|42|32,41,52|7 + 5 = 12, write 2 carry 1. Then 2 + 1 + 1 = 4.'],
+    gen: function g(lv) { var p = FL.p4pairs.add(lv ? 2 : 1, lv ? 6 : 5, lv && r(0, 1)), a = p[0], b = p[1]; return mc('Adding in columns', 'What is <b>' + a + ' + ' + b + '</b>?', a + b, [a + b + 10, a + b - 10, a + b + 1, a + b - 1], 'Add the ones, then add the tens. Carry 1 ten if the ones make 10 or more.', a + ' + ' + b + ' = ' + (a + b) + '.'); } });
 
   P(402, 'learn3', { ch: 'fox', bg: 'day',
-    way: 'Line up the digits. Subtract the ones first. If the top digit is too small, exchange a ten for 10 ones.|exchange when the top is smaller',
-    ex: ['What is 74 - 28?|Ones: 4 is smaller than 8, so exchange: 14 - 8 = 6.;Tens: 6 - 2 = 4.|46|74, -28, 46', 'What is 352 - 175?|Ones: 12 - 5 = 7.;Tens: 4 - 7 so exchange: 14 - 7 = 7.;Hundreds: 2 - 1 = 1.|177|352, -175, 177'],
-    mist: 'Never take the smaller digit from the bigger. 74 - 28 is not 54.|exchange, do not flip',
-    real: 'A bus holds 82. 37 are on board. How many seats left?|45|55,35,119|82 - 37.|82 - 37',
-    qs: ['53 - 27 = ?|26|34,36,25|13 - 7 = 6.', '81 - 46 = ?|35|45,25,34|11 - 6 = 5.', '240 - 85 = ?|155|165,145,225|Exchange.', '305 - 128 = ?|177|187,277,167|Exchange twice.', '420 - 163 = ?|257|267,357,247|Exchange.', '92 - 58 = ?|34|44,24,36|12 - 8 = 4.', '600 - 245 = ?|355|365,455,345|Exchange twice.', '134 - 76 = ?|58|68,48,62|14 - 6 = 8.'],
-    gen: function g(lv) { var a = r(52, lv ? 899 : 99), b = r(11, a - 5); return mc('Subtracting in columns', 'What is <b>' + a + ' - ' + b + '</b>?', a - b, [a - b + 10, a - b - 10, a - b + 100, a - b + 1], 'Subtract ones, then tens, then hundreds. Exchange when needed.', a + ' - ' + b + ' = ' + (a - b) + '.'); } });
+    way: 'Line up the digits. Subtract the ones first, then subtract the tens.|ones first, then tens',
+    ex: ['What is 87 - 43?|Ones: 7 - 3 = 4.;Tens: 8 - 4 = 4.|44|87, -43, 44', 'What is 56 - 32?|Ones: 6 - 2 = 4.;Tens: 5 - 3 = 2.|24|56, -32, 24'],
+    mist: 'Always take the bottom number from the top. Do not add them.|top take away bottom',
+    real: 'A bus holds 78. 35 are on board. How many seats left?|43|113,33,42|78 - 35.|78 - 35',
+    qs: ['68 - 25 = ?|43|93,33,42|8 - 5 = 3 then 6 - 2 = 4.', '79 - 36 = ?|43|115,33,42|9 - 6 = 3 then 7 - 3 = 4.', '85 - 23 = ?|62|108,52,63|5 - 3 = 2 then 8 - 2 = 6.', '47 - 24 = ?|23|71,33,22|7 - 4 = 3 then 4 - 2 = 2.', '96 - 55 = ?|41|151,31,42|6 - 5 = 1 then 9 - 5 = 4.', '59 - 38 = ?|21|97,31,20|9 - 8 = 1 then 5 - 3 = 2.', '74 - 41 = ?|33|115,43,32|4 - 1 = 3 then 7 - 4 = 3.', '88 - 62 = ?|26|150,36,25|8 - 2 = 6 then 8 - 6 = 2.'],
+    gen: function g(lv) { var p = FL.p4pairs.sub(lv ? 5 : 3, 9), a = p[0], b = p[1]; return mc('Subtracting in columns', 'What is <b>' + a + ' - ' + b + '</b>?', a - b, [a - b + 10, a - b - 10, a - b + 1, a - b - 1], 'Subtract the ones, then subtract the tens.', a + ' - ' + b + ' = ' + (a - b) + '.'); } });
 
   P(402, 'learn4', { ch: 'fox', bg: 'day',
-    way: 'Round each number first, then add or subtract. The estimate tells you if your answer is sensible.|198 + 303 ≈ 200 + 300',
-    ex: ['Estimate 298 + 403.|298 rounds to 300.;403 rounds to 400.;300 + 400 = 700.|about 700|300 + 400', 'Estimate 82 - 39.|82 rounds to 80, 39 rounds to 40.;80 - 40 = 40.|about 40|80 - 40'],
+    way: 'Round each number to the nearest 10 first, then add or subtract. The estimate tells you if your answer is sensible.|48 + 31 ≈ 50 + 30',
+    ex: ['Estimate 48 + 31.|48 rounds to 50.;31 rounds to 30.;50 + 30 = 80.|about 80|50 + 30', 'Estimate 82 - 39.|82 rounds to 80, 39 rounds to 40.;80 - 40 = 40.|about 40|80 - 40'],
     mist: 'An estimate is not exact. Use it to check, not to give the final answer.|≈ means about',
-    real: 'You work out 197 + 304 = 5,01. Is that sensible? Estimate: 200 + 300.|No, about 500|Yes,about 50,about 5000|Estimate is 500, so check 501.|200 + 300',
-    qs: ['Estimate 48 + 31 by rounding to tens.|80|90,70,50|50 + 30.', 'Estimate 99 + 102.|200|100,300,210|100 + 100.', 'Estimate 61 - 29.|30|40,20,90|60 - 30.', 'Estimate 295 + 199.|500|400,600,490|300 + 200.', 'Estimate 704 - 296.|400|500,300,410|700 - 300.', 'Estimate 78 + 22.|100|90,110,70|80 + 20.', 'Estimate 405 + 395.|800|700,900,810|400 + 400.', 'Estimate 91 - 48.|40|50,30,140|90 - 50.'],
-    gen: function g(lv) { var a = r(21, lv ? 899 : 99), b = r(11, lv ? 399 : 59), h = lv ? 100 : 10, ra = Math.round(a / h) * h, rb = Math.round(b / h) * h, up = r(0, 1); if (!up && ra - rb < h) return g(lv); var e = up ? ra + rb : ra - rb; return mc('Estimating', 'Estimate <b>' + a + (up ? ' + ' : ' - ') + b + '</b> by rounding to the nearest ' + h + '.', e, [e + h, e - h, a + b, e + h * 2], 'Round each number, then do the sum.', ra + (up ? ' + ' : ' - ') + rb + ' = ' + e + '.'); } });
+    real: 'You work out 38 + 21 = 49. Is that sensible? Estimate: 40 + 20.|No, about 60|Yes,about 50,about 600|Estimate is 60, so check 49.|40 + 20',
+    qs: ['Estimate 48 + 31 by rounding to tens.|80|90,70,50|50 + 30.', 'Estimate 39 + 22.|60|50,70,90|40 + 20.', 'Estimate 61 - 29.|30|40,20,90|60 - 30.', 'Estimate 52 + 38.|90|80,100,70|50 + 40.', 'Estimate 74 - 31.|40|30,50,110|70 - 30.', 'Estimate 78 + 22.|100|90,110,70|80 + 20.', 'Estimate 41 + 59.|100|90,110,40|40 + 60.', 'Estimate 91 - 48.|40|50,30,140|90 - 50.'],
+    gen: function g(lv) { var a = r(21, 89), b = r(11, lv ? 59 : 39), ra = Math.round(a / 10) * 10, rb = Math.round(b / 10) * 10, up = r(0, 1); if (!up && ra - rb < 10) return g(lv); var e = up ? ra + rb : ra - rb; return mc('Estimating', 'Estimate <b>' + a + (up ? ' + ' : ' - ') + b + '</b> by rounding to the nearest 10.', e, [e + 10, e - 10, a + b, e + 20], 'Round each number, then do the sum.', ra + (up ? ' + ' : ' - ') + rb + ' = ' + e + '.'); } });
 
   P(402, 'learnm1', { ch: 'fox', bg: 'day',
     t: 'Partitioning to add|How can I split numbers to add them?|Split a number into hundreds, tens and ones, add the parts, then put them back together.|45 + 32 = 40 + 30 + 5 + 2',
     words: 'partition=split a number into parts=✂️;total=the answer to an addition=🧮;tens=groups of 10=🔟;ones=single units=1️⃣',
     see: ['Split 45 into 40 and 5. Split 32 into 30 and 2.|45 = 40 + 5,32 = 30 + 2', 'Add the tens: 40 + 30 = 70. Add the ones: 5 + 2 = 7.|70,7', 'Put it together: 70 + 7 = 77.|45 + 32 = 77'],
-    ex3: ['What is 54 + 23?|50 + 20 = 70.;4 + 3 = 7.;70 + 7 = 77.|77|50 + 20,4 + 3', 'What is 63 + 28?|60 + 20 = 80.;3 + 8 = 11.;80 + 11 = 91.|91|80 + 11', 'What is 120 + 45?|100 + 20 + 40 + 5.;60 + 5 = 65 so 165.|165|100,60,5'],
+    ex3: ['What is 54 + 23?|50 + 20 = 70.;4 + 3 = 7.;70 + 7 = 77.|77|50 + 20,4 + 3', 'What is 63 + 28?|60 + 20 = 80.;3 + 8 = 11.;80 + 11 = 91.|91|80 + 11', 'What is 27 + 31?|20 + 30 = 50.;7 + 1 = 8.;50 + 8 = 58.|58|20 + 30,7 + 1'],
     mist: 'Add the tens as tens. 40 + 30 is 70, not 7.|tens stay tens',
     chk: 'What is 35 + 42?|77|67,87,75|30 + 40 + 5 + 2.|35 + 42',
     rem: 'Split, add tens, add ones, put back together.|split, add, join',
     way: 'Draw base ten blocks, a rod for each ten and a cube for each one.|4 rods 5 cubes,3 rods 2 cubes',
     ex: ['What is 36 + 41?|30 + 40 = 70.;6 + 1 = 7.|77|70 + 7', 'What is 72 + 19?|70 + 10 = 80.;2 + 9 = 11.|91|80 + 11'],
     real: 'You have 47 marbles and win 22. How many now?|69|59,79,25|40 + 20, 7 + 2.|47 + 22',
-    qs: ['23 + 45 = ?|68|58,78,65|20 + 40, 3 + 5.', '51 + 36 = ?|87|77,97,85|50 + 30, 1 + 6.', '64 + 25 = ?|89|79,99,84|60 + 20, 4 + 5.', '38 + 27 = ?|65|55,75,64|30 + 20, 8 + 7 = 15.', '75 + 18 = ?|93|83,103,92|70 + 10, 5 + 8 = 13.', '120 + 53 = ?|173|163,183,172|Hundreds, tens, ones.', 'Split 67 into tens and ones.|60 + 7|6 + 7,70 + 6,600 + 7|6 tens and 7 ones.', '44 + 44 = ?|88|84,78,98|Double 44.'],
+    qs: ['23 + 45 = ?|68|58,78,65|20 + 40, 3 + 5.', '51 + 36 = ?|87|77,97,85|50 + 30, 1 + 6.', '64 + 25 = ?|89|79,99,84|60 + 20, 4 + 5.', '38 + 27 = ?|65|55,75,64|30 + 20, 8 + 7 = 15.', '75 + 18 = ?|93|83,103,92|70 + 10, 5 + 8 = 13.', '31 + 58 = ?|89|79,99,88|30 + 50, 1 + 8.', 'Split 67 into tens and ones.|60 + 7|6 + 7,70 + 6,600 + 7|6 tens and 7 ones.', '44 + 44 = ?|88|84,78,98|Double 44.'],
     gen: function g(lv) { var a = r(12, lv ? 89 : 59), b = r(12, lv ? 89 : 59); return mc('Partitioning', 'Use partitioning to work out <b>' + a + ' + ' + b + '</b>.', a + b, [a + b + 10, a + b - 10, a + b + 1, a + b - 1], 'Add the tens, add the ones, then join.', a + ' + ' + b + ' = ' + (a + b) + '.'); } });
 
   P(402, 'learnm2', { ch: 'fox', bg: 'day',
     t: 'Add or subtract?|How do I know whether to add or subtract?|Read the story. Joining, getting more, or finding the total means add. Taking away, giving, or finding the difference means subtract.|join = add,take away = subtract',
     words: 'total=altogether=🧮;difference=how many more or less=↔️;left=what remains=🧺;more than=add on=➕',
     see: ['“How many altogether?” means add.|3 + 4 = 7', '“How many are left?” means subtract.|9 - 4 = 5', '“How many more?” means find the difference.|12 - 7 = 5'],
-    ex3: ['Sam has 25 cards. He gets 18 more. How many now?|Getting more means add.;25 + 18 = 43.|43|25 + 18', 'There are 60 sweets. 27 are eaten. How many left?|Eaten means take away.;60 - 27 = 33.|33|60 - 27', 'Ali has 45 and Bea has 30. How many more has Ali?|More means difference.;45 - 30 = 15.|15|45 - 30'],
+    ex3: ['Sam has 25 cards. He gets 14 more. How many now?|Getting more means add.;25 + 14 = 39.|39|25 + 14', 'There are 68 sweets. 27 are eaten. How many left?|Eaten means take away.;68 - 27 = 41.|41|68 - 27', 'Ali has 45 and Bea has 30. How many more has Ali?|More means difference.;45 - 30 = 15.|15|45 - 30'],
     mist: 'Do not pick by the biggest number. Read what is happening in the story.|story first',
     chk: 'There are 14 red and 9 blue balloons. How many altogether?|23|5,24,13|Altogether means add.|14 + 9',
     rem: 'Picture the story, choose add or subtract, then check the answer makes sense.|read, choose, check',
     way: 'Draw a bar model: one long bar for the total and two short bars for the parts.|total = part + part',
-    ex: ['A box has 38 pens. 15 are used. How many left?|Used means take away.;38 - 15 = 23.|23|38 - 15', 'A shop sells 26 apples and 19 pears. How many fruit?|Altogether means add.;26 + 19 = 45.|45|26 + 19'],
-    real: 'A class has 28 children. 9 are away. How many are in school?|19|37,29,18|Away means take away.|28 - 9',
-    qs: ['15 birds and 8 more arrive. Altogether?|23|7,22,24|Add.', '40 balloons, 12 pop. How many left?|28|52,38,27|Subtract.', 'Amy has 30p, Ben has 45p. How many more has Ben?|15p|75p,25p,5p|Difference.', '62 ducks, 28 leave. How many left?|34|44,90,24|Subtract.', '17 + 26 pupils. How many altogether?|43|33,53,41|Add.', 'A jug has 90 ml. 35 ml is poured out. Left?|55 ml|125 ml,65 ml,45 ml|Subtract.', '53 and 38. How many altogether?|91|81,15,101|Add.', 'Which sum for “How many more is 72 than 45”?|72 - 45|72 + 45,45 - 72,72 × 45|Difference.'],
-    gen: function g(lv) { var a = r(25, lv ? 95 : 70), b = r(8, 24), ad = r(0, 1), name = pick(['marbles', 'stickers', 'books', 'coins']); return ad ? mc('Add or subtract', 'Mia has <b>' + a + '</b> ' + name + ' and gets <b>' + b + '</b> more. How many does she have <b>now</b>?', a + b, [a - b, a + b + 10, a + b - 1], 'Getting more means add.', a + ' + ' + b + ' = ' + (a + b) + '.') : mc('Add or subtract', 'Mia has <b>' + a + '</b> ' + name + ' and gives away <b>' + b + '</b>. How many are <b>left</b>?', a - b, [a + b, a - b + 10, a - b - 1], 'Giving away means take away.', a + ' - ' + b + ' = ' + (a - b) + '.'); } });
+    ex: ['A box has 38 pens. 15 are used. How many left?|Used means take away.;38 - 15 = 23.|23|38 - 15', 'A shop sells 26 apples and 13 pears. How many fruit?|Altogether means add.;26 + 13 = 39.|39|26 + 13'],
+    real: 'A class has 29 children. 8 are away. How many are in school?|21|37,20,22|Away means take away.|29 - 8',
+    qs: ['15 birds and 8 more arrive. Altogether?|23|7,22,24|Add.', '48 balloons, 12 pop. How many left?|36|60,38,35|Subtract.', 'Amy has 30p, Ben has 45p. How many more has Ben?|15p|75p,25p,5p|Difference.', '68 ducks, 25 leave. How many left?|43|93,33,42|Subtract.', '17 + 22 pupils. How many altogether?|39|29,49,38|Add.', 'A jug has 95 ml. 35 ml is poured out. Left?|60 ml|130 ml,70 ml,50 ml|Subtract.', '53 and 36. How many altogether?|89|79,17,99|Add.', 'Which sum for “How many more is 75 than 42”?|75 - 42|75 + 42,42 - 75,75 × 42|Difference.'],
+    gen: function g(lv) { var ad = r(0, 1), p = ad ? FL.p4pairs.add(2, 6) : FL.p4pairs.sub(4, 9), a = p[0], b = p[1], name = pick(['marbles', 'stickers', 'books', 'coins']); return ad ? mc('Add or subtract', 'Mia has <b>' + a + '</b> ' + name + ' and gets <b>' + b + '</b> more. How many does she have <b>now</b>?', a + b, [a - b, a + b + 10, a + b - 1], 'Getting more means add.', a + ' + ' + b + ' = ' + (a + b) + '.') : mc('Add or subtract', 'Mia has <b>' + a + '</b> ' + name + ' and gives away <b>' + b + '</b>. How many are <b>left</b>?', a - b, [a + b, a - b + 10, a - b - 1], 'Giving away means take away.', a + ' - ' + b + ' = ' + (a - b) + '.'); } });
 
   P(402, 'learnm3', { ch: 'fox', bg: 'day',
     t: 'Missing numbers|How do I find a missing number?|Use the opposite. Addition and subtraction undo each other. To find a missing part, subtract from the total.|? + 8 = 20, so 20 - 8 = 12',
@@ -46842,12 +46917,16 @@ S.extraMakers = function (n, level) {
     rem: 'Missing part: use the opposite. Always check.|add ↔ subtract',
     way: 'Draw a bar model with the total on top and the parts below. Fill in what you know.|total 50,part 20,part ?',
     ex: ['25 + ? = 70|70 - 25 = 45.|45|45 + 25 = 70', '? - 18 = 22|22 + 18 = 40.|40|40 - 18 = 22'],
-    real: 'You need 100 points. You have 64. How many more?|36|46,164,26|100 - 64.|64 + ? = 100',
-    qs: ['? + 20 = 50|30|70,40,20|50 - 20.', '35 + ? = 60|25|95,35,15|60 - 35.', '? - 10 = 45|55|35,45,65|45 + 10.', '80 - ? = 30|50|110,40,60|80 - 30.', '? + 45 = 100|55|145,65,45|100 - 45.', '90 - ? = 55|35|145,45,25|90 - 55.', '? - 25 = 25|50|0,25,100|25 + 25.', '17 + ? = 17|0|17,34,1|Nothing needed.'],
-    gen: function g(lv) { var a = r(11, lv ? 70 : 40), b = r(11, lv ? 70 : 40), t = a + b, k = r(0, 2); return k === 0 ? mc('Missing numbers', 'What is the missing number? <b>? + ' + a + ' = ' + t + '</b>', b, [b + 10, b - 1, t + a], 'Subtract the part from the total.', t + ' - ' + a + ' = ' + b + '.') : k === 1 ? mc('Missing numbers', 'What is the missing number? <b>' + t + ' - ? = ' + a + '</b>', b, [b + 10, b - 1, t + a], 'Subtract the answer from the total.', t + ' - ' + a + ' = ' + b + '.') : mc('Missing numbers', 'What is the missing number? <b>? - ' + a + ' = ' + b + '</b>', t, [t + 10, t - 1, b - a < 1 ? t + 5 : b - a], 'Add back.', b + ' + ' + a + ' = ' + t + '.'); } });
+    real: 'You need 78 points. You have 52. How many more?|26|36,130,25|78 - 52.|52 + ? = 78',
+    qs: ['? + 20 = 50|30|70,40,20|50 - 20.', '35 + ? = 60|25|95,35,15|60 - 35.', '? - 10 = 45|55|35,45,65|45 + 10.', '80 - ? = 30|50|110,40,60|80 - 30.', '? + 45 = 99|54|144,64,44|99 - 45.', '95 - ? = 55|40|150,50,30|95 - 55.', '? - 25 = 25|50|0,25,100|25 + 25.', '17 + ? = 17|0|17,34,1|Nothing needed.'],
+    gen: function g(lv) { var p = FL.p4pairs.add(1, lv ? 5 : 4), a = p[0], b = p[1], t = a + b, k = r(0, 2); return k === 0 ? mc('Missing numbers', 'What is the missing number? <b>? + ' + a + ' = ' + t + '</b>', b, [b + 10, b - 1, t + a], 'Subtract the part from the total.', t + ' - ' + a + ' = ' + b + '.') : k === 1 ? mc('Missing numbers', 'What is the missing number? <b>' + t + ' - ? = ' + a + '</b>', b, [b + 10, b - 1, t + a], 'Subtract the answer from the total.', t + ' - ' + a + ' = ' + b + '.') : mc('Missing numbers', 'What is the missing number? <b>? - ' + a + ' = ' + b + '</b>', t, [t + 10, t - 1, b - a < 1 ? t + 5 : b - a], 'Add back.', b + ' + ' + a + ' = ' + t + '.'); } });
+
+  /* a picture of rows of cakes, made when the lesson is built */
+  function AR(rows, per, show) { return function () { return FL.p4.arr(rows, per, 'cake', show); }; }
 
   /* ===== 403 Multiplication and division ===== */
   P(403, 'learn1', { ch: 'bear', bg: 'farm',
+    vis: [['Look at 7 cakes in a row. To double 7 we make 2 rows of 7. 7 + 7 = 14.', AR(2, 7, 3)], ['Double again. Now there are 4 rows of 7. That is double 14, which is 28. So 7 × 4 = 28.', AR(4, 7, 3)], ['Halving goes the other way. 28 cakes in 4 equal rows is 7 in each row. 28 ÷ 4 = 7.', AR(4, 7, 2)]],
     way: 'To double a number, add it to itself. To halve it, share it into 2 equal parts.|double 7 = 14,half of 14 = 7',
     ex: ['Double 26.|Double 20 = 40.;Double 6 = 12.;40 + 12 = 52.|52|20 + 20,6 + 6', 'Half of 74.|Half of 70 = 35.;Half of 4 = 2.;35 + 2 = 37.|37|70 → 35,4 → 2'],
     mist: 'Doubling is × 2. Halving is ÷ 2. Do not mix them up.|× 2 and ÷ 2',
@@ -46864,6 +46943,7 @@ S.extraMakers = function (n, level) {
     gen: function g(lv) { var a = r(2, lv ? 9 : 6), b = pick(lv ? [20, 30, 40, 50, 60] : [20, 30, 40, 50]), p = a * b; return mc('Multiples of ten', 'What is <b>' + a + ' × ' + b + '</b>?', p, [p / 10, p * 10, a + b, p + 10], 'Do ' + a + ' × ' + b / 10 + ' then × 10.', a + ' × ' + b / 10 + ' = ' + p / 10 + ', then × 10 = ' + p + '.'); } });
 
   P(403, 'learn3', { ch: 'bear', bg: 'farm',
+    vis: [['Take 3 rows of 24. Split each row into 20 and 4. 3 rows of 20 is 60.', AR(3, 4, 1)], ['3 rows of 4 is 12. Now put the parts together: 60 + 12 = 72. So 3 × 24 = 72.', AR(3, 4, 3)]],
     way: 'Split the two-digit number into tens and ones. Multiply each part, then add.|4 × 23 = 4 × 20 + 4 × 3',
     ex: ['What is 3 × 24?|3 × 20 = 60.;3 × 4 = 12.;60 + 12 = 72.|72|60 + 12', 'What is 5 × 36?|5 × 30 = 150.;5 × 6 = 30.;150 + 30 = 180.|180|150 + 30'],
     mist: 'Multiply both the tens and the ones. 3 × 24 is not 3 × 20.|do both parts',
@@ -46872,6 +46952,7 @@ S.extraMakers = function (n, level) {
     gen: function g(lv) { var a = r(2, lv ? 9 : 5), b = r(11, lv ? 49 : 29), t = Math.floor(b / 10) * 10, o = b % 10; return mc('Two-digit multiplying', 'What is <b>' + a + ' × ' + b + '</b>?', a * b, [a * t + o, a * b + a, a * b - 10, a * t], 'Split ' + b + ' into ' + t + ' and ' + o + '.', a + ' × ' + t + ' = ' + a * t + ', ' + a + ' × ' + o + ' = ' + a * o + ', total ' + a * b + '.'); } });
 
   P(403, 'learn4', { ch: 'bear', bg: 'farm',
+    vis: [['Here are 3 rows of 4 cakes. 3 × 4 = 12.', AR(3, 4, 3)], ['Turn it around: 4 rows of 3 cakes. 4 × 3 = 12. The same 12 cakes!', AR(4, 3, 3)], ['Share the 12 cakes into 3 equal rows: 12 ÷ 3 = 4. Or into 4 equal rows: 12 ÷ 4 = 3.', AR(3, 4, 1)]],
     way: 'Use a fact you know to find a new one. If 3 × 4 = 12, then 30 × 4 = 120 and 12 ÷ 4 = 3.|3 × 4 = 12 → 12 ÷ 4 = 3',
     ex: ['You know 6 × 4 = 24. What is 24 ÷ 4?|Division undoes multiplication.|6|24 ÷ 4 = 6', 'You know 5 × 8 = 40. What is 50 × 8?|5 tens × 8 = 40 tens.|400|50 × 8 = 400'],
     mist: 'Division is the opposite of multiplication. 24 ÷ 6 = 4 because 6 × 4 = 24.|× and ÷ undo',
@@ -46895,6 +46976,7 @@ S.extraMakers = function (n, level) {
     mist: 'In the 9 times table the digits of the answer add to 9. 9 × 4 = 36 and 3 + 6 = 9.|3 + 6 = 9',
     chk: 'What is 9 × 7?|63|56,72,69|10 × 7 - 7.|70 - 7',
     rem: 'Build new facts from easy ones: 5s, 10s and doubles.|5s, 10s, doubles',
+    vis: [['Let us find 6 × 4. First look at 3 × 4. That is 3 rows of 4 cakes: 12.', AR(3, 4, 3)], ['6 rows is double 3 rows. Double 12 is 24. So 6 × 4 = 24.', AR(6, 4, 3)], ['For 9 × 4, think 10 × 4 = 40, then take away one row of 4. 40 − 4 = 36.', AR(9, 4, 3)]],
     way: 'Draw an array of dots in rows and columns and count the rows of 6.|6 × 4 = 24',
     ex: ['What is 7 × 7?|5 × 7 = 35, 2 × 7 = 14.;35 + 14 = 49.|49|35 + 14', 'What is 8 × 8?|8 × 4 = 32.;Double: 64.|64|32 × 2'],
     real: 'An egg box holds 6. How many eggs in 7 boxes?|42|36,48,13|6 × 7.|7 × 6',
@@ -46909,6 +46991,7 @@ S.extraMakers = function (n, level) {
     mist: 'Division groups must be equal. 10 shared between 3 is not 3, 3, 4.|equal groups',
     chk: 'How many groups of 4 in 24?|6|5,8,20|4 × 6 = 24.|24 ÷ 4',
     rem: 'Divide means share equally or find how many groups.|÷ = share or group',
+    vis: [['Look at 6 plates with 3 cakes on each plate. We show them as 6 rows of 3 cakes.', AR(6, 3, 1)], ['Count the cakes in each row: 3, 6, 9, 12, 15, 18. Adding 3 six times: 3 + 3 + 3 + 3 + 3 + 3 = 18.', AR(6, 3, 2)], ['So 6 × 3 = 18. Multiplication is a quick way to add equal groups.', AR(6, 3, 3)], ['Now share 12 cakes between 3 plates. Give one cake to each plate at a time. Each plate gets 4 cakes. 12 ÷ 3 = 4.', AR(3, 4, 1)], ['Or group them: how many plates of 3 cakes can we make from 12 cakes? 4 plates. Again 12 ÷ 3 = 4.', AR(4, 3, 1)], ['Multiplication and division are linked. 3 × 4 = 12, so 12 ÷ 3 = 4.', AR(3, 4, 3)]],
     way: 'Draw circles and put the items in one at a time until they are used up.|12 sweets, 3 circles',
     ex: ['16 pencils shared between 4 pots. How many in each?|4 × 4 = 16.|4|16 ÷ 4', 'How many 10s in 70?|10 × 7 = 70.|7|70 ÷ 10'],
     real: '30 children make teams of 5. How many teams?|6|35,25,150|5 × 6 = 30.|30 ÷ 5',
@@ -47162,12 +47245,12 @@ S.extraMakers = function (n, level) {
   P(406, 'learnm3', { ch: 'owl', bg: 'day',
     t: 'Months and the year|How many days are in each month?|A year has 12 months and 365 days. Some months have 30 days, some 31 and February has 28 or 29.|30 days has September...',
     words: 'month=part of a year=🗓️;leap year=366 days every 4 years=🐸;year=12 months=📆;date=day and month=📅',
-    see: ['Rhyme: 30 days hath September, April, June and November.|Sep, Apr, Jun, Nov', 'All the rest have 31, except February with 28.|Feb = 28', 'In a leap year February has 29 days. A leap year has 366 days.|29, 366'],
+    see: ['Rhyme: 30 days hath September, April, June and November.|30 days: September,30 days: April,30 days: June,30 days: November', 'All the rest have 31, except February with 28.|February has 28 days (29 in a leap year)', 'In a leap year February has 29 days. A leap year has 366 days.|Leap year: February has 29 days,A leap year has 366 days'],
     ex3: ['How many days in June?|June is in the rhyme.|30|30', 'How many days in July?|Not in the rhyme.|31|31', 'How many months have 30 days?|Sep, Apr, Jun, Nov.|4|4'],
     mist: 'Check the month. February is the short month. Not all months have 30 days.|28, 30, 31',
     chk: 'How many days in September?|30|31,28,29|In the rhyme.|Sep',
     rem: '30 days hath September, April, June and November. Feb 28 or 29. Others 31.|rhyme',
-    way: 'Use your knuckles: knuckles are 31-day months, the dips between are 30 (not February).|knuckles',
+    way: 'Make a fist and count the months along your knuckles. Start at the first knuckle: that is January. Say each month as you move. A knuckle that sticks up is a month with 31 days. A dip between two knuckles is a short month: February has 28 or 29 days, and the other dips have 30 days. After the last knuckle, July, jump to the first knuckle again for August, and carry on to December.|<div style="display:flex;flex-direction:column;align-items:center;gap:6px"><div style="display:flex;gap:10px;flex-wrap:wrap;justify-content:center"><div style="text-align:center"><div style="font-weight:800;color:#2b2340;margin-bottom:2px">Left fist: Jan to Jul</div><div style="display:flex;align-items:flex-end;justify-content:center;gap:4px;background:#f6d9b8;border:3px solid #2b2340;border-radius:18px;padding:8px 10px"><div style="text-align:center"><div style="font-weight:800;font-size:.8rem;color:#2b2340">Jan</div><div style="width:34px;height:44px;background:#ffd08a;border:3px solid #2b2340;border-radius:50% 50% 6px 6px;margin-top:2px"></div><div style="font-size:.7rem;font-weight:800;color:#2b2340">31</div></div><div style="text-align:center"><div style="font-weight:800;font-size:.8rem;color:#2b2340">Feb</div><div style="width:34px;height:22px;background:#c98f5a;border:3px solid #2b2340;border-radius:6px;margin-top:2px"></div><div style="font-size:.7rem;font-weight:800;color:#2b2340">28/29</div></div><div style="text-align:center"><div style="font-weight:800;font-size:.8rem;color:#2b2340">Mar</div><div style="width:34px;height:44px;background:#ffd08a;border:3px solid #2b2340;border-radius:50% 50% 6px 6px;margin-top:2px"></div><div style="font-size:.7rem;font-weight:800;color:#2b2340">31</div></div><div style="text-align:center"><div style="font-weight:800;font-size:.8rem;color:#2b2340">Apr</div><div style="width:34px;height:22px;background:#c98f5a;border:3px solid #2b2340;border-radius:6px;margin-top:2px"></div><div style="font-size:.7rem;font-weight:800;color:#2b2340">30</div></div><div style="text-align:center"><div style="font-weight:800;font-size:.8rem;color:#2b2340">May</div><div style="width:34px;height:44px;background:#ffd08a;border:3px solid #2b2340;border-radius:50% 50% 6px 6px;margin-top:2px"></div><div style="font-size:.7rem;font-weight:800;color:#2b2340">31</div></div><div style="text-align:center"><div style="font-weight:800;font-size:.8rem;color:#2b2340">Jun</div><div style="width:34px;height:22px;background:#c98f5a;border:3px solid #2b2340;border-radius:6px;margin-top:2px"></div><div style="font-size:.7rem;font-weight:800;color:#2b2340">30</div></div><div style="text-align:center"><div style="font-weight:800;font-size:.8rem;color:#2b2340">Jul</div><div style="width:34px;height:44px;background:#ffd08a;border:3px solid #2b2340;border-radius:50% 50% 6px 6px;margin-top:2px"></div><div style="font-size:.7rem;font-weight:800;color:#2b2340">31</div></div></div></div><div style="text-align:center"><div style="font-weight:800;color:#2b2340;margin-bottom:2px">Right fist: Aug to Dec</div><div style="display:flex;align-items:flex-end;justify-content:center;gap:4px;background:#f6d9b8;border:3px solid #2b2340;border-radius:18px;padding:8px 10px"><div style="text-align:center"><div style="font-weight:800;font-size:.8rem;color:#2b2340">Aug</div><div style="width:34px;height:44px;background:#ffd08a;border:3px solid #2b2340;border-radius:50% 50% 6px 6px;margin-top:2px"></div><div style="font-size:.7rem;font-weight:800;color:#2b2340">31</div></div><div style="text-align:center"><div style="font-weight:800;font-size:.8rem;color:#2b2340">Sep</div><div style="width:34px;height:22px;background:#c98f5a;border:3px solid #2b2340;border-radius:6px;margin-top:2px"></div><div style="font-size:.7rem;font-weight:800;color:#2b2340">30</div></div><div style="text-align:center"><div style="font-weight:800;font-size:.8rem;color:#2b2340">Oct</div><div style="width:34px;height:44px;background:#ffd08a;border:3px solid #2b2340;border-radius:50% 50% 6px 6px;margin-top:2px"></div><div style="font-size:.7rem;font-weight:800;color:#2b2340">31</div></div><div style="text-align:center"><div style="font-weight:800;font-size:.8rem;color:#2b2340">Nov</div><div style="width:34px;height:22px;background:#c98f5a;border:3px solid #2b2340;border-radius:6px;margin-top:2px"></div><div style="font-size:.7rem;font-weight:800;color:#2b2340">30</div></div><div style="text-align:center"><div style="font-weight:800;font-size:.8rem;color:#2b2340">Dec</div><div style="width:34px;height:44px;background:#ffd08a;border:3px solid #2b2340;border-radius:50% 50% 6px 6px;margin-top:2px"></div><div style="font-size:.7rem;font-weight:800;color:#2b2340">31</div></div></div></div></div><div style="font-weight:800;color:#2b2340">High knuckle = 31 days. Dip between = 30 days (Feb 28 or 29).</div></div>',
     ex: ['How many days in April?|In the rhyme.|30|30', 'How many days in March?|Not in the rhyme.|31|31'],
     real: 'Your birthday is on 14 March. How many days from 1 March?|13|14,30,31|14 - 1.|14 - 1',
     qs: ['Days in a leap year?|366|365,364,360|One extra day.', 'How many months in a year?|12|10,11,13|12.', 'Days in November?|30|31,28,29|Rhyme.', 'Days in August?|31|30,28,29|Not rhyme.', 'Days in February (not leap)?|28|29,30,31|Short month.', 'Which has 31 days?|January|April,June,September|31.', 'Which has 30 days?|April|January,March,May|Rhyme.', 'Which month is after June?|July|May,August,June|Order.'],

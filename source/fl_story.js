@@ -49,7 +49,7 @@
     '.flb .a-up{animation:flUp 2.6s ease-in both}' +
     '.flb .a-wig{animation:flWig 1.2s ease-in-out infinite}' +
     '.flb .a-in{animation:flIn .7s ease-out both}' +
-    '.flp{position:relative;display:flex;align-items:center;justify-content:center;gap:10px;flex-wrap:wrap;padding:14px 12px;min-height:220px;line-height:1.3}' +
+    '.flp{position:relative;display:flex;align-items:center;justify-content:center;gap:10px;flex-wrap:wrap;padding:14px 12px;min-height:220px;line-height:1.3;color:#2b2340}' +
     '.flp-ch{flex:0 0 auto;animation:flBob 2.6s ease-in-out infinite}.flp-ch svg{width:110px;height:auto}' +
     '.flp-pic>svg{flex:1 1 150px}.flp-pic{flex:1 1 200px;min-width:0;display:flex;flex-wrap:wrap;gap:8px;justify-content:center;align-items:center;animation:flPop .6s cubic-bezier(.3,1.6,.6,1) both;animation-delay:.25s}.flp-pic>*{max-width:100%}' +
     '.flp-pic .card,.flp-pic .sv-card{color:#2b2340}' +
@@ -124,6 +124,14 @@
      story-based lesson is another, with Watch me, Let's do it together, Your turn and a recap. */
   var NUMW = ['zero', 'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine', 'ten', 'eleven', 'twelve', 'thirteen', 'fourteen', 'fifteen', 'sixteen', 'seventeen', 'eighteen', 'nineteen', 'twenty'];
   function strip(h) { return String(h).replace(/<[^>]+>/g, ''); }
+  /* a teaching slide whose picture is only a bare word or number also shows what is being said, so nothing is narration-only */
+  function capPic(x) { var h = typeof x.pic === 'function' ? x.pic() : (x.pic || ''); if (x.mode !== 'watch' || !x.say) return h;
+    var txt = h.replace(/<style[\s\S]*?<\/style>/g, '').replace(/<svg[\s\S]*?<\/svg>/g, 'S').replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim();
+    if (/<svg|<table|<img/.test(h) && txt.length > 3) return h;
+    if (txt.length > 40 || /data-wq/.test(h) && txt.length > 40) return h;
+    var say = strip(x.say); if (say.length < 12 || say.length > 170) return h;
+    var cap = '<div style="font-size:clamp(1.05rem,3.6vw,1.5rem);font-weight:800;color:#2b2340;background:#fff;border:3px solid #2b2340;border-radius:16px;padding:8px 14px;margin:0 auto 10px;max-width:94%;text-align:center;line-height:1.25">' + say + '</div>';
+    return '<div style="display:flex;flex-direction:column;align-items:center;gap:8px;width:100%">' + cap + h + '</div>'; }
   function pic(p, ch) { var h = typeof p === 'function' ? p() : (p || '');
     if (ch && h.indexOf('class="flp ') >= 0 && h.indexOf('flp-ch') < 0) h = h.replace('<div class="flp-pic">', '<div class="flp-ch">' + FL.char(ch, 110) + '</div><div class="flp-pic">');
     return h ? '<div class="flb flb-w"><div class="flb-stage">' + h + '</div></div>' : ''; }
@@ -142,14 +150,15 @@
     L = BT.L;
     var sc = [], watch = [], tog = [], turn = [], tips = [];
       l.screens.forEach(function (x) {
-        var p = pic(x.pic, l.char);
+        var p = pic(capPic(x), l.char);
         if (x.mode === 'watch') { var sw0 = L.st(x.say, p); if (x.facts) sw0.facts = x.facts; watch.push(sw0); }
         else { if (x.tip && tips.length < 4) tips.push(x.tip); (x.mode === 'together' ? tog : turn).push.apply(x.mode === 'together' ? tog : turn, askSteps(x.say, p, x.options, x.answer, x.explain, x.mode === 'together' ? x.tip : '')); }
       });
       if (watch.length) sc.push(L.SC('Watch me', l.title, sw(watch)));
       if (tog.length) sc.push(L.SC('Let’s do it together', 'Try it with me', sw(tog)));
       if (turn.length) sc.push(L.SC('Your turn', 'Pause, think, then listen', sw(turn)));
-      if (tips.length) sc.push(L.rec(l.title, 'Let’s remember the tips from this lesson. ' + tips.map(strip).map(function (t) { return /[.!?…]$/.test(t) ? t : t + '.'; }).join(' '), tips.map(strip)));
+      if (l.rem && String(l.rem).trim()) { var rp = String(l.rem).split('|'), say0 = strip(rp[0]), pts = rp[1] ? strip(rp[1]).split(',').map(function (x) { return x.trim(); }).filter(Boolean) : say0.split(/(?<=[.!?])\s+/).filter(Boolean); sc.push(L.rec(l.title, 'Let\u2019s remember. ' + say0, pts.length > 1 ? pts : [say0])); }
+      else if (tips.length) sc.push(L.rec(l.title, 'Let’s remember the tips from this lesson. ' + tips.map(strip).map(function (t) { return /[.!?…]$/.test(t) ? t : t + '.'; }).join(' '), tips.map(strip)));
     return L.ep(l.title, strip(l.title).replace(/\?$/, '').toLowerCase() + '.', sc);
   }
   /* add Let's learn lessons to the end of a topic's Watch lesson list */
@@ -166,7 +175,7 @@
     var eps = ((BT.EP_BY_TOPIC && BT.EP_BY_TOPIC[n]) || []).map(function (x) { return typeof x === 'string' ? BT.EP[x] : x; }).filter(Boolean);
     var ep = eps.filter(function (e) { return e.title === title; })[0]; if (!ep) return false;
     var by = { watch: [], together: [], turn: [] }, tips = [];
-    screens.forEach(function (x) { var p = pic(x.pic, char);
+    screens.forEach(function (x) { var p = pic(capPic(x), char);
       if (x.mode === 'watch') by.watch.push(L.st(x.say, p));
       else { if (x.tip) tips.push(x.tip); by[x.mode].push.apply(by[x.mode], askSteps(x.say, p, x.options, x.answer, x.explain, x.mode === 'together' ? x.tip : '')); } });
     function scene(name) { return ep.scenes.filter(function (s) { return s.h === name; })[0]; }

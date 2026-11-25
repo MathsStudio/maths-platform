@@ -7,7 +7,8 @@
   var FL = window.FL, BT = window.BT, S = window.Studio; if (!FL || !BT || !BT.add || !S) return;
   var V = BT.sv, INK = '#2b2340', r = FL.r, pick = FL.pick, shuffle = FL.shuffle;
 
-  function big(t) { return '<div style="font-size:clamp(1.6rem,6vw,2.4rem);font-weight:800;color:' + INK + ';background:#fff;border:3px solid ' + INK + ';border-radius:16px;padding:6px 18px;text-align:center;display:inline-block">' + t + '</div>'; }
+  function stackFr(t) { return String(t).replace(/(^|[^\d\/.])(\d{1,3})\/(\d{1,3})(?![\d\/])/g, function (m, a, n, d) { return a + '<span style="display:inline-flex;flex-direction:column;align-items:center;vertical-align:middle;line-height:1.05;margin:0 .15em"><span style="padding:0 .2em">' + n + '</span><span style="border-top:.12em solid currentColor;padding:0 .2em">' + d + '</span></span>'; }); }
+  function big(t) { t = /^\s*</.test(String(t)) ? t : stackFr(t); return '<div style="font-size:clamp(1.6rem,6vw,2.4rem);font-weight:800;color:' + INK + ';background:#fff;border:3px solid ' + INK + ';border-radius:16px;padding:6px 18px;text-align:center;display:inline-block;white-space:nowrap;font-size:clamp(2rem,8vw,3.2rem)">' + t + '</div>'; }
   function cards(list) { return '<div style="display:flex;flex-wrap:wrap;gap:8px;justify-content:center">' + list.map(function (t) { return '<span style="background:#fff;border:3px solid ' + INK + ';border-radius:14px;padding:6px 12px;font-weight:800;color:' + INK + '">' + t + '</span>'; }).join('') + '</div>'; }
   /* each key word is read and explained in turn: "Bigger means more." */
   function spoken(w) { var raw = String(w[0]), pm = /\(([^)]*)\)/.exec(raw), word = raw.replace(/\s*\([^)]*\)/g, '').trim(), m = String(w[1]).trim();
@@ -118,9 +119,9 @@
     'In a place value chart: 4 hundreds, 7 tens and 3 ones.': 'Your turn: draw a place value chart for 625.',
     '362 is past the halfway point, 350. It is nearer 400.': 'Your turn: draw a number line from 200 to 300. Mark 280. Is it nearer 200 or 300?',
     'On a number line, −3 is 3 steps to the left of 0.': 'Your turn: draw a number line from −5 to 5. Mark −2.',
-    'Line them up in columns, ones under ones.': 'Your turn: write 145 + 32 in columns, ones under ones.',
+    'Line them up in columns, ones under ones.': 'Your turn: write 43 + 52 in columns, ones under ones.',
     'Ones: 2 take away 7 does not work. Exchange 1 ten: now 12 ones and 4 tens.': 'Your turn: write 63 − 28 in columns and exchange a ten.',
-    'Round: 298 is about 300, and 403 is about 400.': 'Your turn: draw a number line and round 512 to the nearest hundred.',
+    'Round: 48 is about 50, and 31 is about 30.': 'Your turn: draw a number line and round 82 to the nearest ten.',
     'Double 12 on a bar: 12 and 12 makes 24.': 'Your turn: draw a bar for double 15.',
     'Each crate is 2 tens. 3 crates is 6 tens.': 'Your turn: draw 4 crates with 2 tens in each. How many tens?',
     'Split 14 into 10 and 4. Three 10s is 30, three 4s is 12.': 'Your turn: draw a grid to work out 13 × 4.',
@@ -224,9 +225,9 @@
     '401|How do I round to the nearest 10 and 100?': 'Look at <b>362</b>. To the nearest 10, the ones digit is <b>2</b>, so it rounds down to <b>360</b>. To the nearest 100, the tens digit is <b>6</b>, so it rounds up to <b>400</b>.',
     '401|How can a thermometer help me understand negative numbers?': 'The thermometer shows <b>−3</b>. That is 3 below zero, so it is very cold.',
     '402|How can compensating help me add and subtract?': 'For <b>46 + 9</b>, add 10: <b>56</b>. That is 1 too many, so take 1 away: <b>55</b>.',
-    '402|How do I add using columns?': 'Ones: 7 + 5 = <b>12</b>. Write 2 and carry 1 ten. Tens: 4 + 3 + 1 = <b>8</b>. Hundreds: 2 + 1 = <b>3</b>. So 247 + 135 = <b>382</b>.',
-    '402|How do I subtract using columns?': 'Ones: 2 take away 7 does not work, so exchange a ten. Now 12 − 7 = <b>5</b>. Tens: 4 − 2 = <b>2</b>. Hundreds: 3 − 1 = <b>2</b>. So 352 − 127 = <b>225</b>.',
-    '402|How can estimating help me check my answer?': 'For <b>298 + 403</b>, round to <b>300 + 400 = 700</b>. The answer should be about 700.',
+    '402|How do I add using columns?': 'Ones: 3 + 2 = <b>5</b>. Tens: 4 + 5 = <b>9</b>. So 43 + 52 = <b>95</b>.',
+    '402|How do I subtract using columns?': 'Ones: 7 − 3 = <b>4</b>. Tens: 8 − 4 = <b>4</b>. So 87 − 43 = <b>44</b>.',
+    '402|How can estimating help me check my answer?': 'For <b>48 + 31</b>, round to <b>50 + 30 = 80</b>. The answer should be about 80.',
     '403|How can doubling and halving help me multiply and divide?': '<b>2 × 6 = 12</b>. Double it: <b>4 × 6 = 24</b>.',
     '403|How can I multiply a two-digit number?': 'For <b>14 × 3</b>, split 14 into 10 and 4. 10 × 3 = <b>30</b> and 4 × 3 = <b>12</b>. 30 + 12 = <b>42</b>.',
     '404|How can I compare fractions?': 'Look at <b>1/3</b> and <b>1/5</b>. Thirds are bigger pieces than fifths, so <b>1/3</b> is bigger.',

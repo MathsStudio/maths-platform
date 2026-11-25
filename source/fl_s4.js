@@ -10,6 +10,17 @@
   function col(a, b, sign) { return '<pre style="font:800 1.8rem/1.3 ui-monospace,monospace;text-align:right;margin:0;padding:8px 18px;border-radius:12px;background:#fff;color:' + INK + ';border:3px solid ' + INK + '">  ' + a + '\n' + sign + ' ' + b + '\n─────</pre>'; }
   function hto(h, t, o) { var c = function (v, bg) { return '<td style="border:3px solid ' + INK + ';padding:6px 14px;font-size:1.8rem;font-weight:800;background:' + bg + '">' + v + '</td>'; };
     return '<table style="border-collapse:collapse;color:' + INK + ';text-align:center;background:#fff"><tr><th style="padding:2px 10px">H</th><th>T</th><th>O</th></tr><tr>' + c(h, '#ffe2ec') + c(t, '#e3f4ff') + c(o, '#fff1c9') + '</tr></table>'; }
+  /* a tens-and-ones column sum shown step by step: res = {t, o} digits written so far, hi = 't' / 'o' column to highlight */
+  function colS(a, b, sign, res, hi, carry, anim) {
+    a = String(a); b = String(b); res = res || {};
+    function c(v, k) { var on = hi === k; return '<td style="padding:4px 18px;font:800 2rem/1.25 ui-monospace,monospace;text-align:center;background:' + (on ? (k === 't' ? '#d4ecff' : '#ffe9a8') : '#fff') + ';color:' + INK + '">' + (v == null ? '' : v) + '</td>'; }
+    function two(x) { x = x.length < 2 ? ' ' + x : x; return [x.charAt(0).trim(), x.charAt(1)]; }
+    var A = two(a), B = two(b);
+    var sty = carry ? '<style>@keyframes cHop{0%{transform:translate(64px,70px) scale(.7);opacity:.2}35%{transform:translate(64px,0) scale(1.5);opacity:1}100%{transform:translate(0,0) scale(1);opacity:1}}.cHop{display:inline-block;animation:cHop 1.8s ease-out both}</style>' : '';
+    var cr = carry ? '<tr><td></td><td style="text-align:center;height:2.2rem;color:#e0457b;font:800 1.5rem ui-monospace,monospace"><span class="' + (anim ? 'cHop' : '') + '">' + carry + '</span></td><td></td></tr>' : '';
+    return sty + '<table style="border-collapse:collapse;background:#fff;border:3px solid ' + INK + ';border-radius:12px;color:' + INK + '"><tr><th></th><th style="padding:2px 18px;background:#d4ecff">T</th><th style="padding:2px 18px;background:#ffe9a8">O</th></tr>' + cr +
+      '<tr><td></td>' + c(A[0], 't') + c(A[1], 'o') + '</tr><tr><td style="font:800 2rem ui-monospace,monospace;padding-left:12px">' + sign + '</td>' + c(B[0], 't') + c(B[1], 'o') + '</tr>' +
+      '<tr><td colspan="3" style="border-top:4px solid ' + INK + ';height:2px;padding:0"></td></tr><tr><td></td>' + c(res.t, 't') + c(res.o, 'o') + '</tr></table>'; }
   function W(say, pic, facts) { return { mode: 'watch', say: say, pic: pic, facts: facts }; }
   function TG(say, pic, options, answer, tip, explain) { return { mode: 'together', say: say, pic: pic, options: options, answer: answer, tip: tip, explain: explain }; }
   function Y(say, pic, options, answer, tip, explain) { return { mode: 'turn', say: say, pic: pic, options: options, answer: answer, tip: tip, explain: explain }; }
@@ -70,10 +81,10 @@
       pages: [
         pg(P('space', 'rocket', '', 'Mission start!'), 'Ruby the rocket is flying supplies to the space station.'),
         pg(P('space', 'rocket', big('46 + 9')), 'Ruby has forty-six boxes and loads nine more. Adding nine is tricky, so she adds ten and takes one away.', Q('What is 46 + 9?', [54, 55, 56], 55, 'Forty-six and ten is fifty-six, take one: fifty-five.')),
-        pg(P('space', 'rocket', col(268, 125, '+')), 'On Monday she flies two hundred and sixty-eight kilometres, on Tuesday one hundred and twenty-five. She adds in columns.', Q('How far altogether?', [383, 393, 493], 393, 'Ones: thirteen, carry one. Tens: nine. Hundreds: three.')),
-        pg(P('space', 'rocket', col(460, 135, '−')), 'The station had four hundred and sixty oxygen tanks. One hundred and thirty-five are used.', Q('How many are left?', [325, 335, 395], 325, 'Exchange a ten for the ones column.')),
-        pg(P('space', 'rocket', big('298 + 403 ≈ 300 + 400')), 'Ruby checks with an estimate: about three hundred and four hundred is about seven hundred.'),
-        pg(P('space', 'rocket', big('701 ✓')), 'The real answer is seven hundred and one. Close to the estimate, so it makes sense!')
+        pg(P('space', 'rocket', col(34, 25, '+')), 'On Monday she flies 34 kilometres, on Tuesday 25. She adds in columns: ones first, then tens.', Q('How far altogether?', [49, 59, 69], 59, 'Ones: 4 + 5 = 9. Tens: 3 + 2 = 5.')),
+        pg(P('space', 'rocket', col(65, 24, '−')), 'The station had 65 oxygen tanks. 24 are used.', Q('How many are left?', [31, 41, 89], 41, 'Ones: 5 − 4 = 1. Tens: 6 − 2 = 4.')),
+        pg(P('space', 'rocket', big('48 + 31 ≈ 50 + 30')), 'Ruby checks with an estimate: about 50 and about 30 is about 80.'),
+        pg(P('space', 'rocket', big('79 ✓')), 'The real answer is 79. Close to the estimate, so it makes sense!')
       ] },
     learn: [
       { title: 'How can compensating help me add and subtract?', char: 'rocket', screens: [
@@ -85,28 +96,58 @@
         Y('What is 74 − 29?', P('space', '', big('74 − 29')), [45, 46, 55], 45, 'Take away thirty, then add one back.', 'Forty-five.')
       ] },
       { title: 'How do I add using columns?', char: 'rocket', screens: [
-        W('Two hundred and forty-three add one hundred and fifty-two. Ones: five. Tens: nine. Hundreds: three. Three hundred and ninety-five.', P('space', '', col(243, 152, '+'))),
-        W('Two hundred and sixty-eight add one hundred and twenty-five. Ones: thirteen, write three and carry one ten. Tens: nine. Hundreds: three.', P('space', '', col(268, 125, '+'))),
-        TG('What is 156 + 227?', P('space', '', col(156, 227, '+')), [373, 383, 483], 383, 'Ones: six and seven make thirteen. Carry one.', 'Three hundred and eighty-three.'),
-        TG('What is 314 + 245?', P('space', '', col(314, 245, '+')), [559, 569, 659], 559, 'No carrying needed.', 'Five hundred and fifty-nine.'),
-        Y('What is 476 + 258?', P('space', '', col(476, 258, '+')), [624, 724, 734], 734, 'Carry twice.', 'Seven hundred and thirty-four.'),
-        Y('What is 345 + 280?', P('space', '', col(345, 280, '+')), [525, 615, 625], 625, 'Tens: four and eight make twelve.', 'Six hundred and twenty-five.')
+        W('Today we add in columns. A 2-digit number has tens and ones. The number 43 has 4 tens and 3 ones.', P('space', '', colS(43, '', '+', {}, ''))),
+        W('Here is the sum 43 + 52. Write 43 on top and 52 underneath. Tens go under tens, and ones go under ones.', P('space', '', colS(43, 52, '+', {}, ''))),
+        W('Step 1: always start with the ones, on the right. The ones are 3 and 2. 3 + 2 = 5.', P('space', '', colS(43, 52, '+', {}, 'o'))),
+        W('Write the 5 under the ones column. It is the ones digit of the answer.', P('space', '', colS(43, 52, '+', { o: 5 }, 'o'))),
+        W('Step 2: now the tens. The tens are 4 and 5. 4 + 5 = 9.', P('space', '', colS(43, 52, '+', { o: 5 }, 't'))),
+        W('Write the 9 under the tens column. The answer is 95. So 43 + 52 = 95.', P('space', '', colS(43, 52, '+', { t: 9, o: 5 }, ''))),
+        W('Let us do another one: 24 + 35. Line up the tens and the ones. Ones first: 4 + 5 = 9.', P('space', '', colS(24, 35, '+', { o: 9 }, 'o'))),
+        W('Now the tens: 2 + 3 = 5. The answer is 59. So 24 + 35 = 59.', P('space', '', colS(24, 35, '+', { t: 5, o: 9 }, 't'))),
+        W('What if one number has only 1 digit? Take 61 + 7. Put the 7 under the ones. Ones: 1 + 7 = 8.', P('space', '', colS(61, 7, '+', { o: 8 }, 'o'))),
+        W('There is nothing to add to the 6 tens, so it stays as 6. The answer is 68. So 61 + 7 = 68.', P('space', '', colS(61, 7, '+', { t: 6, o: 8 }, 't'))),
+        W('Sometimes the ones add up to 10 or more. Look at 47 + 35. Start with the ones: 7 + 5 = 12.', P('space', '', colS(47, 35, '+', {}, 'o'))),
+        W('12 is 1 ten and 2 ones. Write the 2 in the ones column. The 1 ten hops across to the tens column. Watch it go!', P('space', '', colS(47, 35, '+', { o: 2 }, 'o', 1, true))),
+        W('Now add the tens: 4 + 3 + the 1 that hopped over is 8. Write 8. So 47 + 35 = 82.', P('space', '', colS(47, 35, '+', { t: 8, o: 2 }, 't', 1))),
+        W('Here is another one: 38 + 24. Ones: 8 + 4 = 12. Write 2, and the 1 ten hops to the tens.', P('space', '', colS(38, 24, '+', { o: 2 }, 'o', 1, true))),
+        W('Tens: 3 + 2 + 1 = 6. So 38 + 24 = 62.', P('space', '', colS(38, 24, '+', { t: 6, o: 2 }, 't', 1))),
+        W('Watch out! Do not forget the ten that hopped across. 47 + 35 is 82, not 72.', P('space', '', big('47 + 35 = 82 ✓'))),
+        W('Watch out! Always line up the ones under the ones. If you put the 7 under the tens, you get 61 + 70 = 131. That is wrong!', P('space', '', big('61 + 7 = 68 ✓'))),
+        W('Check with an estimate. 43 is about 40 and 52 is about 50. 40 + 50 = 90. Our answer 95 is close to 90, so it makes sense.', P('space', '', big('43 + 52 ≈ 40 + 50 = 90')))
+        ,
+        TG('What is 21 + 47?', P('space', '', colS(21, 47, '+', {}, '')), [58, 68, 78], 68, 'Ones first: 1 + 7. Then the tens: 2 + 4.', '1 + 7 = 8 and 2 + 4 = 6. So 68.'),
+        TG('What is 53 + 34?', P('space', '', colS(53, 34, '+', {}, '')), [77, 87, 97], 87, 'Ones: 3 + 4. Tens: 5 + 3.', '3 + 4 = 7 and 5 + 3 = 8. So 87.'),
+        TG('What is 27 + 15?', P('space', '', colS(27, 15, '+', {}, '')), [32, 42, 41], 42, 'Ones: 7 + 5 = 12. Write 2 and carry 1.', '7 + 5 = 12. Write 2 and carry 1. Then 2 + 1 + 1 = 4. So 42.'),
+        Y('What is 62 + 23?', P('space', '', colS(62, 23, '+', {}, '')), [75, 85, 86], 85, 'Ones: 2 + 3. Tens: 6 + 2.', '2 + 3 = 5 and 6 + 2 = 8. So 85.'),
+        Y('What is 38 + 25?', P('space', '', colS(38, 25, '+', {}, '')), [53, 63, 62], 63, 'Ones: 8 + 5 = 13. Write 3 and carry 1.', '8 + 5 = 13. Write 3 and carry 1. Then 3 + 2 + 1 = 6. So 63.'),
+        Y('What is 36 + 41?', P('space', '', colS(36, 41, '+', {}, '')), [67, 77, 87], 77, 'Ones: 6 + 1. Tens: 3 + 4.', '6 + 1 = 7 and 3 + 4 = 7. So 77.')
       ] },
       { title: 'How do I subtract using columns?', char: 'rocket', screens: [
-        W('Five hundred and eighty-seven take away two hundred and forty-three. Ones: four. Tens: four. Hundreds: three. Three hundred and forty-four.', P('space', '', col(587, 243, '−'))),
-        W('Three hundred and fifty-two take away one hundred and twenty-seven. Two take away seven? Exchange a ten: twelve take away seven is five.', P('space', '', col(352, 127, '−'))),
-        TG('What is 473 − 258?', P('space', '', col(473, 258, '−')), [215, 225, 235], 215, 'Exchange a ten for the ones.', 'Two hundred and fifteen.'),
-        TG('What is 698 − 345?', P('space', '', col(698, 345, '−')), [343, 353, 453], 353, 'No exchange needed.', 'Three hundred and fifty-three.'),
-        Y('What is 562 − 138?', P('space', '', col(562, 138, '−')), [424, 434, 436], 424, 'Two take away eight? Exchange.', 'Four hundred and twenty-four.'),
-        Y('What is 800 − 350?', P('space', '', col(800, 350, '−')), [450, 550, 500], 450, 'Count on from three hundred and fifty.', 'Four hundred and fifty.')
+        W('Now we take away in columns. The bigger number goes on top. We take the bottom number away from the top number.', P('space', '', colS(87, 43, '−', {}, ''))),
+        W('Here is the sum 87 − 43. Line up the tens and the ones. Tens under tens, ones under ones.', P('space', '', colS(87, 43, '−', {}, ''))),
+        W('Step 1: start with the ones, on the right. 7 − 3 = 4.', P('space', '', colS(87, 43, '−', {}, 'o'))),
+        W('Write the 4 under the ones column.', P('space', '', colS(87, 43, '−', { o: 4 }, 'o'))),
+        W('Step 2: now the tens. 8 − 4 = 4.', P('space', '', colS(87, 43, '−', { o: 4 }, 't'))),
+        W('Write the 4 under the tens column. The answer is 44. So 87 − 43 = 44.', P('space', '', colS(87, 43, '−', { t: 4, o: 4 }, ''))),
+        W('Let us do another one: 98 − 53. Ones first: 8 − 3 = 5.', P('space', '', colS(98, 53, '−', { o: 5 }, 'o'))),
+        W('Now the tens: 9 − 5 = 4. The answer is 45. So 98 − 53 = 45.', P('space', '', colS(98, 53, '−', { t: 4, o: 5 }, 't'))),
+        W('We can check by adding back. 45 + 53 = 98. That is the number we started with, so it is correct!', P('space', '', big('45 + 53 = 98 ✓'))),
+        W('Watch out! Take the bottom number away from the top number. Do not add them. 87 − 43 is 44, not 130.', P('space', '', big('87 − 43 = 44 ✓'))),
+        TG('What is 59 − 24?', P('space', '', colS(59, 24, '−', {}, '')), [25, 35, 83], 35, 'Ones: 9 − 4. Tens: 5 − 2.', '9 − 4 = 5 and 5 − 2 = 3. So 35.'),
+        TG('What is 68 − 32?', P('space', '', colS(68, 32, '−', {}, '')), [36, 46, 100], 36, 'Ones: 8 − 2. Tens: 6 − 3.', '8 − 2 = 6 and 6 − 3 = 3. So 36.'),
+        Y('What is 76 − 41?', P('space', '', colS(76, 41, '−', {}, '')), [35, 45, 117], 35, 'Ones: 6 − 1. Tens: 7 − 4.', '6 − 1 = 5 and 7 − 4 = 3. So 35.'),
+        Y('What is 85 − 23?', P('space', '', colS(85, 23, '−', {}, '')), [52, 62, 108], 62, 'Ones: 5 − 3. Tens: 8 − 2.', '5 − 3 = 2 and 8 − 2 = 6. So 62.')
       ] },
       { title: 'How can estimating help me check my answer?', char: 'rocket', screens: [
-        W('Two hundred and ninety-eight is about three hundred. Four hundred and three is about four hundred. So the answer is about seven hundred.', P('space', '', big('298 + 403 ≈ 700'))),
-        W('If an answer is far from the estimate, check again!', P('space', '', big('512 − 189 ≈ 300'))),
-        TG('Estimate 612 + 195.', P('space', '', big('612 + 195')), [700, 800, 900], 800, 'Round each to the nearest hundred.', 'About six hundred and two hundred: eight hundred.'),
-        TG('Estimate 489 − 210.', P('space', '', big('489 − 210')), [200, 300, 400], 300, 'About five hundred take away two hundred.', 'About three hundred.'),
-        Y('Estimate 381 + 407.', P('space', '', big('381 + 407')), [700, 800, 900], 800, 'Four hundred and four hundred.', 'About eight hundred.'),
-        Y('Lisa worked out 512 − 189 = 523. Is that sensible?', P('space', '', big('512 − 189 = 523?')), ['Yes', 'No'], 'No', 'Estimate: five hundred take away two hundred.', 'No. It should be about three hundred.')
+        W('An estimate is a quick answer that is close, but not exact. We round each number to the nearest 10 first.', P('space', '', big('48 + 31 ≈ ?'))),
+        W('48 is closer to 50 than 40, so it rounds to 50. 31 is closer to 30, so it rounds to 30.', P('space', '', big('48 ≈ 50, 31 ≈ 30'))),
+        W('Now add the rounded numbers. 50 + 30 = 80. So the answer is about 80.', P('space', '', big('48 + 31 ≈ 50 + 30 = 80'))),
+        W('The real answer is 79. That is close to our estimate of 80, so it makes sense!', P('space', '', big('79 ≈ 80 ✓'))),
+        W('If an answer is far from the estimate, check again! 82 − 39 is about 80 − 40 = 40.', P('space', '', big('82 − 39 ≈ 40'))),
+        TG('Estimate 62 + 29.', P('space', '', big('62 + 29')), [80, 90, 100], 90, 'Round each to the nearest 10.', '62 is about 60 and 29 is about 30. 60 + 30 = 90.'),
+        TG('Estimate 89 − 21.', P('space', '', big('89 − 21')), [60, 70, 80], 70, 'Round each to the nearest 10.', '89 is about 90 and 21 is about 20. 90 − 20 = 70.'),
+        Y('Estimate 38 + 41.', P('space', '', big('38 + 41')), [70, 80, 90], 80, '38 is about 40. 41 is about 40.', '40 + 40 = 80.'),
+        Y('Lisa worked out 82 − 39 = 53. Is that sensible?', P('space', '', big('82 − 39 = 53?')), ['Yes', 'No'], 'No', 'Estimate: 80 − 40.', 'No. It should be about 40.')
       ] }
     ]
   });

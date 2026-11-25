@@ -11,7 +11,7 @@
   function uniq(a, ans) { var o = [], seen = {}; seen[String(ans)] = 1; a.forEach(function (x) { x = String(x); if (!seen[x] && !/NaN|undefined/.test(x)) { seen[x] = 1; o.push(x); } }); return o.slice(0, 3); }
   FL.mcq = function (tag, q, a, ws, h, e, p) { return FL.MC(tag, q, String(a), uniq(ws, a), [h], e, p || ''); };
   FL.P4 = function (n, id, o) {
-    var spec = { id: id, ch: o.ch || 'owl', bg: o.bg || 'day', way: two(o.way), ex: o.ex.map(ex), mist: two(o.mist), real: rl(o.real), qs: o.qs.map(qq), gen: o.gen };
+    var spec = { id: id, ch: o.ch || 'owl', bg: o.bg || 'day', way: two(o.way), ex: o.ex.map(ex), mist: two(o.mist), real: rl(o.real), qs: o.qs.map(qq), gen: o.gen, vis: o.vis, rem: o.rem && !o.t ? o.rem : undefined };
     if (o.t) {
       var t = o.t.split('|'), ch = o.chk.split('|'), opts = [ch[1]].concat(ch[2].split(',')), k = opts.length > 1 ? 1 : 0;
       opts = opts.slice(k).concat(opts.slice(0, k));
