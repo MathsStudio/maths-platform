@@ -86,3 +86,19 @@
   });
   if (FL.wexLast) FL.wexLast();
 })();
+/* P4 adding and subtracting: columns come before compensating */
+(function () {
+  var S = window.Studio, BT = window.BT; if (!S || !S.topics || !S.topics[402]) return;
+  var t = S.topics[402], ids = ['learn1', 'learn2', 'learn3'];
+  var pos = [], i; t.steps.forEach(function (s, k) { if (ids.indexOf(s.id) >= 0) pos.push(k); });
+  if (pos.length !== 3) return;
+  var g = function (id) { return t.steps.filter(function (s) { return s.id === id; })[0]; };
+  var ord = [g('learn2'), g('learn3'), g('learn1')];
+  pos.forEach(function (p, k) { t.steps[p] = ord[k]; });
+  if (BT && BT.EP_BY_TOPIC && BT.EP_BY_TOPIC[402]) {
+    var e = BT.EP_BY_TOPIC[402], nm = function (x) { return typeof x === 'string' ? x : x.title; }, f = function (re) { for (var k = 0; k < e.length; k++) if (re.test(nm(e[k]))) return k; return -1; };
+    var a = f(/compensating/i), b = f(/adding using columns|add using columns/i), c = f(/subtracting using columns|subtract using columns/i);
+    if (a >= 0 && b >= 0 && c >= 0 && a < b && b < c) { var A = e[a], B = e[b], C = e[c]; e[a] = B; e[b] = C; e[c] = A; }
+  }
+  if (S.arrange) S.arrange(t);
+})();
