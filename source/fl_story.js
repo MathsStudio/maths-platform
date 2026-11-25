@@ -125,13 +125,13 @@
   var NUMW = ['zero', 'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine', 'ten', 'eleven', 'twelve', 'thirteen', 'fourteen', 'fifteen', 'sixteen', 'seventeen', 'eighteen', 'nineteen', 'twenty'];
   function strip(h) { return String(h).replace(/<[^>]+>/g, ''); }
   /* a teaching slide whose picture is only a bare word or number also shows what is being said, so nothing is narration-only */
-  function capPic(x) { var h = typeof x.pic === 'function' ? x.pic() : (x.pic || ''); if (x.mode !== 'watch' || !x.say) return h;
+  function capPic(x) { var h = typeof x.pic === 'function' ? x.pic() : (x.pic || ''); if (x.mode !== 'watch' || !x.say) return h; /* only sentences that explain a calculation (they contain numbers) are shown, below the picture; general narration is not copied */
     var txt = h.replace(/<style[\s\S]*?<\/style>/g, '').replace(/<svg[\s\S]*?<\/svg>/g, 'S').replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim();
     if (/<table/.test(h) && txt.length > 3) return h;
     if (txt.length > 40 || /data-wq/.test(h) && txt.length > 40) return h;
-    var say = FL.digitise(strip(x.say)); if (say.length < 12 || say.length > 170) return h;
-    var cap = '<div style="font-size:clamp(1.05rem,3.6vw,1.5rem);font-weight:800;color:#2b2340;background:#fff;border:3px solid #2b2340;border-width:0 0 3px 0;border-radius:0;padding:10px 16px;margin:0;width:100%;box-sizing:border-box;text-align:center;line-height:1.25">' + say + '</div>';
-    return '<div class="flx-capwrap">' + cap + h + '</div>'; }
+    var say = FL.digitise(strip(x.say)); if (say.length < 12 || say.length > 170 || !/\d/.test(say)) return h;
+    var cap = '<div style="font-size:clamp(1.05rem,3.6vw,1.5rem);font-weight:800;color:#2b2340;background:#fff;border:3px solid #2b2340;border-width:3px 0 0 0;border-radius:0;padding:10px 16px;margin:0;width:100%;box-sizing:border-box;text-align:center;line-height:1.25">' + say + '</div>';
+    return '<div class="flx-capwrap">' + h + cap + '</div>'; }
   function pic(p, ch) { var h = typeof p === 'function' ? p() : (p || '');
     if (ch && h.indexOf('class="flp ') >= 0 && h.indexOf('flp-ch') < 0) h = h.replace('<div class="flp-pic">', '<div class="flp-ch">' + FL.char(ch, 110) + '</div><div class="flp-pic">');
     return h ? '<div class="flb flb-w"><div class="flb-stage">' + h + '</div></div>' : ''; }

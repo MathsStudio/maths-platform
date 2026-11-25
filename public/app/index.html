@@ -16532,7 +16532,7 @@ S.extraMakers = function (n, level) {
       var ph = tmp.innerHTML.trim(); 
       /* older lessons without a themed picture: show the content on the topic's own scene beside its character, never a bare cream box */
       if (ph && ph.indexOf('flb-stage') < 0 && ph.indexOf('class="flp ') < 0 && window.FL && FL.panel && FL.THEME && FL.THEME[meta.n]) { var th0 = FL.THEME[meta.n], sy = FL.digitise(String((steps[c.k] || {}).say || '').replace(/<[^>]*>/g, '').trim()), tx0 = ph.replace(/<style[\s\S]*?<\/style>/g, '').replace(/<svg[\s\S]*?<\/svg>/g, 'S').replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim();
-        if (sy.length > 11 && sy.length < 200 && tx0.length < 30 && !/<table/.test(ph)) ph = '<div style="width:100%;font-size:clamp(1.05rem,3.4vw,1.5rem);font-weight:800;text-align:center">' + sy + '</div>' + ph;
+        if (/\d/.test(sy) && sy.length > 11 && sy.length < 200 && tx0.length < 30 && !/<table/.test(ph)) ph = ph + '<div style="width:100%;font-size:clamp(1.05rem,3.4vw,1.5rem);font-weight:800;text-align:center">' + sy + '</div>';
         ph = '<div class="flb flb-w"><div class="flb-stage" style="line-height:1.3;border:0;background:none">' + FL.panel(th0[1], th0[0], '<div style="display:flex;flex-wrap:wrap;gap:10px;justify-content:center;align-items:center;font-weight:800;color:#2b2340;background:#fff;border:3px solid #2b2340;border-radius:16px;padding:10px 14px;max-width:96%">' + ph + '</div>') + '</div></div>'; }
       var P = stage.querySelector('.flx-pic'), T = stage.querySelector('.flx-top'), O = stage.querySelector('.flx-opts');
       if (ph !== flPic) { flPic = ph; P.innerHTML = ph; P.classList.toggle('flx-plain', !!ph && ph.indexOf('flb-stage') < 0); P.classList.remove('flx-in'); void P.offsetWidth; P.classList.add('flx-in'); fitPic(P); try { stackFracs(P); } catch (e) {} }
@@ -40161,13 +40161,13 @@ S.extraMakers = function (n, level) {
   var NUMW = ['zero', 'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine', 'ten', 'eleven', 'twelve', 'thirteen', 'fourteen', 'fifteen', 'sixteen', 'seventeen', 'eighteen', 'nineteen', 'twenty'];
   function strip(h) { return String(h).replace(/<[^>]+>/g, ''); }
   /* a teaching slide whose picture is only a bare word or number also shows what is being said, so nothing is narration-only */
-  function capPic(x) { var h = typeof x.pic === 'function' ? x.pic() : (x.pic || ''); if (x.mode !== 'watch' || !x.say) return h;
+  function capPic(x) { var h = typeof x.pic === 'function' ? x.pic() : (x.pic || ''); if (x.mode !== 'watch' || !x.say) return h; /* only sentences that explain a calculation (they contain numbers) are shown, below the picture; general narration is not copied */
     var txt = h.replace(/<style[\s\S]*?<\/style>/g, '').replace(/<svg[\s\S]*?<\/svg>/g, 'S').replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim();
     if (/<table/.test(h) && txt.length > 3) return h;
     if (txt.length > 40 || /data-wq/.test(h) && txt.length > 40) return h;
-    var say = FL.digitise(strip(x.say)); if (say.length < 12 || say.length > 170) return h;
-    var cap = '<div style="font-size:clamp(1.05rem,3.6vw,1.5rem);font-weight:800;color:#2b2340;background:#fff;border:3px solid #2b2340;border-width:0 0 3px 0;border-radius:0;padding:10px 16px;margin:0;width:100%;box-sizing:border-box;text-align:center;line-height:1.25">' + say + '</div>';
-    return '<div class="flx-capwrap">' + cap + h + '</div>'; }
+    var say = FL.digitise(strip(x.say)); if (say.length < 12 || say.length > 170 || !/\d/.test(say)) return h;
+    var cap = '<div style="font-size:clamp(1.05rem,3.6vw,1.5rem);font-weight:800;color:#2b2340;background:#fff;border:3px solid #2b2340;border-width:3px 0 0 0;border-radius:0;padding:10px 16px;margin:0;width:100%;box-sizing:border-box;text-align:center;line-height:1.25">' + say + '</div>';
+    return '<div class="flx-capwrap">' + h + cap + '</div>'; }
   function pic(p, ch) { var h = typeof p === 'function' ? p() : (p || '');
     if (ch && h.indexOf('class="flp ') >= 0 && h.indexOf('flp-ch') < 0) h = h.replace('<div class="flp-pic">', '<div class="flp-ch">' + FL.char(ch, 110) + '</div><div class="flp-pic">');
     return h ? '<div class="flb flb-w"><div class="flb-stage">' + h + '</div></div>' : ''; }
@@ -42870,14 +42870,6 @@ S.extraMakers = function (n, level) {
         pg(P('space', 'rocket', big('79 ✓')), 'The real answer is 79. Close to the estimate, so it makes sense!')
       ] },
     learn: [
-      { title: 'How can compensating help me add and subtract?', char: 'rocket', screens: [
-        W('Forty-six add nine: forty-six add ten is fifty-six, then take one away. Fifty-five.', P('space', '', big('46 + 10 − 1 = 55'))),
-        W('Eighty-five take away twenty-nine: take away thirty is fifty-five, then add one back. Fifty-six.', P('space', '', big('85 − 30 + 1 = 56'))),
-        TG('What is 57 + 19?', P('space', '', big('57 + 19')), [75, 76, 86], 76, 'Add twenty, then take one away.', 'Seventy-six.'),
-        TG('What is 63 − 9?', P('space', '', big('63 − 9')), [53, 54, 64], 54, 'Take away ten, then add one back.', 'Fifty-four.'),
-        Y('What is 123 + 99?', P('space', '', big('123 + 99')), [212, 222, 223], 222, 'Add one hundred, then take one away.', 'Two hundred and twenty-two.'),
-        Y('What is 74 − 29?', P('space', '', big('74 − 29')), [45, 46, 55], 45, 'Take away thirty, then add one back.', 'Forty-five.')
-      ] },
       { title: 'How do I add using columns?', char: 'rocket', screens: [
         W('Today we add in columns. A 2-digit number has tens and ones. The number 43 has 4 tens and 3 ones.', P('space', '', colS(43, '', '+', {}, ''))),
         W('Here is the sum 43 + 52. Write 43 on top and 52 underneath. Tens go under tens, and ones go under ones.', P('space', '', colS(43, 52, '+', {}, ''))),
@@ -42920,6 +42912,14 @@ S.extraMakers = function (n, level) {
         TG('What is 68 − 32?', P('space', '', colS(68, 32, '−', {}, '')), [36, 46, 100], 36, 'Ones: 8 − 2. Tens: 6 − 3.', '8 − 2 = 6 and 6 − 3 = 3. So 36.'),
         Y('What is 76 − 41?', P('space', '', colS(76, 41, '−', {}, '')), [35, 45, 117], 35, 'Ones: 6 − 1. Tens: 7 − 4.', '6 − 1 = 5 and 7 − 4 = 3. So 35.'),
         Y('What is 85 − 23?', P('space', '', colS(85, 23, '−', {}, '')), [52, 62, 108], 62, 'Ones: 5 − 3. Tens: 8 − 2.', '5 − 3 = 2 and 8 − 2 = 6. So 62.')
+      ] },
+      { title: 'How can compensating help me add and subtract?', char: 'rocket', screens: [
+        W('Forty-six add nine: forty-six add ten is fifty-six, then take one away. Fifty-five.', P('space', '', big('46 + 10 − 1 = 55'))),
+        W('Eighty-five take away twenty-nine: take away thirty is fifty-five, then add one back. Fifty-six.', P('space', '', big('85 − 30 + 1 = 56'))),
+        TG('What is 57 + 19?', P('space', '', big('57 + 19')), [75, 76, 86], 76, 'Add twenty, then take one away.', 'Seventy-six.'),
+        TG('What is 63 − 9?', P('space', '', big('63 − 9')), [53, 54, 64], 54, 'Take away ten, then add one back.', 'Fifty-four.'),
+        Y('What is 123 + 99?', P('space', '', big('123 + 99')), [212, 222, 223], 222, 'Add one hundred, then take one away.', 'Two hundred and twenty-two.'),
+        Y('What is 74 − 29?', P('space', '', big('74 − 29')), [45, 46, 55], 45, 'Take away thirty, then add one back.', 'Forty-five.')
       ] },
       { title: 'How can estimating help me check my answer?', char: 'rocket', screens: [
         W('An estimate is a quick answer that is close, but not exact. We round each number to the nearest 10 first.', P('space', '', big('48 + 31 ≈ ?'))),

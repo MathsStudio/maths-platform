@@ -87,14 +87,6 @@
         pg(P('space', 'rocket', big('79 ✓')), 'The real answer is 79. Close to the estimate, so it makes sense!')
       ] },
     learn: [
-      { title: 'How can compensating help me add and subtract?', char: 'rocket', screens: [
-        W('Forty-six add nine: forty-six add ten is fifty-six, then take one away. Fifty-five.', P('space', '', big('46 + 10 − 1 = 55'))),
-        W('Eighty-five take away twenty-nine: take away thirty is fifty-five, then add one back. Fifty-six.', P('space', '', big('85 − 30 + 1 = 56'))),
-        TG('What is 57 + 19?', P('space', '', big('57 + 19')), [75, 76, 86], 76, 'Add twenty, then take one away.', 'Seventy-six.'),
-        TG('What is 63 − 9?', P('space', '', big('63 − 9')), [53, 54, 64], 54, 'Take away ten, then add one back.', 'Fifty-four.'),
-        Y('What is 123 + 99?', P('space', '', big('123 + 99')), [212, 222, 223], 222, 'Add one hundred, then take one away.', 'Two hundred and twenty-two.'),
-        Y('What is 74 − 29?', P('space', '', big('74 − 29')), [45, 46, 55], 45, 'Take away thirty, then add one back.', 'Forty-five.')
-      ] },
       { title: 'How do I add using columns?', char: 'rocket', screens: [
         W('Today we add in columns. A 2-digit number has tens and ones. The number 43 has 4 tens and 3 ones.', P('space', '', colS(43, '', '+', {}, ''))),
         W('Here is the sum 43 + 52. Write 43 on top and 52 underneath. Tens go under tens, and ones go under ones.', P('space', '', colS(43, 52, '+', {}, ''))),
@@ -137,6 +129,14 @@
         TG('What is 68 − 32?', P('space', '', colS(68, 32, '−', {}, '')), [36, 46, 100], 36, 'Ones: 8 − 2. Tens: 6 − 3.', '8 − 2 = 6 and 6 − 3 = 3. So 36.'),
         Y('What is 76 − 41?', P('space', '', colS(76, 41, '−', {}, '')), [35, 45, 117], 35, 'Ones: 6 − 1. Tens: 7 − 4.', '6 − 1 = 5 and 7 − 4 = 3. So 35.'),
         Y('What is 85 − 23?', P('space', '', colS(85, 23, '−', {}, '')), [52, 62, 108], 62, 'Ones: 5 − 3. Tens: 8 − 2.', '5 − 3 = 2 and 8 − 2 = 6. So 62.')
+      ] },
+      { title: 'How can compensating help me add and subtract?', char: 'rocket', screens: [
+        W('Forty-six add nine: forty-six add ten is fifty-six, then take one away. Fifty-five.', P('space', '', big('46 + 10 − 1 = 55'))),
+        W('Eighty-five take away twenty-nine: take away thirty is fifty-five, then add one back. Fifty-six.', P('space', '', big('85 − 30 + 1 = 56'))),
+        TG('What is 57 + 19?', P('space', '', big('57 + 19')), [75, 76, 86], 76, 'Add twenty, then take one away.', 'Seventy-six.'),
+        TG('What is 63 − 9?', P('space', '', big('63 − 9')), [53, 54, 64], 54, 'Take away ten, then add one back.', 'Fifty-four.'),
+        Y('What is 123 + 99?', P('space', '', big('123 + 99')), [212, 222, 223], 222, 'Add one hundred, then take one away.', 'Two hundred and twenty-two.'),
+        Y('What is 74 − 29?', P('space', '', big('74 − 29')), [45, 46, 55], 45, 'Take away thirty, then add one back.', 'Forty-five.')
       ] },
       { title: 'How can estimating help me check my answer?', char: 'rocket', screens: [
         W('An estimate is a quick answer that is close, but not exact. We round each number to the nearest 10 first.', P('space', '', big('48 + 31 ≈ ?'))),
