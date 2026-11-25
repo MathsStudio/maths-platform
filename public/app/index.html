@@ -16531,7 +16531,7 @@ S.extraMakers = function (n, level) {
       
       var ph = tmp.innerHTML.trim(); 
       /* older lessons without a themed picture: show the content on the topic's own scene beside its character, never a bare cream box */
-      if (ph && ph.indexOf('flb-stage') < 0 && ph.indexOf('class="flp ') < 0 && window.FL && FL.panel && FL.THEME && FL.THEME[meta.n]) { var th0 = FL.THEME[meta.n], sy = String((steps[c.k] || {}).say || '').replace(/<[^>]*>/g, '').trim(), tx0 = ph.replace(/<style[\s\S]*?<\/style>/g, '').replace(/<svg[\s\S]*?<\/svg>/g, 'S').replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim();
+      if (ph && ph.indexOf('flb-stage') < 0 && ph.indexOf('class="flp ') < 0 && window.FL && FL.panel && FL.THEME && FL.THEME[meta.n]) { var th0 = FL.THEME[meta.n], sy = FL.digitise(String((steps[c.k] || {}).say || '').replace(/<[^>]*>/g, '').trim()), tx0 = ph.replace(/<style[\s\S]*?<\/style>/g, '').replace(/<svg[\s\S]*?<\/svg>/g, 'S').replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim();
         if (sy.length > 11 && sy.length < 200 && tx0.length < 30 && !/<table/.test(ph)) ph = '<div style="width:100%;font-size:clamp(1.05rem,3.4vw,1.5rem);font-weight:800;text-align:center">' + sy + '</div>' + ph;
         ph = '<div class="flb flb-w"><div class="flb-stage" style="line-height:1.3;border:0;background:none">' + FL.panel(th0[1], th0[0], '<div style="display:flex;flex-wrap:wrap;gap:10px;justify-content:center;align-items:center;font-weight:800;color:#2b2340;background:#fff;border:3px solid #2b2340;border-radius:16px;padding:10px 14px;max-width:96%">' + ph + '</div>') + '</div></div>'; }
       var P = stage.querySelector('.flx-pic'), T = stage.querySelector('.flx-top'), O = stage.querySelector('.flx-opts');
@@ -39659,6 +39659,68 @@ S.extraMakers = function (n, level) {
   function tx(x, y, t, size, fill, weight, anchor) { return '<text x="' + x + '" y="' + y + '" font-size="' + (size || 16) + '" font-weight="' + (weight || 800) + '" text-anchor="' + (anchor || 'middle') + '" style="fill:' + (fill || 'var(--fg)') + ';font-family:inherit">' + t + '</text>'; }
   FL.svg = svg; FL.tx = tx;
   var INK = '#2b2340';
+  /* number words written as digits on screen (two..twenty, tens, hundred); "one" is left alone because it is often a pronoun */
+  FL.digitise = function (t) {
+    var W = { two: 2, three: 3, four: 4, five: 5, six: 6, seven: 7, eight: 8, nine: 9, ten: 10, eleven: 11, twelve: 12, thirteen: 13, fourteen: 14, fifteen: 15, sixteen: 16, seventeen: 17, eighteen: 18, nineteen: 19, twenty: 20, thirty: 30, forty: 40, fifty: 50, sixty: 60, seventy: 70, eighty: 80, ninety: 90 };
+    var tens = { twenty: 20, thirty: 30, forty: 40, fifty: 50, sixty: 60, seventy: 70, eighty: 80, ninety: 90 }, ones = { one: 1, two: 2, three: 3, four: 4, five: 5, six: 6, seven: 7, eight: 8, nine: 9 };
+    return String(t).replace(/\b(twenty|thirty|forty|fifty|sixty|seventy|eighty|ninety)[- ](one|two|three|four|five|six|seven|eight|nine)\b/gi, function (m, a, b) { return tens[a.toLowerCase()] + ones[b.toLowerCase()]; })
+      .replace(/\b(two|three|four|five|six|seven|eight|nine|ten|eleven|twelve|thirteen|fourteen|fifteen|sixteen|seventeen|eighteen|nineteen|twenty|thirty|forty|fifty|sixty|seventy|eighty|ninety)\b(?!\s+(?:o.clock))/gi, function (m) { return W[m.toLowerCase()]; });
+  };
+  /* a 10 by 10 square with n small squares shaded: percentages made visible */
+  FL.hundred = function (n) {
+    var s = '', i, r, c; for (i = 0; i < 100; i++) { r = Math.floor(i / 10); c = i % 10; s += '<rect x="' + (6 + c * 20) + '" y="' + (6 + r * 20) + '" width="19" height="19" rx="2" fill="' + (i < n ? '#ffb03b' : '#fff3d6') + '" stroke="' + INK + '" stroke-width="1.6"/>'; }
+    return '<div style="text-align:center;font-weight:800;color:' + INK + '"><div style="max-width:230px;margin:0 auto">' + svg(212, 212, n + ' of 100 squares shaded', s, 230) + '</div><div style="margin-top:4px;font-size:1.2rem;background:#fff;border:3px solid ' + INK + ';border-radius:12px;display:inline-block;padding:2px 12px">' + n + ' out of 100 = ' + n + '%</div></div>';
+  };
+
+  /* a bar graph with a title, labelled axes and a scale: items [label, value, colour?] */
+  FL.barGraph = function (items, step, max, title, xl, yl, mark) {
+    var W = 330, H = 230, L = 52, B = 38, T = 34, plotW = W - L - 12, plotH = H - B - T, s = '', i, v;
+    s += tx(W / 2, 18, title, 15, INK, 800);
+    for (v = 0; v <= max; v += step) { var y = T + plotH - (v / max) * plotH; s += '<line x1="' + L + '" y1="' + y + '" x2="' + (L + plotW) + '" y2="' + y + '" stroke="#cfc6e6" stroke-width="1.5"/>' + tx(L - 6, y + 4, v, 12, INK, 800, 'end'); }
+    s += '<line x1="' + L + '" y1="' + T + '" x2="' + L + '" y2="' + (T + plotH) + '" stroke="' + INK + '" stroke-width="3"/><line x1="' + L + '" y1="' + (T + plotH) + '" x2="' + (L + plotW) + '" y2="' + (T + plotH) + '" stroke="' + INK + '" stroke-width="3"/>';
+    var bw = plotW / items.length;
+    items.forEach(function (it, k) { var h = (it[1] / max) * plotH, x = L + k * bw + bw * 0.18, w = bw * 0.64, y0 = T + plotH - h;
+      s += '<rect x="' + x + '" y="' + y0 + '" width="' + w + '" height="' + h + '" fill="' + (it[2] || '#ffb03b') + '" stroke="' + INK + '" stroke-width="2.5"/>' + tx(x + w / 2, T + plotH + 15, it[0], 11, INK, 800);
+      if (mark === k) s += '<line x1="' + L + '" y1="' + y0 + '" x2="' + (x + w) + '" y2="' + y0 + '" stroke="#d64545" stroke-width="3" stroke-dasharray="6 4"/>' + tx(x + w / 2, y0 - 5, it[1], 13, '#d64545', 800); });
+    s += tx(L + plotW / 2, H - 6, xl, 12, INK, 800) + '<text transform="translate(12 ' + (T + plotH / 2) + ') rotate(-90)" font-size="12" font-weight="800" text-anchor="middle" fill="' + INK + '">' + yl + '</text>';
+    return svg(W, H, title, s, 420);
+  };
+
+  /* simple concept pictures for P4 shape and chance lessons */
+  FL.sh = {
+    tess: function () { var s = tx(80, 14, 'Squares fit: no gaps', 12, INK, 800), i, j; for (i = 0; i < 3; i++) for (j = 0; j < 3; j++) s += '<rect x="' + (20 + i * 38) + '" y="' + (24 + j * 38) + '" width="38" height="38" fill="' + ((i + j) % 2 ? '#ffd23f' : '#7cc4ff') + '" stroke="' + INK + '" stroke-width="2.5"/>';
+      s += tx(250, 14, 'Circles leave gaps', 12, INK, 800); for (i = 0; i < 3; i++) for (j = 0; j < 3; j++) s += '<circle cx="' + (205 + i * 38 + 19) + '" cy="' + (24 + j * 38 + 19) + '" r="18" fill="#ff8fab" stroke="' + INK + '" stroke-width="2.5"/>';
+      return svg(330, 150, 'Squares tessellate but circles do not', s, 420); },
+    right: function () { var s = '<line x1="60" y1="130" x2="60" y2="30" stroke="' + INK + '" stroke-width="5"/><line x1="60" y1="130" x2="180" y2="130" stroke="' + INK + '" stroke-width="5"/><rect x="60" y="100" width="30" height="30" fill="none" stroke="#d64545" stroke-width="3"/>' + tx(215, 95, 'right angle', 15, '#d64545', 800) + tx(215, 115, '= a quarter turn', 13, INK, 800);
+      return svg(330, 150, 'A right angle is a square corner', s, 380); },
+    shapes: function () { var s = '<polygon points="60,30 20,100 100,100" fill="#7cc4ff" stroke="' + INK + '" stroke-width="3"/>' + tx(60, 125, 'triangle: 3 sides', 12, INK, 800) + tx(60, 140, '3 corners', 12, INK, 800)
+        + '<rect x="190" y="50" width="70" height="70" fill="#ffd23f" stroke="' + INK + '" stroke-width="3"/><polygon points="190,50 215,30 285,30 260,50" fill="#ffe27a" stroke="' + INK + '" stroke-width="3"/><polygon points="260,50 285,30 285,100 260,120" fill="#e0a800" stroke="' + INK + '" stroke-width="3"/>' + tx(235, 140, 'cube: 6 faces, 12 edges', 12, INK, 800) + tx(235, 20, '8 vertices', 12, INK, 800);
+      return svg(330, 150, 'A triangle is flat and a cube is solid', s, 420); },
+    sym: function () { var s = '<rect x="60" y="20" width="100" height="100" fill="#ffd23f" stroke="' + INK + '" stroke-width="3"/>', d = ' stroke="#d64545" stroke-width="3" stroke-dasharray="7 5"';
+      s += '<line x1="110" y1="10" x2="110" y2="130"' + d + '/><line x1="50" y1="70" x2="170" y2="70"' + d + '/><line x1="55" y1="15" x2="165" y2="125"' + d + '/><line x1="165" y1="15" x2="55" y2="125"' + d + '/>' + tx(255, 60, 'A square has', 14, INK, 800) + tx(255, 80, '4 lines of symmetry', 14, '#d64545', 800);
+      return svg(330, 140, 'A square has 4 lines of symmetry', s, 420); },
+    turns: function () { var s = '', L = ['quarter turn', 'half turn', '3/4 turn', 'full turn'], A = [90, 180, 270, 360], i;
+      for (i = 0; i < 4; i++) { var cx = 45 + i * 80, cy = 60, a = A[i] * Math.PI / 180, ex = cx + 30 * Math.sin(a), ey = cy - 30 * Math.cos(a);
+        s += '<circle cx="' + cx + '" cy="' + cy + '" r="30" fill="#fff" stroke="' + INK + '" stroke-width="2.5"/><line x1="' + cx + '" y1="' + cy + '" x2="' + cx + '" y2="' + (cy - 30) + '" stroke="' + INK + '" stroke-width="3"/>' + (A[i] < 360 ? '<line x1="' + cx + '" y1="' + cy + '" x2="' + ex + '" y2="' + ey + '" stroke="#d64545" stroke-width="3"/>' : '') + tx(cx, 112, L[i], 11, INK, 800) + tx(cx, 126, ['1/4', '1/2', '3/4', '1'][i], 12, '#d64545', 800); }
+      return svg(330, 135, 'Quarter, half, three-quarter and full turns', s, 420); },
+    mirror: function () { var s = '<rect x="30" y="40" width="50" height="50" fill="#7cc4ff" stroke="' + INK + '" stroke-width="3"/><polygon points="80,40 80,90 110,90" fill="#7cc4ff" stroke="' + INK + '" stroke-width="3"/><line x1="165" y1="20" x2="165" y2="120" stroke="#d64545" stroke-width="4" stroke-dasharray="8 5"/>' + tx(165, 135, 'mirror line', 12, '#d64545', 800)
+        + '<rect x="250" y="40" width="50" height="50" fill="#7cc4ff" fill-opacity=".6" stroke="' + INK + '" stroke-width="3"/><polygon points="250,40 250,90 220,90" fill="#7cc4ff" fill-opacity=".6" stroke="' + INK + '" stroke-width="3"/>';
+      return svg(330, 145, 'A shape and its mirror image', s, 420); },
+    grid: function (col, row) { var s = '', i, j; for (i = 0; i < 5; i++) { s += tx(52 + i * 40, 18, 'ABCDE'[i], 13, INK, 800); for (j = 0; j < 5; j++) s += '<rect x="' + (32 + i * 40) + '" y="' + (24 + j * 24) + '" width="40" height="24" fill="' + (i === col && j === 5 - row ? '#ffd23f' : '#fff') + '" stroke="' + INK + '" stroke-width="2"/>'; }
+      for (j = 0; j < 5; j++) s += tx(22, 41 + j * 24, 5 - j, 13, INK, 800);
+      s += tx(290, 70, 'C4:', 15, '#d64545', 800) + tx(290, 90, 'along to C,', 12, INK, 800) + tx(290, 105, 'up to 4', 12, INK, 800);
+      return svg(360, 150, 'A grid with columns A to E and rows 1 to 5', s, 420); },
+    chance: function () { var s = '<line x1="30" y1="60" x2="300" y2="60" stroke="' + INK + '" stroke-width="4"/>', P = [[0, 'impossible', '0'], [.25, 'unlikely', '1/4'], [.5, 'even chance', '1/2'], [.75, 'likely', '3/4'], [1, 'certain', '1']], i;
+      P.forEach(function (p, k) { var x = 30 + p[0] * 270; s += '<circle cx="' + x + '" cy="60" r="7" fill="#ffd23f" stroke="' + INK + '" stroke-width="2.5"/>' + tx(x, 40, p[2], 13, '#d64545', 800) + tx(x, 88 + (k % 2) * 16, p[1], 11, INK, 800); });
+      return svg(330, 120, 'A chance line from impossible (0) to certain (1)', s, 420); }
+  };
+  /* a pictogram: one row per label, one picture per `key` items, half picture for a half */
+  FL.pictogram = function (rows, icon, key) {
+    var h = '<div style="display:grid;gap:6px;justify-items:start;font-weight:800;color:' + INK + ';background:#fff;border:3px solid ' + INK + ';border-radius:14px;padding:8px 12px"><div style="font-size:1.05rem">Key: ' + icon + ' = ' + key + '</div>';
+    rows.forEach(function (r) { var full = Math.floor(r[1]), half = r[1] - full > 0; h += '<div style="display:flex;align-items:center;gap:8px"><span style="min-width:4.6em;font-size:1.05rem">' + r[0] + '</span><span style="font-size:1.7rem;letter-spacing:2px">' + new Array(full + 1).join(icon) + (half ? '<span style="display:inline-block;width:.55em;overflow:hidden;vertical-align:bottom">' + icon + '</span>' : '') + '</span></div>'; });
+    return h + '</div>';
+  };
+
 
   /* friendly characters, drawn at (0,0) to (100,100) */
   var CH = {
@@ -40091,9 +40153,9 @@ S.extraMakers = function (n, level) {
   /* a teaching slide whose picture is only a bare word or number also shows what is being said, so nothing is narration-only */
   function capPic(x) { var h = typeof x.pic === 'function' ? x.pic() : (x.pic || ''); if (x.mode !== 'watch' || !x.say) return h;
     var txt = h.replace(/<style[\s\S]*?<\/style>/g, '').replace(/<svg[\s\S]*?<\/svg>/g, 'S').replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim();
-    if (/<svg|<table|<img/.test(h) && txt.length > 3) return h;
+    if (/<table/.test(h) && txt.length > 3) return h;
     if (txt.length > 40 || /data-wq/.test(h) && txt.length > 40) return h;
-    var say = strip(x.say); if (say.length < 12 || say.length > 170) return h;
+    var say = FL.digitise(strip(x.say)); if (say.length < 12 || say.length > 170) return h;
     var cap = '<div style="font-size:clamp(1.05rem,3.6vw,1.5rem);font-weight:800;color:#2b2340;background:#fff;border:3px solid #2b2340;border-width:0 0 3px 0;border-radius:0;padding:10px 16px;margin:0;width:100%;box-sizing:border-box;text-align:center;line-height:1.25">' + say + '</div>';
     return '<div class="flx-capwrap">' + cap + h + '</div>'; }
   function pic(p, ch) { var h = typeof p === 'function' ? p() : (p || '');
@@ -45329,11 +45391,12 @@ S.extraMakers = function (n, level) {
     if (sp.way) scr.push({ mode: 'watch', say: strip(sp.way[0]), pic: pn(sp.way[1]) });
     (sp.vis || []).forEach(function (w) { scr.push({ mode: 'watch', say: strip(w[0]), pic: pn(typeof w[1] === 'function' ? w[1]() : w[1]) }); });
     (sp.watch || []).forEach(function (w) { scr.push({ mode: 'watch', say: strip(w[0]), pic: pn(w[1]) }); });
+    function ep(t) { t = String(t).trim(); return /[.!?]$/.test(t) ? t : t + '.'; }
     (sp.ex || []).forEach(function (e) {
       var fin = strip(e[2]), qbox = '<div style="font-size:clamp(1.2rem,4.5vw,1.8rem);font-weight:800;color:#2b2340;background:#fff;border:3px solid #2b2340;border-radius:16px;padding:8px 16px;margin:0 auto 10px;max-width:92%;text-align:center;line-height:1.25">' + strip(e[0]) + '</div>', pc = pn(qbox + (Array.isArray(e[3]) ? e[3][e[3].length - 1] : e[3]));
       /* teaching slide: the question is on screen with its answer written just below it */
       var abox = '<div style="font-size:clamp(1.3rem,5vw,2rem);font-weight:800;color:#fff;background:#2e9e4f;border:3px solid #2b2340;border-radius:16px;padding:8px 18px;margin:10px auto 0;max-width:92%;text-align:center;line-height:1.25">Answer: ' + fin + '</div>';
-      scr.push({ mode: 'watch', say: strip(e[0]) + ' ' + e[1].map(strip).join(' ') + ' So the answer is ' + fin + '.', pic: pn('<div style="display:flex;flex-direction:column;align-items:center;gap:8px;width:100%">' + qbox + (Array.isArray(e[3]) ? e[3][e[3].length - 1] : e[3]) + abox + '</div>') }); });
+      scr.push({ mode: 'watch', say: ep(strip(e[0])) + ' ' + e[1].map(function (z) { return ep(strip(z)); }).join(' ') + ' So the answer is ' + fin + '.', pic: pn('<div style="display:flex;flex-direction:column;align-items:center;gap:8px;width:100%">' + qbox + (Array.isArray(e[3]) ? e[3][e[3].length - 1] : e[3]) + abox + '</div>') }); });
     qs.slice(0, 4).forEach(function (r) { var o = qo(r); scr.push({ mode: 'together', say: o.q, pic: pn(o.pic), tip: o.tip === 'Think about what you learned in this lesson.' ? '' : o.tip, options: o.options, answer: o.answer, explain: o.explain }); });
     qs.slice(4, 8).forEach(function (r) { var o = qo(r); scr.push({ mode: 'turn', say: o.q, pic: pn(o.pic), tip: o.tip === 'Think about what you learned in this lesson.' ? '' : o.tip, options: o.options, answer: o.answer, explain: o.explain }); });
     if (sp.li) {
@@ -46503,13 +46566,13 @@ S.extraMakers = function (n, level) {
   M(306, { id: 'learnm2', ch: 'owl', bg: 'day',
     li: ['am and pm', 'What do am and pm mean?', 'The clock goes round twice a day. am is from midnight to noon. pm is from noon to midnight.', C(['am: morning', 'pm: afternoon and night']),
       [['am', 'from midnight to noon', '🌅'], ['pm', 'from noon to midnight', '🌆'], ['noon', '12 o’clock in the day', '☀️'], ['midnight', '12 o’clock at night', '🌙']],
-      [['7:30 am is in the morning, when you eat breakfast.', C(['7:30 am', '🥣'])], ['3:00 pm is in the afternoon, when school finishes.', C(['3:00 pm', '🏫'])], ['9:00 pm is at night, near bedtime.', C(['9:00 pm', '🛏️'])]],
+      [['7:30 am is in the morning, when you eat breakfast.', '<div style="text-align:center;font-weight:800">' + FL.p4.clk(7, 30, 150) + '7:30 am: breakfast 🥣</div>'], ['3:00 pm is in the afternoon, when school finishes.', '<div style="text-align:center;font-weight:800">' + FL.p4.clk(3, 0, 150) + '3:00 pm: school ends 🏫</div>'], ['9:00 pm is at night, near bedtime.', '<div style="text-align:center;font-weight:800">' + FL.p4.clk(9, 0, 150) + '9:00 pm: bedtime 🛏️</div>']],
       [['You wake up at 7:00. Is it am or pm?', ['Morning.'], 'am', C(['7:00 am'])], ['You have dinner at 6:00. Is it am or pm?', ['Evening.'], 'pm', C(['6:00 pm'])], ['What time is noon?', ['Middle of the day.'], '12:00 pm', C(['12:00'])]],
       ['12 pm is noon, 12 am is midnight. The twelve is the tricky one.', C(['12 pm noon', '12 am midnight'])],
       ['School starts at 9:00 in the morning. Is it am or pm?', C(['9:00']), ['am', 'pm'], 'am', 'Morning is am.', 'Think of the sun.'],
       ['am: morning. pm: afternoon and evening.', C(['am', 'pm'])]],
     ex: [['Your lunch is at 12:30. Is it am or pm?', ['Just after noon.'], 'pm', C(['12:30 pm'])], ['You go to bed at 8:00 at night. am or pm?', ['Evening.'], 'pm', C(['8:00 pm'])]],
-    way: ['A day has 24 hours. The clock face shows 12, so we need am and pm to say which half.', C(['12 hours am', '12 hours pm'])],
+    way: ['A day has 24 hours. The clock face shows 12, so we need am and pm to say which half.', '<div style="display:flex;gap:10px;justify-content:center;font-weight:800;text-align:center"><div>' + FL.p4.clk(6, 0, 130) + 'am: midnight to noon (12 hours)</div><div>' + FL.p4.clk(6, 0, 130) + 'pm: noon to midnight (12 hours)</div></div>'],
     mist: ['Do not say am for the afternoon. 3:00 in the afternoon is pm.', C(['3:00 pm'])],
     real: ['The film starts at 7:00 in the evening. Is that am or pm?', 'pm', ['am'], 'Evening is pm.', C(['7:00'])],
     qs: [['Breakfast at 8:00. am or pm?', 'am', ['pm'], 'Morning.', ''], ['Dinner at 6:00. am or pm?', 'pm', ['am'], 'Evening.', ''], ['Bedtime at 8:30. am or pm?', 'pm', ['am'], 'Night.', ''], ['Wake up at 6:30. am or pm?', 'am', ['pm'], 'Morning.', ''],
@@ -46610,7 +46673,7 @@ S.extraMakers = function (n, level) {
       ['What does the ruler show?', rule(0, 20, 17), ['15', '17', '18'], '17', 'Read the pointer: 2 after 15.', 'Count on from 15.'],
       ['To read a scale: find the step size, then count on.', C(['step size', 'count on'])]],
     ex: [['A thermometer goes up in 2s: 0, 2, 4 … The line is at 8. What is the temperature?', ['Count in 2s.'], '8 °C', C(['0', '2', '4', '6', '8'])], ['A scale goes 0, 10, 20, 30. The pointer is halfway between 10 and 20.', ['Halfway is 15.'], '15', C(['10', '15', '20'])]],
-    way: ['Mark the middle of a scale to get half-values like 5, 15, 25.', C(['0', '5', '10', '15'])],
+    way: ['Mark the middle of a scale to get half-values like 5, 15, 25.', FL.p4.scale(0, 30, 5, 15, '')],
     mist: ['Check what each mark is worth before you read. Sometimes the marks are 2, not 1.', C(['marks go up in 2s'])],
     real: ['A jug marked 0, 250, 500 ml has water at 250 ml and a bit more. What is a good reading?', 'about 300 ml', ['about 100 ml', 'about 500 ml'], 'A bit more than 250.', C(['250', '?', '500'])],
     qs: [['A ruler pointer is 3 marks after 10. Reading?', '13', ['3', '30', '103'], '10 + 3.', rule(0, 20, 13)], ['A scale steps by 5: 0, 5, 10, 15. Pointer on the third mark. Reading?', '15', ['10', '5', '20'], '3 × 5.', ''], ['The scale steps by 10: 0, 10, 20. Halfway between 10 and 20 is…', '15', ['12', '14', '25'], 'Half of 10.', ''], ['A scale steps by 2. Pointer after 6 (1 mark). Reading?', '8', ['7', '6', '10'], '6 + 2.', ''],
@@ -46993,13 +47056,13 @@ S.extraMakers = function (n, level) {
   P(403, 'learnm2', { ch: 'bear', bg: 'farm',
     t: 'Sharing and grouping|What does dividing mean?|Division means sharing into equal groups, or finding how many groups fit. 12 ÷ 3 can be 12 shared into 3, or how many 3s in 12.|12 ÷ 3 = 4',
     words: 'divide=share equally or group=➗;share=give equal amounts=🍰;group=a set of things together=👥;equal=the same size=🟰',
-    see: ['Sharing: 12 sweets shared between 3 children is 4 each.|12 ÷ 3 = 4', 'Grouping: How many groups of 3 in 12? 4 groups.|4 groups of 3', 'Both give the same answer: 4.|3 × 4 = 12'],
+    see: ['Sharing: 12 cakes are shared between 3 plates, one cake at a time. Each plate gets 4 cakes. 12 ÷ 3 = 4.|' + FL.p4.arr(3, 4, 'cake', 1), 'Grouping: how many plates of 3 cakes can we make from 12 cakes? 4 plates. 12 ÷ 3 = 4.|' + FL.p4.arr(4, 3, 'cake', 1), 'Both give the same answer: 4. And 3 × 4 = 12, so division undoes multiplication.|' + FL.p4.arr(3, 4, 'cake', 3)],
     ex3: ['20 stickers shared between 4. How many each?|20 ÷ 4.;4 × 5 = 20.|5|20 ÷ 4 = 5', 'How many groups of 5 in 35?|5 × 7 = 35.|7|35 ÷ 5 = 7', '18 ÷ 3 = ?|3 × 6 = 18.|6|18 ÷ 3 = 6'],
     mist: 'Division groups must be equal. 10 shared between 3 is not 3, 3, 4.|equal groups',
     chk: 'How many groups of 4 in 24?|6|5,8,20|4 × 6 = 24.|24 ÷ 4',
     rem: 'Divide means share equally or find how many groups.|÷ = share or group',
     vis: [['Look at 6 plates with 3 cakes on each plate. We show them as 6 rows of 3 cakes.', AR(6, 3, 1)], ['Count the cakes in each row: 3, 6, 9, 12, 15, 18. Adding 3 six times: 3 + 3 + 3 + 3 + 3 + 3 = 18.', AR(6, 3, 2)], ['So 6 × 3 = 18. Multiplication is a quick way to add equal groups.', AR(6, 3, 3)], ['Now share 12 cakes between 3 plates. Give one cake to each plate at a time. Each plate gets 4 cakes. 12 ÷ 3 = 4.', AR(3, 4, 1)], ['Or group them: how many plates of 3 cakes can we make from 12 cakes? 4 plates. Again 12 ÷ 3 = 4.', AR(4, 3, 1)], ['Multiplication and division are linked. 3 × 4 = 12, so 12 ÷ 3 = 4.', AR(3, 4, 3)]],
-    way: 'Draw circles and put the items in one at a time until they are used up.|12 sweets, 3 circles',
+    way: 'Draw 3 circles and put the 12 sweets in one at a time until they are all used up. Every circle ends with 4 sweets.|' + FL.p4.arr(3, 4, 'cake', 1),
     ex: ['16 pencils shared between 4 pots. How many in each?|4 × 4 = 16.|4|16 ÷ 4', 'How many 10s in 70?|10 × 7 = 70.|7|70 ÷ 10'],
     real: '30 children make teams of 5. How many teams?|6|35,25,150|5 × 6 = 30.|30 ÷ 5',
     qs: ['12 ÷ 4 = ?|3|8,16,4|4 × 3 = 12.', '20 ÷ 5 = ?|4|15,25,100|5 × 4 = 20.', '18 ÷ 2 = ?|9|16,20,36|Half.', '24 ÷ 6 = ?|4|18,30,144|6 × 4 = 24.', '40 ÷ 10 = ?|4|30,50,400|10 × 4.', '27 ÷ 3 = ?|9|24,30,81|3 × 9.', '35 ÷ 7 = ?|5|28,42,245|7 × 5.', '48 ÷ 8 = ?|6|40,56,384|8 × 6.'],
@@ -47102,12 +47165,12 @@ S.extraMakers = function (n, level) {
   P(404, 'learnm3', { ch: 'mouse', bg: 'kitchen',
     t: 'Percentages|What does percent mean?|Percent means out of 100. 50% is 50 out of 100, which is half. 25% is a quarter. 10% is a tenth.|50% = 1/2',
     words: 'percent=out of every 100=💯;percentage=an amount as a part of 100=📊;half=50%=➗;quarter=25%=🍰',
-    see: ['A 100 square: 50 shaded is 50%, half.|50% = 1/2', '25 shaded is 25%, a quarter.|25% = 1/4', '10 shaded is 10%, a tenth.|10% = 1/10'],
+    see: ['Percent means out of 100. This 100 square has 50 small squares shaded. 50 out of 100 is 50%, which is half.|' + FL.hundred(50), 'Now 25 small squares are shaded. 25 out of 100 is 25%, which is a quarter.|' + FL.hundred(25), 'Now 10 small squares are shaded. 10 out of 100 is 10%, which is a tenth.|' + FL.hundred(10)],
     ex3: ['What is 50% of 40?|Half of 40.|20|÷ 2', 'What is 25% of 40?|A quarter of 40.|10|÷ 4', 'What is 10% of 40?|A tenth of 40.|4|÷ 10'],
     mist: '10% of 50 is 5, not 10. It is a tenth of the amount.|÷ 10',
     chk: 'What is 50% of 60?|30|50,6,20|Half.|60 ÷ 2',
     rem: '50% = half, 25% = quarter, 10% = tenth, 100% = all.|% = out of 100',
-    way: 'Use 100 squares and shade 10, 25 or 50 to see the percentages.|10, 25, 50, 100',
+    way: 'Use a 100 square and shade 75 small squares. 75 out of 100 is 75%, which is three quarters.|' + FL.hundred(75),
     ex: ['What is 25% of 20?|A quarter of 20.|5|20 ÷ 4', 'What is 10% of 90?|A tenth of 90.|9|90 ÷ 10'],
     real: 'A shirt costing £20 is 50% off. How much do you save?|£10|£5,£20,£50|Half.|20 ÷ 2',
     qs: ['50% of 10?|5|10,50,2|Half.', '25% of 12?|3|4,6,12|Quarter.', '10% of 30?|3|10,30,5|Tenth.', '100% of 7?|7|0,1,70|All.', '50% of 24?|12|6,48,24|Half.', '25% of 100?|25|4,50,10|Quarter.', '10% of 200?|20|2,100,10|Tenth.', '25% of 8?|2|4,3,1|Quarter.'],
@@ -47177,13 +47240,13 @@ S.extraMakers = function (n, level) {
   P(405, 'learnm3', { ch: 'frog', bg: 'pond',
     t: 'Fewest coins|How do I pay using the fewest coins?|Use the biggest coins you can first, then smaller ones. This makes the fewest coins.|65p = 50p + 10p + 5p',
     words: 'coin=a piece of money=🪙;fewest=the smallest number=1️⃣;biggest=the largest value=⬆️;value=how much it is worth=💷',
-    see: ['To make 65p, start with 50p.|50p', 'Left: 15p. Use a 10p. Left: 5p. Use a 5p.|10p,5p', '50p + 10p + 5p = 65p. That is 3 coins.|3 coins'],
-    ex3: ['Fewest coins for 35p|20p + 10p + 5p.|3 coins|20, 10, 5', 'Fewest coins for 90p|50p + 20p + 20p.|3 coins|50, 20, 20', 'Fewest coins for 12p|10p + 2p.|2 coins|10, 2'],
+    see: ['To make 65p, start with the biggest coin that fits: 50p.|' + FL.coins([50]), 'We still need 15p. The biggest coin that fits is 10p. Then we need 5p, so we use a 5p coin.|' + FL.coins([10, 5]), '50p + 10p + 5p = 65p. That is 3 coins.|' + FL.coins([50, 10, 5])],
+    ex3: ['Fewest coins for 35p|20p + 10p + 5p.|3 coins|' + FL.coins([20, 10, 5]), 'Fewest coins for 90p|50p + 20p + 20p.|3 coins|' + FL.coins([50, 20, 20]), 'Fewest coins for 12p|10p + 2p.|2 coins|' + FL.coins([10, 2])],
     mist: 'Do not use lots of small coins. Start with the biggest coin that fits.|biggest first',
     chk: 'Fewest coins to make 40p?|20p + 20p|10p + 10p + 10p + 10p,20p + 10p + 5p + 5p|Two 20p coins.|40p',
     rem: 'Biggest coin first, then the next.|biggest first',
-    way: 'Try with real or paper coins and see which uses the fewest.|50, 20, 10, 5, 2, 1',
-    ex: ['Fewest coins for 27p|20p + 5p + 2p.|3 coins|20, 5, 2', 'Fewest coins for 60p|50p + 10p.|2 coins|50, 10'],
+    way: 'Try with real or paper coins and see which uses the fewest. These are all the coins we can use.|' + FL.coins([50, 20, 10, 5, 2, 1]),
+    ex: ['Fewest coins for 27p|20p + 5p + 2p.|3 coins|' + FL.coins([20, 5, 2]), 'Fewest coins for 60p|50p + 10p.|2 coins|' + FL.coins([50, 10])],
     real: 'You need to give 45p change. What are the fewest coins?|20p + 20p + 5p|50p,10p × 4 + 5p,20p + 10p × 2 + 5p|20 + 20 + 5.|45p',
     qs: ['Fewest coins for 50p?|one 50p|two 20p and a 10p,five 10p,ten 5p|One coin.', 'Fewest coins for 30p?|20p + 10p|three 10p,six 5p,50p|2 coins.', 'Fewest coins for 15p?|10p + 5p|three 5p,10p + 2p + 2p + 1p,15p|2 coins.', 'Fewest coins for 70p?|50p + 20p|seven 10p,20p + 20p + 20p + 10p,50p + 10p + 10p|2 coins.', 'Fewest coins for 8p?|5p + 2p + 1p|eight 1p,2p + 2p + 2p + 2p,5p + 1p + 1p + 1p|3 coins.', 'How many coins for 100p using only 50p?|2|1,4,5|50 + 50.', 'Fewest coins for 25p?|20p + 5p|ten p,five 5p,10p + 10p + 5p|2 coins.', 'Fewest coins for 17p?|10p + 5p + 2p|ten + five + one,five 2p + 1p,seventeen 1p|3 coins.'],
     gen: function g(lv) { var a = pick([50, 20, 10, 5, 2, 1]), tot = r(1, lv ? 9 : 5) * pick([5, 10]) + (lv ? r(0, 4) : 0); var left = tot; var coins = [50, 20, 10, 5, 2, 1], cnt = 0; coins.forEach(function (v) { while (left >= v) { left -= v; cnt++; } }); if (tot > 99) return g(lv); return mc('Fewest coins', 'What is the <b>fewest number of coins</b> that make <b>' + tot + 'p</b>?', cnt, [cnt + 1, cnt + 2, cnt - 1 > 0 ? cnt - 1 : cnt + 3], 'Use the biggest coins first.', 'Biggest coins first gives ' + cnt + ' coins.'); } });
@@ -47206,8 +47269,8 @@ S.extraMakers = function (n, level) {
     gen: function g(lv) { var h = r(1, 12), m = pick(lv ? [5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55] : [5, 10, 15, 20, 25, 30]); return mc('Telling the time', 'What time does the clock show?', tm(h, m), [tm(h, 60 - m), tm(h % 12 + 1, m), tm(h, m + 5 < 60 ? m + 5 : 0), tm(h, m === 30 ? 15 : 30)], 'Hour hand first, then count in 5s.', 'It is ' + tm(h, m) + '.', CK(h, m)); } });
 
   P(406, 'learn3', { ch: 'owl', bg: 'day',
-    way: 'am is from midnight to noon. pm is from noon to midnight. The clock goes round twice a day.|am = morning,pm = afternoon and night',
-    ex: ['You wake up at 7:00. am or pm?|That is in the morning.|7:00 am|morning', 'You have dinner at 6:30. am or pm?|That is in the evening.|6:30 pm|evening'],
+    way: 'am is from midnight to noon. pm is from noon to midnight. The clock goes round twice a day.|' + '<div style="display:flex;gap:10px;justify-content:center;align-items:center"><div style="text-align:center;font-weight:800">' + FL.p4.clk(9, 0, 130) + '9 am: morning</div><div style="text-align:center;font-weight:800">' + FL.p4.clk(9, 0, 130) + '9 pm: night</div></div>',
+    ex: ['You wake up at 7:00. am or pm?|That is in the morning.|7:00 am|' + FL.p4.clk(7, 0, 150) + ', 'You have dinner at 6:30. am or pm?|That is in the evening.|6:30 pm|' + FL.p4.clk(6, 30, 150) + '],
     mist: '12 noon is 12:00 pm, and 12 midnight is 12:00 am.|noon = pm,midnight = am',
     real: 'School ends at 3:15 in the afternoon. am or pm?|pm|am|After noon.|3:15 pm',
     qs: ['Breakfast at 8:00. am or pm?|am|pm|Morning.', 'Lunch at 12:30. am or pm?|pm|am|After noon.', 'Bedtime at 8:30 at night. am or pm?|pm|am|Night.', 'Waking at 6:45. am or pm?|am|pm|Morning.', 'Which is later: 10 am or 10 pm?|10 pm|10 am|Evening.', 'Which is earlier: 9 am or 9 pm?|9 am|9 pm|Morning.', 'What time is noon?|12:00 pm|12:00 am,1:00 pm,11:00 am|Middle of the day.', 'What time is midnight?|12:00 am|12:00 pm,1:00 am,11:00 pm|Middle of the night.'],
@@ -47293,7 +47356,7 @@ S.extraMakers = function (n, level) {
     gen: function g(lv) { var s = r(0, lv ? 8 : 5), len = r(3, lv ? 12 : 9), e = s + len; if (e > 20) return g(lv); return mc('Length', 'The object starts at <b>' + s + '</b> and ends at <b>' + e + '</b> on the ruler. How long is it?', len + ' cm', [e + ' cm', (len + 1) + ' cm', (len - 1) + ' cm', (e + s) + ' cm'], 'Subtract the start from the end.', e + ' - ' + s + ' = ' + len + '.', rule(0, 20, e)); } });
 
   P(407, 'learn3', { ch: 'frog', bg: 'pond',
-    way: 'Perimeter is the distance all the way round the edge of a shape. Add up all the sides.|5 + 3 + 5 + 3 = 16|',
+    way: 'Perimeter is the distance all the way round the edge of a shape. Add up all the sides.|' + FL.p4.rectPic(5, 3, 'cm'),
     ex: ['A rectangle has sides 5 cm and 3 cm. Perimeter?|Opposite sides are equal: 5, 3, 5, 3.;5 + 3 + 5 + 3 = 16.|16 cm|5 + 3 + 5 + 3', 'A square has sides of 6 cm. Perimeter?|4 sides of 6.;6 + 6 + 6 + 6 = 24.|24 cm|4 × 6'],
     mist: 'Add all four sides, not just two. 5 + 3 is only half the perimeter.|all the sides',
     real: 'A garden is 8 m long and 4 m wide. How much fencing goes round it?|24 m|12 m,32 m,16 m|8 + 4 + 8 + 4.|8 + 4 + 8 + 4',
@@ -47301,8 +47364,8 @@ S.extraMakers = function (n, level) {
     gen: function g(lv) { var a = r(2, lv ? 15 : 9), b = r(2, lv ? 12 : 8); if (a === b) return g(lv); return mc('Perimeter', 'A rectangle is <b>' + a + ' cm</b> long and <b>' + b + ' cm</b> wide. What is its perimeter?', 2 * (a + b) + ' cm', [(a + b) + ' cm', (a * b) + ' cm', (2 * (a + b) + 2) + ' cm', (2 * a + b) + ' cm'], 'Add all four sides.', a + ' + ' + b + ' + ' + a + ' + ' + b + ' = ' + 2 * (a + b) + '.'); } });
 
   P(407, 'learn4', { ch: 'frog', bg: 'pond',
-    way: 'On a scale, first work out how much each small step is worth. Then count on from the last number.|0, 10, 20 with 5 steps between: each step is 2',
-    ex: ['The scale goes up in 10s: 0, 10, 20, 30. The pointer is halfway between 20 and 30. Reading?|Halfway is 5 more.;20 + 5 = 25.|25|20, 25, 30', 'A scale is marked 0, 100, 200. Pointer is halfway between 100 and 200.|Halfway is 50 more.|150|100, 150, 200'],
+    way: 'On a scale, first work out how much each small step is worth. Then count on from the last number.|' + FL.p4.scale(0, 20, 2, 8, '') ,
+    ex: ['The scale goes up in 10s: 0, 10, 20, 30. The pointer is halfway between 20 and 30. Reading?|Halfway is 5 more.;20 + 5 = 25.|25|' + FL.p4.scale(0, 40, 10, 25, '') + ', 'A scale is marked 0, 100, 200. Pointer is halfway between 100 and 200.|Halfway is 50 more.|150|' + FL.p4.scale(0, 300, 50, 150, '') + '],
     mist: 'Work out each small step first. Do not just read the nearest number.|step size first',
     real: 'A jug is marked 0, 250, 500 ml. The water is halfway between 250 and 500. About how much?|375 ml|300 ml,400 ml,250 ml|Halfway is 125 more.|250 + 125',
     qs: ['Marked 0 10 20. Halfway between 10 and 20?|15|12,14,25|Half of 10.', 'Marked 0 100 200. Halfway between 0 and 100?|50|10,25,150|Half.', 'Steps of 2: 6, 8, 10. What comes after 10?|12|11,14,15|+2.', 'Steps of 5 starting at 0. Third mark?|15|5,10,20|3 × 5.', 'Marked in 20s: 0, 20, 40. The pointer is on 60. Next mark?|80|62,70,100|+20.', 'A scale shows 0, 1, 2 kg. Halfway between 1 and 2?|1.5 kg|1.2 kg,1.1 kg,2.5 kg|Half a kilogram.', 'Marks 0, 50, 100. Pointer exactly on the middle mark?|50|25,75,0|Middle.', 'Steps of 10. After 40?|50|45,60,41|+10.'],
@@ -47384,7 +47447,7 @@ S.extraMakers = function (n, level) {
     gen: function g(lv) { var P = [['square', 4], ['rectangle', 4], ['right-angled triangle', 1], ['circle', 0], ['equilateral triangle', 0]], p = pick(P); return mc('Right angles', 'How many <b>right angles</b> does a <b>' + p[0] + '</b> have?', p[1], [0, 1, 2, 3, 4].filter(function (x) { return x !== p[1]; }), 'Count the square corners.', 'A ' + p[0] + ' has ' + p[1] + ' right angle' + (p[1] === 1 ? '' : 's') + '.', p[0] === 'right-angled triangle' || p[0] === 'equilateral triangle' ? SH(['triangle'], 90) : SH([p[0]], 90)); } });
 
   P(408, 'learn4', { ch: 'rocket', bg: 'space',
-    way: 'The four main compass points are North, East, South and West. Between them are North-East, South-East, South-West and North-West.|N, E, S, W',
+    way: 'The four main compass points are North, East, South and West. Between them are North-East, South-East, South-West and North-West.|' + FL.cards(['N = North', 'E = East', 'S = South', 'W = West']),
     ex: ['What is opposite to North?|Opposite means the other way.|South|N → S', 'Face East. Turn a quarter turn clockwise. Which way now?|Clockwise from East is South.|South|E → S'],
     mist: 'Clockwise goes N → E → S → W. Anticlockwise goes the other way.|N E S W clockwise',
     real: 'You walk North then turn around and walk back. Which way are you walking?|South|East,West,North|Opposite of North.|N → S',
@@ -47499,12 +47562,12 @@ S.extraMakers = function (n, level) {
   P(409, 'learnm2', { ch: 'fox', bg: 'day',
     t: 'Bar graphs and scales|How do I read a bar graph with a scale?|Look at the scale up the side. Each step might be 1, 2, 5 or 10. Read across from the top of the bar to the scale.|scale 0, 2, 4, 6',
     words: 'bar graph=a graph with bars=📊;scale=the numbers up the side=📏;axis=a line with labels=➖;title=what the graph is about=🏷️',
-    see: ['Read the title first to see what the graph shows.|title', 'Check the scale. It goes up in 2s: 0, 2, 4, 6.|2, 4, 6', 'A bar reaching 6 means 6.|bar = 6'],
+    see: ['Read the title first. It tells us what the graph shows: our favourite pets.|' + FL.barGraph([['Cats', 6], ['Dogs', 10, '#4aa8ff'], ['Fish', 4, '#7cc96b'], ['Birds', 8, '#ff8fab']], 2, 10, 'Our favourite pets', 'Pet', 'Number of children'), 'Check the scale up the side. It goes up in 2s: 0, 2, 4, 6, 8, 10.|' + FL.barGraph([['Cats', 6], ['Dogs', 10, '#4aa8ff'], ['Fish', 4, '#7cc96b'], ['Birds', 8, '#ff8fab']], 2, 10, 'Our favourite pets', 'Pet', 'Number of children'), 'The cats bar reaches the line at 6, so 6 children chose cats. Read across from the top of the bar to the scale.|' + FL.barGraph([['Cats', 6], ['Dogs', 10, '#4aa8ff'], ['Fish', 4, '#7cc96b'], ['Birds', 8, '#ff8fab']], 2, 10, 'Our favourite pets', 'Pet', 'Number of children', 0)],
     ex3: ['The scale goes up in 2s. A bar is halfway between 4 and 6. How many?|Halfway is 5.|5|5', 'A bar reaches 10 on a scale in 5s. How many?|It reaches the 10 mark.|10|10', 'Bars of 8 and 6. How many more?|8 - 6.|2|8 - 6'],
     mist: 'Do not count the bars. Read the number on the scale.|scale',
     chk: 'The scale goes up in 5s. A bar reaches the 2nd mark above 0. How many?|10|2,5,7|2 × 5.|2 × 5',
     rem: 'Read the title, check the scale, read across from the top of the bar.|title, scale',
-    way: 'Make a bar graph of the weather in your class for a week.|sunny, rainy, cloudy',
+    way: 'Make a bar graph of the weather for a week. Sunny 3 days, rainy 2 days and cloudy 2 days. Give the graph a title and label both axes.|' + FL.barGraph([['Sunny', 3, '#ffd23f'], ['Rainy', 2, '#4aa8ff'], ['Cloudy', 2, '#b8c0cc']], 1, 4, 'Weather this week', 'Weather', 'Number of days'),
     ex: ['Scale in 2s. A bar at the 3rd mark. How many?|3 × 2.|6|6', 'Scale in 10s. A bar at 40. How many?|It reaches 40.|40|40'],
     real: 'A graph of favourite fruit has scale in 5s. Apples reach 20. How many chose apples?|20|4,5,25|Read the scale.|scale in 5s',
     qs: ['Scale in 2s. Bar at the 4th mark. How many?|8|4,6,24|4 × 2.', 'Scale in 5s. Bar at the 3rd mark. How many?|15|3,8,35|3 × 5.', 'Scale in 10s. Bar at the 5th mark. How many?|50|5,15,510|5 × 10.', 'Scale in 5s. A bar halfway between 10 and 15?|12.5|11,13,10|Between.', 'Bars 12 and 8. Difference?|4|20,3,5|12 - 8.', 'Bars 12 and 8. Total?|20|4,18,22|12 + 8.', 'Where do you read the number?|on the scale|on the title,on the label|Scale.', 'The tallest bar shows the…|most|least,none,middle|Highest.'],
@@ -47513,12 +47576,12 @@ S.extraMakers = function (n, level) {
   P(409, 'learnm3', { ch: 'fox', bg: 'day',
     t: 'Pictograms with keys|How do I read a pictogram?|A pictogram uses pictures. The key tells what each picture is worth. Multiply the pictures by the key.|each ⭐ = 2',
     words: 'pictogram=a chart using pictures=🖼️;key=what each picture is worth=🔑;symbol=a picture used for counting=⭐;data=information we collect=📊',
-    see: ['Read the key first. Each star means 2 children.|⭐ = 2', '3 stars means 3 × 2 = 6.|3 × 2 = 6', 'A half star is half of 2, which is 1.|½ ⭐ = 1'],
+    see: ['Read the key first. Each star means 2 children. Monday has 2 stars.|' + FL.pictogram([['Monday', 2], ['Tuesday', 3]], '⭐', 2), 'Tuesday has 3 stars, so 3 × 2 = 6 children.|' + FL.pictogram([['Tuesday', 3]], '⭐', 2), 'A half star is half of 2, which is 1. Wednesday has 2 stars and a half star: 2 + 2 + 1 = 5 children.|' + FL.pictogram([['Wednesday', 2.5]], '⭐', 2)],
     ex3: ['Each ⭐ = 5. A row has 4 stars. How many?|4 × 5.|20|20', 'Each ⭐ = 10. A row has 3 stars. How many?|3 × 10.|30|30', 'Each ⭐ = 2. A row has 5 stars. How many?|5 × 2.|10|10'],
     mist: 'Check the key. One picture does not always mean 1.|key first',
     chk: 'Each ⭐ = 5. There are 6 stars. How many?|30|11,56,6|6 × 5.|6 × 5',
     rem: 'Key first. Pictures × key.|pictures × key',
-    way: 'Draw your own pictogram using a key of 2.|⭐ = 2',
+    way: 'Draw your own pictogram using a key of 2. Red has 4 children, blue has 3 and green has 5. Each star is 2 children, so red is 2 stars, blue is 1 and a half stars, and green is 2 and a half stars.|' + FL.pictogram([['Red', 2], ['Blue', 1.5], ['Green', 2.5]], '⭐', 2),
     ex: ['Each 🍎 = 2. There are 7 apples drawn. How many?|7 × 2.|14|14', 'Each 🍎 = 10. 4 pictures. How many?|4 × 10.|40|40'],
     real: 'A pictogram key says each car = 10 cars. 5 pictures. How many cars?|50|15,5,510|5 × 10.|5 × 10',
     qs: ['Key: ⭐ = 1. 7 stars. How many?|7|1,70,8|7 × 1.', 'Key: ⭐ = 2. 4 stars. How many?|8|4,6,24|4 × 2.', 'Key: ⭐ = 5. 3 stars. How many?|15|8,35,3|3 × 5.', 'Key: ⭐ = 10. 6 stars. How many?|60|16,600,6|6 × 10.', 'Key: ⭐ = 2. A half star is…|1|2,0.5,4|Half of 2.', 'Key: ⭐ = 5. A row has 25 children. How many stars?|5|10,20,30|25 ÷ 5.', 'Key: ⭐ = 2. A row shows 12. How many stars?|6|10,14,24|12 ÷ 2.', 'What does the key tell you?|what each picture is worth|the title,the date,the colour|Key.'],

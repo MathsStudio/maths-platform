@@ -303,7 +303,7 @@
       
       var ph = tmp.innerHTML.trim(); 
       /* older lessons without a themed picture: show the content on the topic's own scene beside its character, never a bare cream box */
-      if (ph && ph.indexOf('flb-stage') < 0 && ph.indexOf('class="flp ') < 0 && window.FL && FL.panel && FL.THEME && FL.THEME[meta.n]) { var th0 = FL.THEME[meta.n], sy = String((steps[c.k] || {}).say || '').replace(/<[^>]*>/g, '').trim(), tx0 = ph.replace(/<style[\s\S]*?<\/style>/g, '').replace(/<svg[\s\S]*?<\/svg>/g, 'S').replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim();
+      if (ph && ph.indexOf('flb-stage') < 0 && ph.indexOf('class="flp ') < 0 && window.FL && FL.panel && FL.THEME && FL.THEME[meta.n]) { var th0 = FL.THEME[meta.n], sy = FL.digitise(String((steps[c.k] || {}).say || '').replace(/<[^>]*>/g, '').trim()), tx0 = ph.replace(/<style[\s\S]*?<\/style>/g, '').replace(/<svg[\s\S]*?<\/svg>/g, 'S').replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim();
         if (sy.length > 11 && sy.length < 200 && tx0.length < 30 && !/<table/.test(ph)) ph = '<div style="width:100%;font-size:clamp(1.05rem,3.4vw,1.5rem);font-weight:800;text-align:center">' + sy + '</div>' + ph;
         ph = '<div class="flb flb-w"><div class="flb-stage" style="line-height:1.3;border:0;background:none">' + FL.panel(th0[1], th0[0], '<div style="display:flex;flex-wrap:wrap;gap:10px;justify-content:center;align-items:center;font-weight:800;color:#2b2340;background:#fff;border:3px solid #2b2340;border-radius:16px;padding:10px 14px;max-width:96%">' + ph + '</div>') + '</div></div>'; }
       var P = stage.querySelector('.flx-pic'), T = stage.querySelector('.flx-top'), O = stage.querySelector('.flx-opts');

@@ -26,7 +26,7 @@
     gen: function g(lv) { var s = r(0, lv ? 8 : 5), len = r(3, lv ? 12 : 9), e = s + len; if (e > 20) return g(lv); return mc('Length', 'The object starts at <b>' + s + '</b> and ends at <b>' + e + '</b> on the ruler. How long is it?', len + ' cm', [e + ' cm', (len + 1) + ' cm', (len - 1) + ' cm', (e + s) + ' cm'], 'Subtract the start from the end.', e + ' - ' + s + ' = ' + len + '.', rule(0, 20, e)); } });
 
   P(407, 'learn3', { ch: 'frog', bg: 'pond',
-    way: 'Perimeter is the distance all the way round the edge of a shape. Add up all the sides.|5 + 3 + 5 + 3 = 16|',
+    way: 'Perimeter is the distance all the way round the edge of a shape. Add up all the sides.|' + FL.p4.rectPic(5, 3, 'cm'),
     ex: ['A rectangle has sides 5 cm and 3 cm. Perimeter?|Opposite sides are equal: 5, 3, 5, 3.;5 + 3 + 5 + 3 = 16.|16 cm|5 + 3 + 5 + 3', 'A square has sides of 6 cm. Perimeter?|4 sides of 6.;6 + 6 + 6 + 6 = 24.|24 cm|4 × 6'],
     mist: 'Add all four sides, not just two. 5 + 3 is only half the perimeter.|all the sides',
     real: 'A garden is 8 m long and 4 m wide. How much fencing goes round it?|24 m|12 m,32 m,16 m|8 + 4 + 8 + 4.|8 + 4 + 8 + 4',
@@ -34,8 +34,8 @@
     gen: function g(lv) { var a = r(2, lv ? 15 : 9), b = r(2, lv ? 12 : 8); if (a === b) return g(lv); return mc('Perimeter', 'A rectangle is <b>' + a + ' cm</b> long and <b>' + b + ' cm</b> wide. What is its perimeter?', 2 * (a + b) + ' cm', [(a + b) + ' cm', (a * b) + ' cm', (2 * (a + b) + 2) + ' cm', (2 * a + b) + ' cm'], 'Add all four sides.', a + ' + ' + b + ' + ' + a + ' + ' + b + ' = ' + 2 * (a + b) + '.'); } });
 
   P(407, 'learn4', { ch: 'frog', bg: 'pond',
-    way: 'On a scale, first work out how much each small step is worth. Then count on from the last number.|0, 10, 20 with 5 steps between: each step is 2',
-    ex: ['The scale goes up in 10s: 0, 10, 20, 30. The pointer is halfway between 20 and 30. Reading?|Halfway is 5 more.;20 + 5 = 25.|25|20, 25, 30', 'A scale is marked 0, 100, 200. Pointer is halfway between 100 and 200.|Halfway is 50 more.|150|100, 150, 200'],
+    way: 'On a scale, first work out how much each small step is worth. Then count on from the last number.|' + FL.p4.scale(0, 20, 2, 8, '') ,
+    ex: ['The scale goes up in 10s: 0, 10, 20, 30. The pointer is halfway between 20 and 30. Reading?|Halfway is 5 more.;20 + 5 = 25.|25|' + FL.p4.scale(0, 40, 10, 25, '') + ', 'A scale is marked 0, 100, 200. Pointer is halfway between 100 and 200.|Halfway is 50 more.|150|' + FL.p4.scale(0, 300, 50, 150, '') + '],
     mist: 'Work out each small step first. Do not just read the nearest number.|step size first',
     real: 'A jug is marked 0, 250, 500 ml. The water is halfway between 250 and 500. About how much?|375 ml|300 ml,400 ml,250 ml|Halfway is 125 more.|250 + 125',
     qs: ['Marked 0 10 20. Halfway between 10 and 20?|15|12,14,25|Half of 10.', 'Marked 0 100 200. Halfway between 0 and 100?|50|10,25,150|Half.', 'Steps of 2: 6, 8, 10. What comes after 10?|12|11,14,15|+2.', 'Steps of 5 starting at 0. Third mark?|15|5,10,20|3 × 5.', 'Marked in 20s: 0, 20, 40. The pointer is on 60. Next mark?|80|62,70,100|+20.', 'A scale shows 0, 1, 2 kg. Halfway between 1 and 2?|1.5 kg|1.2 kg,1.1 kg,2.5 kg|Half a kilogram.', 'Marks 0, 50, 100. Pointer exactly on the middle mark?|50|25,75,0|Middle.', 'Steps of 10. After 40?|50|45,60,41|+10.'],
@@ -117,7 +117,7 @@
     gen: function g(lv) { var P = [['square', 4], ['rectangle', 4], ['right-angled triangle', 1], ['circle', 0], ['equilateral triangle', 0]], p = pick(P); return mc('Right angles', 'How many <b>right angles</b> does a <b>' + p[0] + '</b> have?', p[1], [0, 1, 2, 3, 4].filter(function (x) { return x !== p[1]; }), 'Count the square corners.', 'A ' + p[0] + ' has ' + p[1] + ' right angle' + (p[1] === 1 ? '' : 's') + '.', p[0] === 'right-angled triangle' || p[0] === 'equilateral triangle' ? SH(['triangle'], 90) : SH([p[0]], 90)); } });
 
   P(408, 'learn4', { ch: 'rocket', bg: 'space',
-    way: 'The four main compass points are North, East, South and West. Between them are North-East, South-East, South-West and North-West.|N, E, S, W',
+    way: 'The four main compass points are North, East, South and West. Between them are North-East, South-East, South-West and North-West.|' + FL.cards(['N = North', 'E = East', 'S = South', 'W = West']),
     ex: ['What is opposite to North?|Opposite means the other way.|South|N → S', 'Face East. Turn a quarter turn clockwise. Which way now?|Clockwise from East is South.|South|E → S'],
     mist: 'Clockwise goes N → E → S → W. Anticlockwise goes the other way.|N E S W clockwise',
     real: 'You walk North then turn around and walk back. Which way are you walking?|South|East,West,North|Opposite of North.|N → S',
@@ -232,12 +232,12 @@
   P(409, 'learnm2', { ch: 'fox', bg: 'day',
     t: 'Bar graphs and scales|How do I read a bar graph with a scale?|Look at the scale up the side. Each step might be 1, 2, 5 or 10. Read across from the top of the bar to the scale.|scale 0, 2, 4, 6',
     words: 'bar graph=a graph with bars=📊;scale=the numbers up the side=📏;axis=a line with labels=➖;title=what the graph is about=🏷️',
-    see: ['Read the title first to see what the graph shows.|title', 'Check the scale. It goes up in 2s: 0, 2, 4, 6.|2, 4, 6', 'A bar reaching 6 means 6.|bar = 6'],
+    see: ['Read the title first. It tells us what the graph shows: our favourite pets.|' + FL.barGraph([['Cats', 6], ['Dogs', 10, '#4aa8ff'], ['Fish', 4, '#7cc96b'], ['Birds', 8, '#ff8fab']], 2, 10, 'Our favourite pets', 'Pet', 'Number of children'), 'Check the scale up the side. It goes up in 2s: 0, 2, 4, 6, 8, 10.|' + FL.barGraph([['Cats', 6], ['Dogs', 10, '#4aa8ff'], ['Fish', 4, '#7cc96b'], ['Birds', 8, '#ff8fab']], 2, 10, 'Our favourite pets', 'Pet', 'Number of children'), 'The cats bar reaches the line at 6, so 6 children chose cats. Read across from the top of the bar to the scale.|' + FL.barGraph([['Cats', 6], ['Dogs', 10, '#4aa8ff'], ['Fish', 4, '#7cc96b'], ['Birds', 8, '#ff8fab']], 2, 10, 'Our favourite pets', 'Pet', 'Number of children', 0)],
     ex3: ['The scale goes up in 2s. A bar is halfway between 4 and 6. How many?|Halfway is 5.|5|5', 'A bar reaches 10 on a scale in 5s. How many?|It reaches the 10 mark.|10|10', 'Bars of 8 and 6. How many more?|8 - 6.|2|8 - 6'],
     mist: 'Do not count the bars. Read the number on the scale.|scale',
     chk: 'The scale goes up in 5s. A bar reaches the 2nd mark above 0. How many?|10|2,5,7|2 × 5.|2 × 5',
     rem: 'Read the title, check the scale, read across from the top of the bar.|title, scale',
-    way: 'Make a bar graph of the weather in your class for a week.|sunny, rainy, cloudy',
+    way: 'Make a bar graph of the weather for a week. Sunny 3 days, rainy 2 days and cloudy 2 days. Give the graph a title and label both axes.|' + FL.barGraph([['Sunny', 3, '#ffd23f'], ['Rainy', 2, '#4aa8ff'], ['Cloudy', 2, '#b8c0cc']], 1, 4, 'Weather this week', 'Weather', 'Number of days'),
     ex: ['Scale in 2s. A bar at the 3rd mark. How many?|3 × 2.|6|6', 'Scale in 10s. A bar at 40. How many?|It reaches 40.|40|40'],
     real: 'A graph of favourite fruit has scale in 5s. Apples reach 20. How many chose apples?|20|4,5,25|Read the scale.|scale in 5s',
     qs: ['Scale in 2s. Bar at the 4th mark. How many?|8|4,6,24|4 × 2.', 'Scale in 5s. Bar at the 3rd mark. How many?|15|3,8,35|3 × 5.', 'Scale in 10s. Bar at the 5th mark. How many?|50|5,15,510|5 × 10.', 'Scale in 5s. A bar halfway between 10 and 15?|12.5|11,13,10|Between.', 'Bars 12 and 8. Difference?|4|20,3,5|12 - 8.', 'Bars 12 and 8. Total?|20|4,18,22|12 + 8.', 'Where do you read the number?|on the scale|on the title,on the label|Scale.', 'The tallest bar shows the…|most|least,none,middle|Highest.'],
@@ -246,12 +246,12 @@
   P(409, 'learnm3', { ch: 'fox', bg: 'day',
     t: 'Pictograms with keys|How do I read a pictogram?|A pictogram uses pictures. The key tells what each picture is worth. Multiply the pictures by the key.|each ⭐ = 2',
     words: 'pictogram=a chart using pictures=🖼️;key=what each picture is worth=🔑;symbol=a picture used for counting=⭐;data=information we collect=📊',
-    see: ['Read the key first. Each star means 2 children.|⭐ = 2', '3 stars means 3 × 2 = 6.|3 × 2 = 6', 'A half star is half of 2, which is 1.|½ ⭐ = 1'],
+    see: ['Read the key first. Each star means 2 children. Monday has 2 stars.|' + FL.pictogram([['Monday', 2], ['Tuesday', 3]], '⭐', 2), 'Tuesday has 3 stars, so 3 × 2 = 6 children.|' + FL.pictogram([['Tuesday', 3]], '⭐', 2), 'A half star is half of 2, which is 1. Wednesday has 2 stars and a half star: 2 + 2 + 1 = 5 children.|' + FL.pictogram([['Wednesday', 2.5]], '⭐', 2)],
     ex3: ['Each ⭐ = 5. A row has 4 stars. How many?|4 × 5.|20|20', 'Each ⭐ = 10. A row has 3 stars. How many?|3 × 10.|30|30', 'Each ⭐ = 2. A row has 5 stars. How many?|5 × 2.|10|10'],
     mist: 'Check the key. One picture does not always mean 1.|key first',
     chk: 'Each ⭐ = 5. There are 6 stars. How many?|30|11,56,6|6 × 5.|6 × 5',
     rem: 'Key first. Pictures × key.|pictures × key',
-    way: 'Draw your own pictogram using a key of 2.|⭐ = 2',
+    way: 'Draw your own pictogram using a key of 2. Red has 4 children, blue has 3 and green has 5. Each star is 2 children, so red is 2 stars, blue is 1 and a half stars, and green is 2 and a half stars.|' + FL.pictogram([['Red', 2], ['Blue', 1.5], ['Green', 2.5]], '⭐', 2),
     ex: ['Each 🍎 = 2. There are 7 apples drawn. How many?|7 × 2.|14|14', 'Each 🍎 = 10. 4 pictures. How many?|4 × 10.|40|40'],
     real: 'A pictogram key says each car = 10 cars. 5 pictures. How many cars?|50|15,5,510|5 × 10.|5 × 10',
     qs: ['Key: ⭐ = 1. 7 stars. How many?|7|1,70,8|7 × 1.', 'Key: ⭐ = 2. 4 stars. How many?|8|4,6,24|4 × 2.', 'Key: ⭐ = 5. 3 stars. How many?|15|8,35,3|3 × 5.', 'Key: ⭐ = 10. 6 stars. How many?|60|16,600,6|6 × 10.', 'Key: ⭐ = 2. A half star is…|1|2,0.5,4|Half of 2.', 'Key: ⭐ = 5. A row has 25 children. How many stars?|5|10,20,30|25 ÷ 5.', 'Key: ⭐ = 2. A row shows 12. How many stars?|6|10,14,24|12 ÷ 2.', 'What does the key tell you?|what each picture is worth|the title,the date,the colour|Key.'],

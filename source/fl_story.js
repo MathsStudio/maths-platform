@@ -127,9 +127,9 @@
   /* a teaching slide whose picture is only a bare word or number also shows what is being said, so nothing is narration-only */
   function capPic(x) { var h = typeof x.pic === 'function' ? x.pic() : (x.pic || ''); if (x.mode !== 'watch' || !x.say) return h;
     var txt = h.replace(/<style[\s\S]*?<\/style>/g, '').replace(/<svg[\s\S]*?<\/svg>/g, 'S').replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim();
-    if (/<svg|<table|<img/.test(h) && txt.length > 3) return h;
+    if (/<table/.test(h) && txt.length > 3) return h;
     if (txt.length > 40 || /data-wq/.test(h) && txt.length > 40) return h;
-    var say = strip(x.say); if (say.length < 12 || say.length > 170) return h;
+    var say = FL.digitise(strip(x.say)); if (say.length < 12 || say.length > 170) return h;
     var cap = '<div style="font-size:clamp(1.05rem,3.6vw,1.5rem);font-weight:800;color:#2b2340;background:#fff;border:3px solid #2b2340;border-width:0 0 3px 0;border-radius:0;padding:10px 16px;margin:0;width:100%;box-sizing:border-box;text-align:center;line-height:1.25">' + say + '</div>';
     return '<div class="flx-capwrap">' + cap + h + '</div>'; }
   function pic(p, ch) { var h = typeof p === 'function' ? p() : (p || '');

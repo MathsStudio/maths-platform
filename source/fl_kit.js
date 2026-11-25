@@ -12,6 +12,68 @@
   function tx(x, y, t, size, fill, weight, anchor) { return '<text x="' + x + '" y="' + y + '" font-size="' + (size || 16) + '" font-weight="' + (weight || 800) + '" text-anchor="' + (anchor || 'middle') + '" style="fill:' + (fill || 'var(--fg)') + ';font-family:inherit">' + t + '</text>'; }
   FL.svg = svg; FL.tx = tx;
   var INK = '#2b2340';
+  /* number words written as digits on screen (two..twenty, tens, hundred); "one" is left alone because it is often a pronoun */
+  FL.digitise = function (t) {
+    var W = { two: 2, three: 3, four: 4, five: 5, six: 6, seven: 7, eight: 8, nine: 9, ten: 10, eleven: 11, twelve: 12, thirteen: 13, fourteen: 14, fifteen: 15, sixteen: 16, seventeen: 17, eighteen: 18, nineteen: 19, twenty: 20, thirty: 30, forty: 40, fifty: 50, sixty: 60, seventy: 70, eighty: 80, ninety: 90 };
+    var tens = { twenty: 20, thirty: 30, forty: 40, fifty: 50, sixty: 60, seventy: 70, eighty: 80, ninety: 90 }, ones = { one: 1, two: 2, three: 3, four: 4, five: 5, six: 6, seven: 7, eight: 8, nine: 9 };
+    return String(t).replace(/\b(twenty|thirty|forty|fifty|sixty|seventy|eighty|ninety)[- ](one|two|three|four|five|six|seven|eight|nine)\b/gi, function (m, a, b) { return tens[a.toLowerCase()] + ones[b.toLowerCase()]; })
+      .replace(/\b(two|three|four|five|six|seven|eight|nine|ten|eleven|twelve|thirteen|fourteen|fifteen|sixteen|seventeen|eighteen|nineteen|twenty|thirty|forty|fifty|sixty|seventy|eighty|ninety)\b(?!\s+(?:o.clock))/gi, function (m) { return W[m.toLowerCase()]; });
+  };
+  /* a 10 by 10 square with n small squares shaded: percentages made visible */
+  FL.hundred = function (n) {
+    var s = '', i, r, c; for (i = 0; i < 100; i++) { r = Math.floor(i / 10); c = i % 10; s += '<rect x="' + (6 + c * 20) + '" y="' + (6 + r * 20) + '" width="19" height="19" rx="2" fill="' + (i < n ? '#ffb03b' : '#fff3d6') + '" stroke="' + INK + '" stroke-width="1.6"/>'; }
+    return '<div style="text-align:center;font-weight:800;color:' + INK + '"><div style="max-width:230px;margin:0 auto">' + svg(212, 212, n + ' of 100 squares shaded', s, 230) + '</div><div style="margin-top:4px;font-size:1.2rem;background:#fff;border:3px solid ' + INK + ';border-radius:12px;display:inline-block;padding:2px 12px">' + n + ' out of 100 = ' + n + '%</div></div>';
+  };
+
+  /* a bar graph with a title, labelled axes and a scale: items [label, value, colour?] */
+  FL.barGraph = function (items, step, max, title, xl, yl, mark) {
+    var W = 330, H = 230, L = 52, B = 38, T = 34, plotW = W - L - 12, plotH = H - B - T, s = '', i, v;
+    s += tx(W / 2, 18, title, 15, INK, 800);
+    for (v = 0; v <= max; v += step) { var y = T + plotH - (v / max) * plotH; s += '<line x1="' + L + '" y1="' + y + '" x2="' + (L + plotW) + '" y2="' + y + '" stroke="#cfc6e6" stroke-width="1.5"/>' + tx(L - 6, y + 4, v, 12, INK, 800, 'end'); }
+    s += '<line x1="' + L + '" y1="' + T + '" x2="' + L + '" y2="' + (T + plotH) + '" stroke="' + INK + '" stroke-width="3"/><line x1="' + L + '" y1="' + (T + plotH) + '" x2="' + (L + plotW) + '" y2="' + (T + plotH) + '" stroke="' + INK + '" stroke-width="3"/>';
+    var bw = plotW / items.length;
+    items.forEach(function (it, k) { var h = (it[1] / max) * plotH, x = L + k * bw + bw * 0.18, w = bw * 0.64, y0 = T + plotH - h;
+      s += '<rect x="' + x + '" y="' + y0 + '" width="' + w + '" height="' + h + '" fill="' + (it[2] || '#ffb03b') + '" stroke="' + INK + '" stroke-width="2.5"/>' + tx(x + w / 2, T + plotH + 15, it[0], 11, INK, 800);
+      if (mark === k) s += '<line x1="' + L + '" y1="' + y0 + '" x2="' + (x + w) + '" y2="' + y0 + '" stroke="#d64545" stroke-width="3" stroke-dasharray="6 4"/>' + tx(x + w / 2, y0 - 5, it[1], 13, '#d64545', 800); });
+    s += tx(L + plotW / 2, H - 6, xl, 12, INK, 800) + '<text transform="translate(12 ' + (T + plotH / 2) + ') rotate(-90)" font-size="12" font-weight="800" text-anchor="middle" fill="' + INK + '">' + yl + '</text>';
+    return svg(W, H, title, s, 420);
+  };
+
+  /* simple concept pictures for P4 shape and chance lessons */
+  FL.sh = {
+    tess: function () { var s = tx(80, 14, 'Squares fit: no gaps', 12, INK, 800), i, j; for (i = 0; i < 3; i++) for (j = 0; j < 3; j++) s += '<rect x="' + (20 + i * 38) + '" y="' + (24 + j * 38) + '" width="38" height="38" fill="' + ((i + j) % 2 ? '#ffd23f' : '#7cc4ff') + '" stroke="' + INK + '" stroke-width="2.5"/>';
+      s += tx(250, 14, 'Circles leave gaps', 12, INK, 800); for (i = 0; i < 3; i++) for (j = 0; j < 3; j++) s += '<circle cx="' + (205 + i * 38 + 19) + '" cy="' + (24 + j * 38 + 19) + '" r="18" fill="#ff8fab" stroke="' + INK + '" stroke-width="2.5"/>';
+      return svg(330, 150, 'Squares tessellate but circles do not', s, 420); },
+    right: function () { var s = '<line x1="60" y1="130" x2="60" y2="30" stroke="' + INK + '" stroke-width="5"/><line x1="60" y1="130" x2="180" y2="130" stroke="' + INK + '" stroke-width="5"/><rect x="60" y="100" width="30" height="30" fill="none" stroke="#d64545" stroke-width="3"/>' + tx(215, 95, 'right angle', 15, '#d64545', 800) + tx(215, 115, '= a quarter turn', 13, INK, 800);
+      return svg(330, 150, 'A right angle is a square corner', s, 380); },
+    shapes: function () { var s = '<polygon points="60,30 20,100 100,100" fill="#7cc4ff" stroke="' + INK + '" stroke-width="3"/>' + tx(60, 125, 'triangle: 3 sides', 12, INK, 800) + tx(60, 140, '3 corners', 12, INK, 800)
+        + '<rect x="190" y="50" width="70" height="70" fill="#ffd23f" stroke="' + INK + '" stroke-width="3"/><polygon points="190,50 215,30 285,30 260,50" fill="#ffe27a" stroke="' + INK + '" stroke-width="3"/><polygon points="260,50 285,30 285,100 260,120" fill="#e0a800" stroke="' + INK + '" stroke-width="3"/>' + tx(235, 140, 'cube: 6 faces, 12 edges', 12, INK, 800) + tx(235, 20, '8 vertices', 12, INK, 800);
+      return svg(330, 150, 'A triangle is flat and a cube is solid', s, 420); },
+    sym: function () { var s = '<rect x="60" y="20" width="100" height="100" fill="#ffd23f" stroke="' + INK + '" stroke-width="3"/>', d = ' stroke="#d64545" stroke-width="3" stroke-dasharray="7 5"';
+      s += '<line x1="110" y1="10" x2="110" y2="130"' + d + '/><line x1="50" y1="70" x2="170" y2="70"' + d + '/><line x1="55" y1="15" x2="165" y2="125"' + d + '/><line x1="165" y1="15" x2="55" y2="125"' + d + '/>' + tx(255, 60, 'A square has', 14, INK, 800) + tx(255, 80, '4 lines of symmetry', 14, '#d64545', 800);
+      return svg(330, 140, 'A square has 4 lines of symmetry', s, 420); },
+    turns: function () { var s = '', L = ['quarter turn', 'half turn', '3/4 turn', 'full turn'], A = [90, 180, 270, 360], i;
+      for (i = 0; i < 4; i++) { var cx = 45 + i * 80, cy = 60, a = A[i] * Math.PI / 180, ex = cx + 30 * Math.sin(a), ey = cy - 30 * Math.cos(a);
+        s += '<circle cx="' + cx + '" cy="' + cy + '" r="30" fill="#fff" stroke="' + INK + '" stroke-width="2.5"/><line x1="' + cx + '" y1="' + cy + '" x2="' + cx + '" y2="' + (cy - 30) + '" stroke="' + INK + '" stroke-width="3"/>' + (A[i] < 360 ? '<line x1="' + cx + '" y1="' + cy + '" x2="' + ex + '" y2="' + ey + '" stroke="#d64545" stroke-width="3"/>' : '') + tx(cx, 112, L[i], 11, INK, 800) + tx(cx, 126, ['1/4', '1/2', '3/4', '1'][i], 12, '#d64545', 800); }
+      return svg(330, 135, 'Quarter, half, three-quarter and full turns', s, 420); },
+    mirror: function () { var s = '<rect x="30" y="40" width="50" height="50" fill="#7cc4ff" stroke="' + INK + '" stroke-width="3"/><polygon points="80,40 80,90 110,90" fill="#7cc4ff" stroke="' + INK + '" stroke-width="3"/><line x1="165" y1="20" x2="165" y2="120" stroke="#d64545" stroke-width="4" stroke-dasharray="8 5"/>' + tx(165, 135, 'mirror line', 12, '#d64545', 800)
+        + '<rect x="250" y="40" width="50" height="50" fill="#7cc4ff" fill-opacity=".6" stroke="' + INK + '" stroke-width="3"/><polygon points="250,40 250,90 220,90" fill="#7cc4ff" fill-opacity=".6" stroke="' + INK + '" stroke-width="3"/>';
+      return svg(330, 145, 'A shape and its mirror image', s, 420); },
+    grid: function (col, row) { var s = '', i, j; for (i = 0; i < 5; i++) { s += tx(52 + i * 40, 18, 'ABCDE'[i], 13, INK, 800); for (j = 0; j < 5; j++) s += '<rect x="' + (32 + i * 40) + '" y="' + (24 + j * 24) + '" width="40" height="24" fill="' + (i === col && j === 5 - row ? '#ffd23f' : '#fff') + '" stroke="' + INK + '" stroke-width="2"/>'; }
+      for (j = 0; j < 5; j++) s += tx(22, 41 + j * 24, 5 - j, 13, INK, 800);
+      s += tx(290, 70, 'C4:', 15, '#d64545', 800) + tx(290, 90, 'along to C,', 12, INK, 800) + tx(290, 105, 'up to 4', 12, INK, 800);
+      return svg(360, 150, 'A grid with columns A to E and rows 1 to 5', s, 420); },
+    chance: function () { var s = '<line x1="30" y1="60" x2="300" y2="60" stroke="' + INK + '" stroke-width="4"/>', P = [[0, 'impossible', '0'], [.25, 'unlikely', '1/4'], [.5, 'even chance', '1/2'], [.75, 'likely', '3/4'], [1, 'certain', '1']], i;
+      P.forEach(function (p, k) { var x = 30 + p[0] * 270; s += '<circle cx="' + x + '" cy="60" r="7" fill="#ffd23f" stroke="' + INK + '" stroke-width="2.5"/>' + tx(x, 40, p[2], 13, '#d64545', 800) + tx(x, 88 + (k % 2) * 16, p[1], 11, INK, 800); });
+      return svg(330, 120, 'A chance line from impossible (0) to certain (1)', s, 420); }
+  };
+  /* a pictogram: one row per label, one picture per `key` items, half picture for a half */
+  FL.pictogram = function (rows, icon, key) {
+    var h = '<div style="display:grid;gap:6px;justify-items:start;font-weight:800;color:' + INK + ';background:#fff;border:3px solid ' + INK + ';border-radius:14px;padding:8px 12px"><div style="font-size:1.05rem">Key: ' + icon + ' = ' + key + '</div>';
+    rows.forEach(function (r) { var full = Math.floor(r[1]), half = r[1] - full > 0; h += '<div style="display:flex;align-items:center;gap:8px"><span style="min-width:4.6em;font-size:1.05rem">' + r[0] + '</span><span style="font-size:1.7rem;letter-spacing:2px">' + new Array(full + 1).join(icon) + (half ? '<span style="display:inline-block;width:.55em;overflow:hidden;vertical-align:bottom">' + icon + '</span>' : '') + '</span></div>'; });
+    return h + '</div>';
+  };
+
 
   /* friendly characters, drawn at (0,0) to (100,100) */
   var CH = {
