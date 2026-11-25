@@ -130,8 +130,8 @@
     if (/<svg|<table|<img/.test(h) && txt.length > 3) return h;
     if (txt.length > 40 || /data-wq/.test(h) && txt.length > 40) return h;
     var say = strip(x.say); if (say.length < 12 || say.length > 170) return h;
-    var cap = '<div style="font-size:clamp(1.05rem,3.6vw,1.5rem);font-weight:800;color:#2b2340;background:#fff;border:3px solid #2b2340;border-radius:16px;padding:8px 14px;margin:0 auto 10px;max-width:94%;text-align:center;line-height:1.25">' + say + '</div>';
-    return '<div style="display:flex;flex-direction:column;align-items:center;gap:8px;width:100%">' + cap + h + '</div>'; }
+    var cap = '<div style="font-size:clamp(1.05rem,3.6vw,1.5rem);font-weight:800;color:#2b2340;background:#fff;border:3px solid #2b2340;border-width:0 0 3px 0;border-radius:0;padding:10px 16px;margin:0;width:100%;box-sizing:border-box;text-align:center;line-height:1.25">' + say + '</div>';
+    return '<div class="flx-capwrap">' + cap + h + '</div>'; }
   function pic(p, ch) { var h = typeof p === 'function' ? p() : (p || '');
     if (ch && h.indexOf('class="flp ') >= 0 && h.indexOf('flp-ch') < 0) h = h.replace('<div class="flp-pic">', '<div class="flp-ch">' + FL.char(ch, 110) + '</div><div class="flp-pic">');
     return h ? '<div class="flb flb-w"><div class="flb-stage">' + h + '</div></div>' : ''; }
