@@ -13,7 +13,7 @@
   FL.svg = svg; FL.tx = tx;
   var INK = '#2b2340';
   /* number words written as digits on screen (two..twenty, tens, hundred); "one" is left alone because it is often a pronoun */
-  FL.digitise = function (t) {
+  FL.digitise = function (t) { if (/hundred|thousand|in words|\bsay\b|spell/i.test(String(t))) return t;
     var W = { two: 2, three: 3, four: 4, five: 5, six: 6, seven: 7, eight: 8, nine: 9, ten: 10, eleven: 11, twelve: 12, thirteen: 13, fourteen: 14, fifteen: 15, sixteen: 16, seventeen: 17, eighteen: 18, nineteen: 19, twenty: 20, thirty: 30, forty: 40, fifty: 50, sixty: 60, seventy: 70, eighty: 80, ninety: 90 };
     var tens = { twenty: 20, thirty: 30, forty: 40, fifty: 50, sixty: 60, seventy: 70, eighty: 80, ninety: 90 }, ones = { one: 1, two: 2, three: 3, four: 4, five: 5, six: 6, seven: 7, eight: 8, nine: 9 };
     return String(t).replace(/\b(twenty|thirty|forty|fifty|sixty|seventy|eighty|ninety)[- ](one|two|three|four|five|six|seven|eight|nine)\b/gi, function (m, a, b) { return tens[a.toLowerCase()] + ones[b.toLowerCase()]; })
@@ -66,6 +66,16 @@
     chance: function () { var s = '<line x1="30" y1="60" x2="300" y2="60" stroke="' + INK + '" stroke-width="4"/>', P = [[0, 'impossible', '0'], [.25, 'unlikely', '1/4'], [.5, 'even chance', '1/2'], [.75, 'likely', '3/4'], [1, 'certain', '1']], i;
       P.forEach(function (p, k) { var x = 30 + p[0] * 270; s += '<circle cx="' + x + '" cy="60" r="7" fill="#ffd23f" stroke="' + INK + '" stroke-width="2.5"/>' + tx(x, 40, p[2], 13, '#d64545', 800) + tx(x, 88 + (k % 2) * 16, p[1], 11, INK, 800); });
       return svg(330, 120, 'A chance line from impossible (0) to certain (1)', s, 420); }
+  };
+
+  /* place value table: hundreds, tens, ones with the digit and counters */
+  FL.pv = function (h, t, o) {
+    var cols = [['Hundreds', h, '#ff8fab', 100], ['Tens', t, '#7cc4ff', 10], ['Ones', o, '#ffd23f', 1]], s = '<div style="display:flex;gap:6px;justify-content:center;align-items:stretch;font-weight:800;color:#2b2340">';
+    cols.forEach(function (c) {
+      var dots = ''; for (var i = 0; i < c[1]; i++) dots += '<span style="display:inline-block;width:20px;height:20px;border-radius:50%;background:' + c[2] + ';border:2px solid #2b2340;margin:2px"></span>';
+      s += '<div style="background:#fff;border:3px solid #2b2340;border-radius:10px;min-width:92px;text-align:center;overflow:hidden"><div style="background:' + c[2] + ';padding:4px 6px;font-size:.8em">' + c[0] + '</div><div style="font-size:2em;line-height:1.2">' + c[1] + '</div><div style="min-height:30px;padding:2px;max-width:110px">' + dots + '</div><div style="font-size:.75em;padding-bottom:4px">' + (c[1] * c[3]) + '</div></div>';
+    });
+    return s + '</div>';
   };
   /* a pictogram: one row per label, one picture per `key` items, half picture for a half */
   FL.pictogram = function (rows, icon, key) {

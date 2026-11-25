@@ -39660,7 +39660,7 @@ S.extraMakers = function (n, level) {
   FL.svg = svg; FL.tx = tx;
   var INK = '#2b2340';
   /* number words written as digits on screen (two..twenty, tens, hundred); "one" is left alone because it is often a pronoun */
-  FL.digitise = function (t) {
+  FL.digitise = function (t) { if (/hundred|thousand|in words|\bsay\b|spell/i.test(String(t))) return t;
     var W = { two: 2, three: 3, four: 4, five: 5, six: 6, seven: 7, eight: 8, nine: 9, ten: 10, eleven: 11, twelve: 12, thirteen: 13, fourteen: 14, fifteen: 15, sixteen: 16, seventeen: 17, eighteen: 18, nineteen: 19, twenty: 20, thirty: 30, forty: 40, fifty: 50, sixty: 60, seventy: 70, eighty: 80, ninety: 90 };
     var tens = { twenty: 20, thirty: 30, forty: 40, fifty: 50, sixty: 60, seventy: 70, eighty: 80, ninety: 90 }, ones = { one: 1, two: 2, three: 3, four: 4, five: 5, six: 6, seven: 7, eight: 8, nine: 9 };
     return String(t).replace(/\b(twenty|thirty|forty|fifty|sixty|seventy|eighty|ninety)[- ](one|two|three|four|five|six|seven|eight|nine)\b/gi, function (m, a, b) { return tens[a.toLowerCase()] + ones[b.toLowerCase()]; })
@@ -39713,6 +39713,16 @@ S.extraMakers = function (n, level) {
     chance: function () { var s = '<line x1="30" y1="60" x2="300" y2="60" stroke="' + INK + '" stroke-width="4"/>', P = [[0, 'impossible', '0'], [.25, 'unlikely', '1/4'], [.5, 'even chance', '1/2'], [.75, 'likely', '3/4'], [1, 'certain', '1']], i;
       P.forEach(function (p, k) { var x = 30 + p[0] * 270; s += '<circle cx="' + x + '" cy="60" r="7" fill="#ffd23f" stroke="' + INK + '" stroke-width="2.5"/>' + tx(x, 40, p[2], 13, '#d64545', 800) + tx(x, 88 + (k % 2) * 16, p[1], 11, INK, 800); });
       return svg(330, 120, 'A chance line from impossible (0) to certain (1)', s, 420); }
+  };
+
+  /* place value table: hundreds, tens, ones with the digit and counters */
+  FL.pv = function (h, t, o) {
+    var cols = [['Hundreds', h, '#ff8fab', 100], ['Tens', t, '#7cc4ff', 10], ['Ones', o, '#ffd23f', 1]], s = '<div style="display:flex;gap:6px;justify-content:center;align-items:stretch;font-weight:800;color:#2b2340">';
+    cols.forEach(function (c) {
+      var dots = ''; for (var i = 0; i < c[1]; i++) dots += '<span style="display:inline-block;width:20px;height:20px;border-radius:50%;background:' + c[2] + ';border:2px solid #2b2340;margin:2px"></span>';
+      s += '<div style="background:#fff;border:3px solid #2b2340;border-radius:10px;min-width:92px;text-align:center;overflow:hidden"><div style="background:' + c[2] + ';padding:4px 6px;font-size:.8em">' + c[0] + '</div><div style="font-size:2em;line-height:1.2">' + c[1] + '</div><div style="min-height:30px;padding:2px;max-width:110px">' + dots + '</div><div style="font-size:.75em;padding-bottom:4px">' + (c[1] * c[3]) + '</div></div>';
+    });
+    return s + '</div>';
   };
   /* a pictogram: one row per label, one picture per `key` items, half picture for a half */
   FL.pictogram = function (rows, icon, key) {
@@ -46867,16 +46877,16 @@ S.extraMakers = function (n, level) {
     gen: function g(lv) { var a = r(1, lv ? 9 : 5), d = r(a + 1, a + (lv ? 8 : 5)), res = a - d; return mc('Negative numbers', 'It is <b>' + a + ' °C</b> and the temperature drops by <b>' + d + ' degrees</b>. What is it now?', res + ' °C', [(-res) + ' °C', (res - 1) + ' °C', (res + 1) + ' °C'], 'Count down on a thermometer, passing zero.', a + ' - ' + d + ' = ' + res + '.'); } });
 
   P(401, 'learnm1', { ch: 'owl', bg: 'day',
-    t: 'Reading 3-digit numbers|How do I read and write 3-digit numbers?|We say a 3-digit number by its hundreds, tens and ones. 253 is two hundred and fifty-three.|253,hundreds tens ones',
+    t: 'Reading 3-digit numbers|How do I read and write 3-digit numbers?|We say a 3-digit number by its hundreds, tens and ones. 253 is two hundred and fifty-three.|' + FL.pv(2, 5, 3),
     words: 'hundreds=a group of 100=💯;tens=a group of 10=🔟;ones=single units=1️⃣;digit=a number symbol 0 to 9=🔢',
-    see: ['253 is 2 hundreds, 5 tens and 3 ones.|2 hundreds,5 tens,3 ones', 'We say two hundred and fifty-three.|253 = two hundred and fifty-three', 'A zero holds a place. 305 has no tens.|3 hundreds,0 tens,5 ones'],
-    ex3: ['Write four hundred and six in digits.|4 hundreds, no tens, 6 ones.|406|406', 'Write 580 in words.|5 hundreds and 8 tens.|five hundred and eighty|580', 'What is 7 hundreds + 2 tens + 9 ones?|Put the digits side by side.|729|729'],
+    see: ['253 is 2 hundreds, 5 tens and 3 ones.|' + FL.pv(2, 5, 3), 'We say two hundred and fifty-three.|' + FL.pv(2, 5, 3), 'A zero holds a place. 305 has no tens.|' + FL.pv(3, 0, 5)],
+    ex3: ['Write four hundred and six in digits.|4 hundreds, no tens, 6 ones.|406|' + FL.pv(4, 0, 6), 'Write 580 in words.|5 hundreds and 8 tens.|five hundred and eighty|' + FL.pv(5, 8, 0), 'What is 7 hundreds + 2 tens + 9 ones?|Put the digits side by side.|729|' + FL.pv(7, 2, 9)],
     mist: 'Do not leave out the zero. Two hundred and five is 205, not 25.|205 not 25',
-    chk: 'Write three hundred and forty-two in digits.|342|324,432|Hundreds first, then tens, then ones.|3 hundreds,4 tens,2 ones',
+    chk: 'Write three hundred and forty-two in digits.|342|324,432|Hundreds first, then tens, then ones.|' + FL.pv(3, 4, 2),
     rem: 'Say the hundreds, then the tens, then the ones. Use 0 for an empty place.|hundreds, tens, ones',
-    way: 'Make the number with place value counters: 100s, 10s and 1s.|3 hundreds,5 tens,2 ones',
-    ex: ['Write 600 + 40 + 5.|6 hundreds, 4 tens, 5 ones.|645|645', 'Write 900 + 3.|No tens, so use a zero.|903|903'],
-    real: 'A page number is two hundred and nine. Write it.|209|29,290,2009|Zero tens.|2 hundreds,0 tens,9 ones',
+    way: 'Make the number with place value counters: 100s, 10s and 1s.|' + FL.pv(3, 5, 2),
+    ex: ['Write 600 + 40 + 5.|6 hundreds, 4 tens, 5 ones.|645|' + FL.pv(6, 4, 5), 'Write 900 + 3.|No tens, so use a zero.|903|' + FL.pv(9, 0, 3)],
+    real: 'A page number is two hundred and nine. Write it.|209|29,290,2009|Zero tens.|' + FL.pv(2, 0, 9),
     qs: ['Write seven hundred and twenty-one.|721|712,127,7021|7 hundreds, 2 tens, 1 one.', 'Write 400 + 50 + 6.|456|465,546,4056|Place values.', 'Write nine hundred and four.|904|94,940,9004|Zero tens.', 'Say 618 in words.|six hundred and eighteen|six hundred and eight,sixty-eight|Hundreds, tens, ones.', 'How many tens in 350?|35|3,5,350|35 tens.', 'What is 200 + 7?|207|27,270,2007|No tens.', 'Write 3 hundreds, 0 tens, 8 ones.|308|38,380,3008|Zero tens.', 'Write one hundred and thirty.|130|103,1030,13|1 hundred, 3 tens.'],
     gen: function g(lv) { var h = r(1, 9), t = r(0, 9), o = r(0, 9), n = h * 100 + t * 10 + o; return mc('Reading numbers', 'Write <b>' + h + ' hundreds, ' + t + ' tens and ' + o + ' ones</b> as a number.', n, [h * 100 + o * 10 + t, t * 100 + h * 10 + o, h * 10 + t + o, n + 10], 'Hundreds, then tens, then ones.', n + '.'); } });
 

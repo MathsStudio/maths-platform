@@ -39,16 +39,16 @@
     gen: function g(lv) { var a = r(1, lv ? 9 : 5), d = r(a + 1, a + (lv ? 8 : 5)), res = a - d; return mc('Negative numbers', 'It is <b>' + a + ' °C</b> and the temperature drops by <b>' + d + ' degrees</b>. What is it now?', res + ' °C', [(-res) + ' °C', (res - 1) + ' °C', (res + 1) + ' °C'], 'Count down on a thermometer, passing zero.', a + ' - ' + d + ' = ' + res + '.'); } });
 
   P(401, 'learnm1', { ch: 'owl', bg: 'day',
-    t: 'Reading 3-digit numbers|How do I read and write 3-digit numbers?|We say a 3-digit number by its hundreds, tens and ones. 253 is two hundred and fifty-three.|253,hundreds tens ones',
+    t: 'Reading 3-digit numbers|How do I read and write 3-digit numbers?|We say a 3-digit number by its hundreds, tens and ones. 253 is two hundred and fifty-three.|' + FL.pv(2, 5, 3),
     words: 'hundreds=a group of 100=💯;tens=a group of 10=🔟;ones=single units=1️⃣;digit=a number symbol 0 to 9=🔢',
-    see: ['253 is 2 hundreds, 5 tens and 3 ones.|2 hundreds,5 tens,3 ones', 'We say two hundred and fifty-three.|253 = two hundred and fifty-three', 'A zero holds a place. 305 has no tens.|3 hundreds,0 tens,5 ones'],
-    ex3: ['Write four hundred and six in digits.|4 hundreds, no tens, 6 ones.|406|406', 'Write 580 in words.|5 hundreds and 8 tens.|five hundred and eighty|580', 'What is 7 hundreds + 2 tens + 9 ones?|Put the digits side by side.|729|729'],
+    see: ['253 is 2 hundreds, 5 tens and 3 ones.|' + FL.pv(2, 5, 3), 'We say two hundred and fifty-three.|' + FL.pv(2, 5, 3), 'A zero holds a place. 305 has no tens.|' + FL.pv(3, 0, 5)],
+    ex3: ['Write four hundred and six in digits.|4 hundreds, no tens, 6 ones.|406|' + FL.pv(4, 0, 6), 'Write 580 in words.|5 hundreds and 8 tens.|five hundred and eighty|' + FL.pv(5, 8, 0), 'What is 7 hundreds + 2 tens + 9 ones?|Put the digits side by side.|729|' + FL.pv(7, 2, 9)],
     mist: 'Do not leave out the zero. Two hundred and five is 205, not 25.|205 not 25',
-    chk: 'Write three hundred and forty-two in digits.|342|324,432|Hundreds first, then tens, then ones.|3 hundreds,4 tens,2 ones',
+    chk: 'Write three hundred and forty-two in digits.|342|324,432|Hundreds first, then tens, then ones.|' + FL.pv(3, 4, 2),
     rem: 'Say the hundreds, then the tens, then the ones. Use 0 for an empty place.|hundreds, tens, ones',
-    way: 'Make the number with place value counters: 100s, 10s and 1s.|3 hundreds,5 tens,2 ones',
-    ex: ['Write 600 + 40 + 5.|6 hundreds, 4 tens, 5 ones.|645|645', 'Write 900 + 3.|No tens, so use a zero.|903|903'],
-    real: 'A page number is two hundred and nine. Write it.|209|29,290,2009|Zero tens.|2 hundreds,0 tens,9 ones',
+    way: 'Make the number with place value counters: 100s, 10s and 1s.|' + FL.pv(3, 5, 2),
+    ex: ['Write 600 + 40 + 5.|6 hundreds, 4 tens, 5 ones.|645|' + FL.pv(6, 4, 5), 'Write 900 + 3.|No tens, so use a zero.|903|' + FL.pv(9, 0, 3)],
+    real: 'A page number is two hundred and nine. Write it.|209|29,290,2009|Zero tens.|' + FL.pv(2, 0, 9),
     qs: ['Write seven hundred and twenty-one.|721|712,127,7021|7 hundreds, 2 tens, 1 one.', 'Write 400 + 50 + 6.|456|465,546,4056|Place values.', 'Write nine hundred and four.|904|94,940,9004|Zero tens.', 'Say 618 in words.|six hundred and eighteen|six hundred and eight,sixty-eight|Hundreds, tens, ones.', 'How many tens in 350?|35|3,5,350|35 tens.', 'What is 200 + 7?|207|27,270,2007|No tens.', 'Write 3 hundreds, 0 tens, 8 ones.|308|38,380,3008|Zero tens.', 'Write one hundred and thirty.|130|103,1030,13|1 hundred, 3 tens.'],
     gen: function g(lv) { var h = r(1, 9), t = r(0, 9), o = r(0, 9), n = h * 100 + t * 10 + o; return mc('Reading numbers', 'Write <b>' + h + ' hundreds, ' + t + ' tens and ' + o + ' ones</b> as a number.', n, [h * 100 + o * 10 + t, t * 100 + h * 10 + o, h * 10 + t + o, n + 10], 'Hundreds, then tens, then ones.', n + '.'); } });
 
