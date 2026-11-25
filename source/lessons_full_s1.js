@@ -264,7 +264,7 @@
         S("A fraction has 2 numbers. The bottom number is called the denominator. It tells us how many equal parts the whole is split into. The top number is called the numerator. It tells us how many of those parts we are talking about.", E('3/8', 'g') + V.cols([V.card('Denominator: parts in the whole', 'b', true), V.card('Numerator: parts we have', 'g', true)], 2)),
         S("The word equal is very important. A fraction only works when all the parts are the same size. If the pieces are different sizes, we cannot call them eighths.", V.rule('Every part must be the same size.'))
       ]),
-      SC('Fractions of shapes', 'Example 1: 2 fifths', [
+      SC('Fractions of shapes', 'Example 1: 2/5', [
         S("Here is a circle cut into 5 equal slices. 2 of the slices are shaded. So the fraction shaded is 2/5.", LK.pie(2, 5, { r: 50 }) + E('2/5', 'g')),
         S("How many slices are not shaded? 3. So 3/5 of the circle is not shaded. The 2 fractions together make 5/5, which is the whole circle.", E('2/5 + 3/5 = 5/5 = 1', 'g'))
       ]),
@@ -309,12 +309,12 @@
       SC('Making equivalent fractions', 'Example 1: multiply top and bottom', [
         S("How can we make equivalent fractions without a picture? Multiply the numerator and the denominator by the same number. Let's start with 3/5 and multiply by 2.", E('3/5')),
         S("3 times 2 is 6. 5 times 2 is 10. So 3/5 is equal to 6/10.", E('3/5 = 6/10', 'g') + V.rule('Do the same to the top and the bottom.')),
-        S("We can do it again, multiplying by 3. 3 times 3 is 9. 5 times 3 is 15. So 3/5 is also 9 fifteenths.", E('3/5 = 9/15', 'g')),
+        S("We can do it again, multiplying by 3. 3 times 3 is 9. 5 times 3 is 15. So 3/5 is also 9/15.", E('3/5 = 9/15', 'g')),
         S("Why does this work? Multiplying the top and bottom by the same number is the same as multiplying the fraction by 1, and that never changes its value.", V.rule('× 2 over 2 is × 1, so the value stays the same.'))
       ]),
       SC('Simplifying', 'Example 2: divide top and bottom', [
-        S("We can go the other way. We divide the top and the bottom by the same number. This is called simplifying. Take 12 sixteenths.", E('12/16')),
-        S("12 and 16 can both be divided by 4. 12 divided by 4 is 3. 16 divided by 4 is 4. So 12 sixteenths is 3/4.", g('12/16 = 3/4')),
+        S("We can go the other way. We divide the top and the bottom by the same number. This is called simplifying. Take 12/16.", E('12/16')),
+        S("12 and 16 can both be divided by 4. 12 divided by 4 is 3. 16 divided by 4 is 4. So 12/16 is 3/4.", g('12/16 = 3/4')),
         S("Is 3/4 as simple as it can get? 3 and 4 have no common factor, apart from 1. So yes. It is in its simplest form.", V.rule('Simplest form: no more common factors.'))
       ]),
       SC('Simplifying', 'Example 3: 30 forty-fifths', [
@@ -332,7 +332,7 @@
       SC('In real life', 'Pizza', [
         S("A pizza has 8 slices. You eat 4 slices. You have eaten 4/8. But your friend ate half of another pizza. Who ate more? 4/8 is equal to 1/2, so you both ate the same amount.", g('4/8 = 1/2'))
       ]),
-      L.turn("Your turn! Number one. Find the missing number. 3/4 equals how many twentieths? Pause and try it.", E('3/4 = ?/20'), "4 times 5 is 20. So 3 times 5 is 15. 3/4 equals 15 twentieths.", g('3/4 = 15/20')),
+      L.turn("Your turn! Number one. Find the missing number. 3/4 equals how many twentieths? Pause and try it.", E('3/4 = ?/20'), "4 times 5 is 20. So 3 times 5 is 15. 3/4 equals 15/20.", g('3/4 = 15/20')),
       L.turn("Your turn! Number two. Simplify 40 sixtieths fully. Pause and try it.", E('40/60'), "Divide top and bottom by 20. 40 divided by 20 is 2. 60 divided by 20 is 3. The answer is 2/3.", g('40/60 = 2/3')),
       L.turn("Your turn! Number three. Fill in the missing number. 4/10 equals what over 5? Pause and try it.", E('4/10 = ?/5'), "10 divided by 2 is 5. So divide the top by 2 as well. 4 divided by 2 is 2. The answer is 2/5.", g('4/10 = 2/5')),
       L.rec(T, "Equivalent fractions show the same amount. Multiply the top and the bottom by the same number to make 1. Divide the top and the bottom by the same number to simplify. Never add or subtract the same number.", ['Same amount, different numbers', '× top and bottom by the same', '÷ to simplify', 'Never add to top and bottom', 'Scale to find missing numbers'])

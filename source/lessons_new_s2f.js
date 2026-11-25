@@ -23,7 +23,7 @@
       ['Dividing the wrong way', "Mistake two: dividing 8 by 3 to change 3/8 to a decimal. The top goes first: 3 divided by 8.", ['r|8 ÷ 3 = 2.67 ✗', 'g|3 ÷ 8 = 0.375 ✓']]],
     real: ['In real life', "A recipe uses 3/4 of a bag of flour, which is 75%. A phone battery on 40% has 2/5 left. All of these mean the same amount in different clothes.", ['3/4 = 0.75 = 75%', '40% = 2/5']],
     turns: [
-      { q: 'Write 7 twentieths as a percentage.', say: "7 twentieths is the same as 35/100, because we multiply top and bottom by 5. 35/100 is 35%.", work: ['7/20 = 35/100', '= 35%'], ans: ['g|35%'] },
+      { q: 'Write 7/20 as a percentage.', say: "7/20 is the same as 35/100, because we multiply top and bottom by 5. 35/100 is 35%.", work: ['7/20 = 35/100', '= 35%'], ans: ['g|35%'] },
       { q: 'Find 35% of £240.', say: "35% is 0.35. 0.35 times 240 is £84.", work: ['35% = 0.35', '0.35 × 240 = 84'], ans: ['g|£84'] },
       { q: 'Put these in order, smallest first: 0.4, 35%, 3/8.', say: "Change them all to percentages. 0.4 is 40%. 35% stays the same. 3/8 is 37.5%. In order: 35, 37.5, 40.", work: ['0.4 = 40%', '3/8 = 0.375 = 37.5%', '35% < 37.5% < 40%'], ans: ['g|35%, 3/8, 0.4'] }],
     rec: ["Fractions, decimals and percentages are 3 ways to write the same number.", ['Fraction → decimal: top ÷ bottom', 'Decimal → %: × 100', 'Percentage of an amount: × decimal', 'Fraction of an amount: ÷ bottom × top']]

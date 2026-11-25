@@ -10345,7 +10345,7 @@ S.spatialExtra = S.extraMakers;
       ['Percent means out of 100, so 25% is 25 out of 100, which simplifies to ' + fr(1, 4) + '.', 'Decimals with hundredths match percentages: 0.35 = 35%.'],
       ['Example 1: 0.75 = 75% = ' + fr(3, 4) + '.', 'Example 2: ' + fr(1, 10) + ' = 0.1 = 10%.', 'Example 3: 20% = 0.2 = ' + fr(1, 5) + '.']),
     X('Which is bigger?', 'Which is bigger, 0.7 or ' + fr(3, 5) + '?',
-      ['Write both as percentages so they are easy to compare.', '0.7 = 70%.', fr(3, 5) + ' = 6 tenths = 60%.', '70% is more than 60%, so 0.7 is bigger.'],
+      ['Write both as percentages so they are easy to compare.', '0.7 = 70%.', fr(3, 5) + ' = 6/10 = 60%.', '70% is more than 60%, so 0.7 is bigger.'],
       ['0.7 and ' + fr(3, 5), '0.7 = 70%', fr(3, 5) + ' = 60%', '0.7 is bigger'], '0.7 is bigger',
       'A 0.7 litre bottle holds more than a three-fifths litre bottle.',
       'how to compare a fraction and a decimal.',
@@ -20246,7 +20246,7 @@ W('How do you solve ordering and logic puzzles?', [
         S("A fraction has 2 numbers. The bottom number is called the denominator. It tells us how many equal parts the whole is split into. The top number is called the numerator. It tells us how many of those parts we are talking about.", E('3/8', 'g') + V.cols([V.card('Denominator: parts in the whole', 'b', true), V.card('Numerator: parts we have', 'g', true)], 2)),
         S("The word equal is very important. A fraction only works when all the parts are the same size. If the pieces are different sizes, we cannot call them eighths.", V.rule('Every part must be the same size.'))
       ]),
-      SC('Fractions of shapes', 'Example 1: 2 fifths', [
+      SC('Fractions of shapes', 'Example 1: 2/5', [
         S("Here is a circle cut into 5 equal slices. 2 of the slices are shaded. So the fraction shaded is 2/5.", LK.pie(2, 5, { r: 50 }) + E('2/5', 'g')),
         S("How many slices are not shaded? 3. So 3/5 of the circle is not shaded. The 2 fractions together make 5/5, which is the whole circle.", E('2/5 + 3/5 = 5/5 = 1', 'g'))
       ]),
@@ -20291,12 +20291,12 @@ W('How do you solve ordering and logic puzzles?', [
       SC('Making equivalent fractions', 'Example 1: multiply top and bottom', [
         S("How can we make equivalent fractions without a picture? Multiply the numerator and the denominator by the same number. Let's start with 3/5 and multiply by 2.", E('3/5')),
         S("3 times 2 is 6. 5 times 2 is 10. So 3/5 is equal to 6/10.", E('3/5 = 6/10', 'g') + V.rule('Do the same to the top and the bottom.')),
-        S("We can do it again, multiplying by 3. 3 times 3 is 9. 5 times 3 is 15. So 3/5 is also 9 fifteenths.", E('3/5 = 9/15', 'g')),
+        S("We can do it again, multiplying by 3. 3 times 3 is 9. 5 times 3 is 15. So 3/5 is also 9/15.", E('3/5 = 9/15', 'g')),
         S("Why does this work? Multiplying the top and bottom by the same number is the same as multiplying the fraction by 1, and that never changes its value.", V.rule('× 2 over 2 is × 1, so the value stays the same.'))
       ]),
       SC('Simplifying', 'Example 2: divide top and bottom', [
-        S("We can go the other way. We divide the top and the bottom by the same number. This is called simplifying. Take 12 sixteenths.", E('12/16')),
-        S("12 and 16 can both be divided by 4. 12 divided by 4 is 3. 16 divided by 4 is 4. So 12 sixteenths is 3/4.", g('12/16 = 3/4')),
+        S("We can go the other way. We divide the top and the bottom by the same number. This is called simplifying. Take 12/16.", E('12/16')),
+        S("12 and 16 can both be divided by 4. 12 divided by 4 is 3. 16 divided by 4 is 4. So 12/16 is 3/4.", g('12/16 = 3/4')),
         S("Is 3/4 as simple as it can get? 3 and 4 have no common factor, apart from 1. So yes. It is in its simplest form.", V.rule('Simplest form: no more common factors.'))
       ]),
       SC('Simplifying', 'Example 3: 30 forty-fifths', [
@@ -20314,7 +20314,7 @@ W('How do you solve ordering and logic puzzles?', [
       SC('In real life', 'Pizza', [
         S("A pizza has 8 slices. You eat 4 slices. You have eaten 4/8. But your friend ate half of another pizza. Who ate more? 4/8 is equal to 1/2, so you both ate the same amount.", g('4/8 = 1/2'))
       ]),
-      L.turn("Your turn! Number one. Find the missing number. 3/4 equals how many twentieths? Pause and try it.", E('3/4 = ?/20'), "4 times 5 is 20. So 3 times 5 is 15. 3/4 equals 15 twentieths.", g('3/4 = 15/20')),
+      L.turn("Your turn! Number one. Find the missing number. 3/4 equals how many twentieths? Pause and try it.", E('3/4 = ?/20'), "4 times 5 is 20. So 3 times 5 is 15. 3/4 equals 15/20.", g('3/4 = 15/20')),
       L.turn("Your turn! Number two. Simplify 40 sixtieths fully. Pause and try it.", E('40/60'), "Divide top and bottom by 20. 40 divided by 20 is 2. 60 divided by 20 is 3. The answer is 2/3.", g('40/60 = 2/3')),
       L.turn("Your turn! Number three. Fill in the missing number. 4/10 equals what over 5? Pause and try it.", E('4/10 = ?/5'), "10 divided by 2 is 5. So divide the top by 2 as well. 4 divided by 2 is 2. The answer is 2/5.", g('4/10 = 2/5')),
       L.rec(T, "Equivalent fractions show the same amount. Multiply the top and the bottom by the same number to make 1. Divide the top and the bottom by the same number to simplify. Never add or subtract the same number.", ['Same amount, different numbers', '× top and bottom by the same', '÷ to simplify', 'Never add to top and bottom', 'Scale to find missing numbers'])
@@ -24270,10 +24270,10 @@ W('How do you solve ordering and logic puzzles?', [
   LS('What are equivalent fractions?', 'how different fractions can show the same amount, and how to find them.', {
     intro: ['Same amount, different numbers', 'Equivalent fractions', "Equivalent fractions show the same amount. 1/2, 2/4 and 4/8 all cover the same part of a bar.", LK.fbar(1, 2, 280, 280) + LK.fbar(2, 4, 280, 280) + LK.fbar(4, 8, 280, 280)],
     ex: [['Making equivalent fractions', 'Multiply top and bottom', [["Multiply the numerator and denominator by the same number. 3/5 times 2 over 2 is 6/10.", E('3/5 = 6/10 = 9/15', 'g') + V.rule('Do the same to the top and the bottom.')]]],
-      ['Simplifying', 'Divide top and bottom', [["Divide both by the same number to simplify. 12 sixteenths divided by 4 is 3/4.", E('12/16 = 3/4', 'g')]]],
+      ['Simplifying', 'Divide top and bottom', [["Divide both by the same number to simplify. 12/16 divided by 4 is 3/4.", E('12/16 = 3/4', 'g')]]],
       ['Missing numbers', '2/3 = ?/12', [["3 times 4 is 12, so the top must be 2 times 4: 8.", E('2/3 = 8/12', 'g')]]]],
     real: ['Pizza', "4 slices of an 8-slice pizza is the same as half a pizza. Same amount, different slices.", E('4/8 = 1/2', 'g')],
-    turn: ["Your turn! Find the missing number: 3/4 equals how many twentieths? Pause and try it.", E('3/4 = ?/20'), "4 times 5 is 20, so 3 times 5 is 15. 15 twentieths.", E('15/20', 'g')],
+    turn: ["Your turn! Find the missing number: 3/4 equals how many twentieths? Pause and try it.", E('3/4 = ?/20'), "4 times 5 is 20, so 3 times 5 is 15. 15/20.", E('15/20', 'g')],
     rec: ["Equivalent fractions show the same amount. Multiply or divide the top and bottom by the same number to find them.", ['Same amount, different numbers', '× top and bottom by the same', '÷ to simplify', 'Find missing numbers by scaling']],
     deep: ['Multiplying top and bottom by the same number is multiplying by 1, so the value never changes.', 'Adding the same number to top and bottom does not give an equivalent fraction: 1/2 ≠ 2/3.']
   });
@@ -24736,7 +24736,7 @@ W('How do you solve ordering and logic puzzles?', [
     intro: ['Probability', 'From 0 to 1', "Probability measures how likely something is, from 0, impossible, to 1, certain.", V.cards(['0 impossible', '0.5 even', '1 certain'], ['b', 'p', 'g'])],
     ex: [['Theoretical probability', 'Equally likely outcomes', [["A bag has 4 red and 6 blue counters. The probability of red is 4 out of 10: 2/5.", E('P(red) = 4/10 = 2/5', 'g')]]],
       ['The complement', 'Not happening', [["The probability of not red is 1 take away 2/5: 3/5.", E('P(not red) = 1 − 2/5 = 3/5', 'g')]]],
-      ['Relative frequency', 'From an experiment', [["A drawing pin lands point up 36 times in 50 throws. The relative frequency is 36 fiftieths: 0.72.", E('36 ÷ 50 = 0.72', 'g')]]],
+      ['Relative frequency', 'From an experiment', [["A drawing pin lands point up 36 times in 50 throws. The relative frequency is 36/50: 0.72.", E('36 ÷ 50 = 0.72', 'g')]]],
       ['Expected results', 'Predict', [["If the probability of rain is 0.3, in 30 days we expect about 9 rainy days.", E('0.3 × 30 = 9', 'g')]]]],
     turn: ["Your turn! A fair dice is rolled 60 times. About how many sixes would you expect? Pause and try it.", E('1/6 × 60'), "Ten sixes.", E('10', 'g')],
     rec: ["Probability is ways it can happen over total outcomes. The complement is 1 minus it. Relative frequency comes from experiments and gets more reliable with more trials.", ['P = ways ÷ total', 'P(not) = 1 − P', 'Relative frequency from trials', 'Expected = P × trials']],
@@ -24897,7 +24897,7 @@ W('How do you solve ordering and logic puzzles?', [
     intro: ['Same-size pieces', 'Common denominators', "You can only add or subtract fractions when the pieces are the same size, so find a common denominator first.", LK.fbar(1, 3, 280, 280) + LK.fbar(1, 4, 280, 150)],
     ex: [['Different denominators', '1/3 + 1/4', [["The lowest common denominator of 3 and 4 is 12. 1/3 is 4/12; 1/4 is 3/12. 7/12.", E('4/12 + 3/12 = 7/12', 'g')]]],
       ['Subtracting', '5/6 − 3/8', [["The LCM of 6 and 8 is 24. 20 twenty-fourths take away 9 twenty-fourths is 11 twenty-fourths.", E('20/24 − 9/24 = 11/24', 'g')]]],
-      ['Mixed numbers', '2 3/4 + 1 2/5', [["Wholes: 3. Fractions: 15 twentieths plus 8 twentieths is 23 twentieths, 1 and 3 twentieths. Total: 4 and 3 twentieths.", E('2 3/4 + 1 2/5 = 4 3/20', 'g')]]],
+      ['Mixed numbers', '2 3/4 + 1 2/5', [["Wholes: 3. Fractions: 15/20 plus 8/20 is 23/20, 1 and 3/20. Total: 4 and 3/20.", E('2 3/4 + 1 2/5 = 4 3/20', 'g')]]],
       ['Borrowing a whole', '3 1/6 − 1 2/3', [["Change to improper: 19/6 take away 10/6 is 9/6: 1 and 1/2.", E('19/6 − 10/6 = 9/6 = 1 1/2', 'g')]]]],
     real: ['Time', "Ali spends 3/4 of an hour on maths and 2/3 of an hour reading. Together: 9/12 plus 8/12, 17/12, 1 hour and 5 minutes.", E('3/4 + 2/3 = 1 5/12 h', 'g')],
     turn: ["Your turn! Work out 3/5 plus 1/2. Pause and try it.", E('3/5 + 1/2'), "6/10 plus 5/10 is 11/10: 1 and 1/10.", E('1 1/10', 'g')],
@@ -24910,7 +24910,7 @@ W('How do you solve ordering and logic puzzles?', [
     ex: [['Fraction of an amount', '5/8 of £72', [["72 divided by 8 is 9. 9 times 5 is £45.", E('5/8 of £72 = £45', 'g')]]],
       ['Percentage of an amount', '35% of 240', [["10% is 24. 30% is 72, 5% is 12. 84.", E('35% of 240 = 84', 'g')]]],
       ['Fraction to percentage', '7/20', [["Multiply top and bottom by 5: 35/100, 35%. Or divide 7 by 20: 0.35.", E('7/20 = 35%', 'g')]]],
-      ['Percentage to fraction', '45%', [["45/100, which simplifies to 9 twentieths.", E('45% = 45/100 = 9/20', 'g')]]],
+      ['Percentage to fraction', '45%', [["45/100, which simplifies to 9/20.", E('45% = 45/100 = 9/20', 'g')]]],
       ['Which is bigger?', '2/3 of 90 or 70% of 80', [["2/3 of 90 is 60. 70% of 80 is 56. 2/3 of 90 is bigger.", E('60 > 56', 'g')]]]],
     turn: ["Your turn! Which is bigger: 3/4 of 60, or 40% of 120? Pause and try it.", E('¾ of 60 or 40% of 120'), "45 and 48. 40% of 120 is bigger.", E('48 > 45', 'g')],
     rec: ["For a fraction of an amount, divide by the bottom and multiply by the top. Build percentages from 10%. Convert using hundredths.", ['Fraction: ÷ bottom, × top', 'Percent: build from 10%', 'Fraction ↔ percentage via /100', 'Compare in the same form']],
@@ -26306,7 +26306,7 @@ W('How do you solve ordering and logic puzzles?', [
       ['Multiplying mixed numbers part by part', "Mistake two: multiplying the whole numbers and fractions separately. 1 and 1/2 times 2 and 2/3 is not 1 times 2 plus 1/2 times 2/3. Change to improper fractions first.", ['r|1 1/2 × 2 2/3 = (1 × 2) + (1/2 × 2/3) ✗', 'g|3/2 × 8/3 = 4 ✓']]],
     real: ['In real life', "You have 3 and 1/2 litres of juice. Each glass holds 1/4 of a litre. How many glasses? 3 and 1/2 is 7/2. 7/2 divided by 1/4 is 7/2 times 4. That is 28/2, which is 14 glasses.", ['3 1/2 ÷ 1/4 = 7/2 × 4/1', '= 28/2 = 14 glasses']],
     turns: [
-      { q: 'Work out 3/4 times 2/5.', task: '3/4 × 2/5', say: "Multiply the numerators: 3 times 2 is 6. Multiply the denominators: 4 times 5 is 20. 6 twentieths. Divide the top and the bottom by 2 to get 3/10.", work: ['3 × 2 = 6', '4 × 5 = 20', '6/20 = 3/10'], ans: ['g|3/10'] },
+      { q: 'Work out 3/4 times 2/5.', task: '3/4 × 2/5', say: "Multiply the numerators: 3 times 2 is 6. Multiply the denominators: 4 times 5 is 20. 6/20. Divide the top and the bottom by 2 to get 3/10.", work: ['3 × 2 = 6', '4 × 5 = 20', '6/20 = 3/10'], ans: ['g|3/10'] },
       { q: 'Work out 5/6 divided by 2/3.', task: '5/6 ÷ 2/3', say: "Flip the second fraction and multiply. 5/6 times 3/2. 5 times 3 is 15. 6 times 2 is 12. 15/12 simplifies to 5/4, which is 1 and 1/4.", work: ['5/6 ÷ 2/3 = 5/6 × 3/2', '5 × 3 = 15 and 6 × 2 = 12', '15/12 = 5/4 = 1 1/4'], ans: ['g|1 1/4'] },
       { q: 'A batch of biscuits needs 2/3 of a cup of sugar. You have 4 and 1/2 cups. How many batches can you make?', say: "We divide 4 and 1/2 by 2/3. 4 and 1/2 is 9/2. 9/2 divided by 2/3 is 9/2 times 3/2. 9 times 3 is 27. 2 times 2 is 4. 27/4 is 6 and 3/4. So 6 full batches, and 3/4 of another.", work: ['4 1/2 = 9/2', '9/2 ÷ 2/3 = 9/2 × 3/2', '= 27/4', '= 6 3/4'], ans: ['g|6 full batches (6 3/4)'] }],
     rec: ["Multiply across. To divide, flip the second fraction and multiply.", ['Multiply the tops and the bottoms', 'Cancel before multiplying if you can', 'Divide: flip the second fraction, then multiply', 'Mixed numbers: change to improper fractions first', 'Simplify the answer']]
@@ -26323,7 +26323,7 @@ W('How do you solve ordering and logic puzzles?', [
         ["Now 1/4 of the £40 left. 40 divided by 4 is 10. She spends £10 on lunch, and has £30 left.", ['1/4 of 40 = 10', '40 − 10 = 30', 'g|£30 left']]]],
       ['Reading a book', [
         ["Tom reads 2/5 of a book on Monday. What fraction is left? 1 whole is 5/5. 5/5 minus 2/5 is 3/5 left.", ['1 − 2/5 = 3/5 left']],
-        ["On Tuesday he reads 1/3 of what is left. 1/3 of 3/5 is 3 fifteenths, which is 1/5. So altogether he has read 2/5 plus 1/5, which is 3/5. 2/5 of the book is still left.", ['1/3 × 3/5 = 1/5', '2/5 + 1/5 = 3/5 read', 'g|2/5 left']]]],
+        ["On Tuesday he reads 1/3 of what is left. 1/3 of 3/5 is 3/15, which is 1/5. So altogether he has read 2/5 plus 1/5, which is 3/5. 2/5 of the book is still left.", ['1/3 × 3/5 = 1/5', '2/5 + 1/5 = 3/5 read', 'g|2/5 left']]]],
       ['Getting to school', [
         ["In a class, 3/8 walk to school. 1/4 of the rest cycle. The rest take the bus. What fraction take the bus? The rest after the walkers is 1 minus 3/8, which is 5/8.", ['1 − 3/8 = 5/8 are not walking']],
         ["The cyclists are 1/4 of 5/8. That is 5 thirty-seconds. Bus riders are 5/8 minus 5 thirty-seconds: 20 thirty-seconds minus 5 thirty-seconds, which is 15 thirty-seconds.", ['1/4 × 5/8 = 5/32', '5/8 − 5/32 = 20/32 − 5/32', 'g|15/32 take the bus']]]]],
@@ -26333,7 +26333,7 @@ W('How do you solve ordering and logic puzzles?', [
     real: ['In real life', "Budgeting uses this idea. You spend 1/3 of your wages on rent. Then you save 1/4 of what is left. The savings are 1/4 of 2/3 of your wages, which is 1/6 of your wages.", ['2/3 × 1/4 = 2/12 = 1/6']],
     turns: [
       { q: 'Sam has £48. He spends 1/4 on lunch, then 1/3 of what is left on a book. How much does he have left?', say: "1/4 of 48 is 12. So £36 are left. 1/3 of 36 is 12 for the book. 36 minus 12 leaves £24.", work: ['1/4 of 48 = 12', '48 − 12 = 36 left', '1/3 of 36 = 12', '36 − 12 = 24'], ans: ['g|£24'] },
-      { q: 'A tank is 2/5 used in the morning. In the afternoon 1/4 of what is left is used. What fraction of the tank is left?', say: "After the morning, 3/5 are left. 1/4 of 3/5 is 3 twentieths used in the afternoon. 3/5 is 12 twentieths. 12 twentieths minus 3 twentieths is 9 twentieths.", work: ['1 − 2/5 = 3/5 left', '1/4 × 3/5 = 3/20 used', '3/5 = 12/20', '12/20 − 3/20 = 9/20'], ans: ['g|9/20 left'] },
+      { q: 'A tank is 2/5 used in the morning. In the afternoon 1/4 of what is left is used. What fraction of the tank is left?', say: "After the morning, 3/5 are left. 1/4 of 3/5 is 3/20 used in the afternoon. 3/5 is 12/20. 12/20 minus 3/20 is 9/20.", work: ['1 − 2/5 = 3/5 left', '1/4 × 3/5 = 3/20 used', '3/5 = 12/20', '12/20 − 3/20 = 9/20'], ans: ['g|9/20 left'] },
       { q: 'A bag has 72 sweets. 1/3 are red. 3/8 of the rest are green. How many are green?', say: "1/3 of 72 is 24 red sweets. That leaves 48. 3/8 of 48: 48 divided by 8 is 6, and 6 times 3 is 18. So 18 sweets are green.", work: ['1/3 of 72 = 24 red', '72 − 24 = 48 left', '48 ÷ 8 = 6', '6 × 3 = 18'], ans: ['g|18 green'] }],
     rec: ["Each new fraction is taken from what is left.", ['Find the first part', 'Subtract to find what is left', 'Take the next fraction of what is left', 'Do not add fractions of different wholes']]
   });
@@ -26643,7 +26643,7 @@ W('How do you solve ordering and logic puzzles?', [
       ['Dividing the wrong way', "Mistake two: dividing 8 by 3 to change 3/8 to a decimal. The top goes first: 3 divided by 8.", ['r|8 ÷ 3 = 2.67 ✗', 'g|3 ÷ 8 = 0.375 ✓']]],
     real: ['In real life', "A recipe uses 3/4 of a bag of flour, which is 75%. A phone battery on 40% has 2/5 left. All of these mean the same amount in different clothes.", ['3/4 = 0.75 = 75%', '40% = 2/5']],
     turns: [
-      { q: 'Write 7 twentieths as a percentage.', say: "7 twentieths is the same as 35/100, because we multiply top and bottom by 5. 35/100 is 35%.", work: ['7/20 = 35/100', '= 35%'], ans: ['g|35%'] },
+      { q: 'Write 7/20 as a percentage.', say: "7/20 is the same as 35/100, because we multiply top and bottom by 5. 35/100 is 35%.", work: ['7/20 = 35/100', '= 35%'], ans: ['g|35%'] },
       { q: 'Find 35% of £240.', say: "35% is 0.35. 0.35 times 240 is £84.", work: ['35% = 0.35', '0.35 × 240 = 84'], ans: ['g|£84'] },
       { q: 'Put these in order, smallest first: 0.4, 35%, 3/8.', say: "Change them all to percentages. 0.4 is 40%. 35% stays the same. 3/8 is 37.5%. In order: 35, 37.5, 40.", work: ['0.4 = 40%', '3/8 = 0.375 = 37.5%', '35% < 37.5% < 40%'], ans: ['g|35%, 3/8, 0.4'] }],
     rec: ["Fractions, decimals and percentages are 3 ways to write the same number.", ['Fraction → decimal: top ÷ bottom', 'Decimal → %: × 100', 'Percentage of an amount: × decimal', 'Fraction of an amount: ÷ bottom × top']]
@@ -28880,7 +28880,7 @@ W('How do you solve ordering and logic puzzles?', [
 
   LS("Adding and subtracting fractions with different denominators", "how to add and subtract fractions by using a common denominator.", "Adding and subtracting fractions",
     E("Same denominator first", ["You can only add or subtract fractions when the bottom numbers are the same. If they are different, find a common denominator, for example the LCM of the bottoms, and make equivalent fractions.", ["1/2 + 1/3: LCM of 2 and 3 is 6"]], ["Then add or subtract only the tops. The bottom stays the same.", ["3/6 + 2/6 = 5/6"]]),
-    [E("Same denominators", ["Work out 3/8 plus 2/8. The bottoms are the same. Add the tops: 5/8.", ["3/8 + 2/8", "g|5/8"]]), E("Different denominators", ["Work out 1/2 plus 1/3. The common denominator is 6. 1/2 is 3/6. 1/3 is 2/6. Add: 5/6.", ["1/2 = 3/6", "1/3 = 2/6", "g|3/6 + 2/6 = 5/6"]]), E("Subtracting", ["Work out 3/4 minus 1/5. The common denominator is 20. 3/4 is 15 twentieths. 1/5 is 4 twentieths. Subtract: 11 twentieths.", ["3/4 = 15/20", "1/5 = 4/20", "g|15/20 − 4/20 = 11/20"]]), E("Simplify the answer", ["Work out 1/6 plus 1/3. 1/3 is 2/6. Add: 3/6. Simplify: 1/2.", ["1/6 + 2/6 = 3/6", "g|= 1/2"]])],
+    [E("Same denominators", ["Work out 3/8 plus 2/8. The bottoms are the same. Add the tops: 5/8.", ["3/8 + 2/8", "g|5/8"]]), E("Different denominators", ["Work out 1/2 plus 1/3. The common denominator is 6. 1/2 is 3/6. 1/3 is 2/6. Add: 5/6.", ["1/2 = 3/6", "1/3 = 2/6", "g|3/6 + 2/6 = 5/6"]]), E("Subtracting", ["Work out 3/4 minus 1/5. The common denominator is 20. 3/4 is 15/20. 1/5 is 4/20. Subtract: 11/20.", ["3/4 = 15/20", "1/5 = 4/20", "g|15/20 − 4/20 = 11/20"]]), E("Simplify the answer", ["Work out 1/6 plus 1/3. 1/3 is 2/6. Add: 3/6. Simplify: 1/2.", ["1/6 + 2/6 = 3/6", "g|= 1/2"]])],
     [M("Adding the bottoms", "Mistake one: adding the tops and the bottoms.", "1/2 + 1/3 = 2/5 ✗", "1/2 + 1/3 = 5/6 ✓"), M("Forgetting to change both", "Mistake two: changing only one fraction. Both must have the same bottom.", "1/2 + 2/6 = 3/6 ✗", "3/6 + 2/6 = 5/6 ✓")],
     ["A recipe uses 1/2 cup of milk and 1/3 of a cup of water. Together that is 5/6 of a cup.", ["1/2 + 1/3 = 5/6"]],
     [T("Work out 2/9 + 4/9.", "Same bottom. Add the tops: 6/9. Simplify to 2/3.", ["2/9 + 4/9 = 6/9"], "2/3"), T("Work out 1/4 + 2/3.", "The common denominator is 12. 1/4 is 3/12 and 2/3 is 8/12. 11/12.", ["3/12 + 8/12"], "11/12"), T("Work out 5/6 − 1/4.", "The common denominator is 12. 5/6 is 10/12. 1/4 is 3/12. 7/12.", ["10/12 − 3/12"], "7/12")],
@@ -28912,9 +28912,9 @@ W('How do you solve ordering and logic puzzles?', [
 
   LS("Comparing and ordering fractions", "how to compare fractions and put them in order from smallest to largest.", "Comparing and ordering fractions",
     E("Same bottom", ["To compare fractions, make the denominators the same. Then the bigger numerator means the bigger fraction.", ["Same denominator: compare the tops"]], ["Another way is to change them to decimals. 1/2 is 0.5, 3/5 is 0.6.", ["3/5 = 0.6", "1/2 = 0.5"]]),
-    [E("Compare two", ["Which is bigger, 2/3 or 3/5? The common denominator is 15. 2/3 is 10 fifteenths. 3/5 is 9 fifteenths. 10 is bigger than 9.", ["2/3 = 10/15", "3/5 = 9/15", "g|2/3 is bigger"]]), E("Order three", ["Put 1/2, 3/4 and 2/5 in order, smallest first. Twentieths: 10, 15, 8. 8 is smallest.", ["1/2 = 10/20", "3/4 = 15/20", "2/5 = 8/20", "g|2/5, 1/2, 3/4"]]), E("Using decimals", ["Which is bigger, 7/8 or 4/5? 7/8 is 0.875. 4/5 is 0.8.", ["7/8 = 0.875", "4/5 = 0.8", "g|7/8 is bigger"]]), E("Same top", ["Which is bigger, 1/5 or 1/8? If the tops are the same, the smaller bottom means bigger pieces. 1/5.", ["Same top, smaller bottom = bigger", "g|1/5"]])],
+    [E("Compare two", ["Which is bigger, 2/3 or 3/5? The common denominator is 15. 2/3 is 10/15. 3/5 is 9/15. 10 is bigger than 9.", ["2/3 = 10/15", "3/5 = 9/15", "g|2/3 is bigger"]]), E("Order three", ["Put 1/2, 3/4 and 2/5 in order, smallest first. Twentieths: 10, 15, 8. 8 is smallest.", ["1/2 = 10/20", "3/4 = 15/20", "2/5 = 8/20", "g|2/5, 1/2, 3/4"]]), E("Using decimals", ["Which is bigger, 7/8 or 4/5? 7/8 is 0.875. 4/5 is 0.8.", ["7/8 = 0.875", "4/5 = 0.8", "g|7/8 is bigger"]]), E("Same top", ["Which is bigger, 1/5 or 1/8? If the tops are the same, the smaller bottom means bigger pieces. 1/5.", ["Same top, smaller bottom = bigger", "g|1/5"]])],
     [M("Comparing the bottoms", "Mistake one: saying the fraction with the bigger bottom is bigger.", "1/8 > 1/5 ✗", "1/5 > 1/8 ✓"), M("Comparing tops only", "Mistake two: comparing only the tops with different bottoms.", "2/3 < 3/5 ✗ (3 > 2)", "10/15 > 9/15 ✓")],
-    ["A pizza share: 1 friend gets 2/5, another gets 3/8. 2/5 is 16 fortieths, 3/8 is 15 fortieths. So the first friend has a bit more.", ["2/5 = 16/40", "3/8 = 15/40"]],
+    ["A pizza share: 1 friend gets 2/5, another gets 3/8. 2/5 is 16/40, 3/8 is 15/40. So the first friend has a bit more.", ["2/5 = 16/40", "3/8 = 15/40"]],
     [T("Which is bigger, 3/4 or 5/8?", "Eighths: 3/4 is 6/8. 6 is more than 5.", ["3/4 = 6/8"], "3/4"), T("Order from smallest: 1/3, 1/4, 1/6.", "Same top: the biggest bottom is smallest.", ["1/6, 1/4, 1/3"], "1/6, 1/4, 1/3"), T("Which is bigger, 5/6 or 7/9?", "Eighteenths: 5/6 is 15 eighteenths, 7/9 is 14 eighteenths.", ["15/18", "14/18"], "5/6")],
     ["Same denominator, then compare the tops.", ["Or use decimals"]]);
 

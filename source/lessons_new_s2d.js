@@ -56,7 +56,7 @@
       ['Multiplying mixed numbers part by part', "Mistake two: multiplying the whole numbers and fractions separately. 1 and 1/2 times 2 and 2/3 is not 1 times 2 plus 1/2 times 2/3. Change to improper fractions first.", ['r|1 1/2 × 2 2/3 = (1 × 2) + (1/2 × 2/3) ✗', 'g|3/2 × 8/3 = 4 ✓']]],
     real: ['In real life', "You have 3 and 1/2 litres of juice. Each glass holds 1/4 of a litre. How many glasses? 3 and 1/2 is 7/2. 7/2 divided by 1/4 is 7/2 times 4. That is 28/2, which is 14 glasses.", ['3 1/2 ÷ 1/4 = 7/2 × 4/1', '= 28/2 = 14 glasses']],
     turns: [
-      { q: 'Work out 3/4 times 2/5.', task: '3/4 × 2/5', say: "Multiply the numerators: 3 times 2 is 6. Multiply the denominators: 4 times 5 is 20. 6 twentieths. Divide the top and the bottom by 2 to get 3/10.", work: ['3 × 2 = 6', '4 × 5 = 20', '6/20 = 3/10'], ans: ['g|3/10'] },
+      { q: 'Work out 3/4 times 2/5.', task: '3/4 × 2/5', say: "Multiply the numerators: 3 times 2 is 6. Multiply the denominators: 4 times 5 is 20. 6/20. Divide the top and the bottom by 2 to get 3/10.", work: ['3 × 2 = 6', '4 × 5 = 20', '6/20 = 3/10'], ans: ['g|3/10'] },
       { q: 'Work out 5/6 divided by 2/3.', task: '5/6 ÷ 2/3', say: "Flip the second fraction and multiply. 5/6 times 3/2. 5 times 3 is 15. 6 times 2 is 12. 15/12 simplifies to 5/4, which is 1 and 1/4.", work: ['5/6 ÷ 2/3 = 5/6 × 3/2', '5 × 3 = 15 and 6 × 2 = 12', '15/12 = 5/4 = 1 1/4'], ans: ['g|1 1/4'] },
       { q: 'A batch of biscuits needs 2/3 of a cup of sugar. You have 4 and 1/2 cups. How many batches can you make?', say: "We divide 4 and 1/2 by 2/3. 4 and 1/2 is 9/2. 9/2 divided by 2/3 is 9/2 times 3/2. 9 times 3 is 27. 2 times 2 is 4. 27/4 is 6 and 3/4. So 6 full batches, and 3/4 of another.", work: ['4 1/2 = 9/2', '9/2 ÷ 2/3 = 9/2 × 3/2', '= 27/4', '= 6 3/4'], ans: ['g|6 full batches (6 3/4)'] }],
     rec: ["Multiply across. To divide, flip the second fraction and multiply.", ['Multiply the tops and the bottoms', 'Cancel before multiplying if you can', 'Divide: flip the second fraction, then multiply', 'Mixed numbers: change to improper fractions first', 'Simplify the answer']]
@@ -73,7 +73,7 @@
         ["Now 1/4 of the £40 left. 40 divided by 4 is 10. She spends £10 on lunch, and has £30 left.", ['1/4 of 40 = 10', '40 − 10 = 30', 'g|£30 left']]]],
       ['Reading a book', [
         ["Tom reads 2/5 of a book on Monday. What fraction is left? 1 whole is 5/5. 5/5 minus 2/5 is 3/5 left.", ['1 − 2/5 = 3/5 left']],
-        ["On Tuesday he reads 1/3 of what is left. 1/3 of 3/5 is 3 fifteenths, which is 1/5. So altogether he has read 2/5 plus 1/5, which is 3/5. 2/5 of the book is still left.", ['1/3 × 3/5 = 1/5', '2/5 + 1/5 = 3/5 read', 'g|2/5 left']]]],
+        ["On Tuesday he reads 1/3 of what is left. 1/3 of 3/5 is 3/15, which is 1/5. So altogether he has read 2/5 plus 1/5, which is 3/5. 2/5 of the book is still left.", ['1/3 × 3/5 = 1/5', '2/5 + 1/5 = 3/5 read', 'g|2/5 left']]]],
       ['Getting to school', [
         ["In a class, 3/8 walk to school. 1/4 of the rest cycle. The rest take the bus. What fraction take the bus? The rest after the walkers is 1 minus 3/8, which is 5/8.", ['1 − 3/8 = 5/8 are not walking']],
         ["The cyclists are 1/4 of 5/8. That is 5 thirty-seconds. Bus riders are 5/8 minus 5 thirty-seconds: 20 thirty-seconds minus 5 thirty-seconds, which is 15 thirty-seconds.", ['1/4 × 5/8 = 5/32', '5/8 − 5/32 = 20/32 − 5/32', 'g|15/32 take the bus']]]]],
@@ -83,7 +83,7 @@
     real: ['In real life', "Budgeting uses this idea. You spend 1/3 of your wages on rent. Then you save 1/4 of what is left. The savings are 1/4 of 2/3 of your wages, which is 1/6 of your wages.", ['2/3 × 1/4 = 2/12 = 1/6']],
     turns: [
       { q: 'Sam has £48. He spends 1/4 on lunch, then 1/3 of what is left on a book. How much does he have left?', say: "1/4 of 48 is 12. So £36 are left. 1/3 of 36 is 12 for the book. 36 minus 12 leaves £24.", work: ['1/4 of 48 = 12', '48 − 12 = 36 left', '1/3 of 36 = 12', '36 − 12 = 24'], ans: ['g|£24'] },
-      { q: 'A tank is 2/5 used in the morning. In the afternoon 1/4 of what is left is used. What fraction of the tank is left?', say: "After the morning, 3/5 are left. 1/4 of 3/5 is 3 twentieths used in the afternoon. 3/5 is 12 twentieths. 12 twentieths minus 3 twentieths is 9 twentieths.", work: ['1 − 2/5 = 3/5 left', '1/4 × 3/5 = 3/20 used', '3/5 = 12/20', '12/20 − 3/20 = 9/20'], ans: ['g|9/20 left'] },
+      { q: 'A tank is 2/5 used in the morning. In the afternoon 1/4 of what is left is used. What fraction of the tank is left?', say: "After the morning, 3/5 are left. 1/4 of 3/5 is 3/20 used in the afternoon. 3/5 is 12/20. 12/20 minus 3/20 is 9/20.", work: ['1 − 2/5 = 3/5 left', '1/4 × 3/5 = 3/20 used', '3/5 = 12/20', '12/20 − 3/20 = 9/20'], ans: ['g|9/20 left'] },
       { q: 'A bag has 72 sweets. 1/3 are red. 3/8 of the rest are green. How many are green?', say: "1/3 of 72 is 24 red sweets. That leaves 48. 3/8 of 48: 48 divided by 8 is 6, and 6 times 3 is 18. So 18 sweets are green.", work: ['1/3 of 72 = 24 red', '72 − 24 = 48 left', '48 ÷ 8 = 6', '6 × 3 = 18'], ans: ['g|18 green'] }],
     rec: ["Each new fraction is taken from what is left.", ['Find the first part', 'Subtract to find what is left', 'Take the next fraction of what is left', 'Do not add fractions of different wholes']]
   });

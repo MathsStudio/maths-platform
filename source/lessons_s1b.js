@@ -319,7 +319,7 @@
     intro: ['Probability', 'From 0 to 1', "Probability measures how likely something is, from 0, impossible, to 1, certain.", V.cards(['0 impossible', '0.5 even', '1 certain'], ['b', 'p', 'g'])],
     ex: [['Theoretical probability', 'Equally likely outcomes', [["A bag has 4 red and 6 blue counters. The probability of red is 4 out of 10: 2/5.", E('P(red) = 4/10 = 2/5', 'g')]]],
       ['The complement', 'Not happening', [["The probability of not red is 1 take away 2/5: 3/5.", E('P(not red) = 1 − 2/5 = 3/5', 'g')]]],
-      ['Relative frequency', 'From an experiment', [["A drawing pin lands point up 36 times in 50 throws. The relative frequency is 36 fiftieths: 0.72.", E('36 ÷ 50 = 0.72', 'g')]]],
+      ['Relative frequency', 'From an experiment', [["A drawing pin lands point up 36 times in 50 throws. The relative frequency is 36/50: 0.72.", E('36 ÷ 50 = 0.72', 'g')]]],
       ['Expected results', 'Predict', [["If the probability of rain is 0.3, in 30 days we expect about 9 rainy days.", E('0.3 × 30 = 9', 'g')]]]],
     turn: ["Your turn! A fair dice is rolled 60 times. About how many sixes would you expect? Pause and try it.", E('1/6 × 60'), "Ten sixes.", E('10', 'g')],
     rec: ["Probability is ways it can happen over total outcomes. The complement is 1 minus it. Relative frequency comes from experiments and gets more reliable with more trials.", ['P = ways ÷ total', 'P(not) = 1 − P', 'Relative frequency from trials', 'Expected = P × trials']],

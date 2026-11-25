@@ -123,7 +123,7 @@
       ['Percent means out of 100, so 25% is 25 out of 100, which simplifies to ' + fr(1, 4) + '.', 'Decimals with hundredths match percentages: 0.35 = 35%.'],
       ['Example 1: 0.75 = 75% = ' + fr(3, 4) + '.', 'Example 2: ' + fr(1, 10) + ' = 0.1 = 10%.', 'Example 3: 20% = 0.2 = ' + fr(1, 5) + '.']),
     X('Which is bigger?', 'Which is bigger, 0.7 or ' + fr(3, 5) + '?',
-      ['Write both as percentages so they are easy to compare.', '0.7 = 70%.', fr(3, 5) + ' = 6 tenths = 60%.', '70% is more than 60%, so 0.7 is bigger.'],
+      ['Write both as percentages so they are easy to compare.', '0.7 = 70%.', fr(3, 5) + ' = 6/10 = 60%.', '70% is more than 60%, so 0.7 is bigger.'],
       ['0.7 and ' + fr(3, 5), '0.7 = 70%', fr(3, 5) + ' = 60%', '0.7 is bigger'], '0.7 is bigger',
       'A 0.7 litre bottle holds more than a three-fifths litre bottle.',
       'how to compare a fraction and a decimal.',

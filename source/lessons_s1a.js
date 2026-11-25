@@ -75,10 +75,10 @@
   LS('What are equivalent fractions?', 'how different fractions can show the same amount, and how to find them.', {
     intro: ['Same amount, different numbers', 'Equivalent fractions', "Equivalent fractions show the same amount. 1/2, 2/4 and 4/8 all cover the same part of a bar.", LK.fbar(1, 2, 280, 280) + LK.fbar(2, 4, 280, 280) + LK.fbar(4, 8, 280, 280)],
     ex: [['Making equivalent fractions', 'Multiply top and bottom', [["Multiply the numerator and denominator by the same number. 3/5 times 2 over 2 is 6/10.", E('3/5 = 6/10 = 9/15', 'g') + V.rule('Do the same to the top and the bottom.')]]],
-      ['Simplifying', 'Divide top and bottom', [["Divide both by the same number to simplify. 12 sixteenths divided by 4 is 3/4.", E('12/16 = 3/4', 'g')]]],
+      ['Simplifying', 'Divide top and bottom', [["Divide both by the same number to simplify. 12/16 divided by 4 is 3/4.", E('12/16 = 3/4', 'g')]]],
       ['Missing numbers', '2/3 = ?/12', [["3 times 4 is 12, so the top must be 2 times 4: 8.", E('2/3 = 8/12', 'g')]]]],
     real: ['Pizza', "4 slices of an 8-slice pizza is the same as half a pizza. Same amount, different slices.", E('4/8 = 1/2', 'g')],
-    turn: ["Your turn! Find the missing number: 3/4 equals how many twentieths? Pause and try it.", E('3/4 = ?/20'), "4 times 5 is 20, so 3 times 5 is 15. 15 twentieths.", E('15/20', 'g')],
+    turn: ["Your turn! Find the missing number: 3/4 equals how many twentieths? Pause and try it.", E('3/4 = ?/20'), "4 times 5 is 20, so 3 times 5 is 15. 15/20.", E('15/20', 'g')],
     rec: ["Equivalent fractions show the same amount. Multiply or divide the top and bottom by the same number to find them.", ['Same amount, different numbers', '× top and bottom by the same', '÷ to simplify', 'Find missing numbers by scaling']],
     deep: ['Multiplying top and bottom by the same number is multiplying by 1, so the value never changes.', 'Adding the same number to top and bottom does not give an equivalent fraction: 1/2 ≠ 2/3.']
   });
