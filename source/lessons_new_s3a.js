@@ -1155,9 +1155,56 @@
     L.rec('How do you work backwards from a volume or area to find a missing length?', "Write the formula, put in the numbers you know, and solve for the missing one. Divide to find a height. If the unknown is squared, as in a radius, take the square root at the end. Keep pi until the last step to stay accurate.", ['Write the formula', 'Substitute known values', 'Divide', 'Square root if squared'])
   ]);
 
+  /* ---- Regular payments and bank charges (S3 version of the S2 lesson) ---- */
+  (function () {
+    var H = BT.fxh; if (!H || !BT.L.fx) return;
+    var TB = H.tbl(['Month', 'Description', 'Payment'], [['Jan', 'Energy (direct debit)', '£84.00'], ['Feb', 'Energy (direct debit)', '£94.08']], 2);
+    BT.L.fx('How do you manage regular payments and bank charges?', 'how a price rise, a failed payment or an overdraft changes what regular payments cost over a year.', {
+      head: 'Regular payments and charges',
+      basics: [
+        ['Standing orders and direct debits', [
+          ["A standing order is fixed. You tell the bank to pay the same amount on the same date. A direct debit can change, because the company decides how much to take. In this lesson we use percentages to see what a change costs over a whole year.", ['Standing order: fixed', 'Direct debit: can change']],
+          ["When prices rise, a direct debit rises with them, and the company usually tells you first. You can check the new amount on your statement and plan for it.", ['Check each new amount', 'Plan for the change']]]],
+        ['A price rise on a statement', [
+          ["Look at this energy direct debit. In January it was eighty-four pounds. In February it is ninety-four pounds eight pence. The supplier raised the price by twelve per cent.", [TB, 'n|A rise of 12% on £84']],
+          ["To increase an amount by a percentage, multiply by the multiplier. For a twelve per cent rise the multiplier is one point one two, which is a hundred and twelve per cent as a decimal.", ['100% + 12% = 112%', '112% = 1.12']]]],
+        ['The cost for a year', [
+          ["Direct debits and standing orders are monthly. To find the cost for a year, multiply by twelve. To find the extra cost of a rise for a year, work out the extra each month, then multiply by twelve.", ['Year = monthly × 12', 'Extra a year = extra a month × 12']]]]],
+      ex: [
+        ['A price rise', [
+          ["An energy direct debit is eighty-four pounds a month. The supplier raises the price by twelve per cent. What is the new monthly payment? The multiplier for a twelve per cent rise is one point one two.", ['100% + 12% = 112%', 'Multiplier = 1.12']],
+          ["Multiply the old payment by the multiplier. Eighty-four times one point one two is ninety-four pounds eight pence.", ['84 × 1.12', 'g|= £94.08']]]],
+        ['The extra cost for a year', [
+          ["How much extra is that a year? First find the extra each month. Ninety-four pounds eight pence minus eighty-four pounds is ten pounds eight pence.", ['94.08 − 84 = £10.08']],
+          ["Now multiply by twelve, because the rise applies to every month. Ten pounds eight pence times twelve is one hundred and twenty pounds ninety-six pence.", ['10.08 × 12', 'g|= £120.96 extra a year']]]],
+        ['Saving by standing order', [
+          ["A standing order pays one hundred and fifty pounds a month into a savings account. At the end of the year the bank adds three per cent of the total saved. First find the total saved in twelve months. One hundred and fifty times twelve is one thousand eight hundred pounds.", ['150 × 12', 'g|= £1,800']],
+          ["One per cent of one thousand eight hundred is eighteen pounds. Three per cent is three times that, fifty-four pounds.", ['1% of 1,800 = 18', '3% = 18 × 3 = 54']],
+          ["The account then holds one thousand eight hundred plus fifty-four, one thousand eight hundred and fifty-four pounds.", ['1,800 + 54', 'g|= £1,854']]]],
+        ['Overdraft charges', [
+          ["A bank charges one point five per cent of the overdrawn amount each month. Dev is overdrawn by four hundred pounds for one month. One per cent of four hundred is four pounds. Half of one per cent is two pounds. So one point five per cent is six pounds.", ['1% of 400 = 4', '0.5% of 400 = 2', 'g|1.5% = £6']],
+          ["The bank also charges five pounds each time a direct debit fails. Dev has two failed direct debits. The failed payments cost ten pounds.", ['2 × 5 = £10']],
+          ["Add the six pound overdraft charge. His total charges are sixteen pounds.", ['6 + 10', 'g|= £16']]]],
+        ['Monthly or yearly', [
+          ["A gym costs forty pounds a month by direct debit, or four hundred and twenty pounds if paid for the whole year at once. Which is cheaper over a year, and by how much? By direct debit it is forty times twelve, four hundred and eighty pounds.", ['40 × 12 = 480']],
+          ["Paying at once costs four hundred and twenty pounds. Four hundred and eighty minus four hundred and twenty is sixty. Paying yearly saves sixty pounds.", ['480 − 420', 'g|= £60 saved']]]]],
+      mist: [
+        ['Adding the percentage', "Mistake one: adding twelve to the payment instead of finding twelve per cent. A twelve per cent rise on eighty-four pounds is not eighty-four plus twelve. Use the multiplier one point one two.", ['r|84 + 12 = £96 ✗', 'g|84 × 1.12 = £94.08 ✓']],
+        ['Using the wrong multiplier', "Mistake two: using zero point one two as the multiplier. That finds only the twelve per cent, not the new price. For a rise, add the percentage to a hundred per cent first.", ['r|84 × 0.12 = £10.08 (this is only the rise) ✗', 'g|84 × 1.12 = £94.08 ✓']],
+        ['Stopping at one month', "Mistake three: giving the monthly extra when the question asks for the whole year. Ten pounds eight pence is the extra for one month only. Multiply it by twelve.", ['r|Extra a year = £10.08 ✗', 'g|10.08 × 12 = £120.96 ✓']]],
+      real: ['In real life', "Check your direct debit amounts when prices rise. A small rise each month adds up over a year. Keep enough money in the account, because a failed payment can cost you a fee.", ['Check each new payment amount', 'Small monthly rises add up over a year']],
+      turns: [
+        { q: 'A phone direct debit is thirty-five pounds a month. The company raises the price by ten per cent. What is the new payment?', say: "The multiplier for a ten per cent rise is one point one. Thirty-five times one point one is thirty-eight pounds fifty.", work: ['Multiplier = 1.1', '35 × 1.1'], ans: ['g|£38.50'] },
+        { q: 'A broadband direct debit rises from twenty-five pounds to twenty-seven pounds fifty a month. How much extra is that over a year?', say: "The extra each month is two pounds fifty. Two pounds fifty times twelve is thirty pounds.", work: ['27.50 − 25 = 2.50', '2.50 × 12'], ans: ['g|£30'] },
+        { q: 'A bank charges two per cent of the overdrawn amount each month. Mina is overdrawn by three hundred and fifty pounds for one month and has one failed direct debit that costs seven pounds. What is her total charge?', say: "One per cent of three hundred and fifty is three pounds fifty. Two per cent is seven pounds. Add the seven pound fee. Her total charge is fourteen pounds.", work: ['1% of 350 = 3.50', '2% = 7', '7 + 7'], ans: ['g|£14'] },
+        { q: 'A gym costs thirty-five pounds a month by direct debit, or three hundred and ninety pounds if paid for the whole year at once. How much is saved by paying yearly?', say: "By direct debit the cost is thirty-five times twelve, four hundred and twenty pounds. Four hundred and twenty minus three hundred and ninety is thirty pounds saved.", work: ['35 × 12 = 420', '420 − 390'], ans: ['g|£30 saved'] }],
+      rec: ["Find a percentage change with a multiplier. For a year, multiply the monthly amount by twelve.", ['Rise: multiplier, then compare', 'Year = monthly × 12', 'Overdraft charge = % of the overdrawn amount', 'Add any fixed fees']]
+    });
+  })();
+
   /* ---- Watch lists: old lessons plus the new ones (841 to 844) ---- */
   L.use(841, ['How do you evaluate powers and express whole numbers as powers?', 'How do you use the laws of indices?', 'How do you write a number as a product of its prime factors?', 'How do you calculate percentage changes?', 'How do you work out reverse percentages?', 'How do you work with repeated percentage change?', 'Compound growth and depreciation', 'How do you write numbers in standard form, including small numbers?', 'How do you multiply and divide numbers in standard form?', 'How do you work with rounding and upper and lower bounds?', 'How do you estimate by rounding to one significant figure?', 'What are rational and irrational numbers?', 'Surds', 'How do you describe sets of numbers?', 'Percentage change and wages']);
-  L.use(842, ['How do you convert currencies?', 'How do you compare currency exchange offers?', 'How do you calculate prices with VAT?', 'How do you work out profit and loss as a percentage?', 'How do you calculate simple interest?', 'Compound interest', 'How do you work out depreciation?', 'Tax bands', 'How do you work out take-home pay?', 'How do you plan a budget with percentages and a yearly plan?', 'How do you work out the cost of credit and hire purchase?', 'Percentage change and wages', 'Best buys, interest and exchange']);
+  L.use(842, ['How do you convert currencies?', 'How do you compare currency exchange offers?', 'How do you calculate prices with VAT?', 'How do you work out profit and loss as a percentage?', 'How do you calculate simple interest?', 'Compound interest', 'How do you work out depreciation?', 'Tax bands', 'How do you work out take-home pay?', 'How do you plan a budget with percentages and a yearly plan?', 'How do you work out the cost of credit and hire purchase?', 'How do you manage regular payments and bank charges?', 'Percentage change and wages', 'Best buys, interest and exchange']);
   L.use(843, ['How do you share an amount in a ratio and work with changing ratios?', 'Ratio with different units', 'How do you work with direct proportion and formulae?', 'How do you work with inverse proportion and formulae?', 'Density and other rates', 'Changing units of speed', 'Speed, distance and time', 'How do you find average speed over a whole journey?', 'How do you read and draw distance-time graphs?', 'How do you compare value for money using unit rates?']);
   L.use(844, ['What are the properties of 3D objects?', 'How do you find the area and perimeter of compound shapes, including semicircles and trapezia?', 'How do you find the volume of prisms and cylinders?', 'How do you find the surface area of a cylinder and other solids?', 'Volume of cones and spheres', 'Surface area of cones and spheres', 'How do you find the volume and surface area of compound solids?', 'How do you convert units of area and volume?', 'How do you work backwards from a volume or area to find a missing length?', 'Circles, similarity and solids']);
 })();

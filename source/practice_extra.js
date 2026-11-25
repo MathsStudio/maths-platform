@@ -5,10 +5,10 @@
   'use strict';
   var S = Studio, BT = window.BT; if (!BT || !BT.ACTGEN) return;
   var G = BT.ACTGEN;
-  var TAG = { x_neg: 'Negative numbers', x_decx: 'Decimals to three places', x_prime: 'Prime numbers', x_factors: 'Factors and multiples', x_subst: 'Substitution', x_nth: 'nth term', x_terms: 'Simplifying terms', x_poly: 'Polygons', x_scale: 'Linear scale factor', x_symm: 'Symmetry', x_faces: '3D objects', x_areaunits: 'Units of area and volume', x_speed: 'Speed, distance and time', x_sqcube: 'Powers and roots', x_rounddec: 'Rounding to decimal places', x_datatype: 'Types of data', x_perim: 'Perimeter', x_pctchange: 'Percentage change' };
+  var TAG = { x_neg: 'Negative numbers', x_decx: 'Decimals to three places', x_prime: 'Prime numbers', x_factors: 'Factors and multiples', x_subst: 'Substitution', x_nth: 'nth term', x_terms: 'Simplifying terms', x_poly: 'Polygons', x_scale: 'Linear scale factor', x_symm: 'Symmetry', x_faces: '3D objects', x_areaunits: 'Units of area and volume', x_speed: 'Speed, distance and time', x_sqcube: 'Powers and roots', x_rounddec: 'Rounding to decimal places', x_datatype: 'Types of data', x_perim: 'Perimeter', x_pctchange: 'Percentage change', x_bankpay: 'Regular payments' };
   var MAP = {
     801: [['x_rounddec', 2]], 807: [['x_speed', 0]], 809: [['x_nth', 0], ['x_terms', 0]], 811: [['x_poly', 1], ['x_symm', 0]], 812: [['x_datatype', 0]], 813: [['x_faces', 0]],
-    821: [['x_neg', 0], ['x_decx', 0], ['x_prime', 2], ['x_factors', 2]], 826: [['x_faces', 0], ['x_areaunits', 0]],
+    824: [['x_bankpay', 0]], 842: [['x_bankpay', 1]], 821: [['x_neg', 0], ['x_decx', 0], ['x_prime', 2], ['x_factors', 2]], 826: [['x_faces', 0], ['x_areaunits', 0]],
     841: [['x_sqcube', 2], ['x_pctchange', 0]], 845: [['x_subst', 0], ['x_nth', 0], ['x_terms', 0]], 851: [['x_poly', 2], ['x_scale', 0]], 853: [['x_symm', 0]]
   };
   function toQ(id, r) {

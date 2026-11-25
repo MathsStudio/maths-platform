@@ -213,5 +213,52 @@
      T('The balance is fifty-five pounds. Payments out are twelve pounds forty and eight pounds sixty. Then one hundred pounds comes in. What is the final balance?', "The payments out total twenty-one pounds. Fifty-five minus twenty-one is thirty-four pounds. Then add one hundred. The final balance is one hundred and thirty-four pounds.", ['12.40 + 8.60 = £21', '55 − 21 = £34', '34 + 100 = £134'], '£134')],
     ["Money in adds. Money out subtracts. Below zero is overdrawn.", ['Closing = opening + in − out', 'Negative means overdrawn', 'Check each line', 'Watch for unknown payments']]);
 
-  L.use(824, ['How do you find the best value for money?', 'Pay, overtime and National Insurance', 'Wages and VAT', 'Income tax and wages', 'Percentage change and wages', 'Insurance, bills and benefits', 'Percentage profit and loss', 'Budgeting: income and spending', 'Hire purchase and loans', 'Exchange rates and commission', 'Simple and compound interest', 'Savings accounts and credit cards', 'Reading a bank statement']);
+  (function () {
+    var ST = H.tbl(['Date', 'Description', 'Out', 'In', 'Balance'], [['01 Oct', 'Opening balance', '', '', '£820.00'], ['03 Oct', 'Rent (standing order)', '£450.00', '', '£370.00'], ['05 Oct', 'Phone (direct debit)', '£35.00', '', '£335.00'], ['28 Oct', 'Wages', '', '£1,150.00', '£1,485.00']]);
+    BT.L.fx('Direct debits, standing orders and bank charges', 'how regular payments leave your account and how to work out what they cost.', {
+      head: 'Regular payments',
+      basics: [
+        ['Two ways to pay regularly', [
+          ["A standing order is an instruction you give your bank to pay the same amount, on the same date, to the same person, every month. Rent and savings are often paid this way. The amount only changes if you tell the bank to change it.", ['Standing order = fixed amount, fixed date']],
+          ["A direct debit is different. You give a company permission to take money from your account. The company decides how much to take, so the amount can change. Gas, electricity and phone bills are often paid this way.", ['Direct debit = the company takes the money', 'The amount can change']],
+          ["So remember who is in control. With a standing order, you tell the bank what to pay. With a direct debit, the company tells the bank what to take.", ['Standing order: you set it', 'Direct debit: the company sets the amount']]]],
+        ['On a bank statement', [
+          ["Here is a bank statement. The balance starts at eight hundred and twenty pounds. Look at the rent on the third. Four hundred and fifty pounds goes out, and the description says standing order.", [ST, 'n|Rent: a standing order']],
+          ["The phone bill on the fifth is a direct debit. Money out takes the balance down. Wages are money in, so they bring the balance up.", ['Money out: subtract', 'Money in: add']]]],
+        ['Paying for a whole year', [
+          ["Regular payments like these are made once a month. So in one year there are twelve payments. To find the cost for a year, multiply the monthly amount by twelve.", ['Monthly payment', 'Year = monthly × 12']],
+          ["Be careful. Fifty-two is the number of weeks in a year. It is only used for weekly payments, not monthly ones.", ['Monthly: × 12', 'Weekly: × 52']]]]],
+      ex: [
+        ['A standing order for a year', [
+          ["Ben pays rent of four hundred and fifty pounds a month by standing order. We want the cost for a whole year. A payment is made each month, and there are twelve months.", ['450 a month', '12 months in a year']],
+          ["So we multiply. Four hundred times twelve is four thousand eight hundred. Fifty times twelve is six hundred. Add them to get five thousand four hundred pounds.", ['400 × 12 = 4,800', '50 × 12 = 600', 'g|4,800 + 600 = £5,400 a year']]]],
+        ['Which type of payment?', [
+          ["Ali pays rent of four hundred pounds, the same every month, to his landlord. Is this a standing order or a direct debit? The amount is fixed, and Ali tells the bank to pay it. So it is a standing order.", ['Same every month, Ali sets it', 'g|Standing order']],
+          ["Ali's gas bill changes every month, and the gas company takes the money. The company decides the amount, so this is a direct debit.", ['Changes, the company takes it', 'g|Direct debit']]]],
+        ['Direct debits that change', [
+          ["Nina pays for electricity by direct debit. The bill is sixty-two pounds in January, fifty-eight pounds in February and fifty-four pounds in March. What is the total for the three months? Sixty-two plus fifty-eight plus fifty-four is one hundred and seventy-four pounds.", ['62 + 58 + 54', 'g|= £174']],
+          ["The mean monthly payment is the total divided by three. One hundred and seventy-four divided by three is fifty-eight pounds.", ['174 ÷ 3', 'g|= £58 a month']],
+          ["The mean helps you plan. If you keep fifty-eight pounds a month aside for electricity, you will be close to the real cost.", ['Mean: a good amount to budget']]]],
+        ['Following the balance', [
+          ["An account has eight hundred and twenty pounds. Rent of four hundred and fifty pounds leaves by standing order. First take away the rent. Eight hundred and twenty minus four hundred and fifty is three hundred and seventy pounds.", ['820 − 450 = 370']],
+          ["A phone bill of thirty-five pounds is taken by direct debit. Three hundred and seventy minus thirty-five is three hundred and thirty-five pounds.", ['370 − 35 = 335']],
+          ["Then wages of one thousand one hundred and fifty pounds arrive. Three hundred and thirty-five plus one thousand one hundred and fifty is one thousand four hundred and eighty-five pounds. This matches the statement.", ['335 + 1,150', 'g|= £1,485', ST]]]],
+        ['A bank charge', [
+          ["A bank charges two pounds for each day an account is overdrawn. Ravi is overdrawn for nine days. What is the charge? Two times nine is eighteen pounds.", ['2 × 9', 'g|= £18']],
+          ["The same bank charges eight pounds when a payment fails. Ravi has one failed payment. His total charges are eighteen plus eight, twenty-six pounds.", ['18 + 8', 'g|= £26']]]]],
+      mist: [
+        ['Mixing up the two', "Mistake one: thinking a standing order can change by itself. A standing order is fixed, and only changes if you tell the bank. A direct debit can change, because the company decides the amount.", ['r|A standing order changes each month ✗', 'g|Standing order = fixed. Direct debit can change ✓']],
+        ['Using the wrong number of payments', "Mistake two: using fifty-two for a monthly payment. A payment made once a month is made twelve times a year, not fifty-two times.", ['r|450 × 52 = £23,400 ✗', 'g|450 × 12 = £5,400 ✓']],
+        ['Forgetting the charges', "Mistake three: forgetting the extra charges. When a payment fails or an account is overdrawn, the bank adds charges. Add every charge to the total.", ['r|Total = £18 (missed the failed payment fee) ✗', 'g|18 + 8 = £26 ✓']]],
+      real: ['In real life', "Setting up regular payments can stop you missing a bill and paying a late fee. But the money must be in the account on the day. If it is not, the payment can fail and the bank can charge you.", ['Keep enough money in the account', 'Check your statement every month']],
+      turns: [
+        { q: 'Mia pays sixty pounds a month into a savings account by standing order. How much does she save in a year?', say: "A monthly payment is made twelve times in a year. Sixty times twelve is seven hundred and twenty pounds.", work: ['12 payments a year', '60 × 12'], ans: ['g|£720'] },
+        { q: 'Gas is paid by direct debit. The payments are forty-eight pounds in October, sixty-three pounds in November and seventy-five pounds in December. What is the mean monthly payment?', say: "Add the three payments. Forty-eight plus sixty-three plus seventy-five is one hundred and eighty-six pounds. Divide by three. One hundred and eighty-six divided by three is sixty-two pounds.", work: ['48 + 63 + 75 = 186', '186 ÷ 3'], ans: ['g|£62'] },
+        { q: 'An account has six hundred and forty pounds. Rent of three hundred and eighty pounds leaves by standing order and a bill of forty-five pounds by direct debit. Then wages of nine hundred pounds arrive. What is the balance?', say: "Six hundred and forty minus three hundred and eighty is two hundred and sixty. Take away forty-five to get two hundred and fifteen. Then add nine hundred. The balance is one thousand one hundred and fifteen pounds.", work: ['640 − 380 = 260', '260 − 45 = 215', '215 + 900'], ans: ['g|£1,115'] },
+        { q: 'An account has two hundred and eighty pounds. Rent of five hundred pounds leaves by standing order. What is the balance, and is the account overdrawn?', say: "Two hundred and eighty minus five hundred is minus two hundred and twenty. The balance is below zero, so the account is overdrawn by two hundred and twenty pounds.", work: ['280 − 500 = −220', 'Below zero: overdrawn'], ans: ['g|−£220, overdrawn by £220'] }],
+      rec: ["A standing order is fixed. A direct debit can change. A monthly payment is made twelve times a year.", ['Standing order: fixed amount, fixed date', 'Direct debit: the company takes the money, the amount can change', 'Monthly payment: × 12 for a year', 'Balance: take away payments, add money in']]
+    });
+  })();
+
+  L.use(824, ['How do you find the best value for money?', 'Pay, overtime and National Insurance', 'Wages and VAT', 'Income tax and wages', 'Percentage change and wages', 'Insurance, bills and benefits', 'Percentage profit and loss', 'Budgeting: income and spending', 'Hire purchase and loans', 'Exchange rates and commission', 'Simple and compound interest', 'Savings accounts and credit cards', 'Reading a bank statement', 'Direct debits, standing orders and bank charges']);
 })();

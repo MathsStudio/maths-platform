@@ -19451,6 +19451,12 @@ S.extraMakers = function (n, level) {
   'use strict';
   var BT = window.BT; if (!BT || !BT.L || !BT.L.fx) return;
   var H = BT.fxh = {};
+  /* H.tbl(head, rows, hi): a small table picture for a slide; hi = row number to highlight (1-based), cells may be '' */
+  H.tbl = function (head, rows, hi) {
+    var th = 'padding:.35em .7em;text-align:right;border-bottom:2px solid var(--border,#c9d3ea);font-weight:700', td = 'padding:.35em .7em;text-align:right;border-bottom:1px solid var(--border,#dfe5f3)';
+    return 'h|<table style="margin:.4em auto;border-collapse:collapse;font-size:.95em;max-width:100%;background:var(--surface,transparent);color:var(--fg,inherit)"><thead><tr>' + head.map(function (h, i) { return '<th style="' + th + (i < 2 ? ';text-align:left' : '') + '">' + h + '</th>'; }).join('') + '</tr></thead><tbody>' +
+      rows.map(function (r, k) { return '<tr' + (hi === k + 1 ? ' style="background:var(--surface-2,#e8eefc);font-weight:700"' : '') + '>' + r.map(function (c, i) { return '<td style="' + td + (i < 2 ? ';text-align:left' : '') + '">' + c + '</td>'; }).join('') + '</tr>'; }).join('') + '</tbody></table>';
+  };
   /* E(sub, [say, lines], [say, lines], ...) */
   H.E = function (sub) { var a = [].slice.call(arguments, 1); return [sub, a]; };
   /* M(sub, say, wrongLine, rightLine) */
@@ -27154,7 +27160,54 @@ W('How do you solve ordering and logic puzzles?', [
      T('The balance is fifty-five pounds. Payments out are twelve pounds forty and eight pounds sixty. Then one hundred pounds comes in. What is the final balance?', "The payments out total twenty-one pounds. Fifty-five minus twenty-one is thirty-four pounds. Then add one hundred. The final balance is one hundred and thirty-four pounds.", ['12.40 + 8.60 = £21', '55 − 21 = £34', '34 + 100 = £134'], '£134')],
     ["Money in adds. Money out subtracts. Below zero is overdrawn.", ['Closing = opening + in − out', 'Negative means overdrawn', 'Check each line', 'Watch for unknown payments']]);
 
-  L.use(824, ['How do you find the best value for money?', 'Pay, overtime and National Insurance', 'Wages and VAT', 'Income tax and wages', 'Percentage change and wages', 'Insurance, bills and benefits', 'Percentage profit and loss', 'Budgeting: income and spending', 'Hire purchase and loans', 'Exchange rates and commission', 'Simple and compound interest', 'Savings accounts and credit cards', 'Reading a bank statement']);
+  (function () {
+    var ST = H.tbl(['Date', 'Description', 'Out', 'In', 'Balance'], [['01 Oct', 'Opening balance', '', '', '£820.00'], ['03 Oct', 'Rent (standing order)', '£450.00', '', '£370.00'], ['05 Oct', 'Phone (direct debit)', '£35.00', '', '£335.00'], ['28 Oct', 'Wages', '', '£1,150.00', '£1,485.00']]);
+    BT.L.fx('Direct debits, standing orders and bank charges', 'how regular payments leave your account and how to work out what they cost.', {
+      head: 'Regular payments',
+      basics: [
+        ['Two ways to pay regularly', [
+          ["A standing order is an instruction you give your bank to pay the same amount, on the same date, to the same person, every month. Rent and savings are often paid this way. The amount only changes if you tell the bank to change it.", ['Standing order = fixed amount, fixed date']],
+          ["A direct debit is different. You give a company permission to take money from your account. The company decides how much to take, so the amount can change. Gas, electricity and phone bills are often paid this way.", ['Direct debit = the company takes the money', 'The amount can change']],
+          ["So remember who is in control. With a standing order, you tell the bank what to pay. With a direct debit, the company tells the bank what to take.", ['Standing order: you set it', 'Direct debit: the company sets the amount']]]],
+        ['On a bank statement', [
+          ["Here is a bank statement. The balance starts at eight hundred and twenty pounds. Look at the rent on the third. Four hundred and fifty pounds goes out, and the description says standing order.", [ST, 'n|Rent: a standing order']],
+          ["The phone bill on the fifth is a direct debit. Money out takes the balance down. Wages are money in, so they bring the balance up.", ['Money out: subtract', 'Money in: add']]]],
+        ['Paying for a whole year', [
+          ["Regular payments like these are made once a month. So in one year there are twelve payments. To find the cost for a year, multiply the monthly amount by twelve.", ['Monthly payment', 'Year = monthly × 12']],
+          ["Be careful. Fifty-two is the number of weeks in a year. It is only used for weekly payments, not monthly ones.", ['Monthly: × 12', 'Weekly: × 52']]]]],
+      ex: [
+        ['A standing order for a year', [
+          ["Ben pays rent of four hundred and fifty pounds a month by standing order. We want the cost for a whole year. A payment is made each month, and there are twelve months.", ['450 a month', '12 months in a year']],
+          ["So we multiply. Four hundred times twelve is four thousand eight hundred. Fifty times twelve is six hundred. Add them to get five thousand four hundred pounds.", ['400 × 12 = 4,800', '50 × 12 = 600', 'g|4,800 + 600 = £5,400 a year']]]],
+        ['Which type of payment?', [
+          ["Ali pays rent of four hundred pounds, the same every month, to his landlord. Is this a standing order or a direct debit? The amount is fixed, and Ali tells the bank to pay it. So it is a standing order.", ['Same every month, Ali sets it', 'g|Standing order']],
+          ["Ali's gas bill changes every month, and the gas company takes the money. The company decides the amount, so this is a direct debit.", ['Changes, the company takes it', 'g|Direct debit']]]],
+        ['Direct debits that change', [
+          ["Nina pays for electricity by direct debit. The bill is sixty-two pounds in January, fifty-eight pounds in February and fifty-four pounds in March. What is the total for the three months? Sixty-two plus fifty-eight plus fifty-four is one hundred and seventy-four pounds.", ['62 + 58 + 54', 'g|= £174']],
+          ["The mean monthly payment is the total divided by three. One hundred and seventy-four divided by three is fifty-eight pounds.", ['174 ÷ 3', 'g|= £58 a month']],
+          ["The mean helps you plan. If you keep fifty-eight pounds a month aside for electricity, you will be close to the real cost.", ['Mean: a good amount to budget']]]],
+        ['Following the balance', [
+          ["An account has eight hundred and twenty pounds. Rent of four hundred and fifty pounds leaves by standing order. First take away the rent. Eight hundred and twenty minus four hundred and fifty is three hundred and seventy pounds.", ['820 − 450 = 370']],
+          ["A phone bill of thirty-five pounds is taken by direct debit. Three hundred and seventy minus thirty-five is three hundred and thirty-five pounds.", ['370 − 35 = 335']],
+          ["Then wages of one thousand one hundred and fifty pounds arrive. Three hundred and thirty-five plus one thousand one hundred and fifty is one thousand four hundred and eighty-five pounds. This matches the statement.", ['335 + 1,150', 'g|= £1,485', ST]]]],
+        ['A bank charge', [
+          ["A bank charges two pounds for each day an account is overdrawn. Ravi is overdrawn for nine days. What is the charge? Two times nine is eighteen pounds.", ['2 × 9', 'g|= £18']],
+          ["The same bank charges eight pounds when a payment fails. Ravi has one failed payment. His total charges are eighteen plus eight, twenty-six pounds.", ['18 + 8', 'g|= £26']]]]],
+      mist: [
+        ['Mixing up the two', "Mistake one: thinking a standing order can change by itself. A standing order is fixed, and only changes if you tell the bank. A direct debit can change, because the company decides the amount.", ['r|A standing order changes each month ✗', 'g|Standing order = fixed. Direct debit can change ✓']],
+        ['Using the wrong number of payments', "Mistake two: using fifty-two for a monthly payment. A payment made once a month is made twelve times a year, not fifty-two times.", ['r|450 × 52 = £23,400 ✗', 'g|450 × 12 = £5,400 ✓']],
+        ['Forgetting the charges', "Mistake three: forgetting the extra charges. When a payment fails or an account is overdrawn, the bank adds charges. Add every charge to the total.", ['r|Total = £18 (missed the failed payment fee) ✗', 'g|18 + 8 = £26 ✓']]],
+      real: ['In real life', "Setting up regular payments can stop you missing a bill and paying a late fee. But the money must be in the account on the day. If it is not, the payment can fail and the bank can charge you.", ['Keep enough money in the account', 'Check your statement every month']],
+      turns: [
+        { q: 'Mia pays sixty pounds a month into a savings account by standing order. How much does she save in a year?', say: "A monthly payment is made twelve times in a year. Sixty times twelve is seven hundred and twenty pounds.", work: ['12 payments a year', '60 × 12'], ans: ['g|£720'] },
+        { q: 'Gas is paid by direct debit. The payments are forty-eight pounds in October, sixty-three pounds in November and seventy-five pounds in December. What is the mean monthly payment?', say: "Add the three payments. Forty-eight plus sixty-three plus seventy-five is one hundred and eighty-six pounds. Divide by three. One hundred and eighty-six divided by three is sixty-two pounds.", work: ['48 + 63 + 75 = 186', '186 ÷ 3'], ans: ['g|£62'] },
+        { q: 'An account has six hundred and forty pounds. Rent of three hundred and eighty pounds leaves by standing order and a bill of forty-five pounds by direct debit. Then wages of nine hundred pounds arrive. What is the balance?', say: "Six hundred and forty minus three hundred and eighty is two hundred and sixty. Take away forty-five to get two hundred and fifteen. Then add nine hundred. The balance is one thousand one hundred and fifteen pounds.", work: ['640 − 380 = 260', '260 − 45 = 215', '215 + 900'], ans: ['g|£1,115'] },
+        { q: 'An account has two hundred and eighty pounds. Rent of five hundred pounds leaves by standing order. What is the balance, and is the account overdrawn?', say: "Two hundred and eighty minus five hundred is minus two hundred and twenty. The balance is below zero, so the account is overdrawn by two hundred and twenty pounds.", work: ['280 − 500 = −220', 'Below zero: overdrawn'], ans: ['g|−£220, overdrawn by £220'] }],
+      rec: ["A standing order is fixed. A direct debit can change. A monthly payment is made twelve times a year.", ['Standing order: fixed amount, fixed date', 'Direct debit: the company takes the money, the amount can change', 'Monthly payment: × 12 for a year', 'Balance: take away payments, add money in']]
+    });
+  })();
+
+  L.use(824, ['How do you find the best value for money?', 'Pay, overtime and National Insurance', 'Wages and VAT', 'Income tax and wages', 'Percentage change and wages', 'Insurance, bills and benefits', 'Percentage profit and loss', 'Budgeting: income and spending', 'Hire purchase and loans', 'Exchange rates and commission', 'Simple and compound interest', 'Savings accounts and credit cards', 'Reading a bank statement', 'Direct debits, standing orders and bank charges']);
 })();
 </script>
 <script>
@@ -34516,9 +34569,56 @@ W('How do you solve ordering and logic puzzles?', [
     L.rec('How do you work backwards from a volume or area to find a missing length?', "Write the formula, put in the numbers you know, and solve for the missing one. Divide to find a height. If the unknown is squared, as in a radius, take the square root at the end. Keep pi until the last step to stay accurate.", ['Write the formula', 'Substitute known values', 'Divide', 'Square root if squared'])
   ]);
 
+  /* ---- Regular payments and bank charges (S3 version of the S2 lesson) ---- */
+  (function () {
+    var H = BT.fxh; if (!H || !BT.L.fx) return;
+    var TB = H.tbl(['Month', 'Description', 'Payment'], [['Jan', 'Energy (direct debit)', '£84.00'], ['Feb', 'Energy (direct debit)', '£94.08']], 2);
+    BT.L.fx('How do you manage regular payments and bank charges?', 'how a price rise, a failed payment or an overdraft changes what regular payments cost over a year.', {
+      head: 'Regular payments and charges',
+      basics: [
+        ['Standing orders and direct debits', [
+          ["A standing order is fixed. You tell the bank to pay the same amount on the same date. A direct debit can change, because the company decides how much to take. In this lesson we use percentages to see what a change costs over a whole year.", ['Standing order: fixed', 'Direct debit: can change']],
+          ["When prices rise, a direct debit rises with them, and the company usually tells you first. You can check the new amount on your statement and plan for it.", ['Check each new amount', 'Plan for the change']]]],
+        ['A price rise on a statement', [
+          ["Look at this energy direct debit. In January it was eighty-four pounds. In February it is ninety-four pounds eight pence. The supplier raised the price by twelve per cent.", [TB, 'n|A rise of 12% on £84']],
+          ["To increase an amount by a percentage, multiply by the multiplier. For a twelve per cent rise the multiplier is one point one two, which is a hundred and twelve per cent as a decimal.", ['100% + 12% = 112%', '112% = 1.12']]]],
+        ['The cost for a year', [
+          ["Direct debits and standing orders are monthly. To find the cost for a year, multiply by twelve. To find the extra cost of a rise for a year, work out the extra each month, then multiply by twelve.", ['Year = monthly × 12', 'Extra a year = extra a month × 12']]]]],
+      ex: [
+        ['A price rise', [
+          ["An energy direct debit is eighty-four pounds a month. The supplier raises the price by twelve per cent. What is the new monthly payment? The multiplier for a twelve per cent rise is one point one two.", ['100% + 12% = 112%', 'Multiplier = 1.12']],
+          ["Multiply the old payment by the multiplier. Eighty-four times one point one two is ninety-four pounds eight pence.", ['84 × 1.12', 'g|= £94.08']]]],
+        ['The extra cost for a year', [
+          ["How much extra is that a year? First find the extra each month. Ninety-four pounds eight pence minus eighty-four pounds is ten pounds eight pence.", ['94.08 − 84 = £10.08']],
+          ["Now multiply by twelve, because the rise applies to every month. Ten pounds eight pence times twelve is one hundred and twenty pounds ninety-six pence.", ['10.08 × 12', 'g|= £120.96 extra a year']]]],
+        ['Saving by standing order', [
+          ["A standing order pays one hundred and fifty pounds a month into a savings account. At the end of the year the bank adds three per cent of the total saved. First find the total saved in twelve months. One hundred and fifty times twelve is one thousand eight hundred pounds.", ['150 × 12', 'g|= £1,800']],
+          ["One per cent of one thousand eight hundred is eighteen pounds. Three per cent is three times that, fifty-four pounds.", ['1% of 1,800 = 18', '3% = 18 × 3 = 54']],
+          ["The account then holds one thousand eight hundred plus fifty-four, one thousand eight hundred and fifty-four pounds.", ['1,800 + 54', 'g|= £1,854']]]],
+        ['Overdraft charges', [
+          ["A bank charges one point five per cent of the overdrawn amount each month. Dev is overdrawn by four hundred pounds for one month. One per cent of four hundred is four pounds. Half of one per cent is two pounds. So one point five per cent is six pounds.", ['1% of 400 = 4', '0.5% of 400 = 2', 'g|1.5% = £6']],
+          ["The bank also charges five pounds each time a direct debit fails. Dev has two failed direct debits. The failed payments cost ten pounds.", ['2 × 5 = £10']],
+          ["Add the six pound overdraft charge. His total charges are sixteen pounds.", ['6 + 10', 'g|= £16']]]],
+        ['Monthly or yearly', [
+          ["A gym costs forty pounds a month by direct debit, or four hundred and twenty pounds if paid for the whole year at once. Which is cheaper over a year, and by how much? By direct debit it is forty times twelve, four hundred and eighty pounds.", ['40 × 12 = 480']],
+          ["Paying at once costs four hundred and twenty pounds. Four hundred and eighty minus four hundred and twenty is sixty. Paying yearly saves sixty pounds.", ['480 − 420', 'g|= £60 saved']]]]],
+      mist: [
+        ['Adding the percentage', "Mistake one: adding twelve to the payment instead of finding twelve per cent. A twelve per cent rise on eighty-four pounds is not eighty-four plus twelve. Use the multiplier one point one two.", ['r|84 + 12 = £96 ✗', 'g|84 × 1.12 = £94.08 ✓']],
+        ['Using the wrong multiplier', "Mistake two: using zero point one two as the multiplier. That finds only the twelve per cent, not the new price. For a rise, add the percentage to a hundred per cent first.", ['r|84 × 0.12 = £10.08 (this is only the rise) ✗', 'g|84 × 1.12 = £94.08 ✓']],
+        ['Stopping at one month', "Mistake three: giving the monthly extra when the question asks for the whole year. Ten pounds eight pence is the extra for one month only. Multiply it by twelve.", ['r|Extra a year = £10.08 ✗', 'g|10.08 × 12 = £120.96 ✓']]],
+      real: ['In real life', "Check your direct debit amounts when prices rise. A small rise each month adds up over a year. Keep enough money in the account, because a failed payment can cost you a fee.", ['Check each new payment amount', 'Small monthly rises add up over a year']],
+      turns: [
+        { q: 'A phone direct debit is thirty-five pounds a month. The company raises the price by ten per cent. What is the new payment?', say: "The multiplier for a ten per cent rise is one point one. Thirty-five times one point one is thirty-eight pounds fifty.", work: ['Multiplier = 1.1', '35 × 1.1'], ans: ['g|£38.50'] },
+        { q: 'A broadband direct debit rises from twenty-five pounds to twenty-seven pounds fifty a month. How much extra is that over a year?', say: "The extra each month is two pounds fifty. Two pounds fifty times twelve is thirty pounds.", work: ['27.50 − 25 = 2.50', '2.50 × 12'], ans: ['g|£30'] },
+        { q: 'A bank charges two per cent of the overdrawn amount each month. Mina is overdrawn by three hundred and fifty pounds for one month and has one failed direct debit that costs seven pounds. What is her total charge?', say: "One per cent of three hundred and fifty is three pounds fifty. Two per cent is seven pounds. Add the seven pound fee. Her total charge is fourteen pounds.", work: ['1% of 350 = 3.50', '2% = 7', '7 + 7'], ans: ['g|£14'] },
+        { q: 'A gym costs thirty-five pounds a month by direct debit, or three hundred and ninety pounds if paid for the whole year at once. How much is saved by paying yearly?', say: "By direct debit the cost is thirty-five times twelve, four hundred and twenty pounds. Four hundred and twenty minus three hundred and ninety is thirty pounds saved.", work: ['35 × 12 = 420', '420 − 390'], ans: ['g|£30 saved'] }],
+      rec: ["Find a percentage change with a multiplier. For a year, multiply the monthly amount by twelve.", ['Rise: multiplier, then compare', 'Year = monthly × 12', 'Overdraft charge = % of the overdrawn amount', 'Add any fixed fees']]
+    });
+  })();
+
   /* ---- Watch lists: old lessons plus the new ones (841 to 844) ---- */
   L.use(841, ['How do you evaluate powers and express whole numbers as powers?', 'How do you use the laws of indices?', 'How do you write a number as a product of its prime factors?', 'How do you calculate percentage changes?', 'How do you work out reverse percentages?', 'How do you work with repeated percentage change?', 'Compound growth and depreciation', 'How do you write numbers in standard form, including small numbers?', 'How do you multiply and divide numbers in standard form?', 'How do you work with rounding and upper and lower bounds?', 'How do you estimate by rounding to one significant figure?', 'What are rational and irrational numbers?', 'Surds', 'How do you describe sets of numbers?', 'Percentage change and wages']);
-  L.use(842, ['How do you convert currencies?', 'How do you compare currency exchange offers?', 'How do you calculate prices with VAT?', 'How do you work out profit and loss as a percentage?', 'How do you calculate simple interest?', 'Compound interest', 'How do you work out depreciation?', 'Tax bands', 'How do you work out take-home pay?', 'How do you plan a budget with percentages and a yearly plan?', 'How do you work out the cost of credit and hire purchase?', 'Percentage change and wages', 'Best buys, interest and exchange']);
+  L.use(842, ['How do you convert currencies?', 'How do you compare currency exchange offers?', 'How do you calculate prices with VAT?', 'How do you work out profit and loss as a percentage?', 'How do you calculate simple interest?', 'Compound interest', 'How do you work out depreciation?', 'Tax bands', 'How do you work out take-home pay?', 'How do you plan a budget with percentages and a yearly plan?', 'How do you work out the cost of credit and hire purchase?', 'How do you manage regular payments and bank charges?', 'Percentage change and wages', 'Best buys, interest and exchange']);
   L.use(843, ['How do you share an amount in a ratio and work with changing ratios?', 'Ratio with different units', 'How do you work with direct proportion and formulae?', 'How do you work with inverse proportion and formulae?', 'Density and other rates', 'Changing units of speed', 'Speed, distance and time', 'How do you find average speed over a whole journey?', 'How do you read and draw distance-time graphs?', 'How do you compare value for money using unit rates?']);
   L.use(844, ['What are the properties of 3D objects?', 'How do you find the area and perimeter of compound shapes, including semicircles and trapezia?', 'How do you find the volume of prisms and cylinders?', 'How do you find the surface area of a cylinder and other solids?', 'Volume of cones and spheres', 'Surface area of cones and spheres', 'How do you find the volume and surface area of compound solids?', 'How do you convert units of area and volume?', 'How do you work backwards from a volume or area to find a missing length?', 'Circles, similarity and solids']);
 })();
@@ -38734,6 +38834,19 @@ S.extraMakers = function (n, level) {
     return { vis: V.cards([a + ' for £' + pa.toFixed(2), b + ' for £' + pb.toFixed(2)], ['b', 'p']), q: 'Which pack of yoghurts is the better buy?', answer: best, wrong: [ua < ub ? b + ' for £' + pb.toFixed(2) : a + ' for £' + pa.toFixed(2), 'They are the same value'], keepOrder: true,
       explain: 'Price for one: £' + ua.toFixed(3) + ' and £' + ub.toFixed(3) + '. The lower price for one is the better buy.' };
   }; });
+  lab([null, null, null], 'x_bankpay', 'Regular payments', ['Work out what regular payments cost.', 'Work out what regular payments cost over a year.', 'Work out what regular payments and charges cost.'], function (v) { return function () {
+    var P = function (x) { return '£' + (Math.round(x * 100) % 100 === 0 ? String(Math.round(x)).replace(/\B(?=(\d{3})+$)/g, ',') : (Math.round(x * 100) / 100).toFixed(2)); }, k = rnd(0, 2);
+    if (v === 0) {
+      if (k === 0) { var m = rnd(3, 30) * 10, y = m * 12; return { vis: big(P(m) + ' a month'), q: 'A standing order pays <b>' + P(m) + '</b> every month. How much is paid in a year?', answer: P(y), wrong: [P(m * 52), P(m * 10), P(m + 12)], explain: 'A monthly payment is made 12 times a year. ' + m + ' × 12 = ' + P(y) + '.' }; }
+      if (k === 1) { var a = rnd(40, 80), b = rnd(40, 80), c = rnd(40, 80), t = a + b + c; while (t % 3) { c++; t++; } return { vis: big(P(a) + ', ' + P(b) + ', ' + P(c)), q: 'Direct debit payments for three months are ' + P(a) + ', ' + P(b) + ' and ' + P(c) + '. What is the mean monthly payment?', answer: P(t / 3), wrong: [P(t), P(t / 3 + 3), P(t / 2)], explain: 'Add: ' + a + ' + ' + b + ' + ' + c + ' = ' + t + '. Divide by 3: ' + P(t / 3) + '.' }; }
+      var bal = rnd(40, 90) * 10, out = rnd(10, 30) * 10, dd = rnd(2, 8) * 5, inn = rnd(60, 120) * 10, fin = bal - out - dd + inn;
+      return { vis: big('Balance ' + P(bal)), q: 'An account has <b>' + P(bal) + '</b>. A standing order of ' + P(out) + ' and a direct debit of ' + P(dd) + ' are paid out. Then ' + P(inn) + ' of wages arrive. What is the balance?', answer: P(fin), wrong: [P(bal + out + dd + inn), P(bal - out - dd), P(bal - out + inn)], explain: bal + ' − ' + out + ' − ' + dd + ' + ' + inn + ' = ' + P(fin) + '.' };
+    }
+    if (k === 0) { var base = rnd(4, 15) * 5, pc = pick([5, 10, 20]), np = Math.round(base * (100 + pc)) / 100; return { vis: big(P(base) + ' + ' + pc + '%'), q: 'A direct debit is <b>' + P(base) + '</b> a month. The price rises by ' + pc + '%. What is the new monthly payment?', answer: P(np), wrong: [P(base + pc), P(base * pc / 100), P(base * (100 - pc) / 100)], explain: 'Multiplier ' + (100 + pc) / 100 + '. ' + base + ' × ' + (100 + pc) / 100 + ' = ' + P(np) + '.' }; }
+    if (k === 1) { var o = rnd(20, 60), ex = rnd(1, 6) * 2.5, yr = ex * 12; return { vis: big(P(o) + ' → ' + P(o + ex)), q: 'A direct debit rises from <b>' + P(o) + '</b> to <b>' + P(o + ex) + '</b> a month. How much extra is that over a year?', answer: P(yr), wrong: [P(ex), P(yr + o), P(ex * 52)], explain: 'Extra a month: ' + P(ex) + '. Over a year: ' + ex + ' × 12 = ' + P(yr) + '.' }; }
+    var od = rnd(2, 9) * 50, rt = pick([1, 2, 3]), fee = pick([5, 7, 10]), tot = od * rt / 100 + fee;
+    return { vis: big('Overdrawn ' + P(od)), q: 'A bank charges <b>' + rt + '%</b> of the overdrawn amount each month, plus ' + P(fee) + ' for a failed direct debit. Sam is overdrawn by ' + P(od) + ' for one month with one failed direct debit. What is the total charge?', answer: P(tot), wrong: [P(od * rt / 100), P(od * rt / 100 * fee), P(od + fee)], explain: rt + '% of ' + od + ' = ' + P(od * rt / 100) + '. Add the fee of ' + P(fee) + ': ' + P(tot) + '.' };
+  }; });
   lab([null, 5, 712], 'x_volume', 'Volume builder', ['', 'Count the cubes to find the volume of each cuboid.', 'Use length × breadth × height to find each volume.'], function (v) { return function () {
     var l = rnd(2, 4), w = rnd(1, 3), h = rnd(1, 3), vol = l * w * h, rows = []; for (var i = 0; i < w; i++) { var r = []; for (var j = 0; j < l; j++) r.push(h); rows.push(r); }
     if (v === 2) { l = rnd(3, 12); w = rnd(2, 8); h = rnd(2, 9); vol = l * w * h; return { vis: big(l + ' cm × ' + w + ' cm × ' + h + ' cm'), q: 'What is the volume of a cuboid ' + l + ' cm long, ' + w + ' cm wide and ' + h + ' cm high?', answer: vol + ' cm³', wrong: [(l + w + h) + ' cm³', (l * w) + ' cm³', (2 * (l * w + l * h + w * h)) + ' cm³'], explain: 'V = l × b × h = ' + l + ' × ' + w + ' × ' + h + ' = ' + vol + ' cm³.' }; }
@@ -39079,10 +39192,10 @@ S.extraMakers = function (n, level) {
   'use strict';
   var S = Studio, BT = window.BT; if (!BT || !BT.ACTGEN) return;
   var G = BT.ACTGEN;
-  var TAG = { x_neg: 'Negative numbers', x_decx: 'Decimals to three places', x_prime: 'Prime numbers', x_factors: 'Factors and multiples', x_subst: 'Substitution', x_nth: 'nth term', x_terms: 'Simplifying terms', x_poly: 'Polygons', x_scale: 'Linear scale factor', x_symm: 'Symmetry', x_faces: '3D objects', x_areaunits: 'Units of area and volume', x_speed: 'Speed, distance and time', x_sqcube: 'Powers and roots', x_rounddec: 'Rounding to decimal places', x_datatype: 'Types of data', x_perim: 'Perimeter', x_pctchange: 'Percentage change' };
+  var TAG = { x_neg: 'Negative numbers', x_decx: 'Decimals to three places', x_prime: 'Prime numbers', x_factors: 'Factors and multiples', x_subst: 'Substitution', x_nth: 'nth term', x_terms: 'Simplifying terms', x_poly: 'Polygons', x_scale: 'Linear scale factor', x_symm: 'Symmetry', x_faces: '3D objects', x_areaunits: 'Units of area and volume', x_speed: 'Speed, distance and time', x_sqcube: 'Powers and roots', x_rounddec: 'Rounding to decimal places', x_datatype: 'Types of data', x_perim: 'Perimeter', x_pctchange: 'Percentage change', x_bankpay: 'Regular payments' };
   var MAP = {
     801: [['x_rounddec', 2]], 807: [['x_speed', 0]], 809: [['x_nth', 0], ['x_terms', 0]], 811: [['x_poly', 1], ['x_symm', 0]], 812: [['x_datatype', 0]], 813: [['x_faces', 0]],
-    821: [['x_neg', 0], ['x_decx', 0], ['x_prime', 2], ['x_factors', 2]], 826: [['x_faces', 0], ['x_areaunits', 0]],
+    824: [['x_bankpay', 0]], 842: [['x_bankpay', 1]], 821: [['x_neg', 0], ['x_decx', 0], ['x_prime', 2], ['x_factors', 2]], 826: [['x_faces', 0], ['x_areaunits', 0]],
     841: [['x_sqcube', 2], ['x_pctchange', 0]], 845: [['x_subst', 0], ['x_nth', 0], ['x_terms', 0]], 851: [['x_poly', 2], ['x_scale', 0]], 853: [['x_symm', 0]]
   };
   function toQ(id, r) {
