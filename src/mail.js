@@ -51,14 +51,18 @@ export function newsletterMail(subject, body, unsubUrl) {
   };
 }
 /* a personal email from the admin page to chosen people: plain text in, paragraphs out, replies go to info@ */
+/* sign-off for emails sent from the admin page; the logo is a PNG on our own site because email apps block SVG */
+const EMAIL_FOOTER = '<table role="presentation" cellpadding="0" cellspacing="0" style="margin-top:28px;border-top:2px solid #2b5fd9;padding-top:14px;width:100%"><tr><td style="padding:14px 14px 0 0;vertical-align:middle;width:56px"><a href="https://mathsstudio.co.uk"><img src="https://mathsstudio.co.uk/icon-192.png" width="52" height="52" alt="MathsStudio" style="display:block;border:0;border-radius:12px"></a></td>' +
+  '<td style="padding-top:14px;vertical-align:middle;font-family:Arial,Helvetica,sans-serif;line-height:1.5"><div style="font-weight:700;font-size:17px;color:#14213d">MathsStudio</div><div style="font-size:13px;color:#5b6788">Maths that makes sense, one small step at a time</div>' +
+  '<div style="font-size:13px;margin-top:4px"><a href="mailto:info@mathsstudio.co.uk" style="color:#2b5fd9;text-decoration:none">info@mathsstudio.co.uk</a> &nbsp;|&nbsp; <a href="https://mathsstudio.co.uk" style="color:#2b5fd9;text-decoration:none">mathsstudio.co.uk</a></div></td></tr></table>';
 export function personalMail(subject, body) {
   const ps = paras(body);
   return {
     subject,
-    text: ps.join('\n\n') + '\n\n--\nMathsStudio\ninfo@mathsstudio.co.uk',
+    text: ps.join('\n\n') + '\n\n--\nMathsStudio\nMaths that makes sense, one small step at a time\ninfo@mathsstudio.co.uk\nhttps://mathsstudio.co.uk',
     html: '<div style="font-family:Arial,Helvetica,sans-serif;font-size:16px;color:#14213d;line-height:1.55;max-width:560px">' +
       ps.map(x => '<p style="margin:0 0 14px">' + linkify(x) + '</p>').join('') +
-      '<p style="color:#5b6788;font-size:14px;margin-top:24px;border-top:1px solid #e3e8f4;padding-top:12px">MathsStudio<br>info@mathsstudio.co.uk</p></div>'
+      EMAIL_FOOTER + '</div>'
   };
 }
 /* up to 100 emails per call */
