@@ -14,7 +14,7 @@
      ['Ordering', "Mistake two: thinking a number is bigger because its first digit is bigger, even when it has fewer digits.", '9,500 > 12,000 ✗', '12,000 > 9,500 ✓']],
     ["The attendance at a big stadium is 82,450. The 8 is worth 80,000, so we know there are about eighty thousand fans.", ['8 × 10,000 = 80,000']],
     [['What is the value of the 5 in 2,540,000?', "The 5 is in the hundred thousands column. 5 × 100,000.", ['5 × 100,000'], '500,000'],
-     ['Write 706,020 in words.', "Seven hundred and six thousand, and twenty.", ['706 thousand', '020'], 'Seven hundred and six thousand and twenty'],
+     ['Write 706,020 in words.', "Seven hundred and six thousand, and twenty.", ['706 thousand 020'], 'Seven hundred and six thousand and twenty'],
      ['Put these in order, smallest first: 8,900, 890, 8,090.', "890 has the fewest digits. Then 8,090, then 8,900.", ['890 < 8,090 < 8,900'], '890, 8,090, 8,900']],
     ["Columns tell the value.", ['Each column is 10 times bigger', 'Zero holds the place']]);
 
