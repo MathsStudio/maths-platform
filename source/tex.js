@@ -58,6 +58,7 @@
       if (last) { frag.appendChild(document.createTextNode(txt.slice(last))); node.parentNode.replaceChild(frag, node); }
     });
     busy = false;
+    requestAnimationFrame(function () { try { document.dispatchEvent(new Event('fracsrendered')); } catch (e) { /* ignore */ } });
   }
   function schedule() { if (pending || busy) return; pending = true; requestAnimationFrame(function () { pending = false; try { pass(); } catch (e) { busy = false; } }); }
   function start() {

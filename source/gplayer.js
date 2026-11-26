@@ -25,7 +25,7 @@
     '.gp-dash{position:absolute;left:0;right:0;bottom:15px;display:flex;justify-content:center;gap:4px}',
     '.gp-dash i{display:block;width:32px;height:3px;border-radius:2px;background:#e3cdf3}.gp-dash i.on{background:#881cd6}',
     '.gp-body{position:absolute;left:24px;right:24px;top:58px;bottom:44px;display:flex;align-items:center;justify-content:center}',
-    '.gp-fit{width:100%;display:flex;flex-direction:column;align-items:center;gap:10px;transform-origin:50% 50%}',
+    '.gp-fit{width:100%;display:flex;flex-direction:column;align-items:center;gap:16px;transform-origin:50% 50%}',
     '.gp-h{font-size:28px;text-align:center;margin:0;line-height:1.25;text-wrap:balance}',
     '.gp-sub{font-size:18px;color:#6b6480;text-align:center;margin:-4px 0 2px}',
     '.gp-title{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;text-align:center;padding:0 50px}',
@@ -51,6 +51,11 @@
     '.gp-stage .b{color:var(--accent);border-color:var(--accent)}.gp-stage .g{color:var(--good);border-color:var(--good)}.gp-stage .r{color:var(--bad);border-color:var(--bad)}.gp-stage .y{color:#2a7fb0;border-color:#2a7fb0}',
     '.gp-stage .sv-big{font-weight:700;font-size:50px;line-height:1.05;text-align:center}',
     '.gp-stage .sv-eq{font-weight:700;font-size:32px;text-align:center;line-height:1.3;text-wrap:balance}',
+    /* stacked fractions are taller than a text line: give every line that holds one its own room above and below, so it never touches the line next to it */
+    '.gp-stage .fr{margin:.32em .12em}',
+    '.gp-stage .sv-eq:has(.fr),.gp-stage .sv-note:has(.fr),.gp-stage .gp-sub:has(.fr){padding:.2em 0;line-height:1.5}',
+    '.gp-stage [data-sb]:has(.fr){padding:.25em 0}',
+    '.gp-stage .sv-eq+.sv-eq,.gp-stage .sv-note+.sv-eq,.gp-stage .sv-eq+.sv-note{margin-top:6px}',
     '.gp-stage .sv-eq.g{color:var(--good)}.gp-stage .sv-eq.r{color:var(--bad)}.gp-stage .sv-eq.b{color:var(--accent)}',
     '.gp-stage .sv-rule{background:var(--hl);color:#221a3a;border:0;border-radius:10px;padding:10px 20px;font-size:19px;text-align:center;max-width:680px}',
     '.gp-stage .sv-note{color:#6b6480;font-size:17px;text-align:center}',
@@ -204,6 +209,7 @@
       vr.addEventListener('change', function () { if (H.setRate) H.setRate(Number(vr.value)); var src = document.getElementById('setRate'); if (src) src.value = vr.value; again(); });
     }
 
+    document.addEventListener('fracsrendered', function () { try { if (stage.__refit) stage.__refit(); } catch (e) { /* ignore */ } });
     var narrow = null, lastI = 0;
     function fit() {
       var full = root.classList.contains('full');
@@ -275,6 +281,8 @@
         var aw = lab ? e.clientWidth : body.clientWidth, nw2 = e.scrollWidth;
         if (nw2 > aw) { var r = aw / nw2 * 0.97; if (r >= 0.6) e.style.fontSize = (parseFloat(getComputedStyle(e).fontSize) * r).toFixed(1) + 'px'; else if (lab) { e.style.fontSize = (parseFloat(getComputedStyle(e).fontSize) * 0.8).toFixed(1) + 'px'; e.style.whiteSpace = 'normal'; e.style.lineHeight = '1.2'; e.style.alignItems = 'flex-start'; body.style.top = (e.offsetTop + e.offsetHeight + 8) + 'px'; } else e.style.whiteSpace = ''; }
       });
+      var shrinkFit = function () {
+        if (!f || !f.isConnected) return; f.style.transform = '';
       var need = f.scrollHeight, room = body.clientHeight, needW = f.scrollWidth, roomW = body.clientWidth;
       var k2 = Math.min(1, room / need, roomW / needW);
       /* a crowded slide: shrink the pictures first (to 40% at most) so the words keep their size */
@@ -287,7 +295,9 @@
           need = f.scrollHeight; needW = f.scrollWidth; k2 = Math.min(1, room / need, roomW / needW);
         }
       }
-      if (k2 < 1) f.style.transform = 'scale(' + k2.toFixed(3) + ')';
+      f.style.transform = k2 < 1 ? 'scale(' + k2.toFixed(3) + ')' : '';
+      };
+      stage.__refit = shrinkFit; shrinkFit();
     }
     var flPic = '', flTop = '', flOpt = '';
     function showFL(c) {

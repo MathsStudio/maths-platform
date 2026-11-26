@@ -66,7 +66,7 @@
     return s;
   }
   L.calc = function (x) { return calcLines(x); };
-  function calcLines(say) { var r = []; (String(say || '').replace(/\s+/g, ' ').match(/[^.?!]+[.?!]+/g) || []).forEach(function (x) { var c = parseCalc(x); if (c && r.indexOf(c) < 0) r.push(c); }); return r; }
+  function calcLines(say) { var r = []; dsplit(say).forEach(function (x) { var c = parseCalc(x); if (c && r.indexOf(c) < 0) r.push(c); }); return r; }
   function reaches(lines, ansHtml) {
     if (!lines.length) return false;
     var rhs = lines[lines.length - 1].split(' = ')[1] || '', nums = (String(ansHtml || '').replace(/<[^>]*>/g, ' ').match(/\d[\d,.]*/g) || []).map(function (x) { return x.replace(/,/g, ''); });
@@ -132,7 +132,7 @@
       var turn = sc.h === 'Your turn', recap = /^Let/.test(sc.h || '');
       sc.steps.forEach(function (st, k) {
         if (!st || !st.say || recap) return;
-        var sents = st.say.replace(/\s+/g, ' ').match(/[^.?!]+[.?!]+/g) || [], add = [];
+        var sents = dsplit(st.say), add = [];
         sents.forEach(function (x) {
           x = x.trim(); var isQ = /\?$/.test(x);
           if (turn) return;
@@ -159,7 +159,8 @@
   BT.WORK = BT.WORK || {};
   /* BT.W3(title, [ [lines of turn 1], [lines of turn 2], ... ]): the written step-by-step working of each Your turn, in order */
   BT.W3 = function (title, turns) { BT.WORK[title] = turns; };
-  function sentences(say) { return (String(say || '').replace(/^Your turn!\s*/, '').replace(/\s+/g, ' ').match(/[^.?!]+[.?!]+/g) || [String(say || '')]).map(function (x) { return x.trim(); }).filter(Boolean); }
+  function dsplit(t) { return (String(t || '').replace(/\s+/g, ' ').replace(/(\d)\.(?=\d)/g, '$1\u0001').match(/[^.?!]+[.?!]+/g) || []).map(function (x) { return x.replace(/\u0001/g, '.'); }); }
+  function sentences(say) { /* a decimal point is not the end of a sentence: 3.4 stays whole */ return (String(say || '').replace(/^Your turn!\s*/, '').replace(/\s+/g, ' ').replace(/(\d)\.(?=\d)/g, '$1\u0001').match(/[^.?!]+[.?!]+/g) || [String(say || '')]).map(function (x) { return x.replace(/\u0001/g, '.').trim(); }).filter(Boolean); }
   /* the lines of working are spread over the spoken sentences in order; more than three lines go onto a further slide */
   function workScenes(lines0, say, qt, ansHtml) {
     var S = sentences(say), lines = [], figs = [], cur = '', hasFig = false, N, scenes = [], i, per;
