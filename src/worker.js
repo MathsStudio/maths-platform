@@ -291,6 +291,7 @@ async function admin(request, env, url) {
   if (url.pathname === '/admin/newsletter' && request.method === 'POST') return await newsletter(request, env);
   if (url.pathname === '/admin/email' && request.method === 'POST') return await directEmail(request, env);
   if (url.pathname === '/admin/email/delete' && request.method === 'POST') return await deleteDraft(request, env);
+  if (url.pathname === '/admin/email/delete-sent' && request.method === 'POST') return await deleteSent(request, env);
   if (url.pathname === '/admin/inbox' && request.method === 'POST') return await inboxAction(request, env);
   if (url.pathname === '/admin/revoke' && request.method === 'POST') return await revoke(request, env);
   if (url.pathname === '/admin/grant' && request.method === 'POST') return await grant(request, env);
@@ -391,6 +392,11 @@ async function directEmail(request, env) {
   if (sent) { await db.saveMail(env, { kind: 'sent', to: to.join(', '), cc: ccs.join(', '), bcc: bccs.join(', '), subject, body, files: names.join('\n'), sent }); if (draftId) await db.deleteDraft(env, draftId); if (orig) await db.setInbox(env, orig.id, 'read'); }
   else return back('Nothing was sent. Could not send to: ' + failed.join(', ') + '. Your message is kept here, so you can try again.', true);
   return done('Sent from info@mathsstudio.co.uk to ' + sent + (sent === 1 ? ' person' : ' people') + (ccs.length || bccs.length ? ' (' + to.length + ' To' + (ccs.length ? ', ' + ccs.length + ' CC' : '') + (bccs.length ? ', ' + bccs.length + ' BCC' : '') + ')' : '') + (attachments.length ? ' with ' + attachments.length + ' attachment' + (attachments.length === 1 ? '' : 's') : '') + '.', 'sent');
+}
+async function deleteSent(request, env) {
+  if (!sameOrigin(request)) return json({ error: 'Not allowed' }, 403);
+  const fd = await request.formData(), n = await db.deleteSent(env, fd.getAll('ids').map(x => parseInt(x, 10)));
+  return redirect('/admin?em=' + encodeURIComponent(n ? 'Deleted ' + n + ' sent email' + (n === 1 ? '' : 's') + '.' : 'Nothing was selected.') + '#sent');
 }
 async function deleteDraft(request, env) {
   if (!sameOrigin(request)) return json({ error: 'Not allowed' }, 403);
@@ -558,7 +564,7 @@ export default {
         return page(pg.adminOut(), 200, { 'Set-Cookie': adminCookie('', request, 0) });
       }
       if (p === '/admin/bye') return new Response('Logged out.', { status: 401, headers: { 'WWW-Authenticate': 'Basic realm="MathsStudio admin", charset="UTF-8"', 'Cache-Control': 'no-store', 'X-Robots-Tag': 'noindex' } });
-      if (p === '/admin' || p === '/admin/' || p === '/admin/export.csv' || p === '/admin/newsletter' || p === '/admin/email' || p === '/admin/email/delete' || p === '/admin/inbox' || p === '/admin/revoke' || p === '/admin/grant' || p === '/admin/reply' || p === '/admin/login' || p === '/admin/forgot' || p === '/admin/reset') { await db.init(env); return await admin(request, env, url); }
+      if (p === '/admin' || p === '/admin/' || p === '/admin/export.csv' || p === '/admin/newsletter' || p === '/admin/email' || p === '/admin/email/delete' || p === '/admin/email/delete-sent' || p === '/admin/inbox' || p === '/admin/revoke' || p === '/admin/grant' || p === '/admin/reply' || p === '/admin/login' || p === '/admin/forgot' || p === '/admin/reset') { await db.init(env); return await admin(request, env, url); }
       const dynamic = p.startsWith('/api/') || p.startsWith('/auth/') || p === '/logout' || p === '/unsubscribe' || p === '/account' || p.startsWith('/account/') || p === '/app' || p.startsWith('/app/') || p === '/learn' || p.startsWith('/learn/');
       if (!dynamic) return withHeaders(await env.ASSETS.fetch(request));
       /* the lessons themselves do not need the database: if it has a hiccup, a child can still open them (the database is only for sign-in and saved progress) */

@@ -215,6 +215,10 @@ r = await adminPost({ action: 'send', subject: 'P5 news', body: 'x', confirm: '1
     ok(sqlite.prepare('SELECT unread FROM inbox').get().unread === 0, 'the message is marked read after replying');
     await worker.email({ raw: new Response('Subject: x\r\n\r\nhi').body, forward: async () => { throw new Error('x'); } }, env); ok(sqlite.prepare('SELECT COUNT(*) c FROM inbox').get().c === 2, 'a forwarding problem does not lose the saved copy');
     q = await worker.fetch(new Request(B + '/admin/inbox', { method: 'POST', headers: { Authorization: 'Basic ' + btoa('a:pw'), Origin: B, 'Content-Type': 'application/x-www-form-urlencoded' }, body: 'id=' + ib.id + '&what=delete' }), env); ok(sqlite.prepare('SELECT COUNT(*) c FROM inbox').get().c === 1, 'an Inbox message can be deleted'); delete env.FORWARD_TO; }
+  { const ids = sqlite.prepare("SELECT id FROM mails WHERE kind='sent' ORDER BY id").all().map(r => r.id), before = ids.length; ok(before >= 2, 'there are sent emails to tidy');
+    const f = new FormData(); f.append('ids', String(ids[0])); f.append('ids', String(ids[1])); f.append('ids', 'abc'); q = await worker.fetch(new Request(B + '/admin/email/delete-sent', { method: 'POST', headers: { Authorization: 'Basic ' + btoa('a:pw'), Origin: B }, body: f }), env);
+    ok(q.status === 303 && sqlite.prepare("SELECT COUNT(*) c FROM mails WHERE kind='sent'").get().c === before - 2, 'selected sent emails are deleted, others stay');
+    q = await worker.fetch(new Request(B + '/admin/email/delete-sent', { method: 'POST', headers: { Origin: B }, body: new FormData() }), env); ok(q.status === 401, 'deleting sent emails needs the admin password'); }
   globalThis.fetch = rf2; }
 // admin: forgot password
 { const sent = []; const rf3 = globalThis.fetch; globalThis.fetch = async (u, o) => { if (String(u).endsWith('api.resend.com/emails')) { sent.push(JSON.parse(o.body)); return new Response('{}', { status: 200 }); } return rf3(u, o); };

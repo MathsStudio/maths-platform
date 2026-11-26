@@ -188,6 +188,11 @@ export async function listMails(env) {
   return { sent: all.filter(x => x.kind === 'sent'), drafts: all.filter(x => x.kind === 'draft') };
 }
 export async function getMail(env, id) { return await env.DB.prepare('SELECT * FROM mails WHERE id = ?').bind(id).first(); }
+export async function deleteSent(env, ids) {
+  ids = ids.filter(n => Number.isInteger(n) && n > 0).slice(0, 200); if (!ids.length) return 0;
+  const r = await env.DB.prepare("DELETE FROM mails WHERE kind = 'sent' AND id IN (" + ids.map(() => '?').join(',') + ')').bind(...ids).run();
+  return (r.meta && r.meta.changes) || 0;
+}
 export async function deleteDraft(env, id) { await env.DB.prepare("DELETE FROM mails WHERE id = ? AND kind = 'draft'").bind(id).run(); }
 /* the Inbox: emails that people send to info@, kept here as well as forwarded to Gmail */
 export async function saveInbox(env, m) {
