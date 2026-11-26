@@ -24,6 +24,8 @@ const SCHEMA = [
   `CREATE TABLE IF NOT EXISTS newsletters (id INTEGER PRIMARY KEY AUTOINCREMENT, subject TEXT NOT NULL, audience TEXT NOT NULL, sent INTEGER NOT NULL, failed INTEGER NOT NULL, created_at TEXT NOT NULL)`,
   `CREATE TABLE IF NOT EXISTS mails (id INTEGER PRIMARY KEY AUTOINCREMENT, kind TEXT NOT NULL, to_list TEXT NOT NULL, cc_list TEXT NOT NULL, bcc_list TEXT NOT NULL, subject TEXT NOT NULL, body TEXT NOT NULL, files TEXT NOT NULL, sent INTEGER NOT NULL, failed TEXT NOT NULL, created_at TEXT NOT NULL, updated_at TEXT NOT NULL)`,
   `CREATE TABLE IF NOT EXISTS inbox (id INTEGER PRIMARY KEY AUTOINCREMENT, from_email TEXT NOT NULL, from_name TEXT NOT NULL, to_addr TEXT NOT NULL, subject TEXT NOT NULL, body TEXT NOT NULL, files TEXT NOT NULL, message_id TEXT NOT NULL, unread INTEGER NOT NULL, received_at TEXT NOT NULL)`,
+  `CREATE TABLE IF NOT EXISTS admin_settings (k TEXT PRIMARY KEY, v TEXT NOT NULL)`,
+  `CREATE TABLE IF NOT EXISTS admin_reset (hash TEXT PRIMARY KEY, expires_at INTEGER NOT NULL)`,
   `CREATE TABLE IF NOT EXISTS progress (user_id INTEGER PRIMARY KEY, data TEXT NOT NULL, updated_at TEXT NOT NULL)`,
   `CREATE TABLE IF NOT EXISTS learners (id INTEGER PRIMARY KEY AUTOINCREMENT, user_id INTEGER NOT NULL, name TEXT NOT NULL, avatar TEXT NOT NULL, created_at TEXT NOT NULL)`,
   `CREATE INDEX IF NOT EXISTS learners_user ON learners (user_id)`,
@@ -277,4 +279,16 @@ export async function markLessonReplied(env, id, reply) { await env.DB.prepare('
 /* admin sign-in sessions (the admin login page sets an HttpOnly cookie for /admin only) */
 export async function addAdminSession(env, hash, expires) { await env.DB.prepare('INSERT INTO admin_sessions (hash, expires_at) VALUES (?, ?)').bind(hash, expires).run(); }
 export async function adminSessionOk(env, hash) { const r = await env.DB.prepare('SELECT expires_at FROM admin_sessions WHERE hash = ?').bind(hash).first(); return !!r && r.expires_at > Math.floor(Date.now() / 1000); }
+/* admin password chosen through "Forgot password": stored hashed, and used instead of the first one set in Cloudflare */
+export async function adminPwHash(env) { const r = await env.DB.prepare("SELECT v FROM admin_settings WHERE k = 'pw'").first(); return r ? r.v : ''; }
+export async function setAdminPw(env, stored) {
+  await env.DB.prepare("INSERT INTO admin_settings (k, v) VALUES ('pw', ?) ON CONFLICT(k) DO UPDATE SET v = excluded.v").bind(stored).run();
+  await env.DB.prepare('DELETE FROM admin_sessions').run(); await env.DB.prepare('DELETE FROM admin_reset').run();
+}
+export async function addAdminReset(env, hash, expires) { await env.DB.prepare('DELETE FROM admin_reset WHERE expires_at < ?').bind(Math.floor(Date.now() / 1000)).run(); await env.DB.prepare('INSERT INTO admin_reset (hash, expires_at) VALUES (?, ?)').bind(hash, expires).run(); }
+export async function adminResetOk(env, hash) { const r = await env.DB.prepare('SELECT expires_at FROM admin_reset WHERE hash = ?').bind(hash).first(); return !!r && r.expires_at > Math.floor(Date.now() / 1000); }
+export async function verifiedUserEmails(env, emails) {
+  const out = []; for (const e of emails) { const r = await env.DB.prepare('SELECT email FROM users WHERE lower(email) = ? AND verified_at IS NOT NULL').bind(e).first(); if (r) out.push(r.email); }
+  return out;
+}
 export async function dropAdminSession(env, hash) { await env.DB.prepare('DELETE FROM admin_sessions WHERE hash = ?').bind(hash).run(); }

@@ -216,6 +216,25 @@ r = await adminPost({ action: 'send', subject: 'P5 news', body: 'x', confirm: '1
     await worker.email({ raw: new Response('Subject: x\r\n\r\nhi').body, forward: async () => { throw new Error('x'); } }, env); ok(sqlite.prepare('SELECT COUNT(*) c FROM inbox').get().c === 2, 'a forwarding problem does not lose the saved copy');
     q = await worker.fetch(new Request(B + '/admin/inbox', { method: 'POST', headers: { Authorization: 'Basic ' + btoa('a:pw'), Origin: B, 'Content-Type': 'application/x-www-form-urlencoded' }, body: 'id=' + ib.id + '&what=delete' }), env); ok(sqlite.prepare('SELECT COUNT(*) c FROM inbox').get().c === 1, 'an Inbox message can be deleted'); delete env.FORWARD_TO; }
   globalThis.fetch = rf2; }
+// admin: forgot password
+{ const sent = []; const rf3 = globalThis.fetch; globalThis.fetch = async (u, o) => { if (String(u).endsWith('api.resend.com/emails')) { sent.push(JSON.parse(o.body)); return new Response('{}', { status: 200 }); } return rf3(u, o); };
+  const post = (path, body) => worker.fetch(new Request(B + path, { method: 'POST', headers: { Origin: B, 'Content-Type': 'application/x-www-form-urlencoded' }, body: new URLSearchParams(body).toString() }), env);
+  sqlite.prepare('DELETE FROM rate').run();
+  let q = await worker.fetch(new Request(B + '/admin'), env); ok(/Forgot password\?/.test(await q.text()), 'admin sign-in page has a Forgot password link');
+  q = await post('/admin/forgot', {}); ok(/on its way/.test(await q.text()) && sent.length === 0, 'with no owner email set up, nothing is sent and nothing is revealed');
+  sqlite.prepare('DELETE FROM rate').run(); env.FORWARD_TO = 'owner@gmail.test';
+  q = await post('/admin/forgot', {}); ok(/on its way/.test(await q.text()) && sent.length === 1 && sent[0].to.join() === 'owner@gmail.test', 'reset link goes only to the owner email');
+  const link = (sent[0].text.match(/\/admin\/reset\?t=[a-f0-9A-Za-z_-]+/) || [''])[0]; ok(!!link, 'the email holds a reset link');
+  const tok = link.split('t=')[1];
+  q = await worker.fetch(new Request(B + link), env); ok(/Choose a new admin password/.test(await q.text()), 'the link opens the new password form');
+  q = await post('/admin/reset', { t: tok, password: 'short', password2: 'short' }); ok(/at least 10/.test(await q.text()), 'a short new password is refused');
+  q = await post('/admin/reset', { t: tok, password: 'a-long-new-pass', password2: 'different-pass-1' }); ok(/not the same/.test(await q.text()), 'two different passwords are refused');
+  q = await post('/admin/reset', { t: 'wrongtoken', password: 'a-long-new-pass', password2: 'a-long-new-pass' }); ok(/expired or was already used/.test(await q.text()), 'a made-up link does not work');
+  q = await post('/admin/reset', { t: tok, password: 'a-long-new-pass', password2: 'a-long-new-pass' }); ok(/Password changed/.test(await q.text()), 'a good new password is saved');
+  q = await worker.fetch(new Request(B + link), env); ok(/expired or was already used/.test(await q.text()), 'the link works only once');
+  q = await post('/admin/login', { password: 'a-long-new-pass' }); ok(q.status === 303 && /ms_admin=/.test(q.headers.get('Set-Cookie') || ''), 'the new password signs in');
+  q = await post('/admin/login', { password: 'pw' }); ok(q.status === 401, 'the old password no longer works');
+  sqlite.prepare("DELETE FROM admin_settings").run(); sqlite.prepare('DELETE FROM rate').run(); delete env.FORWARD_TO; globalThis.fetch = rf3; }
 // admin log out
 { let q = await worker.fetch(new Request(B + '/admin/logout'), env); const t = await q.text(); ok(q.status === 200 && /logged out of admin/.test(t) && /\/admin\/bye/.test(t), 'admin log out page works without the password');
   q = await worker.fetch(new Request(B + '/admin/bye'), env); ok(q.status === 401 && /MathsStudio admin/.test(q.headers.get('WWW-Authenticate') || ''), 'log out replaces the saved admin password');

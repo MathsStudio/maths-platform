@@ -29,6 +29,13 @@ export function loginMail(link) {
     html: wrap('<p>Press the button to sign in. The link works once and lasts 30 minutes.</p><p><a href="' + esc(link) + '" style="display:inline-block;background:#2b5fd9;color:#ffffff;padding:12px 22px;border-radius:10px;text-decoration:none;font-weight:700">Sign in</a></p><p style="font-size:13px;color:#5b6788">Or copy this address into your browser:<br>' + esc(link) + '</p>')
   };
 }
+export function adminResetMail(link) {
+  return {
+    subject: 'Reset the MathsStudio admin password',
+    text: 'Open this link to choose a new admin password (it works once and lasts 30 minutes):\n' + link + '\n\nIf this was not you, ignore this email. The admin password stays the same.\n\nMathsStudio',
+    html: wrap('<p>Press the button to choose a new <b>admin</b> password. The link works once and lasts 30 minutes.</p><p><a href="' + esc(link) + '" style="display:inline-block;background:#2b5fd9;color:#ffffff;padding:12px 22px;border-radius:10px;text-decoration:none;font-weight:700">Choose a new admin password</a></p><p style="font-size:13px;color:#5b6788">Or copy this address into your browser:<br>' + esc(link) + '</p>')
+  };
+}
 export function resetMail(link) {
   return {
     subject: 'Reset your MathsStudio password',

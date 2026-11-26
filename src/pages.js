@@ -20,7 +20,19 @@ export function adminLogin(err) {
   return shell('Admin sign in', '<form class="card scard" method="post" action="/admin/login"><h1>Admin sign in</h1><p class="ssub">For the MathsStudio owner only.</p>' +
     (err ? '<div class="msg err" role="alert">' + esc(err) + '</div>' : '') +
     '<label for="apw">Admin password</label><input id="apw" name="password" type="password" autocomplete="current-password" required>' +
-    '<button class="btn" type="submit">Sign in</button></form>');
+    '<button class="btn" type="submit">Sign in</button><p style="text-align:center;margin:14px 0 0"><a href="/admin/forgot">Forgot password?</a></p></form>');
+}
+export function adminForgot(note) {
+  return shell('Forgot admin password', '<form class="card scard" method="post" action="/admin/forgot"><h1>Forgot your password?</h1><p class="ssub">We will email a link to the owner\'s verified email address. Use it to choose a new admin password.</p>' +
+    (note ? '<div class="msg ok" role="status">' + esc(note) + '</div>' : '') +
+    '<button class="btn" type="submit">Email me a reset link</button><p style="text-align:center;margin:14px 0 0"><a href="/admin">Back to sign in</a></p></form>');
+}
+export function adminReset(token, err) {
+  return shell('New admin password', '<form class="card scard" method="post" action="/admin/reset"><h1>Choose a new admin password</h1><p class="ssub">At least 10 characters. You will be signed out everywhere else.</p>' +
+    (err ? '<div class="msg err" role="alert">' + esc(err) + '</div>' : '') + '<input type="hidden" name="t" value="' + esc(token) + '">' +
+    '<label for="npw">New password</label><input id="npw" name="password" type="password" minlength="10" autocomplete="new-password" required>' +
+    '<label for="npw2">Type it again</label><input id="npw2" name="password2" type="password" minlength="10" autocomplete="new-password" required>' +
+    '<button class="btn" type="submit">Save new password</button></form>');
 }
 export function adminOut() {
   return shell('Logged out', '<div class="card scard"><h1>You are logged out of admin</h1><p class="ssub" id="outmsg">Logging out…</p><div class="sbtns"><a class="btn" href="/admin">Log in again</a><a class="btn alt" href="/">Home page</a></div></div>' +

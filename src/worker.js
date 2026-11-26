@@ -1,6 +1,6 @@
 import { page, json, redirect, withHeaders, sameOrigin, validEmail, randomToken, sha256, safeEqual, parseCookies, cookie, hashPassword, checkPassword } from './util.js';
 import * as db from './db.js';
-import { sendMail, sendBatch, newsletterMail, personalMail, purchaseMail, verifyMail, loginMail, resetMail } from './mail.js';
+import { sendMail, sendBatch, adminResetMail, newsletterMail, personalMail, purchaseMail, verifyMail, loginMail, resetMail } from './mail.js';
 import * as pg from './pages.js';
 import { parseMail, readRaw } from './inbound.js';
 
@@ -241,18 +241,49 @@ function adminCookie(v, request, maxAge) { return 'ms_admin=' + v + '; Path=/adm
 async function adminHtml(env, rows, o) { o = o || {}; o.mails = await db.listMails(env); o.mails.inbox = await db.listInbox(env); return pg.admin(rows, o); }
 async function adminRows(env) { return (await db.adminList(env)).map(r => Object.assign(r, { owner: isOwner(env, r.email) })); }
 
+/* the admin password: the one chosen through "Forgot password" if there is one, otherwise the ADMIN_PASSWORD secret from Cloudflare */
+async function adminPwOk(env, pw) {
+  const stored = await db.adminPwHash(env);
+  return stored ? await checkPassword(pw, stored) : safeEqual(pw, env.ADMIN_PASSWORD);
+}
+/* where the reset link goes: the owner accounts that have verified their email, else the address mail is forwarded to */
+async function ownerEmails(env) {
+  const owners = String(env.OWNER_EMAILS || '').toLowerCase().split(/[\s,;]+/).filter(Boolean), ok = owners.length ? await db.verifiedUserEmails(env, owners) : [];
+  return ok.length ? ok : (env.FORWARD_TO ? [String(env.FORWARD_TO).trim()] : []);
+}
+async function adminForgot(request, env, url) {
+  if (request.method === 'GET') return page(pg.adminForgot());
+  if (!sameOrigin(request)) return json({ error: 'Not allowed' }, 403);
+  const same = 'If an owner email address is set up, a reset link is on its way. It works once and lasts 30 minutes.';
+  if (!(await db.rateOk(env, 'adminforgot', 3, 3600))) return page(pg.adminForgot(same));
+  const to = await ownerEmails(env);
+  if (to.length) { const t = randomToken(); await db.addAdminReset(env, await sha256(t), Math.floor(Date.now() / 1000) + 1800); const m = adminResetMail(new URL(request.url).origin + '/admin/reset?t=' + t); try { await sendMail(env, to, m.subject, m.text, m.html); } catch (e) { console.error('admin reset mail failed', e && e.stack || e); } }
+  return page(pg.adminForgot(same));
+}
+async function adminReset(request, env, url) {
+  if (request.method === 'GET') { const t = String(url.searchParams.get('t') || ''); return (t && await db.adminResetOk(env, await sha256(t))) ? page(pg.adminReset(t)) : page(pg.adminForgot('That link has expired or was already used. Ask for a new one.')); }
+  if (!sameOrigin(request)) return json({ error: 'Not allowed' }, 403);
+  const b = await readForm(request), t = String(b.t || ''), pw = String(b.password || '');
+  if (!t || !(await db.adminResetOk(env, await sha256(t)))) return page(pg.adminForgot('That link has expired or was already used. Ask for a new one.'));
+  if (pw.length < 10) return page(pg.adminReset(t, 'Please use at least 10 characters.'));
+  if (pw !== String(b.password2 || '')) return page(pg.adminReset(t, 'The two passwords are not the same.'));
+  await db.setAdminPw(env, await hashPassword(pw));
+  return page(pg.message('Password changed', 'Your new admin password is saved and you are signed out everywhere. <a href="/admin">Sign in</a>.'));
+}
 async function admin(request, env, url) {
   if (!env.ADMIN_PASSWORD) return page(pg.message('Admin locked', 'The admin password has not been set yet.'), 503);
-  const h = request.headers.get('Authorization') || '', ok0 = h.startsWith('Basic ') && (() => { try { const s = atob(h.slice(6)), i = s.indexOf(':'); return safeEqual(s.slice(i + 1), env.ADMIN_PASSWORD); } catch (e) { return false; } })();
+  const h = request.headers.get('Authorization') || '', ok0 = await (async () => { try { if (!h.startsWith('Basic ')) return false; const s = atob(h.slice(6)), i = s.indexOf(':'); return await adminPwOk(env, s.slice(i + 1)); } catch (e) { return false; } })();
   if (!(await db.rateOkPeek(env, 'adminfail:' + ip(request), 10, 900))) return new Response('Too many wrong tries. Wait 15 minutes.', { status: 429, headers: { 'Cache-Control': 'no-store' } });
   /* the admin sign-in page: a normal form (no browser pop-up); a right password sets a 12-hour admin cookie */
   if (url.pathname === '/admin/login' && request.method === 'POST') {
     if (!sameOrigin(request)) return json({ error: 'Not allowed' }, 403);
     const b = await readForm(request);
-    if (!safeEqual(String(b.password || ''), env.ADMIN_PASSWORD)) { await db.rateOk(env, 'adminfail:' + ip(request), 1000, 900); return page(pg.adminLogin('That password is not right. Please try again.'), 401); }
+    if (!(await adminPwOk(env, String(b.password || '')))) { await db.rateOk(env, 'adminfail:' + ip(request), 1000, 900); return page(pg.adminLogin('That password is not right. Please try again.'), 401); }
     const t = randomToken(); await db.addAdminSession(env, await sha256(t), Math.floor(Date.now() / 1000) + 12 * 3600);
     return redirect('/admin/', { 'Set-Cookie': adminCookie(t, request, 12 * 3600) });
   }
+  if (url.pathname === '/admin/forgot') return await adminForgot(request, env, url);
+  if (url.pathname === '/admin/reset') return await adminReset(request, env, url);
   const at = parseCookies(request).ms_admin, ok = ok0 || (!!at && await db.adminSessionOk(env, await sha256(at)));
   const out = (() => { try { return h.startsWith('Basic ') && atob(h.slice(6)).startsWith('logged-out:'); } catch (e) { return false; } })();   // the dummy login left by Log out is not a wrong try
   if (!ok && h && !out) await db.rateOk(env, 'adminfail:' + ip(request), 1000, 900);   // only wrong passwords count
@@ -527,7 +558,7 @@ export default {
         return page(pg.adminOut(), 200, { 'Set-Cookie': adminCookie('', request, 0) });
       }
       if (p === '/admin/bye') return new Response('Logged out.', { status: 401, headers: { 'WWW-Authenticate': 'Basic realm="MathsStudio admin", charset="UTF-8"', 'Cache-Control': 'no-store', 'X-Robots-Tag': 'noindex' } });
-      if (p === '/admin' || p === '/admin/' || p === '/admin/export.csv' || p === '/admin/newsletter' || p === '/admin/email' || p === '/admin/email/delete' || p === '/admin/inbox' || p === '/admin/revoke' || p === '/admin/grant' || p === '/admin/reply' || p === '/admin/login') { await db.init(env); return await admin(request, env, url); }
+      if (p === '/admin' || p === '/admin/' || p === '/admin/export.csv' || p === '/admin/newsletter' || p === '/admin/email' || p === '/admin/email/delete' || p === '/admin/inbox' || p === '/admin/revoke' || p === '/admin/grant' || p === '/admin/reply' || p === '/admin/login' || p === '/admin/forgot' || p === '/admin/reset') { await db.init(env); return await admin(request, env, url); }
       const dynamic = p.startsWith('/api/') || p.startsWith('/auth/') || p === '/logout' || p === '/unsubscribe' || p === '/account' || p.startsWith('/account/') || p === '/app' || p.startsWith('/app/') || p === '/learn' || p.startsWith('/learn/');
       if (!dynamic) return withHeaders(await env.ASSETS.fetch(request));
       /* the lessons themselves do not need the database: if it has a hiccup, a child can still open them (the database is only for sign-in and saved progress) */
