@@ -44,7 +44,8 @@
     } else {
       var terse = function (x) { return x.length < 14 || /^\S+ [×÷+−]\s*\S*$/.test(x); };
       if (rule) { var rs = sents(rule.steps[0].say), ok = function (x) { return x && x.length <= 95 && x.split(' ').length >= 5 && !/^(Look|Here|Let|Imagine|Watch|Say|Listen|Think|Today|Welcome|Hello|Can you|Which|What|How|Why)\b/i.test(x) && !/\?$/.test(x); }; if (ok(rs[0])) { items.push({ b: rs[0].replace(/[.]$/, ''), say: rs[0] }); if (ok(rs[1])) items.push({ b: rs[1].replace(/[.]$/, '').replace(/^(Then|Next|Now|So|And)\s+/i, function (w) { return ''; }).replace(/^./, function (c) { return c.toUpperCase(); }), say: rs[1] }); } }
-      if (ex.length) {
+      /* worked examples are not recap material: a recap names the ideas, not the problems */
+      if (false && ex.length) {
         var pick = ex.length > 2 ? [ex[0], ex[ex.length - 1]] : ex;
         pick.forEach(function (s) {
           var lines = [], q = '', say = [];
@@ -67,7 +68,7 @@
     }
     /* the recap names the ideas only: no numbers, no working, no answers. A bullet that needs a number is dropped,
        and what is spoken for a bullet is its idea in words, never a worked line from the lesson. */
-    items = items.filter(function (x) { return !isWork(x.b); });
+    items = items.filter(function (x) { return !isWork(x.b) && !/\?/.test(x.b) && x.b.split(' ').length >= 3 && !/:\s*[A-Z][a-z]+$/.test(x.b); });
     items.forEach(function (x) { if (isWork(x.say)) x.say = 'Remember: ' + low1(x.b.replace(/^Avoid: /, 'avoid ')).replace(/[.]$/, '') + '.'; });
     if (items.length < 3) {
       /* a thin lesson is topped up with its own number-free sentences: the rules it teaches, not the working */
@@ -81,8 +82,15 @@
     /* no duplicates, five at most */
     var seen = {}; items = items.filter(function (x) { var k = norm(x.b); if (!k || seen[k]) return false; seen[k] = 1; return true; }).slice(0, 5);
     if (items.length < 2) return;
-    var steps = [L.st('Let’s recap what we learned in ' + title + '.', '')];
-    items.forEach(function (x) { steps.push(L.st(x.say, '<div class="sv-list"><div><b>✓</b>' + x.b + '</div></div>')); });
+    var steps = [L.st('Let’s recap what we have done in this lesson.', '')];
+    /* the narration says the fact that was learned, one point at a time; the bullet on screen is the same fact */
+    items.forEach(function (x) {
+      var imp = /^(Put|Check|Use|Write|Count|Multiply|Divide|Look|Find|Draw|Add|Take|Round|Compare|Keep|Start|Test|Make|Read|Choose|Line|Get|Learn|Say|Mark|Label|Measure|Estimate|Sort|Make)\b/;
+      var fact = /^Avoid: /.test(x.b) ? 'Remember to avoid ' + low1(x.b.replace(/^Avoid: /, '')).replace(/[.]$/, '') + '.'
+        : imp.test(x.b) ? 'Remember to ' + low1(x.b).replace(/[.]$/, '') + '.'
+        : 'We have learned that ' + low1(x.b).replace(/[.]$/, '') + '.';
+      steps.push(L.st(fact, '<div class="sv-list"><div><b>✓</b>' + x.b + '</div></div>'));
+    });
     var scene = L.SC('Let’s recap', old ? old.sub : title, steps);
     if (ri >= 0) sc[ri] = scene; else sc.push(scene);
     e._recap = items;
