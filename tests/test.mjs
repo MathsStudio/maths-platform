@@ -176,22 +176,45 @@ r = await adminPost({ action: 'send', subject: 'P5 news', body: 'x', confirm: '1
 // admin: a normal email from info@ to chosen people
 { const one = []; const rf2 = globalThis.fetch; globalThis.fetch = async (u, o) => { if (String(u).endsWith('api.resend.com/emails')) { one.push(JSON.parse(o.body)); return new Response('{}', { status: 200 }); } return rf2(u, o); };
   const em = (body, pw = 'pw') => { const f = new URLSearchParams(); for (const [k, v] of body) f.append(k, v); return worker.fetch(new Request(B + '/admin/email', { method: 'POST', headers: { Authorization: 'Basic ' + btoa('a:' + pw), Origin: B, 'Content-Type': 'application/x-www-form-urlencoded', 'CF-Connecting-IP': '8.8.8.8' }, body: f.toString() }), env); };
+  const follow = async r => r.status === 303 ? worker.fetch(new Request(B + r.headers.get('Location'), { headers: { Authorization: 'Basic ' + btoa('a:pw') } }), env) : r;
   let q = await em([['to', 'parent@example.com'], ['subject', 'Hi'], ['body', 'x']], 'wrong'); ok(q.status === 401 && one.length === 0, 'admin email needs the admin password');
   q = await em([['subject', 'Hi'], ['body', 'x']]); ok(/Choose at least one person/.test(await q.text()) && one.length === 0, 'admin email needs someone to send to');
   q = await em([['to_other', 'not-an-email'], ['subject', 'Hi'], ['body', 'x']]); ok(/does not look like an email/.test(await q.text()) && one.length === 0, 'admin email checks typed addresses');
-  q = await em([['to', 'parent@example.com'], ['to_other', 'someone@else.test, parent@example.com'], ['subject', 'About your account'], ['body', 'Hello\n\nThanks']]); const t = await q.text();
-  ok(/Sent to 2 people from info@mathsstudio.co.uk/.test(t) && one.length === 1 && one[0].to.length === 2 && one[0].from === 'MathsStudio <info@mathsstudio.co.uk>' && one[0].reply_to === 'info@mathsstudio.co.uk', 'admin email is one normal email from info@, replies to info@');
+  q = await em([['to', 'parent@example.com'], ['to_other', 'someone@else.test, parent@example.com'], ['subject', 'About your account'], ['body', 'Hello\n\nThanks']]); ok(q.status === 303 && /#sent$/.test(q.headers.get('Location')), 'after sending, the page opens the Sent list'); const t = await (await follow(q)).text();
+  ok(/Sent from info@mathsstudio.co.uk to 2 people/.test(t) && one.length === 1 && one[0].to.length === 2 && one[0].from === 'MathsStudio <info@mathsstudio.co.uk>' && one[0].reply_to === 'info@mathsstudio.co.uk', 'admin email is one normal email from info@, replies to info@');
   ok(!/unsubscribe/i.test(one[0].text) && /<p[^>]*>Hello<\/p>/.test(one[0].html), 'admin email is a normal letter, not a newsletter');
-  ok(/Send an email/.test(t) && /name="to" value="parent@example.com"/.test(t), 'admin page lists accounts to tick');
+  ok(/Write an email/.test(t) && /name="to" value="parent@example.com"/.test(t), 'admin page lists accounts to tick');
+  ok(/About your account/.test(t) && /To: parent@example.com, someone@else.test/.test(t) && /Sent \(1\)/.test(t), 'sent email appears in the Sent list with its recipients');
   { one.length = 0; const f = new FormData(); f.append('to', 'parent@example.com'); f.append('cc', 'boss@x.test'); f.append('bcc', 'hidden@x.test, hidden2@x.test'); f.append('subject', 'With file'); f.append('body', 'See attached'); f.append('files', new File(['hello pdf'], 'plan.pdf', { type: 'application/pdf' }));
-    q = await worker.fetch(new Request(B + '/admin/email', { method: 'POST', headers: { Authorization: 'Basic ' + btoa('a:pw'), Origin: B }, body: f }), env); const t2 = await q.text();
+    q = await worker.fetch(new Request(B + '/admin/email', { method: 'POST', headers: { Authorization: 'Basic ' + btoa('a:pw'), Origin: B }, body: f }), env); const t2 = await (await follow(q)).text();
     ok(one.length === 1 && one[0].to.join() === 'parent@example.com' && one[0].cc.join() === 'boss@x.test' && one[0].bcc.length === 2, 'CC and BCC go in one email, BCC separate from To');
     ok(one[0].attachments && one[0].attachments.length === 1 && one[0].attachments[0].filename === 'plan.pdf' && atob(one[0].attachments[0].content) === 'hello pdf', 'attached file is sent');
-    ok(/Sent to 4 people/.test(t2) && /1 attachment/.test(t2), 'admin sees how many were sent with the file');
+    ok(/to 4 people/.test(t2) && /1 attachment/.test(t2), 'admin sees how many were sent with the file');
     one.length = 0; const g = new FormData(); g.append('to', 'parent@example.com'); g.append('subject', 'x'); g.append('body', 'y'); g.append('files', new File(['x'], 'virus.exe'));
     q = await worker.fetch(new Request(B + '/admin/email', { method: 'POST', headers: { Authorization: 'Basic ' + btoa('a:pw'), Origin: B }, body: g }), env); ok(/cannot be attached/.test(await q.text()) && one.length === 0, 'program files cannot be attached');
     one.length = 0; const h = new FormData(); h.append('to', 'parent@example.com'); h.append('cc', 'bad'); h.append('subject', 'x'); h.append('body', 'y');
     q = await worker.fetch(new Request(B + '/admin/email', { method: 'POST', headers: { Authorization: 'Basic ' + btoa('a:pw'), Origin: B }, body: h }), env); ok(/does not look like an email/.test(await q.text()) && one.length === 0, 'CC addresses are checked'); }
+  { const dr = async (fields) => { const f = new FormData(); for (const [k, v] of fields) f.append(k, v); return worker.fetch(new Request(B + '/admin/email', { method: 'POST', headers: { Authorization: 'Basic ' + btoa('a:pw'), Origin: B }, body: f }), env); };
+    one.length = 0; q = await dr([['action', 'draft'], ['subject', 'Later'], ['body', 'half written'], ['to_other', 'x@y.test']]); ok(q.status === 303 && one.length === 0, 'a draft can be saved without sending');
+    const t3 = await (await follow(q)).text(); ok(/Drafts \(1\)/.test(t3) && /Later/.test(t3) && /half written|x@y.test/.test(t3), 'draft is listed');
+    const id = sqlite.prepare("SELECT id FROM mails WHERE kind='draft'").get().id; q = await worker.fetch(new Request(B + '/admin?draft=' + id, { headers: { Authorization: 'Basic ' + btoa('a:pw') } }), env);
+    ok(/value="x@y.test"/.test(await q.text()), 'opening a draft fills the form again');
+    q = await dr([['action', 'send'], ['draft_id', String(id)], ['to_other', 'x@y.test'], ['subject', 'Later'], ['body', 'finished']]); ok(one.length === 1 && sqlite.prepare("SELECT COUNT(*) c FROM mails WHERE kind='draft'").get().c === 0, 'sending a draft removes it from Drafts');
+    q = await dr([['action', 'draft'], ['subject', 'Bin me'], ['body', 'x']]); const id2 = sqlite.prepare("SELECT id FROM mails WHERE kind='draft'").get().id; const df = new URLSearchParams({ id: String(id2) });
+    q = await worker.fetch(new Request(B + '/admin/email/delete', { method: 'POST', headers: { Authorization: 'Basic ' + btoa('a:pw'), Origin: B, 'Content-Type': 'application/x-www-form-urlencoded' }, body: df.toString() }), env); ok(sqlite.prepare("SELECT COUNT(*) c FROM mails WHERE kind='draft'").get().c === 0, 'a draft can be deleted'); }
+  { const dr = async (fields) => { const f = new FormData(); for (const [k, v] of fields) f.append(k, v); return worker.fetch(new Request(B + '/admin/email', { method: 'POST', headers: { Authorization: 'Basic ' + btoa('a:pw'), Origin: B }, body: f }), env); };
+    const fwd = []; env.FORWARD_TO = 'me@gmail.test'; const rawMail = 'From: =?UTF-8?B?TWlzcyBZb3VuZw==?= <young@school.test>\r\nTo: info@mathsstudio.co.uk\r\nSubject: Parent council\r\nMessage-ID: <abc@school.test>\r\nContent-Type: text/plain; charset=utf-8\r\n\r\nYes, please come on Tuesday.\r\n';
+    await worker.email({ raw: new Response(rawMail).body, forward: async a => { fwd.push(a); } }, env);
+    ok(fwd.length === 1 && fwd[0] === 'me@gmail.test', 'incoming mail is still forwarded to Gmail');
+    const ib = sqlite.prepare('SELECT * FROM inbox').get(); ok(ib && ib.from_email === 'young@school.test' && ib.from_name === 'Miss Young' && /come on Tuesday/.test(ib.body) && ib.unread === 1, 'incoming mail is saved in the Inbox, unread');
+    q = await worker.fetch(new Request(B + '/admin', { headers: { Authorization: 'Basic ' + btoa('a:pw') } }), env); ok(/Inbox \(1 new\)/.test(await q.text()), 'admin shows the unread count');
+    q = await worker.fetch(new Request(B + '/admin?reply=' + ib.id, { headers: { Authorization: 'Basic ' + btoa('a:pw') } }), env); const rt = await q.text();
+    ok(/value="Re: Parent council"/.test(rt) && /value="young@school.test"/.test(rt) && /&gt; Yes, please come on Tuesday/.test(rt), 'Reply fills in To, Subject and the quoted message');
+    one.length = 0; q = await dr([['action', 'send'], ['reply_id', String(ib.id)], ['to_other', 'young@school.test'], ['subject', 'Re: Parent council'], ['body', 'Thank you, see you Tuesday.']]);
+    ok(one.length === 1 && one[0].headers && one[0].headers['In-Reply-To'] === '<abc@school.test>', 'a reply is threaded under the original message');
+    ok(sqlite.prepare('SELECT unread FROM inbox').get().unread === 0, 'the message is marked read after replying');
+    await worker.email({ raw: new Response('Subject: x\r\n\r\nhi').body, forward: async () => { throw new Error('x'); } }, env); ok(sqlite.prepare('SELECT COUNT(*) c FROM inbox').get().c === 2, 'a forwarding problem does not lose the saved copy');
+    q = await worker.fetch(new Request(B + '/admin/inbox', { method: 'POST', headers: { Authorization: 'Basic ' + btoa('a:pw'), Origin: B, 'Content-Type': 'application/x-www-form-urlencoded' }, body: 'id=' + ib.id + '&what=delete' }), env); ok(sqlite.prepare('SELECT COUNT(*) c FROM inbox').get().c === 1, 'an Inbox message can be deleted'); delete env.FORWARD_TO; }
   globalThis.fetch = rf2; }
 // admin log out
 { let q = await worker.fetch(new Request(B + '/admin/logout'), env); const t = await q.text(); ok(q.status === 200 && /logged out of admin/.test(t) && /\/admin\/bye/.test(t), 'admin log out page works without the password');

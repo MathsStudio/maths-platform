@@ -22,6 +22,8 @@ const SCHEMA = [
   `CREATE TABLE IF NOT EXISTS admin_sessions (hash TEXT PRIMARY KEY, expires_at INTEGER NOT NULL)`,
   `CREATE INDEX IF NOT EXISTS rate_k ON rate (k, ts)`,
   `CREATE TABLE IF NOT EXISTS newsletters (id INTEGER PRIMARY KEY AUTOINCREMENT, subject TEXT NOT NULL, audience TEXT NOT NULL, sent INTEGER NOT NULL, failed INTEGER NOT NULL, created_at TEXT NOT NULL)`,
+  `CREATE TABLE IF NOT EXISTS mails (id INTEGER PRIMARY KEY AUTOINCREMENT, kind TEXT NOT NULL, to_list TEXT NOT NULL, cc_list TEXT NOT NULL, bcc_list TEXT NOT NULL, subject TEXT NOT NULL, body TEXT NOT NULL, files TEXT NOT NULL, sent INTEGER NOT NULL, failed TEXT NOT NULL, created_at TEXT NOT NULL, updated_at TEXT NOT NULL)`,
+  `CREATE TABLE IF NOT EXISTS inbox (id INTEGER PRIMARY KEY AUTOINCREMENT, from_email TEXT NOT NULL, from_name TEXT NOT NULL, to_addr TEXT NOT NULL, subject TEXT NOT NULL, body TEXT NOT NULL, files TEXT NOT NULL, message_id TEXT NOT NULL, unread INTEGER NOT NULL, received_at TEXT NOT NULL)`,
   `CREATE TABLE IF NOT EXISTS progress (user_id INTEGER PRIMARY KEY, data TEXT NOT NULL, updated_at TEXT NOT NULL)`,
   `CREATE TABLE IF NOT EXISTS learners (id INTEGER PRIMARY KEY AUTOINCREMENT, user_id INTEGER NOT NULL, name TEXT NOT NULL, avatar TEXT NOT NULL, created_at TEXT NOT NULL)`,
   `CREATE INDEX IF NOT EXISTS learners_user ON learners (user_id)`,
@@ -171,6 +173,31 @@ export async function marketingList(env, year) {
 }
 export async function logNewsletter(env, subject, audience, sent, failed) {
   await env.DB.prepare('INSERT INTO newsletters (subject, audience, sent, failed, created_at) VALUES (?, ?, ?, ?, ?)').bind(subject, audience, sent, failed, new Date().toISOString()).run();
+}
+/* the admin mailbox: sent emails (history) and drafts */
+export async function saveMail(env, m) {
+  const now = new Date().toISOString(), v = [m.kind, m.to || '', m.cc || '', m.bcc || '', m.subject || '', m.body || '', m.files || '', m.sent || 0, m.failed || ''];
+  if (m.id) { await env.DB.prepare("UPDATE mails SET kind=?, to_list=?, cc_list=?, bcc_list=?, subject=?, body=?, files=?, sent=?, failed=?, updated_at=? WHERE id=?").bind(...v, now, m.id).run(); return m.id; }
+  const r = await env.DB.prepare('INSERT INTO mails (kind, to_list, cc_list, bcc_list, subject, body, files, sent, failed, created_at, updated_at) VALUES (?,?,?,?,?,?,?,?,?,?,?)').bind(...v, now, now).run();
+  return r.meta && r.meta.last_row_id;
+}
+export async function listMails(env) {
+  const r = await env.DB.prepare('SELECT id, kind, to_list, cc_list, bcc_list, subject, body, files, sent, failed, created_at, updated_at FROM mails ORDER BY id DESC LIMIT 200').all(), all = r.results || [];
+  return { sent: all.filter(x => x.kind === 'sent'), drafts: all.filter(x => x.kind === 'draft') };
+}
+export async function getMail(env, id) { return await env.DB.prepare('SELECT * FROM mails WHERE id = ?').bind(id).first(); }
+export async function deleteDraft(env, id) { await env.DB.prepare("DELETE FROM mails WHERE id = ? AND kind = 'draft'").bind(id).run(); }
+/* the Inbox: emails that people send to info@, kept here as well as forwarded to Gmail */
+export async function saveInbox(env, m) {
+  await env.DB.prepare('INSERT INTO inbox (from_email, from_name, to_addr, subject, body, files, message_id, unread, received_at) VALUES (?,?,?,?,?,?,?,1,?)')
+    .bind(m.fromEmail || '', m.fromName || '', m.to || '', m.subject || '', m.body || '', (m.files || []).join('\n'), m.messageId || '', new Date().toISOString()).run();
+  await env.DB.prepare('DELETE FROM inbox WHERE id NOT IN (SELECT id FROM inbox ORDER BY id DESC LIMIT 500)').run();
+}
+export async function listInbox(env) { const r = await env.DB.prepare('SELECT * FROM inbox ORDER BY id DESC LIMIT 100').all(); return r.results || []; }
+export async function getInbox(env, id) { return await env.DB.prepare('SELECT * FROM inbox WHERE id = ?').bind(id).first(); }
+export async function setInbox(env, id, what) {
+  if (what === 'delete') await env.DB.prepare('DELETE FROM inbox WHERE id = ?').bind(id).run();
+  else await env.DB.prepare('UPDATE inbox SET unread = ? WHERE id = ?').bind(what === 'unread' ? 1 : 0, id).run();
 }
 export async function recentNewsletters(env) {
   const r = await env.DB.prepare('SELECT subject, audience, sent, failed, created_at FROM newsletters ORDER BY id DESC LIMIT 5').all();

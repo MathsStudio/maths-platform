@@ -6,7 +6,7 @@ export async function sendMail(env, to, subject, text, html, replyTo, extra) {
   const r = await fetch('https://api.resend.com/emails', {
     method: 'POST',
     headers: { Authorization: 'Bearer ' + env.RESEND_API_KEY, 'Content-Type': 'application/json' },
-    body: JSON.stringify({ from: env.FROM_EMAIL, to: Array.isArray(to) ? to : [to], cc: extra.cc && extra.cc.length ? extra.cc : undefined, bcc: extra.bcc && extra.bcc.length ? extra.bcc : undefined, subject, text, html, reply_to: replyTo || undefined, attachments: extra.attachments && extra.attachments.length ? extra.attachments : undefined })
+    body: JSON.stringify({ from: env.FROM_EMAIL, to: Array.isArray(to) ? to : [to], cc: extra.cc && extra.cc.length ? extra.cc : undefined, bcc: extra.bcc && extra.bcc.length ? extra.bcc : undefined, subject, text, html, reply_to: replyTo || undefined, attachments: extra.attachments && extra.attachments.length ? extra.attachments : undefined, headers: extra.headers || undefined })
   });
   if (!r.ok) throw new Error('mail-failed-' + r.status);
 }

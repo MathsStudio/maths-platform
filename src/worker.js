@@ -2,6 +2,7 @@ import { page, json, redirect, withHeaders, sameOrigin, validEmail, randomToken,
 import * as db from './db.js';
 import { sendMail, sendBatch, newsletterMail, personalMail, purchaseMail, verifyMail, loginMail, resetMail } from './mail.js';
 import * as pg from './pages.js';
+import { parseMail, readRaw } from './inbound.js';
 
 const SESSION_SEC = 30 * 86400, VERIFY_SEC = 86400, LOGIN_SEC = 1800;
 const ROLES = ['parent', 'teacher'];
@@ -237,6 +238,7 @@ async function lessonRequest(request, env, user) {
 }
 
 function adminCookie(v, request, maxAge) { return 'ms_admin=' + v + '; Path=/admin; HttpOnly; SameSite=Strict; Max-Age=' + maxAge + (new URL(request.url).protocol === 'https:' ? '; Secure' : ''); }
+async function adminHtml(env, rows, o) { o = o || {}; o.mails = await db.listMails(env); o.mails.inbox = await db.listInbox(env); return pg.admin(rows, o); }
 async function adminRows(env) { return (await db.adminList(env)).map(r => Object.assign(r, { owner: isOwner(env, r.email) })); }
 
 async function admin(request, env, url) {
@@ -257,22 +259,41 @@ async function admin(request, env, url) {
   if (!ok) return page(pg.adminLogin(), 401);
   if (url.pathname === '/admin/newsletter' && request.method === 'POST') return await newsletter(request, env);
   if (url.pathname === '/admin/email' && request.method === 'POST') return await directEmail(request, env);
+  if (url.pathname === '/admin/email/delete' && request.method === 'POST') return await deleteDraft(request, env);
+  if (url.pathname === '/admin/inbox' && request.method === 'POST') return await inboxAction(request, env);
   if (url.pathname === '/admin/revoke' && request.method === 'POST') return await revoke(request, env);
   if (url.pathname === '/admin/grant' && request.method === 'POST') return await grant(request, env);
   if (url.pathname === '/admin/reply' && request.method === 'POST') return await replyRequest(request, env);
   const rows = await adminRows(env);
   if (url.pathname === '/admin/export.csv')
     return withHeaders(new Response(pg.csv(rows), { headers: { 'Content-Type': 'text/csv; charset=utf-8', 'Content-Disposition': 'attachment; filename="mathsstudio-signups.csv"', 'Cache-Control': 'no-store', 'X-Robots-Tag': 'noindex' } }));
-  return page(pg.admin(rows, { note: String(url.searchParams.get('note') || '').slice(0, 300), hl: String(url.searchParams.get('hl') || '').slice(0, 200), log: await db.recentNewsletters(env), reqs: await db.recentLessonRequests(env) }));
+  return page(await adminHtml(env, rows, { note: String(url.searchParams.get('note') || '').slice(0, 300), hl: String(url.searchParams.get('hl') || '').slice(0, 200), emNote: String(url.searchParams.get('em') || '').slice(0, 300), em: (await draftToForm(env, url.searchParams.get('draft'))) || (await replyToForm(env, url.searchParams.get('reply'))), log: await db.recentNewsletters(env), reqs: await db.recentLessonRequests(env) }));
 }
 
 
+async function replyToForm(env, id) {
+  const n = parseInt(id, 10); if (!n) return undefined;
+  const m = await db.getInbox(env, n); if (!m) return undefined;
+  const q = String(m.body || '').split('\n').map(l => '> ' + l).join('\n');
+  return { id: 0, replyId: m.id, subject: /^re:/i.test(m.subject) ? m.subject : 'Re: ' + m.subject, body: '\n\n\nOn ' + String(m.received_at).slice(0, 10) + ', ' + (m.from_name ? m.from_name + ' <' + m.from_email + '>' : m.from_email) + ' wrote:\n' + q, to: [], other: m.from_email, cc: '', bcc: '' };
+}
+async function inboxAction(request, env) {
+  if (!sameOrigin(request)) return json({ error: 'Not allowed' }, 403);
+  const b = await readForm(request), what = ['read', 'unread', 'delete'].includes(b.what) ? b.what : 'read';
+  await db.setInbox(env, parseInt(b.id, 10) || 0, what);
+  return redirect('/admin?em=' + encodeURIComponent(what === 'delete' ? 'Message deleted.' : what === 'read' ? 'Marked as read.' : 'Marked as unread.') + '#inbox');
+}
+async function draftToForm(env, id) {
+  const n = parseInt(id, 10); if (!n) return undefined;
+  const d = await db.getMail(env, n); if (!d || d.kind !== 'draft') return undefined;
+  return { id: d.id, subject: d.subject, body: d.body, to: [], other: d.to_list, cc: d.cc_list, bcc: d.bcc_list };
+}
 async function newsletter(request, env) {
   if (!sameOrigin(request)) return json({ error: 'Not allowed' }, 403);
   const b = await readForm(request), origin = new URL(request.url).origin;
   const subject = String(b.subject || '').trim().slice(0, 150), body = String(b.body || '').trim().slice(0, 20000);
   const audience = pg.YEARS.includes(b.audience) ? b.audience : '';
-  const rows = await adminRows(env), done = async note => page(pg.admin(rows, { note, subject, body, audience, log: await db.recentNewsletters(env) }));
+  const rows = await adminRows(env), done = async note => page(await adminHtml(env, rows, { note, subject, body, audience, log: await db.recentNewsletters(env) }));
   if (!subject || !body) return done('Please write a subject and a message first.');
   if (b.action === 'test') {
     const to = String(b.test_to || '').trim().toLowerCase();
@@ -295,7 +316,7 @@ async function newsletter(request, env) {
     if (ok) sent += chunk.length; else failed += chunk.length;
   }
   await db.logNewsletter(env, subject, audience || 'everyone', sent, failed);
-  return page(pg.admin(rows, { note: 'Sent to ' + sent + ' people' + (failed ? ', ' + failed + ' could not be sent (try again later for them).' : '.'), log: await db.recentNewsletters(env) }));
+  return page(await adminHtml(env, rows, { note: 'Sent to ' + sent + ' people' + (failed ? ', ' + failed + ' could not be sent (try again later for them).' : '.'), log: await db.recentNewsletters(env) }));
 }
 
 /* an email from info@ to people the owner picks (accounts ticked on the list, or any typed address), with optional CC, BCC and attachments */
@@ -304,39 +325,53 @@ function b64(buf) { const a = new Uint8Array(buf); let s = ''; for (let i = 0; i
 async function directEmail(request, env) {
   if (!sameOrigin(request)) return json({ error: 'Not allowed' }, 403);
   const fd = await request.formData(), get = k => String(fd.get(k) || '');
-  const subject = get('subject').trim().slice(0, 150), body = get('body').trim().slice(0, 20000);
+  const subject = get('subject').trim().slice(0, 150), body = get('body').trim().slice(0, 20000), draftId = parseInt(get('draft_id'), 10) || 0, replyId = parseInt(get('reply_id'), 10) || 0, asDraft = get('action') === 'draft';
   const list = k => get(k).split(/[\s,;]+/).map(x => x.trim().toLowerCase()).filter(Boolean);
   const picked = fd.getAll('to').map(x => String(x).trim().toLowerCase());
   const typed = list('to_other'), cc = list('cc'), bcc = list('bcc');
-  const rows = await adminRows(env), log = await db.recentNewsletters(env);
-  const back = (note, keep) => page(pg.admin(rows, Object.assign({ log, emNote: note }, keep ? { em: { subject, body, to: picked, other: get('to_other'), cc: get('cc'), bcc: get('bcc') } } : {})));
+  const rows = await adminRows(env);
+  const back = async (note, keep) => page(await adminHtml(env, rows, Object.assign({ emNote: note }, keep ? { em: { id: draftId, replyId, subject, body, to: picked, other: get('to_other'), cc: get('cc'), bcc: get('bcc') } } : {})));
+  const done = (note, tab) => redirect('/admin?em=' + encodeURIComponent(note) + '#' + tab);
+  const files = fd.getAll('files').filter(f => f && typeof f === 'object' && f.size > 0), names = files.map(f => String(f.name || 'file').replace(/[\r\n"\\/]/g, '_').slice(0, 120));
+  const toAll = Array.from(new Set(picked.filter(validEmail).concat(typed.filter(validEmail))));
+  if (asDraft) {
+    /* a draft keeps the words and the people, not the attached files */
+    await db.saveMail(env, { id: draftId || 0, kind: 'draft', to: toAll.concat(typed.filter(x => !validEmail(x))).join(', '), cc: cc.join(', '), bcc: bcc.join(', '), subject, body });
+    return done('Draft saved.' + (files.length ? ' Files are not kept in drafts, so attach them again when you send.' : ''), 'drafts');
+  }
   const bad = typed.concat(cc, bcc).filter(x => !validEmail(x));
   if (bad.length) return back('This does not look like an email address: ' + bad[0], true);
-  const to = Array.from(new Set(picked.filter(validEmail).concat(typed)));
+  const to = toAll;
   const ccs = Array.from(new Set(cc.filter(x => !to.includes(x)))), bccs = Array.from(new Set(bcc.filter(x => !to.includes(x) && !ccs.includes(x))));
   if (!to.length) return back('Choose at least one person for To, or type an email address.', true);
   if (to.length + ccs.length + bccs.length > 50) return back('Please send to 50 people or fewer at a time. For everyone, use the newsletter.', true);
   if (!subject || !body) return back('Please write a subject and a message first.', true);
-  const files = fd.getAll('files').filter(f => f && typeof f === 'object' && f.size > 0), total = files.reduce((n, f) => n + f.size, 0);
+  const total = files.reduce((n, f) => n + f.size, 0);
   if (files.length > MAIL_MAX_FILES) return back('Please attach ' + MAIL_MAX_FILES + ' files or fewer.', true);
   if (files.some(f => MAIL_BLOCKED.test(f.name))) return back('This type of file cannot be attached: ' + files.find(f => MAIL_BLOCKED.test(f.name)).name, true);
   if (total > MAIL_MAX_BYTES) return back('The attachments are too big (' + (total / 1048576).toFixed(1) + ' MB). The limit is ' + (MAIL_MAX_BYTES / 1048576) + ' MB in total.', true);
   if (!(await db.rateOk(env, 'direct', 200, 3600))) return back('Too many emails in the last hour. Please wait a little.', true);
-  const attachments = []; for (const f of files) attachments.push({ filename: String(f.name || 'file').replace(/[\r\n"\\/]/g, '_').slice(0, 120), content: b64(await f.arrayBuffer()) });
+  const attachments = []; for (let i = 0; i < files.length; i++) attachments.push({ filename: names[i], content: b64(await files[i].arrayBuffer()) });
   const m = personalMail(subject, body), reply = 'info@mathsstudio.co.uk';
   let sent = 0, failed = [];
   /* one normal email, like Gmail: To and CC people can see each other, BCC people are hidden */
-  try { await sendMail(env, to, m.subject, m.text, m.html, reply, { cc: ccs, bcc: bccs, attachments }); sent = to.length + ccs.length + bccs.length; } catch (e) { failed = to.concat(ccs, bccs); }
-  const who = (to.length === 1 ? to[0] : to.length + ' people') + (ccs.length ? ' + ' + ccs.length + ' CC' : '') + (bccs.length ? ' + ' + bccs.length + ' BCC' : '') + (attachments.length ? ' + ' + attachments.length + ' file' + (attachments.length === 1 ? '' : 's') : '');
-  await db.logNewsletter(env, subject, 'email to ' + who, sent, failed.length);
-  return page(pg.admin(rows, { log: await db.recentNewsletters(env), emNote: (sent ? 'Sent to ' + sent + (sent === 1 ? ' person' : ' people') + ' from info@mathsstudio.co.uk' + (ccs.length || bccs.length ? ' (' + to.length + ' To' + (ccs.length ? ', ' + ccs.length + ' CC' : '') + (bccs.length ? ', ' + bccs.length + ' BCC' : '') + ')' : '') + (attachments.length ? ' with ' + attachments.length + ' attachment' + (attachments.length === 1 ? '' : 's') : '') + '.' : 'Nothing was sent.') + (failed.length ? ' Could not send to: ' + failed.join(', ') + '.' : '') }));
+  const orig = replyId ? await db.getInbox(env, replyId) : null, headers = orig && orig.message_id ? { 'In-Reply-To': orig.message_id, References: orig.message_id } : undefined;
+  try { await sendMail(env, to, m.subject, m.text, m.html, reply, { cc: ccs, bcc: bccs, attachments, headers }); sent = to.length + ccs.length + bccs.length; } catch (e) { failed = to.concat(ccs, bccs); }
+  if (sent) { await db.saveMail(env, { kind: 'sent', to: to.join(', '), cc: ccs.join(', '), bcc: bccs.join(', '), subject, body, files: names.join('\n'), sent }); if (draftId) await db.deleteDraft(env, draftId); if (orig) await db.setInbox(env, orig.id, 'read'); }
+  else return back('Nothing was sent. Could not send to: ' + failed.join(', ') + '. Your message is kept here, so you can try again.', true);
+  return done('Sent from info@mathsstudio.co.uk to ' + sent + (sent === 1 ? ' person' : ' people') + (ccs.length || bccs.length ? ' (' + to.length + ' To' + (ccs.length ? ', ' + ccs.length + ' CC' : '') + (bccs.length ? ', ' + bccs.length + ' BCC' : '') + ')' : '') + (attachments.length ? ' with ' + attachments.length + ' attachment' + (attachments.length === 1 ? '' : 's') : '') + '.', 'sent');
+}
+async function deleteDraft(request, env) {
+  if (!sameOrigin(request)) return json({ error: 'Not allowed' }, 403);
+  const b = await readForm(request); await db.deleteDraft(env, parseInt(b.id, 10) || 0);
+  return redirect('/admin?em=' + encodeURIComponent('Draft deleted.') + '#drafts');
 }
 
 /* answers a lesson request from the admin page: emails the parent from info@ and marks the request as replied */
 async function replyRequest(request, env) {
   if (!sameOrigin(request)) return json({ error: 'Not allowed' }, 403);
   const b = await readForm(request), id = Number(b.id), body = String(b.body || '').trim().slice(0, 20000);
-  const back = async note => page(pg.admin(await adminRows(env), { log: await db.recentNewsletters(env), reqs: await db.recentLessonRequests(env), reqNote: note, reqOpen: id, reqBody: body }));
+  const back = async note => page(await adminHtml(env, await adminRows(env), { log: await db.recentNewsletters(env), reqs: await db.recentLessonRequests(env), reqNote: note, reqOpen: id, reqBody: body }));
   const rq = id ? await db.lessonRequest(env, id) : null;
   if (!rq) return await back('That request could not be found.');
   if (!body) return await back('Please write your reply first.');
@@ -344,7 +379,7 @@ async function replyRequest(request, env) {
   const m = personalMail('Re: your lesson request: ' + rq.year + ' · ' + rq.topic, body);
   try { await sendMail(env, rq.email, m.subject, m.text, m.html, 'info@mathsstudio.co.uk'); } catch (e) { return await back('The reply could not be sent. Check that email sending is set up, then try again.'); }
   await db.markLessonReplied(env, id, body);
-  return page(pg.admin(await adminRows(env), { log: await db.recentNewsletters(env), reqs: await db.recentLessonRequests(env), reqNote: 'Reply sent to ' + rq.email + '.' }));
+  return page(await adminHtml(env, await adminRows(env), { log: await db.recentNewsletters(env), reqs: await db.recentLessonRequests(env), reqNote: 'Reply sent to ' + rq.email + '.' }));
 }
 
 /* gives free access (one year group or all) to an existing account, for a chosen length of time */
@@ -478,6 +513,11 @@ async function stripeWebhook(request, env) {
 
 export default {
   async scheduled(event, env) { await db.init(env); await db.cleanup(env); },
+  /* mail sent to info@ (Cloudflare Email Routing > send to this Worker): keep a copy in the admin Inbox, then forward it to Gmail as before */
+  async email(message, env) {
+    try { await db.init(env); await db.saveInbox(env, parseMail(await readRaw(message.raw, 8 * 1024 * 1024))); } catch (e) { console.error('inbox save failed', e && e.stack || e); }
+    if (env.FORWARD_TO) { try { await message.forward(env.FORWARD_TO); } catch (e) { console.error('forward failed', e && e.stack || e); } }
+  },
   async fetch(request, env) {
     const url = new URL(request.url), p = url.pathname, m = request.method;
     try {
@@ -487,7 +527,7 @@ export default {
         return page(pg.adminOut(), 200, { 'Set-Cookie': adminCookie('', request, 0) });
       }
       if (p === '/admin/bye') return new Response('Logged out.', { status: 401, headers: { 'WWW-Authenticate': 'Basic realm="MathsStudio admin", charset="UTF-8"', 'Cache-Control': 'no-store', 'X-Robots-Tag': 'noindex' } });
-      if (p === '/admin' || p === '/admin/' || p === '/admin/export.csv' || p === '/admin/newsletter' || p === '/admin/email' || p === '/admin/revoke' || p === '/admin/grant' || p === '/admin/reply' || p === '/admin/login') { await db.init(env); return await admin(request, env, url); }
+      if (p === '/admin' || p === '/admin/' || p === '/admin/export.csv' || p === '/admin/newsletter' || p === '/admin/email' || p === '/admin/email/delete' || p === '/admin/inbox' || p === '/admin/revoke' || p === '/admin/grant' || p === '/admin/reply' || p === '/admin/login') { await db.init(env); return await admin(request, env, url); }
       const dynamic = p.startsWith('/api/') || p.startsWith('/auth/') || p === '/logout' || p === '/unsubscribe' || p === '/account' || p.startsWith('/account/') || p === '/app' || p.startsWith('/app/') || p === '/learn' || p.startsWith('/learn/');
       if (!dynamic) return withHeaders(await env.ASSETS.fetch(request));
       /* the lessons themselves do not need the database: if it has a hiccup, a child can still open them (the database is only for sign-in and saved progress) */
