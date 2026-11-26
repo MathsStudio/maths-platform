@@ -95,6 +95,7 @@
     if (ri >= 0) sc[ri] = scene; else sc.push(scene);
     e._recap = items;
   }
-  Object.keys(BT.EP).forEach(function (t) { var e = BT.EP[t]; if (!e || !e.scenes || e._recap) return; try { build(t, e); } catch (x) { if (window.console) console.warn('recap', t, x); } });
+  var all = Object.keys(BT.EP).map(function (t) { return [t, BT.EP[t]]; }).concat((BT.ALLEP || []).map(function (e) { return [e.title, e]; }));
+  all.forEach(function (pair) { var t = pair[0], e = pair[1]; if (!e || !e.scenes || e._recap) return; try { build(t, e); } catch (x) { if (window.console) console.warn('recap', t, x); } });
   BT.recapBuilt = true;
 })();

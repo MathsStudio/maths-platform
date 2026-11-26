@@ -500,6 +500,8 @@
   BT.lessons = function (n, label, episodes, keep) {
     var t = S.topics[n]; if (!t) { if (window.console) console.warn('lessons: no topic ' + n); return; }
     BT.EP = BT.EP || {}; episodes.forEach(function (e) { if (e && e.title) BT.EP[e.title] = e; });
+    /* every episode a topic plays, even when two lessons share a title */
+    BT.ALLEP = (BT.ALLEP || []).concat((episodes || []).filter(Boolean));
     episodes = episodes.filter(function (e) { if (!e && window.console) console.warn('lessons: missing episode in topic ' + n); return !!e; });
     var old = t.steps.filter(function (s) { return s.id === 'watch'; })[0], kept = [];
     if (old && keep) (old.slides || []).forEach(function (sl) { if (sl.ep && keep.indexOf(sl.title) >= 0) kept.push(sl.ep); });
