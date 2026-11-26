@@ -298,27 +298,42 @@ async function newsletter(request, env) {
   return page(pg.admin(rows, { note: 'Sent to ' + sent + ' people' + (failed ? ', ' + failed + ' could not be sent (try again later for them).' : '.'), log: await db.recentNewsletters(env) }));
 }
 
-/* an email from info@ to people the owner picks (accounts ticked on the list, or any typed address) */
+/* an email from info@ to people the owner picks (accounts ticked on the list, or any typed address), with optional CC, BCC and attachments */
+const MAIL_BLOCKED = /\.(exe|bat|cmd|com|scr|js|jar|msi|vbs|ps1|dll|apk)$/i, MAIL_MAX_FILES = 5, MAIL_MAX_BYTES = 10 * 1024 * 1024;
+function b64(buf) { const a = new Uint8Array(buf); let s = ''; for (let i = 0; i < a.length; i += 0x8000) s += String.fromCharCode.apply(null, a.subarray(i, i + 0x8000)); return btoa(s); }
 async function directEmail(request, env) {
   if (!sameOrigin(request)) return json({ error: 'Not allowed' }, 403);
   const fd = await request.formData(), get = k => String(fd.get(k) || '');
   const subject = get('subject').trim().slice(0, 150), body = get('body').trim().slice(0, 20000);
+  const list = k => get(k).split(/[\s,;]+/).map(x => x.trim().toLowerCase()).filter(Boolean);
   const picked = fd.getAll('to').map(x => String(x).trim().toLowerCase());
-  const typed = get('to_other').split(/[\s,;]+/).map(x => x.trim().toLowerCase()).filter(Boolean);
+  const typed = list('to_other'), cc = list('cc'), bcc = list('bcc'), one = get('one') === '1';
   const rows = await adminRows(env), log = await db.recentNewsletters(env);
-  const back = (note, keep) => page(pg.admin(rows, Object.assign({ log, emNote: note }, keep ? { em: { subject, body, to: picked, other: get('to_other') } } : {})));
-  const bad = typed.filter(x => !validEmail(x));
+  const back = (note, keep) => page(pg.admin(rows, Object.assign({ log, emNote: note }, keep ? { em: { subject, body, to: picked, other: get('to_other'), cc: get('cc'), bcc: get('bcc'), one } } : {})));
+  const bad = typed.concat(cc, bcc).filter(x => !validEmail(x));
   if (bad.length) return back('This does not look like an email address: ' + bad[0], true);
   const to = Array.from(new Set(picked.filter(validEmail).concat(typed)));
-  if (!to.length) return back('Choose at least one person, or type an email address.', true);
-  if (to.length > 50) return back('Please send to 50 people or fewer at a time. For everyone, use the newsletter.', true);
+  const ccs = Array.from(new Set(cc.filter(x => !to.includes(x)))), bccs = Array.from(new Set(bcc.filter(x => !to.includes(x) && !ccs.includes(x))));
+  if (!to.length) return back('Choose at least one person for To, or type an email address.', true);
+  if (to.length + ccs.length + bccs.length > 50) return back('Please send to 50 people or fewer at a time. For everyone, use the newsletter.', true);
   if (!subject || !body) return back('Please write a subject and a message first.', true);
+  const files = fd.getAll('files').filter(f => f && typeof f === 'object' && f.size > 0), total = files.reduce((n, f) => n + f.size, 0);
+  if (files.length > MAIL_MAX_FILES) return back('Please attach ' + MAIL_MAX_FILES + ' files or fewer.', true);
+  if (files.some(f => MAIL_BLOCKED.test(f.name))) return back('This type of file cannot be attached: ' + files.find(f => MAIL_BLOCKED.test(f.name)).name, true);
+  if (total > MAIL_MAX_BYTES) return back('The attachments are too big (' + (total / 1048576).toFixed(1) + ' MB). The limit is ' + (MAIL_MAX_BYTES / 1048576) + ' MB in total.', true);
   if (!(await db.rateOk(env, 'direct', 200, 3600))) return back('Too many emails in the last hour. Please wait a little.', true);
-  const m = personalMail(subject, body);
+  const attachments = []; for (const f of files) attachments.push({ filename: String(f.name || 'file').replace(/[\r\n"\\/]/g, '_').slice(0, 120), content: b64(await f.arrayBuffer()) });
+  const m = personalMail(subject, body), reply = 'info@mathsstudio.co.uk';
   let sent = 0, failed = [];
-  for (const addr of to) { try { await sendMail(env, addr, m.subject, m.text, m.html, 'info@mathsstudio.co.uk'); sent++; } catch (e) { failed.push(addr); } }
-  await db.logNewsletter(env, subject, 'email to ' + (to.length === 1 ? to[0] : to.length + ' people'), sent, failed.length);
-  return page(pg.admin(rows, { log: await db.recentNewsletters(env), emNote: 'Sent to ' + sent + (sent === 1 ? ' person' : ' people') + ' from info@mathsstudio.co.uk.' + (failed.length ? ' Could not send to: ' + failed.join(', ') + '.' : '') }));
+  if (ccs.length || bccs.length || one) {
+    /* one normal email: everyone in To and CC can see each other, BCC people are hidden */
+    try { await sendMail(env, to, m.subject, m.text, m.html, reply, { cc: ccs, bcc: bccs, attachments }); sent = to.length + ccs.length + bccs.length; } catch (e) { failed = to.concat(ccs, bccs); }
+  } else {
+    for (const addr of to) { try { await sendMail(env, addr, m.subject, m.text, m.html, reply, { attachments }); sent++; } catch (e) { failed.push(addr); } }
+  }
+  const who = (to.length === 1 ? to[0] : to.length + ' people') + (ccs.length ? ' + ' + ccs.length + ' CC' : '') + (bccs.length ? ' + ' + bccs.length + ' BCC' : '') + (attachments.length ? ' + ' + attachments.length + ' file' + (attachments.length === 1 ? '' : 's') : '');
+  await db.logNewsletter(env, subject, 'email to ' + who, sent, failed.length);
+  return page(pg.admin(rows, { log: await db.recentNewsletters(env), emNote: (sent ? 'Sent to ' + sent + (sent === 1 ? ' person' : ' people') + ' from info@mathsstudio.co.uk' + (ccs.length || bccs.length ? ' (' + to.length + ' To' + (ccs.length ? ', ' + ccs.length + ' CC' : '') + (bccs.length ? ', ' + bccs.length + ' BCC' : '') + ')' : '') + (attachments.length ? ' with ' + attachments.length + ' attachment' + (attachments.length === 1 ? '' : 's') : '') + '.' : 'Nothing was sent.') + (failed.length ? ' Could not send to: ' + failed.join(', ') + '.' : '') }));
 }
 
 /* answers a lesson request from the admin page: emails the parent from info@ and marks the request as replied */

@@ -183,6 +183,15 @@ r = await adminPost({ action: 'send', subject: 'P5 news', body: 'x', confirm: '1
   ok(/Sent to 2 people from info@mathsstudio.co.uk/.test(t) && one.length === 2 && one.every(m => m.from === 'MathsStudio <info@mathsstudio.co.uk>' && m.reply_to === 'info@mathsstudio.co.uk'), 'admin email goes from info@ to each chosen person once, replies to info@');
   ok(!/unsubscribe/i.test(one[0].text) && /<p[^>]*>Hello<\/p>/.test(one[0].html), 'admin email is a normal letter, not a newsletter');
   ok(/Send an email/.test(t) && /name="to" value="parent@example.com"/.test(t), 'admin page lists accounts to tick');
+  { one.length = 0; const f = new FormData(); f.append('to', 'parent@example.com'); f.append('cc', 'boss@x.test'); f.append('bcc', 'hidden@x.test, hidden2@x.test'); f.append('subject', 'With file'); f.append('body', 'See attached'); f.append('files', new File(['hello pdf'], 'plan.pdf', { type: 'application/pdf' }));
+    q = await worker.fetch(new Request(B + '/admin/email', { method: 'POST', headers: { Authorization: 'Basic ' + btoa('a:pw'), Origin: B }, body: f }), env); const t2 = await q.text();
+    ok(one.length === 1 && one[0].to.join() === 'parent@example.com' && one[0].cc.join() === 'boss@x.test' && one[0].bcc.length === 2, 'CC and BCC go in one email, BCC separate from To');
+    ok(one[0].attachments && one[0].attachments.length === 1 && one[0].attachments[0].filename === 'plan.pdf' && atob(one[0].attachments[0].content) === 'hello pdf', 'attached file is sent');
+    ok(/Sent to 4 people/.test(t2) && /1 attachment/.test(t2), 'admin sees how many were sent with the file');
+    one.length = 0; const g = new FormData(); g.append('to', 'parent@example.com'); g.append('subject', 'x'); g.append('body', 'y'); g.append('files', new File(['x'], 'virus.exe'));
+    q = await worker.fetch(new Request(B + '/admin/email', { method: 'POST', headers: { Authorization: 'Basic ' + btoa('a:pw'), Origin: B }, body: g }), env); ok(/cannot be attached/.test(await q.text()) && one.length === 0, 'program files cannot be attached');
+    one.length = 0; const h = new FormData(); h.append('to', 'parent@example.com'); h.append('cc', 'bad'); h.append('subject', 'x'); h.append('body', 'y');
+    q = await worker.fetch(new Request(B + '/admin/email', { method: 'POST', headers: { Authorization: 'Basic ' + btoa('a:pw'), Origin: B }, body: h }), env); ok(/does not look like an email/.test(await q.text()) && one.length === 0, 'CC addresses are checked'); }
   globalThis.fetch = rf2; }
 // admin log out
 { let q = await worker.fetch(new Request(B + '/admin/logout'), env); const t = await q.text(); ok(q.status === 200 && /logged out of admin/.test(t) && /\/admin\/bye/.test(t), 'admin log out page works without the password');
