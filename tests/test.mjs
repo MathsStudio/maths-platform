@@ -180,7 +180,7 @@ r = await adminPost({ action: 'send', subject: 'P5 news', body: 'x', confirm: '1
   q = await em([['subject', 'Hi'], ['body', 'x']]); ok(/Choose at least one person/.test(await q.text()) && one.length === 0, 'admin email needs someone to send to');
   q = await em([['to_other', 'not-an-email'], ['subject', 'Hi'], ['body', 'x']]); ok(/does not look like an email/.test(await q.text()) && one.length === 0, 'admin email checks typed addresses');
   q = await em([['to', 'parent@example.com'], ['to_other', 'someone@else.test, parent@example.com'], ['subject', 'About your account'], ['body', 'Hello\n\nThanks']]); const t = await q.text();
-  ok(/Sent to 2 people from info@mathsstudio.co.uk/.test(t) && one.length === 2 && one.every(m => m.from === 'MathsStudio <info@mathsstudio.co.uk>' && m.reply_to === 'info@mathsstudio.co.uk'), 'admin email goes from info@ to each chosen person once, replies to info@');
+  ok(/Sent to 2 people from info@mathsstudio.co.uk/.test(t) && one.length === 1 && one[0].to.length === 2 && one[0].from === 'MathsStudio <info@mathsstudio.co.uk>' && one[0].reply_to === 'info@mathsstudio.co.uk', 'admin email is one normal email from info@, replies to info@');
   ok(!/unsubscribe/i.test(one[0].text) && /<p[^>]*>Hello<\/p>/.test(one[0].html), 'admin email is a normal letter, not a newsletter');
   ok(/Send an email/.test(t) && /name="to" value="parent@example.com"/.test(t), 'admin page lists accounts to tick');
   { one.length = 0; const f = new FormData(); f.append('to', 'parent@example.com'); f.append('cc', 'boss@x.test'); f.append('bcc', 'hidden@x.test, hidden2@x.test'); f.append('subject', 'With file'); f.append('body', 'See attached'); f.append('files', new File(['hello pdf'], 'plan.pdf', { type: 'application/pdf' }));

@@ -307,9 +307,9 @@ async function directEmail(request, env) {
   const subject = get('subject').trim().slice(0, 150), body = get('body').trim().slice(0, 20000);
   const list = k => get(k).split(/[\s,;]+/).map(x => x.trim().toLowerCase()).filter(Boolean);
   const picked = fd.getAll('to').map(x => String(x).trim().toLowerCase());
-  const typed = list('to_other'), cc = list('cc'), bcc = list('bcc'), one = get('one') === '1';
+  const typed = list('to_other'), cc = list('cc'), bcc = list('bcc');
   const rows = await adminRows(env), log = await db.recentNewsletters(env);
-  const back = (note, keep) => page(pg.admin(rows, Object.assign({ log, emNote: note }, keep ? { em: { subject, body, to: picked, other: get('to_other'), cc: get('cc'), bcc: get('bcc'), one } } : {})));
+  const back = (note, keep) => page(pg.admin(rows, Object.assign({ log, emNote: note }, keep ? { em: { subject, body, to: picked, other: get('to_other'), cc: get('cc'), bcc: get('bcc') } } : {})));
   const bad = typed.concat(cc, bcc).filter(x => !validEmail(x));
   if (bad.length) return back('This does not look like an email address: ' + bad[0], true);
   const to = Array.from(new Set(picked.filter(validEmail).concat(typed)));
@@ -325,12 +325,8 @@ async function directEmail(request, env) {
   const attachments = []; for (const f of files) attachments.push({ filename: String(f.name || 'file').replace(/[\r\n"\\/]/g, '_').slice(0, 120), content: b64(await f.arrayBuffer()) });
   const m = personalMail(subject, body), reply = 'info@mathsstudio.co.uk';
   let sent = 0, failed = [];
-  if (ccs.length || bccs.length || one) {
-    /* one normal email: everyone in To and CC can see each other, BCC people are hidden */
-    try { await sendMail(env, to, m.subject, m.text, m.html, reply, { cc: ccs, bcc: bccs, attachments }); sent = to.length + ccs.length + bccs.length; } catch (e) { failed = to.concat(ccs, bccs); }
-  } else {
-    for (const addr of to) { try { await sendMail(env, addr, m.subject, m.text, m.html, reply, { attachments }); sent++; } catch (e) { failed.push(addr); } }
-  }
+  /* one normal email, like Gmail: To and CC people can see each other, BCC people are hidden */
+  try { await sendMail(env, to, m.subject, m.text, m.html, reply, { cc: ccs, bcc: bccs, attachments }); sent = to.length + ccs.length + bccs.length; } catch (e) { failed = to.concat(ccs, bccs); }
   const who = (to.length === 1 ? to[0] : to.length + ' people') + (ccs.length ? ' + ' + ccs.length + ' CC' : '') + (bccs.length ? ' + ' + bccs.length + ' BCC' : '') + (attachments.length ? ' + ' + attachments.length + ' file' + (attachments.length === 1 ? '' : 's') : '');
   await db.logNewsletter(env, subject, 'email to ' + who, sent, failed.length);
   return page(pg.admin(rows, { log: await db.recentNewsletters(env), emNote: (sent ? 'Sent to ' + sent + (sent === 1 ? ' person' : ' people') + ' from info@mathsstudio.co.uk' + (ccs.length || bccs.length ? ' (' + to.length + ' To' + (ccs.length ? ', ' + ccs.length + ' CC' : '') + (bccs.length ? ', ' + bccs.length + ' BCC' : '') + ')' : '') + (attachments.length ? ' with ' + attachments.length + ' attachment' + (attachments.length === 1 ? '' : 's') : '') + '.' : 'Nothing was sent.') + (failed.length ? ' Could not send to: ' + failed.join(', ') + '.' : '') }));

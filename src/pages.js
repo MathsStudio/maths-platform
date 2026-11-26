@@ -82,16 +82,15 @@ function accessCell(r) {
 function emailCard(rows, o) {
   const em = o.em || {}, pick = new Set(em.to || []);
   const list = rows.filter(r => r.email).map(r => '<label class="empick" data-year="' + esc(r.year || '') + '"><input type="checkbox" name="to" value="' + esc(r.email) + '"' + (pick.has(String(r.email).toLowerCase()) ? ' checked' : '') + '><span>' + esc(r.email) + '</span><small>' + esc([r.year, r.role].filter(Boolean).join(' · ')) + '</small></label>').join('');
-  return '<section class="card nl em"><h2>Send an email</h2><p class="note">Sends a normal email from <b>info@mathsstudio.co.uk</b> to the people you choose. Their replies come to info@, which forwards to your Gmail. For news to everyone, use the <a href="#email">Newsletter tab</a>.</p>' +
+  return '<section class="card nl em"><h2>Send an email</h2><p class="note">Sends one normal email from <b>info@mathsstudio.co.uk</b>, like Gmail: people in To and CC see each other, BCC stays hidden. Their replies come to info@, which forwards to your Gmail. For news to everyone, use the <a href="#email">Newsletter tab</a>.</p>' +
     (o.emNote ? '<p class="nlnote" role="status">' + esc(o.emNote) + '</p>' : '') +
     '<form method="post" action="/admin/email#sendemail" enctype="multipart/form-data"><div class="emto"><b style="font-size:13px">To</b><div class="emchips" id="emChips"><span class="note">Nobody chosen yet</span></div>' +
     '<details class="emdd"><summary>Choose people ▾</summary><div class="emddin"><div class="admtools"><input class="emfind" type="search" placeholder="Search email" aria-label="Search email"><select class="emyear" aria-label="Year"><option value="">All years</option>' + YEARS.map(y => '<option>' + y + '</option>').join('') + '</select></div>' +
     '<div class="admtools"><button type="button" class="btn alt emall">Tick all shown</button><button type="button" class="btn alt emnone">Clear</button></div>' +
     '<div class="emlist">' + (list || '<p class="note">Nobody has signed up yet.</p>') + '</div></div></details></div>' +
     '<label>Or type email addresses (separate with commas)<input name="to_other" value="' + esc(em.other || '') + '" placeholder="name@example.com, another@example.com"></label>' +
-    '<div class="emcc"><label>CC <small class="note">(everyone can see these addresses)</small><input name="cc" value="' + esc(em.cc || '') + '" placeholder="name@example.com, another@example.com"></label>' +
-    '<label>BCC <small class="note">(hidden from everyone else)</small><input name="bcc" value="' + esc(em.bcc || '') + '" placeholder="name@example.com, another@example.com"></label></div>' +
-    '<label class="chk"><input type="checkbox" name="one" value="1"' + (em.one ? ' checked' : '') + '> Send as one email, so the people in To can see each other (always on when you use CC or BCC). Leave it off to send each person their own copy.</label>' +
+    '<div class="emcc"><label>CC <small class="note">(seen by everyone)</small><input name="cc" value="' + esc(em.cc || '') + '" placeholder="name@example.com, another@example.com"></label>' +
+    '<label>BCC <small class="note">(hidden from others)</small><input name="bcc" value="' + esc(em.bcc || '') + '" placeholder="name@example.com, another@example.com"></label></div>' +
     '<label>Subject<input name="subject" maxlength="150" required value="' + esc(em.subject || '') + '"></label>' +
     '<label>Message<textarea name="body" rows="8" required placeholder="Write in plain text. Leave a blank line between paragraphs.">' + esc(em.body || '') + '</textarea></label>' +
     '<label>Attach files <small class="note">(up to 5 files, 10 MB in total, no program files)</small><input type="file" name="files" id="emFiles" multiple></label><div class="emchips" id="emFileList"></div>' +
