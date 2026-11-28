@@ -16660,7 +16660,8 @@ S.extraMakers = function (n, level) {
         function quoteFor(t) {
           if (!fx) return;
           var pp = blk.querySelector('.flp-pic');
-          if (!t) { if (cloud) { cloud.classList.remove('on'); } if (pp) pp.style.transform = ''; return; }
+          /* the cloud only ever shows the words being spoken now: when it is hidden its old words are cleared, so a number from an earlier question cannot show up beside the character */
+          if (!t) { if (cloud) { cloud.classList.remove('on'); cloud.textContent = ''; } if (pp) pp.style.transform = ''; return; }
           var ch = blk.querySelector('.flp-ch'); if (!ch) return;
           if (!cloud) { cloud = document.createElement('div'); cloud.className = 'fl-cloud'; fx.appendChild(cloud); }
           var fr = fx.getBoundingClientRect(), cr = (ch.querySelector('svg') || ch).getBoundingClientRect(), k = fr.width / Math.max(1, fx.offsetWidth);   /* the stage may be scaled to fit the screen */
