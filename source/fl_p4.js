@@ -59,7 +59,7 @@
         ex: [['Counting in 25s', 'Up by 25', [["Twenty-five, fifty, seventy-five, one hundred. Each jump is twenty-five.", E('25, 50, 75, 100', 'g')]]],
           ['Counting in 3s', 'Up by 3', [["Three, six, nine, twelve, fifteen. The rule is add three.", E('3, 6, 9, 12, 15', 'g')]]],
           ['Counting back', 'Down by 100', [["Nine hundred, eight hundred, seven hundred. The rule is take away one hundred.", E('900, 800, 700, 600', 'g')]]]],
-        real: ['Seats', "In the lab theatre, each row has four more seats than the row in front: twelve, sixteen, twenty, twenty-four.", E('12, 16, 20, 24', 'b')],
+        real: ['Seats', "In the lab theatre, each row has four more seats than the row in front: twelve, sixteen, twenty, twenty-four.", V.rule("Each row has 4 more seats than the row in front. The first row has 12. What are the next rows?") + E('12, 16, 20, 24', 'b')],
         turn: ["Your turn! What comes next: forty, eighty, one hundred and twenty? Pause and try it.", E('40, 80, 120, ?'), "The rule is add forty. One hundred and sixty.", E('160', 'g')],
         rec: ["Find the rule between each pair, check it every time, then continue or fill gaps.", ['Find the rule', 'Check every pair', 'Up or down?', 'Continue or fill gaps']],
         deep: ['Patterns in 3s and 4s are the 3 and 4 times tables.', 'Some patterns go down, past zero, into negative numbers.']
@@ -69,7 +69,7 @@
         ex: [['Read it', '452', [["Four hundreds, five tens and two ones: four hundred and fifty-two.", E('400 + 50 + 2', 'g')]]],
           ['Zeros', '608', [["Six hundreds, no tens and eight ones: six hundred and eight. The zero holds the tens place.", E('600 + 0 + 8', 'g')]]],
           ['Digit value', 'Where is the 7?', [["In seven hundred and sixteen, the seven is in the hundreds. It is worth seven hundred.", E('716: the 7 is worth 700', 'g')]]]],
-        real: ['Steps', "Professor Owl climbed nine hundred and twenty-five steps up the lighthouse.", E('925 steps', 'b')],
+        real: ['Steps', "Professor Owl climbed nine hundred and twenty-five steps up the lighthouse.", V.rule("Professor Owl climbed 925 steps. Show the number.") + E('925 steps', 'b')],
         turn: ["Your turn! What is the value of the three in five hundred and thirty-one? Pause and try it.", E('531'), "It is in the tens column: thirty.", E('30', 'g')],
         rec: ["Each column is worth ten times the column to its right.", ['H, T, O', '10 tens = 1 hundred', 'Zero holds a place', 'Value depends on the column']],
         deep: ['1000 is ten hundreds, or a hundred tens.', 'Read numbers from the biggest column.']
@@ -79,7 +79,7 @@
         ex: [['Nearest 10', '467', [["Four hundred and sixty-seven is between four hundred and sixty and four hundred and seventy. It rounds to four hundred and seventy.", E('467 → 470', 'g')]]],
           ['Nearest 100', '362', [["Three hundred and sixty-two is between three hundred and four hundred. Look at the tens: six, so round up to four hundred.", E('362 → 400', 'g')]]],
           ['Round down', '630', [["To the nearest hundred, six hundred and thirty: look at the tens, three, so round down. Six hundred.", E('630 → 600', 'g')]]]],
-        real: ['Crowd', "Four hundred and eighty people came to the show. That is about five hundred.", E('480 → 500', 'b')],
+        real: ['Crowd', "Four hundred and eighty people came to the show. That is about five hundred.", V.rule("480 people came to the show. About how many?") + E('480 → 500', 'b')],
         turn: ["Your turn! Round seven hundred and forty-nine to the nearest hundred. Pause and try it.", E('749 → ?'), "Look at the tens: four. Round down to seven hundred.", E('700', 'g')],
         rec: ["To round to 100, look at the tens digit. 5 or more rounds up.", ['Find the two 10s or 100s', 'Look at the next digit', '5 or more: up', '4 or less: down']],
         deep: ['Rounding helps to estimate and check answers.', 'For the nearest 100, only the tens digit decides.']
@@ -89,7 +89,7 @@
         ex: [['Read it', 'Minus 4', [["The red line stops four below zero: minus four degrees.", thermo(-4)]]],
           ['Warmer', 'From −2 up 5', [["From minus two, count up five: minus one, zero, one, two, three.", E('−2 + 5 = 3', 'g')]]],
           ['Colder', 'From 3 down 6', [["From three, count down six: two, one, zero, minus one, minus two, minus three.", E('3 − 6 = −3', 'g')]]]],
-        real: ['Freezer', "Professor Owl's freezer is minus eighteen degrees. Much colder than the kitchen!", E('−18°C', 'b')],
+        real: ['Freezer', "Professor Owl's freezer is minus eighteen degrees. Much colder than the kitchen!", V.rule("The freezer is −18 °C. Is it warmer or colder than 0 °C?") + E('−18°C', 'b')],
         turn: ["Your turn! It is two degrees. It falls by five degrees. What is it now? Pause and try it.", thermo(2), "Two, one, zero, minus one, minus two, minus three.", E('−3°C', 'g')],
         rec: ["Numbers below zero are negative. Count through zero carefully.", ['Zero is the middle', 'Below zero: negative', 'Up is warmer', 'Count through zero']],
         deep: ['−5 is colder than −2.', 'Negative numbers are used for temperatures, lifts and sea levels.']
@@ -134,7 +134,7 @@
         ex: [['Add 9', '46 + 9', [["Forty-six plus ten is fifty-six. Take away one: fifty-five.", E('46 + 10 − 1 = 55', 'g')]]],
           ['Add 19', '64 + 19', [["Sixty-four plus twenty is eighty-four. Take away one: eighty-three.", E('64 + 20 − 1 = 83', 'g')]]],
           ['Subtract 29', '85 − 29', [["Eighty-five take away thirty is fifty-five. We took one too many, so add one back: fifty-six.", E('85 − 30 + 1 = 56', 'g')]]]],
-        real: ['Fuel', "Ruby has one hundred and twenty-three litres of fuel and adds ninety-nine more. One hundred and twenty-three plus one hundred, take away one: two hundred and twenty-two.", E('123 + 99 = 222', 'b')],
+        real: ['Fuel', "Ruby has one hundred and twenty-three litres of fuel and adds ninety-nine more. One hundred and twenty-three plus one hundred, take away one: two hundred and twenty-two.", V.rule("Ruby has 123 litres and adds 99 more. How many now?") + E('123 + 99 = 222', 'b')],
         turn: ["Your turn! What is fifty-seven plus nineteen? Pause and try it.", E('57 + 19'), "Fifty-seven plus twenty is seventy-seven. Take away one: seventy-six.", E('76', 'g')],
         rec: ["Round to a friendly number, work it out, then adjust.", ['Spot a number near a ten', 'Round it', 'Add or subtract', 'Adjust back']],
         deep: ['When adding, you added too much, so take away the extra.', 'When subtracting, you took too much, so add the extra back.']
@@ -145,7 +145,7 @@
           ['Another one', '24 + 35', [["Ones: 4 + 5 = 9. Tens: 2 + 3 = 5. The answer is 59.", E('24 + 35 = 59', 'g')]]],
           ['Carry a ten', '47 + 35', [["Ones: 7 + 5 = 12. Write 2 and carry 1 ten to the tens column. Tens: 4 + 3 + 1 = 8. The answer is 82.", E('47 + 35 = 82', 'g')]]],
           ['A 2-digit and a 1-digit number', '61 + 7', [["Ones: 1 + 7 = 8. Tens: just 6. The answer is 68.", E('61 + 7 = 68', 'g')]]]],
-        real: ['Space miles', "On Monday Ruby flies 34 kilometres, on Tuesday 25. Ones: 4 + 5 = 9. Tens: 3 + 2 = 5. Altogether: 59 kilometres.", E('34 + 25 = 59', 'b')],
+        real: ['Space miles', "On Monday Ruby flies 34 kilometres, on Tuesday 25. Ones: 4 + 5 = 9. Tens: 3 + 2 = 5. Altogether: 59 kilometres.", V.rule("Ruby flies 34 km on Monday and 25 km on Tuesday. How far altogether?") + E('34 + 25 = 59', 'b')],
         turn: ["Your turn! What is 26 + 53? Pause and try it.", E('26 + 53'), "Ones: 6 + 3 = 9. Tens: 2 + 5 = 7. The answer is 79.", E('79', 'g')],
         rec: ["Line up the tens and the ones. Add the ones first, then the tens.", ['Line up T and O', 'Start with the ones', 'Then add the tens', 'Check with an estimate']],
         deep: ['Always line up the ones, not the first digits.', 'Adding the ones first is the same order we always use.']
@@ -155,7 +155,7 @@
         ex: [['Take away the ones, then the tens', '87 − 43', [["Ones: 7 − 3 = 4. Tens: 8 − 4 = 4. The answer is 44.", E('87 − 43 = 44', 'g')]]],
           ['Another one', '98 − 53', [["Ones: 8 − 3 = 5. Tens: 9 − 5 = 4. The answer is 45.", E('98 − 53 = 45', 'g')]]],
           ['Check it', 'Add back', [["Check: 44 + 43 = 87. Correct!", E('44 + 43 = 87', 'g')]]]],
-        real: ['Oxygen', "The station had 65 oxygen tanks. 24 were used. Ones: 5 − 4 = 1. Tens: 6 − 2 = 4. 41 are left.", E('65 − 24 = 41', 'b')],
+        real: ['Oxygen', "The station had 65 oxygen tanks. 24 were used. Ones: 5 − 4 = 1. Tens: 6 − 2 = 4. 41 are left.", V.rule("65 tanks, 24 used. How many are left?") + E('65 − 24 = 41', 'b')],
         turn: ["Your turn! What is 79 − 36? Pause and try it.", E('79 − 36'), "Ones: 9 − 6 = 3. Tens: 7 − 3 = 4. The answer is 43.", E('43', 'g')],
         rec: ["Line up the tens and the ones. Take away the ones first, then the tens.", ['Line up T and O', 'Start with the ones', 'Then the tens', 'Check by adding']],
         deep: ['The bigger number always goes on top.', 'Adding back checks a subtraction.']
@@ -165,7 +165,7 @@
         ex: [['Round to 10', '48 + 31', [["48 is about 50. 31 is about 30. 50 + 30 = 80. About 80.", E('≈ 50 + 30 = 80', 'g')]]],
           ['Check', 'Is 79 sensible?', [["The exact answer is 79. That is close to 80, so it makes sense.", E('79 ≈ 80 ✓', 'g')]]],
           ['Spot a mistake', '82 − 39', [["About 80 take away 40: 40. If you got 53, something went wrong!", E('≈ 40, not 53', 'g')]]]],
-        real: ['Shopping list', "Ruby buys things costing £2.98 and £4.10. That is about £3 + £4 = £7.", E('≈ £3 + £4 = £7', 'b')],
+        real: ['Shopping list', "Ruby buys things costing £2.98 and £4.10. That is about £3 + £4 = £7.", V.rule("Ruby buys items costing £2.98 and £4.10. About how much is that?") + E('≈ £3 + £4 = £7', 'b')],
         turn: ["Your turn! Estimate 62 + 29. Pause and try it.", E('62 + 29 ≈ ?'), "62 is about 60. 29 is about 30. 60 + 30 = 90.", E('≈ 90', 'g')],
         rec: ["Round each number to the nearest 10, work out a quick answer, then compare.", ['Round each number', 'Quick answer', 'Compare to the real answer', 'Too far off? Check again']],
         deep: ['≈ means approximately equal.', 'An estimate is a check, not the final answer.']
@@ -206,7 +206,7 @@
         ex: [['× 4', 'Double, double', [["Seven times four: double seven is fourteen, double again is twenty-eight.", E('7 × 4 = 28', 'g')]]],
           ['× 4 again', 'Bigger numbers', [["Twelve times four: double twelve is twenty-four, double again is forty-eight.", E('12 × 4 = 48', 'g')]]],
           ['÷ 4', 'Halve, halve', [["Thirty-six divided by four: half is eighteen, half again is nine.", E('36 ÷ 4 = 9', 'g')]]]],
-        real: ['Eggs', "Each hen lays four eggs a week. Nine hens: double nine is eighteen, double eighteen is thirty-six eggs.", E('9 × 4 = 36', 'b')],
+        real: ['Eggs', "Each hen lays four eggs a week. Nine hens: double nine is eighteen, double eighteen is thirty-six eggs.", V.rule("9 hens each lay 4 eggs a week. How many eggs?") + E('9 × 4 = 36', 'b')],
         turn: ["Your turn! What is eight times four? Pause and try it.", E('8 × 4'), "Double eight is sixteen. Double sixteen is thirty-two.", E('32', 'g')],
         rec: ["× 2: double. × 4: double twice. ÷ 4: halve twice.", ['Double for × 2', 'Double twice for × 4', 'Halve for ÷ 2', 'Halve twice for ÷ 4']],
         deep: ['Doubling and halving undo each other.', 'Halve the tens and ones separately for big numbers.']
@@ -216,7 +216,7 @@
         ex: [['× 10', '23 × 10', [["The digits move one place: two hundred and thirty.", E('23 × 10 = 230', 'g')]]],
           ['× 30', '4 × 30', [["Four times three is twelve. Ten times bigger: one hundred and twenty.", E('4 × 30 = 120', 'g')]]],
           ['× 50', '6 × 50', [["Six times five is thirty. Ten times bigger: three hundred.", E('6 × 50 = 300', 'g')]]]],
-        real: ['Carrots', "Finn plants six rows of forty carrots. Six times four is twenty-four, ten times bigger: two hundred and forty.", E('6 × 40 = 240', 'b')],
+        real: ['Carrots', "Finn plants six rows of forty carrots. Six times four is twenty-four, ten times bigger: two hundred and forty.", V.rule("6 rows of 40 carrots. How many carrots?") + E('6 × 40 = 240', 'b')],
         turn: ["Your turn! What is three times seventy? Pause and try it.", E('3 × 70'), "Three times seven is twenty-one. Ten times bigger: two hundred and ten.", E('210', 'g')],
         rec: ["Use the times table fact, then make it ten times bigger.", ['Find the small fact', 'Then × 10', 'Digits move left', 'Zero holds the ones place']],
         deep: ['× 10 does not just "add a zero": the digits move.', 'This also works for × 100.']
@@ -226,7 +226,7 @@
         ex: [['23 × 4', 'Tens and ones', [["Twenty times four is eighty. Three times four is twelve. Eighty plus twelve: ninety-two.", E('80 + 12 = 92', 'g')]]],
           ['15 × 3', 'Again', [["Ten times three is thirty. Five times three is fifteen. Forty-five.", E('30 + 15 = 45', 'g')]]],
           ['A grid', '34 × 5', [["Use a grid: thirty times five is one hundred and fifty, four times five is twenty. One hundred and seventy.", tbl([['× 5', '150', '20']], ['', '30', '4'])]]]],
-        real: ['Fence posts', "Each field needs twenty-six posts. Three fields: sixty plus eighteen, seventy-eight posts.", E('26 × 3 = 78', 'b')],
+        real: ['Fence posts', "Each field needs twenty-six posts. Three fields: sixty plus eighteen, seventy-eight posts.", V.rule("Each field needs 26 posts. How many for 3 fields?") + E('26 × 3 = 78', 'b')],
         turn: ["Your turn! What is twenty-one times four? Pause and try it.", E('21 × 4'), "Twenty times four is eighty. One times four is four. Eighty-four.", E('84', 'g')],
         rec: ["Split into tens and ones, multiply each part, then add.", ['Partition', 'Multiply the tens', 'Multiply the ones', 'Add the parts']],
         deep: ['Partitioning works because multiplying spreads over adding.', 'Don’t forget to add both parts.']
@@ -236,7 +236,7 @@
         ex: [['Turn around', '4 × 3', [["Four times three is also twelve.", E('3 × 4 = 4 × 3 = 12', 'g')]]],
           ['Divide', '12 ÷ 3', [["Twelve divided by three is four, and twelve divided by four is three.", E('12 ÷ 3 = 4', 'g')]]],
           ['Order', '5 × 7 × 2', [["Multiply in an easy order: five times two is ten, ten times seven is seventy.", E('5 × 2 × 7 = 70', 'g')]]]],
-        real: ['A group', "There are three pens with four sheep each, and every sheep needs two buckets of water. Four times two is eight, three times eight is twenty-four buckets.", E('3 × 4 × 2 = 24', 'b')],
+        real: ['A group', "There are three pens with four sheep each, and every sheep needs two buckets of water. Four times two is eight, three times eight is twenty-four buckets.", V.rule("3 pens with 4 sheep each. Each sheep needs 2 buckets. How many buckets?") + E('3 × 4 × 2 = 24', 'b')],
         turn: ["Your turn! Four times five is twenty. What is twenty divided by four? Pause and try it.", E('20 ÷ 4'), "Five.", E('5', 'g')],
         rec: ["One fact gives a family: turn it round, divide, or scale it by ten.", ['Turn it round', 'Divide back', '× 10 for bigger facts', 'Choose an easy order']],
         deep: ['Multiplying three numbers works in any order.', 'Look for pairs that make 10.']
@@ -278,7 +278,7 @@
         ex: [['Same top', '1/2 and 1/4', [["Cut into two pieces, each piece is big. Cut into four, each piece is smaller. One half is bigger.", '<div class="sv-row">' + pie(2, 1) + pie(4, 1) + '</div>']]],
           ['Same bottom', '3/8 and 5/8', [["The pieces are the same size, so five pieces is more than three. Five eighths is bigger.", '<div class="sv-row">' + pie(8, 3) + pie(8, 5) + '</div>']]],
           ['Thirds', '1/3 and 1/5', [["Fewer pieces means bigger pieces. One third is bigger than one fifth.", E('1/3 > 1/5', 'g')]]]],
-        real: ['Pizza night', "Would you rather have three tenths or seven tenths of a pizza? Seven tenths: more slices of the same size!", E('7/10 > 3/10', 'b')],
+        real: ['Pizza night', "Would you rather have three tenths or seven tenths of a pizza? Seven tenths: more slices of the same size!", V.rule("Which is more, 3/10 or 7/10 of a pizza?") + E('7/10 > 3/10', 'b')],
         turn: ["Your turn! Which is bigger: one sixth or one third? Pause and try it.", E('1/6 or 1/3'), "One third: fewer, bigger pieces.", E('1/3', 'g')],
         rec: ["Same bottom: bigger top wins. Top of 1: smaller bottom wins.", ['Same bottom: compare tops', 'Top of 1: smaller bottom wins', 'Draw it to check', '< and >']],
         deep: ['A bigger bottom number does not mean a bigger fraction.', 'Fractions must be of the same whole to compare.']
@@ -288,7 +288,7 @@
         ex: [['A half', '1/2', [["Half of a hundred squares is fifty: fifty percent. As a decimal: nought point five.", pie(2, 1)]]],
           ['A quarter', '1/4', [["A quarter is twenty-five percent, or nought point two five.", E('1/4 = 0.25 = 25%', 'g')]]],
           ['A tenth', '1/10', [["One tenth is nought point one, or ten percent.", E('1/10 = 0.1 = 10%', 'g')]]]],
-        real: ['Phone battery', "Benny's tablet says fifty percent battery: it is half full.", E('50% = half', 'b')],
+        real: ['Phone battery', "Benny's tablet says fifty percent battery: it is half full.", V.rule("The tablet battery is 50%. What fraction is that?") + E('50% = half', 'b')],
         turn: ["Your turn! What percentage is three quarters? Pause and try it.", pie(4, 3), "Seventy-five percent.", E('75%', 'g')],
         rec: ["Fractions, decimals and percentages are different ways to write the same amount.", ['1/2 = 0.5 = 50%', '1/4 = 0.25 = 25%', '3/4 = 0.75 = 75%', '1/10 = 0.1 = 10%']],
         deep: ['Percent means out of 100.', '100% is the whole thing.']
@@ -298,7 +298,7 @@
         ex: [['Quarters', '4 steps', [["Split zero to one into four equal steps: one quarter, two quarters, three quarters.", fline(4, [[0.25, '1/4'], [0.75, '3/4']])]]],
           ['Halfway', '1/2', [["Two quarters is halfway: the same as one half.", fline(4, [[0.5, '1/2']])]]],
           ['Order', 'Smallest first', [["On a line of tenths, three tenths, then five tenths, then nine tenths.", fline(10, [[0.3, '3/10'], [0.5, ''], [0.9, '9/10']])]]]],
-        real: ['A race', "The finish line is at one. Benny has run three quarters of the way.", fline(4, [[0.75, 'Benny']])],
+        real: ['A race', "The finish line is at one. Benny has run three quarters of the way.", V.rule("The finish line is at 1. Benny has run 3/4 of the way. Where is he?") + fline(4, [[0.75, 'Benny']])],
         turn: ["Your turn! Which is closer to one: two fifths or four fifths? Pause and try it.", fline(5, [[0.4, ''], [0.8, '']]), "Four fifths.", E('4/5', 'g')],
         rec: ["Split 0 to 1 into equal steps. Count the steps to place a fraction.", ['Equal steps', 'Count from 0', 'Further right = bigger', 'Halfway is 1/2']],
         deep: ['Fractions with the same bottom are easy to order: compare the tops.', 'The number line keeps going past 1.']
@@ -308,7 +308,7 @@
         ex: [['1/3 of 12', 'Divide by 3', [["Twelve divided by three is four.", E('1/3 of 12 = 4', 'g')]]],
           ['1/5 of 20', 'Divide by 5', [["Twenty divided by five is four.", E('1/5 of 20 = 4', 'g')]]],
           ['1/10 of 30', 'Divide by 10', [["Thirty divided by ten is three.", E('1/10 of 30 = 3', 'g')]]]],
-        real: ['Prize money', "The winner gets one quarter of forty pounds. Forty divided by four: ten pounds.", E('1/4 of £40 = £10', 'b')],
+        real: ['Prize money', "The winner gets one quarter of forty pounds. Forty divided by four: ten pounds.", V.rule("What is 1/4 of £40?") + E('1/4 of £40 = £10', 'b')],
         turn: ["Your turn! What is one tenth of fifty? Pause and try it.", E('1/10 of 50'), "Fifty divided by ten: five.", E('5', 'g')],
         rec: ["To find one part, divide by the bottom number.", ['÷ by the bottom number', 'Share into equal groups', 'Draw groups to check', '1/2 = ÷ 2']],
         deep: ['Finding 1/4 is the same as halving twice.', 'The bigger the bottom number, the smaller the share.']
@@ -350,7 +350,7 @@
         ex: [['From £5', '£3.40', [["Count on from three pounds forty: sixty pence makes four pounds, one pound makes five. Change: one pound sixty.", E('£3.40 + 60p + £1 = £5', 'g')]]],
           ['From £2', '£1.25', [["One pound twenty-five, plus seventy-five pence makes two pounds. Change: seventy-five pence.", E('£1.25 + 75p = £2', 'g')]]],
           ['From £10', '£6.50', [["Six pounds fifty plus fifty pence is seven pounds, plus three pounds is ten. Change: three pounds fifty.", E('£6.50 + 50p + £3 = £10', 'g')]]]],
-        real: ['A busy day', "A customer buys a mug for three pounds forty and pays with a five pound note. Molly gives one pound sixty change.", FL.coins([100, 50, 10])],
+        real: ['A busy day', "A customer buys a mug for three pounds forty and pays with a five pound note. Molly gives one pound sixty change.", V.rule("A mug costs £3.40. The customer pays £5. How much change?") + FL.coins([100, 50, 10])],
         turn: ["Your turn! Something costs two pounds thirty. You pay with five pounds. How much change? Pause and try it.", E('£5 − £2.30'), "Seventy pence makes three pounds, plus two pounds: two pounds seventy.", E('£2.70', 'g')],
         rec: ["Count on from the price to the next pound, then on to the money paid.", ['Start at the price', 'Count to the next pound', 'Then to what was paid', 'Add the jumps']],
         deep: ['£1 = 100p, so £2.30 = 230p.', 'Counting on is how shopkeepers give change.']
@@ -360,7 +360,7 @@
         ex: [['£10', 'Two £5 notes', [["Five plus five is ten pounds.", FL.coins([500, 500])]]],
           ['£3.75', 'Fewest coins', [["Two pounds, one pound, fifty pence, twenty pence, five pence.", FL.coins([200, 100, 50, 20, 5])]]],
           ['£7.20', 'Another way', [["Five pounds, two pounds and twenty pence.", FL.coins([500, 200, 20])]]]],
-        real: ['The float', "At the start of the fair Molly has twenty pounds in coins and notes to give change.", FL.coins([1000, 500, 200, 200, 100])],
+        real: ['The float', "At the start of the fair Molly has twenty pounds in coins and notes to give change.", V.rule("Molly has £20 in coins and notes for change. What is the float?") + FL.coins([1000, 500, 200, 200, 100])],
         turn: ["Your turn! How much is a five pound note, a two pound coin and a fifty pence coin? Pause and try it.", FL.coins([500, 200, 50]), "Seven pounds fifty.", E('£7.50', 'g')],
         rec: ["The same total can be made in many ways. Use the biggest first for the fewest coins and notes.", ['Biggest first', 'Count on', 'Many ways', '£1 = 100p']],
         deep: ['Using fewer coins makes paying quicker.', 'Count values, not the number of coins.']
@@ -370,7 +370,7 @@
         ex: [['Pounds first', '£3.10 or £2.95', [["Two pounds is less than three pounds, so two pounds ninety-five is cheaper.", E('£2.95 < £3.10', 'g')]]],
           ['Then pence', '£2.45 or £2.54', [["Both are two pounds. Forty-five pence is less than fifty-four. Two pounds forty-five is cheaper.", E('£2.45 < £2.54', 'g')]]],
           ['How much cheaper?', 'Find the difference', [["Two pounds fifty-four take away two pounds forty-five is nine pence.", E('9p cheaper', 'g')]]]],
-        real: ['Juice', "One stall sells juice for sixty-five pence, another for seventy pence. The first is five pence cheaper.", E('65p < 70p', 'b')],
+        real: ['Juice', "One stall sells juice for sixty-five pence, another for seventy pence. The first is five pence cheaper.", V.rule("Juice is 65p at one stall and 70p at another. Which is cheaper, and by how much?") + E('65p < 70p', 'b')],
         turn: ["Your turn! Which is cheaper: one pound nineteen or ninety-nine pence? Pause and try it.", E('£1.19 or 99p'), "Ninety-nine pence is less than one pound.", E('99p', 'g')],
         rec: ["Compare pounds first, then pence. Subtract to find how much cheaper.", ['Same units', 'Pounds first', 'Then pence', 'Subtract the difference']],
         deep: ['Watch for prices in pence and pounds: 99p is £0.99.', 'The cheaper item is not always the better buy: check the size.']
@@ -421,7 +421,7 @@
         ex: [['To the hour', '2:50 + 10', [["From two fifty, ten minutes takes us to three o'clock.", E('2:50 → 3:00', 'g')]]],
           ['The rest', '+ 15 more', [["Twenty-five minus ten is fifteen. Three o'clock plus fifteen minutes: three fifteen.", E('3:00 → 3:15', 'g')]]],
           ['How long', '8:40 to 9:20', [["From eight forty to nine o'clock is twenty minutes. Then twenty more. Forty minutes.", E('20 + 20 = 40 min', 'g')]]]],
-        real: ['Late train', "The train was due at four forty-five but is thirty minutes late. Fifteen minutes to five o'clock, then fifteen more: five fifteen.", E('4:45 + 30 min = 5:15', 'b')],
+        real: ['Late train', "The train was due at four forty-five but is thirty minutes late. Fifteen minutes to five o'clock, then fifteen more: five fifteen.", V.rule("The train is due at 4:45 and is 30 minutes late. What time does it arrive?") + E('4:45 + 30 min = 5:15', 'b')],
         turn: ["Your turn! It is six thirty-five. What time will it be in forty minutes? Pause and try it.", E('6:35 + 40 min'), "Twenty-five minutes to seven o'clock, then fifteen more: seven fifteen.", E('7:15', 'g')],
         rec: ["Count on to the next o'clock first, then add the minutes left.", ['Find the next hour', 'Count to it', 'Add what is left', '60 minutes in an hour']],
         deep: ['Time does not work like 100: after 59 minutes comes the next hour.', 'A number line helps with time too.']
@@ -431,7 +431,7 @@
         ex: [['Past', 'Long hand on 4', [["The long hand is on four: twenty minutes past. The short hand is past three. Twenty past three.", clk(3, 20)]]],
           ['To', 'Long hand on 8', [["The long hand is on eight: twenty minutes to the next hour. Twenty to six.", clk(5, 40)]]],
           ['Digital', '5:40', [["On a digital clock, twenty to six is five forty.", E('20 to 6 = 5:40', 'g')]]]],
-        real: ['Train times', "Ollie's train leaves at ten past eleven: eleven ten.", clk(11, 10)],
+        real: ['Train times', "Ollie's train leaves at ten past eleven: eleven ten.", V.rule("Ollie's train leaves at 11:10. Show the time.") + clk(11, 10)],
         turn: ["Your turn! The long hand is on seven, the short hand is past two. What time is it? Pause and try it.", clk(2, 35, 170), "Twenty-five to three: two thirty-five.", E('25 to 3', 'g')],
         rec: ["Count in fives for the long hand. Up to 6 is past, after 6 is to.", ['Each number = 5 min', 'Up to 30: past', 'After 30: to', 'Digital: hour then minutes']],
         deep: ['At "to" times, the short hand is nearly at the next number.', '2:35 and 25 to 3 are the same time.']
@@ -441,7 +441,7 @@
         ex: [['am', 'Morning', [["Ollie wakes up at seven am.", E('7 am', 'g')]]],
           ['pm', 'Afternoon', [["School finishes at three pm.", E('3 pm', 'g')]]],
           ['Midday', '12 pm', [["Twelve noon is midday. After that, it is pm.", E('12 noon', 'g')]]]],
-        real: ['Night train', "The sleeper train leaves at nine pm and arrives at seven am the next morning.", E('9 pm → 7 am', 'b')],
+        real: ['Night train', "The sleeper train leaves at nine pm and arrives at seven am the next morning.", V.rule("The sleeper train leaves at 9 pm and arrives at 7 am. How long is the journey?") + E('9 pm → 7 am', 'b')],
         turn: ["Your turn! Is lunch at twelve thirty am or pm? Pause and try it.", E('12:30 lunch'), "After midday: pm.", E('pm', 'g')],
         rec: ["am: midnight to midday. pm: midday to midnight.", ['am: morning', 'pm: afternoon and evening', 'Midday: 12 noon', 'Midnight: 12 at night']],
         deep: ['24-hour clocks use 13:00 instead of 1 pm.', 'Morning starts just after midnight.']
@@ -451,7 +451,7 @@
         ex: [['Find a time', 'Stirling', [["Train one leaves Stirling at nine forty-five.", E('Stirling: 9:45', 'g')]]],
           ['How long', 'Glasgow to Perth', [["Train one leaves Glasgow at nine fifteen and reaches Perth at ten twenty: one hour and five minutes.", E('9:15 → 10:20 = 1 h 5 min', 'g')]]],
           ['Pick a train', 'Arrive before 11', [["To reach Perth before eleven, take train one.", E('Train 1', 'g')]]]],
-        real: ['Planning', "Ollie wants to get to Dundee for lunch at twelve. Train two arrives at eleven forty-five: just in time!", E('11:45', 'b')],
+        real: ['Planning', "Ollie wants to get to Dundee for lunch at twelve. Train two arrives at eleven forty-five: just in time!", V.rule("Ollie needs to arrive by 12:00. Train 2 arrives at 11:45. Is it in time?") + E('11:45', 'b')],
         turn: ["Your turn! When does train two arrive in Dundee? Pause and try it.", tbl(TT, ['Station', 'Train 1', 'Train 2']), "Eleven forty-five.", E('11:45', 'g')],
         rec: ["Find the row for the place, the column for the train, and read where they meet.", ['Find the row', 'Find the column', 'Read the time', 'Subtract for how long']],
         deep: ['Each column is one train.', 'Bridge through the hour to find journey times.']
@@ -491,7 +491,7 @@
         ex: [['Count', 'A rectangle', [["Count the green squares: twelve. The area is twelve squares.", gridShape(rectCells(4, 3), 6, 5)]]],
           ['Rows', 'Multiply', [["There are three rows of four. Three times four is twelve. Quicker than counting!", E('3 × 4 = 12 squares', 'g')]]],
           ['Odd shapes', 'Still count', [["An L-shape: count every square: seven.", gridShape(['1,1', '1,2', '1,3', '2,3', '3,3', '4,3', '2,2'], 6, 5)]]]],
-        real: ['A lawn', "Frankie's lawn is five squares long and four squares wide: twenty squares of grass.", gridShape(rectCells(5, 4), 7, 6)],
+        real: ['A lawn', "Frankie's lawn is five squares long and four squares wide: twenty squares of grass.", V.rule("A lawn is 5 squares long and 4 squares wide. How many squares?") + gridShape(rectCells(5, 4), 7, 6)],
         turn: ["Your turn! What is the area of a rectangle two rows of six? Pause and try it.", gridShape(rectCells(6, 2), 8, 4), "Two times six: twelve squares.", E('12 squares', 'g')],
         rec: ["Area is the number of squares a shape covers. For a rectangle, multiply rows by columns.", ['Area = space inside', 'Count squares', 'Rectangle: rows × columns', 'Units: squares (or cm²)']],
         deep: ['Shapes with the same area can look very different.', 'Count half squares as halves.']
@@ -501,7 +501,7 @@
         ex: [['m to cm', '3 m', [["Three metres is three hundred centimetres.", E('3 m = 300 cm', 'g')]]],
           ['Mixed', '1 m 45 cm', [["One metre forty-five is one hundred and forty-five centimetres.", E('1 m 45 cm = 145 cm', 'g')]]],
           ['Compare', '2 m or 180 cm', [["Two metres is two hundred centimetres, so it is longer than one hundred and eighty.", E('200 cm > 180 cm', 'g')]]]],
-        real: ['Fence', "Frankie's fence is four metres twenty long: four hundred and twenty centimetres.", E('4 m 20 cm = 420 cm', 'b')],
+        real: ['Fence', "Frankie's fence is four metres twenty long: four hundred and twenty centimetres.", V.rule("Frankie's fence is 4 m 20 cm. How many centimetres is that?") + E('4 m 20 cm = 420 cm', 'b')],
         turn: ["Your turn! How many centimetres in two metres fifty? Pause and try it.", E('2 m 50 cm'), "Two hundred and fifty centimetres.", E('250 cm', 'g')],
         rec: ["1 m = 100 cm. Change to the same unit to compare.", ['1 m = 100 cm', 'Use cm for short things', 'Same units to compare', 'Pick a sensible unit']],
         deep: ['Use mm for tiny things, km for long journeys.', 'A metre is about one big step.']
@@ -511,7 +511,7 @@
         ex: [['Add the sides', '6 m by 4 m', [["Six plus four plus six plus four: twenty metres.", E('6 + 4 + 6 + 4 = 20 m', 'g')]]],
           ['A square', '5 cm sides', [["Four sides of five: twenty centimetres.", E('4 × 5 = 20 cm', 'g')]]],
           ['On squares', 'Count edges', [["Walk round the outside and count the edges of the squares.", gridShape(rectCells(3, 2), 5, 4)]]]],
-        real: ['Lace', "A card is ten centimetres by eight. Lace round the edge: thirty-six centimetres.", rectPic(10, 8, 'cm')],
+        real: ['Lace', "A card is ten centimetres by eight. Lace round the edge: thirty-six centimetres.", V.rule("A card is 10 cm by 8 cm. How much lace goes round the edge?") + rectPic(10, 8, 'cm')],
         turn: ["Your turn! What is the perimeter of a rectangle seven by three? Pause and try it.", rectPic(7, 3, 'cm'), "Seven plus three plus seven plus three: twenty.", E('20 cm', 'g')],
         rec: ["Perimeter: add all the sides. Area: count the squares inside.", ['Perimeter = around', 'Add every side', 'Rectangle: 2 lengths + 2 widths', 'Not the same as area']],
         deep: ['Perimeter is a length (cm, m); area is in squares.', 'Don’t forget the sides you cannot see labelled.']
@@ -521,7 +521,7 @@
         ex: [['Steps of 10', '0 to 100', [["Each step is ten. The arrow is on seventy.", scale(0, 100, 10, 70, 'cm')]]],
           ['Steps of 5', '0 to 50 kg', [["Each step is five. The arrow is on thirty-five kilograms.", scale(0, 50, 5, 35, 'kg')]]],
           ['Steps of 100', 'Jug in ml', [["A jug goes up in hundreds of millilitres. The water is at six hundred.", scale(0, 1000, 100, 600, 'ml')]]]],
-        real: ['Compost', "Frankie weighs his compost: the arrow points to sixteen kilograms.", scale(0, 20, 2, 16, 'kg')],
+        real: ['Compost', "Frankie weighs his compost: the arrow points to sixteen kilograms.", V.rule("What does the arrow point to on the scale?") + scale(0, 20, 2, 16, 'kg')],
         turn: ["Your turn! The scale goes up in twos. What does the arrow point to? Pause and try it.", scale(0, 20, 2, 14, 'kg'), "One step after twelve: fourteen.", E('14 kg', 'g')],
         rec: ["Find the value of each step, then count from a labelled mark.", ['Read the labels', 'Count the steps between', 'Value of one step', 'Count on to the arrow']],
         deep: ['Not every scale goes up in ones.', 'Check the unit: g, kg, ml or litres.']
@@ -562,7 +562,7 @@
         ex: [['Squares', 'No gaps', [["Squares fit together perfectly, like a chessboard.", FL.shapeRow(['square', 'square', 'square'], 60)]]],
           ['Triangles', 'Flip and fit', [["Triangles tessellate if you turn every other one upside down.", FL.shapeRow(['triangle', 'triangle', 'triangle'], 60)]]],
           ['Circles', 'Gaps!', [["Circles leave gaps between them. They do not tessellate.", FL.shapeRow(['circle', 'circle', 'circle'], 60)]]]],
-        real: ['Honeycomb', "Bees build honeycomb from hexagons, which tessellate with no wasted space.", FL.shape('hexagon', '#ffd166', 110)],
+        real: ['Honeycomb', "Bees build honeycomb from hexagons, which tessellate with no wasted space.", V.rule("What shape are the cells of a honeycomb?") + FL.shape('hexagon', '#ffd166', 110)],
         turn: ["Your turn! Do rectangles tessellate? Pause and try it.", FL.shape('rectangle', null, 110), "Yes: think of a brick wall.", E('Yes', 'g')],
         rec: ["A tessellation covers a surface with shapes, no gaps and no overlaps.", ['No gaps', 'No overlaps', 'Squares, triangles, hexagons', 'Circles leave gaps']],
         deep: ['Regular pentagons do not tessellate on their own.', 'You can flip or turn shapes to make them fit.']
@@ -572,7 +572,7 @@
         ex: [['Find it', 'The diamond', [["Along to C, up to 4. The diamond is at C4.", grid(2, 3, '💎')]]],
           ['The anchor', 'A2', [["Along to A, up to 2: the anchor is at A2.", grid(0, 1, '⚓')]]],
           ['Order matters', 'Letter first', [["B3 is not the same as C2! Always the letter first.", E('letter, then number', 'g')]]]],
-        real: ['Maps', "Real maps use grid references to help people find places.", grid(4, 0, '🏝️')],
+        real: ['Maps', "Real maps use grid references to help people find places.", V.rule("What do grid references help people do?") + grid(4, 0, '🏝️')],
         turn: ["Your turn! Where is the parrot? Pause and try it.", grid(3, 2, '🦜'), "Along to D, up to 3: D3.", E('D3', 'g')],
         rec: ["Go along to find the letter, then up to find the number.", ['Along first', 'Then up', 'Letter then number', 'Check the square']],
         deep: ['Along the corridor, up the stairs helps remember the order.', 'Each grid reference names one square.']
@@ -582,7 +582,7 @@
         ex: [['A square', '4 right angles', [["Every corner of a square is a right angle.", FL.shape('square', null, 110)]]],
           ['Not right', 'Too wide or too narrow', [["An equilateral triangle has no right angles: its corners are too narrow.", FL.shape('triangle', null, 110)]]],
           ['Turns', 'Quarter turn', [["Turning a quarter turn is turning through one right angle. A half turn is two right angles.", E('¼ turn = 1 right angle', 'g')]]]],
-        real: ['Doors and windows', "Doors, windows and books all have right-angled corners.", FL.shape('rectangle', null, 110)],
+        real: ['Doors and windows', "Doors, windows and books all have right-angled corners.", V.rule("What do doors, windows and books have?") + FL.shape('rectangle', null, 110)],
         turn: ["Your turn! How many right angles in a full turn? Pause and try it.", E('full turn = ? right angles'), "Four.", E('4', 'g')],
         rec: ["A right angle is a square corner and a quarter turn.", ['Square corner', 'Quarter turn', 'Mark it with a small square', 'Use a page corner to check']],
         deep: ['Angles smaller than a right angle are acute; bigger are obtuse.', 'A rectangle has 4 right angles, however long it is.']
@@ -592,7 +592,7 @@
         ex: [['Clockwise', 'N, E, S, W', [["Going clockwise: North, East, South, West.", compass('E')]]],
           ['Quarter turn', 'North to East', [["Facing North, a quarter turn clockwise makes you face East.", compass('E')]]],
           ['Half turn', 'North to South', [["A half turn from North makes you face South.", compass('S')]]]],
-        real: ['Directions', "From the boat, walk North three squares, then East two squares to find the treasure.", grid(2, 3, '💎')],
+        real: ['Directions', "From the boat, walk North three squares, then East two squares to find the treasure.", V.rule("From the boat, walk North 3 squares, then East 2 squares. Where is the treasure?") + grid(2, 3, '💎')],
         turn: ["Your turn! Facing West, make a half turn. Which way do you face? Pause and try it.", compass('W'), "East.", E('East', 'g')],
         rec: ["The four compass points are North, East, South and West, going clockwise.", ['N at the top', 'Clockwise: N, E, S, W', 'Quarter turn = 1 point', 'Half turn = opposite']],
         deep: ['North-East is halfway between North and East.', 'A compass needle always points North.']
@@ -631,7 +631,7 @@
         ex: [['Tally', 'Count in fives', [["Ollie draws a tally mark each rainy day. Twelve rainy days.", FL.tally(12)]]],
           ['Bar chart', 'Read the scale', [["This scale goes up in twos. The Rainy bar reaches twelve.", V.bars([['Sunny', 7], ['Rainy', 12], ['Cloudy', 9], ['Snowy', 2]], 14)]]],
           ['Compare', 'How many more?', [["Twelve rainy days, seven sunny: five more rainy days.", E('12 − 7 = 5', 'g')]]]],
-        real: ['Scotland!', "Ollie lives in Scotland, so rainy days win again!", FL.says('owl', 'Rainy: 12 days')],
+        real: ['Scotland!', "Ollie lives in Scotland, so rainy days win again!", V.rule("How many rainy days are there in the chart?") + FL.says('owl', 'Rainy: 12 days')],
         turn: ["Your turn! How many days were not rainy? Pause and try it.", V.bars([['Sunny', 7], ['Rainy', 12], ['Cloudy', 9], ['Snowy', 2]], 14), "Seven plus nine plus two: eighteen.", E('18', 'g')],
         rec: ["Collect with tallies, display in a bar chart, read the scale carefully, then compare.", ['Collect', 'Tally', 'Draw bars', 'Read and compare']],
         deep: ['Choose a scale that fits your biggest number.', 'Label both axes and give the chart a title.']
@@ -641,7 +641,7 @@
         ex: [['Read it', 'Tuesday', [["Find Tuesday, read below: eleven degrees.", E('Tue: 11°C', 'g')]]],
           ['Warmest', 'Biggest number', [["The biggest number is fourteen, on Thursday.", E('Thu: 14°C', 'g')]]],
           ['Difference', 'Thu − Wed', [["Fourteen take away six: Thursday was eight degrees warmer than Wednesday.", E('14 − 6 = 8', 'g')]]]],
-        real: ['Rainfall', "Ollie also records rain in millimetres for each week.", tbl([['Week 1', '12 mm'], ['Week 2', '30 mm'], ['Week 3', '5 mm']], ['Week', 'Rain'])],
+        real: ['Rainfall', "Ollie also records rain in millimetres for each week.", V.rule("Week 1: 12 mm, week 2: 30 mm, week 3: 5 mm. Which week was the wettest?") + tbl([['Week 1', '12 mm'], ['Week 2', '30 mm'], ['Week 3', '5 mm']], ['Week', 'Rain'])],
         turn: ["Your turn! Which day was coldest? Pause and try it.", tbl([['8', '11', '6', '14']], ['Mon', 'Tue', 'Wed', 'Thu']), "Wednesday: six degrees.", E('Wed', 'g')],
         rec: ["Find the right column and row, then read where they meet.", ['Read the headings', 'Find the row', 'Find the column', 'Compare values']],
         deep: ['Tables keep data tidy and easy to compare.', 'Always check the units in the heading.']
@@ -651,7 +651,7 @@
         ex: [['Venn', 'Overlap', [["Twelve is even and more than ten, so it goes in the overlap.", venn('Even', 'More than 10', [['12', 145, 95]])]]],
           ['Outside', 'Neither rule', [["Seven is not even and not more than ten, so it goes outside both circles.", venn('Even', 'More than 10', [['7', 145, 170]])]]],
           ['Carroll', 'A table', [["A Carroll diagram has rows and columns for yes and no.", tbl([['Even', '4', '12'], ['Not even', '7', '15']], ['', '10 or less', 'More than 10'])]]]],
-        real: ['Animals', "Sort animals: can fly, and has four legs. A bird can fly but has two legs.", venn('Can fly', 'Four legs', [['bird', 70, 95], ['dog', 215, 95], ['fish', 145, 170]])],
+        real: ['Animals', "Sort animals: can fly, and has four legs. A bird can fly but has two legs.", V.rule("Which animals can fly and have 4 legs?") + venn('Can fly', 'Four legs', [['bird', 70, 95], ['dog', 215, 95], ['fish', 145, 170]])],
         turn: ["Your turn! Where does eighteen go: Even, More than 10, both, or neither? Pause and try it.", venn('Even', 'More than 10'), "Eighteen is even and more than ten: in the overlap.", E('both', 'g')],
         rec: ["Check each rule. Both: the overlap. Neither: outside.", ['Check rule 1', 'Check rule 2', 'Both: in the middle', 'Neither: outside']],
         deep: ['Carroll diagrams always have a box for "not".', 'Every item must go somewhere.']
@@ -661,7 +661,7 @@
         ex: [['Certain', 'Will happen', [["Tomorrow will come after today. That is certain.", E('certain', 'g')]]],
           ['Even chance', 'Half and half', [["A coin landing on heads: even chance.", E('even chance', 'g')]]],
           ['Impossible', 'Cannot happen', [["A normal dice landing on seven is impossible.", E('impossible', 'g')]]]],
-        real: ['Forecast', "In winter in Scotland, rain is likely. Snow in August is very unlikely!", FL.says('owl', 'Rain: likely!')],
+        real: ['Forecast', "In winter in Scotland, rain is likely. Snow in August is very unlikely!", V.rule("Is snow in August likely or unlikely?") + FL.says('owl', 'Rain: likely!')],
         turn: ["Your turn! How likely is it that a cat will learn to talk? Pause and try it.", E('a talking cat?'), "Impossible!", E('impossible', 'g')],
         rec: ["Describe chance on a scale from impossible to certain.", ['Impossible', 'Unlikely', 'Even chance', 'Likely, certain']],
         deep: ['Even chance means as likely to happen as not.', 'Likely things do not always happen.']
