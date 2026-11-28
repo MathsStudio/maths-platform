@@ -42567,15 +42567,15 @@ S.extraMakers = function (n, level) {
 
   /* ================= 301 Numbers: Captain Pip's treasure ================= */
   FL.addStory(301, {
-    story: { title: 'Captain Pip’s Treasure Map', endPic: P('sea', 'pirate', coinsBox(3) + T(5, 'star', 5), 'Treasure!'), endText: 'Captain Pip found the treasure: three hundred and five gold coins! Thank you, shipmate.',
+    story: { title: 'Captain Pip’s Treasure Map', endPic: P('sea', 'pirate', big('300 + 5 = 305') + T(5, 'star', 5), 'Treasure!'), endText: 'Captain Pip found the treasure: three hundred and five gold coins! Thank you, shipmate.',
       pages: [
         pg(P('sea', 'pirate', '', 'Ahoy!'), 'Ahoy! I’m Captain Pip. My treasure map is full of number puzzles. Will you help me?'),
         pg(P('sea', 'pirate', big('5, 10, 15, 20, ?')), 'The first clue is a pattern. Five, ten, fifteen, twenty …', Q('What number comes next?', [21, 25, 30], 25, 'The jump is five. Twenty and five make twenty-five.')),
-        pg(P('sea', 'pirate', coinsBox(2) + T(3, 'star', 3)), 'We find two bags of one hundred coins and three loose coins.'),
+        pg(P('sea', 'pirate', big('200 + 3 = 203') + T(3, 'star', 3)), 'We find two bags of one hundred coins and three loose coins.'),
         pg(P('sea', 'pirate', hto(2, 0, 3)), 'Two hundreds, no tens and three ones make two hundred and three. The zero keeps the tens place.', Q('How many hundreds are in 203?', [0, 2, 3], 2, 'The 2 is in the hundreds column.')),
         pg(P('sea', 'pirate', cards(['Island A: 145', 'Island B: 152'])), 'Two islands. The treasure is on the island with the bigger number.', Q('Which number is bigger?', [145, 152], 152, 'Both have one hundred. Five tens beats four tens.')),
         pg(P('sea', 'pirate', FL.track(30, 40, [38])), 'The treasure is about thirty-eight steps away. Thirty-eight is nearly forty.', Q('Round 38 to the nearest ten.', [30, 40], 40, 'Eight is five or more, so we round up to forty.')),
-        pg(P('sea', 'pirate', coinsBox(3) + T(5, 'star', 5)), 'We dig and find it! Three hundreds and five ones: three hundred and five gold coins.')
+        pg(P('sea', 'pirate', big('300 + 5 = 305') + T(5, 'star', 5)), 'We dig and find it! Three hundreds and five ones: three hundred and five gold coins.')
       ] },
     learn: [
       { title: 'How can I use number patterns to work out a sequence?', char: 'pirate', screens: [
