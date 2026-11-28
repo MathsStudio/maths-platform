@@ -316,7 +316,7 @@
     SC('When is it finished?', 'No common factor left', [
       st("A fraction is in its simplest form when the only number that divides both top and bottom is one. Five sevenths can't be simplified.", V.eq('5/7 is already simplest', 'g'))]),
     SC('In real life', 'Test scores', [
-      st("Maya scored fifteen out of twenty. Divide both by five: three quarters of the questions were right.", V.eq('15/20 = 3/4', 'g'))]),
+        st("Maya scored 15 out of 20. Divide both by 5: 3/4 of the questions were right.", V.rule('Maya scores 15 out of 20 questions. What fraction is that in its simplest form?') + V.eq('15/20 ÷ 5 = 3/4', 'g'))]),
     turn("Your turn! Simplify twenty-four thirty-sixths. Pause and try it.", V.eq('24/36 = ?'),
       "The highest common factor is twelve. Twenty-four divided by twelve is two; thirty-six divided by twelve is three. Two thirds.", V.eq('24/36 = 2/3', 'g')),
     rec('How do you simplify fractions?', "Divide the numerator and denominator by the same number. Keep going until only one divides both, or use the highest common factor in one step.",
@@ -334,7 +334,7 @@
     SC('Multiplying by a whole number', '2/5 × 3', [
       st("Two fifths times three means three lots of two fifths. Multiply the numerator by three and keep the denominator: six fifths.", V.eq('2/5 × 3 = 6/5 = 1 1/5', 'g'))]),
     SC('In real life', 'A recipe', [
-      st("A recipe needs three quarters of a cup of milk. To make four batches, multiply by four: twelve quarters, which is three cups.", V.eq('3/4 × 4 = 12/4 = 3 cups', 'g'))]),
+      st("A recipe needs 3/4 of a cup of milk. To make 4 batches, multiply by 4: 12/4, which is 3 cups.", V.rule('A recipe needs 3/4 of a cup of milk. How much milk do you need for 4 batches?') + V.eq('3/4 × 4 = 12/4 = 3 cups', 'g'))]),
     turn("Your turn! Find five sixths of forty-two. Pause and try it.", V.eq('5/6 of 42 = ?'),
       "Forty-two divided by six is seven. Seven times five is thirty-five.", V.eq('5/6 of 42 = 35', 'g')),
     rec('Fractions of amounts and multiplying', "To find a fraction of an amount, divide by the denominator and multiply by the numerator. To multiply a fraction by a whole number, multiply the numerator.",
@@ -374,7 +374,7 @@
     SC('Building other percentages', '35% of 240', [
       st("Thirty-five per cent is thirty per cent plus five per cent. Thirty per cent is three lots of twenty-four: seventy-two. Five per cent is half of ten per cent: twelve. Add them: eighty-four.", V.eq('30% = 72 · 5% = 12', 'b') + V.eq('35% of 240 = 84', 'g'))]),
     SC('In real life', 'A discount', [
-      st("A scooter costs forty pounds with twenty per cent off. Ten per cent is four pounds, so twenty per cent is eight pounds. The new price is thirty-two pounds.", V.eq('£40 − £8 = £32', 'g'))]),
+        st("A scooter costs £40 with 20% off. 10% is £4, so 20% is £8. The new price is £32.", V.rule('A scooter costs £40 with 20% off. What is the new price?') + V.eq('£40 − £8 = £32', 'g'))]),
     turn("Your turn! What is fifteen per cent of sixty pounds? Pause and try it.", V.eq('15% of £60 = ?'),
       "Ten per cent is six pounds, five per cent is three pounds. Together, nine pounds.", V.eq('£6 + £3 = £9', 'g')),
     rec('What is a percentage?', "A percentage is a number out of one hundred, and one hundred per cent is the whole. Find ten per cent by dividing by ten, and build other percentages from ten per cent, five per cent and one per cent.",
