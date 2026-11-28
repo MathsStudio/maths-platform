@@ -33,7 +33,7 @@
     story: { title: 'Professor Owl’s Number Lab', endPic: P('room', 'owl', big('Puzzle solved!'), 'Hoo-ray!'), endText: 'Professor Owl solved every puzzle in the lab. Thank you for your help, young scientist!',
       pages: [
         pg(P('room', 'owl', '', 'Hoo!'), 'Welcome to my number lab! I am Professor Owl, and today we will solve number puzzles.'),
-        pg(P('room', 'owl', big('25, 50, 75, ?')), 'My first test tube has a pattern: twenty-five, fifty, seventy-five …', Q('What comes next?', [80, 100, 125], 100, 'The jump is twenty-five.')),
+        pg(P('room', 'owl', big('25, 50, 75, ?')), 'My first test tube has a pattern: 25, 50, 75 …', Q('What comes next?', [80, 100, 125], 100, 'The jump is 25.')),
         pg(P('room', 'owl', hto(4, 5, 2)), 'My machine prints four hundred and fifty-two. Four hundreds, five tens and two ones.', Q('What is the 5 worth?', [5, 50, 500], 50, 'The 5 is in the tens column.')),
         pg(P('room', 'owl', K.scale(300, 400, 10, 362, '')), 'Three hundred and sixty-two beetles crawled into the lab! About how many is that?', Q('Round 362 to the nearest 100.', [300, 360, 400], 400, 'Look at the tens: six, so round up.')),
         pg(P('night', 'owl', FL.thermo(-3)), 'Brrr! The freezer in my lab is three degrees below zero: minus three.'),

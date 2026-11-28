@@ -68,7 +68,9 @@
     }
     /* the recap names the ideas only: no numbers, no working, no answers. A bullet that needs a number is dropped,
        and what is spoken for a bullet is its idea in words, never a worked line from the lesson. */
-    items = items.filter(function (x) { return !isWork(x.b) && !/\?/.test(x.b) && x.b.split(' ').length >= 3 && !/:\s*[A-Z][a-z]+$/.test(x.b); });
+    /* only the maths to remember: a bullet that gives this lesson's own example answer ("The jump is fifty.", "The jump is 4.") is left out */
+    var exAns = /\b(jump|answer|total|sum|difference|product|missing number|next number|number)s?\s+(is|are)\s+(\d[\d,.]*|zero|one|two|three|four|five|six|seven|eight|nine|ten|eleven|twelve|twenty|thirty|forty|fifty|sixty|seventy|eighty|ninety|hundred|thousand)\b/i;
+    items = items.filter(function (x) { return !isWork(x.b) && !/\?/.test(x.b) && x.b.split(' ').length >= 3 && !/:\s*[A-Z][a-z]+$/.test(x.b) && !exAns.test(x.b); });
     items.forEach(function (x) { if (isWork(x.say)) x.say = 'Remember: ' + low1(x.b.replace(/^Avoid: /, 'avoid ')).replace(/[.]$/, '') + '.'; });
     if (items.length < 3) {
       /* a thin lesson is topped up with its own number-free sentences: the rules it teaches, not the working */

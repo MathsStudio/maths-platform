@@ -163,7 +163,9 @@
     var TT = D(ep.title), FLM = !!ep.fl, slides = [{ title: true, steps: [{ say: FLM ? (ep.intro || ('Today we are going to learn: ' + TT)) : TT + ' In this lesson, we will learn ' + (ep.goal || '') }] }];
     ep.scenes.forEach(function (sc) { slides.push(sc); });
     var chunks = [];
-    slides.forEach(function (sl, si) { sl.steps.forEach(function (st, k) { chunks.push({ si: si, k: k, say: st.say, think: !!st.think, answer: st.answer, facts: st.facts, last: k === sl.steps.length - 1, turnQ: sl.h === 'Your turn' && k === 0 && (sl.steps.length > 1 || !!sl.asks) }); }); });
+    /* numbers are always digits on screen and in the voice: "seventy-five" is said as 75 in one go, with no pause at the hyphen */
+    var dg = function (t) { return window.FL && FL.digitise ? FL.digitise(t) : t; };
+    slides.forEach(function (sl, si) { sl.steps.forEach(function (st, k) { chunks.push({ si: si, k: k, say: dg(st.say), think: !!st.think, answer: st.answer, facts: st.facts, last: k === sl.steps.length - 1, turnQ: sl.h === 'Your turn' && k === 0 && (sl.steps.length > 1 || !!sl.asks) }); }); });
     var dashes = ''; for (var d = 0; d < meta.of; d++) dashes += '<i class="' + (d <= meta.q ? 'on' : '') + '"></i>';
     var short = TT;   /* the lesson's question, with its question mark, stays in the purple label at the top */
     function same(a, b) { var n = function (x) { return String(x || '').replace(/<[^>]+>/g, '').toLowerCase().replace(/[^a-z0-9]+/g, ' ').trim(); }; return n(a) === n(b); }

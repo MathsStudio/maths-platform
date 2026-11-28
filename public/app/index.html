@@ -16391,7 +16391,9 @@ S.extraMakers = function (n, level) {
     var TT = D(ep.title), FLM = !!ep.fl, slides = [{ title: true, steps: [{ say: FLM ? (ep.intro || ('Today we are going to learn: ' + TT)) : TT + ' In this lesson, we will learn ' + (ep.goal || '') }] }];
     ep.scenes.forEach(function (sc) { slides.push(sc); });
     var chunks = [];
-    slides.forEach(function (sl, si) { sl.steps.forEach(function (st, k) { chunks.push({ si: si, k: k, say: st.say, think: !!st.think, answer: st.answer, facts: st.facts, last: k === sl.steps.length - 1, turnQ: sl.h === 'Your turn' && k === 0 && (sl.steps.length > 1 || !!sl.asks) }); }); });
+    /* numbers are always digits on screen and in the voice: "seventy-five" is said as 75 in one go, with no pause at the hyphen */
+    var dg = function (t) { return window.FL && FL.digitise ? FL.digitise(t) : t; };
+    slides.forEach(function (sl, si) { sl.steps.forEach(function (st, k) { chunks.push({ si: si, k: k, say: dg(st.say), think: !!st.think, answer: st.answer, facts: st.facts, last: k === sl.steps.length - 1, turnQ: sl.h === 'Your turn' && k === 0 && (sl.steps.length > 1 || !!sl.asks) }); }); });
     var dashes = ''; for (var d = 0; d < meta.of; d++) dashes += '<i class="' + (d <= meta.q ? 'on' : '') + '"></i>';
     var short = TT;   /* the lesson's question, with its question mark, stays in the purple label at the top */
     function same(a, b) { var n = function (x) { return String(x || '').replace(/<[^>]+>/g, '').toLowerCase().replace(/[^a-z0-9]+/g, ' ').trim(); }; return n(a) === n(b); }
@@ -40630,7 +40632,7 @@ S.extraMakers = function (n, level) {
       function stones(list, planet) { return FL.svg(400, 120, planet ? 'Planets with numbers' : 'Stepping stones', FL.stones(list, 70, planet), 400); }
       function boxes(list) { return FL.svg(400, 110, 'Boxes of stars', list.map(function (v, k) { return '<rect x="' + (22 + k * 92) + '" y="15" width="80" height="80" rx="10" fill="' + (v === '?' ? '#ffd166' : '#fff') + '" stroke="' + INK + '" stroke-width="3"/>' + FL.tx(62 + k * 92, 67, v, 28, INK); }).join(''), 400); }
       function big(t) { return '<div style="font-size:2.2rem;font-weight:800;color:' + INK + ';background:#fff;border:3px solid ' + INK + ';border-radius:16px;padding:6px 18px">' + t + '</div>'; }
-      function plus(a, b) { return '<div style="display:flex;gap:10px;align-items:center;justify-content:center;flex-wrap:wrap"><div style="max-width:220px">' + T(a, 'star', 5) + '</div><b style="font-size:2em;color:#fff">+</b><div style="max-width:60px">' + T(b, 'star', 1) + '</div></div>'; }
+      function plus(a, b) { return '<div style="display:flex;gap:10px;align-items:center;justify-content:center;flex-wrap:wrap"><div style="max-width:220px">' + T(a, 'star', 5) + '</div><b style="font-size:2em;color:#2b2340">+</b><div style="max-width:60px">' + T(b, 'star', 1) + '</div></div>'; }
       return [
         { title: 'How can I use number patterns to work out a sequence?', char: 'rocket', screens: [
           { mode: 'watch', say: 'I hop on the stepping stones. One, two, three, four. Each stone is one more.', pic: P('pond', '', stones([1, 2, 3, 4])) },
@@ -42972,7 +42974,7 @@ S.extraMakers = function (n, level) {
     story: { title: 'Professor Owl’s Number Lab', endPic: P('room', 'owl', big('Puzzle solved!'), 'Hoo-ray!'), endText: 'Professor Owl solved every puzzle in the lab. Thank you for your help, young scientist!',
       pages: [
         pg(P('room', 'owl', '', 'Hoo!'), 'Welcome to my number lab! I am Professor Owl, and today we will solve number puzzles.'),
-        pg(P('room', 'owl', big('25, 50, 75, ?')), 'My first test tube has a pattern: twenty-five, fifty, seventy-five …', Q('What comes next?', [80, 100, 125], 100, 'The jump is twenty-five.')),
+        pg(P('room', 'owl', big('25, 50, 75, ?')), 'My first test tube has a pattern: 25, 50, 75 …', Q('What comes next?', [80, 100, 125], 100, 'The jump is 25.')),
         pg(P('room', 'owl', hto(4, 5, 2)), 'My machine prints four hundred and fifty-two. Four hundreds, five tens and two ones.', Q('What is the 5 worth?', [5, 50, 500], 50, 'The 5 is in the tens column.')),
         pg(P('room', 'owl', K.scale(300, 400, 10, 362, '')), 'Three hundred and sixty-two beetles crawled into the lab! About how many is that?', Q('Round 362 to the nearest 100.', [300, 360, 400], 400, 'Look at the tens: six, so round up.')),
         pg(P('night', 'owl', FL.thermo(-3)), 'Brrr! The freezer in my lab is three degrees below zero: minus three.'),
@@ -45359,11 +45361,11 @@ S.extraMakers = function (n, level) {
   function box(inner) { return '<div style="border:3px dashed ' + INK + ';border-radius:14px;padding:6px;background:#fff;max-width:170px">' + inner + '</div>'; }
   function grp(k, n, kind) { var o = []; for (var i = 0; i < k; i++) o.push(box(TH(n, kind, 5))); return '<div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap">' + o.join('') + '</div>'; }
   function bar(n, col) { var s = ''; for (var i = 0; i < n; i++) s += '<span style="display:inline-block;width:26px;height:26px;background:' + (col || '#ffb703') + ';border:2px solid ' + INK + ';margin-right:-2px"></span>'; return '<div style="display:flex;justify-content:center;flex-wrap:wrap">' + s + '</div>'; }
-  function rowBars(items) { return '<div style="display:grid;gap:8px;justify-items:center">' + items.map(function (x) { return '<div style="display:flex;align-items:center;gap:10px"><b style="min-width:80px;text-align:right;color:#fff">' + x[0] + '</b>' + bar(x[1], x[2]) + '</div>'; }).join('') + '</div>'; }
+  function rowBars(items) { return '<div style="display:grid;gap:8px;justify-items:center">' + items.map(function (x) { return '<div style="display:flex;align-items:center;gap:10px"><b style="min-width:80px;text-align:right;color:#2b2340">' + x[0] + '</b>' + bar(x[1], x[2]) + '</div>'; }).join('') + '</div>'; }
   function pies(list) { return '<div style="display:flex;gap:14px;justify-content:center;flex-wrap:wrap;align-items:flex-start;padding-bottom:6px">' + list.map(function (p, i) { return (i ? '<b style="font-size:3rem;color:#2b2340;background:#fff;border-radius:12px;padding:0 10px">=</b>' : '') + '<div style="text-align:center;max-width:150px;color:#2b2340">' + FL.pie(p[0], p[1]) + '<div style="margin-top:4px;margin-bottom:12px">'+ '<div style="display:inline-flex;flex-direction:column;align-items:center;font-size:1.6rem;line-height:1.05;font-weight:800;color:#2b2340;background:#fff;border:3px solid #2b2340;border-radius:12px;padding:4px 14px"><span>' + p[1] + '</span><span style="border-top:4px solid #2b2340;width:100%;text-align:center">' + p[0] + '</span></div>' + '</div></div>'; }).join('') + '</div>'; }
   function sym(kind) { var lines = { square: ['<line x1="50" y1="14" x2="50" y2="86"/>', '<line x1="14" y1="50" x2="86" y2="50"/>', '<line x1="14" y1="14" x2="86" y2="86"/>', '<line x1="86" y1="14" x2="14" y2="86"/>'], rectangle: ['<line x1="50" y1="14" x2="50" y2="86"/>', '<line x1="12" y1="50" x2="88" y2="50"/>'], triangle: ['<line x1="50" y1="14" x2="50" y2="90"/>'] }, body = { square: '<rect x="24" y="24" width="52" height="52" fill="#ffd166" stroke="' + INK + '" stroke-width="3"/>', rectangle: '<rect x="14" y="30" width="72" height="40" fill="#ffd166" stroke="' + INK + '" stroke-width="3"/>', triangle: '<polygon points="50,22 18,78 82,78" fill="#ffd166" stroke="' + INK + '" stroke-width="3"/>', lshape: '<polygon points="24,22 50,22 50,56 78,56 78,78 24,78" fill="#ffd166" stroke="' + INK + '" stroke-width="3"/>' };
     return '<svg viewBox="0 0 100 100" role="img" aria-label="' + kind + (lines[kind] ? ' with ' + lines[kind].length + ' lines of symmetry' : ' with no line of symmetry') + '" style="width:230px;max-width:100%;height:auto">' + body[kind] + '<g stroke="#e63946" stroke-width="3" stroke-dasharray="6 4">' + (lines[kind] || []).join('') + '</g></svg>'; }
-  function symRow(ks) { return '<div style="display:flex;gap:14px;justify-content:center;flex-wrap:wrap">' + ks.map(function (k) { return '<div style="text-align:center;font-weight:800;color:#fff">' + sym(k[0]) + '<div>' + k[1] + '</div></div>'; }).join('') + '</div>'; }
+  function symRow(ks) { return '<div style="display:flex;gap:14px;justify-content:center;flex-wrap:wrap">' + ks.map(function (k) { return '<div style="text-align:center;font-weight:800;color:#2b2340">' + sym(k[0]) + '<div>' + k[1] + '</div></div>'; }).join('') + '</div>'; }
   /* rows: ['w', say, pic] watch; ['t'|'u', say, pic, tip, options, answer, explain] together or your turn */
   function WL(title, char, bg, rows) {
     return { title: title, char: char, screens: rows.map(function (r) { var o = { mode: r[0] === 'w' ? 'watch' : r[0] === 't' ? 'together' : 'turn', say: r[1], pic: P(bg, '', r[2]) }; if (r[0] !== 'w') { o.tip = r[3]; o.options = r[4]; o.answer = r[5]; o.explain = r[6]; } return o; }) };
@@ -47931,7 +47933,9 @@ S.extraMakers = function (n, level) {
     }
     /* the recap names the ideas only: no numbers, no working, no answers. A bullet that needs a number is dropped,
        and what is spoken for a bullet is its idea in words, never a worked line from the lesson. */
-    items = items.filter(function (x) { return !isWork(x.b) && !/\?/.test(x.b) && x.b.split(' ').length >= 3 && !/:\s*[A-Z][a-z]+$/.test(x.b); });
+    /* only the maths to remember: a bullet that gives this lesson's own example answer ("The jump is fifty.", "The jump is 4.") is left out */
+    var exAns = /\b(jump|answer|total|sum|difference|product|missing number|next number|number)s?\s+(is|are)\s+(\d[\d,.]*|zero|one|two|three|four|five|six|seven|eight|nine|ten|eleven|twelve|twenty|thirty|forty|fifty|sixty|seventy|eighty|ninety|hundred|thousand)\b/i;
+    items = items.filter(function (x) { return !isWork(x.b) && !/\?/.test(x.b) && x.b.split(' ').length >= 3 && !/:\s*[A-Z][a-z]+$/.test(x.b) && !exAns.test(x.b); });
     items.forEach(function (x) { if (isWork(x.say)) x.say = 'Remember: ' + low1(x.b.replace(/^Avoid: /, 'avoid ')).replace(/[.]$/, '') + '.'; });
     if (items.length < 3) {
       /* a thin lesson is topped up with its own number-free sentences: the rules it teaches, not the working */

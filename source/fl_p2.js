@@ -41,7 +41,7 @@
       function stones(list, planet) { return FL.svg(400, 120, planet ? 'Planets with numbers' : 'Stepping stones', FL.stones(list, 70, planet), 400); }
       function boxes(list) { return FL.svg(400, 110, 'Boxes of stars', list.map(function (v, k) { return '<rect x="' + (22 + k * 92) + '" y="15" width="80" height="80" rx="10" fill="' + (v === '?' ? '#ffd166' : '#fff') + '" stroke="' + INK + '" stroke-width="3"/>' + FL.tx(62 + k * 92, 67, v, 28, INK); }).join(''), 400); }
       function big(t) { return '<div style="font-size:2.2rem;font-weight:800;color:' + INK + ';background:#fff;border:3px solid ' + INK + ';border-radius:16px;padding:6px 18px">' + t + '</div>'; }
-      function plus(a, b) { return '<div style="display:flex;gap:10px;align-items:center;justify-content:center;flex-wrap:wrap"><div style="max-width:220px">' + T(a, 'star', 5) + '</div><b style="font-size:2em;color:#fff">+</b><div style="max-width:60px">' + T(b, 'star', 1) + '</div></div>'; }
+      function plus(a, b) { return '<div style="display:flex;gap:10px;align-items:center;justify-content:center;flex-wrap:wrap"><div style="max-width:220px">' + T(a, 'star', 5) + '</div><b style="font-size:2em;color:#2b2340">+</b><div style="max-width:60px">' + T(b, 'star', 1) + '</div></div>'; }
       return [
         { title: 'How can I use number patterns to work out a sequence?', char: 'rocket', screens: [
           { mode: 'watch', say: 'I hop on the stepping stones. One, two, three, four. Each stone is one more.', pic: P('pond', '', stones([1, 2, 3, 4])) },
