@@ -577,13 +577,18 @@ var SLIDE_MORE = {"1.learn1": [{"more": ["Our number system uses only ten digits
   function save() { try { localStorage.setItem('pm-studio', JSON.stringify(store)); } catch (e) { /* ignore */ } scheduleSync(); }
   /* Progress follows the signed-in email: it is sent to the server a moment after every change and loaded back on any device. */
   var syncOn = false, syncTimer = null, replaceNext = false;
-  function scheduleSync() { if (!syncOn) return; clearTimeout(syncTimer); syncTimer = setTimeout(pushProgress, 1200); }
+  function scheduleSync() { if (!syncOn) return; clearTimeout(syncTimer); syncTimer = setTimeout(pushProgress, 600); }
   var learner = null;   /* the child using the app right now (null when the account has no child profiles) */
   function progUrl() { return '/api/progress' + (learner ? '?learner=' + learner.id : ''); }
   function pushProgress() {
-    clearTimeout(syncTimer); var body = JSON.stringify({ progress: store.progress, replace: replaceNext }); replaceNext = false;
-    try { fetch(progUrl(), { method: 'POST', credentials: 'same-origin', headers: { 'Content-Type': 'application/json' }, body: body, keepalive: body.length < 60000 }).catch(function () { }); } catch (e) { }
+    clearTimeout(syncTimer); syncTimer = null; var body = JSON.stringify({ progress: store.progress, replace: replaceNext }); replaceNext = false;
+    /* a save that does not reach the server (no signal, server busy) is sent again, so a finished set is never lost */
+    try { fetch(progUrl(), { method: 'POST', credentials: 'same-origin', headers: { 'Content-Type': 'application/json' }, body: body, keepalive: body.length < 60000 })
+      .then(function (r) { if (r.status >= 500) throw new Error('retry'); }).catch(function () { if (!syncTimer) syncTimer = setTimeout(pushProgress, 4000); }); } catch (e) { }
   }
+  /* leaving the page or switching app sends any save that is still waiting */
+  document.addEventListener('visibilitychange', function () { if (document.visibilityState === 'hidden' && syncTimer) pushProgress(); });
+  window.addEventListener('pagehide', function () { if (syncTimer) pushProgress(); });
   function mergeProgress(into, from) {
     var changed = false;
     Object.keys(from || {}).forEach(function (k) {

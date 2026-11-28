@@ -112,8 +112,9 @@
   /* star tens: full fuel tanks (ten stars each) and loose stars, for tens and ones */
   function starTens(t, o) {
     var s = '';
-    for (var k = 0; k < t; k++) s += '<g transform="translate(14 ' + (14 + k * 74) + ') scale(.62)">' + tank(0, 0, 10) + '</g>';
-    for (var j = 0; j < o; j++) s += FL.bit('star', 200 + (j % 5) * 40, 50 + Math.floor(j / 5) * 50, 'pop', .3 + j * .15, null, 1.25);
+    /* the tanks sit lower and a little larger, clear of the question card at the top; the loose stars sit beside them, not on the card */
+    for (var k = 0; k < t; k++) s += '<g transform="translate(24 ' + (72 + k * 80) + ') scale(.7)">' + tank(0, 0, 10) + '</g>';
+    for (var j = 0; j < o; j++) s += FL.bit('star', 215 + (j % 5) * 36, 112 + Math.floor(j / 5) * 50, 'pop', .3 + j * .15, null, 1.25);
     return scene('space', s, t + ' full tanks of ten and ' + o + ' loose stars');
   }
   FL.starTens = starTens;
