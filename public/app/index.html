@@ -20070,8 +20070,8 @@ W('How do you solve ordering and logic puzzles?', [
         S("Mistake number three: saying that multiplying by 10 just adds a 0. That works for whole numbers like 7 times 10, but not for decimals. 4.37 times 10 is 43.7, not 4.370.", E('4.37 × 10 = 4.370  ✗', 'r') + g('4.37 × 10 = 43.7  ✓'))
       ]),
       SC('In real life', 'Money and sport', [
-        S("Money uses place value all the time. £3.45 is 3 ones, 4/10 and 5/100 of a pound. That is why pence come after the point.", E('£3.45 = 3 + 0.4 + 0.05')),
-        S("In sport, races are timed to the hundredth of a second. 9.58 seconds beats 9.63 seconds, because at the tenths column 5 is smaller than 6, and a smaller time is faster.", g('9.58 < 9.63'))
+        S("Money uses place value all the time. Pence come after the point, so each part of £3.45 has its own column.", V.rule('£3.45 is pounds, tenths and hundredths. What is each part worth?') + E('£3.45 = 3 + 0.4 + 0.05')),
+        S("In sport, races are timed to the hundredth of a second. A smaller time is faster.", V.rule('Which is faster, 9.58 seconds or 9.63 seconds?') + g('9.58 < 9.63, so 9.58 is faster'))
       ]),
       L.turn("Your turn! Number one. What is the value of the 6 in 12.364? Pause and think.", E('12.364'), "The 6 is in the hundredths column, so it is worth 6/100: 0.06.", g('0.06')),
       L.turn("Your turn! Number two. Which is bigger, 0.09 or 0.1? Pause and think.", E('0.09  or  0.1  ?'), "Write 0.1 as 0.10. In the tenths, 0 is smaller than 1, so 0.1 is bigger.", g('0.10 > 0.09')),
@@ -20128,8 +20128,8 @@ W('How do you solve ordering and logic puzzles?', [
         S("Mistake three: taking the smaller digit away from the bigger 1. In 52 take away 37, the ones column is 2 take away 7. Some people do 7 take away 2 and get 5. That is wrong. You must exchange, and do 12 take away 7.", r('7 − 2 = 5  ✗') + g('12 − 7 = 5  ✓  (after exchanging)'))
       ]),
       SC('In real life', 'Fundraising', [
-        S("A school raises 4,000, £860 at a fair. Then it raises 2,000, £575 from a sponsored walk. To find the total we add in columns.", E('£4,860 + £2,575')),
-        S("0 plus 5 is 5. 6 plus 7 is 13, write 3, carry 1. 8 plus 5 plus 1 is 14, write 4, carry 1. 4 plus 2 plus 1 is 7. The school has raised 7,000, £435.", g('£4,860 + £2,575 = £7,435'))
+        S("To find the total of two amounts, we add in columns, pounds with pounds.", V.rule('A school raises £4,860 at a fair and £2,575 from a sponsored walk. How much in total?') + E('£4,860 + £2,575')),
+        S("Add the columns, carrying where needed.", g('£4,860 + £2,575 = £7,435'))
       ]),
       L.turn("Your turn! Number one. Work out 6,005, take away 2,000, 318. Pause and try it. Remember the zeros.", E('6,005 − 2,318'), "Exchange across the zeros. The tens and hundreds each become 9, and the ones become 15. The answer is 3,000, 687.", g('6,005 − 2,318 = 3,687')),
       L.turn("Your turn! Number two. Work out 4,000, 785, plus 3,000, 658. Pause and try it.", E('4,785 + 3,658'), "5 plus 8 is 13. 8 plus 5 plus 1 is 14. 7 plus 6 plus 1 is 14. 4 plus 3 plus 1 is 8. The answer is 8,000, 443.", g('4,785 + 3,658 = 8,443')),
@@ -20178,8 +20178,8 @@ W('How do you solve ordering and logic puzzles?', [
         S("Mistake three: forgetting the point in the answer. The point goes straight down from the question into the answer. Always check that your answer is sensible with an estimate.", r('7235  ✗') + g('7.235  ✓'))
       ]),
       SC('In real life', 'Science measurements', [
-        S("A beaker holds 1.25 litres of water. A scientist pours out 0.375 litres. How much is left? Write 1.25 as 1.250, and subtract.", E('1.250 − 0.375')),
-        S("Exchange along. 10 take away 5 is 5. 14 take away 7 is 7. 11 take away 3 is 8. 0 take away 0 is 0. So 0.875 litres are left.", g('1.250 − 0.375 = 0.875 litres'))
+        S("A scientist pours some water out of a beaker. We subtract the amount poured out.", V.rule('A beaker holds 1.250 litres. 0.375 litres is poured out. How much is left?') + E('1.250 − 0.375')),
+        S("Exchange along the columns, then check the answer is sensible.", g('1.250 − 0.375 = 0.875 litres'))
       ]),
       L.turn("Your turn! Number one. Work out 3.7, plus 0.456. Pause and try it. Fill the gaps with zeros first.", E('3.700 + 0.456'), "Line up the points. 0 plus 6 is 6. 0 plus 5 is 5. 7 plus 4 is 11, write 1, carry 1. 3 plus the carried 1 is 4. The answer is 4.156.", g('3.700 + 0.456 = 4.156')),
       L.turn("Your turn! Number two. Work out 8.05, take away 2.378. Pause and try it.", E('8.050 − 2.378'), "Write 8.05 as 8.050. Exchange carefully. The answer is 5.672.", g('8.050 − 2.378 = 5.672')),
@@ -20216,9 +20216,9 @@ W('How do you solve ordering and logic puzzles?', [
         S("Mistake three: stopping the list too early, and missing a common multiple. Keep writing multiples until you find a number in both lists.", V.rule('Keep listing until the lists meet.'))
       ]),
       SC('In real life', 'Lights and buses', [
-        S("A lighthouse light flashes every 6 seconds. A second light flashes every 10 seconds. They both flash together now. When will they next flash together?", E('6, 12, 18, 24, 30') + E('10, 20, 30')),
-        S("We want the lowest common multiple of 6 and 10. It is 30. So the lights flash together again after 30 seconds.", g('LCM(6, 10) = 30 seconds')),
-        S("Here is another. 1 bus leaves a stop every 12 minutes. Another leaves every 18 minutes. They leave together at 9 o'clock. The LCM of 12 and 18 is 36. So they next leave together 36 minutes later.", g('LCM(12, 18) = 36 minutes'))
+        S("Two lights flash at different times. We need the next time they match.", V.rule('Light A flashes every 6 seconds and light B every 10 seconds. When do they flash together next?') + E('6, 12, 18, 24, 30  ·  10, 20, 30')),
+        S("The lowest common multiple of 6 and 10 is 30.", g('LCM(6, 10) = 30 seconds')),
+        S("Here is one more.", V.rule('A bus leaves every 12 minutes and another every 18 minutes. They leave together at 9 o\'clock. When do they next leave together?') + g('LCM(12, 18) = 36 minutes'))
       ]),
       L.turn("Your turn! Number one. What is the lowest common multiple of 9 and 15? Pause and try it.", E('LCM(9, 15)'), "List the multiples of 15: 15, 30, 45. 9 goes into 40-5 5 times. So the answer is 45.", g('LCM(9, 15) = 45')),
       L.turn("Your turn! Number two. What is the lowest common multiple of 10 and 25? Pause and try it.", E('LCM(10, 25)'), "Multiples of 25: 25, 50. 10 goes into 55 times. So the answer is 50.", g('LCM(10, 25) = 50')),
@@ -20260,8 +20260,8 @@ W('How do you solve ordering and logic puzzles?', [
         S("Mistake three: giving a common factor instead of the highest 1. 3 is a common factor of 18 and 24. But the highest is 6.", r('HCF(18, 24) = 3  ✗') + g('HCF(18, 24) = 6  ✓'))
       ]),
       SC('In real life', 'Packing', [
-        S("A teacher has 30 pencils and 45 rubbers. She wants to make identical packs. Every pack must have the same number of pencils and the same number of rubbers, with nothing left over. What is the most packs she can make?", E('30 pencils, 45 rubbers')),
-        S("We need the highest common factor of 30 and 45. It is 15. So she can make 15 packs. Each pack has 2 pencils and 3 rubbers.", g('HCF(30, 45) = 15 packs') + E('30 ÷ 15 = 2    45 ÷ 15 = 3'))
+        S("We need the highest common factor, the biggest number that divides both.", V.rule('A teacher has 30 pencils and 45 rubbers. She makes identical packs with none left over. What is the most packs she can make?') + E('HCF(30, 45) = 15 packs')),
+        S("Each pack has 30 ÷ 15 = 2 pencils and 45 ÷ 15 = 3 rubbers.", E('30 ÷ 15 = 2     45 ÷ 15 = 3'))
       ]),
       L.turn("Your turn! Number one. What is the highest common factor of 20 and 32? Pause and try it.", E('HCF(20, 32)'), "Factors of 20: 1, 2, 4, 5, 10, 20. Which of these divide 32? 1, 2 and 4. The highest is 4.", g('HCF(20, 32) = 4')),
       L.turn("Your turn! Number two. What is the highest common factor of 36 and 54? Pause and try it.", E('HCF(36, 54)'), "Factors of 36 include 18. 18 divides 54 exactly, 3 times. Nothing bigger than 18 divides both. So the answer is 18.", g('HCF(36, 54) = 18')),
@@ -20302,8 +20302,8 @@ W('How do you solve ordering and logic puzzles?', [
         S("Mistake three: forgetting to multiply by the numerator. To find 3/8 of 64, dividing by 8 only gives 1/8. You still need to multiply by 3.", r('3/8 of 64 = 8  ✗') + g('3/8 of 64 = 24  ✓'))
       ]),
       SC('In real life', 'Recipes and classes', [
-        S("A recipe uses 2/3 of a 300 gram bag of oats. 1/3 of 300 is 100. So 2/3 is 200 grams.", E('300 ÷ 3 = 100,  100 × 2 = 200') + g('2/3 of 300 g = 200 g')),
-        S("In a class of 28 pupils, 3/4 walk to school. 1/4 of 28 is 7. So 3/4 is 21 pupils.", E('28 ÷ 4 = 7,  7 × 3 = 21') + g('21 pupils walk'))
+        S("A third of 300 is 100. Two thirds is two of those.", V.rule('A recipe uses 2/3 of a 300 g bag of oats. How many grams is that?') + E('300 ÷ 3 = 100,  100 × 2 = 200') + g('2/3 of 300 g = 200 g')),
+        S("Now a class. A quarter of 28 is 7, so three quarters is 21.", V.rule('In a class of 28 pupils, 3/4 walk to school. How many pupils walk?') + E('28 ÷ 4 = 7,  7 × 3 = 21') + g('21 pupils walk'))
       ]),
       L.turn("Your turn! Number one. What is 5/6 of 48? Pause and try it.", E('5/6 of 48'), "48 divided by 6 is 8. 8 times 5 is 40.", g('5/6 of 48 = 40')),
       L.turn("Your turn! Number two. What is 3/5 of 35? Pause and try it.", E('3/5 of 35'), "35 divided by 5 is 7. 7 times 3 is 21.", g('3/5 of 35 = 21')),
@@ -20344,7 +20344,7 @@ W('How do you solve ordering and logic puzzles?', [
         S("Mistake three: stopping too soon when simplifying. 8/12 can be divided by 2 to give 4/6. But that is not finished. Divide by 2 again to get 2/3.", r('8/12 = 4/6  (not finished)  ✗') + g('8/12 = 2/3  ✓'))
       ]),
       SC('In real life', 'Pizza', [
-        S("A pizza has 8 slices. You eat 4 slices. You have eaten 4/8. But your friend ate half of another pizza. Who ate more? 4/8 is equal to 1/2, so you both ate the same amount.", g('4/8 = 1/2'))
+        S("Two fractions are equal when they have the same value.", V.rule('A pizza has 8 slices. You eat 4. Your friend eats 1/2 of another pizza. Who ate more?') + E('4/8 = 1/2') + g('You both ate the same amount'))
       ]),
       L.turn("Your turn! Number one. Find the missing number. 3/4 equals how many twentieths? Pause and try it.", E('3/4 = ?/20'), "4 times 5 is 20. So 3 times 5 is 15. 3/4 equals 15/20.", g('3/4 = 15/20')),
       L.turn("Your turn! Number two. Simplify 40 sixtieths fully. Pause and try it.", E('40/60'), "Divide top and bottom by 20. 40 divided by 20 is 2. 60 divided by 20 is 3. The answer is 2/3.", g('40/60 = 2/3')),
@@ -20384,7 +20384,7 @@ W('How do you solve ordering and logic puzzles?', [
         S("Mistake three: forgetting to add the numerator. For 4 and 2/3, 4 times 3 is 12. We must add the 2, to get 14.", r('4 2/3 = 12/3  ✗') + g('4 2/3 = 14/3  ✓'))
       ]),
       SC('In real life', 'Measuring', [
-        S("A carpenter needs 9/2 of a metre of wood. 2/2 make 1 metre, so 9/2 is 4 whole metres and 1/2 left over. That is 4 and 1/2 metres.", g('9/2 = 4 1/2 m'))
+        S("A mixed number shows whole metres and a part.", V.rule('A carpenter needs 9/2 of a metre of wood. Write this as a mixed number.') + g('9/2 = 4 1/2 m'))
       ]),
       L.turn("Your turn! Number one. Write 23/6 as a mixed number. Pause and try it.", E('23/6'), "23 divided by 6 is 3, with 5 left over. The answer is 3 and 5/6.", g('23/6 = 3 5/6')),
       L.turn("Your turn! Number two. Write 5 and 3/8 as an improper fraction. Pause and try it.", E('5 3/8'), "5 times 8 is 40. Add 3 to make 43. The answer is 43/8.", g('5 3/8 = 43/8')),
@@ -20425,8 +20425,8 @@ W('How do you solve ordering and logic puzzles?', [
         S("Mistake three: forgetting to multiply by 100 at the end. 18 divided by 40 is 0.45. That is a decimal. To make it a percentage, multiply by 100.", r('18 out of 40 = 0.45%  ✗') + g('18 out of 40 = 45%  ✓'))
       ]),
       SC('In real life', 'A discount', [
-        S("A coat costs £45. In the sale it has 20% off. 10% of 45 is £4.50. So 20% is £9.", E('10% = £4.50') + E('20% = £9')),
-        S("The saving is £9. So the new price is 45 minus 9, which is £36.", g('£45 − £9 = £36'))
+        S("10% is one tenth. We find 10% first, then use it for 20%.", V.rule('A coat costs £45 with 20% off. How much is the saving?') + E('10% of £45 = £4.50, so 20% = £9')),
+        S("The new price is 45 minus 9.", g('£45 − £9 = £36'))
       ]),
       L.turn("Your turn! Number one. What is 5% of 60? Pause and try it.", E('5% of 60'), "10% of 60 is 6. 5% is half of that. The answer is 3.", g('5% of 60 = 3')),
       L.turn("Your turn! Number two. What is 25% of 96? Pause and try it.", E('25% of 96'), "25% is 1/4. 96 divided by 4 is 24.", g('25% of 96 = 24')),
@@ -20469,7 +20469,8 @@ W('How do you solve ordering and logic puzzles?', [
         S("Mistake three: mixing up profit and loss. If you sell for more than you paid, it is a profit. If you sell for less, it is a loss.", V.tbl([['Sell > buy', 'Profit'], ['Sell < buy', 'Loss']], ['', '']))
       ]),
       SC('In real life', 'Putting it together', [
-        S("Maya earns £12 an hour. She works for 7 hours. That is 7 times 12, £84. She puts 10% into a savings account. 10% of £84 is £8.40.", E('7 × £12 = £84') + E('10% of £84 = £8.40', 'g'))
+        S("Pay is hours times the rate.", V.rule('Maya earns £12 an hour for 7 hours and saves 10% of her pay. How much does she save?') + E('7 × £12 = £84')),
+        S("10% of £84 is £8.40.", g('10% of £84 = £8.40'))
       ]),
       L.turn("Your turn! Number one. You earn £12 an hour for 7 hours. How much do you earn? Pause and try it.", E('7 × £12'), "7 times 12 is £84.", g('£84')),
       L.turn("Your turn! Number two. You save £300. The bank pays 4% interest for a year. How much interest is that? Pause and try it.", E('4% of £300'), "1% of 300 is £3. 4% is £12.", g('4% of £300 = £12')),
@@ -20510,8 +20511,8 @@ W('How do you solve ordering and logic puzzles?', [
         S("Mistake three: mixing weekly and monthly amounts. A bus fare of £6 a week is not £6 a month. Make sure everything is for the same length of time.", V.rule('Same period for every number.'))
       ]),
       SC('In real life', 'A class party', [
-        S("A class has £120 to spend on a party. Food costs £75. Decorations cost £28. How much is left for prizes?", E('£120, food £75, decorations £28')),
-        S("The spending is 75 plus 28. That is £103. 120 take away 103 leaves £17 for prizes.", E('£75 + £28 = £103') + g('£120 − £103 = £17'))
+        S("First we add the spending, then take it from the money.", V.rule('A class has £120. Food costs £75 and decorations cost £28. How much is left for prizes?') + E('£75 + £28 = £103')),
+        S("120 take away 103 leaves £17.", g('£120 − £103 = £17'))
       ]),
       L.turn("Your turn! Number one. Income is £250. Spending is £185. How much is left? Pause and try it.", E('£250 − £185'), "250 take away 185 is £65.", g('£65')),
       L.turn("Your turn! Number two. You want to buy a game that costs £45. You save £9 a week. How many weeks? Pause and try it.", E('£45 ÷ £9'), "45 divided by 9 is 5 weeks.", g('5 weeks')),
@@ -20551,7 +20552,7 @@ W('How do you solve ordering and logic puzzles?', [
         S("Mistake three: not checking if the answer is sensible. If you work out that a man's height is 180 metres, then something is wrong. It should be 180 centimetres.", r('180 m  ✗') + g('180 cm  ✓'))
       ]),
       SC('In real life', 'Cooking', [
-        S("Recipes use grams for flour and millilitres for milk. If they used kilograms and litres, we would have tiny decimals like 0.25 kilograms. 250 grams is much easier.", E('250 g flour · 300 ml milk', 'g'))
+        S("A kilogram is 1,000 grams, so we can change grams into kilograms by moving the point three places.", V.rule('A recipe needs 250 g of flour. How many kilograms is that?') + g('250 g = 0.25 kg'))
       ]),
       L.turn("Your turn! Number one. What unit would you use to measure the mass of a lorry? Pause and think.", E('?'), "A lorry is very heavy, so we use tonnes.", g('tonnes')),
       L.turn("Your turn! Number two. What unit would you use to measure the width of a classroom? Pause and think.", E('?'), "A classroom is a few metres wide, so we use metres.", g('metres')),
@@ -20592,8 +20593,8 @@ W('How do you solve ordering and logic puzzles?', [
         S("Mistake three: treating time like metric. Never use 10 or 100 for minutes. Use 60.", V.rule('1 hour = 60 minutes, not 100.'))
       ]),
       SC('In real life', 'A recipe', [
-        S("A jug holds 1.2 litres. A glass holds 200 millilitres. How many glasses can the jug fill? First, change the jug to millilitres. 1.2 times 1,000 is 1,000, 200 millilitres.", E('1.2 l = 1,200 ml')),
-        S("Now divide by the size of a glass. 1,000, 200 divided by 200 is 6. The jug fills 6 glasses.", g('1,200 ÷ 200 = 6'))
+        S("First change litres into millilitres. There are 1,000 millilitres in a litre.", V.rule('A jug holds 1.2 litres. A glass holds 200 millilitres. How many glasses can the jug fill?') + E('1.2 l = 1,200 ml')),
+        S("Now divide by the size of a glass.", g('1,200 ÷ 200 = 6 glasses'))
       ]),
       L.turn("Your turn! Number one. How many centimetres are in 4.06 metres? Pause and try it.", E('4.06 m = ? cm'), "Multiply by 100. The answer is 406 centimetres.", g('406 cm')),
       L.turn("Your turn! Number two. Change 3,000, 200 metres to kilometres. Pause and try it.", E('3,200 m = ? km'), "Divide by 1,000. The answer is 3.2 kilometres.", g('3.2 km')),
@@ -20635,7 +20636,7 @@ W('How do you solve ordering and logic puzzles?', [
         S("Mistake three: using square units. Perimeter is a length, so it is in centimetres or metres. Square centimetres are for area.", r('44 cm²  ✗') + g('44 cm  ✓'))
       ]),
       SC('In real life', 'Fencing', [
-        S("A garden is 15 metres long and 8 metres wide. A farmer wants to put a fence all the way round. How much fencing is needed? 15 plus 8 is 23. Double it. 46 metres.", g('2 × (15 + 8) = 46 m'))
+        S("A fence goes all the way round, so we add all four sides.", V.rule('A garden is 15 m long and 8 m wide. How much fencing goes all the way round?') + g('2 × (15 + 8) = 46 m'))
       ]),
       L.turn("Your turn! Number one. A square has sides of 11 centimetres. What is its perimeter? Pause and try it.", E('4 × 11'), "4 times 11 is 44 centimetres.", g('44 cm')),
       L.turn("Your turn! Number two. A rectangle is 14 metres long and 9 metres wide. What is the perimeter? Pause and try it.", E('2 × (14 + 9)'), "14 plus 9 is 23. Double it to get 46 metres.", g('46 m')),
@@ -20671,7 +20672,7 @@ W('How do you solve ordering and logic puzzles?', [
         S("Mistake three: mixing up the names. A quadrilateral is any shape with 4 sides. A square, a rectangle and a kite are all quadrilaterals.", V.rule('Quadrilateral = any four-sided polygon.'))
       ]),
       SC('In real life', 'All around us', [
-        S("Road signs use 2D shapes. Triangles warn us of danger. Circles give orders, like a speed limit. Rectangles give information. And a stop sign is a regular octagon.", V.cards(['▲ warning', '● order', '■ information'], ['b', 'p', 'g']))
+        S("Road signs use 2D shapes.", V.rule('Which 2D shape is a stop sign?') + E('▲ warning  ·  ● order  ·  ■ information') + g('A regular octagon, 8 sides'))
       ]),
       L.turn("Your turn! Number one. What do we call a polygon with 8 sides? Pause and think.", E('?'), "An octagon, like a stop sign.", g('octagon')),
       L.turn("Your turn! Number two. Is a circle a polygon? Pause and think.", E('?'), "No. A circle has a curved edge, and no straight sides.", g('No')),
@@ -20711,7 +20712,7 @@ W('How do you solve ordering and logic puzzles?', [
         S("Mistake three: forgetting that a trapezium has only one pair of parallel sides. If there are 2 pairs, it is a parallelogram.", V.rule('Trapezium: exactly 1 pair parallel.'))
       ]),
       SC('In real life', 'Design', [
-        S("Builders use rectangles for windows and doors because their right angles fit neatly together. They use triangles in bridges and roofs, because triangles are rigid and strong. They do not bend out of shape.", V.cards(['Rectangles fit', 'Triangles are strong'], ['b', 'g']))
+        S("Triangles are rigid, so they do not bend out of shape.", V.rule('Why do builders use triangles in bridges and roofs?') + g('Triangles are rigid and strong'))
       ]),
       L.turn("Your turn! Number one. Which quadrilateral has exactly 1 pair of parallel sides? Pause and think.", E('?'), "A trapezium.", g('trapezium')),
       L.turn("Your turn! Number two. A triangle has 2 equal sides. What is it called? Pause and think.", E('?'), "It is an isosceles triangle.", g('isosceles')),
@@ -20753,7 +20754,7 @@ W('How do you solve ordering and logic puzzles?', [
         S("Mistake three: mixing up acute and obtuse. Acute is smaller than 90. Obtuse is bigger than 90.", V.rule('Acute < 90 < Obtuse.'))
       ]),
       SC('In real life', 'Estimate first', [
-        S("Always estimate before you measure. Suppose an angle looks quite small, but your protractor says 115 degrees. Something is wrong. You used the wrong scale. 180 minus 115 is 65 degrees.", E('180° − 115° = 65°', 'g'))
+        S("Always estimate before you measure. A small angle must be less than 90 degrees.", V.rule('An angle looks small, but the protractor reads 115°. What should the angle be?') + E('180° − 115° = 65°'))
       ]),
       L.turn("Your turn! Number one. What type of angle is 125 degrees? Pause and think.", E('125°'), "It is between 90 and 180, so it is obtuse.", g('obtuse')),
       L.turn("Your turn! Number two. What type of angle is 210 degrees? Pause and think.", E('210°'), "It is bigger than 180, so it is reflex.", g('reflex')),
@@ -20790,7 +20791,7 @@ W('How do you solve ordering and logic puzzles?', [
         S("Mistake three: asking leading questions. Don't you agree football is the best? pushes people to say yes. Ask a neutral question.", r('Don\'t you agree football is best?  ✗') + g('What is your favourite sport?  ✓'))
       ]),
       SC('In real life', 'Using data', [
-        S("A school canteen counts how many pupils choose each meal. This is data. They use it to decide how much of each meal to cook. Less waste, and fewer disappointed pupils.", E('Data → decision', 'g'))
+        S("Counting gives data. Data helps us decide.", V.rule('A canteen counts how many pupils choose each meal. What is this data used for?') + g('Deciding how much of each meal to cook'))
       ]),
       L.turn("Your turn! Number one. Is the time to run 100 metres discrete or continuous data? Pause and think.", E('?'), "Time is measured, so it is continuous.", g('continuous')),
       L.turn("Your turn! Number two. Is the number of goals in a match discrete or continuous? Pause and think.", E('?'), "Goals are counted, so they are discrete.", g('discrete')),
@@ -20830,7 +20831,7 @@ W('How do you solve ordering and logic puzzles?', [
         S("Mistake three: not checking the total. The frequencies should add up to the number of people asked.", V.rule('Check: total = people asked.'))
       ]),
       SC('In real life', 'A traffic survey', [
-        S("A class counts the cars, buses and bikes that pass the school for 10 minutes. They make a tally chart, turn it into a frequency table, and then they can see which kind of traffic is most common.", E('tally → frequency table', 'g'))
+        S("A tally chart is turned into a frequency table.", V.rule('A class counts cars, buses and bikes passing the school for 10 minutes. What do they make from the tally?') + g('A frequency table'))
       ]),
       L.turn("Your turn! Number one. How many tally marks are in 3 full gates and 2 extra marks? Pause and think.", E('3 gates + 2'), "Each gate is 5. 15 plus 2 is 17.", g('17')),
       L.turn("Your turn! Number two. A frequency table shows 9, 14 and 7. What is the total? Pause and think.", E('9 + 14 + 7'), "9 plus 14 is 23. Plus 7 is 30.", g('30')),
@@ -24811,7 +24812,8 @@ W('How do you solve ordering and logic puzzles?', [
       SC('Two brackets', '(12.6 + 3.4) ÷ (5 − 3)', [
         st("Work out each bracket first. 12.6 plus 3.4 is 16. 5 take away 3 is 2. 16 divided by 2 is 8.", E('12.6 + 3.4 = 16') + E('5 − 3 = 2') + E('16 ÷ 2 = 8', 'g'))]),
       SC('In real life', 'A phone bill', [
-        st("A phone costs £12.50 a month for 3 months, plus 4 extra downloads at 75p each. 3 times £12.50 is £37.50. 4 times 75p is £3. Add them: £40.50.", E('3 × 12.50 + 4 × 0.75') + E('37.50 + 3.00 = £40.50', 'g'))]),
+        st("A phone bill has a monthly cost and some extra downloads. We add the two amounts.", V.rule('A phone costs £12.50 a month for 3 months, plus 4 extra downloads at 75p each. What is the total?') + E('3 × £12.50 = £37.50') + E('4 × 75p = £3.00') + E('£37.50 + £3.00 = £40.50', 'g')),
+      ]),
       L.turn("Your turn! Work out 4.2, add 3 times, bracket, 1.5 plus 2.5, squared. Pause and try it.", E('4.2 + 3 × (1.5 + 2.5)² = ?'),
         "Brackets: 1.5 plus 2.5 is 4. 4 squared is 16. 3 times 16 is 48. 4.2 plus 48 is 52.2.", E('4.2 + 48 = 52.2', 'g')),
       L.rec('How do you calculate with mixed operations?', "Use BIDMAS: brackets, then powers, then dividing and multiplying, then adding and subtracting. Work brackets from the inside out, and go left to right on the same level.",

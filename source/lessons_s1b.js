@@ -362,7 +362,8 @@
       SC('Two brackets', '(12.6 + 3.4) ÷ (5 − 3)', [
         st("Work out each bracket first. 12.6 plus 3.4 is 16. 5 take away 3 is 2. 16 divided by 2 is 8.", E('12.6 + 3.4 = 16') + E('5 − 3 = 2') + E('16 ÷ 2 = 8', 'g'))]),
       SC('In real life', 'A phone bill', [
-        st("A phone costs £12.50 a month for 3 months, plus 4 extra downloads at 75p each. 3 times £12.50 is £37.50. 4 times 75p is £3. Add them: £40.50.", E('3 × 12.50 + 4 × 0.75') + E('37.50 + 3.00 = £40.50', 'g'))]),
+        st("A phone bill has a monthly cost and some extra downloads. We add the two amounts.", V.rule('A phone costs £12.50 a month for 3 months, plus 4 extra downloads at 75p each. What is the total?') + E('3 × £12.50 = £37.50') + E('4 × 75p = £3.00') + E('£37.50 + £3.00 = £40.50', 'g')),
+      ]),
       L.turn("Your turn! Work out 4.2, add 3 times, bracket, 1.5 plus 2.5, squared. Pause and try it.", E('4.2 + 3 × (1.5 + 2.5)² = ?'),
         "Brackets: 1.5 plus 2.5 is 4. 4 squared is 16. 3 times 16 is 48. 4.2 plus 48 is 52.2.", E('4.2 + 48 = 52.2', 'g')),
       L.rec('How do you calculate with mixed operations?', "Use BIDMAS: brackets, then powers, then dividing and multiplying, then adding and subtracting. Work brackets from the inside out, and go left to right on the same level.",
