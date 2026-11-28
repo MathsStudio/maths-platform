@@ -47959,7 +47959,7 @@ S.extraMakers = function (n, level) {
     e._recap = items;
   }
   var all = Object.keys(BT.EP).map(function (t) { return [t, BT.EP[t]]; }).concat((BT.ALLEP || []).map(function (e) { return [e.title, e]; }));
-  all.forEach(function (pair) { var t = pair[0], e = pair[1]; if (!e || !e.scenes || e._recap) return; try { build(t, e); } catch (x) { if (window.console) console.warn('recap', t, x); } });
+  all.forEach(function (pair) { var t = pair[0], e = pair[1]; if (!e || !e.scenes || e._recap || e.fl) return; /* First level stories have their own player: no added recap */ try { build(t, e); } catch (x) { if (window.console) console.warn('recap', t, x); } });
   BT.recapBuilt = true;
 })();
 </script>
