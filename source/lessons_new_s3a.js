@@ -52,7 +52,7 @@
       S("Mistake four: thinking anything to the power 0 is 0. It is 1.", r('5⁰ = 0  ✗') + g('5⁰ = 1  ✓'))
     ]),
     SC('In real life', 'Computers and memory', [
-      S("Computer memory is measured in powers of 2. A kilobyte is about 2 to the 10 bytes. A megabyte is 2 to the 20. To find how many kilobytes are in a megabyte, divide. 2 to the 20 divided by 2 to the 10 is 2 to the 10. That is 1,024.", g('2²⁰ ÷ 2¹⁰ = 2¹⁰ = 1,024'))
+        S("A megabyte has 2²⁰ bytes. A kilobyte has 2¹⁰.", V.rule('How many kilobytes are in 1 megabyte?') + E('2²⁰ ÷ 2¹⁰ = 2¹⁰') + g('= 1,024'))
     ]),
     L.turn("Your turn! Number one. Simplify x to the six, times x to the four. Pause and try it.", E('x⁶ × x⁴'), "Add the indices. 6 plus 4 is 10. x to the 10.", g('x¹⁰')),
     L.turn("Your turn! Number two. Simplify 12 y to the 8, divided by 3 y to the 2. Pause and try it.", E('12y⁸ ÷ 3y²'), "12 divided by 3 is 4. 8 minus 2 is 6. 4 y to the 6.", g('4y⁶')),
@@ -98,7 +98,7 @@
       S("Mistake three: miscounting the places. Count carefully, 1 place at a time, from the original decimal point.", V.rule('Count the places the point moves.'))
     ]),
     SC('In real life', 'Science', [
-      S("The distance from the Earth to the Sun is about 150 million kilometres. In standard form, 1.5 times 10 to the 8. A red blood cell is about 0.00007 metres across. In standard form, 7 times 10 to the negative 5.", E('1.5 × 10⁸ km') + E('7 × 10⁻⁵ m'))
+        S("Write very large and very small numbers in standard form.", V.rule('The Sun is about 150,000,000 km away. A red blood cell is about 0.00007 m across. Write both in standard form.') + g('1.5 × 10⁸ km and 7 × 10⁻⁵ m'))
     ]),
     L.turn("Your turn! Number one. Write 340,000 in standard form. Pause and try it.", E('340,000'), "3.4. The point moves 5 places. 3.4 times 10 to the 5.", g('3.4 × 10⁵')),
     L.turn("Your turn! Number two. Write 0.00008 in standard form. Pause and try it.", E('0.00008'), "8. The point moves 5 places to the right. A small number, so a negative power. 8 times 10 to the negative 5.", g('8 × 10⁻⁵')),
@@ -142,7 +142,7 @@
       S("Mistake three: adding powers when adding numbers. For addition, the powers must be matched first. We do not add the powers.", r('10⁵ + 10⁴ = 10⁹  ✗'))
     ]),
     SC('In real life', 'Light and distance', [
-      S("Light travels at about 3 times 10 to the 8 metres per second. How far does it go in 500 seconds, which is 5 times 10 squared? Multiply. 3 times 5 is 15. 8 plus 2 is 10. 15 times 10 to the 10, which is 1.5 times 10 to the 11 metres.", E('(3 × 10⁸) × (5 × 10²) = 15 × 10¹⁰') + g('= 1.5 × 10¹¹ m'))
+        S("Multiply the numbers, then add the powers of 10.", V.rule('Light travels 3 × 10⁸ m each second. How far does it go in 500 seconds?') + E('(3 × 10⁸) × (5 × 10²) = 15 × 10¹⁰') + g('= 1.5 × 10¹¹ m'))
     ]),
     L.turn("Your turn! Number one. Work out 2 times 10 to the 3, times 4 times 10 to the 5. Pause and try it.", E('(2 × 10³)(4 × 10⁵)'), "2 times 4 is 8. 3 plus 5 is 8. 8 times 10 to the 8.", g('8 × 10⁸')),
     L.turn("Your turn! Number two. Work out 6 times 10 to the 8, divided by 3 times 10 to the 2. Pause and try it.", E('(6 × 10⁸) ÷ (3 × 10²)'), "6 divided by 3 is 2. 8 minus 2 is 6. 2 times 10 to the 6.", g('2 × 10⁶')),
@@ -186,7 +186,7 @@
       S("Mistake three. Using the wrong bounds for a division. The greatest value of 12 divided by 4, each to the nearest whole number. Wrong: upper over upper, 12.5 over 4.5, 2.78. To make a fraction as big as possible, make the top as big as possible and the bottom as small as possible. 12.5 over 3.5, 3.57.", r('12.5 ÷ 4.5 ≈ 2.78  ✗') + g('12.5 ÷ 3.5 ≈ 3.57  ✓'))
     ]),
     SC('In real life', 'Weighing', [
-      S("A parcel weighs 2.3 kilograms, to 1 decimal place. A courier charges extra above 2.4 kilograms. Could the parcel really be over? The upper bound is 2.35. That is less than 2.4. So no extra charge.", E('Upper bound 2.35 < 2.4') + g('No extra charge'))
+        S("Find the upper bound for the parcel's weight.", V.rule('A parcel weighs 2.3 kg to 1 decimal place. Could it be over 2.4 kg?') + E('Upper bound 2.35 kg') + g('2.35 is less than 2.4, so no extra charge'))
     ]),
     L.turn("Your turn! Number one. A mass is 17 kilograms, to the nearest kilogram. What are the lower and upper bounds? Pause and try it.", E('17 kg'), "Half of 1 is 0.5. 16.5 and 17.5.", g('16.5 and 17.5')),
     L.turn("Your turn! Number two. A time is 6.2 seconds, to 1 decimal place. What is the lower bound? Pause and try it.", E('6.2 s'), "Half of 0.1 is 0.05. 6.2 minus 0.05. 6.15.", g('6.15 s')),
@@ -225,7 +225,7 @@
       S("Mistake three: thinking 22 over 7 is pi. It is only a close approximation. It is a fraction, so it is rational, but pi is not.", V.rule('22/7 ≈ π, but ≠ π'))
     ]),
     SC('In real life', 'Measuring', [
-      S("A square with sides of 1 metre has a diagonal of root 2 metres. This length is irrational. No matter how finely we measure, we can never write its exact length as a fraction. We can only get closer.", V.note('The diagonal of a unit square is irrational'))
+        S("The diagonal of a square is a length we can only get closer to.", V.rule('A square has sides of 1 m. Why can its diagonal never be written exactly as a fraction?') + g('√2 is irrational'))
     ]),
     L.turn("Your turn! Number one. Is 0.6 rational or irrational? Pause and think.", E('0.6'), "It is 6/10, which is 3/5. It is a fraction, so it is rational.", g('Rational')),
     L.turn("Your turn! Number two. Is the square root of 25 rational or irrational? Pause and think.", E('√25'), "The root of 25 is 5. That is rational.", g('Rational')),
@@ -269,7 +269,7 @@
       S("Mistake three. Using the exact numbers, not rounded ones. Estimate 4.8 times 19.6, divided by 0.52. Wrong: use a calculator, 180.9, and call it an estimate. An estimate rounds first. 5 times 20, divided by 0.5. 200.", r('exact 180.9, not an estimate  ✗') + g('5 × 20 ÷ 0.5 = 200  ✓'))
     ]),
     SC('In real life', 'Shopping', [
-      S("You buy 11 items at £2.99 each. Estimate the cost. Round to 10 items at £3. About £30. The shop assistant says £32.89. Close enough to your estimate, so it seems right.", E('11 × 2.99 ≈ 10 × 3 = 30') + g('Exact: £32.89'))
+        S("Estimate by rounding, then compare with the real bill.", V.rule('You buy 11 items at £2.99 each. Estimate the cost, then check the bill of £32.89.') + E('11 × 2.99 ≈ 10 × 3 = £30') + g('£32.89 is close, so it seems right'))
     ]),
     L.turn("Your turn! Number one. Round 6,000, 105 to 1 significant figure. Pause and try it.", E('6,105'), "The first digit is 6. The next digit is 1. Round down. 6,000.", g('6,000')),
     L.turn("Your turn! Number two. Estimate 51.2 times 9.8. Pause and try it.", E('51.2 × 9.8'), "50 times 10. 500.", g('500')),
@@ -308,7 +308,7 @@
       S("Mistake three. Using the wrong multiplier. After a 15% decrease the price is £68. Wrong: divide by 0.15. The multiplier for a 15% decrease is 0.85. 68 divided by 0.85 is £80.", r('68 ÷ 0.15 ≈ 453  ✗') + g('68 ÷ 0.85 = 80  ✓'))
     ]),
     SC('In real life', 'Sales', [
-      S("A pair of trainers is reduced by 30% to £56. What was the original price? The multiplier is 0.7. 56 divided by 0.7 is £80. A real saving of £24.", g('56 ÷ 0.7 = £80'))
+        S("A 30% discount leaves 70%, so the multiplier is 0.7.", V.rule('A pair of trainers is 30% off and costs £56. What was the original price?') + E('56 ÷ 0.7') + g('= £80'))
     ]),
     L.turn("Your turn! Number one. After a 25% discount, a jacket costs £45. What was the original price? Pause and try it.", E('45 ÷ 0.75'), "The multiplier is 0.75. 45 divided by 0.75 is £60.", g('£60')),
     L.turn("Your turn! Number two. A salary is £33,000 after a 10% rise. What was it before? Pause and try it.", E('33,000 ÷ 1.1'), "The multiplier is 1.1. 33,000 divided by 1.1 is £30,000.", g('£30,000')),
@@ -348,7 +348,7 @@
       S("Mistake three: using the rate as the multiplier. For a 10% rise, the multiplier is 1.1, not 0.1.", r('× 0.1  ✗') + g('× 1.1  ✓'))
     ]),
     SC('In real life', 'Prices and inflation', [
-      S("When prices rise by 3% each year, in 10 years, the same basket of shopping costs 1.03 to the power 10 times as much. That is about 1.34. A basket costing £100 today would cost about £134 in 10 years.", g('1.03¹⁰ ≈ 1.34'))
+        S("Each year the price is multiplied by 1.03.", V.rule('Prices rise 3% a year. A £100 basket costs £100 today. About what in 10 years?') + E('1.03¹⁰ ≈ 1.34') + g('About £134'))
     ]),
     L.turn("Your turn! Number one. A bike is worth £200, and loses 10% a year. What is it worth after 2 years? Pause and try it.", E('200 × 0.9²'), "0.9 squared is 0.81. 200 times that is £162.", g('£162')),
     L.turn("Your turn! Number two. A town of 10,000 grows by 2% a year for 3 years. What is the population? Pause and try it.", E('10,000 × 1.02³'), "1.02 cubed is about 1.061. So about 10,000, 612.", g('≈ 10,612')),
@@ -427,7 +427,7 @@
       S("Mistake three: taking the percentage of the original every year. Each year's percentage is of the current value.", V.rule('Each year: new value.'))
     ]),
     SC('In real life', 'Buying second hand', [
-      S("Because new cars lose value fastest in the early years, many people buy second-hand. A 3-year-old car is much cheaper than a new 1, but may still be reliable.", V.note('Depreciation is fastest in year one'))
+        S("New cars lose value fastest in the early years.", V.rule('Why do many people buy a 3-year-old car rather than a new one?') + g('A new car loses value fastest in its early years'))
     ]),
     L.turn("Your turn! Number one. A phone costs £800 and loses 30% in the first year. What is it worth? Pause and try it.", E('800 × 0.7'), "The multiplier is 0.7. £560.", g('£560')),
     L.turn("Your turn! Number two. A van costs 20,000 and loses 10% a year. What is it worth after 2 years? Pause and try it.", E('20,000 × 0.9²'), "0.9 squared is 0.81. 16,000, £200.", g('£16,200')),
@@ -465,7 +465,7 @@
       S("Mistake three: using 20 as the multiplier. 20% is 0.2. Adding it to 1 is 1.2.", r('× 20  ✗') + g('× 1.2  ✓'))
     ]),
     SC('In real life', 'Shop prices', [
-      S("A shop advertises a television at £400 plus VAT. The real price you pay is 400 times 1.2, which is £480. Always check if a price includes VAT.", g('£400 + VAT = £480'))
+        S("Always check whether a price includes VAT.", V.rule('A TV costs £400 plus 20% VAT. What do you pay?') + E('400 × 1.2') + g('= £480'))
     ]),
     L.turn("Your turn! Number one. Add 20% VAT to a price of £75. Pause and try it.", E('75 × 1.2'), "75 times 1.2 is £90.", g('£90')),
     L.turn("Your turn! Number two. A price with VAT is £180. What is the net price? Pause and try it.", E('180 ÷ 1.2'), "£150.", g('£150')),
@@ -502,7 +502,7 @@
       S("Mistake three: mixing up profit and selling price. Profit is only the difference.", V.rule('Profit = selling − cost.'))
     ]),
     SC('In real life', 'Running a stall', [
-      S("At a school fair, you buy cakes for £50 and sell them for 75. Your profit is £25. The percentage profit is 25 over 50, which is 50%. The school keeps the profit.", g('25 ÷ 50 × 100 = 50%'))
+        S("The percentage profit is the profit as a share of the cost.", V.rule('Cakes cost £50 and sell for £75. What is the percentage profit?') + E('25 ÷ 50 × 100') + g('= 50%'))
     ]),
     L.turn("Your turn! Number one. A cap costs £12 and is sold for 15. What is the percentage profit? Pause and try it.", E('3 ÷ 12 × 100'), "The profit is £3. 3 over 12 is 1/4. 25%.", g('25%')),
     L.turn("Your turn! Number two. A shop adds a 30% profit to a cost of £40. What is the selling price? Pause and try it.", E('40 × 1.3'), "Fifty-two pounds.", g('£52')),
@@ -539,7 +539,7 @@
       S("Mistake three. Giving only the interest when asked for the total. £1,000 at 2% for 2 years. The interest is £40. Wrong: the account now holds £40. The total includes the original money. £1,040.", r('total = £40  ✗') + g('total = 1000 + 40 = £1040  ✓'))
     ]),
     SC('In real life', 'Short loans', [
-      S("Simple interest is often used for short term loans, like borrowing money from a friend or a family member. Because it does not compound, it is easier to work out, and it never surprises you with a bigger bill.", V.note('Simple: the same amount each year'))
+        S("Simple interest does not compound, so it is easier to work out.", V.rule('Which is easier to work out for a short loan, simple or compound interest?') + g('Simple interest, because it does not compound'))
     ]),
     L.turn("Your turn! Number one. Find the simple interest on £500 at 4% for 3 years. Pause and try it.", E('500 × 4 × 3 ÷ 100'), "£20 a year. For 3 years. £60.", g('£60')),
     L.turn("Your turn! Number two. What is the total in the account? Pause and try it.", E('500 + 60'), "£560.", g('£560')),
@@ -576,7 +576,7 @@
       S("Mistake three. Mixing yearly and monthly amounts. Yearly tax is 3,100. Wrong: take that off a monthly pay of 2,000. Divide the tax by 12 first. About £258 a month.", r('2000 − 3100 < 0  ✗') + g('3100 ÷ 12 ≈ 258 a month  ✓'))
     ]),
     SC('In real life', 'Reading a payslip', [
-      S("A payslip lists the gross pay and each deduction, and then the net pay at the bottom. Learning to check a payslip helps you spot mistakes, and understand where your money goes.", V.note('Gross − deductions = net'))
+        S("Check the net pay against the gross pay and the deductions.", V.rule('What is the net pay at the bottom of a payslip?') + g('Gross pay minus the deductions'))
     ]),
     L.turn("Your turn! Number one. A person earns £24,000. The allowance is 12,500. How much is taxable? Pause and try it.", E('24,000 − 12,500'), "£11,500.", g('£11,500')),
     L.turn("Your turn! Number two. Tax is 20%. How much tax is due? Pause and try it.", E('20% × 11,500'), "£2,300.", g('£2,300')),
@@ -613,7 +613,7 @@
       S("Mistake three. Forgetting a yearly cost. A subscription is £12 a month. Wrong: put £12 in the yearly plan. There are 12 months. 12 times 12 is 100 and £44.", r('£12 a year  ✗') + g('12 × 12 = £144 a year  ✓'))
     ]),
     SC('In real life', 'Setting a goal', [
-      S("You want to save £600 for a trip in 10 months. 600 divided by 10 is £60 a month. That is your savings target. A budget helps you reach it.", g('600 ÷ 10 = £60 a month'))
+        S("Divide the total by the number of months.", V.rule('You want to save £600 for a trip in 10 months. How much a month?') + E('600 ÷ 10') + g('= £60 a month'))
     ]),
     L.turn("Your turn! Number one. A monthly income is £1,500. 20% goes to savings. How much? Pause and try it.", E('20% × 1,500'), "£300.", g('£300')),
     L.turn("Your turn! Number two. How much is that saved in a year? Pause and try it.", E('300 × 12'), "£3,600.", g('£3,600')),
@@ -652,7 +652,7 @@
       S("Mistake three. Calling the extra cost the interest rate. The cash price is £400, and the credit price is 450. Wrong: the interest is 50%. The extra is £50. As a fraction of 400 it is 12 and 1/2 per cent.", r('£50 extra = 50%  ✗') + g('50 ÷ 400 = 12.5%  ✓'))
     ]),
     SC('In real life', 'Buy now, pay later', [
-      S("Shops often say interest free for 12 months. That can be fine if you pay on time. But if you miss the deadline, interest may be added back to the whole amount. Always read the details.", V.note('Read the small print'))
+        S("Read the details before you agree.", V.rule('A shop offers 12 months interest free. What can happen if you miss the deadline?') + g('Interest may be added to the whole amount'))
     ]),
     L.turn("Your turn! Number one. A TV costs £400 cash. On hire purchase, the deposit is £50, and there are 10 payments of £45. What is the total? Pause and try it.", E('50 + 10 × 45'), "10 times 45 is 450. Plus 50. £500.", g('£500')),
     L.turn("Your turn! Number two. What is the cost of credit? Pause and try it.", E('500 − 400'), "One hundred pounds.", g('£100')),
@@ -690,7 +690,7 @@
       S("Mistake three. Comparing different amounts. Offer 1 gives 220 euros for £200. Offer 2 gives 324 euros for £300. Wrong: 3 24 is bigger, so offer 2 is better. Compare euros per pound. 1.10 against 1.08. Offer 1 is better.", r('324 > 220, so offer 2  ✗') + g('1.10 against 1.08 per £: offer 1  ✓'))
     ]),
     SC('In real life', 'Airport or bank?', [
-      S("Airport exchange desks often have worse rates and bigger fees. Comparing offers before you travel can save you a good deal of money.", V.note('Compare before you travel'))
+        S("Airport desks often have worse rates and bigger fees.", V.rule('Airport exchange desks often have worse rates. What should you do before you travel?') + g('Compare the rates and fees first'))
     ]),
     L.turn("Your turn! Number one. You change £300 at 1.14 euros to the pound. How many euros? Pause and try it.", E('300 × 1.14'), "342 euros.", g('€342')),
     L.turn("Your turn! Number two. A fee of 2% is taken first. How many pounds are changed from 300? Pause and try it.", E('300 × 0.98'), "£294.", g('£294')),
@@ -733,7 +733,7 @@
       S("Mistake three. Not checking that the shares add up. Share 72 in the ratio 5 to 4. Wrong: 45 and 36. They add to 81. That is not 72. 1 part is 8. 40 and 32.", r('45 + 36 = 81 ≠ 72  ✗') + g('40 + 32 = 72  ✓'))
     ]),
     SC('In real life', 'Mixing paint', [
-      S("A painter mixes blue and white paint in the ratio 3 to 7 to make a light blue. For 10 litres of paint, 3 parts blue is 3 litres and 7 parts white is 7 litres. The same ratio gives the same colour every time.", g('3 L blue + 7 L white'))
+        S("Share the 10 litres in the ratio 3 : 7.", V.rule('Paint is mixed blue to white in the ratio 3 : 7. How many litres of each in 10 litres?') + g('3 L blue + 7 L white'))
     ]),
     L.turn("Your turn! Number one. Simplify 18 to 24. Pause and try it.", E('18 : 24'), "Divide both by 6. 3 to 4.", g('3 : 4')),
     L.turn("Your turn! Number two. Share £72 in the ratio 5 to 4. Pause and try it.", E('72 in 5 : 4'), "9 parts. 1 part is £8. £40 and £32.", g('£40 and £32')),
@@ -771,7 +771,7 @@
       S("Mistake three. Finding k upside down. y is 12 when x is 4. Wrong: k is 4 divided by 12. k is y divided by x. 12 divided by 4 is 3.", r('k = 4 ÷ 12  ✗') + g('k = 12 ÷ 4 = 3  ✓'))
     ]),
     SC('In real life', 'Currency and fuel', [
-      S("Exchange rates are direct proportion. Double the pounds gives double the euros. Fuel is too. If 10 litres cost £15, 30 litres cost £45. The constant is £1.50 a litre.", g('C = 1.5L'))
+        S("Find the cost of one litre, then multiply.", V.rule('10 litres of fuel cost £15. What do 30 litres cost?') + E('£15 ÷ 10 = £1.50 a litre') + g('30 × 1.5 = £45'))
     ]),
     L.turn("Your turn! Number one. 6 tickets cost £42. How much do 9 tickets cost? Pause and try it.", E('42 ÷ 6 × 9'), "1 ticket is £7. 9 tickets are £63.", g('£63')),
     L.turn("Your turn! Number two. y is directly proportional to x. When x is 5, y is 20. Find the constant k. Pause and try it.", E('k = 20 ÷ 5'), "Four.", g('k = 4')),
@@ -811,7 +811,7 @@
       S("Mistake three. Not checking the answer makes sense. y is 40 over x, and x is 10. Wrong: 40 times 10, 400. As x grows, y should shrink. 40 divided by 10 is 4.", r('40 × 10 = 400  ✗') + g('40 ÷ 10 = 4  ✓'))
     ]),
     SC('In real life', 'Sharing the work', [
-      S("10 people clean a hall in 6 hours. If 20 people help, it takes 3 hours. That assumes everyone works equally well. In real life, too many people can get in each other's way.", V.note('Inverse proportion assumes equal work'))
+        S("Work is shared between people, so more people need fewer hours.", V.rule('10 people clean a hall in 6 hours. How long with 20 people, if they all work equally well?') + g('3 hours'))
     ]),
     L.turn("Your turn! Number one. 4 painters take 9 days to paint a house. How long do 6 painters take? Pause and try it.", E('4 × 9 ÷ 6'), "Total work is 36. 36 divided by 6 is 6 days.", g('6 days')),
     L.turn("Your turn! Number two. y is inversely proportional to x. When x is 5, y is 8. Find k. Pause and try it.", E('k = 5 × 8'), "Forty.", g('k = 40')),
@@ -848,7 +848,7 @@
       S("Mistake three. Leaving out a stop. A driver goes 100 kilometres. The driving takes 1 hour, and there is 1/2 hour stop. Wrong: 100 kilometres per hour. The whole journey took 1 and 1/2 hours. About 66.7.", r('100 ÷ 1 = 100 km/h  ✗') + g('100 ÷ 1.5 ≈ 66.7 km/h  ✓'))
     ]),
     SC('In real life', 'Journey planning', [
-      S("Sat navs use average speed to estimate arrival times. A 240 kilometre trip at an average of 80 kilometres per hour takes 3 hours. Heavy traffic lowers the average, and so the arrival time is later.", g('240 ÷ 80 = 3 h'))
+        S("Time equals distance divided by speed.", V.rule('A trip is 240 km at an average of 80 km/h. How long does it take?') + E('240 ÷ 80') + g('= 3 hours'))
     ]),
     L.turn("Your turn! Number one. A runner goes 12 kilometres in 1 and 1/2 hours. What is the average speed? Pause and try it.", E('12 ÷ 1.5'), "8 kilometres per hour.", g('8 km/h')),
     L.turn("Your turn! Number two. A car goes 60 kilometres in 1 hour, and then 90 kilometres in 1 hour. Find the average speed. Pause and try it.", E('150 ÷ 2'), "150 kilometres in 2 hours. 75 kilometres per hour.", g('75 km/h')),
@@ -887,7 +887,7 @@
       S("Mistake three. Thinking the bigger pack is always cheaper. Pasta is £1 for 500 grams, or 3 50 for 1.5 kilograms. Wrong: the family pack must be cheaper. 20p against 23.3 pence per hundred grams. The small pack wins.", r('big pack must be cheaper  ✗') + g('20p against 23.3p per 100 g: small  ✓'))
     ]),
     SC('In real life', 'Supermarkets', [
-      S("Shops often show the unit price on the shelf label, like pence per hundred grams. Reading it makes comparing easy. Now you also know how it is worked out.", V.note('Check the shelf label'))
+        S("The unit price helps you compare.", V.rule('Why does the shelf label show the price per 100 g?') + g('It makes comparing products easy'))
     ]),
     L.turn("Your turn! Number one. 250 grams of cheese costs £2.50. 500 grams costs £4.50. Which is better value? Pause and try it.", E('250 g: £2.50  ·  500 g: £4.50'), "The small 1 is £1 per hundred grams. The big 1 is 90p per hundred grams. The 500 gram block is better value.", g('500 g')),
     L.turn("Your turn! Number two. Find the price per kilogram if 2 kilograms cost £3.40. Pause and try it.", E('3.40 ÷ 2'), "One pound seventy.", g('£1.70 per kg')),
@@ -928,7 +928,7 @@
       S("Mistake three. Forgetting to use hours for the speed. A line goes from 0 to 12 kilometres in 30 minutes. Wrong: 12 divided by 30, 0.4. 30 minutes is half an hour. 12 divided by 0.5 is 24 kilometres per hour.", r('12 ÷ 30 = 0.4 km/h  ✗') + g('12 ÷ 0.5 = 24 km/h  ✓'))
     ]),
     SC('In real life', 'Trains', [
-      S("Train timetables can be drawn as distance-time graphs. Where the lines of 2 trains cross, they pass each other. Railway planners use these to avoid collisions.", V.note('Where lines cross, trains pass'))
+        S("Where the lines cross, the trains pass each other.", V.rule('On a distance-time graph, what does it mean where two train lines cross?') + g('The trains pass each other'))
     ]),
     L.turn("Your turn! Number one. A line rises 6 kilometres in 2 hours. What is the speed? Pause and try it.", E('6 ÷ 2'), "3 kilometres per hour.", g('3 km/h')),
     L.turn("Your turn! Number two. What does a horizontal line mean on a distance-time graph? Pause and think.", E('?'), "The person is stopped.", g('Stopped')),
@@ -966,7 +966,7 @@
       S("Mistake three. Using the slanted side as the height. A trapezium has parallel sides 4 and 8, a vertical height of 5, and a slanted side of 6. Wrong: half times 12 times 6, 36. The height is the straight distance between the parallel sides. Half times 12 times 5, 30.", r('½(4 + 8) × 6 = 36  ✗') + g('½(4 + 8) × 5 = 30  ✓'))
     ]),
     SC('In real life', 'Tracks and windows', [
-      S("A running track is a rectangle with a semicircle at each end. A window with an arch is a rectangle with a semicircle. Builders use exactly these calculations to buy glass and fencing.", V.note('Rectangle + semicircle'))
+        S("Each end of the track is a semicircle.", V.rule('Each end of a running track is a semicircle. What do we work out with these shapes?') + g('The area and perimeter, to buy glass and fencing'))
     ]),
     L.turn("Your turn! Number one. Find the area of a trapezium with parallel sides 4 and 8, and height 5. Pause and try it.", E('a = 4, b = 8, h = 5'), "Half of 12 is 6. 6 times 5 is 30.", g('30 cm²')),
     L.turn("Your turn! Number two. A semicircle has diameter 8. Find its area, to 1 decimal place. Pause and try it.", E('d = 8'), "Radius 4. Half of pi times 16 is 25.1.", g('25.1 cm²')),
@@ -1001,7 +1001,7 @@
       S("Mistake three. Writing the wrong units. A box is 2 by 3 by 4. Wrong: 24 centimetres. Volume is measured in cubic units. 24 cubic centimetres.", r('24 cm  ✗') + g('24 cm³  ✓'))
     ]),
     SC('In real life', 'Pipes and packaging', [
-      S("Engineers work out how much water fits in a pipe using the cylinder formula. A pipe of radius 5 centimetres and length 1 metre holds about 7.85 litres.", V.note('Cylinders everywhere'))
+        S("The volume of a cylinder is π r² h.", V.rule('A pipe has radius 5 cm and length 1 m. How much water does it hold?') + E('π × 5² × 100 ≈ 7,854 cm³') + g('≈ 7.85 litres'))
     ]),
     L.turn("Your turn! Number one. A cuboid is 4 by 5 by 6. Find the volume. Pause and try it.", E('4 × 5 × 6'), "120.", g('120 cm³')),
     L.turn("Your turn! Number two. A cylinder has radius 2 and height 7. Find the volume to 1 decimal place. Pause and try it.", E('π × 2² × 7'), "Pi times 4 times 7. 87.8.", g('87.8 cm³')),
@@ -1039,7 +1039,7 @@
       S("Mistake three. Using the diameter. A cylinder has diameter 10 and height 4. Wrong: the curved area is 2 pi times 10 times 4, 251. Use the radius, 5. 2 pi times 5 times 4, about 126.", r('2π × 10 × 4 ≈ 251  ✗') + g('2π × 5 × 4 ≈ 126  ✓'))
     ]),
     SC('In real life', 'Labels and paint', [
-      S("A can label covers only the curved surface. Paint for a tank covers everything. Knowing which faces you need saves money.", V.note('Which faces do you need?'))
+        S("A can label covers only the curved surface.", V.rule('Which part of a can does a label cover?') + g('The curved surface'))
     ]),
     L.turn("Your turn! Number one. Find the surface area of a cube with side 5. Pause and try it.", E('6 × 5 × 5'), "6 faces, each 25. 150.", g('150 cm²')),
     L.turn("Your turn! Number two. A cylinder has radius 2 and height 5. Find the curved surface area. Pause and try it.", E('2π × 2 × 5'), "2 times pi times 2 times 5 is 20 pi. About 62.8.", g('≈ 62.8 cm²')),
@@ -1075,7 +1075,7 @@
       S("Mistake three. Treating a hemisphere as a whole sphere. A hemisphere has radius 3. Wrong: 4/3 pi times 27, 113. A hemisphere is half a sphere. 56.5.", r('⁴⁄₃π × 27 ≈ 113.1  ✗') + g('½ × ⁴⁄₃π × 27 ≈ 56.5  ✓'))
     ]),
     SC('In real life', 'Silos and rockets', [
-      S("A grain silo is a cylinder with a cone or dome on top. Engineers add the volumes to know how much grain it can hold.", V.note('Silo: cylinder + dome'))
+        S("Engineers add the volumes of the parts.", V.rule('A silo is a cylinder with a dome on top. How do engineers find how much it holds?') + g('Add the volumes of the two parts'))
     ]),
     L.turn("Your turn! Number one. A cylinder has volume 60 and a cone on top has volume 20. What is the total? Pause and try it.", E('60 + 20'), "Eighty.", g('80 cm³')),
     L.turn("Your turn! Number two. Write the volume of a hemisphere of radius 3. Pause and try it.", E('⅔ × π × 27'), "2/3 times pi times 27. 18 pi, about 56.5.", g('≈ 56.5 cm³')),
@@ -1112,7 +1112,7 @@
       S("Mistake three: multiplying when you should divide. Smaller unit, bigger number.", V.rule('Smaller unit, bigger number.'))
     ]),
     SC('In real life', 'Land and water', [
-      S("Land is measured in hectares. 1 hectare is 10,000 square metres. A football pitch is about 3/4 of a hectare.", E('1 hectare = 10 000 m²'))
+        S("Land is measured in hectares.", V.rule('How many square metres are in 1 hectare?') + g('10,000 m²'))
     ]),
     L.turn("Your turn! Number one. Change 2 square metres to square centimetres. Pause and try it.", E('2 m² → cm²'), "Multiply by 10,000. 20,000.", g('20 000 cm²')),
     L.turn("Your turn! Number two. Change 300 square millimetres to square centimetres. Pause and try it.", E('300 mm² → cm²'), "Divide by 100. 3.", g('3 cm²')),
@@ -1147,7 +1147,7 @@
       S("Mistake three. Leaving out one of the values. A cuboid has volume 120, length 6 and width 5. Wrong: the height is 1 20 divided by 6, 20. Divide by both. 1 20 divided by 30 is 4.", r('120 ÷ 6 = 20  ✗') + g('120 ÷ (6 × 5) = 4  ✓'))
     ]),
     SC('In real life', 'Tanks', [
-      S("An engineer needs a tank to hold 5,000 litres, with a set radius. She works backwards from the volume to find how tall to make it.", V.note('Volume known, height needed'))
+        S("Work backwards from the volume to find the height.", V.rule('A tank must hold 5,000 litres. How do we find its height?') + E('Volume = πr²h, so h = V ÷ (πr²)'))
     ]),
     L.turn("Your turn! Number one. A cuboid has volume 60, length 5 and width 3. Find the height. Pause and try it.", E('60 = 5 × 3 × h'), "60 divided by 15. 4.", g('4')),
     L.turn("Your turn! Number two. A circle has area 28.3. Find r squared, if pi is 3.14. Pause and try it.", E('π r² = 28.3'), "Divide by pi. About 9.", g('r² ≈ 9')),

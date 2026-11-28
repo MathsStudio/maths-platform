@@ -21,7 +21,7 @@
     mist: [
       ['Percent as the whole number', "Mistake one: using 35 instead of 0.35. 35% of 240 is not 35 times 240. Change the percentage to a decimal first.", ['r|35 × 240 = 8400 ✗', 'g|0.35 × 240 = 84 ✓']],
       ['Dividing the wrong way', "Mistake two: dividing 8 by 3 to change 3/8 to a decimal. The top goes first: 3 divided by 8.", ['r|8 ÷ 3 = 2.67 ✗', 'g|3 ÷ 8 = 0.375 ✓']]],
-    real: ['In real life', "A recipe uses 3/4 of a bag of flour, which is 75%. A phone battery on 40% has 2/5 left. All of these mean the same amount in different clothes.", ['3/4 = 0.75 = 75%', '40% = 2/5']],
+    real: ['In real life', "A recipe uses 3/4 of a bag of flour, which is 75%. A phone battery on 40% has 2/5 left. All of these mean the same amount in different clothes.", ['n|Write 3/4 as a percentage. Write 40% as a fraction.', '3/4 = 0.75 = 75%', '40% = 2/5']],
     turns: [
       { q: 'Write 7/20 as a percentage.', say: "7/20 is the same as 35/100, because we multiply top and bottom by 5. 35/100 is 35%.", work: ['7/20 = 35/100', '= 35%'], ans: ['g|35%'] },
       { q: 'Find 35% of £240.', say: "35% is 0.35. 0.35 times 240 is £84.", work: ['35% = 0.35', '0.35 × 240 = 84'], ans: ['g|£84'] },
@@ -48,7 +48,7 @@
     mist: [
       ['Adding the percentages', "Mistake one: adding the percentages. 10% then 10% is not 20%. It is 21%, because the second 10% is of a bigger amount.", ['r|10% + 10% = 20% ✗', 'g|1.1 × 1.1 = 1.21 → 21% ✓']],
       ['Rise then fall cancel', "Mistake two: thinking a 20% rise and a 20% fall cancel out. The result is 4% less than the start.", ['r|+20% − 20% = 0% ✗', 'g|1.2 × 0.8 = 0.96 → 4% less ✓']]],
-    real: ['In real life', "Shops put a price up and then have a sale. Investments rise 1 year and fall the next. In every case, we multiply the multipliers. That is why a loss and a gain of the same percentage never quite cancel.", ['1.2 × 0.8 = 0.96']],
+    real: ['In real life', "Shops put a price up and then have a sale. Investments rise 1 year and fall the next. In every case, we multiply the multipliers. That is why a loss and a gain of the same percentage never quite cancel.", ['n|A price rises by 20%, then falls by 20%. What is the overall multiplier?', '1.2 × 0.8 = 0.96']],
     turns: [
       { q: 'A price of £200 goes up by 10% and then up by 10% again. What is the final price?', say: "The multiplier is 1.1 each time. 200 times 1.1 is 220. 220 times 1.1 is £242.", work: ['200 × 1.1 = 220', '220 × 1.1 = 242'], ans: ['g|£242'] },
       { q: '£500 goes up by 20%, then down by 20%. What is the final amount?', say: "Up by 20%: 500 times 1.2 is 600. Down by 20%: 600 times 0.8 is £480.", work: ['500 × 1.2 = 600', '600 × 0.8 = 480'], ans: ['g|£480'] },
@@ -73,7 +73,7 @@
     mist: [
       ['Taking the percentage off the new amount', "Mistake one: finding 20% of 60 and taking it off. 20% of 60 is 12, and 60 minus 12 is 48. That is wrong, because the 20% was of the original, not of 60.", ['r|60 − 12 = £48 ✗', 'g|60 ÷ 1.2 = £50 ✓']],
       ['Multiplying instead of dividing', "Mistake two: multiplying by the multiplier when going back. After a decrease, the original must be bigger. 68 times 0.85 is smaller, which cannot be right.", ['r|68 × 0.85 = 57.80 ✗', 'g|68 ÷ 0.85 = 80 ✓']]],
-    real: ['In real life', "Prices in shops often include tax. To find the price before tax, we reverse the percentage. A bill of £90 with 20% tax was £75 before the tax was added.", ['90 ÷ 1.2 = 75']],
+    real: ['In real life', "Prices in shops often include tax. To find the price before tax, we reverse the percentage. A bill of £90 with 20% tax was £75 before the tax was added.", ['n|A bill of £90 includes 20% tax. What was the price before tax?', '90 ÷ 1.2 = 75']],
     turns: [
       { q: 'After a 25% increase, a price is £75. What was the original price?', say: "The multiplier is 1.25. Divide 75 by 1.25. That gives £60.", work: ['Multiplier = 1.25', '75 ÷ 1.25 = 60'], ans: ['g|£60'] },
       { q: 'A coat in a sale is 30% off. The sale price is £42. What was the original price?', say: "100 minus 30 is 70%. The multiplier is 0.7. Divide 42 by 0.7 to get £60.", work: ['100% − 30% = 70%', 'Multiplier = 0.7', '42 ÷ 0.7 = 60'], ans: ['g|£60'] },

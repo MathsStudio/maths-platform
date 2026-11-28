@@ -38,7 +38,7 @@
         S("Mistake three: mixing up the base and the index. 2 to the power 3 is 8. 3 to the power 2 is 9. They are different.", E('2³ = 8') + E('3² = 9'))
       ]),
       SC('In real life', 'Doubling', [
-        S("A bacterium splits in 2 every hour. After 1 hour there are 2. After 2 hours there are 4. After 10 hours there are 2 to the power 10, which is 1,024 bacteria. 1 bacterium becomes more than 1,000 in just 10 hours.", g('2¹⁰ = 1,024'))
+        S("A bacterium splits in 2 every hour. The number doubles each hour.", V.rule('A bacterium splits into 2 every hour. How many bacteria are there after 10 hours?') + E('2¹⁰') + g('= 1,024 bacteria'))
       ]),
       L.turn("Your turn! Number one. Write 243 as a power of 3. Pause and try it.", E('243 = 3^?'), "Keep multiplying by 3. 3, 9, 27, 81, 243. That is 5 threes. So 3 to the power 5.", g('243 = 3⁵')),
       L.turn("Your turn! Number two. What is 4 to the power 3? Pause and try it.", E('4³'), "4 times 4 is 16. 16 times 4 is 64.", g('4³ = 64')),
@@ -81,7 +81,7 @@
         S("Mistake three: forgetting to use powers. 2 times 2 times 2 should be written as 2 cubed. It saves space, and it makes comparing easier.", E('2 × 2 × 2 × 3 = 2³ × 3', 'g'))
       ]),
       SC('In real life', 'Secret codes', [
-        S("When you pay online, your details are protected by codes. These codes use the fact that it is very easy to multiply 2 huge primes, but very hard to find them again from the answer. Prime factors keep your messages safe.", V.note('Big primes keep messages safe'))
+        S("Your details are protected by codes that use prime numbers.", V.rule('Multiplying two primes is easy: 7 × 13. Finding the two primes from 91 is hard for huge numbers.') + E('7 × 13 = 91'))
       ]),
       L.turn("Your turn! Number one. Write 120 as a product of prime factors. Pause and try it.", E('120 = ?'), "120 divided by 2 is 60, then 30, then 15. 15 is 3 times 5. So 2 cubed times 3 times 5.", g('120 = 2³ × 3 × 5')),
       L.turn("Your turn! Number two. Write 84 as a product of prime factors. Pause and try it.", E('84 = ?'), "84 divided by 2 is 42, then 21. 21 is 3 times 7. So 2 squared times 3 times 7.", g('84 = 2² × 3 × 7')),
@@ -121,7 +121,7 @@
         S("Mistake three: using the wrong multiplier. A 15% decrease is times 0.85, not 0.15.", r('× 0.15  ✗') + g('× 0.85  ✓'))
       ]),
       SC('In real life', 'Population', [
-        S("A town grows from 18,000 people to 19,000, 800. The change is 1,000, 800. Divide by the original, 18,000. That is 0.1. So the population grew by 10%.", g('1,800 ÷ 18,000 × 100 = 10%'))
+        S("A town grows from 18,000 people. Find the change, then divide by the original.", V.rule('A town grows from 18,000 to 19,800 people. What is the percentage increase?') + E('1,800 ÷ 18,000 × 100') + g('= 10%'))
       ]),
       L.turn("Your turn! Number one. A price falls from £80 to £68. What is the percentage decrease? Pause and try it.", E('80 → 68'), "The change is £12. 12 divided by 80 is 0.15. That is 15%.", g('12 ÷ 80 × 100 = 15%')),
       L.turn("Your turn! Number two. Increase £250 by 12%. Pause and try it.", E('250 × 1.12'), "The multiplier is 1.12. 250 times 1.12 is £280.", g('£280')),
@@ -161,7 +161,7 @@
         S("Mistake three: forgetting fees. Some places charge a fee for changing money. Take the fee off first.", V.rule('Fee first, then exchange.'))
       ]),
       SC('In real life', 'Holiday money', [
-        S("You have £500 for a holiday. The bank charges a 2% fee. 2% of 500 is £10. So you change £490. At 1.12 euros to the pound, that is 548 euros 80.", E('£500 − 2% = £490') + g('490 × 1.12 = €548.80'))
+        S("The bank takes a 2% fee first. Then we change the rest into euros.", V.rule('You have £500 and the bank charges 2%. At 1.12 euros to the pound, how many euros do you get?') + E('£500 − 2% = £490') + g('490 × 1.12 = €548.80'))
       ]),
       L.turn("Your turn! Number one. At £1 to 1 dollar 25, how many pounds is 100 dollars? Pause and try it.", E('100 ÷ 1.25'), "We are going back to pounds, so we divide. 100 divided by 1.25 is £80.", g('£80')),
       L.turn("Your turn! Number two. At £1 to 1.1 euros, how many euros for £200? Pause and try it.", E('200 × 1.1'), "We multiply. 200 times 1.1 is 220 euros.", g('€220')),
@@ -239,7 +239,7 @@
         S("Mistake three: mixing up addition and multiplication. x plus x is 2 x. But x times x is x squared.", E('x + x = 2x') + E('x × x = x²'))
       ]),
       SC('In real life', 'Perimeter', [
-        S("A rectangle has sides of length a and b. Its perimeter is a plus b plus a plus b. Collect the like terms. That is 2 a plus 2 b. Algebra gives a short rule for any rectangle.", g('a + b + a + b = 2a + 2b'))
+        S("Collect the like terms to write the perimeter in its simplest form.", V.rule('A rectangle has sides a and b. Write its perimeter in simplest form.') + g('a + b + a + b = 2a + 2b'))
       ]),
       L.turn("Your turn! Number one. Simplify 5 p minus 2 q plus 3 p plus q. Pause and try it.", E('5p − 2q + 3p + q'), "5 p plus 3 p is 8 p. Minus 2 q plus q is minus q. So 8 p minus q.", g('8p − q')),
       L.turn("Your turn! Number two. Simplify 4 x times 3 y. Pause and try it.", E('4x × 3y'), "4 times 3 is 12. x times y is x y. So 12 x y.", g('12xy')),
@@ -277,7 +277,7 @@
         S("Mistake three: reading 5 a as 54. The letter is not a digit. 5 a is 5 times a.", r('5a = 54  ✗') + g('5a = 5 × 4 = 20  ✓'))
       ]),
       SC('In real life', 'Temperature', [
-        S("To change Celsius to Fahrenheit, we use F equals 1.8 C plus 32. When C is 25, 1.8 times 25 is 45. Add 32. 77 degrees.", g('F = 1.8 × 25 + 32 = 77'))
+        S("To change Celsius to Fahrenheit, multiply by 1.8 and add 32.", V.rule('Change 25 °C to Fahrenheit using F = 1.8C + 32.') + E('1.8 × 25 + 32') + g('= 77 °F'))
       ]),
       L.turn("Your turn! Number one. Find 3 p squared minus q, when p is 2 and q is 5. Pause and try it.", E('3p² − q'), "2 squared is 4. 3 times 4 is 12. 12 minus 5 is 7.", g('7')),
       L.turn("Your turn! Number two. Find x squared minus 4 x, when x is negative 3. Pause and try it.", E('x² − 4x, x = −3'), "Negative 3 squared is 9. 4 times negative 3 is negative 12. 9 minus negative 12 is 21.", g('9 + 12 = 21')),
@@ -317,7 +317,7 @@
         S("Mistake three: moving a term without changing its sign. When a plus 4 crosses the equals sign, it becomes minus 4.", V.rule('Cross the equals: change the sign.'))
       ]),
       SC('In real life', 'Equal cost', [
-        S("Plan 1 costs £12 plus £2 a visit. Plan 2 costs £4 a visit. They cost the same when 12 plus 2 v equals 4 v. Subtract 2 v. 12 equals 2 v. So v is 6 visits.", E('12 + 2v = 4v') + g('v = 6'))
+        S("Set the two costs equal, then solve.", V.rule('Plan 1 is £12 plus £2 a visit. Plan 2 is £4 a visit. How many visits make them cost the same?') + E('12 + 2v = 4v') + g('v = 6 visits'))
       ]),
       L.turn("Your turn! Number one. Solve 5, bracket, x plus 1, equals 3 x plus 17. Pause and try it.", E('5(x + 1) = 3x + 17'), "Expand to get 5 x plus 5. Subtract 3 x. 2 x plus 5 equals 17. 2 x equals 12. x is 6.", g('x = 6')),
       L.turn("Your turn! Number two. Solve 4 x minus 9 equals 23. Pause and try it.", E('4x − 9 = 23'), "Add 9. 4 x equals 32. Divide by 4. x is 8.", g('x = 8')),
@@ -356,7 +356,7 @@
         S("Mistake three: skipping the check. Put your answer back into the story. Does it make sense?", V.rule('Check it fits the story.'))
       ]),
       SC('In real life', 'Sharing a bill', [
-        S("4 friends share a bill equally, and then each also pays a £3 tip. Each person pays £11 in total. Let b be the bill. b over 4 plus 3 equals 11. Subtract 3. b over 4 is 8. Multiply by 4. The bill is £32.", E('b/4 + 3 = 11') + g('b = £32'))
+        S("Each person pays a quarter of the bill, plus a £3 tip.", V.rule('4 friends share a bill and each pays a £3 tip. Each pays £11 in total. What is the bill?') + E('b/4 + 3 = 11') + g('b = £32'))
       ]),
       L.turn("Your turn! Number one. 3 consecutive numbers add up to 48. Write and solve an equation. Pause and try it.", E('n + (n+1) + (n+2) = 48'), "3 n plus 3 equals 48. 3 n equals 45. n is 15. The numbers are 15, 16 and 17.", g('15, 16, 17')),
       L.turn("Your turn! Number two. I think of a number, double it and add 7. The answer is 23. What is the number? Pause and try it.", E('2n + 7 = 23'), "Subtract 7. 2 n equals 16. n is 8.", g('n = 8')),
@@ -394,7 +394,7 @@
         S("Mistake three: mixing units. If the rate is in pounds per mile, the distance must be in miles, not kilometres.", V.rule('Keep the units matching.'))
       ]),
       SC('In real life', 'Mobile phone', [
-        S("A phone plan costs £8 a month plus 10p for each extra minute. With m extra minutes, the cost is 8 plus 0.1 m. For 40 extra minutes, that is 8 plus 4, which is £12.", E('C = 8 + 0.1m') + g('m = 40 → £12'))
+        S("The cost is the monthly fee plus 10p for each extra minute.", V.rule('A plan is £8 a month plus 10p a minute. What does 40 extra minutes cost?') + E('8 + 0.1 × 40') + g('= £12'))
       ]),
       L.turn("Your turn! Number one. Write a formula for the cost T of n cinema tickets at £7.50 each, plus a £2 booking fee. Pause and try it.", E('T = ?'), "The changing part is 7.5 times n. The fixed part is 2. So T equals 7.5 n plus 2.", g('T = 7.5n + 2')),
       L.turn("Your turn! Number two. Use your formula to find the cost of 4 tickets. Pause and try it.", E('T = 7.5 × 4 + 2'), "7.5 times 4 is 30. Plus 2 is £32.", g('£32')),
@@ -435,7 +435,7 @@
         S("Mistake three: a blunt pencil or a slipping ruler. A thick line can easily be a millimetre out. Use a sharp pencil.", V.rule('Sharp pencil, steady hand.'))
       ]),
       SC('In real life', 'Building frames', [
-        S("Builders use triangles because they are rigid. A rectangle can lean sideways, but a triangle cannot change shape. A roof truss is built from triangles. The lengths of the beams are chosen using exactly this triangle rule.", V.note('Triangles are rigid'))
+        S("Builders use triangles because they are rigid.", V.rule('Why do builders use triangles in roof frames?') + g('A triangle cannot change shape'))
       ]),
       L.turn("Your turn! Number one. Can you construct a triangle with sides 5, 6 and 12? Pause and think.", E('5 + 6 vs 12'), "5 plus 6 is 11. That is less than 12. So no, it is impossible.", g('No')),
       L.turn("Your turn! Number two. Which tool do you use to draw a triangle when you know all 3 sides? Pause and think.", E('SSS → ?'), "Compasses. You draw 2 arcs that cross.", g('Compasses')),
@@ -518,7 +518,7 @@
         S("Mistake three: not showing your subtraction. Write 180 minus the angles you know.", V.rule('Show: 180 − …'))
       ]),
       SC('In real life', 'Roof angles', [
-        S("A builder cuts a triangular roof gable. The 2 sloping angles are each 35 degrees. The top angle must be 180 minus 70, which is 110 degrees. The saw is set to cut it.", g('180 − 70 = 110°'))
+        S("The top angle is what is left when the two sloping angles are taken from 180.", V.rule('Two sloping roof angles are each 35°. What is the top angle?') + E('180 − 70') + g('= 110°'))
       ]),
       L.turn("Your turn! Number one. A kite has angles of 110, 110 and 60. Find the fourth. Pause and try it.", E('360 − 280'), "110 plus 110 plus 60 is 280. 360 minus 280 is 80 degrees.", g('80°')),
       L.turn("Your turn! Number two. An isosceles triangle has a top angle of 40 degrees. Find each base angle. Pause and try it.", E('(180 − 40) ÷ 2'), "140 divided by 2 is 70 degrees.", g('70°')),
@@ -557,7 +557,7 @@
         S("Mistake three: changing the angles. Angles never change in an enlargement.", V.rule('Lengths change. Angles do not.'))
       ]),
       SC('In real life', 'Models and maps', [
-        S("A model car is made at a scale of 1 to 43. A real car is 4.3 metres long. That is 430 centimetres. Divide by 43. The model is 10 centimetres long.", g('430 ÷ 43 = 10 cm'))
+        S("We divide the real length by the scale.", V.rule('A real car is 4.3 m long. A model is made at scale 1 : 43. How long is the model?') + E('430 ÷ 43') + g('= 10 cm'))
       ]),
       L.turn("Your turn! Number one. A photo 9 centimetres wide is reduced to 6 centimetres. What is the scale factor? Pause and try it.", E('6 ÷ 9'), "6 divided by 9 simplifies to 2/3.", g('k = ⅔')),
       L.turn("Your turn! Number two. A triangle has an area of 5 square centimetres. It is enlarged with scale factor 4. What is the new area? Pause and try it.", E('5 × 4²'), "4 squared is 16. 5 times 16 is 80 square centimetres.", g('80 cm²')),
@@ -636,7 +636,7 @@
         S("Mistake three: saying a bigger range is better. A bigger range means less consistent.", V.rule('Smaller range = more consistent.'))
       ]),
       SC('In real life', 'Choosing a team player', [
-        S("A coach compares 2 goalkeepers. Both save 12 shots per match on average. But 1 has a range of 3, and the other has a range of 9. The coach picks the one with the smaller range, because she can be relied upon every game.", V.note('Reliability needs a small spread'))
+        S("Both goalkeepers save 12 shots on average. The range shows how steady they are.", V.rule('Two goalkeepers each save 12 shots per match on average. Their ranges are 3 and 9. Which should the coach pick?') + g('The range 3 goalkeeper: the more reliable one'))
       ]),
       L.turn("Your turn! Number one. Team X has a median of 12 goals and a range of 3. Team Y has a median of 12 and a range of 9. Compare them. Pause and think.", E('?'), "They score the same on average. But Team X is more consistent, because its range is smaller.", g('Same average · X more consistent')),
       L.turn("Your turn! Number two. A bar chart axis starts at 50 instead of 0. Why is that a problem? Pause and think.", E('?'), "It makes small differences look much bigger than they really are.", g('Exaggerates differences')),
@@ -677,7 +677,7 @@
         S("Mistake three: adding unlike surds. Root 2 plus root 3 is not root 5.", r('√2 + √3 = √5  ✗'))
       ]),
       SC('In real life', 'Diagonals', [
-        S("A square tile has sides of 1 metre. The diagonal is root 2 metres, by Pythagoras. A builder keeps it as root 2 to stay exact, and only rounds to 1.41 metres at the end when cutting.", g('Diagonal = √2 ≈ 1.41 m'))
+        S("Use Pythagoras. The diagonal is root 2 metres.", V.rule('A square tile has sides of 1 m. How long is its diagonal?') + g('√2 ≈ 1.41 m'))
       ]),
       L.turn("Your turn! Number one. Simplify the square root of 45. Pause and try it.", E('√45'), "45 is 9 times 5. The root of 9 is 3. So 3 root 5.", g('3√5')),
       L.turn("Your turn! Number two. Work out 4 root 3 plus 2 root 3. Pause and try it.", E('4√3 + 2√3'), "Six root three.", g('6√3')),
@@ -713,7 +713,7 @@
         S("Mistake three: multiplying by the number of years. Use a power, not a times.", r('1.03 × 5  ✗') + g('1.03⁵  ✓'))
       ]),
       SC('In real life', 'Savings and cars', [
-        S("The same idea shows up in both savings and cars. Money in a savings account grows, so it is compound growth. A new car loses value quickest in its first year. That is why people buy second-hand cars.", V.note('Same idea, different multiplier'))
+        S("Money in a savings account grows. A new car loses value quickly.", V.rule('Which loses value fastest, a new car or money in a savings account?') + g('The new car, in its first year'))
       ]),
       L.turn("Your turn! Number one. A painting worth £5,000 increases by 10% a year. What is it worth after 2 years? Pause and try it.", E('5,000 × 1.1²'), "1.1 squared is 1.21. 5,000 times 1.21 is £6,050.", g('£6,050')),
       L.turn("Your turn! Number two. What multiplier do you use for a 12% decrease? Pause and think.", E('?'), "100 minus 12 is 88. As a decimal, 0.88.", g('0.88')),
@@ -750,7 +750,7 @@
         S("Mistake three: multiplying by the years. Use a power.", r('2,000 × 1.05 × 3  ✗') + g('2,000 × 1.05³  ✓'))
       ]),
       SC('In real life', 'Starting early', [
-        S("Compound interest rewards patience. £1,000 at 5% becomes about 1,630 after 10 years. After 30 years, it is more than 4,300. The longer you leave it, the faster it grows.", V.note('Time is the secret'))
+        S("Compound interest rewards patience. The longer you leave it, the faster it grows.", V.rule('£1,000 is saved at 5% compound interest. What is it worth after 10 years?') + E('1,000 × 1.05¹⁰') + g('≈ £1,629'))
       ]),
       L.turn("Your turn! Number one. Find the value of £1,000 after 2 years at 4% compound interest. Pause and try it.", E('1,000 × 1.04²'), "1.04 squared is 1.0816. So £1,081.60.", g('£1,081.60')),
       L.turn("Your turn! Number two. How much interest was earned? Pause and try it.", E('1,081.60 − 1,000'), "£81.60.", g('£81.60')),
@@ -783,7 +783,7 @@
         S("Mistake three: mixing up taxable income with the total. Always say which one you are using.", V.rule('Taxable income ≠ salary'))
       ]),
       SC('In real life', 'Pay rise', [
-        S("A pay rise puts a little more income into a higher band. Only that extra slice is taxed at the higher rate. Your take-home pay always goes up when you get a pay rise. A bigger salary never makes you worse off.", V.note('Only the extra slice pays the higher rate'))
+        S("A pay rise can move some income into a higher band.", V.rule('A pay rise moves some income into a higher tax band. Which part is taxed at the higher rate?') + g('Only the extra slice'))
       ]),
       L.turn("Your turn! Number one. With a £12,000 allowance and 20% tax, how much tax is due on £32,000? Pause and try it.", E('32,000 − 12,000 = ?'), "Taxable income is 20,000. 20% of 20,000 is £4,000.", g('£4,000')),
       L.turn("Your turn! Number two. What is the taxable income of someone earning 40,000 with a 12,500 allowance? Pause and try it.", E('40,000 − 12,500'), "£27,500.", g('£27,500')),
@@ -824,7 +824,7 @@
         S("Mistake three: forgetting the units in the answer. Write grams per cubic centimetre.", V.rule('g/cm³'))
       ]),
       SC('In real life', 'Floating ships', [
-        S("A steel ship floats, even though steel is dense. The ship is mostly air inside. Its overall density is less than water. That is how enormous ships can float.", V.note('Overall density decides'))
+        S("A steel ship floats, even though steel is dense.", V.rule('Steel is dense, but a steel ship floats. Why?') + g('Most of the ship is air, so its overall density is less than water'))
       ]),
       L.turn("Your turn! Number one. A stone has a mass of 240 grams and a volume of 80 cubic centimetres. What is its density? Pause and try it.", E('240 ÷ 80'), "3 grams per cubic centimetre.", g('3 g/cm³')),
       L.turn("Your turn! Number two. A liquid has a density of 0.8. Find the mass of 500 cubic centimetres. Pause and try it.", E('0.8 × 500'), "Four hundred grams.", g('400 g')),
@@ -862,7 +862,7 @@
         S("Mistake three: using 60 instead of 3.6. 60 only changes hours to minutes.", r('÷ 60  ✗') + g('÷ 3.6  ✓'))
       ]),
       SC('In real life', 'Sprinters', [
-        S("A top sprinter runs at about 10 metres per second. Multiply by 3.6. That is 36 kilometres per hour, faster than a car in a town.", g('10 × 3.6 = 36 km/h'))
+        S("Multiply the metres per second by 3.6 to get km per hour.", V.rule('A sprinter runs at 10 metres per second. What is this in km per hour?') + E('10 × 3.6') + g('= 36 km/h'))
       ]),
       L.turn("Your turn! Number one. Convert 36 kilometres per hour to metres per second. Pause and try it.", E('36 ÷ 3.6'), "10 metres per second.", g('10 m/s')),
       L.turn("Your turn! Number two. Convert 20 metres per second to kilometres per hour. Pause and try it.", E('20 × 3.6'), "72 kilometres per hour.", g('72 km/h')),
@@ -899,7 +899,7 @@
         S("Mistake three: cubing wrongly. r cubed means r times r times r, not r times 3.", r('6³ = 18  ✗') + g('6³ = 216  ✓'))
       ]),
       SC('In real life', 'Ice cream', [
-        S("An ice cream cone holds its volume of ice cream, plus 1/2 sphere of ice cream on top. A shop works out how much ice cream each portion needs, using exactly these 2 formulae.", V.note('Cone + hemisphere'))
+        S("Add the volume of the cone to the volume of the half sphere.", V.rule('A portion is a cone with a half sphere on top. How do you find its volume?') + g('Cone volume + ½ × (4/3)πr³'))
       ]),
       L.turn("Your turn! Number one. Find the volume of a cone with radius 5 and height 12, in terms of pi. Pause and try it.", E('⅓ × π × 25 × 12'), "25 times 12 is 300. 1/3 is 100. So 100 pi.", g('100π ≈ 314')),
       L.turn("Your turn! Number two. Find the volume of a sphere with radius 3, in terms of pi. Pause and try it.", E('⁴⁄₃ × π × 27'), "4/3 of 27 is 36. So 36 pi.", g('36π')),
@@ -936,7 +936,7 @@
         S("Mistake three: mixing up area and volume. Surface area is in square units. Volume is in cubic units.", V.cols([V.card('Area: cm²', 'b', true), V.card('Volume: cm³', 'g', true)], 2))
       ]),
       SC('In real life', 'Party hats', [
-        S("A party hat is a cone with no base. To find how much card is needed, we use only pi r l. A hat with radius 6 and slant height 15 needs 90 pi square centimetres of card, about 283.", g('π × 6 × 15 = 90π ≈ 283 cm²'))
+        S("A hat with no base uses only the curved part, so we use π r l.", V.rule('A party hat has radius 6 cm and slant height 15 cm. How much card is needed?') + E('π × 6 × 15 = 90π') + g('≈ 283 cm²'))
       ]),
       L.turn("Your turn! Number one. Find the surface area of a sphere with radius 2, in terms of pi. Pause and try it.", E('4π × 2²'), "4 times 4 is 16. So 16 pi.", g('16π ≈ 50.3')),
       L.turn("Your turn! Number two. A cone has radius 5 and slant height 13. Find its curved surface area. Pause and try it.", E('π × 5 × 13'), "65 pi, about 204 square centimetres.", g('65π ≈ 204 cm²')),
@@ -975,7 +975,7 @@
         S("Mistake three: forgetting to check. Expand your brackets. You must get back to where you started.", V.rule('Always check by expanding.'))
       ]),
       SC('In real life', 'Mental arithmetic', [
-        S("The pattern gives a trick for mental arithmetic. 53 times 47 is 50 plus 3, times 50 minus 3. That is 50 squared minus 3 squared. 2,500 minus 9 is 2,491.", g('53 × 47 = 50² − 3² = 2,491'))
+        S("Use the pattern (a + b)(a − b) = a² − b².", V.rule('Work out 53 × 47 in your head using (50 + 3)(50 − 3).') + E('50² − 3² = 2,500 − 9') + g('= 2,491'))
       ]),
       L.turn("Your turn! Number one. Factorise x squared minus 100. Pause and try it.", E('x² − 100'), "100 is 10 squared. So x plus 10, times x minus 10.", g('(x + 10)(x − 10)')),
       L.turn("Your turn! Number two. Factorise 6 x squared plus 9 x. Pause and try it.", E('6x² + 9x'), "The highest common factor is 3 x. 3 x, bracket, 2 x plus 3.", g('3x(2x + 3)')),
@@ -1015,7 +1015,7 @@
         S("Mistake three: not checking. Expand your brackets and make sure you get the original.", V.rule('Expand to check.'))
       ]),
       SC('In real life', 'Areas', [
-        S("A rectangular garden has area x squared plus 7 x plus 12 square metres. Factorising gives x plus 3 by x plus 4. So the sides are x plus 3 and x plus 4 metres. A gardener can then work out the length of fence needed.", g('Sides: (x + 3) and (x + 4)'))
+        S("Factorising gives the two side lengths.", V.rule('A garden has area x² + 7x + 12 m². What are its side lengths?') + g('(x + 3) m and (x + 4) m'))
       ]),
       L.turn("Your turn! Number one. Factorise x squared plus x minus 20. Pause and try it.", E('x² + x − 20'), "We need numbers that multiply to negative 20 and add to 1. 5 and negative 4. So x plus 5, times x minus 4.", g('(x + 5)(x − 4)')),
       L.turn("Your turn! Number two. Factorise x squared minus 7 x plus 10. Pause and try it.", E('x² − 7x + 10'), "Multiply to 10, add to negative 7. Negative 2 and negative 5. So x minus 2, times x minus 5.", g('(x − 2)(x − 5)')),
@@ -1053,7 +1053,7 @@
         S("Mistake three: adding denominators. x over 2 plus x over 3 is not x over 5.", r('x/2 + x/3 = x/5  ✗'))
       ]),
       SC('In real life', 'Sharing costs', [
-        S("Half of a prize pot goes to the winner, and 1/3 goes to the runner-up. Together they get £10. How big is the pot? x over 2 plus x over 3 equals 10. Solving gives x equals 12. The pot is £12.", g('x = 12'))
+        S("Add the winner's share and the runner-up's share, and make them equal to £10.", V.rule('A prize pot is split: half to the winner and a third to the runner-up. Together they get £10. What is the pot?') + E('x/2 + x/3 = 10') + g('x = £12'))
       ]),
       L.turn("Your turn! Number one. Solve x over 3 plus 2 equals 9. Pause and try it.", E('x/3 + 2 = 9'), "Subtract 2. x over 3 equals 7. Multiply by 3. x is 21.", g('x = 21')),
       L.turn("Your turn! Number two. Solve x over 4 plus x over 2 equals 6. Pause and try it.", E('x/4 + x/2 = 6'), "Multiply by 4. x plus 2 x equals 24. 3 x equals 24. x is 8.", g('x = 8')),
@@ -1092,7 +1092,7 @@
         S("Mistake three: leaving a part out. In y minus 5 over 3, the 5 and the y are both divided by 3.", V.rule('Brackets: (y − 5) ÷ 3'))
       ]),
       SC('In real life', 'Fuel formula', [
-        S("A car uses a formula, D equals M times G, where D is distance, M is miles per gallon, and G is gallons. To find how many gallons you need, make G the subject. G equals D over M. For a journey of 300 miles at 50 miles per gallon, that is 6 gallons.", g('G = 300 ÷ 50 = 6'))
+        S("Make G the subject, then substitute the values.", V.rule('D = M × G. A journey is 300 miles at 50 miles per gallon. How many gallons are needed?') + E('G = 300 ÷ 50') + g('= 6 gallons'))
       ]),
       L.turn("Your turn! Number one. Make t the subject of v equals u plus a t. Pause and try it.", E('v = u + at'), "Subtract u. v minus u equals a t. Divide by a. t equals v minus u, over a.", g('t = (v − u) ÷ a')),
       L.turn("Your turn! Number two. Solve 3 x plus 2 is less than 20. Pause and try it.", E('3x + 2 < 20'), "Subtract 2. 3 x is less than 18. Divide by 3. x is less than 6.", g('x < 6')),
@@ -1166,7 +1166,7 @@
         S("Mistake three: mixing up the 2 intercepts. Set x to 0 to get the y-intercept. Set y to 0 to get the x-intercept.", V.cols([V.card('x = 0 → y-intercept', 'b', true), V.card('y = 0 → x-intercept', 'g', true)], 2))
       ]),
       SC('In real life', 'Budget lines', [
-        S("A school has £20 to spend. Pencils cost £2 a pack, and pens cost £4 a pack. The equation 2 p plus 4 n equals 20 shows every possible combination. 10 packs of pencils and no pens, or 5 packs of pens and no pencils. And many mixes in between.", g('2p + 4n = 20'))
+        S("Each pencil pack costs £2 and each pen pack £4.", V.rule('A school has £20. Pencils cost £2 a pack and pens £4 a pack. Write an equation for the combinations.') + g('2p + 4n = 20'))
       ]),
       L.turn("Your turn! Number one. Where does 5 x plus 2 y equals 20 cross the y-axis? Pause and try it.", E('x = 0'), "2 y equals 20. y is 10. At 0, 10.", g('(0, 10)')),
       L.turn("Your turn! Number two. Where does it cross the x-axis? Pause and try it.", E('y = 0'), "5 x equals 20. x is 4. At 4, 0.", g('(4, 0)')),
@@ -1203,7 +1203,7 @@
         S("Mistake three: drawing lines carelessly. Use a ruler, and plot at least 3 points to check the line is straight.", V.rule('Ruler, 3 points.'))
       ]),
       SC('In real life', 'Comparing plans', [
-        S("2 phone plans. Plan A costs £5 plus £2 per gigabyte. Plan B costs a flat £11. Draw both lines. They cross at 3 gigabytes. Below 3 gigabytes plan A is cheaper. Above it, plan B is cheaper.", g('Cross at 3 GB'))
+        S("Draw both lines. Where they cross, the two plans cost the same.", V.rule('Plan A is £5 plus £2 per gigabyte. Plan B is a flat £11. Where do they cross?') + E('5 + 2g = 11') + g('g = 3 GB'))
       ]),
       L.turn("Your turn! Number one. The lines y equals 2 x and y equals x plus 3 cross where? Pause and think.", E('2x = x + 3'), "2 x equals x plus 3, so x is 3. y is 6. They cross at 3, 6.", g('(3, 6)')),
       L.turn("Your turn! Number two. Do y equals x plus 2 and y equals x minus 1 have a solution? Pause and think.", E('?'), "Both have gradient 1. They are parallel. No solution.", g('No solution')),
@@ -1242,7 +1242,7 @@
         S("Mistake three: forgetting to find the second letter. You need both x and y.", V.rule('Find both letters.'))
       ]),
       SC('In real life', 'Shopping', [
-        S("2 apples and a pear cost £1.10. An apple and a pear cost 70p. Subtract. 1 apple costs 40p. So a pear costs 30p. Elimination is how shopkeepers work out unknown prices.", g('Apple 40p, pear 30p'))
+        S("Subtract the two bills to find the apple, then the pear.", V.rule('2 apples and a pear cost £1.10. An apple and a pear cost 70p. What does a pear cost?') + E('1 apple = 40p') + g('So a pear = 30p'))
       ]),
       L.turn("Your turn! Number one. Solve x plus y equals 10 and x minus y equals 4. Pause and try it.", E('x + y = 10') + E('x − y = 4'), "Add them. 2 x equals 14. x is 7. y is 3.", g('x = 7, y = 3')),
       L.turn("Your turn! Number two. Solve 2x + y = 9 and x + y = 5. Pause and try it.", E('2x + y = 9') + E('x + y = 5'), "Subtract. x equals 4. Then y is 1.", g('x = 4, y = 1')),
@@ -1277,7 +1277,7 @@
         S("Mistake three: not answering the question. If the question asks for the cost of an adult ticket, write the answer in pounds, in a sentence.", V.rule('Answer in context.'))
       ]),
       SC('In real life', 'Two numbers', [
-        S("Many puzzles are simultaneous equations in disguise. 2 numbers add up to 20 and differ by 6. Add the equations. 2 x equals 26. x is 13. y is 7.", E('x + y = 20') + E('x − y = 6') + g('13 and 7'))
+        S("Add the two equations to find x, then find y.", V.rule('Two numbers add to 20 and differ by 6. What are they?') + E('x + y = 20, x − y = 6') + g('13 and 7'))
       ]),
       L.turn("Your turn! Number one. 2 numbers add to 22 and differ by 4. What are they? Pause and try it.", E('x + y = 22, x − y = 4'), "Add. 2 x equals 26. x is 13. y is 9.", g('13 and 9')),
       L.turn("Your turn! Number two. A pen and a pencil cost £1. 2 pens and a pencil cost £1.60. Find the cost of a pen. Pause and try it.", E('p + n = 100') + E('2p + n = 160'), "Subtract. p is 60p. The pencil is 40p.", g('Pen 60p, pencil 40p')),
@@ -1313,7 +1313,7 @@
         S("Mistake three: multiplying when the unknown is on the bottom. If the unknown is the denominator, you divide.", V.cols([V.card('Unknown on top: ×', 'g', true), V.card('Unknown on bottom: ÷', 'b', true)], 2))
       ]),
       SC('In real life', 'Ladders', [
-        S("A ladder is 3 metres long and leans at 70 degrees to the ground. How high does it reach? We have the hypotenuse and want the opposite. 3 times sine of 70 is about 2.82 metres.", g('3 × sin 70° ≈ 2.82 m'))
+        S("We have the hypotenuse and want the opposite side, so we use sine.", V.rule('A 3 m ladder leans at 70° to the ground. How high does it reach?') + g('3 × sin 70° ≈ 2.82 m'))
       ]),
       L.turn("Your turn! Number one. Angle 30 degrees, hypotenuse 20. Find the opposite side. Pause and try it.", E('20 × sin 30°'), "Sine of 30 is 1/2. 20 times 1/2 is 10.", g('10')),
       L.turn("Your turn! Number two. Which ratio links the opposite and the adjacent? Pause and think.", E('?'), "Tangent. T, O, A.", g('tan')),
@@ -1350,7 +1350,7 @@
         S("Mistake three: not checking if the answer is sensible. In a right-angled triangle, the sine and cosine of an angle are never bigger than 1.", V.rule('sin and cos: between 0 and 1.'))
       ]),
       SC('In real life', 'Safe ladders', [
-        S("Ladders should lean at about 75 degrees. A 4 metre ladder with its foot 1 metre from the wall. Adjacent is 1, hypotenuse is 4. Cosine is 1/4. The angle is about 76 degrees. That is safe.", g('cos⁻¹(1 ÷ 4) ≈ 75.5°'))
+        S("We have the adjacent side and the hypotenuse, so we use cosine.", V.rule('A 4 m ladder has its foot 1 m from the wall. What angle does it make with the ground?') + E('cos θ = 1 ÷ 4') + g('θ ≈ 75.5°'))
       ]),
       L.turn("Your turn! Number one. Opposite 8, adjacent 8. What is the angle? Pause and think.", E('tan⁻¹(8 ÷ 8)'), "The ratio is 1. Tan to the minus 1 of 1 is 45 degrees.", g('45°')),
       L.turn("Your turn! Number two. Opposite 3, hypotenuse 6. Find the angle. Pause and try it.", E('sin⁻¹(3 ÷ 6)'), "3 over 6 is 1/2. Sine to the minus 1 of 1/2 is 30 degrees.", g('30°')),
@@ -1429,7 +1429,7 @@
         S("Mistake three: drawing no diagram. Always sketch the right-angled triangle.", V.rule('Sketch the triangle.'))
       ]),
       SC('In real life', 'Bridges', [
-        S("The arch of a bridge is part of a circle. Engineers know the width of the arch, which is a chord, and its height. Using these facts, they find the radius of the circle to design the curve.", V.note('Arches use circle geometry'))
+        S("Engineers know the width of the arch and its height.", V.rule('Which two facts are needed to find the radius of an arch?') + g('The width and the height of the arch'))
       ]),
       L.turn("Your turn! Number one. A chord is 6 centimetres from the centre of a circle of radius 10. How long is the chord? Pause and try it.", E('2 × √(100 − 36)'), "100 minus 36 is 64. The root is 8. Double it. 16 centimetres.", g('16 cm')),
       L.turn("Your turn! Number two. A point is 10 centimetres from the centre of a circle of radius 6. Find the tangent length. Pause and try it.", E('√(100 − 36)'), "64. The root is 8 centimetres.", g('8 cm')),
@@ -1537,7 +1537,7 @@
         S("Mistake three: comparing only the means. When comparing, say something about both the average and the spread.", V.rule('Mean and standard deviation.'))
       ]),
       SC('In real life', 'Quality control', [
-        S("Factories check their products. If a machine makes screws with a mean length of 20 millimetres, the standard deviation tells them how many screws are likely to be too short or too long. A small standard deviation means almost all screws are right.", V.note('Small s means reliable'))
+        S("A small standard deviation means the screws are close to the mean.", V.rule('Screws have a mean length of 20 mm. What does a small standard deviation tell us?') + g('Almost all screws are close to 20 mm'))
       ]),
       L.turn("Your turn! Number one. 2 classes have the same mean, but standard deviations of 4 and 10. Which is more consistent? Pause and think.", E('?'), "The class with standard deviation 4. It is smaller.", g('s = 4')),
       L.turn("Your turn! Number two. Data: 2, 4, 6. The mean is 4. Find the sum of the squared distances. Pause and try it.", E('(−2)² + 0² + 2²'), "4 plus 0 plus 4 is 8.", g('8')),
@@ -1575,7 +1575,7 @@
         S("Mistake three: drawing the boxes on different scales. To compare box plots, use the same axis.", V.rule('Same scale.'))
       ]),
       SC('In real life', 'Test results', [
-        S("Schools use box plots to compare results between classes. A box plot shows the typical score and the spread in 1 small picture, so teachers can see at a glance how 2 classes compare.", V.note('1 picture, 5 numbers'))
+        S("A box plot shows the typical score and the spread.", V.rule('What does a box plot show about a set of test results?') + g('The typical score and the spread in one picture'))
       ]),
       L.turn("Your turn! Number one. Q1 is 12 and Q3 is 20. What is the interquartile range? Pause and try it.", E('20 − 12'), "Eight.", g('8')),
       L.turn("Your turn! Number two. Find the median of 3, 5, 6, 8, 10. Pause and try it.", E('3, 5, 6, 8, 10'), "The middle value is 6.", g('6')),
@@ -1613,7 +1613,7 @@
         S("Mistake three: forgetting the sign of a negative component when you add.", V.rule('Mind the signs.'))
       ]),
       SC('In real life', 'Navigation', [
-        S("A boat sails 5 kilometres east and 2 north. Then 3 east and 1 south. The total journey is 5 plus 3, which is 8 east. And 2 minus 1, which is 1 north. Pilots and sailors add vectors like this all the time.", g('(5, 2) + (3, −1) = (8, 1)'))
+        S("Add the east movements and the north movements.", V.rule('A boat sails 5 km east and 2 km north, then 3 km east and 1 km south. Where is it?') + E('(5 + 3, 2 − 1)') + g('= (8, 1)'))
       ]),
       L.turn("Your turn! Number one. Add the vectors 2, negative 3 and negative 5, 1. Pause and try it.", E('(2, −3) + (−5, 1)'), "2 plus negative 5 is negative 3. Negative 3 plus 1 is negative 2.", g('(−3, −2)')),
       L.turn("Your turn! Number two. Work out 3 times the vector 2, negative 1. Pause and try it.", E('3 × (2, −1)'), "6, negative 3.", g('(6, −3)')),
@@ -1649,7 +1649,7 @@
         S("Mistake three: squaring a negative wrongly. Negative 6 squared is 36, not negative 36.", V.rule('(−6)² = 36'))
       ]),
       SC('In real life', 'Shortest distance', [
-        S("A drone flies 5 metres east and 12 metres north. The straight line back to the start is 13 metres. That is the magnitude. It is the shortest way home.", g('√(25 + 144) = 13 m'))
+        S("The straight line is the diagonal of a right-angled triangle.", V.rule('A drone flies 5 m east and 12 m north. How far is the straight line back to the start?') + E('√(25 + 144)') + g('= 13 m'))
       ]),
       L.turn("Your turn! Number one. Find the magnitude of 5, 12. Pause and try it.", E('√(25 + 144)'), "25 plus 144 is 169. The root is 13.", g('13')),
       L.turn("Your turn! Number two. Find the magnitude of negative 8, 6. Pause and try it.", E('√(64 + 36)'), "100. The root is 10.", g('10')),

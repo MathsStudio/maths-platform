@@ -22,7 +22,7 @@
     mist: [
       ['Writing it the wrong way round', "Mistake one: swapping the order. 12 boys and 18 girls gives boys to girls as 12 to 18, which is 2 to 3. Writing 3 to 2 gives girls to boys, a different ratio.", ['r|Boys : Girls = 3 : 2 ✗', 'g|Boys : Girls = 2 : 3 ✓']],
       ['Dividing only one number', "Mistake two: dividing only one side. To simplify 12 to 18, we must divide both numbers by the same amount. Dividing only one side changes the ratio.", ['r|12 : 18 → 2 : 18 ✗', 'g|12 : 18 → 2 : 3 ✓']]],
-    real: ['In real life', "A recipe for pastry uses flour and butter in the ratio 2 to 1. That means twice as much flour as butter. A paint mixture of blue and white in the ratio 1 to 3 has 3 times as much white as blue.", ['Flour : Butter = 2 : 1', 'Blue : White = 1 : 3']],
+    real: ['In real life', "A recipe for pastry uses flour and butter in the ratio 2 to 1. That means twice as much flour as butter. A paint mixture of blue and white in the ratio 1 to 3 has 3 times as much white as blue.", ['n|Pastry uses flour : butter = 2 : 1. Paint uses blue : white = 1 : 3. Which mixture has more white paint than blue?', 'Flour : Butter = 2 : 1', 'Blue : White = 1 : 3']],
     turns: [
       { q: 'A bag has 15 red sweets and 25 blue sweets. Write the ratio of red to blue in its simplest form.', say: "The ratio is 15 to 25. The highest common factor is 5. 15 divided by 5 is 3. 25 divided by 5 is 5. The simplest ratio is 3 to 5.", work: ['Red : Blue = 15 : 25', 'HCF = 5', '15 ÷ 5 = 3 and 25 ÷ 5 = 5', '= 3 : 5'], ans: ['g|3 : 5'] },
       { q: 'Write the ratio 4 to 10 in the form 1 to n.', say: "Divide both numbers by 4, to make the first number one. 4 divided by 4 is 1. 10 divided by 4 is 2.5. So the ratio is 1 to 2.5.", work: ['4 : 10', '4 ÷ 4 = 1', '10 ÷ 4 = 2.5', '= 1 : 2.5'], ans: ['g|1 : 2.5'] },
@@ -47,7 +47,7 @@
     mist: [
       ['Dividing by the number of people', "Mistake one: dividing by 3 because there are 3 people. A, B and C do not get equal shares. Divide by the number of parts, 10.", ['r|150 ÷ 3 = £50 each ✗', 'g|150 ÷ 10 = £15 a part ✓']],
       ['Using the biggest number', "Mistake two: dividing by the biggest ratio number, 5, instead of the total of the ratio numbers. The total number of parts is 2 plus 3 plus 5.", ['r|150 ÷ 5 = 30 ✗', 'g|150 ÷ (2 + 3 + 5) = 15 ✓']]],
-    real: ['In real life', "Lottery wins, business profits and inheritances are often shared in a ratio. If 3 friends put in different amounts, they can share the prize in the same ratio.", ['Share £150: 2 : 3 : 5', '£30, £45, £75']],
+    real: ['In real life', "Lottery wins, business profits and inheritances are often shared in a ratio. If 3 friends put in different amounts, they can share the prize in the same ratio.", ['n|Share £150 in the ratio 2 : 3 : 5. How much does each person get?', 'Share £150: 2 : 3 : 5', '£30, £45, £75']],
     turns: [
       { q: 'Share £120 in the ratio 1 to 2 to 3.', say: "1 plus 2 plus 3 is 6 parts. 120 divided by 6 is £20 a part. The shares are 20, 40 and £60.", work: ['1 + 2 + 3 = 6 parts', '120 ÷ 6 = £20 per part', '20, 40 and 60', 'Check: 20 + 40 + 60 = 120'], ans: ['g|£20, £40, £60'] },
       { q: 'Share £240 in the ratio 3 to 4 to 5.', say: "3 plus 4 plus 5 is 12 parts. 240 divided by 12 is £20 a part. The shares are 3 times 20, 4 times 20 and 5 times 20, so 60, 80 and £100.", work: ['3 + 4 + 5 = 12 parts', '240 ÷ 12 = £20 per part', '3 × 20 = 60, 4 × 20 = 80, 5 × 20 = 100', 'Check: 60 + 80 + 100 = 240'], ans: ['g|£60, £80, £100'] },
@@ -72,7 +72,7 @@
     mist: [
       ['Treating the known amount as one part', "Mistake one: using the known amount as the value of 1 part. B has 3 parts, so £45 is 3 parts, not one part.", ['r|C = 5 × 45 = £225 ✗', 'g|C = 5 × 15 = £75 ✓']],
       ['Using the total of the ratio', "Mistake two: dividing 45 by the total number of parts, 10. 45 belongs to B's 3 parts only.", ['r|45 ÷ 10 = 4.5 ✗', 'g|45 ÷ 3 = 15 ✓']]],
-    real: ['In real life', "A shop sells red and blue pens in the ratio 3 to 5. If it has 12 red pens on the shelf, we can work out how many blue pens it has. The same method works for a recipe if you only have a certain amount of 1 ingredient.", ['Red : Blue = 3 : 5', '12 red → 20 blue']],
+    real: ['In real life', "A shop sells red and blue pens in the ratio 3 to 5. If it has 12 red pens on the shelf, we can work out how many blue pens it has. The same method works for a recipe if you only have a certain amount of 1 ingredient.", ['n|A shop sells red to blue pens in the ratio 3 : 5. It has 12 red pens. How many blue pens?', 'Red : Blue = 3 : 5', '12 red → 20 blue']],
     turns: [
       { q: 'Red and blue counters are in the ratio 3 to 7. There are 21 red counters. How many blue counters are there?', say: "3 parts are 21 counters, so 1 part is 7. Blue is 7 parts. 7 times 7 is 49 blue counters.", work: ['3 parts = 21', '1 part = 21 ÷ 3 = 7', 'Blue = 7 parts = 7 × 7 = 49'], ans: ['g|49 blue counters'] },
       { q: 'Money is shared between A, B and C in the ratio 4 to 5 to 6. B gets £35. How much do A and C get, and what is the total?', say: "5 parts are £35, so 1 part is £7. A has 4 parts, £28. C has 6 parts, £42. The total is 15 parts, £105.", work: ['5 parts = £35', '1 part = 35 ÷ 5 = £7', 'A = 4 × 7 = £28 and C = 6 × 7 = £42', 'Total = 15 × 7 = £105'], ans: ['g|A £28, C £42, total £105'] },
@@ -97,7 +97,7 @@
     mist: [
       ['Just joining the ratios', "Mistake one: writing the ratios side by side without matching B. 2 to 3 and 4 to 5 do not give 2 to 3 to 5. B is 3 in 1 ratio and 4 in the other.", ['r|2 : 3 : 5 ✗', 'g|8 : 12 : 15 ✓']],
       ['Multiplying only one number', "Mistake two: scaling only one part of a ratio. To change 2 to 3 into 8 to 12, we must multiply both numbers by 4.", ['r|2 : 3 → 8 : 3 ✗', 'g|2 : 3 → 8 : 12 ✓']]],
-    real: ['In real life', "Recipes and mixtures combine ratios. If the ratio of flour to sugar is 2 to 1, and sugar to butter is 3 to 2, we can find the ratio of all 3 ingredients.", ['Flour : Sugar = 2 : 1', 'Sugar : Butter = 3 : 2']],
+    real: ['In real life', "Recipes and mixtures combine ratios. If the ratio of flour to sugar is 2 to 1, and sugar to butter is 3 to 2, we can find the ratio of all 3 ingredients.", ['n|Flour : sugar = 2 : 1 and sugar : butter = 3 : 2. What is flour : sugar : butter?', 'Flour : Sugar = 2 : 1', 'Sugar : Butter = 3 : 2']],
     turns: [
       { q: 'A to B is 1 to 2, and B to C is 3 to 5. Write A to B to C.', say: "The B numbers are 2 and 3. The lowest common multiple is 6. Multiply the first ratio by 3: 3 to 6. Multiply the second ratio by 2: 6 to 10. So A to B to C is 3 to 6 to 10.", work: ['LCM of 2 and 3 = 6', 'A : B = 1 : 2 → × 3 → 3 : 6', 'B : C = 3 : 5 → × 2 → 6 : 10', 'A : B : C = 3 : 6 : 10'], ans: ['g|3 : 6 : 10'] },
       { q: 'x to y is 2 to 5, and y to z is 10 to 3. Write x to y to z.', say: "The y numbers are 5 and 10. The lowest common multiple is 10. Multiply the first ratio by 2: 4 to 10. The second ratio stays the same: 10 to 3. So x to y to z is 4 to 10 to 3.", work: ['LCM of 5 and 10 = 10', 'x : y = 2 : 5 → × 2 → 4 : 10', 'y : z = 10 : 3', 'x : y : z = 4 : 10 : 3'], ans: ['g|4 : 10 : 3'] },
@@ -123,7 +123,7 @@
     mist: [
       ['Adding instead of multiplying', "Mistake one: adding. 5 pens cost £3.50. 8 pens are 3 more, so adding 3 to the price is wrong. We need the price of 1 pen and multiply.", ['r|3.50 + 3 = £6.50 ✗', 'g|8 × 0.70 = £5.60 ✓']],
       ['Dividing instead of multiplying', "Mistake two: dividing when we should multiply. More pens cost more, so the answer must be bigger than £3.50.", ['r|3.50 ÷ 8 ✗', 'g|8 × 0.70 = 5.60 ✓']]],
-    real: ['In real life', "Shopping, cooking and converting currency all use direct proportion. If petrol costs a fixed price per litre, double the litres means double the cost.", ['Cost ∝ litres', 'Double litres → double cost']],
+    real: ['In real life', "Shopping, cooking and converting currency all use direct proportion. If petrol costs a fixed price per litre, double the litres means double the cost.", ['n|Petrol costs a fixed price per litre. If you buy double the litres, what happens to the cost?', 'Cost ∝ litres', 'Double litres → double cost']],
     turns: [
       { q: '6 apples cost £2.40. How much do 9 apples cost?', say: "1 apple costs £2.40 divided by 6, which is 40p. 9 apples cost 9 times 40p, £3.60.", work: ['1 apple = 2.40 ÷ 6 = £0.40', '9 apples = 9 × 0.40', '= £3.60'], ans: ['g|£3.60'] },
       { q: '3 eggs make 12 muffins. How many eggs are needed for 20 muffins?', say: "1 muffin needs 3 divided by 12, which is 1/4 of an egg. 20 muffins need 20 times 1/4, 5 eggs.", work: ['1 muffin = 3 ÷ 12 = 0.25 egg', '20 muffins = 20 × 0.25', '= 5 eggs'], ans: ['g|5 eggs'] },
@@ -149,7 +149,7 @@
     mist: [
       ['Using direct proportion', "Mistake one: doubling the days when the workers double. More workers must take less time. 8 workers taking 12 days is wrong.", ['r|8 workers: 12 days ✗', 'g|8 workers: 3 days ✓']],
       ['Forgetting the total', "Mistake two: dividing 6 days by 4 workers. First multiply to get the total work, 24, then divide by the new number of workers.", ['r|6 ÷ 4 ✗', 'g|(4 × 6) ÷ 8 = 3 ✓']]],
-    real: ['In real life', "More taps fill a bath faster. A faster car takes less time on the same road. A bigger team finishes a job sooner. These are all inverse proportion.", ['More taps → less time', 'More speed → less time']],
+    real: ['In real life', "More taps fill a bath faster. A faster car takes less time on the same road. A bigger team finishes a job sooner. These are all inverse proportion.", ['n|Two taps fill a bath in half the time of one tap. Is this direct or inverse proportion?', 'More taps → less time', 'More speed → less time']],
     turns: [
       { q: '5 painters paint a house in 8 days. How long would 10 painters take?', say: "The total work is 5 times 8, 40 painter-days. 40 divided by 10 is 4 days.", work: ['5 × 8 = 40 painter-days', '40 ÷ 10 = 4', '= 4 days'], ans: ['g|4 days'] },
       { q: '3 pipes fill a tank in 12 hours. How long would 4 pipes take?', say: "The total is 3 times 12, 36 pipe-hours. 36 divided by 4 is 9 hours.", work: ['3 × 12 = 36 pipe-hours', '36 ÷ 4 = 9', '= 9 hours'], ans: ['g|9 hours'] },
@@ -174,7 +174,7 @@
     mist: [
       ['Not changing the units', "Mistake one: writing 40 to 2 without changing the units. 40 centimetres to 2 metres is not 20 to 1. The units must match.", ['r|40 : 2 = 20 : 1 ✗', 'g|40 : 200 = 1 : 5 ✓']],
       ['Wrong conversion', "Mistake two: using the wrong conversion. 2 metres is 200 centimetres, not 20.", ['r|2 m = 20 cm ✗', 'g|2 m = 200 cm ✓']]],
-    real: ['In real life', "Recipes mix grams and kilograms, millilitres and litres. A cleaning mix might use 250 millilitres of cleaner to 2 litres of water. The ratio is 250 to 2,000, which is 1 to 8.", ['250 ml : 2 l = 250 : 2000', '= 1 : 8']],
+    real: ['In real life', "Recipes mix grams and kilograms, millilitres and litres. A cleaning mix might use 250 millilitres of cleaner to 2 litres of water. The ratio is 250 to 2,000, which is 1 to 8.", ['n|A cleaning mix uses 250 ml of cleaner to 2 litres of water. Write the ratio in the same units.', '250 ml : 2 l = 250 : 2000', '= 1 : 8']],
     turns: [
       { q: 'Write 30 centimetres to 1 and 1/2 metres as a ratio in its simplest form.', say: "1 and 1/2 metres is 150 centimetres. The ratio is 30 to 150. Divide both by 30 to get 1 to 5.", work: ['1.5 m = 150 cm', '30 : 150', '÷ 30 → 1 : 5'], ans: ['g|1 : 5'] },
       { q: 'Write 250 millilitres to 2 litres as a ratio in its simplest form.', say: "2 litres is 2,000 millilitres. The ratio is 250 to 2,000. Divide both by 250 to get 1 to 8.", work: ['2 l = 2000 ml', '250 : 2000', '÷ 250 → 1 : 8'], ans: ['g|1 : 8'] },
@@ -201,7 +201,7 @@
     mist: [
       ['Comparing only the prices', "Mistake one: choosing the cheaper pack without checking the amounts. The bigger pack costs more, but it gives more for each pound, so the price alone is not enough.", ['r|£1.20 < £1.65, so 500 g is better ✗', 'g|24p v 22p per 100 g: 750 g is better ✓']],
       ['Scaling only one ingredient', "Mistake two: scaling the flour but not the eggs. Every ingredient must be multiplied by the same scale factor, or the recipe will not work.", ['r|Flour × 2.5, eggs × 1 ✗', 'g|Everything × 2.5 ✓']]],
-    real: ['In real life', "Supermarkets show the price per hundred grams on shelf labels to help you compare. Caterers scale recipes up for large numbers of guests, and cooks scale them down for 1 person.", ['Shelf label: 24p per 100 g', 'Recipe for 4 → recipe for 10']],
+    real: ['In real life', "Supermarkets show the price per hundred grams on shelf labels to help you compare. Caterers scale recipes up for large numbers of guests, and cooks scale them down for 1 person.", ['n|A pack of 500 g costs £1.20. What is the price per 100 g?', 'Shelf label: 24p per 100 g', 'Recipe for 4 → recipe for 10']],
     turns: [
       { q: 'Pasta costs £1.60 for 400 grams, or £3.80 for 1 kilogram. Which is the better buy?', say: "400 grams for 160p is 40p per hundred grams. 1 kilogram is ten hundred grams. 380p divided by 10 is 38p per hundred grams. 38 is less than 40, so the one kilogram bag is better.", work: ['400 g: 160 ÷ 4 = 40p per 100 g', '1 kg = 1000 g: 380 ÷ 10 = 38p per 100 g', '38p < 40p'], ans: ['g|The 1 kg bag'] },
       { q: 'A pack of 12 pens costs £4.80. A pack of 20 pens costs £7.60. Which is the better buy?', say: "12 pens: 480p divided by 12 is 40p each. 20 pens: 760p divided by 20 is 38p each. The pack of 20 is better.", work: ['12 pens: 480 ÷ 12 = 40p each', '20 pens: 760 ÷ 20 = 38p each', '38p < 40p'], ans: ['g|The pack of 20'] },

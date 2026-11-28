@@ -22,7 +22,7 @@
     mist: [
       ['One is prime', "Mistake one: saying 1 is a prime number. Prime numbers have exactly 2 factors. 1 has only one factor, itself. So 1 is not prime.", ['r|1 is prime ✗', 'g|1 has 1 factor: not prime ✓']],
       ['All odd numbers are prime', "Mistake two: thinking every odd number is prime. 9 is odd, but 9 is 3 times 3. 21 is 3 times 7. Always test.", ['r|9 is prime ✗', 'g|9 = 3 × 3: not prime ✓']]],
-    real: ['In real life', "Prime numbers protect your information online. Banking and messaging apps use huge prime numbers. It is easy to multiply 2 big primes, but extremely hard to work out which 2 primes were multiplied together.", ['7 × 13 = 91', '91 = ? × ?  (hard to reverse for huge numbers)']],
+    real: ['In real life', "Prime numbers protect your information online. Banking and messaging apps use huge prime numbers. It is easy to multiply 2 big primes, but extremely hard to work out which 2 primes were multiplied together.", ['n|Multiply 7 × 13. Then try to find which two primes made 91.', '7 × 13 = 91', '91 = ? × ?  (hard to reverse for huge numbers)']],
     turns: [
       { q: 'Is 37 a prime number?', say: "37 is odd, so 2 does not go in. 3 plus 7 is 10, which is not in the 3 times table. It does not end in 5 or 0. The next prime is 7, and 7 times 7 is 49, bigger than 37. So we can stop. 37 is prime.", work: ['37 is odd: not ÷ 2', '3 + 7 = 10: not ÷ 3', 'Does not end in 0 or 5', '7 × 7 = 49 > 37: stop'], ans: ['g|Yes, 37 is prime'] },
       { q: 'List all the prime numbers between 20 and 40.', say: "Check each number from 21 to 39. 23 is prime. 29 is prime. 31 is prime. 37 is prime. The others are divisible by 2, 3 or 5, or are 7 times something. 21 is 3 times 7, 27 is 3 times 9, 33 is 3 times 11, and 35 is 5 times 7.", work: ['23, 29, 31, 37 are prime', '21 = 3 × 7', '27 = 3 × 9', '33 = 3 × 11', '35 = 5 × 7'], ans: ['g|23, 29, 31, 37'] },
@@ -48,7 +48,7 @@
     mist: [
       ['Mixing them up', "Mistake one: using the HCF when the question needs the LCM. 2 buses leave at 9, every 10 minutes and every 15 minutes. When do they leave together again? Wrong: the HCF, 5, so 5 minutes later. They cannot leave together after 5 minutes. Use the LCM: 30 minutes.", ['r|HCF = 5: after 5 min ✗', 'g|LCM = 30: after 30 min ✓']],
       ['An LCM smaller than a number', "Mistake two: not checking the answer. The LCM must be at least as big as the biggest number. If you get an LCM of 6 for 8 and 12, something is wrong. The LCM of 8 and 12 is 24.", ['r|LCM of 8 and 12 = 4 ✗', 'g|LCM of 8 and 12 = 24 ✓']]],
-    real: ['In real life', "Bus timetables use the LCM. If 1 bus comes every 20 minutes and another every 30, they arrive together every 60 minutes. Builders use the HCF to cut a long board into equal pieces with nothing left over.", ['LCM(20, 30) = 60 min', 'HCF(48, 36) = 12 cm']],
+    real: ['In real life', "Bus timetables use the LCM. If 1 bus comes every 20 minutes and another every 30, they arrive together every 60 minutes. Builders use the HCF to cut a long board into equal pieces with nothing left over.", ['n|Buses leave every 20 and 30 minutes. When do they leave together next?', 'LCM(20, 30) = 60 min', 'HCF(48, 36) = 12 cm']],
     turns: [
       { q: 'Find the highest common factor of 24 and 36.', say: "Write the factors of each. 24 has 1, 2, 3, 4, 6, 8, 12 and 24. 36 has 1, 2, 3, 4, 6, 9, 12, 18 and 36. The biggest number in both lists is 12.", work: ['24: 1, 2, 3, 4, 6, 8, 12, 24', '36: 1, 2, 3, 4, 6, 9, 12, 18, 36', 'Common: 1, 2, 3, 4, 6, 12'], ans: ['g|HCF = 12'] },
       { q: 'Find the lowest common multiple of 8 and 12.', say: "List the multiples of each. 8: 8, 16, 24, 32. 12: 12, 24, 36. The first number in both lists is 24.", work: ['8: 8, 16, 24, 32', '12: 12, 24, 36'], ans: ['g|LCM = 24'] },
@@ -77,7 +77,7 @@
     mist: [
       ['Forgetting zero and negatives', "Mistake one: thinking 0 is not a whole number, or leaving out negatives from the integers. Whole numbers start at 0. Integers go on both sides of 0.", ['r|Integers: 1, 2, 3 ✗', 'g|Integers: …, −1, 0, 1, 2, … ✓']],
       ['Listing too many', "Mistake two: not reading the limits. Multiples of 4 between 10 and 20. Wrong: 4, 8, 12, 16, 20. 4 and 8 are below 10. The set is 12 and 16. Whether 20 is included depends on the wording.", ['r|{4, 8, 12, 16, 20} ✗', 'g|{12, 16} ✓']]],
-    real: ['In real life', "Sets help us sort things. A shop has a set of products on sale and a set of products in stock. The products in both sets are the ones you can buy at the sale price.", ['On sale ∩ in stock = can buy now']],
+    real: ['In real life', "Sets help us sort things. A shop has a set of products on sale and a set of products in stock. The products in both sets are the ones you can buy at the sale price.", ['n|Which products can you buy at the sale price? Products on sale and in stock.', 'On sale ∩ in stock = can buy now']],
     turns: [
       { q: 'List the set of prime numbers less than 20.', say: "Go through the numbers. 2, 3, 5, 7. Then 11, 13, 17, 19. The others are divisible by something. That gives 8 primes.", work: ['2, 3, 5, 7', '11, 13, 17, 19'], ans: ['g|{2, 3, 5, 7, 11, 13, 17, 19}'] },
       { q: 'Is minus 5 a member of the whole numbers? Is it a member of the integers?', say: "Whole numbers start at 0, so minus 5 is not a whole number. Integers include the negative numbers, so minus 5 is an integer.", work: ['Whole numbers: 0, 1, 2, … so −5 ∉ whole numbers', 'Integers: …, −2, −1, 0, 1, … so −5 ∈ integers'], ans: ['g|Not whole; it is an integer'] },
@@ -106,7 +106,7 @@
     mist: [
       ['Multiplying the index', "Mistake one: multiplying the base by the power. 2 cubed is not 2 times 3, which is 6. It is 2 times 2 times 2, which is 8.", ['r|2³ = 2 × 3 = 6 ✗', 'g|2³ = 2 × 2 × 2 = 8 ✓']],
       ['Splitting a root over a sum', "Mistake two: splitting a square root over an addition. The square root of 16 plus 9 is the square root of 25, which is 5. It is not 4 plus 3.", ['r|√(16 + 9) = 4 + 3 = 7 ✗', 'g|√(16 + 9) = √25 = 5 ✓']]],
-    real: ['In real life', "Floor tiles are measured in squares. A square room has an area of 81 square metres, so each wall is 9 metres. A storage cube with an edge of 5 metres holds 125 cubic metres.", ['√81 = 9 m', '5³ = 125 m³']],
+    real: ['In real life', "Floor tiles are measured in squares. A square room has an area of 81 square metres, so each wall is 9 metres. A storage cube with an edge of 5 metres holds 125 cubic metres.", ['n|A square room has an area of 81 m². How long is each wall?', '√81 = 9 m', '5³ = 125 m³']],
     turns: [
       { q: 'Work out 5 cubed.', task: '5³', say: "5 cubed means 5 times 5 times 5. 5 times 5 is 25. 25 times 5 is 125.", work: ['5³ = 5 × 5 × 5', '5 × 5 = 25', '25 × 5 = 125'], ans: ['g|125'] },
       { q: 'Work out the cube root of 64.', task: '∛64', say: "We need a number that, multiplied by itself 3 times, makes 64. Try 3: 3 cubed is 27, too small. Try 4: 4 times 4 is 16, times 4 is 64. So the cube root is 4.", work: ['3³ = 27: too small', '4³ = 4 × 4 × 4 = 16 × 4 = 64 ✓'], ans: ['g|∛64 = 4'] },

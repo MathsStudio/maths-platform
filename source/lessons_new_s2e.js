@@ -23,7 +23,7 @@
     mist: [
       ['Dividing by the percentage number', "Mistake one: dividing by the percentage number. 15% of 60 is not 60 divided by 15. Build it instead. 10% is 6, 5% is 3, and 6 plus 3 is 9.", ['r|15% of 60 = 60 ÷ 15 = 4 ✗', 'g|10% + 5% = 6 + 3 = 9 ✓']],
       ['Forgetting the tens', "Mistake two: finding 10% and 5%, but adding only one 10. For 35% of 240, we need 3 tens, not one.", ['r|24 + 12 = 36 ✗', 'g|3 × 24 + 12 = 84 ✓']]],
-    real: ['In real life', "A jacket costs £80 and is 30% off. 10% is £8, so 30% is £24. You pay 80 minus 24, which is £56. You can do this in your head in the shop.", ['10% = £8, 30% = £24', '80 − 24 = £56']],
+    real: ['In real life', "A jacket costs £80 and is 30% off. 10% is £8, so 30% is £24. You pay 80 minus 24, which is £56. You can do this in your head in the shop.", ['n|A jacket costs £80 and is 30% off. What do you pay?', '10% = £8, 30% = £24', '80 − 24 = £56']],
     turns: [
       { q: 'Find 15% of £60 without a calculator.', say: "10% of 60 is £6. 5% is half of that, £3. 15% is 6 plus 3, which is £9.", work: ['10% of £60 = 60 ÷ 10 = £6', '5% = 6 ÷ 2 = £3', '15% = 6 + 3 = £9'], ans: ['g|£9'] },
       { q: 'Find 35% of £80 without a calculator.', say: "10% of 80 is £8. 30% is 3 times 8, which is 24. 5% is half of 8, which is 4. 24 plus 4 is £28.", work: ['10% of £80 = £8', '30% = 3 × 8 = £24', '5% = 8 ÷ 2 = £4', '35% = 24 + 4 = £28'], ans: ['g|£28'] },
@@ -49,7 +49,7 @@
     mist: [
       ['Dividing the wrong way round', "Mistake one: dividing the whole by the part. 18 out of 24 is 18 divided by 24, not 24 divided by 18. That would give a percentage over 100, which cannot be right for a score.", ['r|24 ÷ 18 = 1.33 → 133% ✗', 'g|18 ÷ 24 = 0.75 → 75% ✓']],
       ['Mixing the units', "Mistake two: using different units. 40 centimetres out of 2 metres is not 40 divided by 2. Change both to centimetres first.", ['r|40 ÷ 2 × 100 = 2000% ✗', 'g|40 ÷ 200 × 100 = 20% ✓']]],
-    real: ['In real life', "Test scores, discounts and surveys are all shown as percentages. If 12 out of 30 pupils walk to school, 12 divided by 30 is 0.4, which is 40%.", ['12 ÷ 30 = 0.4', '= 40% walk']],
+    real: ['In real life', "Test scores, discounts and surveys are all shown as percentages. If 12 out of 30 pupils walk to school, 12 divided by 30 is 0.4, which is 40%.", ['n|12 of 30 pupils walk to school. What percentage is that?', '12 ÷ 30 = 0.4', '= 40% walk']],
     turns: [
       { q: 'Write 9 out of 25 as a percentage.', say: "Write the fraction 9 over 25. Multiply top and bottom by 4 to get 36 over 100. So it is 36%.", work: ['9/25', '9/25 = 36/100', '= 36%'], ans: ['g|36%'] },
       { q: 'A shop sells 48 of its 60 cakes. What percentage were sold?', say: "The part is 48 and the whole is 60. 48 divided by 60 is 0.8. Multiplying by 100 gives 80%.", work: ['48 ÷ 60 = 0.8', '0.8 × 100 = 80%'], ans: ['g|80%'] },
@@ -76,7 +76,7 @@
     mist: [
       ['Using the percentage as the multiplier', "Mistake one: multiplying by the percentage itself. A 15% rise is not times 0.15. That finds the rise only, £9, not the new price.", ['r|60 × 0.15 = £9 ✗', 'g|60 × 1.15 = £69 ✓']],
       ['Using the wrong direction', "Mistake two: using 1.2 for a decrease. A 20% decrease must make the amount smaller, so the multiplier must be less than 1.", ['r|50 × 1.2 = £60 ✗', 'g|50 × 0.8 = £40 ✓']]],
-    real: ['In real life', "Value added tax of 20% is added to many prices. A chair costs £35 before tax. The multiplier is 1.2. 35 times 1.2 is £42.", ['35 × 1.2', '= £42']],
+    real: ['In real life', "Value added tax of 20% is added to many prices. A chair costs £35 before tax. The multiplier is 1.2. 35 times 1.2 is £42.", ['n|A chair costs £35 before 20% VAT. What is the price with VAT?', '35 × 1.2', '= £42']],
     turns: [
       { q: 'Increase £80 by 25%.', say: "100 plus 25 is 125%. The multiplier is 1.25. 80 times 1.25 is £100.", work: ['100% + 25% = 125%', 'Multiplier = 1.25', '80 × 1.25 = 100'], ans: ['g|£100'] },
       { q: 'Decrease £150 by 40%.', say: "100 minus 40 is 60%. The multiplier is 0.6. 150 times 0.6 is £90.", work: ['100% − 40% = 60%', 'Multiplier = 0.6', '150 × 0.6 = 90'], ans: ['g|£90'] },
@@ -102,7 +102,7 @@
     mist: [
       ['Dividing by the new amount', "Mistake one: dividing by the new amount. For 200 rising to 250, 50 divided by 250 gives 20%. That is wrong. Divide by the original, 200.", ['r|50 ÷ 250 = 20% ✗', 'g|50 ÷ 200 = 25% ✓']],
       ['Forgetting to say increase or decrease', "Mistake two: giving just the number. 80 down to 60 is a decrease of 25%. Say whether it is an increase or a decrease.", ['r|Answer: 25% ✗ (up or down?)', 'g|25% decrease ✓']]],
-    real: ['In real life', "News reports use percentage change all the time. If a town has 2,400 people and grows to 3,000, the change is 600. 600 divided by 2,400 is 0.25. The population grew by 25%.", ['600 ÷ 2400 = 0.25', '25% growth']],
+    real: ['In real life', "News reports use percentage change all the time. If a town has 2,400 people and grows to 3,000, the change is 600. 600 divided by 2,400 is 0.25. The population grew by 25%.", ['n|A town grows from 2,400 to 3,000 people. What is the percentage increase?', '600 ÷ 2400 = 0.25', '25% growth']],
     turns: [
       { q: 'A price rises from £50 to £65. What is the percentage increase?', say: "The change is 65 minus 50, which is 15. 15 divided by 50 is 0.3. Multiply by 100. The increase is 30%.", work: ['65 − 50 = 15', '15 ÷ 50 = 0.3', '0.3 × 100 = 30%'], ans: ['g|30% increase'] },
       { q: 'A TV goes from £90 down to £72 in a sale. What is the percentage decrease?', say: "The change is 90 minus 72, which is 18. 18 divided by 90 is 0.2. The decrease is 20%.", work: ['90 − 72 = 18', '18 ÷ 90 = 0.2', '0.2 × 100 = 20%'], ans: ['g|20% decrease'] },
@@ -129,7 +129,7 @@
     mist: [
       ['Using simple interest for compound', "Mistake one: working out compound interest as simple. 500 at 4% for 2 years is not 500 plus 2 lots of 20. With compound interest, year 2 earns interest on 520.", ['r|500 + 20 + 20 = £540 ✗', 'g|500 × 1.04² = £540.80 ✓']],
       ['Leaving out the one', "Mistake two: using 0.04 as the multiplier. For growth, the multiplier is 1 plus the rate, 1.04.", ['r|500 × 0.04² ✗', 'g|500 × 1.04² ✓']]],
-    real: ['In real life', "Savings accounts use compound interest. Loans and credit cards do too, which is why debts can grow quickly. Simple interest is used for some short loans.", ['Savings: compound growth', 'Loans: compound too']],
+    real: ['In real life', "Savings accounts use compound interest. Loans and credit cards do too, which is why debts can grow quickly. Simple interest is used for some short loans.", ['n|Which accounts use compound interest, savings or loans?', 'Savings: compound growth', 'Loans: compound too']],
     turns: [
       { q: 'Find the simple interest on £800 at 3% a year for 4 years.', say: "3% of 800 is £24 each year. Over 4 years, that is 4 times 24, £96.", work: ['3% of £800 = 0.03 × 800 = £24 a year', '4 × 24 = £96'], ans: ['g|£96'] },
       { q: '£300 is invested at 10% compound interest for 2 years. How much is it worth?', say: "The multiplier is 1.1. After year 1: 300 times 1.1 is 330. After year 2: 330 times 1.1 is £363.", work: ['Multiplier = 1.1', 'Year 1: 300 × 1.1 = 330', 'Year 2: 330 × 1.1 = 363'], ans: ['g|£363'] },
@@ -155,7 +155,7 @@
     mist: [
       ['Comparing the top numbers', "Mistake one: comparing the scores without the totals. 52 is bigger than 36, but 52 out of 80 is 65% and 36 out of 45 is 80%.", ['r|52 > 36, so Test 2 is better ✗', 'g|65% < 80%, so Test 1 is better ✓']],
       ['Comparing a percentage with an amount', "Mistake two: comparing 15% with £11. They are different things. Find 15% of the price in pounds, or change £11 to a percentage, before comparing.", ['r|15 > 11 ✗', 'g|£12 > £11 ✓']]],
-    real: ['In real life', "Sports teams, exam boards and shops all compare using percentages. A player who scores 9 goals from 12 shots has 75% accuracy. Another scoring 15 from 24 has about 62.5%.", ['9/12 = 75%', '15/24 = 62.5%']],
+    real: ['In real life', "Sports teams, exam boards and shops all compare using percentages. A player who scores 9 goals from 12 shots has 75% accuracy. Another scoring 15 from 24 has about 62.5%.", ['n|A player scores 9 goals from 12 shots. What is the accuracy as a percentage?', '9/12 = 75%', '15/24 = 62.5%']],
     turns: [
       { q: 'Amy scores 21 out of 30. Ben scores 34 out of 50. Who did better?', say: "Amy: 21 divided by 30 is 0.7, which is 70%. Ben: 34 divided by 50 is 0.68, which is 68%. 70 is bigger than 68, so Amy did better.", work: ['Amy: 21 ÷ 30 = 0.7 = 70%', 'Ben: 34 ÷ 50 = 0.68 = 68%', '70% > 68%'], ans: ['g|Amy did better'] },
       { q: 'Shop A takes 15% off an £80 coat. Shop B takes £11 off the same coat. Which shop gives the bigger saving?', say: "10% of 80 is £8. 5% is £4. So 15% is £12. 12 is more than 11, so shop A saves more.", work: ['10% of £80 = £8', '5% = £4', '15% = 8 + 4 = £12', '£12 > £11'], ans: ['g|Shop A'] },

@@ -25,7 +25,7 @@
     mist: [
       ['Adding the tops and the bottoms', "Mistake one: adding the numerators and the denominators. 1/2 plus 1/3 is not 2/5. 2/5 is smaller than 1/2, which cannot be right. Find a common denominator first. The answer is 5/6.", ['r|1/2 + 1/3 = 2/5 ✗', 'g|1/2 + 1/3 = 3/6 + 2/6 = 5/6 ✓']],
       ['Forgetting to simplify', "Mistake two: leaving the answer unsimplified. 1/6 plus 1/3 is 1/6 plus 2/6, which is 3/6. That simplifies to 1/2.", ['1/6 + 2/6 = 3/6', 'g|3/6 = 1/2 ✓']]],
-    real: ['In real life', "A recipe needs 3/4 of a cup of flour for the cake and 2/3 of a cup for the topping. 3/4 is 9/12 and 2/3 is 8/12. Together that is 17/12, which is 1 and 5/12 cups.", ['3/4 + 2/3 = 9/12 + 8/12', '= 17/12 = 1 5/12 cups']],
+    real: ['In real life', "A recipe needs 3/4 of a cup of flour for the cake and 2/3 of a cup for the topping. 3/4 is 9/12 and 2/3 is 8/12. Together that is 17/12, which is 1 and 5/12 cups.", ['n|A cake needs 3/4 cup of flour and the topping needs 2/3 cup. How many cups in total?', '3/4 + 2/3 = 9/12 + 8/12', '= 17/12 = 1 5/12 cups']],
     turns: [
       { q: 'Work out 2/3 plus 1/4.', task: '2/3 + 1/4', say: "The lowest common multiple of 3 and 4 is 12. 2/3 is 8/12. 1/4 is 3/12. 8 plus 3 is 11. The answer is 11/12.", work: ['LCM of 3 and 4 = 12', '2/3 = 8/12 and 1/4 = 3/12', '8/12 + 3/12 = 11/12'], ans: ['g|11/12'] },
       { q: 'Work out 5/6 minus 3/8.', task: '5/6 − 3/8', say: "The lowest common multiple of 6 and 8 is 24. 5/6 is 20 twenty-fourths. 3/8 is 9 twenty-fourths. 20 minus 9 is 11. The answer is 11 twenty-fourths.", work: ['LCM of 6 and 8 = 24', '5/6 = 20/24 and 3/8 = 9/24', '20/24 − 9/24 = 11/24'], ans: ['g|11/24'] },
@@ -54,7 +54,7 @@
     mist: [
       ['Flipping the wrong fraction', "Mistake one: flipping the first fraction, or both. 2/3 divided by 4/5. Wrong: 3/2 times 4/5. We only flip the second fraction. The first stays the same.", ['r|2/3 ÷ 4/5 = 3/2 × 4/5 ✗', 'g|2/3 ÷ 4/5 = 2/3 × 5/4 ✓']],
       ['Multiplying mixed numbers part by part', "Mistake two: multiplying the whole numbers and fractions separately. 1 and 1/2 times 2 and 2/3 is not 1 times 2 plus 1/2 times 2/3. Change to improper fractions first.", ['r|1 1/2 × 2 2/3 = (1 × 2) + (1/2 × 2/3) ✗', 'g|3/2 × 8/3 = 4 ✓']]],
-    real: ['In real life', "You have 3 and 1/2 litres of juice. Each glass holds 1/4 of a litre. How many glasses? 3 and 1/2 is 7/2. 7/2 divided by 1/4 is 7/2 times 4. That is 28/2, which is 14 glasses.", ['3 1/2 ÷ 1/4 = 7/2 × 4/1', '= 28/2 = 14 glasses']],
+    real: ['In real life', "You have 3 and 1/2 litres of juice. Each glass holds 1/4 of a litre. How many glasses? 3 and 1/2 is 7/2. 7/2 divided by 1/4 is 7/2 times 4. That is 28/2, which is 14 glasses.", ['n|You have 3 1/2 litres of juice. Each glass holds 1/4 of a litre. How many glasses?', '3 1/2 ÷ 1/4 = 7/2 × 4/1', '= 28/2 = 14 glasses']],
     turns: [
       { q: 'Work out 3/4 times 2/5.', task: '3/4 × 2/5', say: "Multiply the numerators: 3 times 2 is 6. Multiply the denominators: 4 times 5 is 20. 6/20. Divide the top and the bottom by 2 to get 3/10.", work: ['3 × 2 = 6', '4 × 5 = 20', '6/20 = 3/10'], ans: ['g|3/10'] },
       { q: 'Work out 5/6 divided by 2/3.', task: '5/6 ÷ 2/3', say: "Flip the second fraction and multiply. 5/6 times 3/2. 5 times 3 is 15. 6 times 2 is 12. 15/12 simplifies to 5/4, which is 1 and 1/4.", work: ['5/6 ÷ 2/3 = 5/6 × 3/2', '5 × 3 = 15 and 6 × 2 = 12', '15/12 = 5/4 = 1 1/4'], ans: ['g|1 1/4'] },
@@ -80,7 +80,7 @@
     mist: [
       ['Taking the second fraction of the original', "Mistake one: taking the second fraction of the whole amount. Aisha had £60 and spent 1/3. She then spends 1/4 of what is left. Wrong: 1/4 of 60 is 15. 1/4 of the £40 left is 10.", ['r|1/4 of 60 = 15 ✗', 'g|1/4 of 40 = 10 ✓']],
       ['Adding the fractions to find what is left', "Mistake two: adding 1/3 and 1/4 and saying the rest is 5/12. The second fraction is a fraction of a smaller amount, so you cannot add the fractions directly.", ['r|1/3 + 1/4 = 7/12 spent ✗', 'n|1/4 is of what is left, not of the whole']]],
-    real: ['In real life', "Budgeting uses this idea. You spend 1/3 of your wages on rent. Then you save 1/4 of what is left. The savings are 1/4 of 2/3 of your wages, which is 1/6 of your wages.", ['2/3 × 1/4 = 2/12 = 1/6']],
+    real: ['In real life', "Budgeting uses this idea. You spend 1/3 of your wages on rent. Then you save 1/4 of what is left. The savings are 1/4 of 2/3 of your wages, which is 1/6 of your wages.", ['n|You spend 1/3 of your wages on rent. Then you save 1/4 of what is left. What fraction is saved?', '2/3 × 1/4 = 2/12 = 1/6']],
     turns: [
       { q: 'Sam has £48. He spends 1/4 on lunch, then 1/3 of what is left on a book. How much does he have left?', say: "1/4 of 48 is 12. So £36 are left. 1/3 of 36 is 12 for the book. 36 minus 12 leaves £24.", work: ['1/4 of 48 = 12', '48 − 12 = 36 left', '1/3 of 36 = 12', '36 − 12 = 24'], ans: ['g|£24'] },
       { q: 'A tank is 2/5 used in the morning. In the afternoon 1/4 of what is left is used. What fraction of the tank is left?', say: "After the morning, 3/5 are left. 1/4 of 3/5 is 3/20 used in the afternoon. 3/5 is 12/20. 12/20 minus 3/20 is 9/20.", work: ['1 − 2/5 = 3/5 left', '1/4 × 3/5 = 3/20 used', '3/5 = 12/20', '12/20 − 3/20 = 9/20'], ans: ['g|9/20 left'] },
@@ -108,7 +108,7 @@
     mist: [
       ['The first number is not between 1 and 10', "Mistake one: a number like 45 times 10 to the 5. The first number must be between 1 and 10. 4.5 times 10 to the 6 is correct.", ['r|45 × 10⁵ ✗', 'g|4.5 × 10⁶ ✓']],
       ['Wrong sign on the power', "Mistake two: using a positive power for a small number. 0.004 is 4 times 10 to the minus 3, not 10 to the 3.", ['r|0.004 = 4 × 10³ ✗', 'g|0.004 = 4 × 10⁻³ ✓']]],
-    real: ['In real life', "Scientists use standard form all the time. The Sun is about 150 million kilometres from the Earth: 1.5 times 10 to the 8. A red blood cell is about 7 times 10 to the minus 6 metres across.", ['1.5 × 10⁸ km', '7 × 10⁻⁶ m']],
+    real: ['In real life', "Scientists use standard form all the time. The Sun is about 150 million kilometres from the Earth: 1.5 times 10 to the 8. A red blood cell is about 7 times 10 to the minus 6 metres across.", ['n|The Sun is about 150,000,000 km away. Write this in standard form.', '1.5 × 10⁸ km', '7 × 10⁻⁶ m']],
     turns: [
       { q: 'Write 62,000 in standard form.', task: '62,000', say: "Put the point to make a number between 1 and 10: 6.2. The point moves 4 places to the left. So the power is 4. The answer is 6.2 times 10 to the 4.", work: ['62,000 → 6.2', 'The point moved 4 places left', 'Power = 4'], ans: ['g|6.2 × 10⁴'] },
       { q: 'Write 0.0035 in standard form.', task: '0.0035', say: "We want a number between 1 and 10: 3.5. The point moves 3 places to the right. For a small number, that is a negative power. 3.5 times 10 to the minus 3.", work: ['0.0035 → 3.5', 'The point moved 3 places right', 'Power = −3'], ans: ['g|3.5 × 10⁻³'] },
@@ -137,7 +137,7 @@
     mist: [
       ['Multiplying the powers', "Mistake one: multiplying the powers. 10 to the 3 times 10 to the 5 is 10 to the 8. Add the powers, do not multiply them.", ['r|10³ × 10⁵ = 10¹⁵ ✗', 'g|10³ × 10⁵ = 10⁸ ✓']],
       ['Leaving the answer untidy', "Mistake two: leaving 15 times 10 to the 7. It looks right, but the front number is bigger than 10. Change it to 1.5 times 10 to the 8.", ['r|15 × 10⁷ (not standard form) ✗', 'g|1.5 × 10⁸ ✓']]],
-    real: ['In real life', "Light travels at 3 times 10 to the 5 kilometres each second. In 500 seconds, which is 5 times 10 to the 2, it travels 3 times 5, which is 15, times 10 to the 7 kilometres. That is 1.5 times 10 to the 8 kilometres, the distance to the Sun.", ['(3 × 10⁵) × (5 × 10²) = 15 × 10⁷', 'g|= 1.5 × 10⁸ km']],
+    real: ['In real life', "Light travels at 3 times 10 to the 5 kilometres each second. In 500 seconds, which is 5 times 10 to the 2, it travels 3 times 5, which is 15, times 10 to the 7 kilometres. That is 1.5 times 10 to the 8 kilometres, the distance to the Sun.", ['n|Light travels 3 × 10⁵ km each second. How far does it go in 500 seconds?', '(3 × 10⁵) × (5 × 10²) = 15 × 10⁷', 'g|= 1.5 × 10⁸ km']],
     turns: [
       { q: 'Work out 4 times 10 to the 3, multiplied by 2 times 10 to the 4.', task: '(4 × 10³) × (2 × 10⁴)', say: "Multiply the front numbers: 4 times 2 is 8. Add the powers: 3 plus 4 is 7. The answer is 8 times 10 to the 7.", work: ['4 × 2 = 8', '3 + 4 = 7'], ans: ['g|8 × 10⁷'] },
       { q: 'Work out 5 times 10 to the 6, multiplied by 4 times 10 to the 2. Give the answer in standard form.', task: '(5 × 10⁶) × (4 × 10²)', say: "Multiply the front numbers: 5 times 4 is 20. Add the powers: 6 plus 2 is 8. That gives 20 times 10 to the 8. 20 is 2 times 10, so the power goes up by 1. 2 times 10 to the 9.", work: ['5 × 4 = 20', '6 + 2 = 8', '20 × 10⁸', '20 = 2 × 10, so 2 × 10⁹'], ans: ['g|2 × 10⁹'] },
@@ -164,7 +164,7 @@
     mist: [
       ['Multiplying the bases', "Mistake one: multiplying the bases. 2 cubed times 2 to the 4 is not 4 to the 7. The base stays 2. The answer is 2 to the 7.", ['r|2³ × 2⁴ = 4⁷ ✗', 'g|2³ × 2⁴ = 2⁷ ✓']],
       ['Negative index means negative number', "Mistake two: thinking a negative index gives a negative answer. 2 to the minus 3 is 1/8. It is a small positive number.", ['r|2⁻³ = −8 ✗', 'g|2⁻³ = 1/8 ✓']]],
-    real: ['In real life', "Computers store data in powers of 2. 1 kilobyte is 2 to the 10 bytes, which is 1,024. 2 to the 10 times 2 to the 10 is 2 to the 20, which is about 1 million bytes, or 1 megabyte.", ['2¹⁰ = 1024', '2¹⁰ × 2¹⁰ = 2²⁰ ≈ 1,000,000']],
+    real: ['In real life', "Computers store data in powers of 2. 1 kilobyte is 2 to the 10 bytes, which is 1,024. 2 to the 10 times 2 to the 10 is 2 to the 20, which is about 1 million bytes, or 1 megabyte.", ['n|1 kilobyte is 2¹⁰ = 1,024 bytes. How many bytes is 1 megabyte, about?', '2¹⁰ = 1024', '2¹⁰ × 2¹⁰ = 2²⁰ ≈ 1,000,000']],
     turns: [
       { q: 'Work out 3 to the 4 times 3 squared.', task: '3⁴ × 3²', say: "The bases are the same, so add the indices. 4 plus 2 is 6. 3 to the 6 is 729.", work: ['3⁴ × 3² = 3⁴⁺²', '= 3⁶', '3⁶ = 729'], ans: ['g|729'] },
       { q: 'Work out 6 to the 9 divided by 6 to the 7.', task: '6⁹ ÷ 6⁷', say: "The bases are the same, so subtract the indices. 9 minus 7 is 2. 6 squared is 36.", work: ['6⁹ ÷ 6⁷ = 6⁹⁻⁷', '= 6²', '6² = 36'], ans: ['g|36'] },
@@ -189,7 +189,7 @@
     mist: [
       ['Using the tolerance one way only', "Mistake one: adding the tolerance but forgetting to subtract it. 50 plus or minus 2 goes both ways. The range is 48 to 52, not 50 to 52.", ['r|50 to 52 ✗', 'g|48 to 52 ✓']],
       ['Mixing up the target and the range', "Mistake two: reading the range as the tolerance. The tolerance is how far from the target. The whole range is twice that.", ['Tolerance = 2', 'Range = 48 to 52 = 4 wide']]],
-    real: ['In real life', "Factories use tolerance for every part. A phone case that is slightly too big will not fit. In medicine, a tablet must contain the right dose, plus or minus a very small tolerance.", ['Part length 80 ± 0.1 mm', '79.9 mm to 80.1 mm']],
+    real: ['In real life', "Factories use tolerance for every part. A phone case that is slightly too big will not fit. In medicine, a tablet must contain the right dose, plus or minus a very small tolerance.", ['n|A part is 80 mm ± 0.1 mm. What are the smallest and largest sizes?', 'Part length 80 ± 0.1 mm', '79.9 mm to 80.1 mm']],
     turns: [
       { q: 'A plank is 40 centimetres, plus or minus 0.3. Find the smallest and largest acceptable lengths.', say: "The smallest length is 40 minus 0.3, which is 39.7. The largest length is 40 plus 0.3, which is 40.3.", work: ['40 − 0.3 = 39.7', '40 + 0.3 = 40.3'], ans: ['g|39.7 cm to 40.3 cm'] },
       { q: 'A shaft should be 12 millimetres, plus or minus 0.15. Is a shaft of 12.18 acceptable?', say: "The smallest allowed is 12 minus 0.15, which is 11.85. The largest allowed is 12 plus 0.15, which is 12.15. 12.18 is bigger than 12.15, so it is outside the range.", work: ['12 − 0.15 = 11.85', '12 + 0.15 = 12.15', '12.18 > 12.15: outside the range'], ans: ['g|No, it is rejected'] },
